@@ -1,58 +1,64 @@
-name: Release image for local development environment
+name: Release docker image for local development
 
 on:
   push:
     branches:
-      - master
-      - develop
+      - y25-099-2-migrate-actions
 
 env:
   IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}
+  BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
-  build:
-    name: Automated release fo Docker image
+  release_docker_image:
+    name: Automated release for Docker image
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: nelonoel/branch-name@v1.0.1
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Build and tag the image for testing and release
-        run: >-
-          docker build .
-          --file Dockerfile
-          --tag docker.pkg.github.com/${IMAGE_NAME}:${BRANCH_NAME}
+        uses: sanger/.github/.github/actions/docker/build-tag-release@master
+        with:
+          image_name: ${{ IMAGE_NAME }}
+          branch_name: ${{ BRANCH_NAME }}
 
       - name: Set release tag
-        # https://docs.github.com/en/actions/reference/workflow-commands-for-github-actions#setting-an-environment-variable
-        run: echo "RELEASE_VERSION=$(printf -- '%s%s\n' $(cat .release-version) $([ ${BRANCH_NAME} = "develop" ] && printf -- '-%s-develop' ${GITHUB_RUN_ID} || echo ""))" >> $GITHUB_ENV
+        id: set_tag
+        uses: sanger/.github/.github/actions/release/set-release-tag@master
+        with:
+          branch_name: ${{ BRANCH_NAME }}
+          release_version: ${{ cat .release-version }}
+          github_run_id: ${{ GITHUB_RUN_ID }}
 
       - name: Login to registry
-        run: >-
-          docker login
-          -u ${{ github.actor }}
-          -p ${{ secrets.GITHUB_TOKEN }}
-          docker.pkg.github.com
+        uses: sanger/.github/.github/actions/docker/registry-login@master
+        with:
+          github_user: ${{ github.actor }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag image with release version
-        run: >-
-          docker tag
-          docker.pkg.github.com/${IMAGE_NAME}:${BRANCH_NAME}
-          docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
+        uses: sanger/.github/.github/actions/docker/tag-image@master
+        with:
+          image_name: ${{ IMAGE_NAME }}
+          branch_name: ${{ BRANCH_NAME }}
+          release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
-      - name: Push release tag image to registry
-        run: >-
-          docker push docker.pkg.github.com/${IMAGE_NAME}:${{ env.RELEASE_VERSION }}
+      - name: Push tagged docker release to registry
+        uses: sanger/.github/.github/actions/docker/push-release@master
+        with:
+          image_name: ${{ IMAGE_NAME }}
+          release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
+
+      - name: Generate access token
+        id: get_token
+        uses: sanger/.github/.github/actions/setup/create_token@master
+        with:
+          app_id: ${{ vars.REMOVE_DOCKER_IMAGE_APP_ID }}
+          private_key: ${{ secrets.REMOVE_DOCKER_IMAGE_PRIVATE_KEY }}
 
       - name: Remove old releases
-        uses: snok/container-retention-policy@v2
+        uses: sanger/.github/.github/actions/docker/remove-image@master
         with:
-          image-names: ${{ github.event.repository.name }}/*
-          cut-off: Four months ago UTC
-          timestamp-to-use: updated_at
-          account-type: org
-          org-name: sanger
-          keep-at-least: 5
-          skip-tags: latest, *[!develop] # This will DELETE any images where the tag contains ANY characters in "develop", excluding '!'
-          token: ${{ secrets.REMOVE_OLD_IMAGES }}
+          repo_name: ${{ github.event.repository.name }}/*
+          github_token: ${{ steps.get_token.outputs.github_token }}
