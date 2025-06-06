@@ -20,8 +20,8 @@ jobs:
       - name: Build and tag the image for testing and release
         uses: sanger/.github/.github/actions/docker/build-tag-release@y25-099-2-migrate-actions
         with:
-          image_name: ${IMAGE_NAME}
-          branch_name: ${BRANCH_NAME}
+          image_name: ${{ env.IMAGE_NAME }}
+          branch_name: ${{ env.BRANCH_NAME }}
 
       - name: Get release version
         id: get_version
@@ -31,8 +31,8 @@ jobs:
         id: set_tag
         uses: sanger/.github/.github/actions/release/set-release-tag@y25-099-2-migrate-actions
         with:
-          branch_name: ${BRANCH_NAME}
-          release_version: ${{ RELEASE_VERSION }}
+          branch_name: ${{ env.BRANCH_NAME }}
+          release_version: ${{ env.RELEASE_VERSION }}
           github_run_id: ${{ github.run_id }}
 
       - name: Login to registry
@@ -44,14 +44,14 @@ jobs:
       - name: Tag image with release version
         uses: sanger/.github/.github/actions/docker/tag-image@y25-099-2-migrate-actions
         with:
-          image_name: ${IMAGE_NAME}
-          branch_name: ${BRANCH_NAME}
+          image_name: ${{ env.IMAGE_NAME }}
+          branch_name: ${{ env.BRANCH_NAME }}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Push tagged docker release to registry
         uses: sanger/.github/.github/actions/docker/push-release@y25-099-2-migrate-actions
         with:
-          image_name: ${IMAGE_NAME}
+          image_name: ${{ env.IMAGE_NAME }}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Generate access token
