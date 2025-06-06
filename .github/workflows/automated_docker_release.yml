@@ -13,6 +13,9 @@ jobs:
   release_docker_image:
     name: Automated release for Docker image
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
     steps:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@y25-099-2-migrate-actions
@@ -54,15 +57,15 @@ jobs:
           image_name: ${{ env.IMAGE_NAME }}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
-      - name: Generate access token
-        id: get_token
-        uses: sanger/.github/.github/actions/setup/create-token@y25-099-2-migrate-actions
-        with:
-          app_id: ${{ vars.REMOVE_DOCKER_IMAGE_APP_ID }}
-          private_key: ${{ secrets.REMOVE_DOCKER_IMAGE_PRIVATE_KEY }}
+      # - name: Generate access token
+      #   id: get_token
+      #   uses: sanger/.github/.github/actions/setup/create-token@y25-099-2-migrate-actions
+      #   with:
+      #     app_id: ${{ vars.REMOVE_DOCKER_IMAGE_APP_ID }}
+      #     private_key: ${{ secrets.REMOVE_DOCKER_IMAGE_PRIVATE_KEY }}
 
       - name: Remove old releases
         uses: sanger/.github/.github/actions/docker/remove-image@y25-099-2-migrate-actions
         with:
           repo_name: ${{ github.event.repository.name }}
-          github_token: ${{ steps.get_token.outputs.github_token }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
