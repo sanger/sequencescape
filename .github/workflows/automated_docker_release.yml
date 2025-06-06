@@ -52,7 +52,7 @@ jobs:
 
       - name: Generate access token
         id: get_token
-        uses: sanger/.github/.github/actions/setup/create_token@master
+        uses: sanger/.github/.github/actions/setup/create-token@master
         with:
           app_id: ${{ vars.REMOVE_DOCKER_IMAGE_APP_ID }}
           private_key: ${{ secrets.REMOVE_DOCKER_IMAGE_PRIVATE_KEY }}
