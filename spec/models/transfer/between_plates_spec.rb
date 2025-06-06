@@ -32,4 +32,39 @@ describe Transfer::BetweenPlates do
       expect(destination_well.stock_wells).to eq([source_well])
     end
   end
+
+  context 'with pre-capture pools' do
+    # This test checks the fix that allows creating the BGE Lib PrePool plate
+    # from BGE Lib PCR XP plate when some wells are failed in Limber. Failed
+    # wells are skipped as long as they are not in the transfers specified.
+    let(:plate) do
+      plate = create(:pooling_plate) # 6 wells
+      pools = [%w[A1 B1 C1], %w[D1 E1 F1]] # into 2 pools
+      pools.each_with_index do |locations, index|
+        plate
+          .wells
+          .located_at(locations)
+          .each do |well|
+            # likely to be after ISC submission
+            create(:isc_request, asset: well, pre_capture_pool: pre_capture_pools[index])
+          end
+      end
+      plate
+    end
+    let(:pre_capture_pools) { create_list(:pre_capture_pool, 2) }
+    let(:child) { create(:plate_with_empty_wells) }
+    let(:transfers) do # A1 excluded
+      { 'B1' => 'A1', 'C1' => 'A1', 'D1' => 'B1', 'E1' => 'B1', 'F1' => 'B1' }
+    end
+
+    it 'skips well that is not in transfers' do
+      expect do
+        described_class.create!(source: plate, destination: child, user: user, transfers: transfers)
+      end.not_to raise_error
+
+      expect(child.transfer_requests.size).to eq(5)
+      expect(child.transfer_requests.map(&:asset)).to match_array(plate.wells.located_at(%w[B1 C1 D1 E1 F1]))
+      expect(child.transfer_requests.map(&:target_asset).uniq).to match_array(child.wells.located_at(%w[A1 B1]))
+    end
+  end
 end
