@@ -64,5 +64,5 @@ jobs:
       - name: Remove old releases
         uses: sanger/.github/.github/actions/docker/remove-image@y25-099-2-migrate-actions
         with:
-          repo_name: ${{ github.event.repository.name }}/*
+          repo_name: ${{ github.event.repository.name }}
           github_token: ${{ steps.get_token.outputs.github_token }}
