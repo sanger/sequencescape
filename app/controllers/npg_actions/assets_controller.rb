@@ -87,6 +87,8 @@ class NpgActions::AssetsController < ApplicationController
     @last_event = Event.family_pass_and_fail.npg_events(@request.id).first
   end
 
+  # Requires a parameter to be passed in the request body, of the following form:
+  # { "qc_information": { "message": "..." } }
   def qc_information
     params.require(:qc_information).permit(:message)
   end
