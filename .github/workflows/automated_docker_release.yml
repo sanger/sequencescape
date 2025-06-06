@@ -1,4 +1,4 @@
-name: Release docker image for local development
+name: Release docker image for local development (2)
 
 on:
   push:
