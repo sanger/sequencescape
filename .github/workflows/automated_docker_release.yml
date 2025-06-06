@@ -33,13 +33,13 @@ jobs:
         with:
           branch_name: ${BRANCH_NAME}
           release_version: ${{ steps.get_version.outputs.version }}
-          github_run_id: ${github.run_id}
+          github_run_id: ${{ github.run_id }}
 
       - name: Login to registry
         uses: sanger/.github/.github/actions/docker/registry-login@y25-099-2-migrate-actions
         with:
-          github_user: ${github.actor}
-          github_token: ${secrets.GITHUB_TOKEN}
+          github_user: ${{ github.actor }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag image with release version
         uses: sanger/.github/.github/actions/docker/tag-image@y25-099-2-migrate-actions
