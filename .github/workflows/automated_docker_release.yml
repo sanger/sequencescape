@@ -20,8 +20,8 @@ jobs:
       - name: Build and tag the image for testing and release
         uses: sanger/.github/.github/actions/docker/build-tag-release@master
         with:
-          image_name: ${{ IMAGE_NAME }}
-          branch_name: ${{ BRANCH_NAME }}
+          image_name: ${IMAGE_NAME}
+          branch_name: ${BRANCH_NAME}
 
       - name: Set release tag
         id: set_tag
