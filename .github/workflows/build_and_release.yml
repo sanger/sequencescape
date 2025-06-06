@@ -26,6 +26,6 @@ jobs:
         run: ./compile-build
 
       - name: Release Build
-        uses: sanger/.github/.github/actions/release-build@master
+        uses: sanger/.github/.github/actions/utils/release-build@master
         with:
           upload_url: ${{ github.event.release.upload_url }}
