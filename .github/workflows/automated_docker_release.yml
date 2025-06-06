@@ -23,13 +23,17 @@ jobs:
           image_name: ${IMAGE_NAME}
           branch_name: ${BRANCH_NAME}
 
+      - name: Get release version
+        id: get_version
+        run: echo "RELEASE_VERSION=$(cat .release-version)" >> "$GITHUB_OUTPUT"
+
       - name: Set release tag
         id: set_tag
         uses: sanger/.github/.github/actions/release/set-release-tag@master
         with:
-          branch_name: ${{ BRANCH_NAME }}
-          release_version: ${{ cat .release-version }}
-          github_run_id: ${{ GITHUB_RUN_ID }}
+          branch_name: ${BRANCH_NAME}
+          release_version: ${steps.get_version.outputs.version}
+          github_run_id: ${github.run_id}
 
       - name: Login to registry
         uses: sanger/.github/.github/actions/docker/registry-login@master
