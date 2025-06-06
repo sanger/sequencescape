@@ -40,10 +40,19 @@ class NpgActions::AssetsController < ApplicationController
     end
   end
 
+  # Does a variety of things to do with closing off sequencing requests & batches, and recording an audit trail:
+  # - Sets the qc_state field of the lane receptacle
+  # - Sets the external_release field of the lane receptacle
+  # - Creates an Event (Sequencescape, not WH) against the lane receptacle to say external_release was updated
+  # - Creates an Event (Sequencescape, not WH) against the lane receptacle, with the qc_information from the API call
+  # - Changes the state of the request
+  # - Creates an Event (Sequencescape, not WH) against the request to record the qc complete state
+  # - If all the requests in the batch are now qc'd, updates the batch state and qc_state fields
+  # - Broadcasts a SequencingComplete event to the Events Warehouse
   def generate_events(state)
     state_str = "#{state}ed"
     batch = @request.batch || raise(ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request')
-
+    
     @asset.set_qc_state(state_str)
 
     @asset.events.create_state_update!(qc_information[:message] || 'No reason given')
