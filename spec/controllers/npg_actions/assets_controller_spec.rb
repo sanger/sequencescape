@@ -446,8 +446,8 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'returns a warning' do
         regexp =
           Regexp.new(
-            "<error><message>The requests on this lane have already been completed with state: 'pass'. "\
-            "Unable to set them to new state: 'fail'.</message></error>",
+            "<error><message>The requests on this lane have already been completed with state: 'pass'. " \
+              "Unable to set them to new state: 'fail'.</message></error>",
             Regexp::MULTILINE
           )
         expect(response).to have_http_status(:bad_request)

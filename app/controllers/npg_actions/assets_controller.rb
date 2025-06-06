@@ -52,7 +52,7 @@ class NpgActions::AssetsController < ApplicationController
   def generate_events(state)
     state_str = "#{state}ed"
     batch = @request.batch || raise(ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request')
-    
+
     @asset.set_qc_state(state_str)
 
     @asset.events.create_state_update!(qc_information[:message] || 'No reason given')
@@ -102,7 +102,7 @@ class NpgActions::AssetsController < ApplicationController
   end
 
   def already_completed_message(existing_state, requested_state)
-    "The requests on this lane have already been completed with state: '#{existing_state}'. "\
-    "Unable to set them to new state: '#{requested_state}'."
+    "The requests on this lane have already been completed with state: '#{existing_state}'. " \
+      "Unable to set them to new state: '#{requested_state}'."
   end
 end
