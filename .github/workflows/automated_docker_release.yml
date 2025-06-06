@@ -32,7 +32,7 @@ jobs:
         uses: sanger/.github/.github/actions/release/set-release-tag@y25-099-2-migrate-actions
         with:
           branch_name: ${BRANCH_NAME}
-          release_version: ${steps.get_version.outputs.version}
+          release_version: ${{ steps.get_version.outputs.version }}
           github_run_id: ${github.run_id}
 
       - name: Login to registry
