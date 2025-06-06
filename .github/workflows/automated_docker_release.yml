@@ -38,20 +38,20 @@ jobs:
       - name: Login to registry
         uses: sanger/.github/.github/actions/docker/registry-login@master
         with:
-          github_user: ${{ github.actor }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_user: ${github.actor}
+          github_token: ${secrets.GITHUB_TOKEN}
 
       - name: Tag image with release version
         uses: sanger/.github/.github/actions/docker/tag-image@master
         with:
-          image_name: ${{ IMAGE_NAME }}
-          branch_name: ${{ BRANCH_NAME }}
+          image_name: ${IMAGE_NAME}
+          branch_name: ${BRANCH_NAME}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Push tagged docker release to registry
         uses: sanger/.github/.github/actions/docker/push-release@master
         with:
-          image_name: ${{ IMAGE_NAME }}
+          image_name: ${IMAGE_NAME}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Generate access token
