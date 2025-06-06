@@ -31,7 +31,7 @@ class NpgActions::AssetsController < ApplicationController
       if @last_event.present?
         # If we already have an event we check to see its state. If it matches,
         # we just continue to rendering, otherwise we blow up.
-        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_event.family != state
+        raise NPGActionInvalid, already_completed_message(@last_event.family, state) if @last_event.family != state
       else
         generate_events(state)
       end
@@ -88,5 +88,10 @@ class NpgActions::AssetsController < ApplicationController
 
   def rescue_error_bad_request(exception)
     render xml: "<error><message>#{exception.message.split("\n").first}</message></error>", status: :bad_request
+  end
+
+  def already_completed_message(existing_state, requested_state)
+    "The requests on this lane have already been completed with state: '#{existing_state}'. "\
+    "Unable to set them to new state: '#{requested_state}'."
   end
 end
