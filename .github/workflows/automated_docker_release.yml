@@ -65,4 +65,4 @@ jobs:
         uses: sanger/.github/.github/actions/docker/remove-image@y25-099-2-migrate-actions
         with:
           repo_name: ${{ github.event.repository.name }}
-          github_token: ${{ secrets.REMOVE_OLD_IMAGES }}
+          github_token: ${{ secrets.TEST-TOKEN }}
