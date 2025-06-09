@@ -171,9 +171,9 @@ RSpec.describe SampleManifest, :sample_manifest do
 
           it 'create 1 MX tube' do
             expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
-                    MultiplexedLibraryTube,
-                    :count
-                  ).by(1).and change(BroadcastEvent, :count).by(1)
+              MultiplexedLibraryTube,
+              :count
+            ).by(1).and change(BroadcastEvent, :count).by(1)
           end
 
           it 'creates sample manifest assets' do

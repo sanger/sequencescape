@@ -21,25 +21,6 @@ Layout/ClosingHeredocIndentation:
     - 'db/migrate/20190829125359_update_view_wells.rb'
     - 'db/seeds.rb'
 
-# Offense count: 18
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: consistent, consistent_relative_to_receiver, special_for_inner_method_call, special_for_inner_method_call_in_parentheses
-Layout/FirstArgumentIndentation:
-  Exclude:
-    - 'app/controllers/batches_controller.rb'
-    - 'app/models/robot/verification/base.rb'
-    - 'app/models/robot/verification/source_dest_control_beds.rb'
-    - 'lib/informatics/lib/informatics/view/menu/list.rb'
-    - 'spec/models/linear_submission_spec.rb'
-    - 'spec/models/phi_x/spiked_buffer_spec.rb'
-    - 'spec/models/phi_x/stock_spec.rb'
-    - 'spec/models/plate/quad_creator_spec.rb'
-    - 'spec/models/sample_manifest_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
-    - 'test/unit/custom_metadatum_test.rb'
-    - 'test/unit/plate_creator_test.rb'
-
 # Offense count: 12
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.

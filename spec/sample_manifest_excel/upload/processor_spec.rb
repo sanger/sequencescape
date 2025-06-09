@@ -1025,9 +1025,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                  RackedTube,
-                  :count
-                ).and not_change(Barcode, :count)
+            RackedTube,
+            :count
+          ).and not_change(Barcode, :count)
         end
       end
 
@@ -1044,9 +1044,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                  RackedTube,
-                  :count
-                ).and not_change(Barcode, :count)
+            RackedTube,
+            :count
+          ).and not_change(Barcode, :count)
         end
 
         it 'will have errors' do
