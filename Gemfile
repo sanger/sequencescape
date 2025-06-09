@@ -221,6 +221,7 @@ group :test, :cucumber do
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda'
   gem 'simplecov', require: false
+  gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
 
   gem 'cucumber_github_formatter'
