@@ -8,22 +8,16 @@ MISSING_METADATA = {
 }.freeze
 STUDY_TYPES = %i[open_study managed_study].freeze
 
-RSpec.describe Study, :accession, type: :model do
+RSpec.describe Study, :accession, type: :model, :accessioning_enabled do
   include MockAccession
 
   before do
     Delayed::Worker.delay_jobs = false
-    configatron.accession_samples = true
-    Accession.configure do |config|
-      config.folder = File.join('spec', 'data', 'accession')
-      config.load!
-    end
     allow(Accession::Request).to receive(:post).and_return(build(:successful_accession_response))
   end
 
   after do
     Delayed::Worker.delay_jobs = true
-    configatron.accession_samples = true
     SampleManifestExcel.reset!
   end
 

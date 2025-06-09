@@ -92,22 +92,11 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#accession_all_samples' do
+  describe '#accession_all_samples', :accessioning_enabled do
     let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
     let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
 
     before { post :accession_all_samples, params: { id: study.id } }
-
-    around do |example|
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
-
-      configatron.accession_samples = true
-      example.run
-      configatron.accession_samples = false
-    end
 
     context 'when the accessioning succeeds' do
       it 'redirects to the study page' do

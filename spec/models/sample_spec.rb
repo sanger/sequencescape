@@ -15,10 +15,6 @@ RSpec.describe Sample, :accession, :cardinal do
     before do
       configatron.accession_samples = false
       Delayed::Worker.delay_jobs = false
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
 
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
     end
@@ -39,22 +35,12 @@ RSpec.describe Sample, :accession, :cardinal do
     end
   end
 
-  context 'accessioning enabled' do
+  context 'accessioning enabled', :accessioning_enabled do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }
 
-    before do
-      configatron.accession_samples = true
-      Delayed::Worker.delay_jobs = false
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
-    end
+    before { Delayed::Worker.delay_jobs = false }
 
-    after do
-      Delayed::Worker.delay_jobs = true
-      configatron.accession_samples = false
-    end
+    after { Delayed::Worker.delay_jobs = true }
 
     it 'will not proceed if the sample is not suitable' do
       sample =
