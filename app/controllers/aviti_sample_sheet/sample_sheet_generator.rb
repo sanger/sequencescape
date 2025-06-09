@@ -19,6 +19,7 @@ module AvitiSampleSheet::SampleSheetGenerator
   def self.generate(batch)
     Generator.new(batch).generate
   end
+
   class Generator
     # These settings are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
     # They specify parameters for Bases2Fastq execution and are fixed for lab usage.

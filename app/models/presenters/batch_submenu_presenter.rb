@@ -57,6 +57,7 @@ module Presenters
       load_pipeline_options
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
       return unless aviti_run_manifest?
+
       add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches, action: :generate_sample_sheet
     end
 
