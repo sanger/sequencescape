@@ -603,7 +603,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
-    raise AccessionValidationFailed, error_message
+    raise AccessionService::AccessionValidationFailed, error_message
   end
 
   def enqueue_accessioning_job!(accessionable)
