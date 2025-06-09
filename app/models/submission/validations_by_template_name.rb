@@ -99,7 +99,7 @@ module Submission::ValidationsByTemplateName
     errors.add(
       :spreadsheet,
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
-        "'#{study_project[1]}', all rows for a specific study and project must have the same value"
+      "'#{study_project[1]}', all rows for a specific study and project must have the same value"
     )
   end
 

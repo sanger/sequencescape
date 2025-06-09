@@ -525,7 +525,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     # Find the biggest group (will be 1 if all samples have unique donor ids)
     # Check size of biggest group <= requested number of pools.
     context 'when the number of samples with the same donor ID is less than ' \
-              'or equal to the requested number of pools for study and project' do
+            'or equal to the requested number of pools for study and project' do
       let(:group_1_number_of_samples) { 96 }
       let(:group_2_number_of_samples) { 0 } # not included in the test
       let(:group_3_number_of_samples) { 0 } # not included in the test
@@ -546,7 +546,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
 
     context 'when the number of samples with the same donor ID is equal to ' \
-              'the requested number of pools for study and project' do
+            'the requested number of pools for study and project' do
       let(:group_1_number_of_samples) { 96 }
       let(:group_2_number_of_samples) { 0 } # not included in the test
       let(:group_3_number_of_samples) { 0 } # not included in the test
@@ -567,7 +567,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
 
     context 'when the number of samples with the same donor ID is greater ' \
-              'than the requested number of pools for study and project' do
+            'than the requested number of pools for study and project' do
       let(:group_1_number_of_samples) { 96 }
       let(:group_2_number_of_samples) { 0 } # not included in the test
       let(:group_3_number_of_samples) { 0 } # not included in the test

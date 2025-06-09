@@ -359,7 +359,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           row = rown + 1
           msg =
             "Retention instruction checks failed at row: #{row}. " \
-              "Tube (#{barcode}) cannot have different retention instruction value."
+            "Tube (#{barcode}) cannot have different retention instruction value."
           expect(processor.errors.full_messages).to include(msg)
         end
       end
@@ -813,7 +813,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(processor).not_to be_valid
             expect(processor.errors.full_messages).to include(
               'Retention instruction checks failed at row: 11. ' \
-                'Plate (SQPD-2) cannot have different retention instruction values.'
+              'Plate (SQPD-2) cannot have different retention instruction values.'
             )
           end
 
@@ -1069,7 +1069,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).not_to be_empty
           expect(errors).to include(
             'Scan could not be retrieved for tube rack with barcode RK11111110. ' \
-              'Service responded with status code 404 and the following message: File not found'
+            'Service responded with status code 404 and the following message: File not found'
           )
         end
       end
@@ -1114,7 +1114,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).not_to be_empty
           expect(errors[0]).to start_with(
             'Response when trying to retrieve scan (tube rack with barcode RK11111110) ' \
-              'was not valid JSON so could not be understood. Error message:'
+            'was not valid JSON so could not be understood. Error message:'
           )
         end
       end

@@ -113,40 +113,6 @@ Layout/LeadingCommentSpace:
     - 'spec/models/sample_manifest/uploader_spec.rb'
     - 'spec/views/labware/show_html_erb_spec.rb'
 
-# Offense count: 47
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: aligned, indented
-Layout/LineEndStringConcatenationIndentation:
-  Exclude:
-    - 'app/models/bulk_submission.rb'
-    - 'app/models/labwhere_reception.rb'
-    - 'app/models/report_fail.rb'
-    - 'app/models/stock_stamper.rb'
-    - 'app/models/submission/validations_by_template_name.rb'
-    - 'app/models/transfer/between_plates.rb'
-    - 'app/uat_actions/uat_actions.rb'
-    - 'app/uat_actions/uat_actions/generate_plate_concentrations.rb'
-    - 'app/uat_actions/uat_actions/generate_plate_volumes.rb'
-    - 'app/uat_actions/uat_actions/generate_qc_results.rb'
-    - 'app/uat_actions/uat_actions/generate_tag_plates.rb'
-    - 'app/uat_actions/uat_actions/generate_tagged_plates.rb'
-    - 'app/uat_actions/uat_actions/test_submission.rb'
-    - 'app/uat_actions/uat_actions/tube_submission.rb'
-    - 'config/initializers/patch_json_api_resource.rb'
-    - 'db/migrate/20220331093754_fix_development_encoding_issues.rb'
-    - 'features/support/paths.rb'
-    - 'lib/record_loader/tag_set_loader.rb'
-    - 'lib/tasks/insdc/import_countries.rake'
-    - 'lib/tasks/rebroadcast_pac_bio_multiple_requests_run.rake'
-    - 'spec/helpers/application_helper_spec.rb'
-    - 'spec/models/asset_links_create_edge_spec.rb'
-    - 'spec/models/bulk_submission_spec.rb'
-    - 'spec/models/scrna_core_cdna_prep_feasibility_validator_spec.rb'
-    - 'spec/models/well_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
-    - 'spec/uat_actions/uat_actions_spec.rb'
-
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.

@@ -54,7 +54,7 @@ class UatActions
       all.each do |uat_action|
         unless CATEGORY_LIST.include?(uat_action.category)
           raise "Category '#{uat_action.category}' from '#{uat_action}' is not in the list " \
-                  "of categories #{CATEGORY_LIST}"
+                "of categories #{CATEGORY_LIST}"
         end
       end
 

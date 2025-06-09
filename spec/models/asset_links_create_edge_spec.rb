@@ -233,7 +233,7 @@ RSpec.describe AssetLink, type: :model do
             edge = args[0]
             message =
               "Duplicate entry '#{ancestor.id}-#{descendant.id}' " \
-                "for key 'index_asset_links_on_ancestor_id_and_descendant_id'"
+              "for key 'index_asset_links_on_ancestor_id_and_descendant_id'"
             exception = ActiveRecord::RecordNotUnique.new(message)
             allow(edge).to receive(:save).and_raise(exception)
 
