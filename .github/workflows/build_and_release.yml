@@ -1,0 +1,31 @@
+name: Build and release
+
+on:
+  release:
+    types: published
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/actions/setup/ruby@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup/env@master
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Compile Build
+        run: ./compile-build
+
+      - name: Release Build
+        uses: sanger/.github/.github/actions/utils/release-build@master
+        with:
+          upload_url: ${{ github.event.release.upload_url }}
