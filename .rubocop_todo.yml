@@ -74,9 +74,6 @@ Layout/HeredocIndentation:
     - 'db/migrate/20190829125358_update_view_sample_tubes.rb'
     - 'db/migrate/20190829125359_update_view_wells.rb'
     - 'db/seeds.rb'
-    - 'spec/features/pipelines/cherrypick/cherrypick_pipeline_spec.rb'
-    - 'spec/models/tag_substitutions_spec.rb'
-    - 'test/unit/qc_report_presenter_test.rb'
 
 # Offense count: 29
 # This cop supports safe autocorrection (--autocorrect).
