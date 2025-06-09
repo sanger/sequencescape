@@ -112,7 +112,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     end
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
-      #prettier-ignore
       let(:expected_tecan_file) { <<~TECAN }
         C;
         C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
@@ -184,7 +183,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
         [plates[0], plates[2], plates[1]]
       end
 
-      #prettier-ignore
       let(:expected_tecan_file) { <<~TECAN }
         C;
         C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
@@ -282,7 +280,6 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
 
-    #prettier-ignore
     let(:expected_tecan_file) { <<~TECAN }
       C;
       C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100

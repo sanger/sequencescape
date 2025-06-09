@@ -6,7 +6,6 @@ module Tasks::AddSpikedInControlHandler
   # helps add the scanned Spiked PhiX as a parent of each lane
   class Handler < Tasks::BaseHandler
     def perform
-      # Rubocop gets in a fight with prettier here.
       if missing_barcodes.present?
         return false, "Can't find a spiked hybridization buffer with barcode #{missing_barcodes.to_sentence}"
       end
