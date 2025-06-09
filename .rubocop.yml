@@ -40,6 +40,9 @@ Layout/EndAlignment:
 Layout/DefEndAlignment:
   EnforcedStyleAlignWith: def
 
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 

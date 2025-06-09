@@ -101,17 +101,6 @@ Layout/LeadingCommentSpace:
     - 'app/models/metadata/form_builder.rb'
     - 'app/models/qc_file.rb'
     - 'app/models/sample_manifest.rb'
-    - 'app/models/sample_manifest/core_behaviour.rb'
-    - 'app/models/work_completion/labware_completion.rb'
-    - 'app/sequencescape_excel/sequencescape_excel/specialised_field/chromium_tag_group.rb'
-    - 'features/support/step_definitions/barcode_steps.rb'
-    - 'features/support/step_definitions/plate_steps.rb'
-    - 'lib/tasks/application.rake'
-    - 'script/poller'
-    - 'spec/features/pipelines/cherrypick/cherrypick_pipeline_spec.rb'
-    - 'spec/models/pooling_spec.rb'
-    - 'spec/models/sample_manifest/uploader_spec.rb'
-    - 'spec/views/labware/show_html_erb_spec.rb'
 
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).
