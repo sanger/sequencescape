@@ -21,14 +21,6 @@ Layout/ClosingHeredocIndentation:
     - 'db/migrate/20190829125359_update_view_wells.rb'
     - 'db/seeds.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyleAlignWith, Severity.
-# SupportedStylesAlignWith: start_of_line, def
-Layout/DefEndAlignment:
-  Exclude:
-    - 'app/models/barcode/barcodeable.rb'
-
 # Offense count: 8
 # This cop supports safe autocorrection (--autocorrect).
 Layout/ElseAlignment:

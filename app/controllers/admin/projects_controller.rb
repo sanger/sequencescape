@@ -54,8 +54,8 @@ class Admin::ProjectsController < ApplicationController
   end
 
   helper_method def project_scopes
-    BY_SCOPES.keys
-  end
+                  BY_SCOPES.keys
+                end
 
   # rubocop:todo Metrics/MethodLength
   def managed_update # rubocop:todo Metrics/AbcSize

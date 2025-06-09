@@ -37,6 +37,9 @@ Layout/EmptyLineAfterMagicComment:
 Layout/EndAlignment:
   EnforcedStyleAlignWith: start_of_line
 
+Layout/DefEndAlignment:
+  EnforcedStyleAlignWith: def
+
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
