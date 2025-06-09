@@ -2,7 +2,7 @@
 
 module Api
   module V2
-    # Provides a JSON API controller for Tube From Tube Creations
+    # Provides a JSON API controller for Tube From Plate Creations
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class TubeFromPlateCreationsController < JSONAPI::ResourceController
       # By default JSONAPI::ResourceController provides most the standard
