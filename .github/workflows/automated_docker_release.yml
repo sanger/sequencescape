@@ -16,10 +16,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: sanger/.github/.github/actions/setup/checkout@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Build and tag the image for testing and release
-        uses: sanger/.github/.github/actions/docker/build-tag-release@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/docker/build-tag-release@master
         with:
           image_name: ${{ env.IMAGE_NAME }}
           branch_name: ${{ env.BRANCH_NAME }}
@@ -30,33 +30,33 @@ jobs:
 
       - name: Set release tag
         id: set_tag
-        uses: sanger/.github/.github/actions/release/set-release-tag@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/release/set-release-tag@master
         with:
           branch_name: ${{ env.BRANCH_NAME }}
           release_version: ${{ env.RELEASE_VERSION }}
           github_run_id: ${{ github.run_id }}
 
       - name: Login to registry
-        uses: sanger/.github/.github/actions/docker/registry-login@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/docker/registry-login@master
         with:
           github_user: ${{ github.actor }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Tag image with release version
-        uses: sanger/.github/.github/actions/docker/tag-image@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/docker/tag-image@master
         with:
           image_name: ${{ env.IMAGE_NAME }}
           branch_name: ${{ env.BRANCH_NAME }}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Push tagged docker release to registry
-        uses: sanger/.github/.github/actions/docker/push-release@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/docker/push-release@master
         with:
           image_name: ${{ env.IMAGE_NAME }}
           release_version_tag: ${{ steps.set_tag.outputs.release_version_tag }}
 
       - name: Remove old releases
-        uses: sanger/.github/.github/actions/docker/remove-image@y25-099-2-migrate-actions
+        uses: sanger/.github/.github/actions/docker/remove-image@master
         with:
           repo_name: ${{ github.event.repository.name }}
           github_token: ${{ secrets.REMOVE_OLD_IMAGES }}
