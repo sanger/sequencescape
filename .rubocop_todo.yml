@@ -55,31 +55,6 @@ Layout/LeadingCommentSpace:
 
 # Offense count: 21
 # This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: aligned, indented
-Layout/MultilineOperationIndentation:
-  Exclude:
-    - 'app/api/model_extensions/order.rb'
-    - 'app/controllers/api/v2/bait_library_layouts_controller.rb'
-    - 'app/controllers/labware_controller.rb'
-    - 'app/helpers/batches_helper.rb'
-    - 'app/models/attributable.rb'
-    - 'app/models/fluidigm_file.rb'
-    - 'app/models/plate/creator.rb'
-    - 'app/models/robot/verification/base.rb'
-    - 'app/models/sample_manifest/generator.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'app/models/tasks/cherrypick_handler.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/upload/processor/tube_rack.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/upload/row.rb'
-    - 'app/uat_actions/uat_actions/plate_information.rb'
-    - 'app/validators/batch_creation_validator.rb'
-    - 'config/application.rb'
-    - 'spec/factories/sample_manifest_excel/sample_manifest_assets.rb'
-    - 'spec/models/linear_submission_spec.rb'
-
-# Offense count: 21
-# This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Lint/AmbiguousBlockAssociation:
   Exclude:

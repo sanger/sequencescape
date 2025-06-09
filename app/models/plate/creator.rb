@@ -289,7 +289,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       scanned_barcodes.flat_map do |scanned|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
-            fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
+          fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
         unless can_create_plates?(plate)
           target_purposes = plate_purposes.map(&:name).join(',')

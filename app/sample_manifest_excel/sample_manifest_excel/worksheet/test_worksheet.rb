@@ -236,10 +236,10 @@ module SampleManifestExcel
         if partial && empty_row?(row_num)
           data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
-              row_num == computed_first_row
+            row_num == computed_first_row
           nil
         elsif validation_errors.include?(:sanger_sample_id_invalid) && column.name == 'sanger_sample_id' &&
-              row_num == computed_first_row
+            row_num == computed_first_row
           'ABC'
         else
           data[column.name] || dynamic_attributes[row_num][column.name]

@@ -159,7 +159,7 @@ module SampleManifestExcel
 
         # check the columns exist, are valid, and at least one of the primary column options are present
         unless columns.present? && columns.valid? &&
-                 (primary_column_names.any? { |column_name| columns.names.include? column_name })
+            (primary_column_names.any? { |column_name| columns.names.include? column_name })
           return true
         end
 

@@ -30,7 +30,7 @@ class BatchCreationValidator < ActiveModel::Validator
 
   def requests_have_same_target_purpose(record)
     if record.pipeline.is_a?(CherrypickingPipeline) &&
-         record.requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
+        record.requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
       record.errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
     end
   end

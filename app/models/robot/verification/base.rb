@@ -18,7 +18,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       yield('User barcode invalid')
     end
     if barcode_hash[:destination_plate_barcode].blank? ||
-         !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
+        !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
       yield('Destination plate barcode invalid')
     end
   end
