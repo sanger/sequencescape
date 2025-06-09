@@ -59,3 +59,4 @@ jobs:
         with:
           repo_name: ${{ github.event.repository.name }}
           github_token: ${{ secrets.REMOVE_OLD_IMAGES }}
+          cutoff_date: "4 months ago"
