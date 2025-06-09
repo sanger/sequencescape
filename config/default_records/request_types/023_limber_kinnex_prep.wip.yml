@@ -4,7 +4,7 @@ kinnex_prep:
   name: Kinnex Prep
   asset_type: Well
   order: 1
-  request_class_name: CustomerRequest
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   for_multiplexing: false
   billable: true
   product_line_name: Short Read

@@ -64,8 +64,6 @@ module Api
       #   The target asset (or receptacle) to which the material is being transferred.
       #   @return [ReceptacleResource] The target asset related to the transfer request.
       has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle', readonly: true
-
-      filter :target_asset_id, apply: ->(records, value, _options) { records.where(target_asset_id: value) }
     end
   end
 end
