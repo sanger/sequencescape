@@ -52,14 +52,6 @@ Layout/FirstArrayElementIndentation:
     - 'test/controllers/batches_controller_test.rb'
     - 'test/unit/qc_report_file_test.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Layout/FirstHashElementIndentation:
-  Exclude:
-    - 'app/controllers/plate_picks_controller.rb'
-
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
 Layout/HeredocIndentation:
