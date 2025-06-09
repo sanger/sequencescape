@@ -515,6 +515,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     unless configatron.accession_samples
       raise AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
+
     accessionable = build_accessionable
     validate_accessionable!(accessionable)
     enqueue_accessioning_job!(accessionable)

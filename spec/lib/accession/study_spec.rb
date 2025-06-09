@@ -8,7 +8,7 @@ MISSING_METADATA = {
 }.freeze
 STUDY_TYPES = %i[open_study managed_study].freeze
 
-RSpec.describe Study, :accession, type: :model, :accessioning_enabled do
+RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
   include MockAccession
 
   before do
