@@ -8,7 +8,7 @@ module Api
     # an ancestor.
     # The created child will have the specified purpose and can be accessed via the {#child} relationship.
     #
-    # @note Access this resource via the `/api/v2/tube_from_tube_creations/` endpoint.
+    # @note Access this resource via the `/api/v2/tube_from_plate_creations/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     #
     # @example POST request with child purpose and parent plate specified by UUID (deprecated)
