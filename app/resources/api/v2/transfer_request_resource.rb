@@ -53,7 +53,7 @@ module Api
       # @!attribute [r] source_asset
       #   The source asset (or receptacle) from which the material is being transferred.
       #   @return [ReceptacleResource] The source asset related to the transfer request.
-      has_one :source_asset, relation_name: 'asset', foreign_key: :asset_id, class_name: 'Receptacle', readonly: true
+      has_one :source_asset, relation_name: :asset, foreign_key: :asset_id, class_name: 'Receptacle', readonly: true
 
       # @!attribute [r] submission
       #   The submission associated with this transfer request, which provides context for the transfer.
@@ -64,6 +64,8 @@ module Api
       #   The target asset (or receptacle) to which the material is being transferred.
       #   @return [ReceptacleResource] The target asset related to the transfer request.
       has_one :target_asset, foreign_key: :target_asset_id, class_name: 'Receptacle', readonly: true
+
+      filter :target_asset_id, apply: ->(records, value, _options) { records.where(target_asset_id: value) }
     end
   end
 end
