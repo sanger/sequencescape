@@ -22,13 +22,13 @@ RSpec.describe Sample, :accession, :cardinal do
     after { Delayed::Worker.delay_jobs = true }
 
     it 'will raise an exception if the sample can be accessioned' do
-      expect { sample.accession }.to raise_error(Sample::AccessioningDisabledError)
+      expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
     end
 
     it 'will not add an accession number if it fails' do
       begin
         sample.accession
-      rescue Sample::AccessioningDisabledError
+      rescue AccessionService::AccessioningDisabledError
         # Ignore the error and continue execution
       end
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil

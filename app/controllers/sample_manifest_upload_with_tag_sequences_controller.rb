@@ -14,7 +14,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     else
       error('Your sample manifest couldn\'t be uploaded.')
     end
-  rescue Sample::AccessionValidationFailed => e
+  rescue AccessionService::AccessionValidationFailed => e
     error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end
 

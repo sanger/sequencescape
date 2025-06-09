@@ -31,7 +31,10 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
 
+  # Define custom error classes for the AccessionService
   AccessionServiceError = Class.new(StandardError)
+  AccessioningDisabledError = Class.new(AccessionServiceError)
+  AccessionValidationFailed = Class.new(AccessionServiceError)
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 

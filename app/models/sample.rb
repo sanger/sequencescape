@@ -25,12 +25,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     attribute :processing_manifest
   end
 
-  class AccessionValidationFailed < StandardError
-  end
-
-  class AccessioningDisabledError < StandardError
-  end
-
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
   DNA_SOURCES = [
@@ -513,7 +507,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def accession
     unless configatron.accession_samples
-      raise AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
 
     accessionable = build_accessionable
@@ -524,10 +518,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession_and_handle_validation_errors
     accession
     Rails.logger.info("Accessioning passed for sample '#{name}'")
-  rescue AccessionValidationFailed => e
-    # Provide feedback to the user by displaying validation feedback in a flash message
-    errors.add(:base, e.message)
-  rescue AccessioningDisabledError => e
+  rescue AccessionService::AccessionServiceError => e
+    # Save error messages for later feedback to the user in a flash message
     errors.add(:base, e.message)
   end
 

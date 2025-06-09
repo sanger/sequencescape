@@ -103,7 +103,7 @@ module SampleManifestExcel
 
       def trigger_accessioning
         changed_samples.each(&:accession)
-      rescue Sample::AccessioningDisabledError => e
+      rescue AccessionService::AccessioningDisabledError => e
         Rails.logger.warn "#{e.message} Skipping accessioning for changed samples."
       end
 

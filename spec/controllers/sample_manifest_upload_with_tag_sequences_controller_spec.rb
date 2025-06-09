@@ -40,7 +40,7 @@ RSpec.describe SampleManifestUploadWithTagSequencesController, type: :controller
 
     context 'when the upload fails due to invalid data' do
       before do
-        allow(uploader).to receive(:run!).and_raise(Sample::AccessionValidationFailed, 'Invalid data')
+        allow(uploader).to receive(:run!).and_raise(AccessionService::AccessionValidationFailed, 'Invalid data')
         post :create, params: { upload: upload_file }
       end
 
