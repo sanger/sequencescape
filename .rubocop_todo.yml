@@ -113,16 +113,6 @@ Layout/LeadingCommentSpace:
     - 'spec/models/sample_manifest/uploader_spec.rb'
     - 'spec/views/labware/show_html_erb_spec.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: leading, trailing
-Layout/LineContinuationLeadingSpace:
-  Exclude:
-    - 'app/models/stock_stamper.rb'
-    - 'app/uat_actions/uat_actions.rb'
-    - 'lib/tasks/rebroadcast_pac_bio_multiple_requests_run.rake'
-
 # Offense count: 47
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, IndentationWidth.
