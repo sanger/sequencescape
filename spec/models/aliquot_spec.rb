@@ -160,4 +160,32 @@ RSpec.describe Aliquot do
       nil => 1
     )
   end
+
+  describe '#equivalent?' do
+    let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag2, sample: sample1) }
+    let(:aliquot2) { build(:aliquot, tag: tag1, tag2: tag2, sample: sample1) }
+
+    context 'when no custom attributes are provided' do
+      it 'returns true for equivalent aliquots' do
+        expect(aliquot1.equivalent?(aliquot2)).to be true
+      end
+
+      it 'returns false for non-equivalent aliquots' do
+        aliquot2.sample = sample2
+        expect(aliquot1.equivalent?(aliquot2)).to be false
+      end
+    end
+
+    context 'when a custom list of attributes is provided' do
+      it 'returns true if only the specified attributes match' do
+        aliquot2.sample = sample2
+        expect(aliquot1.equivalent?(aliquot2, %w[tag_id tag2_id])).to be true
+      end
+
+      it 'returns false if the specified attributes do not match' do
+        aliquot2.tag = create(:tag)
+        expect(aliquot1.equivalent?(aliquot2, %w[tag_id tag2_id])).to be false
+      end
+    end
+  end
 end
