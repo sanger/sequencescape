@@ -78,16 +78,6 @@ Layout/HeredocIndentation:
     - 'spec/models/tag_substitutions_spec.rb'
     - 'test/unit/qc_report_presenter_test.rb'
 
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: Width, AllowedPatterns.
-Layout/IndentationWidth:
-  Exclude:
-    - 'app/api/core/io/base/json_formatting_behaviour/input.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/worksheet/test_worksheet.rb'
-    - 'lib/submission_serializer.rb'
-    - 'script/poller'
-
 # Offense count: 29
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AllowDoxygenCommentStyle, AllowGemfileRubyComment, AllowRBSInlineAnnotation, AllowSteepAnnotation.
