@@ -3,7 +3,8 @@ name: Release docker image for local development
 on:
   push:
     branches:
-      - y25-099-2-migrate-actions
+      - master
+      - develop
 
 env:
   IMAGE_NAME: ${{ github.repository }}/${{ github.event.repository.name }}
