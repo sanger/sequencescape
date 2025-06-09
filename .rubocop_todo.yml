@@ -21,18 +21,6 @@ Layout/ClosingHeredocIndentation:
     - 'db/migrate/20190829125359_update_view_wells.rb'
     - 'db/seeds.rb'
 
-# Offense count: 12
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_brackets
-Layout/FirstArrayElementIndentation:
-  Exclude:
-    - 'app/sample_manifest_excel/sample_manifest_excel/worksheet/test_worksheet.rb'
-    - 'lib/tasks/limber.rake'
-    - 'lib/tasks/record_loader/pipeline_request_information_type.rake'
-    - 'test/controllers/batches_controller_test.rb'
-    - 'test/unit/qc_report_file_test.rb'
-
 # Offense count: 10
 # This cop supports safe autocorrection (--autocorrect).
 Layout/HeredocIndentation:

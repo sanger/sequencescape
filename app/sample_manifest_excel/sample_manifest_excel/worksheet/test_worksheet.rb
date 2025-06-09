@@ -251,10 +251,10 @@ module SampleManifestExcel
       def build_tube_sample_manifest_asset
         asset =
           if %w[
-               tube_multiplexed_library
-               tube_library_with_tag_sequences
-               tube_multiplexed_library_with_tag_sequences
-             ].include? manifest_type
+            tube_multiplexed_library
+            tube_library_with_tag_sequences
+            tube_multiplexed_library_with_tag_sequences
+          ].include? manifest_type
             FactoryBot.create(:empty_library_tube)
           else
             FactoryBot.create(:empty_sample_tube)
