@@ -99,7 +99,7 @@ module Api
       end
 
       # @!attribute [r] uuid
-      #   @return [String] The UUID of the tube from tube creation.
+      #   @return [String] The UUID of the tube from plate creation.
       attribute :uuid, readonly: true
 
       ###
