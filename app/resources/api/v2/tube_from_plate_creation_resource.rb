@@ -3,7 +3,7 @@
 module Api
   module V2
     # Provides a JSON:API representation of {TubeFromPlateCreation} for the creation of a single child tube from a
-    # single parent tube.
+    # single parent plate.
     # Creation of this resource via a `POST` request will create the new child tube with the parent as
     # an ancestor.
     # The created child will have the specified purpose and can be accessed via the {#child} relationship.
