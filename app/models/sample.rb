@@ -525,9 +525,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     accession
     Rails.logger.info("Accessioning passed for sample '#{name}'")
   rescue AccessionValidationFailed => e
-    # Error has already been logged in validate_accessionable!
-    Rails.logger.warn("Accessioning validation failed: #{e.message}")
-    # but provide feedback to the user by displaying it in a flash message
+    # Provide feedback to the user by displaying validation feedback in a flash message
     errors.add(:base, e.message)
   rescue AccessioningDisabledError => e
     errors.add(:base, e.message)
