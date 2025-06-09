@@ -44,11 +44,11 @@ module Api
     #     }
     #   }
     #
-    # @example GET request for all TubeFromTubeCreation resources
-    #   GET /api/v2/tube_from_tube_creations/
+    # @example GET request for all TubeFromCreation resources
+    #   GET /api/v2/tube_from_plate_creations/
     #
     # @example GET request for a TubeFromTubeCreation with ID 123
-    #   GET /api/v2/tube_from_tube_creations/123/
+    #   GET /api/v2/tube_from_plate_creations/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
