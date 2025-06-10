@@ -15,8 +15,6 @@ jobs:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@y25-099-3-migrate-actions
 
-      - uses: nelonoel/branch-name@v1.0.1
-
       - name: Setup Ruby
         uses: sanger/.github/.github/actions/setup/ruby@y25-099-3-migrate-actions
 
