@@ -2130,14 +2130,6 @@ Style/SymbolProc:
     - 'app/models/tasks/plate_transfer_handler.rb'
     - 'db/seeds/0001_workflows.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle, MinSize, WordRegex.
-# SupportedStyles: percent, brackets
-Style/WordArray:
-  Exclude:
-    - 'lib/tasks/cucumber.rake'
-
 # Offense count: 9
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/ZeroLengthPredicate:
