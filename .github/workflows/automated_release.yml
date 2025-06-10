@@ -49,5 +49,5 @@ jobs:
         with:
           release_name: ${{ env.RELEASE_VERSION }}
           github_ref: ${{ github.ref }}
-          commi_sha: ${{ github.sha }}
+          commit_sha: ${{ github.sha }}
 
