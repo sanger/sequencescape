@@ -13,16 +13,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: sanger/.github/.github/actions/setup/checkout@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/setup/checkout@master
 
       - name: Setup Ruby
-        uses: sanger/.github/.github/actions/setup/ruby@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/setup/ruby@master
 
       - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Setup Environment
-        uses: sanger/.github/.github/actions/setup/env@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/setup/env@master
         with:
           dbport: ${{ job.services.mysql.ports[3306] }}
 
@@ -33,7 +33,7 @@ jobs:
       # Create a release tag based on the branch name and .release-version file
       - name: Set release tag
         id: set_tag
-        uses: sanger/.github/.github/actions/release/set-release-tag@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/release/set-release-tag@master
         with:
           branch_name: ${{ env.BRANCH_NAME }}
           release_version: ${{ env.RELEASE_VERSION }}
@@ -45,7 +45,7 @@ jobs:
 
       # Create a GitHub release with the release asset as an artifact
       - name: Create release and upload release.tar.gz
-        uses: sanger/.github/.github/actions/release/create-release@y25-099-3-migrate-actions
+        uses: sanger/.github/.github/actions/release/create-release@master
         with:
           release_name: ${{ steps.set_tag.outputs.release_version_tag }}
           github_ref: ${{ github.ref }}
