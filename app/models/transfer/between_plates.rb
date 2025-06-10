@@ -85,8 +85,13 @@ class Transfer::BetweenPlates < Transfer
 
       # Instead of requiring an exact match between the sources from transfers
       # and the pre-cap group wells, we check if the sources are a subset of
-      # the pre-cap group. This allows for failed wells that are not part of
-      # the transfers to be ignored.
+      # the pre-cap group. In the following, sources and group_details[:wells]
+      # are both arrays of well locations. The former contains the well
+      # locations that are sent by Limber, while the latter contains the
+      # well locations of the pre-cap group. For example, using three wells,
+      # if A1 is failed, sources will be ['B1', 'C1'] and group_details[:wells]
+      # is ['A1', 'B1', 'C1']. The well locations are sorted and checked for
+      # subset matching to validate that the pre-cap group is still applicable.
       found_pre_cap_groups =
         pre_cap_groups.select { |_uuid, group_details| (sources.sort - group_details[:wells].sort).empty? }
 

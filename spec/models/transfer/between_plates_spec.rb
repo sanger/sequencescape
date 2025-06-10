@@ -53,9 +53,10 @@ describe Transfer::BetweenPlates do
     end
     let(:pre_capture_pools) { create_list(:pre_capture_pool, 2) }
     let(:child) { create(:plate_with_empty_wells) }
-    let(:transfers) do # A1 excluded
-      { 'B1' => 'A1', 'C1' => 'A1', 'D1' => 'B1', 'E1' => 'B1', 'F1' => 'B1' }
-    end
+    # In the following, A1 is excluded from the input 'transfers' given by
+    # Limber because it is failed. Sequencescape should exclude it from the
+    # transfer request creation.
+    let(:transfers) { { 'B1' => 'A1', 'C1' => 'A1', 'D1' => 'B1', 'E1' => 'B1', 'F1' => 'B1' } }
 
     it 'skips well that is not in transfers' do
       expect do
