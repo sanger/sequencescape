@@ -28,9 +28,6 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
 
-Style/EmptyMethod:
-  EnforcedStyle: expanded
-
 Layout/EmptyLineAfterMagicComment:
   Enabled: false
 
@@ -49,17 +46,14 @@ Layout/MultilineMethodCallIndentation:
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 
-RSpec/AggregateExamples:
-  # Aggregate examples can be useful, but the cop gets into nasty battles with
-  # other Spec cops, and is only really of value in expensive tests.
-  Enabled: false
-# Added exclude because api and feature specs do not have a specific class.
-RSpec/DescribeClass:
+# Step definitions are defined with Given /regex/ do ...
+# There is little ambiguity here, and brackets just break convention
+Lint/AmbiguousRegexpLiteral:
   Exclude:
-    - "spec/requests/**/*.rb"
-    - "spec/api/**/*.rb"
-    - "spec/features/**/*.rb"
-    - "spec/views/**/*.rb"
+    - features/support/step_definitions/**/*
+
+Rails:
+  Enabled: true
 
 Rails/SkipsModelValidations:
   Exclude:
@@ -70,13 +64,8 @@ Rails/SkipsModelValidations:
 Style/Documentation:
   Enabled: false
 
-Rails:
-  Enabled: true
-# Step definitions are defined with Given /regex/ do ...
-# There is little ambiguity here, and brackets just break convention
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - features/support/step_definitions/**/*
+Style/EmptyMethod:
+  EnforcedStyle: expanded
 
 # Only use shorthand hash syntax when all keys match the variables for better readability
 Style/HashSyntax:
@@ -134,6 +123,7 @@ Metrics/BlockLength:
     - redefine_aasm
     - model
     - step
+
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -145,6 +135,7 @@ Rails/DynamicFindBy:
     - find_by_id_or_name
     - find_by_id_or_name!
     - find_by_barcode
+
 # Method length limits make little sense when you are describing a table schema
 # or a view.
 Metrics/MethodLength:
@@ -154,8 +145,10 @@ Metrics/MethodLength:
     - array
     - hash
     - heredoc
+
 Style/ClassAndModuleChildren:
   Enabled: false
+
 Rails/UnknownEnv:
   Environments:
     - production
@@ -164,6 +157,19 @@ Rails/UnknownEnv:
     - cucumber
     - profile
     - staging
+
+RSpec/AggregateExamples:
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
+
+# Added exclude because api and feature specs do not have a specific class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/requests/**/*.rb"
+    - "spec/api/**/*.rb"
+    - "spec/features/**/*.rb"
+    - "spec/views/**/*.rb"
 
 RSpec/ExampleLength:
   inherit_mode:
