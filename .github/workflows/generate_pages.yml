@@ -3,7 +3,7 @@ name: Deploy Yard to GitHub Pages
 on:
   push:
     branches:
-      -  y25-099-4-migrate-actions
+      - y25-099-4-migrate-actions
 
   workflow_dispatch:
 
