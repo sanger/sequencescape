@@ -11,7 +11,7 @@ permissions:
   id-token: write # Allow OIDC token to be issued
 
 jobs:
-  build:
+  build-docs:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,7 +34,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: build # The deploy job will only run if the build job is successful
+    needs: build-docs # The deploy job will only run if the build job is successful
 
     steps:
       - name: Deploy to GitHub Pages
