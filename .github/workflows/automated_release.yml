@@ -47,7 +47,7 @@ jobs:
       - name: Create release and upload release.tar.gz
         uses: sanger/.github/.github/actions/release/create-release@y25-099-3-migrate-actions
         with:
-          release_name: ${{ env.RELEASE_VERSION }}
+          release_name: ${{ steps.set_tag.outputs.release_version_tag }}
           github_ref: ${{ github.ref }}
           commit_sha: ${{ github.sha }}
 
