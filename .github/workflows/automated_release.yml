@@ -9,7 +9,7 @@ env:
   BRANCH_NAME: ${{ github.ref_name }}
 
 jobs:
-  build-and-release:
+  automated_release:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
