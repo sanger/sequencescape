@@ -384,7 +384,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       flash[:error] = truncate_flash(message)
       format.html { redirect_to pipeline_url(@pipeline) }
     end
-    nil
+    false
   end
 
   def transition_requests(requests, transition, message)
@@ -401,8 +401,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # method due to the overloading on the create endpoint.
   def standard_create(requests)
     # Validate the request selection
-    validation_result = validate_requests_for_batch_creation(requests)
-    return validation_result if validation_result
+    return unless validate_requests_for_batch_creation(requests)
 
     begin
       create_batch_with_requests(requests)
@@ -422,7 +421,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
     return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
-    nil # Return nil if validation passes
+    true # Return true if validation passes
   end
 
   def create_batch_with_requests(requests)
