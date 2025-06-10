@@ -3,7 +3,8 @@ name: Automated build of project and release creation
 on:
   push:
     branches:
-      - y25-099-3-migrate-actions
+      - master
+      - develop
 
 env:
   BRANCH_NAME: ${{ github.ref_name }}
