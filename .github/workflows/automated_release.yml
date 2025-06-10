@@ -50,4 +50,3 @@ jobs:
           release_name: ${{ steps.set_tag.outputs.release_version_tag }}
           github_ref: ${{ github.ref }}
           commit_sha: ${{ github.sha }}
-
