@@ -1,17 +1,11 @@
 name: Linting
 on:
   push:
-  pull_request:
-    types:
-      # defaults
-      - opened
-      - synchronize
-      - reopened
-      # custom
-      - ready_for_review # required for Github-created PRs
+    branches:
+      - y25-099-5-migrate-actions
 
 jobs:
-  rubocop:
+  lint:
     runs-on: ubuntu-latest
     env:
       # Directory to cache Rubocop processing. Support added in 0.9.0 but
@@ -19,52 +13,41 @@ jobs:
       RUBOCOP_CACHE_ROOT: ".rubocop-cache"
       BUNDLE_WITHOUT: "cucumber deployment profile development default test"
     steps:
-      - uses: actions/checkout@v4
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
-      # Establish a cache of rubocop cache to improve performance
-      # ${{ env.RUBOCOP_CACHE_ROOT }}
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/actions/setup/ruby@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+        
       - name: Set up yarn
         run: yarn install
+
+        # If we don't find the specific cache we want, fallback to the last rubocop
+        # cache, then finally any cache for this repo.
+        # Github looks for the newest cache beginning with the first entry, before
+        # falling back the the second if none is present.
+
       - name: Cache cops
-        uses: actions/cache@v4
+        uses: sanger/.github/.github/actions/setup/cache@y25-099-5-migrate-actions
         with:
           path: |
             ${{ env.RUBOCOP_CACHE_ROOT }}
           key: ${{ runner.os }}-rubocop-${{ hashFiles('**/.rubocop_todo.yml') }}
-          # If we don't find the specific cache we want, fallback to the last rubocop
-          # cache, then finally any cache for this repo.
-          # Github looks for the newest cache beginning with the first entry, before
-          # falling back the the second if none is present.
           restore-keys: |
             ${{ runner.os }}-rubocop-
             ${{ runner.os }}-
+
       # Run prettier prior to the cops
       - name: Run prettier
         run: yarn prettier --check .
+        
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
 
-  eslint:
-    name: EsLint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
-      - name: Install
-        run: yarn install
-      - name: Run yarn test
+      - name: Run yarn lint
         run: yarn lint
