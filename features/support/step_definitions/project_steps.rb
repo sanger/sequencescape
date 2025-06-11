@@ -5,6 +5,11 @@ Given /^I have a project called "([^"]*)"$/ do |project|
   FactoryBot.create(:project, name: project)
 end
 
+Given /^a project named "([^"]*)" with project cost code "([^"]*)"$/ do |project_name, cost_code|
+  project =  FactoryBot.create(:project, name: project_name)
+  project.project_metadata.update!(project_cost_code: cost_code )
+end
+
 Given /^project "([^"]*)" approval is "([^"]*)"$/ do |project, approval|
   proj = Project.find_by(name: project)
   proj.approved = (approval == 'approved')
