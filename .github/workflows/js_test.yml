@@ -9,13 +9,14 @@ jobs:
     name: Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v3
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
       - name: Install
         run: yarn install
+
       - name: Run yarn test
         run: yarn test
