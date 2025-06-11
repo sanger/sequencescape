@@ -41,11 +41,13 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          
     # Sets up the matrix for knapsack builds
     strategy:
       matrix:
         ci_node_total: [2]
         ci_node_index: [0, 1]
+
     steps:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@master
