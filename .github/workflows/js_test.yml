@@ -1,8 +1,9 @@
 name: Javascript testing
 
 on:
-  - push
-  - pull_request
+  push:
+    branches:
+      - y25-099-6-migrate-actions
 
 jobs:
   test:
