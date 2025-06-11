@@ -1,4 +1,4 @@
-name: Run the rspec unit tests
+name: Unit tests
 
 env:
   TZ: Europe/London
