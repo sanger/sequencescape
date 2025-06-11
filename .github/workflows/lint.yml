@@ -2,14 +2,8 @@ name: Linting
 
 on:
   push:
-  pull_request:
-    types:
-      # defaults
-      - opened
-      - synchronize
-      - reopened
-      # custom
-      - ready_for_review # required for Github-created PRs
+    branches:
+      - y25-099-5-migrate-actions
 
 jobs:
   rubocop:
