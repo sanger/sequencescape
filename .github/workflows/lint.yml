@@ -21,7 +21,7 @@ jobs:
 
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
-        
+
       - name: Set up yarn
         run: yarn install
 
@@ -42,7 +42,7 @@ jobs:
       # Run prettier prior to the cops
       - name: Run prettier
         run: yarn prettier --check .
-        
+
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
