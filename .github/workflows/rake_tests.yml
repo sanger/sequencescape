@@ -1,0 +1,64 @@
+name: Run the rake tests
+
+env:
+  TZ: Europe/London
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
+  SKIP_AUTOMATIC_GEM_INSTALLATION: true # Disable the bundle install in bin/setup
+
+########
+## Warning!
+## CodeCov's config in `codecov.yml` is expecting an exact number of builds to complete before it will run.
+## See the config value with key `after_n_builds` in that file.
+## If the number of build steps changes, it is important to update the count there to match.
+########
+
+on:
+  push:
+    branches:
+      - y25-099-6-migrate-actions
+
+jobs:
+  rake_tests:
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "cucumber deployment profile development"
+    # Services
+    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:8.0
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/actions/setup/ruby@master
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup/env@master
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
+
+      - name: Run rake tests
+        env:
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: bundle exec rake test
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5.4.0
+        with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info
+          fail_ci_if_error: true
