@@ -6,8 +6,8 @@ on:
       - y25-099-6-migrate-actions
 
 jobs:
-  test:
-    name: Test
+  js_tests:
+    name: Run the javascript tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
