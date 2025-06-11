@@ -1,0 +1,78 @@
+# Since version 2.23 (released in August 2019), git-blame has a feature
+# to ignore or bypass certain commits.
+#
+# This file contains a list of commits that are not likely what you
+# are looking for in a blame, such as mass reformatting or renaming.
+# You can set this file as a default ignore file for blame by running
+# the following command.
+#
+# $ git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# [dev] Lint some of the easier Rubocop todos
+5df50f7e1771dbdfc83f8dc1f889bc95d172526a
+
+# DPL-936-5: The Slightly Smaller Rubocop Linting
+1bd6131fbaf61c660baa23d326c725878bf2799e
+
+# Fixing prettier issues: Rails 6.1
+2b636c8eb04b487695674b11b58a2509c53f71c8
+
+# style: lint prettier
+28f96c4f5abfb7ea6f54d370fe6c078d74cfea96
+
+# [ruby] Update rubocop-rails 2.26.2 → 2.30.3 (minor)
+c61a03411109a95611257c3be1a38b394b8536af
+
+# [ruby] Update rubocop-capybara 2.21.0 → 2.22.1 (minor)
+20e931abbc74d00da5236783be5d47724329389a
+
+# [ruby] Update rubocop-rspec_rails 2.30.0 → 2.31.0 (minor)
+bab5ce62c3e90cd083a2f3d747c76ef34902bd59
+
+# Polish Rubocop configuration
+0af8f576e6a6dedb9df421fca3883bf874f93bb9
+
+# Rubocop enable pending
+dbdc6500df576a8ba5b08419f8c7bfdad68dc136
+
+# Update test-prof
+de6e8566ac0a62508af76abe49ef3cd195d1c142
+
+# Bulk Update Rubocop Gems
+96f60b74b16327f2738834ead6b1a9a49f9f075a
+
+# Update rubocop-rails: 2.3.2 → 2.4.1 (minor)
+0398a68b4bf708cb39e68804e0c536f77cad20a6
+
+# Update rubocop-rspec: 1.36.0 → 1.37.0 (minor)
+3516e2dd19d67d3e0c443bf1b0c229857a11b242
+
+# Rubocop - autofixes
+945fe0a605ddbe609d8eb898d01d8063236e53d7
+
+# Rubocop
+220fd47b71c6f47b2bbd242893f63573a46b848b
+
+# Update rubocop
+eea49334ff194677f57dacf39b98e60a9d4a152a
+
+# Rubocopppery
+57240f44da7d9a90e7047f33afdd634df97809c7
+
+# Rubocopppery
+b273640b56059f237e541e319a03eb66e4ee7dbd
+
+# Rubocop - Layout
+df3fbd18f33765d6b19dd5c9f79d39e766d07313
+
+# Rubocop: Indentation and styling
+c3490ce690b41a7b0fcde0daee1e0b3cf03182b9
+
+# Rubocop
+34a7b7589cdcfb6728f8308759eefc40828ed29d
+
+# Rubocop -autofixes
+7dc0901e06847bcadb195f76c7c33796fd581b28
+
+# More rubocop
+ea76275305e87b62ac8bb092f4d445c576a33922
