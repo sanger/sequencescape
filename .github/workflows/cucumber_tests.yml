@@ -1,4 +1,4 @@
-name: Run the cucumber tests
+name: Cucumber tests
 
 env:
   TZ: Europe/London
