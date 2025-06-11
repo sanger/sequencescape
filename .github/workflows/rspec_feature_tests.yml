@@ -45,6 +45,7 @@ jobs:
       matrix:
         ci_node_total: [2]
         ci_node_index: [0, 1]
+
     steps:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@master
