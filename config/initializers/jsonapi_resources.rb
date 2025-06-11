@@ -16,4 +16,5 @@ Rails.application.config.after_initialize do
   # Monkey patch the ApiKeyAuthenticatable concern into all JSONAPI::ResourceControllers
   JSONAPI::ResourceController.include(Api::V2::Concerns::ApiKeyAuthenticatable)
   JSONAPI::ResourceController.include(Api::V2::Concerns::DisableCsrfTokenAuthentication)
+  JSONAPI::ResourceController.include(Api::V2::Concerns::DisableDestroyAction)
 end

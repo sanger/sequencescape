@@ -12,6 +12,7 @@ RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
   it 'has the expected attributes', :aggregate_failures do
     expect(resource).to have_attribute :cohort
     expect(resource).to have_attribute :collected_by
+    expect(resource).to have_attribute :date_of_sample_collection
     expect(resource).to have_attribute :concentration
     expect(resource).to have_attribute :donor_id
     expect(resource).to have_attribute :gender
@@ -25,6 +26,7 @@ RSpec.describe Api::V2::SampleMetadataResource, type: :resource do
   it 'allows updating of read-write fields', :aggregate_failures do
     expect(resource).to have_updatable_field :cohort
     expect(resource).to have_updatable_field :collected_by
+    expect(resource).to have_updatable_field :date_of_sample_collection
     expect(resource).to have_updatable_field :concentration
     expect(resource).to have_updatable_field :donor_id
     expect(resource).to have_updatable_field :gender

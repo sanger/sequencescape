@@ -48,7 +48,7 @@ new_test_file.xlsx
 
 # Coverage files
 coverage
-rcov
+lcov.info
 
 # IDE files
 *.sublime-workspace

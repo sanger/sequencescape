@@ -8,8 +8,8 @@ KnapsackPro::Hooks::Queue.before_queue do |queue_id|
 end
 
 KnapsackPro::Adapters::CucumberAdapter.bind
-# So the instructions above are actually insufficient, as Knpasack Pro spins up
-# a seperate cucumber process for each subset of the queue. This results in Simplecov
+# So the instructions above are actually insufficient, as Knapsack Pro spins up
+# a separate cucumber process for each subset of the queue. This results in Simplecov
 # clobbering the coverage. Before queue runs only the once, whereas this will run
-# on each invokation
+# on each invocation
 SimpleCov.command_name("#{SimpleCov.command_name}_#{ENV.fetch('KNAPSACK_PRO_SUBSET_QUEUE_ID', nil)}")

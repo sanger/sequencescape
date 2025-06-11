@@ -1,16 +1,18 @@
 #!/bin/bash
 
 # See https://knapsackpro.com/faq/question/how-to-make-knapsack_pro-works-for-forked-repositories-of-my-project
-if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC" = "" ]; then
-  echo "WARN: No KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC github secret. Using fallback."
+if [ "$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE" = "" ]; then
+  echo "WARN: No KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE github secret. Using fallback."
   echo "To improve performance consider:"
   echo "1) Add knapsackpro.com API keys to your github secrets"
   echo "2) Make pull requests from the sanger repo"
   KNAPSACK_PRO_ENDPOINT=https://localhost \
-    KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=disabled-for-fork \
+    KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE=disabled-for-fork \
     KNAPSACK_PRO_MAX_REQUEST_RETRIES=0 \
     bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]" # use Regular Mode here always
 else
     export KNAPSACK_PRO_RSPEC_SPLIT_BY_TEST_EXAMPLES=true
+    export KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC=$KNAPSACK_PRO_TEST_SUITE_TOKEN_FEATURE
+    # https://docs.knapsackpro.com/ruby/reference/#knapsack_pro_test_suite_token_
     bundle exec rake "knapsack_pro:rspec[--format RSpec::Github::Formatter --format progress]"
 fi
