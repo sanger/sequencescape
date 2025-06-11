@@ -1,4 +1,4 @@
-name: Run the rake tests
+name: Rake tests
 
 env:
   TZ: Europe/London
