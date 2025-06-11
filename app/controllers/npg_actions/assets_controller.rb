@@ -28,10 +28,10 @@ class NpgActions::AssetsController < ApplicationController
 
   def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
-      if @last_event.present?
-        # If we already have an event we check to see its state. If it matches,
-        # we just continue to rendering, otherwise we blow up.
-        raise NPGActionInvalid, already_completed_message(@last_event.family, state) if @last_event.family != state
+      if endpoint_previously_called?
+        # If the state provided in the API call (`state`) matches the one previously recorded,
+        # we just continue to rendering, otherwise we raise an exception.
+        raise NPGActionInvalid, conflicting_state_message(state) if existing_state != state
       else
         generate_events(state)
       end
@@ -40,7 +40,7 @@ class NpgActions::AssetsController < ApplicationController
     end
   end
 
-  # Does a variety of things to do with closing off sequencing requests & batches, and recording an audit trail:
+  # Does a variety of things to do with passing / failing sequencing requests & batches, and recording an audit trail:
   # - Sets the qc_state field of the lane receptacle
   # - Sets the external_release field of the lane receptacle
   # - Creates an Event (Sequencescape, not WH) against the lane receptacle to say external_release was updated
@@ -101,8 +101,22 @@ class NpgActions::AssetsController < ApplicationController
     render xml: "<error><message>#{exception.message.split("\n").first}</message></error>", status: :bad_request
   end
 
-  def already_completed_message(existing_state, requested_state)
-    "The requests on this lane have already been completed with state: '#{existing_state}'. " \
-      "Unable to set them to new state: '#{requested_state}'."
+  # If there is already a 'pass' or 'fail' event recorded,
+  # it implies this endpoint has already been called for this request.
+  def endpoint_previously_called?
+    @last_event.present?
+  end
+
+  # Returns the state previously recorded for the request,
+  # if the endpoint has been called before.
+  # Could be 'pass' or 'fail'.
+  def existing_state
+    @last_event.family
+  end
+
+  # Possible qc states are 'pass' and 'fail'
+  def conflicting_state_message(requested_state)
+    "The request on this lane has already been completed with qc state: '#{existing_state}'. " \
+      "Unable to set it to new qc state: '#{requested_state}'."
   end
 end
