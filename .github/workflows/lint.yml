@@ -57,3 +57,8 @@ jobs:
 
       - name: Run yarn lint
         run: yarn lint
+
+      # This isn't linting, but it takes a couple of seconds so it doesn't need
+      # it's own job
+      - name: Run yarn test
+        run: yarn test
