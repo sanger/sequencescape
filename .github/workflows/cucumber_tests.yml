@@ -21,7 +21,7 @@ on:
   push:
     branches:
       - y25-099-6-migrate-actions
-      
+
 jobs:
   cucumber_tests:
     runs-on: ubuntu-latest
