@@ -38,7 +38,7 @@ jobs:
         # falling back the the second if none is present.
 
       - name: Cache cops
-        uses: sanger/.github/.github/actions/setup/cache@y25-099-5-migrate-actions
+        uses: sanger/.github/.github/actions/setup/cache@master
         with:
           path: ${{ env.RUBOCOP_CACHE_ROOT }}
           key: ${{ runner.os }}-rubocop-${{ hashFiles('**/.rubocop_todo.yml') }}
