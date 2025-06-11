@@ -12,7 +12,7 @@ on:
       - ready_for_review # required for Github-created PRs
 
 jobs:
-  lint:
+  rubocop:
     runs-on: ubuntu-latest
     env:
       # Directory to cache Rubocop processing. Support added in 0.9.0 but
@@ -26,18 +26,7 @@ jobs:
       - name: Setup Ruby
         uses: sanger/.github/.github/actions/setup/ruby@master
 
-      - name: Setup Node
-        uses: sanger/.github/.github/actions/setup/node@master
-
-      - name: Set up yarn
-        run: yarn install
-
-        # If we don't find the specific cache we want, fallback to the last rubocop
-        # cache, then finally any cache for this repo.
-        # Github looks for the newest cache beginning with the first entry, before
-        # falling back the the second if none is present.
-
-      - name: Cache cops
+      - name: Cache Rubocop
         uses: sanger/.github/.github/actions/setup/cache@master
         with:
           path: ${{ env.RUBOCOP_CACHE_ROOT }}
@@ -46,19 +35,31 @@ jobs:
             ${{ runner.os }}-rubocop-
             ${{ runner.os }}-
 
-      # Run prettier prior to the cops
-      - name: Run prettier
-        run: yarn prettier --check .
-
       # Actually run our cops with flags to improve the details of lint errors
       # and parallel to try and improve speed
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
 
+  prettier:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Run prettier
+        run: yarn prettier --check .
+
+  yarn-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
       - name: Run yarn lint
         run: yarn lint
-
-      # This isn't linting, but it takes a couple of seconds so it doesn't need
-      # it's own job
-      - name: Run yarn test
-        run: yarn test
