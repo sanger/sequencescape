@@ -20,6 +20,9 @@ jobs:
       - name: Setup Ruby
         uses: sanger/.github/.github/actions/setup/ruby@master
 
+      - name: Set up yarn
+        run: yarn install
+
       - name: Cache Rubocop
         uses: sanger/.github/.github/actions/setup/cache@y25-099-5-migrate-actions
         with:
@@ -43,6 +46,9 @@ jobs:
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
 
+      - name: Set up yarn
+        run: yarn install
+
       - name: Run prettier
         run: yarn prettier --check .
 
@@ -54,6 +60,9 @@ jobs:
 
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Set up yarn
+        run: yarn install
 
       - name: Run yarn lint
         run: yarn lint
