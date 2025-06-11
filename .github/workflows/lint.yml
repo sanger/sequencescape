@@ -33,8 +33,7 @@ jobs:
       - name: Cache cops
         uses: sanger/.github/.github/actions/setup/cache@y25-099-5-migrate-actions
         with:
-          path: |
-            ${{ env.RUBOCOP_CACHE_ROOT }}
+          path: ${{ env.RUBOCOP_CACHE_ROOT }}
           key: ${{ runner.os }}-rubocop-${{ hashFiles('**/.rubocop_todo.yml') }}
           restore-keys: |
             ${{ runner.os }}-rubocop-
