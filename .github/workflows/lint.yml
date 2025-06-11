@@ -69,3 +69,17 @@ jobs:
 
       - name: Run yarn lint
         run: yarn lint
+
+  yard-junk:
+    runs-on: ubuntu-latest
+    env:
+      BUNDLE_WITHOUT: "cucumber deployment profile development default test"
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/actions/setup/ruby@master
+
+      - name: Run yard-junk
+        run: bundle exec yard-junk --sanity
