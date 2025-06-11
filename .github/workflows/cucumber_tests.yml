@@ -28,8 +28,6 @@ jobs:
     env:
       RAILS_ENV: cucumber
       BUNDLE_WITHOUT: "deployment profile development test"
-    # Services
-    # https://docs.github.com/en/free-pro-team@latest/actions/reference/workflow-syntax-for-github-actions#jobsjob_idservices
     services:
       mysql:
         # Use the Mysql docker image https://hub.docker.com/_/mysql
