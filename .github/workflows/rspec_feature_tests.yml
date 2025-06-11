@@ -1,4 +1,4 @@
-name: Run the rspec feature tests
+name: Feature tests
 
 env:
   TZ: Europe/London
