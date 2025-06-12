@@ -10,26 +10,29 @@ class NpgActions::AssetsController < ApplicationController
   before_action :login_required, except: %i[pass fail]
   before_action :find_asset, only: %i[pass fail]
   before_action :find_request, only: %i[pass fail]
-  before_action :find_last_event, only: %i[pass fail]
+  before_action :find_last_pass_or_fail_event, only: %i[pass fail]
   before_action :qc_information, only: %i[pass fail]
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
   rescue_from(NPGActionInvalid, ActionController::ParameterMissing, with: :rescue_error_bad_request)
 
+  # POST /npg_actions/assets/:asset_id/pass
   def fail
     action_for_qc_state('fail')
   end
 
+  # POST /npg_actions/assets/:asset_id/fail
   def pass
     action_for_qc_state('pass')
   end
 
   private
 
+  # Takes the state ('pass' or 'fail') and performs the necessary actions to record the QC decision.
   def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
       if endpoint_previously_called?
-        # If the state provided in the API call (`state`) matches the one previously recorded,
+        # If the requested state matches the one previously recorded,
         # we just continue to rendering, otherwise we raise an exception.
         raise NPGActionInvalid, conflicting_state_message(state) if existing_state != state
       else
@@ -83,8 +86,8 @@ class NpgActions::AssetsController < ApplicationController
     @request = requests.includes(batch: { requests: :asset }).first
   end
 
-  def find_last_event
-    @last_event = Event.family_pass_and_fail.npg_events(@request.id).first
+  def find_last_pass_or_fail_event
+    @last_pass_or_fail_event = Event.family_pass_and_fail.npg_events(@request.id).first
   end
 
   # Requires a parameter to be passed in the request body, of the following form:
@@ -104,14 +107,14 @@ class NpgActions::AssetsController < ApplicationController
   # If there is already a 'pass' or 'fail' event recorded,
   # it implies this endpoint has already been called for this request.
   def endpoint_previously_called?
-    @last_event.present?
+    @last_pass_or_fail_event.present?
   end
 
   # Returns the state previously recorded for the request,
   # if the endpoint has been called before.
   # Could be 'pass' or 'fail'.
   def existing_state
-    @last_event.family
+    @last_pass_or_fail_event.family
   end
 
   # Possible qc states are 'pass' and 'fail'
