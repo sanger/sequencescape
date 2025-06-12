@@ -173,7 +173,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    csv (3.3.4)
+    csv (3.3.5)
     cucumber (9.2.1)
       builder (~> 3.2)
       cucumber-ci-environment (> 9, < 11)
@@ -541,6 +541,7 @@ GEM
       simplecov-html (~> 0.11)
       simplecov_json_formatter (~> 0.1)
     simplecov-html (0.12.3)
+    simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
     sinatra (3.2.0)
       mustermann (~> 3.0)
@@ -705,6 +706,7 @@ DEPENDENCIES
   selenium-webdriver (~> 4.1)
   shoulda
   simplecov
+  simplecov-lcov
   sinatra
   slack-notifier
   syntax_tree
