@@ -201,7 +201,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders and creates events', :aggregate_failures do
         # This is the same as the passed state change shared test with a different batch state
         # This is because the cancelled requests arent filtered on the all_requests_qced? batch.rb method
-        # which prevents if being released
+        # which prevents it being released.
+        # We don't know if this behaviour is desired, but I checked the data and the use case of
+        # only a subset of the requests in a batch being cancelled does not seem to happen. See Y24-174.
 
         # Response
         expect(response).to have_http_status(:ok)
@@ -400,7 +402,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders and creates events', :aggregate_failures do
         # This is the same as the failed state change shared test with a different batch state
         # This is because the cancelled requests arent filtered on the all_requests_qced? batch.rb method
-        # which prevents if being released
+        # which prevents it being released.
+        # We don't know if this behaviour is desired, but I checked the data and the use case of
+        # only a subset of the requests in a batch being cancelled does not seem to happen. See Y24-174.
 
         # Response
         expect(response).to render_template :'assets/show'
