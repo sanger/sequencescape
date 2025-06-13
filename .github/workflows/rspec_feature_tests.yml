@@ -66,8 +66,8 @@ jobs:
           install-dependencies: true
 
       # Establish a cache of js modules to improve performance
-      - name: Cache js
-        uses: actions/cache@v4
+      - name: Cache JS
+        uses: sanger/.github/.github/actions/setup/cache@master
         with:
           path: |
             public/assets
