@@ -58,7 +58,7 @@ jobs:
 
       # Establish a cache of js modules to improve performance
       - name: Cache JS
-        uses: actions/cache@v4
+        uses: sanger/.github/.github/actions/setup/cache@master
         with:
           path: |
             public/assets
