@@ -56,10 +56,8 @@ jobs:
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
 
-      - name: Remove image-bundled Chrome
-        run: sudo apt-get purge google-chrome-stable
       - name: Setup stable Chrome
-        uses: browser-actions/setup-chrome@v1
+        uses: sanger/.github/.github/actions/tests/setup-chrome@y25-099-6-migrate-actions
         with:
           chrome-version: 128
           install-chromedriver: true
