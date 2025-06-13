@@ -63,11 +63,6 @@ jobs:
           install-chromedriver: true
           install-dependencies: true
 
-      # Install only the gems needed for testing
-      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
-      # in case bundler add an only flag
-      # We also set the install path to vendor/bundle to assist with out caching
-      # bin/setup handles the rest of the configuration for us.
       - name: Setup environment
         env:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
