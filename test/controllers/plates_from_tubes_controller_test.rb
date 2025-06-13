@@ -310,7 +310,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end
-        should set_flash[:error].to(/No samples were found in the following tube:/)
+        should set_flash[:error].to(/No samples were found in the following tubes:/)
       end
     end
   end
