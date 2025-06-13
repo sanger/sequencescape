@@ -15,7 +15,7 @@ describe '/api/1/well-uuid' do
   before { well }
 
   describe '#get' do
-    subject { '/api/1/' + uuid }
+    subject { "/api/1/#{uuid}" }
 
     let(:response_body) do
       "{

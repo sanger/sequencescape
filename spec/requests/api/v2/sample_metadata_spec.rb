@@ -36,6 +36,9 @@ describe 'SampleMetadata API', with: :api_v2 do
         expect(json.dig('data', 'attributes', 'cohort')).to eq resource_model.cohort
         expect(json.dig('data', 'attributes', 'collected_by')).to eq resource_model.collected_by
         expect(json.dig('data', 'attributes', 'concentration')).to eq resource_model.concentration
+        expect(
+          json.dig('data', 'attributes', 'date_of_sample_collection')
+        ).to eq resource_model.date_of_sample_collection
         expect(json.dig('data', 'attributes', 'donor_id')).to eq resource_model.donor_id
         expect(json.dig('data', 'attributes', 'gender')).to eq resource_model.gender
         expect(json.dig('data', 'attributes', 'sample_common_name')).to eq resource_model.sample_common_name
@@ -56,6 +59,7 @@ describe 'SampleMetadata API', with: :api_v2 do
                 cohort: 'updated cohort',
                 collected_by: 'updated collected_by',
                 concentration: 'updated concentration',
+                date_of_sample_collection: 'updated date_of_sample_collection',
                 donor_id: 'updated donor_id',
                 gender: 'female',
                 sample_common_name: 'updated sample_common_name',
@@ -79,6 +83,7 @@ describe 'SampleMetadata API', with: :api_v2 do
           expect(response).to have_http_status(:success)
           expect(json.dig('data', 'attributes', 'cohort')).to eq 'updated cohort'
           expect(json.dig('data', 'attributes', 'collected_by')).to eq 'updated collected_by'
+          expect(json.dig('data', 'attributes', 'date_of_sample_collection')).to eq 'updated date_of_sample_collection'
           expect(json.dig('data', 'attributes', 'concentration')).to eq 'updated concentration'
           expect(json.dig('data', 'attributes', 'donor_id')).to eq 'updated donor_id'
           expect(json.dig('data', 'attributes', 'gender')).to eq 'Female'
@@ -96,6 +101,7 @@ describe 'SampleMetadata API', with: :api_v2 do
           resource_model.reload
           expect(resource_model.cohort).to eq 'updated cohort'
           expect(resource_model.collected_by).to eq 'updated collected_by'
+          expect(resource_model.date_of_sample_collection).to eq 'updated date_of_sample_collection'
           expect(resource_model.concentration).to eq 'updated concentration'
           expect(resource_model.donor_id).to eq 'updated donor_id'
           expect(resource_model.gender).to eq 'Female'
@@ -132,6 +138,7 @@ describe 'SampleMetadata API', with: :api_v2 do
               'attributes' => {
                 cohort: 'posted cohort',
                 collected_by: 'posted collected_by',
+                date_of_sample_collection: 'posted date_of_sample_collection',
                 concentration: 'posted concentration',
                 donor_id: 'posted donor_id',
                 gender: 'mixed',
@@ -159,6 +166,7 @@ describe 'SampleMetadata API', with: :api_v2 do
 
           expect(json.dig('data', 'attributes', 'cohort')).to eq 'posted cohort'
           expect(json.dig('data', 'attributes', 'collected_by')).to eq 'posted collected_by'
+          expect(json.dig('data', 'attributes', 'date_of_sample_collection')).to eq 'posted date_of_sample_collection'
           expect(json.dig('data', 'attributes', 'concentration')).to eq 'posted concentration'
           expect(json.dig('data', 'attributes', 'donor_id')).to eq 'posted donor_id'
           expect(json.dig('data', 'attributes', 'gender')).to eq 'Mixed'
@@ -174,6 +182,7 @@ describe 'SampleMetadata API', with: :api_v2 do
           new_model = Sample::Metadata.last
           expect(new_model.cohort).to eq 'posted cohort'
           expect(new_model.collected_by).to eq 'posted collected_by'
+          expect(new_model.date_of_sample_collection).to eq 'posted date_of_sample_collection'
           expect(new_model.concentration).to eq 'posted concentration'
           expect(new_model.donor_id).to eq 'posted donor_id'
           expect(new_model.gender).to eq 'Mixed'

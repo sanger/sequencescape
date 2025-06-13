@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe BroadcastEvent::PoolReleased, :broadcast_event do
   let(:source_plate) do
     pl = create(:full_stock_plate)
-    pl.wells.first.aliquots << (create(:aliquot, sample: tube.samples.first))
-    pl.wells.last.aliquots << (create(:aliquot, sample: tube.samples.last))
+    pl.wells.first.aliquots << create(:aliquot, sample: tube.samples.first)
+    pl.wells.last.aliquots << create(:aliquot, sample: tube.samples.last)
     tube.ancestors << pl
     pl
   end

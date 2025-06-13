@@ -10,6 +10,15 @@ set -o nounset
 
 TIMEOUT=120
 
+# Source bashrc to config correct node and yarn versions
+source ~/.bashrc
+
+# Remove a potentially pre-existing server.pid for Rails.
+rm -f /code/tmp/pids/server.pid
+
+# Install any missing packages - very useful for development without rebuilding the image
+bundle install
+
 ./wait_for_connection.sh "${DBHOST}" "${DBPORT}" "${TIMEOUT}"
 
 if [ "${RESET_DATABASE:-}" = "true" ]; then
@@ -19,6 +28,9 @@ fi
 
 # Build the static web assets
 if [ "${PRECOMPILE_ASSETS:-}" = "true" ]; then
+  echo "Precompiling assets"
+  echo "Vite info"
+  bin/vite info
   bundle exec rails assets:precompile
 fi
 

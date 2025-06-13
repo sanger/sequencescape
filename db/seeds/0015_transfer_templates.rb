@@ -6,7 +6,7 @@ def locations_for(row_range, column_range)
   row_range.map { |row| column_range.map { |column| "#{row}#{column}" } }.flatten
 end
 
-wells_96_locations = locations_for(('A'..'H'), (1..12))
+wells_96_locations = locations_for('A'..'H', 1..12)
 
 def pooling_row_to_first_column_transfer_layout_96
   layout = {}
@@ -20,7 +20,7 @@ ActiveRecord::Base.transaction do
     TransferTemplate.create!(
       name: "Transfer columns #{range.first}-#{range.last}",
       transfer_class_name: Transfer::BetweenPlates.name,
-      transfers: locations_for(('A'..'H'), range).to_h { |location| [location, location] }
+      transfers: locations_for('A'..'H', range).to_h { |location| [location, location] }
     )
   end
   TransferTemplate.create!(

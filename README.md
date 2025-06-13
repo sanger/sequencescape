@@ -46,6 +46,7 @@ a organisation of 900 people.
 - [Testing](#testing)
 - [Linting and formatting](#linting-and-formatting)
 - [Rake tasks](#rake-tasks)
+- [Feature flags](#feature-flags)
 - [Supporting applications](#supporting-applications)
   - [Barcode printing](#barcode-printing)
   - [Plate barcode service](#plate-barcode-service)
@@ -148,8 +149,7 @@ command:
 docker compose -f docker-compose-dev.yml up
 ```
 
-**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications
-to the Dockerfile file) you can run the building process again with:
+**ABOUT RECREATE DOCKER IMAGE** If you ever need to recreate the image built on first start (because you made modifications to the Dockerfile file or there have been dependency updates) you can re build the image again with (or see above for M1 Apple chip):
 
 ```shell
 docker compose build
@@ -352,6 +352,14 @@ of running standalone scripts multiple times.
 
 A breakdown of the the available tasks and how to run them can be found [here](lib/tasks/README.md)
 
+## Feature flags
+
+The use of feature flags is encouraged for development.
+
+[Flipper](https://github.com/flippercloud/flipper) is used for flag management and flags can be controlled from the `/flipper` route.
+
+To create a new feature flag, update `config/feature_flags.yml`.
+
 ## Supporting applications
 
 There are a number of services that are needed in certain parts of Sequencescape these are listed
@@ -492,6 +500,12 @@ As of the time of writing, there are three outcomes to a request made, with resp
   - The request is logged with the prefix "Request made without an API key" including information about the client.
   - The client application should be updated to use a valid API key in future.
 
+#### Documentation
+
+Example POST requests for all the Sequencscape API v2 resources are available to import into Postman REST Client.
+
+The file `Sequencescape API v2.postman_collection.json` is stored in the Pipeline Solutions Shared Network Drive (Finder > Go > Connect to Server > `smb://files-smb/pipeline_solutions`)
+
 ### Publishing AMQP Messages
 
 Some API endpoints (such as `/api/v2/bioscan/export_pool_xp_to_traction`) trigger background jobs which are responsible for publishing data to another instance of RabbitMQ.
@@ -526,9 +540,9 @@ The command uses the [rails-erd](https://github.com/voormedia/rails-erd) gem.
 
 ### Updating the table of contents
 
-To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-node module. To install it, make sure you have installed the dev dependencies from yarn. To update
-the table of contents, run:
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc) node module.
+To install it, make sure you have installed the dev dependencies from yarn.
+To update the table of contents, run:
 
 ```shell
 npx markdown-toc -i README.md --bullets "-"

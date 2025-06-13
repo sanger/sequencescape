@@ -10,7 +10,7 @@ describe '/api/1/request-type-uuid' do
   before { create(:request_type, :uuidable, uuid: uuid, name: 'Sequencing by colour') }
 
   describe '#get' do
-    subject(:url) { '/api/1/' + uuid }
+    subject(:url) { "/api/1/#{uuid}" }
 
     let(:response_body) do
       '{

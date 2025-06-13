@@ -13,7 +13,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
   context 'Parser' do
     context 'With a valid csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results.csv'
+        @filename = Rails.root.join('test/data/bioanalysis_qc_results.csv').to_s
         @content = read_file @filename
         @csv = CSV.parse(@content)
       end
@@ -25,7 +25,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
     context 'With an unreleated csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/fluidigm.csv'
+        @filename = Rails.root.join('test/data/fluidigm.csv').to_s
         @content = read_file @filename
       end
 
@@ -36,7 +36,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
 
     context 'with a non csv file' do
       setup do
-        @filename = Rails.root.to_s + '/test/data/example_file.txt'
+        @filename = Rails.root.join('test/data/example_file.txt').to_s
         @content = read_file @filename
       end
 
@@ -49,7 +49,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
   context 'A Bioanalysis parser of CSV' do
     context 'with a valid CSV biorobot file' do
       setup do
-        filename = Rails.root.to_s + '/test/data/bioanalysis_qc_results.csv'
+        filename = Rails.root.join('test/data/bioanalysis_qc_results.csv').to_s
         content = read_file filename
 
         @parser = Parsers::BioanalysisCsvParser.new(CSV.parse(content))
@@ -112,7 +112,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
     end
     context 'with an invalid CSV biorobot file' do
       setup do
-        filename = File.dirname(__FILE__) + '/../../data/bioanalysis_qc_results-with-error.csv'
+        filename = "#{File.dirname(__FILE__)}/../../data/bioanalysis_qc_results-with-error.csv"
         content = read_file filename
 
         @parser = Parsers::BioanalysisCsvParser.new(CSV.parse(content))

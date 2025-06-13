@@ -23,7 +23,7 @@ class ElementAvitiSequencingRequest < SequencingRequest
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
     custom_attribute(:requested_flowcell_type, required: true, validator: true, selection: true)
 
-    custom_attribute(:percent_phix_requested, integer: true, required: true, minimum: 0)
+    custom_attribute(:percent_phix_requested, integer: true, required: true, maximum: 100)
     custom_attribute(:low_diversity, default: NO, in: YES_OR_NO, required: true)
     enum :low_diversity, { Yes: true, No: false }
   end
