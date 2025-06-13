@@ -12,7 +12,7 @@ describe 'Plate QC display' do
     it 'displays an empty table' do
       login_user user
       visit plate_path(plate)
-      %w[concentration volume current_volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
+      %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           expect(page).to have_css('td', count: 126)
           expect(page).to have_css('tr', count: 10)
@@ -34,7 +34,6 @@ describe 'Plate QC display' do
         well.qc_results << [
           build(:qc_result_concentration),
           build(:qc_result_volume),
-          build(:qc_result_current_volume),
           build(:qc_result_loci_passed),
           build(:qc_result_rin)
         ]
@@ -48,7 +47,7 @@ describe 'Plate QC display' do
     end
 
     it 'displays the correct data' do
-      %w[concentration volume current_volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
+      %w[concentration volume quantity_in_nano_grams loci_passed rin].each do |qc_result|
         within("##{qc_result}") do
           plate.wells.each_with_index do |well, index|
             expect(page).to have_css("tr[#{1 + index}]/td[2]", text: well.qc_result_for(qc_result))
