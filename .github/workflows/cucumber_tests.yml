@@ -86,7 +86,7 @@ jobs:
         run: bin/knapsack_pro_cucumber
 
       - name: Upload capybara artifacts
-        uses: actions/upload-artifact@v4.4.0
+        uses: sanger/.github/.github/actions/tests/upload-artifact@y25-099-6-migrate-actions
         if: ${{ failure() }}
         with:
           name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
