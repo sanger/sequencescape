@@ -77,17 +77,11 @@ jobs:
             ${{ runner.os }}-tests-
             ${{ runner.os }}-
 
-      # Install only the gems needed for testing
-      # Keep an eye on https://github.com/rubygems/bundler-features/issues/59
-      # in case bundler add an only flag
-      # We also set the install path to vendor/bundle to assist with out caching
-      # bin/setup handles the rest of the configuration for us.
-      - name: Setup environment
-        env:
-          DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: |
-          bin/setup
-          bundle exec rake assets:precompile
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup/env@y25-099-6-migrate-actions
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
+          precompile: true
 
       - name: Run rspec tests
         env:
