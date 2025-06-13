@@ -100,10 +100,9 @@ jobs:
           retention-days: 5
 
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5.4.0
+        uses: sanger/.github/.github/actions/tests/codecov@y25-099-6-migrate-actions
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          disable_search: true
+          disable-search: true
           files: ${{ github.workspace }}/lcov.info
-          fail_ci_if_error: true
