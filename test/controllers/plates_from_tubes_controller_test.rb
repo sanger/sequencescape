@@ -34,8 +34,8 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
       # Happy path
       context 'on POST to create a stock plate' do
         setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
 
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
@@ -64,7 +64,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST to create the asset links (as well as the plate)' do
         setup do
-          @tube1 = FactoryBot.create(:tube)
+          @tube1 = FactoryBot.create(:sample_tube)
 
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
@@ -97,8 +97,8 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST to create an RNA plate' do
         setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
 
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
@@ -127,8 +127,8 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST to create both stock and RNA plates' do
         setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
 
           # Stubbing the barcode generation call for the new plate generated
           PlateBarcode.stubs(:create_barcode).returns(
@@ -191,8 +191,8 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST with duplicate barcodes' do
         setup do
-          @tube1 = FactoryBot.create(:tube)
-          @tube2 = FactoryBot.create(:tube)
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
 
           @plate_count = Plate.count
 
@@ -219,7 +219,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
       context 'on POST to create a stock plate with too many tubes' do
         setup do
-          source_tubes = (1..100).map { |_| FactoryBot.create(:tube).barcodes.first.barcode }.join("\r\n")
+          source_tubes = (1..100).map { |_| FactoryBot.create(:sample_tube).barcodes.first.barcode }.join("\r\n")
           post :create,
                params: {
                  plates_from_tubes: {
@@ -265,8 +265,8 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
         context 'on POST to create a plate' do
           setup do
-            @tube1 = FactoryBot.create(:tube)
-            @tube2 = FactoryBot.create(:tube)
+            @tube1 = FactoryBot.create(:sample_tube)
+            @tube2 = FactoryBot.create(:sample_tube)
 
             # Initial plate count in the in-memory database
             @plate_count = Plate.count
@@ -286,6 +286,31 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           end
           should set_flash[:error].to(/Please enter a valid user barcode/)
         end
+      end
+
+      context 'on POST to create a stock plate with empty tubes' do
+        setup do
+          @tube1 = FactoryBot.create(:tube)
+          @tube2 = FactoryBot.create(:sample_tube)
+
+          @plate_count = Plate.count
+
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes:
+                     "#{@tube1.barcodes.first.barcode}
+                        \r\n#{@tube2.barcodes.first.barcode}"
+                 }
+               }
+        end
+        should 'not create a plate' do
+          assert_equal 0, Plate.count
+        end
+        should set_flash[:error].to(/No samples were found in the following tube:/)
       end
     end
   end

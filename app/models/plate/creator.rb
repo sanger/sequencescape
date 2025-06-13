@@ -184,6 +184,11 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  def validate_plate_is_with_sample(plate, plate_barcode)
+    return unless plate.samples.empty?
+    fail_with_error("No samples were found in the scanned plate #{plate_barcode}")
+  end
+
   def create_plate(plate_purpose, plate_barcode)
     plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
       p.name = "#{plate_purpose.name} #{p.human_barcode}"
@@ -286,6 +291,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
             fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
+        validate_plate_is_with_sample(plate, scanned)
 
         unless can_create_plates?(plate)
           target_purposes = plate_purposes.map(&:name).join(',')

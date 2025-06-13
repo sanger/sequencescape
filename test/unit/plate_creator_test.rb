@@ -60,4 +60,18 @@ class CreatorTest < ActiveSupport::TestCase
       # rubocop:enable Layout/LineLength
     end
   end
+
+  test 'should fail if source plate has no samples' do
+    scanned_source_barcode = 'SQPD-1'
+    empty_source_plate = create(:plate, barcode: scanned_source_barcode)
+
+    PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
+
+    error =
+      assert_raises(StandardError) do
+        @creator.send(:validate_plate_is_with_sample, empty_source_plate, scanned_source_barcode)
+      end
+
+    assert_match(/No samples were found in the scanned/, error.message)
+  end
 end
