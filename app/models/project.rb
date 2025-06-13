@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require 'aasm'
 
+# rubocop:disable Metrics/ClassLength
 class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
@@ -57,7 +58,15 @@ class Project < ApplicationRecord
   validates :name, :state, presence: true
   validates :name, uniqueness: { on: :create, message: "already in use (#{name})", case_sensitive: false }
 
-  scope :for_search_query, ->(query) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
+  scope :for_search_query,
+        ->(query) do
+          joins(project_metadata: :project).where(
+            'projects.name LIKE ? OR projects.id = ? OR project_cost_code LIKE ?',
+            "%#{query}%",
+            query,
+            "%#{query}%"
+          )
+        end
 
   # Allow us to pass in nil or '' if we don't want to filter state.
   # State is required so we don't need to look up an actual null state
@@ -147,3 +156,4 @@ class Project < ApplicationRecord
           )
         end
 end
+# rubocop:enable Metrics/ClassLength
