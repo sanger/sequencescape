@@ -80,9 +80,7 @@ class PlatesControllerTest < ActionController::TestCase
               @asset_group_count = AssetGroup.count
               @num_create = 2
               @plates = Array.new(@num_create) { @purpose.create! }
-              @plates.each do |plate|
-                plate.wells << [create(:untagged_well)]
-              end
+              @plates.each { |plate| plate.wells << [create(:untagged_well)] }
               @plate_barcodes = @plates.map(&:barcodes).flatten.map(&:barcode)
               @create_params = {
                 plates: {
