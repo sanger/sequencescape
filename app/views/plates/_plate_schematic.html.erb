@@ -1,6 +1,9 @@
 <%# locals: plate, well_values %>
 <%# plate: Plate %>
 <%# well_values: Array of [method, value] to call on well %>
+<% well_method, well_value = well_values %>
+<%# well_method: Symbol, e.g. :qc_result_for or :well_attribute %>
+<%# well_value: Symbol, e.g. :concentration or :quantity_in_nano_grams %>
 
 <%# Note: very similar to app/views/shared/_show_plate.html.erb %>
 
@@ -28,9 +31,9 @@
           <% well = plate.find_well_by_name(well_name) %>
           <% if well %>
             <% value = begin
-              well.send(well_values[0].to_s, well_values[1].to_s)
+              well.send(well_method.to_s, well_value.to_s)
             rescue NoMethodError, ArgumentError => e
-              well.send(well_values[0].to_s).send(well_values[1].to_s)
+              well.send(well_method.to_s).send(well_value.to_s)
             end %>
             <%= render partial: descriptor, locals: { value: } %>
           <% else %>
