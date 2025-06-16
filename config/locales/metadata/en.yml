@@ -448,7 +448,7 @@ en:
 
         data_release_timing:
           label: How is the data release to be timed?
-          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 12 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: 12 months</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 12 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
+          help: "Choose from:<p><strong>Immediate:</strong> To be released as soon as possible.</p><p><strong>Standard:</strong> To be released:<ul><li>For managed (EGA) studies: 12 months</li><li>For open (ENA) studies: 12 months</li><li>Transcriptomics studies: 12 months</li></ul></p><p><strong>Delayed:</strong><ul><li>For managed (EGA) studies: 12 months plus delay for period</li><li>For open (ENA) studies: 12 months plus delay for period.</li></ul></p><p><strong>Delay until publication:</strong> This option is only available if the data release strategy is set to 'Open (ENA)'.</p><p><strong>Never:</strong> This option is only available if the data release strategy is set to 'Not applicable.'</p>"
 
         data_release_prevention_reason:
           label: What is the reason for preventing data release?
@@ -476,6 +476,12 @@ en:
 
         data_release_delay_reason_comment:
           label: Comment regarding data release timing and approval
+
+        data_release_timing_publication_comment:
+          label: When do you anticipate sharing the data?
+
+        data_share_in_preprint:
+          label: Are you planning to share the data as part of a preprint?
 
         data_access_group:
           label: Data access group
