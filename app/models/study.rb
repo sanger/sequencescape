@@ -60,7 +60,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   YES = 'Yes'
   NO = 'No'
   YES_OR_NO = [YES, NO].freeze
-  Other_type = 'Other'
+  OTHER_TYPE = 'Other'
 
   STUDY_SRA_HOLDS = %w[Hold Public].freeze
 
@@ -110,6 +110,15 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
   EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
   EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
+
+  REMAPPED_ATTRIBUTES =
+    {
+      contaminated_human_dna: YES_OR_NO,
+      remove_x_and_autosomes: YES_OR_NO,
+      study_sra_hold: STUDY_SRA_HOLDS,
+      contains_human_dna: YES_OR_NO,
+      commercially_available: YES_OR_NO
+    }.transform_values { |v| v.index_by { |b| b.downcase } }
 
   # Class variables
   self.per_page = 500
@@ -291,15 +300,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:s3_email_list)
     custom_attribute(:data_deletion_period)
     custom_attribute(:contaminated_human_data_access_group)
-
-    REMAPPED_ATTRIBUTES =
-      {
-        contaminated_human_dna: YES_OR_NO,
-        remove_x_and_autosomes: YES_OR_NO,
-        study_sra_hold: STUDY_SRA_HOLDS,
-        contains_human_dna: YES_OR_NO,
-        commercially_available: YES_OR_NO
-      }.transform_values { |v| v.index_by { |b| b.downcase } }
 
     # These fields are warehoused, so need to match the encoding restrictions there
     # This excludes supplementary characters, which include emoji and rare kanji
