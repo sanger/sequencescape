@@ -9,7 +9,7 @@
 
 require 'jsonapi-resources'
 
-unless JSONAPI::Resources::VERSION == '0.9.0'
+unless JSONAPI::Resources::VERSION == '0.1.0'
   # We're being naughty. So lets ensure that anyone can easily find
   # our little hacks.
   Rails.logger.warn '*' * 80
