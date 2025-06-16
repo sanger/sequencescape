@@ -67,26 +67,16 @@ group :default do
   gem 'sinatra', require: false
   gem 'uuidtools'
 
-  # API v2
-  # Pinned to 0.9.0
-  # We apply some monkey patches to this which aren't compatible with later version
-  # I've done some preliminary work here:
-  # https://github.com/JamesGlover/sequencescape/tree/depfu/update/jsonapi-resources-0.9.5
-  # but not only is there a failing test, but performance was tanking in a few places
-  # due to not correctly eager loading dependencies on nested resources.
+  # Forked and stabilized version of jsonapi-resources for Sanger/PSD projects
+  # https://github.com/sanger/jsonapi-resources.
+  # gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'y25-318-from-develop'
+  gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'y25-318-from-develop'
 
-  # Versions above 0.9.0 are incompatible and it is too much work to upgrade at
-  # this time. Implementing new patches for updates is not a long term solution
-  # as the internals keep changing. However, version 0.9.0 is blocking us from
-  # updating rails to version 6.1 . The following steps show the process for an
-  # alternative solution:
-  # - Fork jsonpi-resources repository
-  # - Create a branch off version 0.9.0
-  # - Remove the ActionController::ForceSSL module
-  # - Load the gem from the branch
-  gem 'jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
+  # Version 0.1.0 (created from develop branch) published and pinned for Sequencescape compatibility.
+  # gem 'sanger-jsonapi-resources', '~> 0.1.0'
+  # gem 'sanger-jsonapi-resources', '0.1.1', path: '/Users/st26/Desktop/Project/jsonapi-resources'
 
-  gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
+  gem 'csv', '~> 3.3' # Required by sanger-jsonapi-resources, previously part of ruby
 
   # Wraps bunny with connection pooling and consumer process handling
   gem 'sanger_warren'
@@ -131,6 +121,8 @@ group :default do
   gem 'flipper', '~> 1.0'
   gem 'flipper-active_record', '~> 1.0'
   gem 'flipper-ui', '~> 1.0'
+
+  gem 'rack', '< 3.0'
 end
 
 group :development do
