@@ -6,10 +6,7 @@ on:
     # * is a special character in YAML so you have to quote this string
     # Every sunday at 10 am
     - cron: "0 10 * * 0"
-  push:
-    branches:
-      - y25-099-7-migrate-actions
 
 jobs:
   update_rubocop:
-    uses: sanger/.github/.github/workflows/update-rubocop.yml@y25-099-7-migrate-actions
+    uses: sanger/.github/.github/workflows/update-rubocop.yml@ymaster
