@@ -451,7 +451,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
         regexp =
           Regexp.new(
             "<error><message>The request on this lane has already been completed with qc state: 'pass'. " \
-              "Unable to set it to new qc state: 'fail'.</message></error>",
+            "Unable to set it to new qc state: 'fail'.</message></error>",
             Regexp::MULTILINE
           )
         expect(response).to have_http_status(:bad_request)
