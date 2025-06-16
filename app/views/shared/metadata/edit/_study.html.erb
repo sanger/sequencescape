@@ -16,7 +16,11 @@
       <%= group.text_area(:study_description) %>
       <%= group.text_area(:study_abstract) %>
       <%= group.radio_select(:study_sra_hold, Study::STUDY_SRA_HOLDS) %>
-    <% end %>
+     
+      <%= metadata_fields.select(:ebi_library_strategy, options_for_select([['Please select...', nil]] + Study::EBI_LIBRARY_STRATEGY_OPTIONS, metadata_fields.object.ebi_library_strategy), (metadata_fields.object.new_record? ? { required: true } : {})) %>
+      <%= metadata_fields.select(:ebi_library_source,  options_for_select([['Please select...', nil]] + Study::EBI_LIBRARY_SOURCE_OPTIONS, metadata_fields.object.ebi_library_source), (metadata_fields.object.new_record? ? { required: true } : {})) %> 
+      <%= metadata_fields.select(:ebi_library_selection, options_for_select([['Please select...', nil]] + Study::EBI_LIBRARY_SELECTION_OPTIONS, metadata_fields.object.ebi_library_selection), (metadata_fields.object.new_record? ? { required: true } : {})) %> 
+    <% end %>    
 
     <%= metadata_fields.radio_select(:contains_human_dna, Study::YES_OR_NO) %>
     <%= metadata_fields.radio_select(:contaminated_human_dna, Study::YES_OR_NO) %>

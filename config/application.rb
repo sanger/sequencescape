@@ -91,6 +91,9 @@ module Sequencescape
 
     config.phi_x = config_for(:phi_x).with_indifferent_access
 
+    # add ena requirement fields here
+    config.ena_requirement_fields = config_for(:ena_requirement_fields)
+
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: true,

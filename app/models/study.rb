@@ -107,6 +107,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
+  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
+
   REMAPPED_ATTRIBUTES =
     {
       contaminated_human_dna: YES_OR_NO,
@@ -209,6 +213,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     association(:faculty_sponsor, :name, required: true)
     association(:program, :name, required: true)
 
+    # These attributes are warehoused
+    # we have invoked map_attribute_to_json_attribute for them in app/models/api/study_io.rb
     custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
     custom_attribute(:study_description, required: true)
     custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
@@ -222,6 +228,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
+
+    # add ebi library strategy, ebi library source, ebi library selection
+    custom_attribute(:ebi_library_strategy, in: EBI_LIBRARY_STRATEGY_OPTIONS)
+    custom_attribute(:ebi_library_source, in: EBI_LIBRARY_SOURCE_OPTIONS)
+    custom_attribute(:ebi_library_selection, in: EBI_LIBRARY_SELECTION_OPTIONS)
 
     custom_attribute(
       :data_release_strategy,
@@ -308,6 +319,22 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 message: 'only allows ASCII',
                 allow_blank: true
               }
+
+    validates :ebi_library_strategy, presence: true, on: :create
+    validates :ebi_library_source, presence: true, on: :create
+    validates :ebi_library_selection, presence: true, on: :create
+
+    validates :ebi_library_strategy,
+              inclusion: {
+                in: EBI_LIBRARY_STRATEGY_OPTIONS
+              },
+              if: -> { ebi_library_strategy_changed? }
+    validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }, if: -> { ebi_library_source_changed? }
+    validates :ebi_library_selection,
+              inclusion: {
+                in: EBI_LIBRARY_SELECTION_OPTIONS
+              },
+              if: -> { ebi_library_selection_changed? }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?

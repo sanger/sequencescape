@@ -200,6 +200,9 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor><name>Contaminated Human Data Access Group</name><value></value></descriptor>
           <descriptor><name>Data access group</name><value>group1</value></descriptor>
+          <descriptor><name>EBI Library Selection</name><value>PCR</value></descriptor>
+          <descriptor><name>EBI Library Source</name><value>GENOMIC</value></descriptor>
+          <descriptor><name>EBI Library Strategy</name><value>WGS</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
           <descriptor><name>Policy Url</name></descriptor>

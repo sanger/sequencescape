@@ -534,6 +534,19 @@ en:
         contaminated_human_data_access_group:
           label: Contaminated Human Data Access Group
           help: "Allows specified Unix groups and users access to data segregated from the main data product, which is potentially contaminated with human data. This access is typically rarely used and is primarily for validating the separation process, as we may not have the ethical or legal clearance."
+
+        ebi_library_strategy:
+          label: EBI Library Strategy
+          edit_info: "ENA requirement"
+
+        ebi_library_source:
+          label: EBI Library Source
+          edit_info: "ENA requirement"
+
+        ebi_library_selection:
+          label: EBI Library Selection
+          edit_info: "ENA requirement"
+
     project:
       metadata:
         project_manager_id:
