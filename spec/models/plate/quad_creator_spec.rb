@@ -129,16 +129,16 @@ RSpec.describe Plate::QuadCreator do
         it 'creates the correct transfer request collection' do
           expected_transfers = number_of_parents * occupied_wells.length
           expect { quad_creator.save }.to change(TransferRequestCollection, :count).by(1).and change(
-                  TransferRequest,
-                  :count
-                ).by(expected_transfers)
+            TransferRequest,
+            :count
+          ).by(expected_transfers)
         end
 
         it 'creates a custom metadatum collection and custom metadata' do
           expect { quad_creator.save }.to change(CustomMetadatumCollection, :count).by(1).and change(
-                  CustomMetadatum,
-                  :count
-                ).by(4)
+            CustomMetadatum,
+            :count
+          ).by(4)
         end
       end
     end

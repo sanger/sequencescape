@@ -64,11 +64,11 @@ module Api
 
         user =
           User.with_uuid(param_hash[:user_uuid]).first ||
-            record_errors.append("The User record identified by UUID '#{param_hash[:user_uuid]}' cannot be found")
+          record_errors.append("The User record identified by UUID '#{param_hash[:user_uuid]}' cannot be found")
 
         plate =
           Plate.with_uuid(param_hash[:plate_uuid]).first ||
-            record_errors.append("The Plate record identified by UUID '#{param_hash[:plate_uuid]}' cannot be found")
+          record_errors.append("The Plate record identified by UUID '#{param_hash[:plate_uuid]}' cannot be found")
 
         respond_with_errors('Record not found', record_errors, :bad_request) and return if record_errors.any?
 

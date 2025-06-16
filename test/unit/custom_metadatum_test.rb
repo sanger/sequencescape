@@ -10,10 +10,10 @@ class CustomMetadatumTest < ActiveSupport::TestCase
   test 'should not allow duplicate keys for assets' do
     metadatum = create(:custom_metadatum)
     assert_not build(
-                 :custom_metadatum,
-                 key: metadatum.key,
-                 custom_metadatum_collection: metadatum.custom_metadatum_collection
-               ).valid?
+      :custom_metadatum,
+      key: metadatum.key,
+      custom_metadatum_collection: metadatum.custom_metadatum_collection
+    ).valid?
   end
 
   test '#to_h should return the key and the value' do

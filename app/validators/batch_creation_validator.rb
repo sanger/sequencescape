@@ -22,6 +22,7 @@ class BatchCreationValidator < ActiveModel::Validator
 
   def batch_meets_minimum_size(record)
     return unless record.min_size && (record.requests.size < record.min_size)
+
     record.errors.add :base,
                       "You must create batches of at least #{record.min_size}
       requests in the pipeline #{record.pipeline.name}"
@@ -29,18 +30,20 @@ class BatchCreationValidator < ActiveModel::Validator
 
   def requests_have_same_target_purpose(record)
     if record.pipeline.is_a?(CherrypickingPipeline) &&
-         record.requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
+        record.requests.map { |request| request.request_metadata.target_purpose_id }.uniq.size > 1
       record.errors.add(:base, 'The selected requests must have the same target purpose (Pick To) values')
     end
   end
 
   def requests_have_same_read_length(record)
     return if record.pipeline.is_read_length_consistent_for_batch?(record)
+
     record.errors.add :base, "The selected requests must have the same values in their 'Read length' field."
   end
 
   def requests_have_same_flowcell_type(record)
     return if record.pipeline.is_flowcell_type_consistent_for_batch?(record)
+
     record.errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
   end
 end

@@ -14,8 +14,8 @@ unless JSONAPI::Resources::VERSION == '0.9.0'
   # our little hacks.
   Rails.logger.warn '*' * 80
   Rails.logger.warn "We are monkey patching 'jsonapi-resources' in #{__FILE__} " \
-                      'but the gem version has changed since the patch was written.' \
-                      'Please ensure that the patch is still required and compatible.'
+                    'but the gem version has changed since the patch was written.' \
+                    'Please ensure that the patch is still required and compatible.'
   Rails.logger.warn '*' * 80
 end
 

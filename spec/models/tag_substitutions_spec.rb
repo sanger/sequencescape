@@ -152,10 +152,10 @@ describe TagSubstitution, :warren do
       end
 
       let(:comment) { <<~COMMENT }
-          Tag substitution performed.
-          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
-          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
-        COMMENT
+        Tag substitution performed.
+        Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+        Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+      COMMENT
 
       it_behaves_like 'tag substitution'
 
@@ -164,12 +164,12 @@ describe TagSubstitution, :warren do
           { user: create(:user), ticket: '12345', comment: 'I wanted my tags to spell CAT TAG' }
         end
         let(:comment) { <<~COMMENT }
-            Tag substitution performed.
-            Referenced ticket no: 12345
-            Reason: I wanted my tags to spell CAT TAG
-            Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
-            Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
-          COMMENT
+          Tag substitution performed.
+          Referenced ticket no: 12345
+          Reason: I wanted my tags to spell CAT TAG
+          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+        COMMENT
       end
     end
 
@@ -201,10 +201,10 @@ describe TagSubstitution, :warren do
       end
 
       let(:comment) { <<~COMMENT }
-          Tag substitution performed.
-          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
-          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
-        COMMENT
+        Tag substitution performed.
+        Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+        Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+      COMMENT
 
       it_behaves_like 'tag substitution'
 
@@ -213,12 +213,12 @@ describe TagSubstitution, :warren do
           { user: create(:user), ticket: '12345', comment: 'I wanted my tags to spell CAT TAG' }
         end
         let(:comment) { <<~COMMENT }
-            Tag substitution performed.
-            Referenced ticket no: 12345
-            Reason: I wanted my tags to spell CAT TAG
-            Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
-            Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
-          COMMENT
+          Tag substitution performed.
+          Referenced ticket no: 12345
+          Reason: I wanted my tags to spell CAT TAG
+          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+        COMMENT
       end
     end
 
@@ -227,10 +227,10 @@ describe TagSubstitution, :warren do
       let(:sample_b_new_tag2) { sample_a_orig_tag2 }
 
       let(:comment) { <<~COMMENT }
-          Tag substitution performed.
-          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo}; Tag2 changed from #{sample_a_orig_tag2.oligo} to #{sample_a_new_tag2.oligo};
-          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo}; Tag2 changed from #{sample_b_orig_tag2.oligo} to #{sample_b_new_tag2.oligo};
-        COMMENT
+        Tag substitution performed.
+        Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo}; Tag2 changed from #{sample_a_orig_tag2.oligo} to #{sample_a_new_tag2.oligo};
+        Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo}; Tag2 changed from #{sample_b_orig_tag2.oligo} to #{sample_b_new_tag2.oligo};
+      COMMENT
 
       let(:instructions) do
         [
@@ -333,10 +333,10 @@ describe TagSubstitution, :warren do
       end
 
       let(:comment) { <<~COMMENT }
-          Tag substitution performed.
-          Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
-          Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
-        COMMENT
+        Tag substitution performed.
+        Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_a_new_tag.oligo};
+        Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
+      COMMENT
 
       before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
 
