@@ -1,4 +1,4 @@
-name: Rake tests
+name: Unit tests
 
 env:
   TZ: Europe/London
@@ -19,6 +19,7 @@ on:
 
 jobs:
   rake_tests:
+    name: Rake tests
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test

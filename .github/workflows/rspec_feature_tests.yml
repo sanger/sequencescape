@@ -1,4 +1,4 @@
-name: Feature tests
+name: Integration tests
 
 env:
   TZ: Europe/London
@@ -22,6 +22,7 @@ on:
 
 jobs:
   rspec_feature_tests:
+    name: Feature tests
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test

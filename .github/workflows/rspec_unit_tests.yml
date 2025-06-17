@@ -22,6 +22,7 @@ on:
 
 jobs:
   rspec_unit_tests:
+    name: RSpec tests
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test

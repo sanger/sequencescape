@@ -1,4 +1,4 @@
-name: Cucumber tests
+name: Integration tests
 
 env:
   TZ: Europe/London
@@ -22,6 +22,7 @@ on:
 
 jobs:
   cucumber_tests:
+    name: Cucumber tests
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: cucumber
