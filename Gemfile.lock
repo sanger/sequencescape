@@ -7,17 +7,6 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
-  remote: https://github.com/sanger/jsonapi-resources.git
-  revision: 3437f45265f031564933921c5aa2d21810e04616
-  branch: y25-318-from-develop
-  specs:
-    sanger-jsonapi-resources (0.1.1)
-      activerecord (>= 4.1)
-      concurrent-ruby
-      csv
-      railties (>= 4.1)
-
-GIT
   remote: https://github.com/sanger/record_loader
   revision: 9e7481f4d2342f042ab13465962e5d6689863198
   specs:
@@ -519,6 +508,11 @@ GEM
       logger
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
+    sanger-jsonapi-resources (0.1.1)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      csv
+      railties (>= 4.1)
     sanger_warren (0.5.0)
       bunny (~> 2.17)
       connection_pool (~> 2.2)
@@ -705,7 +699,7 @@ DEPENDENCIES
   rubocop-rspec_rails
   ruby-prof
   ruby-units
-  sanger-jsonapi-resources!
+  sanger-jsonapi-resources (~> 0.1.1)
   sanger_barcode_format!
   sanger_warren
   selenium-webdriver (~> 4.1)
