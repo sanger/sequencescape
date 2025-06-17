@@ -14,6 +14,7 @@
 # Element recommends using a consistent sample name that clearly identifies the control sequences.
 #
 # Allowed characters in the output file name include: letters, numbers, dashes, dots, parentheses, and underscores.
+# todo: support use cases where the samples in the pool have different index lengths(https://docs.elembio.io/docs/run-manifest/samples/#reconciling)
 
 module AvitiSampleSheet::SampleSheetGenerator
   def self.generate(batch)
@@ -59,7 +60,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     def generate
       CSV.generate(row_sep: "\r\n") do |csv|
         SETTINGS_SECTION.each { |row| csv << row }
-        adjusted_phix_indexes.each { |row| csv << row }
+        phix_section_matching_sample_indexes.each { |row| csv << row }
         append_samples_section(csv)
       end
     end
@@ -67,7 +68,8 @@ module AvitiSampleSheet::SampleSheetGenerator
     private
 
     # Appends the dynamically generated sample section to the CSV.
-    # This section includes sample name, tags, combined lane positions, and study ID.
+    # This section includes sample name, tags (if present), combined lane positions, and study ID.
+    # For untagged samples, Index1 and Index2 will be empty.
     #
     # @param csv [CSV] the CSV object to append rows to.
     def append_samples_section(csv)
@@ -80,6 +82,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     end
 
     # Groups samples from the batch by identity (sample name, tag1, tag2, study).
+    # For untagged samples, tag1 and tag2 will be nil.
     # Excluding failed requests from the grouping.
     # This ensures that aliquots from the same logical sample group are combined,
     # and their positions aggregated.
@@ -103,25 +106,45 @@ module AvitiSampleSheet::SampleSheetGenerator
       grouped_samples
     end
 
-    # Determines the length of sample indexes used in the batch.
-    # This method iterates through grouped samples and retrieves the length of the first non-nil index (tag1 or tag2).
-    # It assumes all sample in the batch contains indexes and are of uniform length.
-    def sample_index_length
-      group_samples_by_identity.each_value do |group|
-        length = group[:tag1]&.length || group[:tag2]&.length
-        return length if length
-      end
+    # Returns the length of the longest sample index tag (tag1 or tag2) across all grouped samples.
+    #
+    # This method examines each group's tag1 and tag2 values, collects their lengths,
+    # and returns the maximum length found. If all tags are nil, it returns nil.
+    #
+    # @return [Integer, nil] the length of the longest tag, or nil if no tags are present
+    def longest_sample_index_length
+      index_lengths = group_samples_by_identity.values
+        .map { |group| [group[:tag1], group[:tag2]] }
+        .flatten
+        .compact
+        .map(&:length)
+
+      index_lengths.max # returns nil if index_lengths is empty (i.e., all tags are nil)
     end
 
     #
-    # In Aviti runs, all sample indexes are expected to be of the same length.
     # Adjusts the PhiX control indexes to match the sample index length used in the batch.
     # The PSD-assisted software supports sample index lengths of either 8 bp or 10 bp.
-    # The default PhiX control indexes are 10 bp long.
+    # The default PhiX control indexes are 10 bp long - adjusting them to match the batch's sample index length
+    # when necessary (sample index length is less than 10 bp).
     #
-    # This method ensures that PhiX control sample indexes are truncated to match the actual
-    # sample index length in the current batch to maintain compatibility and prevent sequencing issues.
-    def adjusted_phix_indexes
+    # If the samples in the pool have no indexes, it removes the phix indexes from the generated sample sheet.
+    def phix_section_matching_sample_indexes
+      sample_index_length = longest_sample_index_length
+      if sample_index_length.nil?
+        remove_phix_control_tags
+      elsif sample_index_length < 10
+        truncated_phix_indexes(sample_index_length)
+      end
+    end
+
+    # Returns only the PhiX sample names (first column)
+    def remove_phix_control_tags
+      PHIX_SECTION.map { |row| [row[0]] }
+    end
+
+    # Truncates PhiX indexes to match the given sample index length
+    def truncated_phix_indexes(sample_index_length)
       PHIX_SECTION.map do |row|
         if row.length > 2
           row = row.dup
