@@ -17,6 +17,7 @@ class WorkCompletion::TubeRackCompletion < WorkCompletion::LabwareCompletion
   #
   # @example
   #   connect_requests
+  #     # => Connects upstream requests to the target tubes' receptacles
   def connect_requests
     target_tubes.each do |target_tube|
       detect_upstream_requests.each { |upstream| pass_and_link_up_requests(target_tube.tube.receptacle, upstream) }
