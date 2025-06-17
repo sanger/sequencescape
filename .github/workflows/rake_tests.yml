@@ -60,7 +60,7 @@ jobs:
         run: bundle exec rake test
 
       - name: Upload coverage reports to Codecov
-        uses: sanger/.github/.github/actions/tests/codecov@y25-099-6-migrate-actions
+        uses: sanger/.github/.github/actions/tests/codecov@master
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
