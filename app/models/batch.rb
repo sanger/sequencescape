@@ -304,7 +304,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
     requests.each do |request|
       barcode = barcodes[request.position - 1]
-      unless barcode == request.asset.machine_barcode
+      unless barcode == request.asset.machine_barcode || barcode == request.asset.human_barcode
         expected_barcode = request.asset.human_barcode
         errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
       end

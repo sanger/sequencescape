@@ -136,7 +136,19 @@ module Api
       # @!attribute [r] order
       #   The order associated with this request.
       has_one :order, always_include_linkage_data: true
+      # @note `always_include_linkage_data` is currently broken. It is supposed to ensure that
+      #   linkage data is always included in the response. However, it is not working as expected.
+      #   To ensure linkage data is always included, explicitly include the relationship in the request.
+      #   For example, use `?include=request_type` in the request URL to include the `submission` relationship.
+      #   See Y25-164 for more details and a possible fix.
+      # @!attribute [r] request_type
+      #   The type of the request, such as "analysis" or "testing."
       has_one :request_type
+
+      # @!attribute [r] primer_panel
+      #   The primer panel used for the request, if applicable.
+      #   @return [PrimerPanelResource] The primer panel linked to the request.
+      #   @note This relationship is read-only.
       has_one :primer_panel, readonly: true
 
       # @!attribute [r] pre_capture_pool

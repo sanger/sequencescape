@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'rexml/document'
+
 # The EBI operates two key AccessionServices
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
@@ -22,6 +25,8 @@
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
 class AccessionService # rubocop:todo Metrics/ClassLength
+  include REXML
+
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
@@ -30,9 +35,9 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
-  CenterName = 'SC' # TODO: [xxx] use confing file
-  Protect = 'protect'
-  Hold = 'hold'
+  CENTER_NAME = 'SC' # TODO: [xxx] use confing file
+  PROTECT = 'protect'
+  HOLD = 'hold'
 
   def provider
   end
@@ -130,7 +135,8 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
 
   def submit_sample_for_user(sample, user)
-    ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
+    # TODO: commented out line as not used without error handling
+    # ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
 
     submit(user, Accessionable::Sample.new(sample))
   end
@@ -141,7 +147,8 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 
-    ebi_accession_number = study.study_metadata.study_ebi_accession_number
+    # TODO: commented as not used without error handling
+    # ebi_accession_number = study.study_metadata.study_ebi_accession_number
 
     # raise NumberNotGenerated, 'No need to' if not ebi_accession_number.blank? and not /ER/.match(ebi_accession_number)
 
@@ -170,19 +177,19 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   end
 
   def sample_visibility(_sample)
-    Protect
+    PROTECT
   end
 
   def study_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def policy_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def dac_visibility(_study)
-    Protect
+    PROTECT
   end
 
   def private?
@@ -217,18 +224,13 @@ class AccessionService # rubocop:todo Metrics/ClassLength
             xml.MODIFY(source: submission[:source], target: '')
           end
         end
-        xml.ACTION { submission[:hold] == AccessionService::Protect ? xml.PROTECT : xml.HOLD }
+        xml.ACTION { submission[:hold] == AccessionService::PROTECT ? xml.PROTECT : xml.HOLD }
       end
     end
     xml.target!
   end
 
   # rubocop:enable Metrics/MethodLength
-
-  require 'rexml/document'
-
-  # require 'curb'
-  include REXML
 
   def accession_options
     raise NotImplemented, 'abstract method'

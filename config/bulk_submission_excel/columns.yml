@@ -309,3 +309,42 @@ cells_per_chip_well:
     is_text:
     is_num_cells_per_chip_well_in_valid_range:
     is_num_cells_per_chip_well_outside_valid_range:
+percent_phix_requested:
+  heading: "% PhiX requested"
+  attribute: :percent_phix_requested
+  unlocked: true
+  type: :integer
+  validation:
+    options:
+      type: :whole
+      operator: :between
+      formula1: "0"
+      formula2: "100"
+      allowBlank: false
+      showInputMessage: true
+      errorTitle: "% PhiX requested"
+      error: "% PhiX requested (between 0 and 100 inclusive)"
+      promptTitle: "% PhiX requested"
+      prompt: "% PhiX requested (between 0 and 100 inclusive)"
+  conditional_formattings:
+    empty_cell:
+    is_text:
+low_diversity:
+  heading: "Low Diversity"
+  unlocked: true
+  attribute: :low_diversity
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Low Diversity"
+      error: "You must enter a value from the list provided."
+      promptTitle: "Low Diversity"
+      prompt: "Select a value type from the approved list"
+    range_name: :low_diversity
+  conditional_formattings:
+    empty_cell:

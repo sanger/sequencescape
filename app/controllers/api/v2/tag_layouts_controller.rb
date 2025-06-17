@@ -10,29 +10,20 @@ module Api
     end
 
     class TagLayoutProcessor < JSONAPI::Processor
-      # Override the default behaviour for a JSONAPI::Processor when creating a new resource.
+      around_create_resource :apply_template
+
+      private
+
       # We need to check whether a template UUID was given, and, if so, copy its data into this
       # new TagLayoutResource. The creation will be prevented if any data from the template is also
       # included in the create request as additional values. e.g. a request has a template UUID and
       # also specifies a direction or a tag_group. In this case, the error will indicate that the
       # template UUID was not an allowed attribute.
-      def create_resource
-        errors = []
-        template = find_template { |new_errors| errors += new_errors }
-        merge_template_data(template) { |new_errors| errors += new_errors } unless template.nil?
-
-        return JSONAPI::ErrorsOperationResult.new(JSONAPI::BAD_REQUEST, errors) unless errors.empty?
-
-        # Perform the usual create actions.
-        resource = TagLayoutResource.create(context)
-        result = resource.replace_fields(params[:data])
-
-        record_template_use(template, resource)
-
-        JSONAPI::ResourceOperationResult.new((result == :completed ? :created : :accepted), resource)
+      def apply_template
+        template = merge_template_data
+        yield
+        record_template_use(template) unless template.nil?
       end
-
-      private
 
       def find_template
         template_uuid = params[:data][:attributes][:tag_layout_template_uuid]
@@ -40,19 +31,16 @@ module Api
 
         template = TagLayoutTemplate.with_uuid(template_uuid).first
 
-        if template.nil?
-          yield JSONAPI::Exceptions::InvalidFieldValue.new(:tag_layout_template_uuid, template_uuid).errors
-        end
+        raise JSONAPI::Exceptions::InvalidFieldValue.new(:tag_layout_template_uuid, template_uuid) if template.nil?
 
         template
       end
 
-      def errors_if_key_present(data, key)
-        return [] if data[key.to_sym].blank?
+      def raise_if_key_present(data, key)
+        return if data[key.to_sym].blank?
 
-        JSONAPI::Exceptions::BadRequest.new(
-          "Cannot provide '#{key}' while also providing 'tag_layout_template_uuid'."
-        ).errors
+        raise JSONAPI::Exceptions::BadRequest,
+              "Cannot provide '#{key}' while also providing 'tag_layout_template_uuid'."
       end
 
       def merge_template_attributes(template)
@@ -61,7 +49,7 @@ module Api
         %i[walking_by direction].each do |attr_key|
           next if template.send(attr_key).blank?
 
-          yield errors_if_key_present(data[:attributes], attr_key)
+          raise_if_key_present(data[:attributes], attr_key)
 
           data[:attributes][attr_key] = template.send(attr_key)
         end
@@ -73,16 +61,22 @@ module Api
         %i[tag_group tag2_group].each do |rel_key|
           next if template.send(rel_key).blank?
 
-          yield errors_if_key_present(data[:attributes], "#{rel_key}_uuid")
-          yield errors_if_key_present(data[:to_one], rel_key)
+          raise_if_key_present(data[:attributes], "#{rel_key}_uuid")
+          raise_if_key_present(data[:to_one], rel_key)
 
           data[:to_one][rel_key] = template.send(rel_key).id
         end
       end
 
-      def merge_template_data(template, &)
-        merge_template_attributes(template, &)
-        merge_template_to_one_relationships(template, &)
+      def merge_template_data
+        template = find_template
+
+        unless template.nil?
+          merge_template_attributes(template)
+          merge_template_to_one_relationships(template)
+        end
+
+        template
       end
 
       def enforce_uniqueness?
@@ -93,8 +87,9 @@ module Api
         attributes.fetch(:enforce_uniqueness, tag2_group_present)
       end
 
-      def record_template_use(template, resource)
-        template&.record_template_use(TagLayout.find(resource.id).plate, enforce_uniqueness?)
+      def record_template_use(template)
+        plate = Plate.with_uuid(params.dig(:data, :attributes, :plate_uuid)).first
+        template.record_template_use(plate, enforce_uniqueness?)
       end
     end
   end

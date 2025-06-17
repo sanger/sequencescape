@@ -4,12 +4,13 @@
 # @return []
 AssetLink::BuilderJob =
   Struct.new(:links) do
-    # For memory reasons we need to limit transaction size to 10 links at a time
-    TRANSACTION_COUNT = 10
     def perform # rubocop:todo Metrics/MethodLength
+      # For memory reasons we need to limit transaction size to 10 links at a time
+      transaction_count = 10
+
       links
         .uniq
-        .each_slice(TRANSACTION_COUNT) do |link_group|
+        .each_slice(transaction_count) do |link_group|
           ActiveRecord::Base.transaction do
             link_group.each do |parent, child|
               # Create edge can accept either a model (which it converts to an endpoint) or
@@ -24,7 +25,7 @@ AssetLink::BuilderJob =
         end
     end
 
-    def self.create(*args)
-      Delayed::Job.enqueue(new(*args))
+    def self.create(*)
+      Delayed::Job.enqueue(new(*))
     end
   end
