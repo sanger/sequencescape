@@ -62,7 +62,7 @@ jobs:
         uses: sanger/.github/.github/actions/setup/node@master
 
       - name: Setup stable Chrome
-        uses: sanger/.github/.github/actions/tests/setup-chrome@y25-099-6-migrate-actions
+        uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
           chrome-version: 128
           install-chromedriver: true
@@ -84,7 +84,7 @@ jobs:
         run: bin/knapsack_pro_cucumber
 
       - name: Upload capybara artifacts
-        uses: sanger/.github/.github/actions/tests/upload-artifact@y25-099-6-migrate-actions
+        uses: sanger/.github/.github/actions/tests/upload-artifact@master
         if: ${{ failure() }}
         with:
           name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
@@ -92,7 +92,7 @@ jobs:
           retention-days: 5
 
       - name: Upload coverage reports to Codecov
-        uses: sanger/.github/.github/actions/tests/codecov@y25-099-6-migrate-actions
+        uses: sanger/.github/.github/actions/tests/codecov@master
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
