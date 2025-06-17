@@ -30,6 +30,7 @@ class Admin::ProjectsController < ApplicationController
       render partial: 'edit', locals: { project: @project }
     end
   end
+
   def update
     @project = Project.find(params[:id])
     flash.now[:notice] = 'Your project has been updated'
@@ -53,8 +54,8 @@ class Admin::ProjectsController < ApplicationController
   end
 
   helper_method def project_scopes
-    BY_SCOPES.keys
-  end
+                  BY_SCOPES.keys
+                end
 
   # rubocop:todo Metrics/MethodLength
   def managed_update # rubocop:todo Metrics/AbcSize

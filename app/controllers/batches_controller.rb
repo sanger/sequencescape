@@ -307,16 +307,16 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(
-         current_user,
-         'batch_1' => {
-           'id' => params['batch']['1'],
-           'lane' => params['batch']['position']['1']
-         },
-         'batch_2' => {
-           'id' => params['batch']['2'],
-           'lane' => params['batch']['position']['2']
-         }
-       )
+      current_user,
+      'batch_1' => {
+        'id' => params['batch']['1'],
+        'lane' => params['batch']['position']['1']
+      },
+      'batch_2' => {
+        'id' => params['batch']['2'],
+        'lane' => params['batch']['position']['2']
+      }
+    )
       flash[:notice] = 'Successfully swapped lane positions'
       redirect_to batch_path(@batch)
     else

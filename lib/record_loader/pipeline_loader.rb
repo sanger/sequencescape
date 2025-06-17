@@ -12,6 +12,7 @@ module RecordLoader
 
     def workflow(options)
       raise 'Workflow not defined' unless options['workflow']
+
       Workflow.create_with(options['workflow']).find_or_create_by!(name: options['workflow']['name'])
     end
 
@@ -48,6 +49,7 @@ module RecordLoader
       wf = workflow(obj)
       request_type_keys = obj.delete('request_type_keys')
       raise 'Request type keys not found' if request_type_keys.blank?
+
       request_types = RequestType.where(key: request_type_keys)
       Pipeline.create_with(obj.merge(workflow: wf, request_types: request_types)).find_or_create_by!(name:)
 

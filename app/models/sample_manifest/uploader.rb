@@ -39,6 +39,7 @@ class SampleManifest::Uploader
     success =
       ActiveRecord::Base.transaction do
         raise ActiveRecord::Rollback unless process_upload_and_callbacks
+
         true
       end
 
