@@ -14,6 +14,7 @@ class TubeRack::Purpose < Purpose
     TubeRack::Purpose.find_by(name: 'TR Stock 96')
   end
 
+  # Creates the tube rack with the given attributes, setting the purpose and size.
   def create!(*args, &)
     options = args.extract_options!
     options[:purpose] = self
