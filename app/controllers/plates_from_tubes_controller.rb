@@ -106,6 +106,7 @@ class PlatesFromTubesController < ApplicationController
     found_tubes = find_tubes(source_tube_barcodes)
     return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
     return unless validate_tubes_with_samples?(found_tubes)
+
     create_plates(scanned_user, barcode_printer, found_tubes)
     handle_successful_creation
   end
@@ -173,6 +174,7 @@ class PlatesFromTubesController < ApplicationController
   def validate_tubes_with_samples?(tubes)
     empty_tubes = tubes.select { |tube| tube.samples.empty? }
     return true if empty_tubes.empty?
+
     respond_to do |format|
       handle_empty_tubes(empty_tubes)
       format.html { render(VIEW_PATH) }

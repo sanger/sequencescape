@@ -186,6 +186,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def validate_plate_is_with_sample(plate, plate_barcode)
     return unless plate.samples.empty?
+
     fail_with_error("No samples were found in the scanned plate #{plate_barcode}")
   end
 
