@@ -19,15 +19,15 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
              label: 'i7 (tag) Tag group',
              help:
                'Select the tag group to use for the i7 tag. ' \
-                 'This tag is usually set both for single and dual ' \
-                 'indexing.',
+               'This tag is usually set both for single and dual ' \
+               'indexing.',
              select_options: -> { TagGroup.visible.alphabetical.pluck(:name) }
   form_field :tag2_group_name,
              :select,
              label: 'i5 (tag2) Tag group',
              help:
                'Select the tag group to use for the i7 tag. ' \
-                 'Set to \'Untagged\' for single indexed samples.',
+               'Set to \'Untagged\' for single indexed samples.',
              select_options: -> { TagGroup.visible.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Untagged'
@@ -37,16 +37,16 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
              label: 'Tag direction',
              help:
                'The order in which tags will be laid out on the plate. ' \
-                 'Most commonly \'column\'.',
+               'Most commonly \'column\'.',
              select_options: -> { TagLayout::DIRECTION_ALGORITHMS.keys }
   form_field :walking_by,
              :select,
              label: 'Tag layout pattern',
              help:
                'Select the algorithm used to layout tags. The most common ' \
-                 'are: \'wells of plate\' which uses a fixed tag layout ' \
-                 'across the plate. \'manual by plate\' which selects tags ' \
-                 'for each occupied well in turn.',
+               'are: \'wells of plate\' which uses a fixed tag layout ' \
+               'across the plate. \'manual by plate\' which selects tags ' \
+               'for each occupied well in turn.',
              # NOTE: We filter out the 'by pool' options here as they are
              # driven by submission information
              select_options: -> { TagLayout::WALKING_ALGORITHMS.keys - EXCLUDED_WALKING }

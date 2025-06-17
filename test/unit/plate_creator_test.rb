@@ -20,18 +20,18 @@ class CreatorTest < ActiveSupport::TestCase
     RestClient.expects(:post)
 
     assert creator.execute(
-             '',
-             barcode_printer,
-             scanned_user,
-             create_asset_group,
-             Plate::CreatorParameters.new(
-               'user_barcode' => '2470000099652',
-               'source_plates' => '',
-               'creator_id' => '1',
-               'dilution_factor' => '1',
-               'barcode_printer' => '1'
-             )
-           )
+      '',
+      barcode_printer,
+      scanned_user,
+      create_asset_group,
+      Plate::CreatorParameters.new(
+        'user_barcode' => '2470000099652',
+        'source_plates' => '',
+        'creator_id' => '1',
+        'dilution_factor' => '1',
+        'barcode_printer' => '1'
+      )
+    )
   end
 
   test 'should properly create plates' do

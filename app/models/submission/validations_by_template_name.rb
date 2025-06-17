@@ -51,6 +51,7 @@ module Submission::ValidationsByTemplateName
       validate_scrna_core_cdna_prep_feasibility
     end
   end
+
   def apply_number_of_samples_per_pool_validation
     # Creates groups of rows based on the study and project name (pool_number, study-project) combinations
     group_rows_by_study_and_project
@@ -98,7 +99,7 @@ module Submission::ValidationsByTemplateName
     errors.add(
       :spreadsheet,
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
-        "'#{study_project[1]}', all rows for a specific study and project must have the same value"
+      "'#{study_project[1]}', all rows for a specific study and project must have the same value"
     )
   end
 

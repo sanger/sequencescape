@@ -14,6 +14,7 @@ module SequencescapeExcel
 
         # do nothing unless we can access the labware (assuming asset will be a well or tube receptacle)
         return if asset_labware.blank?
+
         update_retention_instructions
       end
 
@@ -35,6 +36,7 @@ module SequencescapeExcel
       def update_retention_instructions
         retention_enum_key = find_retention_instruction_key_for_value(value)
         return if retention_enum_key.blank?
+
         asset_labware.retention_instruction = retention_enum_key
         asset_labware.save!
       end

@@ -200,6 +200,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
       break if tube.nil?
+
       well.aliquots << tube.aliquots.map(&:dup)
       create_asset_link(tube, plate, duplicate_barcodes)
     end
@@ -210,6 +211,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     AssetLink.create_edge!(tube, plate)
   rescue ActiveRecord::ActiveRecordError => e
     raise e unless e.message.include?('No change')
+
     duplicate_barcodes << tube.human_barcode
   end
 
@@ -223,11 +225,13 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         user_login: scanned_user.login
       )
     return if print_job.execute
+
     warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
   end
 
   def handle_duplicates(duplicate_barcodes)
     return if duplicate_barcodes.empty?
+
     warnings_list << "Duplicate barcodes found in tubes: #{duplicate_barcodes.join(', ')}"
   end
 
@@ -290,7 +294,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       scanned_barcodes.flat_map do |scanned|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
-            fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
+          fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
         unless can_create_plates?(plate)
           target_purposes = plate_purposes.map(&:name).join(',')

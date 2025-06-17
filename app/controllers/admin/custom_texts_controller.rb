@@ -30,6 +30,7 @@ class Admin::CustomTextsController < ApplicationController
     @custom_text = CustomText.find(params[:id])
     respond_to { |format| format.html }
   end
+
   def create
     @custom_text = CustomText.new(params[:custom_text])
     respond_to do |format|
