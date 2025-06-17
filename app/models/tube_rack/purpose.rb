@@ -3,6 +3,8 @@
 # The purpose of a tube rack is to hold tubes.
 # Created to hold the size of the tube rack for use when generating manifests.
 class TubeRack::Purpose < Purpose
+  self.state_changer = StateChanger::TubeRack
+
   has_many :sample_manifests, inverse_of: :tube_rack_purpose, dependent: :restrict_with_exception
 
   # TODO: change to purpose_id
@@ -12,6 +14,7 @@ class TubeRack::Purpose < Purpose
     TubeRack::Purpose.find_by(name: 'TR Stock 96')
   end
 
+  # Creates the tube rack with the given attributes, setting the purpose and size.
   def create!(*args, &)
     options = args.extract_options!
     options[:purpose] = self
