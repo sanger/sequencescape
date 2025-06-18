@@ -34,7 +34,9 @@ RSpec.describe SpecificTubeRackCreation do
   shared_context 'with common test setup' do
     before do
       expect(specific_tube_rack_creation.save).to (be true),
-      -> { "Failed to save: #{specific_tube_rack_creation.errors.full_messages}" }
+                                                  lambda {
+                                                    "Failed to save: #{specific_tube_rack_creation.errors.full_messages}"
+                                                  }
     end
 
     let(:first_child_rack) { specific_tube_rack_creation.children.first }
@@ -517,7 +519,7 @@ RSpec.describe SpecificTubeRackCreation do
           end.to raise_error(
             StandardError,
             "The tube rack barcode '#{new_tube_rack_barcode_string}' is already in use " \
-              'by another type of labware, cannot create tube rack.'
+            'by another type of labware, cannot create tube rack.'
           )
         end
         # rubocop:enable RSpec/ExampleLength

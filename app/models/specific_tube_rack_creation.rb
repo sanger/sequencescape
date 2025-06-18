@@ -225,7 +225,7 @@ class SpecificTubeRackCreation < AssetCreation
     else
       error_message =
         "The tube rack barcode '#{tube_rack_barcode}' is already in use by " \
-          'another type of labware, cannot create tube rack.'
+        'another type of labware, cannot create tube rack.'
       raise StandardError, error_message
     end
   end
@@ -384,7 +384,7 @@ class SpecificTubeRackCreation < AssetCreation
 
     error_message =
       "The tube '#{tube.name}' could not be linked to the tube rack '#{new_tube_rack.name}' " \
-        "at position '#{tube_position}'."
+      "at position '#{tube_position}'."
     raise StandardError, error_message
   end
 
