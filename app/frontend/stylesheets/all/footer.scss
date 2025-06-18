@@ -1,14 +1,25 @@
 footer#main-footer {
+  @extend .bg-white;
   @extend .text-muted;
   @extend .border-top;
   @extend .font-weight-light;
   @extend .row;
-  @extend .align-self-end;
   @extend .p-3;
   font-size: small;
 
   ul {
     @extend .col-sm-4;
+    @extend .mb-0;
     @extend .list-unstyled;
+  }
+
+  #contact-info {
+    @extend .text-left;
+  }
+  #version-info {
+    @extend .text-center;
+  }
+  #deployment-info {
+    @extend .text-right;
   }
 }

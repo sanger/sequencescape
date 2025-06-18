@@ -89,7 +89,7 @@ class Transfer::BetweenPlates < Transfer
         errors.add(
           :base,
           "Found #{found_pre_cap_groups.length} different pools matching the condition for #{sources} to " \
-            "#{dest_loc} with requests in state start or pending. Please cancel the requests not needed."
+          "#{dest_loc} with requests in state start or pending. Please cancel the requests not needed."
         )
         raise ActiveRecord::RecordInvalid, self
       end

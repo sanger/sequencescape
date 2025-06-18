@@ -63,7 +63,7 @@ Given /^the plate with ID (\d+) has a plate purpose of "([^"]+)"$/ do |id, name|
 end
 
 Given /^a plate with purpose "([^"]*)" and barcode "([^"]*)" exists$/ do |plate_purpose_name, machine_barcode|
-  #FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode})
+  # FactoryBot.create :plate, sanger_barcode: Barcode.build_sanger_code39({machine_barcode: machine_barcode})
   if machine_barcode.start_with?('SQPD')
     FactoryBot.create(
       :plate,

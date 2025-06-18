@@ -1,23 +1,6 @@
 name: Update Rubocop
 
-# This action automatically updates the rubocop gems within a
-# repository and attempt to ensure that the resulting build passes.
-# In order to use it effectively on a given project you should ensure:
-# * All Rubocop associated gems are in the 'lint' group in the Gemfile
-# * You update the 'BUNDLE_WITHOUT' section to exclude other groups, especially
-#   those which will block `bundle install`
-#
-# Once added this will add an actions which:
-# * Automatically runs at 10 am Sunday
-# * Can be triggered manually via a workflow_dispatch (See link below)
-# * Will automatically update all gems in the 'lint' group
-# * Will run new safe autocorrect cops, and will add inline rubocop:todo for
-#   other cops
-# * Will automatically generate a pull request with the above changes.
-#
 on:
-  # Can be triggered manually from the GH interface or via a dispatches POST
-  # https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow
   workflow_dispatch:
   schedule:
     # * is a special character in YAML so you have to quote this string
@@ -26,42 +9,4 @@ on:
 
 jobs:
   update_rubocop:
-    if: (github.repository_owner == 'sanger') # On the sanger fork only
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: "yarn"
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        env:
-          BUNDLE_WITHOUT: "cucumber deployment profile development default test"
-        with:
-          bundler-cache: true
-      - run: yarn install
-      - name: Update Rubocop
-        run: |
-          bundle config --local deployment false
-          bundle update --group=linting
-      - name: Correcting and ignoring
-        run: bundle exec rubocop --auto-correct --disable-uncorrectable
-        # https://github.com/marketplace/actions/create-pull-request
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
-        with:
-          title: Automatic Rubocop update
-          branch: gh_action/update_rubocop
-          labels: Technical Debt
-          draft: always-true # https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#workarounds-to-trigger-further-workflow-runs
-          delete-branch: true
-          body: |
-            Automatic update via https://github.com/sanger/sequencescape/blob/develop/.github/workflows/update_rubocop.yml
-
-            This cop will trigger safe-autocorrect for new cops, and will
-            add inline rubocop:todo for other cops. Please sanity check
-            any changes before merging in.
-
-            Click `Ready for review` to trigger the CI checks.
+    uses: sanger/.github/.github/workflows/update-rubocop.yml@ymaster

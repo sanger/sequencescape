@@ -10,6 +10,7 @@ class Admin::PrimerPanelsController < ApplicationController
 
   def show
   end
+
   def new
     @primer_panel = PrimerPanel.new(programs: default_programs)
   end

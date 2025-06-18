@@ -15,9 +15,15 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include AASM::Extensions
   extend Request::Statemachine::ClassMethods
 
-  # Determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
+  # merge_equivalent_aliquots determines if we attempt to filter out {Aliquot#equivalent? equivalent} aliquots
   # before performing transfers.
-  attr_accessor :merge_equivalent_aliquots
+  # list_of_aliquot_attributes_to_consider_a_duplicate is optional, and is used to determine which aliquots are
+  # equivalent for custom use cases.
+  # keep_this_aliquot_when_deduplicating is optional, and is used to determine which aliquot to keep from the
+  # duplicates in custom cases.
+  attr_accessor :merge_equivalent_aliquots,
+                :list_of_aliquot_attributes_to_consider_a_duplicate,
+                :keep_this_aliquot_when_deduplicating
   attr_writer :aliquot_attributes
 
   # States which are still considered to be processable (ie. not failed or cancelled)
@@ -244,10 +250,9 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     target_asset.aliquots << aliquots_for_transfer
   rescue ActiveRecord::RecordNotUnique => e
-    # We'll specifically handle tag clashes here so that we can produce more informative messages
     raise e unless e.message.include?('aliquot_tag_tag2_and_tag_depth_are_unique_within_receptacle')
 
-    message = "#{asset.display_name} contains aliquots which can't be transferred due to tag clash"
+    message = "Aliquot::TagClash: #{asset.display_name} contains aliquots which can't be transferred due to tag clash"
     errors.add(:asset, message)
 
     raise Aliquot::TagClash, message
@@ -262,6 +267,9 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This is was added to support the Heron (Covid-19) sequencing pipeline,
   # where two plates were subject to separate PCR processes, before being
   # merged together again.
+  # Then further modified for the BGE pipeline to allow a custom list of attributes to
+  # use when deciding an aliquot is a duplicate, and to allow one of the duplicate aliquots
+  # to be kept when deduplicating based on a flag set on the transfer request.
   def aliquots_for_transfer
     merge_equivalent_aliquots ? duplicates_of_distinct_source_aliquots_only : duplicates_of_all_source_aliquots
   end
@@ -271,8 +279,47 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def duplicates_of_distinct_source_aliquots_only
-    duplicates_of_all_source_aliquots.reject do |candidate_aliquot|
-      target_asset.aliquots.any? { |existing_aliquot| existing_aliquot.equivalent?(candidate_aliquot) }
+    duplicates_of_all_source_aliquots.reject { |candidate_aliquot| equivalent_aliquot_in_target?(candidate_aliquot) }
+  end
+
+  # Compare the candidate_aliquot against the target asset aliquots
+  #
+  # @param candidate_aliquot [Aliquot] The candidate aliquot being transferred
+  #
+  # @return [Boolean] true if the candidate_aliquot is equivalent to an existing aliquot in the target asset
+  # and should be rejected, false otherwise
+  def equivalent_aliquot_in_target?(candidate_aliquot)
+    target_asset.aliquots.any? { |existing_aliquot| handle_equivalent_aliquot(existing_aliquot, candidate_aliquot) }
+  end
+
+  # Determine if the existing_aliquot is equivalent to the candidate_aliquot
+  # If they are equivalent, we need to decide whether to keep the existing_aliquot
+  # or reject the candidate_aliquot.
+  #
+  # @param existing_aliquot [Aliquot] The existing aliquot in the target asset
+  # @param candidate_aliquot [Aliquot] The candidate aliquot being transferred
+  #
+  # @return [Boolean] true if the candidate_aliquot should be rejected, false otherwise
+  def handle_equivalent_aliquot(existing_aliquot, candidate_aliquot)
+    if existing_aliquot.equivalent?(candidate_aliquot, list_of_aliquot_attributes_to_consider_a_duplicate)
+      process_equivalent_aliquot(existing_aliquot)
+    else
+      false # No match found, so we can keep the candidate_aliquot
+    end
+  end
+
+  # Process the equivalent aliquot based on the optional keep_this_aliquot_when_deduplicating flag
+  # If this flag is set on the current transfer request, we will delete the existing_aliquot from
+  # the target asset and keep the candidate_aliquot so it can be added.
+  #
+  # @param existing_aliquot [Aliquot] The existing aliquot in the target asset
+  # @return [Boolean] true if the candidate_aliquot should be rejected, false otherwise
+  def process_equivalent_aliquot(existing_aliquot)
+    if keep_this_aliquot_when_deduplicating
+      target_asset.aliquots.delete(existing_aliquot)
+      false # Do not reject the candidate_aliquot
+    else
+      true # Default behaviour, match found so reject the candidate_aliquot
     end
   end
 
@@ -306,6 +353,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def on_failed
     return unless target_asset
     return unless target_asset.allow_to_remove_downstream_aliquots?
+
     ActiveRecord::Base.transaction { target_asset.delay.remove_downstream_aliquots }
   end
   alias on_cancelled on_failed

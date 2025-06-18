@@ -4,9 +4,10 @@ require 'rails_helper'
 
 describe 'Plate QC display' do
   let(:user) { create(:user, email: 'login@example.com') }
+  let(:well_count) { 3 }
 
   describe 'with no QC results' do
-    let!(:plate) { create(:plate, sample_count: 3) }
+    let!(:plate) { create(:plate, well_count:) }
 
     it 'displays an empty table' do
       login_user user
@@ -28,7 +29,7 @@ describe 'Plate QC display' do
 
   describe 'with QC results' do
     let!(:plate) do
-      plate = create(:plate, sample_count: 3)
+      plate = create(:plate, well_count:)
       plate.wells.each do |well|
         well.qc_results << [
           build(:qc_result_concentration),

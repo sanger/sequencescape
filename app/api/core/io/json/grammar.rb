@@ -131,7 +131,7 @@ module Core::Io::Json::Grammar
 
     def merge(node)
       super do |children|
-        self.class.new(@name, children) # prettier-ignore
+        self.class.new(@name, children)
       end
     end
 
@@ -153,6 +153,7 @@ module Core::Io::Json::Grammar
       value =
         @attribute_path.inject(object) do |o, k|
           return if o.nil?
+
           o.send(k)
         end or return
 
