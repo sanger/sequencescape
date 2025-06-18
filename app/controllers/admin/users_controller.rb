@@ -12,6 +12,7 @@ class Admin::UsersController < ApplicationController
 
   def show
   end
+
   def edit
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)

@@ -50,7 +50,7 @@ class UatActions::PlateInformation < UatActions
       .each_with_object([]) do |well, wells_with_active_requests_as_source|
         # requests must have an active state
         if well.requests_as_source.present? &&
-             well.requests_as_source.any? { |request| active_request_states.include?(request.state) }
+            well.requests_as_source.any? { |request| active_request_states.include?(request.state) }
           wells_with_active_requests_as_source << well.map_description
         end
       end

@@ -95,6 +95,7 @@ module Accession
 
     def factory_class_for(tag_yaml)
       return tag_yaml[:class_name].constantize if tag_yaml&.key?(:class_name)
+
       Accession::Tag
     end
 

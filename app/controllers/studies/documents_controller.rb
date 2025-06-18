@@ -14,6 +14,7 @@ class Studies::DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     send_data @document.current_data, filename: @document.filename, type: @document.content_type, disposition: 'inline'
   end
+
   def new
     @study = Study.find(params[:study_id])
   end

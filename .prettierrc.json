@@ -1,5 +1,3 @@
 {
-  "printWidth": 120,
-  "plugins": ["@prettier/plugin-ruby"],
-  "rubySingleQuote": true
+  "printWidth": 120
 }

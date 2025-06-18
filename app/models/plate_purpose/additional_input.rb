@@ -6,6 +6,7 @@ class PlatePurpose::AdditionalInput < PlatePurpose
   READY_STATE = 'passed'
   def state_of(plate)
     return READY_STATE if valid_intermediate_input?(plate)
+
     super(plate)
   end
 
@@ -15,8 +16,10 @@ class PlatePurpose::AdditionalInput < PlatePurpose
 
   def library_creation?(plate)
     return false if plate.wells.with_contents.empty?
+
     plate.wells.with_contents.all? do |well|
       return false if well.requests.empty?
+
       well
         .requests
         .filter { |a| !a.is_a?(CreateAssetRequest) }

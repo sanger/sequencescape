@@ -91,6 +91,8 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:data_release_timing)
     map_attribute_to_json_attribute(:data_release_delay_period)
     map_attribute_to_json_attribute(:data_release_delay_reason)
+    map_attribute_to_json_attribute(:data_release_timing_publication_comment)
+    map_attribute_to_json_attribute(:data_share_in_preprint)
 
     map_attribute_to_json_attribute(:data_access_group)
 
@@ -100,6 +102,12 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:s3_email_list)
     map_attribute_to_json_attribute(:data_deletion_period)
     map_attribute_to_json_attribute(:contaminated_human_data_access_group)
+
+    # Add ebi fields here to be included to send to warehouse
+    map_attribute_to_json_attribute(:ebi_library_strategy)
+    map_attribute_to_json_attribute(:ebi_library_source)
+    map_attribute_to_json_attribute(:ebi_library_selection)
+
     with_association(:program, lookup_by: :id) { map_attribute_to_json_attribute(:name, 'programme') }
   end
 end
