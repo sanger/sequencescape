@@ -14,6 +14,7 @@ describe StockStamper do
     create(:plate_type, name: 'ABgene_0765', maximum_volume: 800)
     create(:plate_type, name: 'ABgene_0800', maximum_volume: 180)
     create(:plate_type, name: 'FluidX075', maximum_volume: 500)
+    create(:plate_type, name: 'FluidX05', maximum_volume: 350)
     create(:plate_type, name: 'FluidX03', maximum_volume: 280)
 
     @attributes = {
