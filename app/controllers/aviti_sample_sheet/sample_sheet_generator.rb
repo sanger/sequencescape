@@ -135,6 +135,8 @@ module AvitiSampleSheet::SampleSheetGenerator
         remove_phix_control_tags
       elsif sample_index_length < 10
         truncated_phix_indexes(sample_index_length)
+      else
+        PHIX_SECTION
       end
     end
 
