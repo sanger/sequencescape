@@ -33,10 +33,8 @@ RSpec.describe SpecificTubeRackCreation do
 
   shared_context 'with common test setup' do
     before do
-      expect(specific_tube_rack_creation.save).to (be true),
-                                                  lambda {
-                                                    "Failed to save: #{specific_tube_rack_creation.errors.full_messages}"
-                                                  }
+      error_messages = specific_tube_rack_creation.errors.full_messages.join(', ')
+      expect(specific_tube_rack_creation.save).to be(true), "Failed to save: #{error_messages}"
     end
 
     let(:first_child_rack) { specific_tube_rack_creation.children.first }
