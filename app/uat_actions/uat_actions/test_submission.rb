@@ -72,7 +72,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Study',
              help:
                'The study under which samples will be created. List includes all active studies. ' \
-                 'Leave blank to use the default study.',
+               'Leave blank to use the default study.',
              select_options: -> { Study.active.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Study selection...'
@@ -82,7 +82,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Project',
              help:
                'The project under which orders will be created. List includes all active projects. ' \
-                 'Leave blank to use the default project.',
+               'Leave blank to use the default project.',
              select_options: -> { Project.active.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Order Project selection...'
@@ -379,6 +379,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
 
   def project
     return UatActions::StaticRecords.project if project_name.blank?
+
     Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 
