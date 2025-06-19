@@ -2,8 +2,8 @@
 
 namespace :pac_bio_run do
   desc 'Update all PacBio runs in the warehouse where there is a duplicate for the index ' \
-         '[id_pac_bio_run_lims, well_label, comparable_tag_identifier, comparable_tag2_identifier]' \
-         ' because there is more than one sequencing request for the run'
+       '[id_pac_bio_run_lims, well_label, comparable_tag_identifier, comparable_tag2_identifier] ' \
+       'because there is more than one sequencing request for the run'
 
   task rebroadcast_duplicates: :environment do
     # This task resends messages

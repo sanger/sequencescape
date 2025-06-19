@@ -24,6 +24,6 @@ class Transfer::BetweenTubesBySubmission < Transfer
   end
 
   def build_asset_links
-    AssetLink::Job.create(source, [destination])
+    AssetLink::Job.create_now(source, [destination])
   end
 end

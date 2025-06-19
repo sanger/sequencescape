@@ -129,6 +129,7 @@ class MbraveTagsCreator
 
   def _create_tag_group(tag_group_name, tags)
     raise "TagGroup #{tag_group_name} already exists" if TagGroup.find_by(name: tag_group_name)
+
     TagGroup.create(name: tag_group_name, tags: tags)
   end
 

@@ -17,7 +17,12 @@ Feature: Added property "commercially_available". Add and edit this value. Pendi
       | ENA Study Accession Number | 12345678      |
       | Study name abbreviation    | CCC3435       |
     And I select "Jack Sponsor" from "Faculty Sponsor"
-    And I choose "<contain_dna>" from "Do any of the samples in this study contain human DNA?"
+    And I select "General" from "Program"
+    And I select "Clone Sequencing" from "Study Type"
+    And I select "WGS" from "EBI Library Strategy"
+    And I select "GENOMIC" from "EBI Library Source"
+    And I select "PCR" from "EBI Library Selection"
+        And I choose "<contain_dna>" from "Do any of the samples in this study contain human DNA?"
     And I choose "<contaminated_dna>" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"
     And I choose "<commercial>" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"
     And I choose "Open (ENA)" from "What is the data release strategy for this study?"

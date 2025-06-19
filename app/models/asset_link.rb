@@ -107,6 +107,7 @@ class AssetLink < ApplicationRecord
       edge = build_edge(ancestor, descendant)
       result = save_edge_or_handle_error(edge)
       return result unless result.nil? # Bubble up.
+
       # Losing process finds the edge created by the winning process.
       link = find_link(ancestor, descendant)
     end
@@ -131,6 +132,7 @@ class AssetLink < ApplicationRecord
     # has_duplicate validation may see it for the losing process before
     # hitting the DB.
     return false unless unique_validation_error?(edge) # Bubble up.
+
     edge.errors.clear # Clear all errors and use the existing link.
   rescue ActiveRecord::RecordNotUnique => e
     # Unique constraint violation is triggered for the losing process after

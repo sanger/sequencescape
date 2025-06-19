@@ -33,7 +33,7 @@ describe NovaseqxPeValidator do
           { flowcell_type: '10B', request_count: 8, result: nil },
           { flowcell_type: '10B', request_count: 2, result: false }
         ].each do |batch_data|
-          it "returns #{batch_data[:result].nil? ? 'nil' : batch_data[:result]} if the flowcell_type is 
+          it "returns #{batch_data[:result].nil? ? 'nil' : batch_data[:result]} if the flowcell_type is
               #{batch_data[:flowcell_type]} and the request count is #{batch_data[:request_count]}" do
             record = create(:batch, request_count: batch_data[:request_count])
             record.requests.each do |request|

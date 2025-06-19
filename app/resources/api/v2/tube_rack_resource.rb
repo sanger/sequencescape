@@ -157,9 +157,9 @@ module Api
       #   @return [ActiveRecord::Relation] Filtered tube racks that have the specified purpose ID.
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
       filter :created_at_gt,
-             apply: lambda { |records, value, _options| records.where('labware.created_at > ?', value[0].to_date) }
+             apply: ->(records, value, _options) { records.where('labware.created_at > ?', value[0].to_date) }
       filter :updated_at_gt,
-             apply: lambda { |records, value, _options| records.where('labware.updated_at > ?', value[0].to_date) }
+             apply: ->(records, value, _options) { records.where('labware.updated_at > ?', value[0].to_date) }
       # TODO: do we need scope for include_used? would have to delegate to racked tubes
 
       ###
@@ -179,6 +179,7 @@ module Api
         tube_locations.each do |coordinate, tube|
           tube_uuid = tube[:uuid]
           raise "No tube found for UUID '#{tube_uuid}'" unless tubes.key?(tube_uuid)
+
           RackedTube.create(coordinate: coordinate, tube: tubes[tube_uuid], tube_rack: @model)
         end
       end
