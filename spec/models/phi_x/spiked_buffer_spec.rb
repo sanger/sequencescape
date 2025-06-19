@@ -89,8 +89,8 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
 
       it 'names tubes appropriately' do
         expect(phi_x_spiked_buffer.created_spiked_buffers).to all have_attributes(
-              name: a_string_starting_with('Example #')
-            )
+          name: a_string_starting_with('Example #')
+        )
       end
 
       it 'sets the concentration and volume' do
@@ -104,9 +104,9 @@ RSpec.describe PhiX::SpikedBuffer, :phi_x do
       it 'generates an aliquot which match the parent' do
         phi_x_spiked_buffer.created_spiked_buffers.each do |tube|
           expect(tube.aliquots).to all have_attributes(
-                sample: parent.aliquots.first.sample,
-                tag: parent.aliquots.first.tag
-              )
+            sample: parent.aliquots.first.sample,
+            tag: parent.aliquots.first.tag
+          )
         end
       end
 

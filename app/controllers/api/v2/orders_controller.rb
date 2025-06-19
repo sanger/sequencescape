@@ -63,6 +63,7 @@ module Api
         asset_uuids.map do |uuid|
           uuid_obj = Uuid.find_by(external_id: uuid)
           raise JSONAPI::Exceptions::InvalidFieldValue.new(:asset_uuids, uuid) if uuid_obj.nil?
+
           uuid_obj&.resource
         end
       end

@@ -1,32 +1,39 @@
-
-<table id="plate" width="100%">
+<%# Note: very similar to app/views/plates/_plate_schematic.html.erb %>
+<table class="plate pr-3" width="100%">
   <tr>
     <th></th>
     <% plate.plate_columns.each do |header| %>
       <th><%= header %></th>
     <% end %>
+    <th></th>
   </tr>
   <% indexed_wells = plate.wells.includes(:map, :samples, :requests, upstream_wells: :map).indexed_by_location %>
   <% plate.plate_rows.each_with_index do |row, row_index| %>
     <tr>
-    <td id='border' width='2%'><%= row %></td>
-      <% plate.plate_columns.each_with_index do |column, column_index| -%>
-        <td>
-          <div id="boxNormal">
-            <% well = indexed_wells["#{row}#{column}"] %>
+      <td class='border'><%= row %></td>
+        <% plate.plate_columns.each_with_index do |column, column_index| -%>
+          <% well = indexed_wells["#{row}#{column}"] %>
+          <td class="<%= well ? 'normal' : 'empty' %>">
             <% if well %>
               <% well.samples.each do |sample| %>
-                <%= link_to sample.name, sample_path(sample) %><br/>
+                <%= link_to sample.name, sample_path(sample) %><br />
               <% end %>
-              <%= link_to "#{row}#{column}", receptacle_path(well) %><br/>
-              Parent: <%= well.upstream_wells.map(&:map_description).join(',').presence || 'None' %>
+              <%= link_to "#{row}#{column}", receptacle_path(well) %><br />
+              Parent: <%= well.upstream_wells.map(&:map_description).join(',').presence || 'None' %><br />
               <%= pluralize well.requests.size, 'request' %>
             <% else %>
               [ Empty ]
             <% end %>
-           </div>
-         </td>
-      <% end -%>
+          </td>
+        <% end -%>
+      <td class='border'><%= row %></td>
     </tr>
   <% end -%>
+  <tr>
+    <th></th>
+    <% plate.plate_columns.each do |header| %>
+      <th><%= header %></th>
+    <% end %>
+    <th></th>
+  </tr>
 </table>

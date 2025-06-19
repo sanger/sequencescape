@@ -1,25 +1,55 @@
+body.sessions {
+  background-color: #039be5; // fallback for gradient
+  // Sanger patterns
+  background-position: center right;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 #login-panel {
   @extend .card;
   @extend .mt-4;
   @extend .mb-4;
+  @extend .border-0;
+  @extend .rounded-lg;
 
-  width: 600px;
+  @extend .w-100;
+  max-width: 28em; // fits title on a single line
+
+  .alert {
+    @extend .mb-0;
+  }
+  .alert-notice,
+  .alert-error {
+    @extend .mx-0;
+    @extend .border-0;
+
+    &:before {
+      font-size: unset;
+      line-height: unset;
+    }
+  }
 
   .title-section {
     @extend .card-body;
+    @extend .text-center;
+  }
+
+  .subtitle-section {
+    @extend .card-subtitle;
+    @extend .text-muted;
+
+    .subtitle-text {
+      @extend .d-inline-block;
+      max-width: 20em; // bottom line longer than top line
+    }
   }
 }
 
 #account_form {
   @extend .card-body;
+  @extend .pt-0;
 
-  .form-help {
-    @extend .form-text;
-    @extend .text-muted;
-  }
-
-  form {
-  }
   input {
     @extend .form-control;
     @extend .form-control-lg;
@@ -28,5 +58,9 @@
     @extend .btn;
     @extend .btn-lg;
     @extend .btn-success;
+  }
+
+  .form-group:last-child {
+    @extend .mb-0;
   }
 }

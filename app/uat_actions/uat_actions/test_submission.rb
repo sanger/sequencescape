@@ -8,7 +8,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # The description displays on the list of UAT actions to provide additional information
   self.description =
     'Generates a basic submission for supported pipelines. ' \
-      'This may produce odd results for some pipelines.'
+    'This may produce odd results for some pipelines.'
   self.category = :setup_and_test
 
   include UatActions::Shared::StudyHelper
@@ -32,15 +32,15 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Plate barcode',
              help:
                'Add the plate which will form part of your submission. ' \
-                 'Leave blank to automatically generate compatible labware. ' \
-                 'This page does not currently support cross-plate submissions.'
+               'Leave blank to automatically generate compatible labware. ' \
+               'This page does not currently support cross-plate submissions.'
   form_field :plate_purpose_name,
              :select,
              label: 'Plate Purpose',
              help:
                'Select the plate purpose to use when creating the plate. ' \
-                 'Leave blank to automatically use the most appropriate purpose. ' \
-                 'Not used if plate barcode is supplied.',
+               'Leave blank to automatically use the most appropriate purpose. ' \
+               'Not used if plate barcode is supplied.',
              select_options: -> { PlatePurpose.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Using default purpose...'
@@ -50,8 +50,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Library Type',
              help:
                'Select the library type to use when creating the requests. ' \
-                 'Leave blank to automatically use the first library type found. ' \
-                 'Useful where the same request type has multiple library types.',
+               'Leave blank to automatically use the first library type found. ' \
+               'Useful where the same request type has multiple library types.',
              select_options: -> { LibraryType.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Using default library type...'
@@ -61,8 +61,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Primer Panel',
              help:
                'Select the primer panel to use when creating the requests. ' \
-                 'Leave blank if not applicable for your submission template choice. ' \
-                 'Currently only used in GBS and Heron pipelines.',
+               'Leave blank if not applicable for your submission template choice. ' \
+               'Currently only used in GBS and Heron pipelines.',
              select_options: -> { PrimerPanel.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Primer panel selection...'
@@ -92,8 +92,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Number of wells with samples',
              help:
                'Use this option to create a partial plate of samples. Enter ' \
-                 'the number of wells with samples. ' \
-                 'Leave blank to use all wells.',
+               'the number of wells with samples. ' \
+               'Leave blank to use all wells.',
              options: {
                minimum: 1
              }
@@ -102,9 +102,9 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Number of samples per occupied well',
              help:
                'Use this option to create wells containing a pool of multiple samples. Enter ' \
-                 'the number of samples per well. All occupied wells will have this number of samples.' \
-                 'Useful for a pipeline where pools of starting samples is required.' \
-                 'Leave blank for 1 sample per well. Max 10 samples per well.',
+               'the number of samples per well. All occupied wells will have this number of samples.' \
+               'Useful for a pipeline where pools of starting samples is required.' \
+               'Leave blank for 1 sample per well. Max 10 samples per well.',
              options: {
                minimum: 1,
                maximum: 10
@@ -114,8 +114,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              label: 'Number of wells to submit',
              help:
                'Use this option to create a partial submission. Enter the ' \
-                 'number of randomly sampled wells to be submitted. ' \
-                 'Leave blank to use all wells.',
+               'number of randomly sampled wells to be submitted. ' \
+               'Leave blank to use all wells.',
              options: {
                minimum: 1
              }

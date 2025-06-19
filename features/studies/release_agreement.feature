@@ -6,6 +6,10 @@ Feature: Studies have a release agreement
     Given I am on the study creation page
     And I fill in "Study name" with "Testing release agreements"
     And I select "Jack Sponsor" from "Faculty Sponsor"
+    And I select "General" from "Program"
+    And I select "WGS" from "EBI Library Strategy"
+    And I select "GENOMIC" from "EBI Library Source"
+    And I select "PCR" from "EBI Library Selection"
     And I fill in "Study description" with "Checking that release agreements behave properly"
     And I fill in "Data access group" with "mygroup"
     And I choose "No" from "Do any of the samples in this study contain human DNA?"

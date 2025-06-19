@@ -355,6 +355,7 @@ end
 # <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
 def render_error_messages(object)
   return if object.errors.count.zero?
+
   contents = +''
   contents << error_message_header(object)
   contents << error_messages_ul_html_safe(object)

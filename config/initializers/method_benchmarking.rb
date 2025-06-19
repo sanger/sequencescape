@@ -12,6 +12,7 @@ if Rails.env.development?
       klass.extend MethodBenchmarking
       (klass.methods - [Object.methods].flatten).sort.compact.uniq.each do |method_name|
         next unless klass.method_defined?(method_name)
+
         klass.instance_eval { benchmark_method method_name, tag: 'configured_at_init' }
       end
     end

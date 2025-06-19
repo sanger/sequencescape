@@ -1,0 +1,54 @@
+<%# locals: plate, well_values %>
+<%# plate: Plate %>
+<%# well_values: Array of [method, value] to call on well %>
+<% well_method, well_value = well_values %>
+<%# well_method: Symbol, e.g. :qc_result_for or :well_attribute %>
+<%# well_value: Symbol, e.g. :concentration or :quantity_in_nano_grams %>
+
+<%# Note: very similar to app/views/shared/_show_plate.html.erb %>
+
+<% descriptor = well_values[1].to_s %>
+
+<table class="plate mb-3" id="<%= descriptor %>">
+  <thead>
+    <tr>
+      <% num_rows = plate.height -%>
+      <% num_columns = plate.width -%>
+      <th></th>
+      <% num_columns.times do |column| -%>
+        <th><%= column + 1 %></th>
+      <% end -%>
+      <th class='border'></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% num_rows.times do |row| -%>
+      <tr>
+        <% rowchar = (65 + row).chr %>
+        <td class='border'><%= rowchar %></td>
+        <% num_columns.times do |column| -%>
+          <% well_name = "#{rowchar}#{column + 1}" %>
+          <% well = plate.find_well_by_name(well_name) %>
+          <% if well %>
+            <% value = begin
+              well.send(well_method.to_s, well_value.to_s)
+            rescue NoMethodError, ArgumentError => e
+              well.send(well_method.to_s).send(well_value.to_s)
+            end %>
+            <%= render partial: descriptor, locals: { value: } %>
+          <% else %>
+            <td></td>
+          <% end %>
+        <% end -%>
+        <td class='border'><%= rowchar %></td>
+      </tr>
+    <% end -%>
+    <tr>
+      <td class='border'></td>
+      <% num_columns.times do |column| -%>
+        <td class='border'><%= column + 1 %></td>
+      <% end -%>
+      <td class='border'></td>
+    </tr>
+  </tbody>
+</table>

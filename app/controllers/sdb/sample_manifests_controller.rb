@@ -77,6 +77,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def set_default_params
     params[:only_first_label] ||= false
     return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
+
     params[:barcode_type] ||= '1D Barcode' # default to 1D barcode
   end
 
@@ -89,6 +90,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
     return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
+
     @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
   end
 

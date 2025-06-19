@@ -33,8 +33,8 @@ class QcFile < ApplicationRecord
   # CarrierWave uploader - gets the uploaded_data file, but saves the identifier to the "filename" column
   has_uploaded :uploaded_data, serialization_column: 'filename'
 
-  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: :filename
-  #mount_uploader :uploaded_data, PolymorphicUploader, mount_on: 'filename'
+  # mount_uploader :uploaded_data, PolymorphicUploader, mount_on: :filename
+  # mount_uploader :uploaded_data, PolymorphicUploader, mount_on: 'filename'
 
   validates :uploaded_data, presence: :true
 

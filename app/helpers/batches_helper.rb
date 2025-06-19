@@ -95,7 +95,7 @@ module BatchesHelper
   def batch_link(batch, options)
     link_text =
       tag.strong("Batch #{batch.id} ") << tag.span(batch.pipeline.name, class: 'pipline-name') << ' ' <<
-        badge(batch.state, type: 'batch-state')
+      badge(batch.state, type: 'batch-state')
     link_to(link_text, batch_path(batch), options)
   end
 end
