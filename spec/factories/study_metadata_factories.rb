@@ -8,6 +8,9 @@ FactoryBot.define do
     contaminated_human_dna { 'No' }
     contains_human_dna { 'No' }
     commercially_available { 'No' }
+    ebi_library_strategy { 'WGS' }
+    ebi_library_source { 'GENOMIC' }
+    ebi_library_selection { 'PCR' }
 
     # Study type is implemented poorly. But I'm in the middle of the rails 4
     # upgrade at the moment, so I need to get things working before I change them.

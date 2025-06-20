@@ -11,7 +11,7 @@ class UatActions::GeneratePlateConcentrations < UatActions
              label: 'Plate barcode',
              help:
                'Enter the barcode of the plate for which you want to add concentrations. ' \
-                 'NB. only well containing aliquots will have concentrations set.'
+               'NB. only well containing aliquots will have concentrations set.'
   form_field :concentration_units,
              :select,
              label: 'Concentration type (ng/µl or nM)',
