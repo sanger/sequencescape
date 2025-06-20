@@ -28,7 +28,7 @@ class ElementAvitiValidator < ActiveModel::Validator
   end
 
   def validate_exactly_two_requests(record)
-    return unless record.requests.size != 2
+    return if record.requests.size == 2
 
     record.errors.add(:base, 'Batches must contain exactly two requests when read length is not 300')
   end

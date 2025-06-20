@@ -14,7 +14,7 @@
 # Element recommends using a consistent sample name that clearly identifies the control sequences.
 #
 # Allowed characters in the output file name include: letters, numbers, dashes, dots, parentheses, and underscores.
-# todo: support use cases where the samples in the pool have different index lengths(https://docs.elembio.io/docs/run-manifest/samples/#reconciling)
+# In the next phase, we will add support for use cases where the samples in the pool have different index lengths(https://docs.elembio.io/docs/run-manifest/samples/#reconciling)
 
 module AvitiSampleSheet::SampleSheetGenerator
   def self.generate(batch)
@@ -36,12 +36,15 @@ module AvitiSampleSheet::SampleSheetGenerator
       %w[R2AdapterTrim FALSE 1+2]
     ].freeze
 
+    SAMPLE_SECTION_HEADERS = [
+      ['[SAMPLES]'],
+      %w[SampleName Index1 Index2 Lane Project]
+    ].freeze
+
     # The values are set according to the official documentation from Element Biosciences.
     # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
     # Users can manually modify this section if necessary.
     PHIX_SECTION = [
-      ['[SAMPLES]'],
-      %w[SampleName Index1 Index2 Lane Project],
       %w[PhiX_Third ATGTCGCTAG CTAGCTCGTA],
       %w[PhiX_Third CACAGATCGT ACGAGAGTCT],
       %w[PhiX_Third GCACATAGTC GACTACTAGC],
@@ -60,6 +63,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     def generate
       CSV.generate(row_sep: "\r\n") do |csv|
         SETTINGS_SECTION.each { |row| csv << row }
+        SAMPLE_SECTION_HEADERS.each { |row| csv << row }
         phix_section_matching_sample_indexes.each { |row| csv << row }
         append_samples_section(csv)
       end
@@ -148,11 +152,9 @@ module AvitiSampleSheet::SampleSheetGenerator
     # Truncates PhiX indexes to match the given sample index length
     def truncated_phix_indexes(sample_index_length)
       PHIX_SECTION.map do |row|
-        if row.length > 2
-          row = row.dup
-          row[1] = row[1][0, sample_index_length] if row[1]
-          row[2] = row[2][0, sample_index_length] if row[2]
-        end
+        row = row.dup
+        row[1] = row[1][0, sample_index_length] if row[1]
+        row[2] = row[2][0, sample_index_length] if row[2]
         row
       end
     end
