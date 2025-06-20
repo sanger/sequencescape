@@ -37,5 +37,16 @@ describe ElementAvitiValidator do
         expect(validator.validate(record)).to be_nil
       end
     end
+
+    context 'when batch contains a single request with read length less than 300' do
+      let(:request) { create(:request, request_metadata: create(:request_metadata, read_length: 75)) }
+
+      before { record.requests = [request] }
+
+      it 'is invalid' do
+        validator.validate(record)
+        expect(record.errors[:base]).to include('Batches must contain exactly two requests when read length is not 300')
+      end
+    end
   end
 end
