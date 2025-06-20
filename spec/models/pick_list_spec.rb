@@ -108,11 +108,14 @@ RSpec.describe PickList, :pick_list do
 
     # Create requests with assets deliberately out of barcode order
     let(:request1) do
- create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset3, submission: submission) end
+      create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset3, submission: submission)
+    end
     let(:request2) do
- create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset1, submission: submission) end
+      create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset1, submission: submission)
+    end
     let(:request3) do
- create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset2, submission: submission) end
+      create(:cherrypick_request, request_type: pipeline.request_types.first, asset: asset2, submission: submission)
+    end
 
     before do
       allow(pick_list).to receive_messages(pipeline:, user:)
