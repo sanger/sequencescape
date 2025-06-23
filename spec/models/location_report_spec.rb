@@ -98,7 +98,7 @@ RSpec.describe LocationReport do
       :sample_tube,
       study: study_1,
       name: 'Tube_1',
-      created_at: '2025-06-23 12:00:00'
+      created_at: '2016-07-01 12:00:00'
     )
   end
   let(:tube_1_purpose) { tube_1.purpose.name }
@@ -174,7 +174,7 @@ RSpec.describe LocationReport do
         end
       end
 
-      context 'when no plates are returned' do
+      context 'when no labwares are returned' do
         let(:name) { 'Test_report' }
         let(:report_type) { 'type_selection' }
         let(:start_date) { '2015-01-01 00:00:00' }
@@ -212,7 +212,7 @@ RSpec.describe LocationReport do
           expect(location_report).to be_valid
         end
 
-        it 'is not valid if the dates do not find any plates' do
+        it 'is not valid if the dates do not find any labware' do
           location_report.start_date = '2016-07-01 00:00:00'
           location_report.end_date = '2016-07-02 00:00:00'
           expect(location_report).not_to be_valid
@@ -260,24 +260,31 @@ RSpec.describe LocationReport do
           "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
+        let(:tube_1_line) do
+          # rubocop:todo Layout/LineLength
+          "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 4,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          # rubocop:enable Layout/LineLength
+        end
 
         before do
           [
             [plate_1.machine_barcode.to_s, 'Shelf 1', locn_prefix],
             [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
-            [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix]
+            [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix],
+            [tube_1.machine_barcode.to_s, 'Shelf 4', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
             stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
           end
 
           plate_1_custom_metadatum
           plate_3_custom_metadatum
+          tube_1_custom_metadatum
         end
 
         context 'dates only' do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-07-01 00:00:00' }
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -286,7 +293,7 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:faculty_sponsor_ids) { [study_1_sponsor.id] }
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -295,7 +302,7 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:faculty_sponsor_ids) { [study_1_sponsor.id, study_2_sponsor.id] }
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -304,7 +311,7 @@ RSpec.describe LocationReport do
           let(:study_id) { study_1.id }
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -314,6 +321,15 @@ RSpec.describe LocationReport do
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:plate_purpose_ids) { [plate_1.plate_purpose.id] }
           let(:expected_lines) { [headers_line, plt_1_line] }
+
+          it_behaves_like 'a successful report'
+        end
+
+        context 'dates and tube purpose' do
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:plate_purpose_ids) { [tube_1.purpose.id] }
+          let(:expected_lines) { [headers_line, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -330,8 +346,8 @@ RSpec.describe LocationReport do
         context 'dates and multiple plate purposes' do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
-          let(:plate_purpose_ids) { [plate_2.plate_purpose.id, plate_3.plate_purpose.id] }
-          let(:expected_lines) { [headers_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
+          let(:plate_purpose_ids) { [plate_2.plate_purpose.id, plate_3.plate_purpose.id, tube_1.purpose.id] }
+          let(:expected_lines) { [headers_line, plt_2_line_1, plt_2_line_2, plt_3_line, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end
@@ -406,6 +422,13 @@ RSpec.describe LocationReport do
           it_behaves_like 'a successful report'
         end
 
+        context 'barcodes for a single-study tube' do
+          let(:barcodes) { [tube_1.machine_barcode] }
+          let(:expected_lines) { [headers_line, tube_1_line] }
+
+          it_behaves_like 'a successful report'
+        end
+
         context 'barcodes for a mixed study plate' do
           let(:barcodes) { [plate_2.machine_barcode] }
           let(:expected_lines) { [headers_line, plt_2_line_1, plt_2_line_2] }
@@ -414,8 +437,10 @@ RSpec.describe LocationReport do
         end
 
         context 'multiple barcodes' do
-          let(:barcodes) { [plate_1.machine_barcode, plate_2.machine_barcode, plate_3.machine_barcode] }
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
+          let(:barcodes) do
+            [plate_1.machine_barcode, plate_2.machine_barcode, plate_3.machine_barcode, tube_1.machine_barcode]
+          end
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line, tube_1_line] }
 
           it_behaves_like 'a successful report'
         end

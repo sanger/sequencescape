@@ -138,7 +138,7 @@ class LocationReport < ApplicationRecord
   def labware_list
     @labware_list ||=
       if type_selection?
-        search_for_plates_by_selection
+        search_for_labware_by_selection
       elsif type_labwhere?
         search_for_labware_by_labwhere_locn_bc
       else
@@ -175,9 +175,9 @@ class LocationReport < ApplicationRecord
     cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
 
-  def search_for_plates_by_selection
+  def search_for_labware_by_selection
     params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes: }
-    Plate.search_for_plates(params)
+    Labware.search_for_labware(params)
   end
 
   def search_for_labware_by_labwhere_locn_bc
