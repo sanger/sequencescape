@@ -19,12 +19,12 @@ module BootstrapHelper
     bs_custom_panel(type, :div, {}, options, &)
   end
 
-  def bs_custom_panel(type, body_type, body_options, options, &block)
+  def bs_custom_panel(type, body_type, body_options, options, &)
     title = options.delete(:title)
     append_class!(options, "ss-card card-style-#{type}")
     tag.div(**options) do
       concat tag.h3(title, class: 'card-header-custom') unless title.nil?
-      concat content_tag(body_type, body_options, &block)
+      concat content_tag(body_type, body_options, &)
     end
   end
 
@@ -92,8 +92,8 @@ module BootstrapHelper
   end
 
   # <div class="col-md-size form-group sqs-form"></div>
-  def form_group(&)
-    tag.div(class: 'form-group row sqs-form', &)
+  def form_group(classes = '', &)
+    tag.div(class: "form-group row sqs-form #{classes}".strip, &)
   end
 
   def bs_column(size = 6, screen = 'md', &)

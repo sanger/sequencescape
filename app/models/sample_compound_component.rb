@@ -15,11 +15,13 @@ class SampleCompoundComponent < ApplicationRecord
 
   def nested_compound_samples_validation
     return if compound_sample.compound_samples.empty?
+
     errors.add(:compound_sample, 'cannot have further compound samples.')
   end
 
   def nested_component_samples_validation
     return if component_sample.component_samples.empty?
+
     errors.add(:component_sample, 'cannot have further component samples.')
   end
 end

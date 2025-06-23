@@ -128,7 +128,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     errors.add :spreadsheet,
                'You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains ' \
-                 "the 'submission name' column"
+               "the 'submission name' column"
     false
   end
 
@@ -206,6 +206,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
               ] = "Submission #{submission.id} built (#{submission.orders.count} orders)"
             rescue Submission::ProjectValidation::Error => e
               errors.add :spreadsheet, "There was an issue with a project: #{e.message}"
+            rescue ActiveRecord::RecordInvalid => e
+              errors.add :base, e.message
             end
           end
         end
@@ -247,7 +249,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'priority',
     'flowcell type',
     'scrna core number of pools',
-    'scrna core cells per chip well'
+    'scrna core cells per chip well',
+    '% phix requested',
+    'low diversity'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -316,7 +320,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         errors.add(
           :spreadsheet,
           "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. " \
-            "Given values were: #{provided_values}."
+          "Given values were: #{provided_values}."
         )
       end
       [field, option.first]
@@ -351,7 +355,9 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['primer panel', 'primer_panel_name'],
         ['flowcell type', 'requested_flowcell_type'],
         ['scrna core number of pools', 'number_of_pools'],
-        ['scrna core cells per chip well', 'cells_per_chip_well']
+        ['scrna core cells per chip well', 'cells_per_chip_well'],
+        ['% phix requested', 'percent_phix_requested'],
+        ['low diversity', 'low_diversity']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end
@@ -457,7 +463,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
       raise StandardError,
             "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. " \
-              'You may be reusing an asset group name'
+            'You may be reusing an asset group name'
     end
 
     add_study_to_assets(found_assets, study)

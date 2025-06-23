@@ -65,6 +65,6 @@ module UiHelper
       @summary_items << item
     end
 
-    delegate :size, to: :@summary_items
+    delegate :size, to: :@summary_items # rubocop:todo Lint/DuplicateMethods
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
+ActiveRecord::Schema[7.1].define(version: 2025_05_15_133642) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -487,10 +487,10 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
   create_table "flipper_gates", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "feature_key", null: false
     t.string "key", null: false
-    t.string "value"
+    t.text "value"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
+    t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true, length: { value: 255 }
   end
 
   create_table "flowcell_types", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
@@ -1551,6 +1551,11 @@ ActiveRecord::Schema[7.1].define(version: 2025_03_26_144346) do
     t.string "data_deletion_period"
     t.string "contaminated_human_data_access_group"
     t.string "data_release_prevention_other_comment"
+    t.string "ebi_library_strategy"
+    t.string "ebi_library_source"
+    t.string "ebi_library_selection"
+    t.string "data_release_timing_publication_comment"
+    t.string "data_share_in_preprint"
     t.index ["faculty_sponsor_id"], name: "index_study_metadata_on_faculty_sponsor_id"
     t.index ["study_id"], name: "index_study_metadata_on_study_id"
   end

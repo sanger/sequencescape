@@ -59,6 +59,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
       .wells
       .filter_map do |w|
         next unless well_range.include?(w)
+
         [w.map.description, w.primary_aliquot.try(:tag).try(:oligo) || '']
       end
       .to_h
@@ -68,6 +69,7 @@ def check_tag_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo 
     assert(false, 'Tag assignment appears to be invalid')
   end
 end
+
 def check_tag2_layout(name, well_range, expected_wells_to_oligos) # rubocop:todo Metrics/MethodLength
   plate = Plate.find_by(name:) or raise StandardError, "Cannot find plate #{name.inspect}"
   wells_to_oligos =

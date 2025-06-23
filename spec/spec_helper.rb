@@ -28,6 +28,11 @@ KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
 end
 
 KnapsackPro::Adapters::RSpecAdapter.bind
+# So the instructions above are actually insufficient, as Knapsack Pro spins up
+# a separate cucumber process for each subset of the queue. This results in Simplecov
+# clobbering the coverage. Before queue runs only the once, whereas this will run
+# on each invocation
+SimpleCov.command_name("#{SimpleCov.command_name}_#{ENV.fetch('KNAPSACK_PRO_SUBSET_QUEUE_ID', nil)}")
 
 require 'factory_bot'
 require 'capybara/rspec'
@@ -139,7 +144,7 @@ RSpec.configure do |config|
   # Print the 10 slowest examples and example groups at the
   # end of the spec run, to help surface which specs are running
   # particularly slow.
-  config.profile_examples = 10
+  config.profile_examples = 3
 
   # Run specs in random order to surface order dependencies. If you find an
   # order dependency and want to debug it, you can fix the order by providing

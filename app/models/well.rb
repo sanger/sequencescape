@@ -220,13 +220,8 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def qc_result_for(key)
-    result =
-      if key == 'quantity_in_nano_grams'
-        well_attribute.quantity_in_nano_grams
-      else
-        results = qc_results_by_key[key]
-        results.first.value if results.present?
-      end
+    results = qc_results_by_key[key]
+    result = results.first.value if results.present?
 
     return if result.nil?
     return result.to_f.round(3) if result.to_s.include?('.')

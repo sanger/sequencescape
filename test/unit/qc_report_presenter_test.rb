@@ -4,28 +4,24 @@ require 'test_helper'
 require 'timecop'
 
 class QcReportPresenterTest < ActiveSupport::TestCase
-  # rubocop:disable Layout/LineLength
-  EXPECTED_CSV =
-    "Sequencescape QC Report,1.0.0
-This section is for information only and cannot be changed
-Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
-Study,Example study
-Product,Demo Product
-Criteria Version,stock_1
-Report Identifier,wtccc_demo_product_20150101000000
-Generated on,\"Thu, 01 Jan 2015 00:00:00 +0000\"
-Contents,All samples
+  EXPECTED_CSV = <<~EXPECTED_CSV
+    Sequencescape QC Report,1.0.0
+    This section is for information only and cannot be changed
+    Please place a Y in the proceed column for any samples you wish to proceed; use a N for samples you don't want to proceed.
+    Study,Example study
+    Product,Demo Product
+    Criteria Version,stock_1
+    Report Identifier,wtccc_demo_product_20150101000000
+    Generated on,"Thu, 01 Jan 2015 00:00:00 +0000"
+    Contents,All samples
 
-Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
-%s,10,EG,X,passed,
-%s,10,EG,X,failed,
-"
-
-  # rubocop:enable Layout/LineLength
+    Asset ID,Total micrograms,Sanger sample,Comment,Qc Decision,Proceed
+    %s,10,EG,X,passed,
+    %s,10,EG,X,failed,
+  EXPECTED_CSV
+  STATE_ARRAY = %w[passed failed].freeze
 
   context 'A QcReportPresenter' do
-    STATE_ARRAY = %w[passed failed].freeze
-
     setup do
       @product = create(:product, name: 'Demo Product')
       @criteria = create(:product_criteria, product: @product, version: 1)

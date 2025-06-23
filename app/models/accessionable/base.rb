@@ -22,7 +22,7 @@ class Accessionable::Base
   end
 
   def center_name
-    AccessionService::CenterName
+    AccessionService::CENTER_NAME
   end
 
   def schema_type
@@ -117,9 +117,11 @@ class Accessionable::Base
       def value_for(value)
         value
       end
+
       def applies_to?(_name)
         true
       end
+
       def incorrect_format_value
         NOT_PROVIDED
       end
@@ -132,6 +134,7 @@ class Accessionable::Base
       def value_for(value)
         return value if OTHER_DEFAULT_SETTINGS.include?(value)
         return incorrect_format_value unless Insdc::Country.find_by(name: value)
+
         value
       end
 
@@ -154,6 +157,7 @@ class Accessionable::Base
       def value_for(value)
         return value if OTHER_DEFAULT_SETTINGS.include?(value)
         return incorrect_format_value unless REGEXP.match?(value)
+
         value
       end
 
@@ -172,8 +176,13 @@ class Accessionable::Base
 
     def label
       accessioning_tag = I18n.exists?("#{@scope}.#{@name}.accessioning_tag")
-      return I18n.t("#{@scope}.#{@name}.accessioning_tag").tr(' ', '_').downcase if accessioning_tag
-      I18n.t("#{@scope}.#{@name}.label").tr(' ', '_').downcase
+
+      # check for field override for when ebi name is different from sanger name
+      # NB. replace any underscores with spaces and ensure in lowercase
+      return I18n.t("#{@scope}.#{@name}.accessioning_tag").tr('_', ' ').downcase if accessioning_tag
+
+      # For the rest the ebi name is the same as the sanger name
+      I18n.t("#{@scope}.#{@name}.label").tr('_', ' ').downcase
     end
 
     def field_serializer_for(name)

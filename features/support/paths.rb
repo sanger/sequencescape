@@ -161,8 +161,8 @@ module NavigationHelpers
 
       # Add more page name => path mappings above here
     else
-      raise "Can't find mapping from \"#{page_name}\" to a path.\n" +
-              'Now, go and add a mapping in features/support/paths.rb'
+      raise "Can't find mapping from \"#{page_name}\" to a path.\n" \
+            'Now, go and add a mapping in features/support/paths.rb'
     end
   end
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/CyclomaticComplexity

@@ -16,6 +16,9 @@ Rails.application.routes.draw do
 
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
+  # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
+  #   and more. Include all actions in the except block for immutable resources.
+  #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
   namespace :api do
     namespace :v2 do
       jsonapi_resources :aliquots
@@ -66,7 +69,7 @@ Rails.application.routes.draw do
       jsonapi_resources :studies
       jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
-      jsonapi_resources :submissions
+      jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
       jsonapi_resources :tag_groups
       jsonapi_resources :tag_sets, only: %i[index show]
@@ -85,6 +88,7 @@ Rails.application.routes.draw do
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
+      jsonapi_resources :work_completions, except: %i[update]
       jsonapi_resources :work_orders
 
       namespace :heron do
@@ -188,6 +192,7 @@ Rails.application.routes.draw do
       get :released
       get :sample_prep_worksheet
       get :new_stock_assets
+      get :generate_sample_sheet
     end
 
     collection do
@@ -632,5 +637,5 @@ Rails.application.routes.draw do
     end
   end
 
-  mount Flipper::UI.app(Flipper) => '/flipper', :constraints => user_is_admin
+  mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
 end

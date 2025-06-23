@@ -99,8 +99,10 @@ Feature: Printing new plate barcodes
     When I freeze time at "Mon Jul 12 10:23:58 UTC 2010"
     #Given a plate with purpose "Stock plate" and barcode "1221234567841" exists
     Given a plate with purpose "Stock plate" and barcode "SQPD-1234567" exists
+    And plate "SQPD-1234567" has "7" wells with aliquots
     #And a plate with barcode "1220001454858" exists
     And a plate with barcode "SQPD-1454" exists
+    And plate "SQPD-1454" has "8" wells with aliquots
     Given I am on the new plate page
     Then I should see "Create Plates"
 

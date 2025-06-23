@@ -24,6 +24,7 @@ class SamplesController < ApplicationController
       format.json { render json: @sample.to_json }
     end
   end
+
   def new
     @sample = Sample.new
     @studies = Study.alphabetical
@@ -45,6 +46,7 @@ class SamplesController < ApplicationController
       format.json { render json: @samples.to_json }
     end
   end
+
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @sample = Sample.new(params[:sample])
 

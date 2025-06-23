@@ -10,21 +10,31 @@
     <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
 
+    <style>
+      .sessions {
+        background-image:
+          url('<%= vite_asset_url "images/sanger-pattern-corner.svg" %>'),
+          linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+      }
+    </style>
     <% if Rails.application.config.disable_animations %>
       <%= vite_stylesheet_tag 'disable_animations' %>
     <% end %>
   </head>
 
-  <body>
-    <div class="container d-flex justify-content-center">
-      <div id="login-panel">
-        <%= vite_image_tag "images/scape-large-dark.jpg", size: "600x229", class: "card-img-top", alt: "Two white lines twirl round each other, separating blue and green fields." %>
+  <body class="sessions">
+    <div class="container-fluid p-0 d-flex flex-column justify-content-between align-items-center min-vh-100">
+      <header></header><%# No header for login page, but helps with spacing %>
+
+      <main id="login-panel">
+        <%= vite_image_tag "images/scape-large-dark.jpg", class: "card-img-top", alt: "Two white lines twirl round each other, separating blue and green fields." %>
         <%= yield %>
-      </div>
+      </main>
+
+      <footer id="main-footer" class="w-100">
+        <%= render partial: 'shared/footer' %>
+      </footer>
     </div>
-    <footer id="main-footer">
-      <%= render partial: 'shared/footer' %>
-    </footer>
   </body>
 
 </html>

@@ -23,7 +23,7 @@ class ElementAvitiSequencingRequest < SequencingRequest
     custom_attribute(:read_length, integer: true, validator: true, required: true, selection: true)
     custom_attribute(:requested_flowcell_type, required: true, validator: true, selection: true)
 
-    custom_attribute(:percent_phix_requested, integer: true, required: true, minimum: 0)
+    custom_attribute(:percent_phix_requested, integer: true, required: true, maximum: 100)
     custom_attribute(:low_diversity, default: NO, in: YES_OR_NO, required: true)
     enum :low_diversity, { Yes: true, No: false }
   end
@@ -43,6 +43,7 @@ class ElementAvitiSequencingRequest < SequencingRequest
 
     def validate_read_length_by_selected_flowcell_type
       return unless requested_flowcell_type == 'LO' && read_length.to_i != 150
+
       errors.add(:read_length, 'For the LO (Low Output) flowcell kit the user can select a Read Length of 150')
     end
   end

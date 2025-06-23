@@ -16,6 +16,12 @@ FactoryBot.define do
       units { 'ul' }
     end
 
+    factory :qc_result_current_volume do
+      key { 'current_volume' }
+      value { '50' }
+      units { 'ul' }
+    end
+
     factory :qc_result_concentration do
       key { 'concentration' }
       value { '50' }

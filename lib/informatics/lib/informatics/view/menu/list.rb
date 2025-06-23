@@ -8,11 +8,11 @@ module Informatics
         def add_item(options = {})
           @items = [] unless @items
           @items.push Informatics::View::Menu::Item.new(
-                        text: options[:text],
-                        link: options[:link],
-                        method: options[:method],
-                        confirm: options[:confirm]
-                      )
+            text: options[:text],
+            link: options[:link],
+            method: options[:method],
+            confirm: options[:confirm]
+          )
         end
       end
     end

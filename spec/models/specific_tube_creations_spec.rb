@@ -14,7 +14,7 @@ RSpec.describe SpecificTubeCreation do
   shared_context 'with common test setup' do
     before do
       expect(specific_tube_creation.save).to (be true),
-      -> { "Failed to save: #{specific_tube_creation.errors.full_messages}" }
+                                             -> { "Failed to save: #{specific_tube_creation.errors.full_messages}" }
     end
 
     let(:first_child) { specific_tube_creation.children.first }
@@ -47,7 +47,7 @@ RSpec.describe SpecificTubeCreation do
 
     describe '#save' do
       include_context 'with common test setup'
-      include_examples 'with common tests'
+      it_behaves_like 'with common tests'
     end
   end
 
@@ -94,7 +94,7 @@ RSpec.describe SpecificTubeCreation do
       include_context 'with common test setup'
       let(:expected_barcode_format) { 'fluidx_barcode' }
 
-      include_examples 'with common tests'
+      it_behaves_like 'with common tests'
 
       it 'sets the foreign barcode as the primary barcode' do
         expect(first_child.primary_barcode.barcode).to eq foreign_barcode
