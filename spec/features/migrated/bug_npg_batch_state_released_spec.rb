@@ -23,7 +23,8 @@ RSpec.feature 'NPG batch state released via XML API', :allow_rescue, :api, :xml 
     visit batch_path(batch)
     expect(page).to have_content('started')
 
-    xml = { qc_information: { message: 'NPG change status in failed' } }.to_xml # string or symbol keys
+    # to_xml accepts string or symbol keys; root element is set to remove 'hash' from the generated XML
+    xml = { qc_information: { message: 'NPG change status in failed' } }.to_xml(root: 'qc_information')
     path = "/npg_actions/assets/#{lane.id}/pass_qc_state"
     headers = { 'HTTP_ACCEPT' => 'application/xml', 'CONTENT_TYPE' => 'application/xml' }
     page.driver.post path, xml, headers
