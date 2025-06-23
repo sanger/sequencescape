@@ -4,10 +4,13 @@ require 'rails_helper'
 
 RSpec.feature 'Pre-capture pools should be defined at submission',
               :api, :barcode_service, :json, :mutiple_orders, :new_api,
-              :single_sign_on, :submission, with: :api_v2 do
+              :single_sign_on, :submission do
   let(:user) { create(:user) }
   let(:study) { create(:study) }
   let(:project) { create(:project) }
+
+  # Create a pre-capture pooling submission setup similar to the retired
+  # submission template 'Illumina-A - HTP ISC - Single ended sequencing'.
   let(:isc_request_type) do
     create(:request_type,
            name: 'ISC Request',
@@ -157,8 +160,8 @@ RSpec.feature 'Pre-capture pools should be defined at submission',
 
     # The submission state should be 'pending' because we used the 'and_submit'
     # attribute to skip the separate submission step. Without the attribute,
-    # we would need a separate POST to /api/v2/submissions/{id}/submit and the
-    # state would be 'building'.
+    # the state would be 'building' and we would need a separate POST to
+    # /api/v2/submissions/{id}/submit .
     expect(response.dig('data', 'attributes', 'state')).to eq('pending')
 
     count = Delayed::Job.count
