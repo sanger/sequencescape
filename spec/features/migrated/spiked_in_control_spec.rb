@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.feature 'Spiked in Control' do
+RSpec.feature 'Spiked in Control', :npg, :xml do
   let(:user) { create(:admin) }
 
   let(:spiked_buffer) do
