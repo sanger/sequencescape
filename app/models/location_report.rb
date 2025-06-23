@@ -31,7 +31,7 @@ class LocationReport < ApplicationRecord
            :check_both_dates_present_if_used,
            :check_end_date_same_or_after_start_date,
            :check_maxlength_of_barcodes,
-           :check_any_plates_found,
+           :check_any_labware_found,
            if: :type_selection?
 
   def type_selection?
@@ -67,8 +67,8 @@ class LocationReport < ApplicationRecord
     errors.add(:end_date, I18n.t('location_reports.errors.end_date_after_start_date'))
   end
 
-  def check_any_plates_found
-    return if plates_list.any?
+  def check_any_labware_found
+    return if labware_list.any?
 
     errors.add(:base, I18n.t('location_reports.errors.no_rows_found'))
   end
@@ -113,18 +113,18 @@ class LocationReport < ApplicationRecord
   end
 
   def generate_report_rows # rubocop:todo Metrics/MethodLength
-    if plates_list.empty?
-      yield([I18n.t('location_reports.errors.plate_list_empty')])
+    if labware_list.empty?
+      yield([I18n.t('location_reports.errors.labware_list_empty')])
       return
     end
 
     yield column_headers
 
-    plates_list.each do |cur_plate|
-      if cur_plate.studies.present?
-        cur_plate.studies.each { |cur_study| yield(generate_report_row(cur_plate, cur_study)) }
+    labware_list.each do |cur_labware|
+      if cur_labware.studies.present?
+        cur_labware.studies.each { |cur_study| yield(generate_report_row(cur_labware, cur_study)) }
       else
-        yield(generate_report_row(cur_plate, nil))
+        yield(generate_report_row(cur_labware, nil))
       end
     end
   end
@@ -135,32 +135,32 @@ class LocationReport < ApplicationRecord
 
   #######
 
-  def plates_list
-    @plates_list ||=
+  def labware_list
+    @labware_list ||=
       if type_selection?
         search_for_plates_by_selection
       elsif type_labwhere?
-        search_for_plates_by_labwhere_locn_bc
+        search_for_labware_by_labwhere_locn_bc
       else
         []
       end
   end
 
-  def generate_report_row(cur_plate, cur_study)
-    row = generate_plate_cols_for_row(cur_plate)
+  def generate_report_row(cur_labware, cur_study)
+    row = generate_labware_cols_for_row(cur_labware)
     row + generate_study_cols_for_row(cur_study)
   end
 
-  def generate_plate_cols_for_row(cur_plate)
+  def generate_labware_cols_for_row(cur_labware)
     [
-      cur_plate.machine_barcode,
-      cur_plate.human_barcode,
-      cur_plate.plate_purpose&.name || 'Unknown', # NB. some older plates do not have a purpose
-      cur_plate.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-      cur_plate.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown',
-      cur_plate.storage_location,
-      cur_plate.storage_location_service,
-      cur_plate.retention_instructions || 'Unknown'
+      cur_labware.machine_barcode,
+      cur_labware.human_barcode,
+      cur_labware.purpose&.name || 'Unknown', # NB. some older plates do not have a purpose
+      cur_labware.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+      cur_labware.received_date&.strftime('%Y-%m-%d %H:%M:%S') || 'Unknown',
+      cur_labware.storage_location,
+      cur_labware.storage_location_service,
+      cur_labware.retention_instructions || 'Unknown'
     ]
   end
 
@@ -180,7 +180,7 @@ class LocationReport < ApplicationRecord
     Plate.search_for_plates(params)
   end
 
-  def search_for_plates_by_labwhere_locn_bc
+  def search_for_labware_by_labwhere_locn_bc
     @labware_barcodes = []
     begin
       get_labwares_per_location(location_barcode) unless location_barcode.nil?
@@ -189,8 +189,7 @@ class LocationReport < ApplicationRecord
     end
     return [] if @labware_barcodes.blank?
 
-    params = { barcodes: @labware_barcodes }
-    Plate.search_for_plates(params)
+    Labware.with_barcode(@labware_barcodes)
   end
 
   def get_labwares_per_location(curr_locn_bc)

@@ -93,6 +93,27 @@ RSpec.describe LocationReport do
     )
   end
 
+  let(:tube_1) do
+    create(
+      :sample_tube,
+      study: study_1,
+      name: 'Tube_1',
+      created_at: '2025-06-23 12:00:00'
+    )
+  end
+  let(:tube_1_purpose) { tube_1.purpose.name }
+  let(:tube_1_created) { tube_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
+  let(:tube_1_received_date) { 'Unknown' }
+  let(:tube_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: tube_1, user: user) }
+  let(:tube_1_custom_metadatum) do
+    create(
+      :custom_metadatum,
+      custom_metadatum_collection: tube_1_custom_metadatum_collection,
+      key: retention_key,
+      value: retention_value
+    )
+  end
+
   let(:headers_line) do
     %w[
       ScannedBarcode
@@ -431,7 +452,7 @@ RSpec.describe LocationReport do
 
         describe 'when no labwares in the location' do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
-          let(:expected_lines) { ['No plates found when attempting to generate the report.'] }
+          let(:expected_lines) { ['No labware found when attempting to generate the report.'] }
 
           before do
             stub_lwclient_locn_find_by_bc(
@@ -493,7 +514,12 @@ RSpec.describe LocationReport do
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{plt_2_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,Unknown,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2] }
+          let(:tube_1_line) do
+            # rubocop:todo Layout/LineLength
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            # rubocop:enable Layout/LineLength
+          end
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
 
           before do
             # set up Shelf 1 with no labwares and 1 sub-location
@@ -519,17 +545,24 @@ RSpec.describe LocationReport do
               lw_locn_name: 'Box 1',
               lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
+            t1 = {
+              lw_barcode: tube_1.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            }
             stub_lwclient_locn_find_by_bc(
               locn_barcode: 'locn-1-at-lvl-2',
               locn_name: 'Box 1',
               locn_parentage: "#{locn_prefix} - Shelf 1"
             )
             stub_lwclient_locn_children(location_barcode, [])
-            stub_lwclient_locn_labwares(location_barcode, [p1, p2])
+            stub_lwclient_locn_labwares(location_barcode, [p1, p2, t1])
             stub_lwclient_labware_find_by_bc(p1)
             stub_lwclient_labware_find_by_bc(p2)
+            stub_lwclient_labware_find_by_bc(t1)
 
             plate_1_custom_metadatum
+            tube_1_custom_metadatum
           end
 
           it_behaves_like 'a successful report'
@@ -597,7 +630,6 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p2)
 
             plate_1_custom_metadatum
-            # plate_3_custom_metadatum
           end
 
           it_behaves_like 'a successful report'
@@ -619,10 +651,13 @@ RSpec.describe LocationReport do
           let(:plt_3_line) do
             "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
+          let(:tube_1_line) do
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          end
 
           # rubocop:enable Layout/LineLength
 
-          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line] }
+          let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, plt_3_line, tube_1_line] }
 
           before do
             # set up Shelf 1 with 1 labware and 1 sub-location
@@ -657,19 +692,26 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(locn_lvl2_t1[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
 
-            # set up Shelf 1 - Tray 1 - Box 1 with 1 labware and no sub-locations
+            # set up Shelf 1 - Tray 1 - Box 1 with 2 labware and no sub-locations
             p3 = {
               lw_barcode: plate_3.machine_barcode,
               lw_locn_name: 'Box 1',
               lw_locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
             }
+            t1 = {
+              lw_barcode: tube_1.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
+            }
             stub_lwclient_locn_find_by_bc(locn_lvl3_b1)
             stub_lwclient_locn_children(locn_lvl3_b1[:locn_barcode], [])
-            stub_lwclient_locn_labwares(locn_lvl3_b1[:locn_barcode], [p3])
+            stub_lwclient_locn_labwares(locn_lvl3_b1[:locn_barcode], [p3, t1])
             stub_lwclient_labware_find_by_bc(p3)
+            stub_lwclient_labware_find_by_bc(t1)
 
             plate_1_custom_metadatum
             plate_3_custom_metadatum
+            tube_1_custom_metadatum
           end
 
           it_behaves_like 'a successful report'
