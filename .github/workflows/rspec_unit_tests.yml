@@ -48,8 +48,8 @@ jobs:
     # Sets up the matrix for knapsack builds
     strategy:
       matrix:
-        ci_node_total: [3]
-        ci_node_index: [0, 1, 2]
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
 
     steps:
       - name: Checkout Repository
