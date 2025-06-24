@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.feature 'if request is pending then the admin could change of request type.', :request do
+RSpec.feature 'if request is pending then the admin could change of request type.', :js, :request do
   let(:user) { create(:admin) }
   let(:project) { create(:project, name: 'Test project 10071597', enforce_quotas: true) }
   let(:lane) { create(:lane, name: 'NPG_Action_Lane_Test', qc_state: 'passed') }
