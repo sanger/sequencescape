@@ -10,7 +10,7 @@ describe PlateType do
     create(:plate_type, name: 'ABgene_0765', maximum_volume: 800)
     create(:plate_type, name: 'ABgene_0800', maximum_volume: 180)
     create(:plate_type, name: 'FluidX075', maximum_volume: 500)
-    create(:plate_type, name: 'FluidX05', maximum_volume: 520)
+    create(:plate_type, name: 'FluidX 0.5µl', maximum_volume: 520)
     create(:plate_type, name: 'FluidX03', maximum_volume: 280)
   end
 
@@ -27,6 +27,6 @@ describe PlateType do
   it 'knows plate types names and maximum volumes' do
     expect(
       described_class.names_and_maximum_volumes
-    ).to eq 'ABgene_0765: 800, ABgene_0800: 180, FluidX075: 500, FluidX05: 520, FluidX03: 280'
+    ).to eq 'ABgene_0765: 800, ABgene_0800: 180, FluidX075: 500, FluidX 0.5µl: 520, FluidX03: 280'
   end
 end
