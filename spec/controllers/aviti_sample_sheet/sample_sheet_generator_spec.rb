@@ -128,10 +128,58 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
     context 'when sample indexes are 8 bp long' do
       it 'truncates PhiX control indexes to match the sample index length (8 bp)' do
         phix1_row = output.split("\r\n")[expected_settings_lines + 2]
-        expect(phix1_row).to include('PhiX_Third,ATGTCGCT,CTAGCTCG')
+        expect(phix1_row).to eq('PhiX_Third,ATGTCGCT,CTAGCTCG')
         index1, index2 = phix1_row.split(',')[1..2]
         expect(index1.length).to eq(8)
         expect(index2.length).to eq(8)
+      end
+    end
+
+    context 'when samples do not have tags' do
+      let(:aliquot2) do
+        instance_double(
+          Aliquot,
+          sample: sample2,
+          tag: nil,
+          tag2: nil,
+          study: study2
+        )
+      end
+      let(:aliquot) do
+        instance_double(Aliquot,
+                        sample: sample,
+                        tag: nil,
+                        tag2: nil,
+                        study: study)
+      end
+
+      it 'removes the phix control tags' do
+        phix1_row = output.split("\r\n")[expected_settings_lines + 2]
+        expect(phix1_row).to eq('PhiX_Third') # No tags for PhiX control
+      end
+    end
+
+    context 'when samples have different tag lengths (mix of 8bp and 10bp)' do
+      let(:aliquot2) do
+        instance_double(
+          Aliquot,
+          sample: sample2,
+          tag: instance_double(Tag, oligo: 'GTGCTGTCAA'), # 10 bp tags
+          tag2: instance_double(Tag, oligo: 'CGTCGTCCTT'),
+          study: study2
+        )
+      end
+      let(:aliquot) do
+        instance_double(Aliquot,
+                        sample: sample,
+                        tag: instance_double(Tag, oligo: 'GTGCTGTC'), # 8 bp tags
+                        tag2: instance_double(Tag, oligo: 'CGTCGTCC'),
+                        study: study)
+      end
+
+      it 'matches the PhiX control tag with the longest sample tag' do
+        phix1_row = output.split("\r\n")[expected_settings_lines + 2]
+        expect(phix1_row).to eq('PhiX_Third,ATGTCGCTAG,CTAGCTCGTA') # 10 bp tags
       end
     end
     # rubocop:enable RSpec/MultipleExpectations
