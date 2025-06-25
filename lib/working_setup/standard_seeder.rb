@@ -140,7 +140,10 @@ module WorkingSetup
           contaminated_human_dna: 'No',
           contains_human_dna: 'No',
           commercially_available: 'No',
-          program_id: program.id
+          program_id: program.id,
+          ebi_library_strategy: 'WGS',
+          ebi_library_source: 'GENOMIC',
+          ebi_library_selection: 'PCR'
         }
       ) do |study|
         study.activate!
