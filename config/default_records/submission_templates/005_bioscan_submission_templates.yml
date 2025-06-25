@@ -7,7 +7,7 @@ Limber-Htp - Bioscan Lysate Prep:
     request_type_keys: ["limber_bioscan_lysate_prep"]
     product_line_name: Bioscan
     product_catalogue_name: Bioscan
-# Library preparation from the Lysate Input plate
+# Library preparation from the Lysate or Lysate Input plate
 # NB. PacBio long read Sequencing happens in Traction for Bioscan
 Limber-Htp - Bioscan Library Prep - Automated:
   name: "Limber-Htp - Bioscan Library Prep - Automated"
