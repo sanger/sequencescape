@@ -74,8 +74,6 @@ module StateChanger
       end
     end
 
-    private
-
     def request_in_well?(well, request)
       well.aliquot_requests.try(:map, &:id).to_a.any?(request.id)
     end
