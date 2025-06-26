@@ -22,6 +22,7 @@ module LabelPrinter
         if @barcode_type == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d']
           return tube.human_barcode
         end
+
         tube.machine_barcode
       end
 

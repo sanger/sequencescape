@@ -3,7 +3,7 @@ require 'configatron'
 
 configatron.amqp.lims_id = 'SQSCP'
 
-configatron.team_name = 'LIMS and Informatics'
+configatron.team_name = 'Production Software Development'
 configatron.team_url = 'http://www.sanger.ac.uk/science/groups/production-software-development'
 
 # This is set in the deployment project to allow per-environment enabling of accessioning

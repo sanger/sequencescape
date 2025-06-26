@@ -15,6 +15,7 @@ class QcableCreator < ApplicationRecord
 
   def make_qcables!
     return qcables_by_supplied_barcode! if supplied_barcode.present?
+
     qcables_by_count! if count.present?
     qcables_by_barcode! if barcodes.present?
   end

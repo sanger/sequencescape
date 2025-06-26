@@ -91,6 +91,9 @@ module Sequencescape
 
     config.phi_x = config_for(:phi_x).with_indifferent_access
 
+    # add ena requirement fields here
+    config.ena_requirement_fields = config_for(:ena_requirement_fields)
+
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: true,
@@ -118,20 +121,20 @@ module Sequencescape
     # Fix for Psych::DisallowedClass: Tried to load unspecified class
     config.active_record.yaml_column_permitted_classes =
       Array(config.active_record.yaml_column_permitted_classes) +
-        %w[
-          Symbol
-          ActiveSupport::HashWithIndifferentAccess
-          ActiveSupport::TimeWithZone
-          ActiveSupport::TimeZone
-          HashWithIndifferentAccess
-          RequestType::Validator::ArrayWithDefault
-          RequestType::Validator::LibraryTypeValidator
-          RequestType::Validator::FlowcellTypeValidator
-          ActionController::Parameters
-          Set
-          Range
-          FieldInfo
-          Time
-        ]
+      %w[
+        Symbol
+        ActiveSupport::HashWithIndifferentAccess
+        ActiveSupport::TimeWithZone
+        ActiveSupport::TimeZone
+        HashWithIndifferentAccess
+        RequestType::Validator::ArrayWithDefault
+        RequestType::Validator::LibraryTypeValidator
+        RequestType::Validator::FlowcellTypeValidator
+        ActionController::Parameters
+        Set
+        Range
+        FieldInfo
+        Time
+      ]
   end
 end

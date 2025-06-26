@@ -1,0 +1,104 @@
+name: Unit tests
+
+env:
+  TZ: Europe/London
+  CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID || '9c624e5d90c5b319d678e06d66c7671f1661fda826436d475f9679b54be63e26' }}
+  KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC: ${{ secrets.KNAPSACK_PRO_TEST_SUITE_TOKEN_RSPEC }}
+  KNAPSACK_PRO_FIXED_QUEUE_SPLIT: true
+  KNAPSACK_PRO_LOG_LEVEL: info
+  SKIP_AUTOMATIC_GEM_INSTALLATION: true # Disable the bundle install in bin/setup
+
+########
+## Warning!
+## CodeCov's config in `codecov.yml` is expecting an exact number of builds to complete before it will run.
+## See the config value with key `after_n_builds` in that file.
+## If the number of build steps changes, it is important to update the count there to match.
+########
+
+on:
+  push:
+  pull_request:
+    types:
+      # defaults
+      - opened
+      - synchronize
+      - reopened
+      # custom
+      - ready_for_review # required for Github-created PRs
+
+jobs:
+  rspec_unit_tests:
+    name: RSpec tests
+    runs-on: ubuntu-latest
+    env:
+      RAILS_ENV: test
+      BUNDLE_WITHOUT: "cucumber deployment profile development"
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:8.0
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
+    # Sets up the matrix for knapsack builds
+    strategy:
+      matrix:
+        ci_node_total: [4]
+        ci_node_index: [0, 1, 2, 3]
+
+    steps:
+      - name: Checkout Repository
+        uses: sanger/.github/.github/actions/setup/checkout@master
+
+      - name: Setup Ruby
+        uses: sanger/.github/.github/actions/setup/ruby@master
+
+      - name: Setup Node
+        uses: sanger/.github/.github/actions/setup/node@master
+
+      # Establish a cache of js modules to improve performance
+      - name: Cache JS
+        uses: sanger/.github/.github/actions/setup/cache@master
+        with:
+          path: |
+            public/assets
+            node_modules
+          key: ${{ runner.os }}-tests-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-tests-
+            ${{ runner.os }}-
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup/env@master
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
+          precompile: true
+
+      - name: Run rspec tests
+        env:
+          KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
+          KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
+          KNAPSACK_PRO_TEST_FILE_EXCLUDE_PATTERN: "spec/features/**{,/*/**}/*_spec.rb"
+          DBPORT: ${{ job.services.mysql.ports[3306] }}
+        run: bin/knapsack_pro_rspec
+
+      - name: Upload capybara artifacts
+        uses: sanger/.github/.github/actions/tests/upload-artifact@master
+        if: ${{ failure() }}
+        with:
+          name: capybara-${{ github.job }}-${{ matrix.ci_node_index }}
+          path: tmp/capybara/
+          retention-days: 5
+
+      - name: Upload coverage reports to Codecov
+        uses: sanger/.github/.github/actions/tests/codecov@master
+        with:
+          name: ${{ github.run_id }}_${{ github.job }}_${{ matrix.ci_node_index }}_${{ github.event_name }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          disable_search: true
+          files: ${{ github.workspace }}/lcov.info

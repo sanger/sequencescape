@@ -112,55 +112,54 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     end
 
     context 'when robot is using 96-Trough buffer (Tecan v1)' do
-      #prettier-ignore
       let(:expected_tecan_file) { <<~TECAN }
-          C;
-          C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
-          C;
-          A;BUFF;;96-TROUGH;1;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
-          W;
-          A;BUFF;;96-TROUGH;2;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
-          W;
-          A;BUFF;;96-TROUGH;3;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;3;;49.1
-          W;
-          A;BUFF;;96-TROUGH;4;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;4;;49.2
-          W;
-          A;BUFF;;96-TROUGH;5;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
-          W;
-          A;BUFF;;96-TROUGH;6;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
-          W;
-          C;
-          A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
-          W;
-          A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;3;;15.9
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;4;;15.8
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
-          W;
-          C;
-          C; SCRC1 = #{plates[0].human_barcode}
-          C; SCRC2 = #{plates[1].human_barcode}
-          C; SCRC3 = #{plates[2].human_barcode}
-          C;
-          C; DEST1 = #{destination_plate_human_barcode}
-        TECAN
+        C;
+        C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
+        C;
+        A;BUFF;;96-TROUGH;1;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
+        W;
+        A;BUFF;;96-TROUGH;2;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
+        W;
+        A;BUFF;;96-TROUGH;3;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;3;;49.1
+        W;
+        A;BUFF;;96-TROUGH;4;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;4;;49.2
+        W;
+        A;BUFF;;96-TROUGH;5;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
+        W;
+        A;BUFF;;96-TROUGH;6;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
+        W;
+        C;
+        A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
+        W;
+        A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;3;;15.9
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;4;;15.8
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
+        W;
+        C;
+        C; SCRC1 = #{plates[0].human_barcode}
+        C; SCRC2 = #{plates[1].human_barcode}
+        C; SCRC3 = #{plates[2].human_barcode}
+        C;
+        C; DEST1 = #{destination_plate_human_barcode}
+      TECAN
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -184,91 +183,90 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
         [plates[0], plates[2], plates[1]]
       end
 
-      #prettier-ignore
       let(:expected_tecan_file) { <<~TECAN }
-          C;
-          C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
-          C;
-          A;BUFF Trough;;Trough 100ml;1;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
-          W;
-          A;BUFF Trough;;Trough 100ml;2;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
-          W;
-          A;BUFF Trough;;Trough 100ml;3;;49.3
-          D;#{destination_plate_human_barcode};;Custom Type;3;;49.3
-          W;
-          A;BUFF Trough;;Trough 100ml;4;;49.4
-          D;#{destination_plate_human_barcode};;Custom Type;4;;49.4
-          W;
-          A;BUFF Trough;;Trough 100ml;5;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
-          W;
-          A;BUFF Trough;;Trough 100ml;6;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
-          W;
-          A;BUFF Trough;;Trough 100ml;7;;49.3
-          D;#{destination_plate_human_barcode};;Custom Type;7;;49.3
-          W;
-          A;BUFF Trough;;Trough 100ml;8;;49.4
-          D;#{destination_plate_human_barcode};;Custom Type;8;;49.4
-          W;
-          A;BUFF Trough;;Trough 100ml;1;;49.1
-          D;#{destination_plate_human_barcode};;Custom Type;9;;49.1
-          W;
-          A;BUFF Trough;;Trough 100ml;2;;49.2
-          D;#{destination_plate_human_barcode};;Custom Type;10;;49.2
-          W;
-          A;BUFF Trough;;Trough 100ml;3;;49.3
-          D;#{destination_plate_human_barcode};;Custom Type;11;;49.3
-          W;
-          A;BUFF Trough;;Trough 100ml;4;;49.4
-          D;#{destination_plate_human_barcode};;Custom Type;12;;49.4
-          W;
-          C;
-          A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
-          W;
-          A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
-          W;
-          A;#{plates[0].human_barcode};;ABgene 0765;3;;15.7
-          D;#{destination_plate_human_barcode};;Custom Type;3;;15.7
-          W;
-          A;#{plates[0].human_barcode};;ABgene 0765;4;;15.6
-          D;#{destination_plate_human_barcode};;Custom Type;4;;15.6
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;3;;15.7
-          D;#{destination_plate_human_barcode};;Custom Type;7;;15.7
-          W;
-          A;#{plates[1].human_barcode};;ABgene 0765;4;;15.6
-          D;#{destination_plate_human_barcode};;Custom Type;8;;15.6
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
-          D;#{destination_plate_human_barcode};;Custom Type;9;;15.9
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
-          D;#{destination_plate_human_barcode};;Custom Type;10;;15.8
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;3;;15.7
-          D;#{destination_plate_human_barcode};;Custom Type;11;;15.7
-          W;
-          A;#{plates[2].human_barcode};;ABgene 0765;4;;15.6
-          D;#{destination_plate_human_barcode};;Custom Type;12;;15.6
-          W;
-          C;
-          C; SCRC1 = #{source_plates_ordered_in_row_order_by_destination[0].human_barcode}
-          C; SCRC2 = #{source_plates_ordered_in_row_order_by_destination[1].human_barcode}
-          C; SCRC3 = #{source_plates_ordered_in_row_order_by_destination[2].human_barcode}
-          C;
-          C; DEST1 = #{destination_plate_human_barcode}
-        TECAN
+        C;
+        C; This file created by user_abc6 on 2018-06-14 11:17:04 +0100
+        C;
+        A;BUFF Trough;;Trough 100ml;1;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;1;;49.1
+        W;
+        A;BUFF Trough;;Trough 100ml;2;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;2;;49.2
+        W;
+        A;BUFF Trough;;Trough 100ml;3;;49.3
+        D;#{destination_plate_human_barcode};;Custom Type;3;;49.3
+        W;
+        A;BUFF Trough;;Trough 100ml;4;;49.4
+        D;#{destination_plate_human_barcode};;Custom Type;4;;49.4
+        W;
+        A;BUFF Trough;;Trough 100ml;5;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;5;;49.1
+        W;
+        A;BUFF Trough;;Trough 100ml;6;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;6;;49.2
+        W;
+        A;BUFF Trough;;Trough 100ml;7;;49.3
+        D;#{destination_plate_human_barcode};;Custom Type;7;;49.3
+        W;
+        A;BUFF Trough;;Trough 100ml;8;;49.4
+        D;#{destination_plate_human_barcode};;Custom Type;8;;49.4
+        W;
+        A;BUFF Trough;;Trough 100ml;1;;49.1
+        D;#{destination_plate_human_barcode};;Custom Type;9;;49.1
+        W;
+        A;BUFF Trough;;Trough 100ml;2;;49.2
+        D;#{destination_plate_human_barcode};;Custom Type;10;;49.2
+        W;
+        A;BUFF Trough;;Trough 100ml;3;;49.3
+        D;#{destination_plate_human_barcode};;Custom Type;11;;49.3
+        W;
+        A;BUFF Trough;;Trough 100ml;4;;49.4
+        D;#{destination_plate_human_barcode};;Custom Type;12;;49.4
+        W;
+        C;
+        A;#{plates[0].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;1;;15.9
+        W;
+        A;#{plates[0].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;2;;15.8
+        W;
+        A;#{plates[0].human_barcode};;ABgene 0765;3;;15.7
+        D;#{destination_plate_human_barcode};;Custom Type;3;;15.7
+        W;
+        A;#{plates[0].human_barcode};;ABgene 0765;4;;15.6
+        D;#{destination_plate_human_barcode};;Custom Type;4;;15.6
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;5;;15.9
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;6;;15.8
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;3;;15.7
+        D;#{destination_plate_human_barcode};;Custom Type;7;;15.7
+        W;
+        A;#{plates[1].human_barcode};;ABgene 0765;4;;15.6
+        D;#{destination_plate_human_barcode};;Custom Type;8;;15.6
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;1;;15.9
+        D;#{destination_plate_human_barcode};;Custom Type;9;;15.9
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;2;;15.8
+        D;#{destination_plate_human_barcode};;Custom Type;10;;15.8
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;3;;15.7
+        D;#{destination_plate_human_barcode};;Custom Type;11;;15.7
+        W;
+        A;#{plates[2].human_barcode};;ABgene 0765;4;;15.6
+        D;#{destination_plate_human_barcode};;Custom Type;12;;15.6
+        W;
+        C;
+        C; SCRC1 = #{source_plates_ordered_in_row_order_by_destination[0].human_barcode}
+        C; SCRC2 = #{source_plates_ordered_in_row_order_by_destination[1].human_barcode}
+        C; SCRC3 = #{source_plates_ordered_in_row_order_by_destination[2].human_barcode}
+        C;
+        C; DEST1 = #{destination_plate_human_barcode}
+      TECAN
 
       it_behaves_like 'a cherrypicking procedure'
     end
@@ -282,36 +280,35 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
       { destination_plate_human_barcode => { 1 => { sources: [plates[0], plates[1], plates[2]] } } }
     end
 
-    #prettier-ignore
     let(:expected_tecan_file) { <<~TECAN }
-        C;
-        C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
-        C;
-        A;#{plates[0].human_barcode};;ABgene 0800;1;;30.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;1;;30.0
-        W;
-        A;#{plates[0].human_barcode};;ABgene 0800;2;;31.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;2;;31.0
-        W;
-        A;#{plates[1].human_barcode};;ABgene 0800;1;;30.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;3;;30.0
-        W;
-        A;#{plates[1].human_barcode};;ABgene 0800;2;;31.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;4;;31.0
-        W;
-        A;#{plates[2].human_barcode};;ABgene 0800;1;;30.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;5;;30.0
-        W;
-        A;#{plates[2].human_barcode};;ABgene 0800;2;;31.0
-        D;#{destination_plate_human_barcode};;ABgene 0800;6;;31.0
-        W;
-        C;
-        C; SCRC1 = #{plates[0].human_barcode}
-        C; SCRC2 = #{plates[1].human_barcode}
-        C; SCRC3 = #{plates[2].human_barcode}
-        C;
-        C; DEST1 = #{destination_plate_human_barcode}
-      TECAN
+      C;
+      C; This file created by user_abc12 on 2018-06-14 17:09:13 +0100
+      C;
+      A;#{plates[0].human_barcode};;ABgene 0800;1;;30.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;1;;30.0
+      W;
+      A;#{plates[0].human_barcode};;ABgene 0800;2;;31.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;2;;31.0
+      W;
+      A;#{plates[1].human_barcode};;ABgene 0800;1;;30.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;3;;30.0
+      W;
+      A;#{plates[1].human_barcode};;ABgene 0800;2;;31.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;4;;31.0
+      W;
+      A;#{plates[2].human_barcode};;ABgene 0800;1;;30.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;5;;30.0
+      W;
+      A;#{plates[2].human_barcode};;ABgene 0800;2;;31.0
+      D;#{destination_plate_human_barcode};;ABgene 0800;6;;31.0
+      W;
+      C;
+      C; SCRC1 = #{plates[0].human_barcode}
+      C; SCRC2 = #{plates[1].human_barcode}
+      C; SCRC3 = #{plates[2].human_barcode}
+      C;
+      C; DEST1 = #{destination_plate_human_barcode}
+    TECAN
 
     let(:expected_pick_files_by_destination_plate) do
       { destination_plate_human_barcode => { 1 => expected_tecan_file } }

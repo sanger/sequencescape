@@ -18,7 +18,7 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
       yield('User barcode invalid')
     end
     if barcode_hash[:destination_plate_barcode].blank? ||
-         !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
+        !Plate.with_barcode(barcode_hash[:destination_plate_barcode]).exists?
       yield('Destination plate barcode invalid')
     end
   end
@@ -171,21 +171,21 @@ class Robot::Verification::Base # rubocop:todo Metrics/ClassLength
 
   def valid_plate_locations?(params, batch, robot, expected_plate_layout) # rubocop:todo Metrics/MethodLength
     unless valid_source_plates_on_robot?(
-             params[:bed_barcodes],
-             params[:plate_barcodes],
-             robot,
-             batch,
-             expected_plate_layout
-           )
+      params[:bed_barcodes],
+      params[:plate_barcodes],
+      robot,
+      batch,
+      expected_plate_layout
+    )
       return false
     end
     unless valid_destination_plates_on_robot?(
-             params[:destination_bed_barcodes],
-             params[:destination_plate_barcodes],
-             robot,
-             batch,
-             expected_plate_layout
-           )
+      params[:destination_bed_barcodes],
+      params[:destination_plate_barcodes],
+      robot,
+      batch,
+      expected_plate_layout
+    )
       return false
     end
 

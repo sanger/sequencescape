@@ -19,6 +19,7 @@ class StudyReportsController < ApplicationController
       disposition: 'attachment'
     )
   end
+
   def new
     params[:study_report] = { study: params[:study] }
     create

@@ -77,6 +77,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_NEVER = 'never'
   DATA_RELEASE_TIMING_DELAYED = 'delayed'
   DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
+  DATA_RELEASE_TIMING_PUBLICATION = 'delay until publication'
+
   DATA_RELEASE_TIMINGS = [
     DATA_RELEASE_TIMING_STANDARD,
     DATA_RELEASE_TIMING_IMMEDIATE,
@@ -106,6 +108,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_DELAY_REASONS_ASSAY = ['assay of no other use'].freeze
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
+
+  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
 
   REMAPPED_ATTRIBUTES =
     {
@@ -209,6 +215,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     association(:faculty_sponsor, :name, required: true)
     association(:program, :name, required: true)
 
+    # These attributes are warehoused
+    # we have invoked map_attribute_to_json_attribute for them in app/models/api/study_io.rb
     custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
     custom_attribute(:study_description, required: true)
     custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
@@ -223,6 +231,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
+    # add ebi library strategy, ebi library source, ebi library selection
+    custom_attribute(:ebi_library_strategy, in: EBI_LIBRARY_STRATEGY_OPTIONS)
+    custom_attribute(:ebi_library_source, in: EBI_LIBRARY_SOURCE_OPTIONS)
+    custom_attribute(:ebi_library_selection, in: EBI_LIBRARY_SELECTION_OPTIONS)
+
     custom_attribute(
       :data_release_strategy,
       required: true,
@@ -235,7 +248,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :data_release_timing,
       required: true,
       default: DATA_RELEASE_TIMING_STANDARD,
-      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER]
+      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER] + [DATA_RELEASE_TIMING_PUBLICATION]
     )
     custom_attribute(
       :data_release_delay_reason,
@@ -244,6 +257,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       if: :delayed_release?
     )
 
+    with_options(if: :delay_until_publication?) do
+      custom_attribute(:data_release_timing_publication_comment, required: true)
+      custom_attribute(:data_share_in_preprint, required: true, in: YES_OR_NO)
+    end
     custom_attribute(:data_release_delay_period, required: true, in: DATA_RELEASE_DELAY_PERIODS, if: :delayed_release?)
     custom_attribute(:bam, default: true)
 
@@ -308,6 +325,22 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 message: 'only allows ASCII',
                 allow_blank: true
               }
+
+    validates :ebi_library_strategy, presence: true, on: :create
+    validates :ebi_library_source, presence: true, on: :create
+    validates :ebi_library_selection, presence: true, on: :create
+
+    validates :ebi_library_strategy,
+              inclusion: {
+                in: EBI_LIBRARY_STRATEGY_OPTIONS
+              },
+              if: -> { ebi_library_strategy_changed? }
+    validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }, if: -> { ebi_library_source_changed? }
+    validates :ebi_library_selection,
+              inclusion: {
+                in: EBI_LIBRARY_SELECTION_OPTIONS
+              },
+              if: -> { ebi_library_selection_changed? }
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
@@ -618,11 +651,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
+  # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
 
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
+    end
+
+    def open?
+      data_release_strategy == DATA_RELEASE_STRATEGY_OPEN
     end
 
     def managed?
@@ -653,6 +691,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       DATA_RELEASE_DELAY_PERIODS.include?(data_release_delay_period)
     end
 
+    def delay_until_publication?
+      data_release_timing == DATA_RELEASE_TIMING_PUBLICATION
+    end
+
     validates :number_of_gigabases_per_sample, numericality: { greater_than_or_equal_to: 0.15, allow_blank: true }
 
     has_one :data_release_non_standard_agreement, class_name: 'Document', as: :documentable
@@ -667,12 +709,18 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_timing_must_not_be_never?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_strategy_must_be_managed?
     validates :data_release_timing,
               inclusion: {
                 in: [DATA_RELEASE_TIMING_NEVER]
               },
               if: :data_release_timing_must_be_never?
+
+    validates :data_release_timing,
+              inclusion: {
+                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
+              },
+              if: :data_release_timing_must_be_open?
 
     def data_release_timing_must_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
@@ -682,6 +730,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     def data_release_timing_must_not_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
         !strategy_not_applicable?
+    end
+
+    def data_release_timing_must_be_open?
+      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? && open?
+    end
+
+    def data_release_strategy_must_be_managed?
+      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? && managed?
     end
 
     def sanity_check_y_separation
@@ -750,4 +806,5 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

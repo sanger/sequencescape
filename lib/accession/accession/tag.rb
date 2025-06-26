@@ -117,6 +117,7 @@ module Accession
       val = record.send(key)
       return val if OTHER_DEFAULT_SETTINGS.include?(val)
       return incorrect_format_value unless Insdc::Country.find_by(name: val)
+
       val
     end
   end
@@ -136,6 +137,7 @@ module Accession
       val = record.send(key)
       return val if OTHER_DEFAULT_SETTINGS.include?(val)
       return incorrect_format_value unless REGEXP.match?(val)
+
       val
     end
   end

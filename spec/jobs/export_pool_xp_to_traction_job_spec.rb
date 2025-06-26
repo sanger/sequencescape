@@ -139,8 +139,7 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
         stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}").to_return(
           status: 200,
           body: '{"schema": "{the_schema}"}',
-          headers: {
-          }
+          headers: {}
         )
       end
 
@@ -168,8 +167,7 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
         stub_request(:get, "http://test-redpanda/subjects/#{schema_subject}/versions/#{schema_version}").to_return(
           status: 404,
           body: '',
-          headers: {
-          }
+          headers: {}
         )
       end
 
