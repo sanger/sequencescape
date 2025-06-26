@@ -9,4 +9,4 @@ on:
 
 jobs:
   update_rubocop:
-    uses: sanger/.github/.github/workflows/update-rubocop.yml@ymaster
+    uses: sanger/.github/.github/workflows/update-rubocop.yml@master
