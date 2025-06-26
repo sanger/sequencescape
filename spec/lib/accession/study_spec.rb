@@ -72,12 +72,12 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         it 'adds errors to the sample model' do
           expect(study.errors.full_messages).to eq(
             [
-              "Accessionable is invalid for sample 'Sample6':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample7':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample8':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}."
+              "Accessionable is invalid for sample 'Sample6': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample7': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample8': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}."
             ]
           )
         end
@@ -106,12 +106,12 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         it 'adds errors to the sample model' do
           expect(study.errors.full_messages).to eq(
             [
-              "Accessionable is invalid for sample 'Sample1':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample2':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample3':" \
-                " Sample does not have the required metadata: #{missing_metadata_for_study}."
+              "Accessionable is invalid for sample 'Sample1': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample2': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample3': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}."
             ]
           )
         end

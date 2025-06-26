@@ -381,6 +381,7 @@ class StudiesController < ApplicationController
     error_messages.concat(errors.full_messages.first(max_messages))
 
     return error_messages unless errors.size > max_messages
+
     error_messages << '...'
     error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown."
   end
