@@ -5,6 +5,9 @@ module StateChanger
   class StandardPlate < StateChanger::Base
     # Target_state of failed will fail associated requests only.
     # All other transitions will be ignored.
+
+    # NB. Adding states other than 'failed' here will require thinking about the implications of
+    # updating the associated_requests.
     self.map_target_state_to_associated_request_state = { 'failed' => 'failed' }
 
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
@@ -95,11 +98,20 @@ module StateChanger
     # Note: Do *NOT* go through labware here, as you'll pull out all requests
     # not just those associated with the wells in the 'contents' array
     # e.g. contents might be just the wells you are failing.
+    # NB. see map_target_state_to_associated_request_state at the top of this file,
+    # if anything other than 'failed' is added to that hash then this method should
+    # be considered carefully, as you will affect both current and downstream requests
+    # which may not be desirable.
     def associated_requests
       # uniq is present here in case more than one well shares the same request
       # e.g. a parent well was split into multiple child wells
+      # aliquot.request holds the request that created this well
       aliquot_requests = receptacles.flat_map(&:aliquot_requests).uniq
+
+      # requests_as_source are new requests made on this well, e.g. a submission
       requests_as_source = receptacles.flat_map(&:requests_as_source).uniq
+
+      # we are changing the state of both
       aliquot_requests + requests_as_source
     end
 
