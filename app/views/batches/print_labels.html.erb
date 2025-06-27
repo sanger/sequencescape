@@ -7,6 +7,7 @@
 <div class="content">
   <div class="info">
     <form action='/batches/print_barcodes' method='POST'>
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
       <%= render partial: "shared/print" %>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>
@@ -14,10 +15,15 @@
           <td width="65%"><input name="count" size="10" value="1" /></td>
         </tr>
 
-        <% @batch.requests.index_by(&:target_asset).each do |target_asset, request| -%>
-          <% next unless target_asset.respond_to?(:human_barcode) %>
+        <%# In the following, the requests are BatchRequests, which associate the Batch with SequencingRequests. %>
+        <%# asset is the Receptacle of the MultiplexedLibraryTube (Labware) of a SequencingRequest. %>
+        <%# human_barcode on the asset is a method delegated to the tube, which is available and returns an NT barcode. %>
+        <%# For comparison, target_asset is the Lane (Receptacle) of a SequencingRequest. %>
+        <%# human_barcode on the target_asset is a method delegated to Lane::Labware, which is available but returns nil. %>
+        <% @batch.requests.index_by(&:asset).each do |asset, request| -%>
+          <% next unless asset.respond_to?(:human_barcode) %>
           <tr>
-            <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= target_asset.human_barcode %></label></td>
+            <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= asset.human_barcode %></label></td>
             <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= request.id %>]' id='printable[<%= request.id %>]' ></td>
           </tr>
         <% end %>
