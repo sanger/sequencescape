@@ -20,14 +20,18 @@ module LabelPrinter
         end
       end
 
+      # Returns the tubes (source_labware) of the selected requests of a batch.
+      # For comparison, target_labware of a request is a Lane::Labware.
+      #
+      # @return [Labware] an array of Labware objects representing the tubes.
       def tubes
         @tubes ||=
           if stock.present?
-            # all info on a label including barcode is about target_asset stock asset
-            requests.map { |request| request.target_labware.stock_asset }
+            # all info on a label including barcode is about source_asset stock asset
+            requests.map { |request| request.source_labware.stock_asset }
           else
-            # all info on a label including barcode is about target_asset
-            requests.map(&:target_labware)
+            # all info on a label including barcode is about source_asset
+            requests.map(&:source_labware)
           end
       end
 
