@@ -242,12 +242,29 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   def print_barcodes
+    batch_page = { controller: 'batches', action: 'show', id: @batch.id }
+    set_message_if_invalid_count
+    set_message_if_no_printables
+    return redirect_back fallback_location: batch_page if flash[:alert].present?
+
     if @batch.requests.empty?
       flash[:notice] = 'Your batch contains no requests.'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
+      redirect_to batch_page
     else
       print_handler(LabelPrinter::Label::BatchTube)
     end
+  end
+
+  # Sets a flash message if the label count is invalid.
+  # @return [void]
+  def set_message_if_invalid_count
+    flash[:alert] = 'Count must be greater than 0.' if params[:count].to_i <= 0
+  end
+
+  # Sets a flash message if no tubes are selected for label printing.
+  def set_message_if_no_printables
+    printables = params[:printable]&.select { |_barcode, check| check == 'on' }
+    flash[:alert] = 'At least one tube must be selected.' if printables.blank?
   end
 
   # Handles printing of the worksheet
