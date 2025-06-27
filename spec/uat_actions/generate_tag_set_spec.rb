@@ -50,7 +50,7 @@ describe UatActions::GenerateTagSet do
       let!(:existing_report) do
         { name: 'Test Tag Set',
           tag_group_name: existing_tag_set.tag_group.name,
-          tag2_group_name: existing_tag_set.tag2_group.name }
+          tag2_group_name: existing_tag_set.tag2_group&.name }
       end
       let(:uat_action) { described_class.new(parameters) }
 
