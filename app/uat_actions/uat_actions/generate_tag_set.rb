@@ -68,13 +68,13 @@ class UatActions::GenerateTagSet < UatActions
   # Returns the tag set if it exists, otherwise returns nil.
   # @return [TagSet, nil] tag set or nil if not found.
   def tag_set
-    @tag_set ||= TagSet.find_by(name:)
+    @tag_set ||= TagSet.find_by(name:) if name.present?
   end
 
   # The tag group with the given name, or nil if not present.
   # @return [TagGroup, nil] tag group or nil if not found.
   def tag_group
-    @tag_group ||= TagGroup.find_by(name: tag_group_name)
+    @tag_group ||= TagGroup.find_by(name: tag_group_name) if tag_group_name.present?
   end
 
   # The tag2 group with the given name, or nil if not present.
