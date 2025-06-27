@@ -36,11 +36,12 @@ class UatActions::GenerateTagSet < UatActions
   validate :validate_tag2_group_exists
 
   # Creates a new tag set if it does not already exist. The report is populated
-  # with tag set name, tag group name, and tag2 group name.
+  # with tag set name, tag group name, and tag2 group name of the tag set.
   # @return [Boolean] true if the tag set is created or already exists.
   def perform
     TagSet.create!(name:, tag_group_name:, tag2_group_name:) if tag_set.blank?
-    report.merge!({ name:, tag_group_name:, tag2_group_name: })
+    report.merge!({ name: tag_set.name, tag_group_name: tag_set.tag_group.name,
+                    tag2_group_name: tag_set.tag2_group&.name })
     true
   end
 
@@ -49,17 +50,17 @@ class UatActions::GenerateTagSet < UatActions
   # Validates that the tag group exists for the selected tag group name.
   # @return [void]
   def validate_tag_group_exists
-    return if tag_group.present?
+    return if TagGroup.exists?(name: tag_group_name)
 
     message = format(ERROR_TAG_GROUP_DOES_NOT_EXIST, tag_group_name)
-    errors.add(:tag2_group_name, message)
+    errors.add(:tag_group_name, message)
   end
 
   # Validates that the tag2 group exists if tag2 group name is provided.
   # @return [void]
   def validate_tag2_group_exists
     return if tag2_group_name.blank?
-    return if tag2_group.present?
+    return if TagGroup.exists?(name: tag2_group_name)
 
     message = format(ERROR_TAG2_GROUP_DOES_NOT_EXIST, tag2_group_name)
     errors.add(:tag2_group_name, message)
@@ -69,17 +70,5 @@ class UatActions::GenerateTagSet < UatActions
   # @return [TagSet, nil] tag set or nil if not found.
   def tag_set
     @tag_set ||= TagSet.find_by(name:) if name.present?
-  end
-
-  # The tag group with the given name, or nil if not present.
-  # @return [TagGroup, nil] tag group or nil if not found.
-  def tag_group
-    @tag_group ||= TagGroup.find_by(name: tag_group_name) if tag_group_name.present?
-  end
-
-  # The tag2 group with the given name, or nil if not present.
-  # @return [TagGroup, nil] tag2 group or nil if not found.
-  def tag2_group
-    @tag2_group ||= TagGroup.find_by(name: tag2_group_name) if tag2_group_name.present?
   end
 end
