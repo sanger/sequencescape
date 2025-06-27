@@ -62,6 +62,8 @@ describe UatActions::GenerateTagSet do
   end
 
   context 'with invalid options' do
+    let(:uat_action) { described_class.new(parameters) }
+
     context 'when name is missing' do
       let(:parameters) do
         {
@@ -69,11 +71,61 @@ describe UatActions::GenerateTagSet do
           tag2_group_name: 'Some Tag2 Group'
         }
       end
-      let(:uat_action) { described_class.new(parameters) }
 
       it 'sets an error message' do # rubocop:disable RSpec/MultipleExpectations
         expect(uat_action.valid?).to be false
         expect(uat_action.errors[:name]).to include("can't be blank")
+      end
+    end
+
+    context 'when tag group name is missing' do
+      let(:parameters) do
+        {
+          name: 'Test Tag Set',
+          tag2_group_name: 'Some Tag2 Group'
+        }
+      end
+
+      it 'sets an error message' do # rubocop:disable RSpec/MultipleExpectations
+        expect(uat_action.valid?).to be false
+        expect(uat_action.errors[:tag_group_name]).to include("can't be blank")
+      end
+    end
+
+    context 'when tag group does not exist' do
+      let(:tag2_group) { create(:tag_group) }
+      let(:tag_group_name) { 'Nonexistent Tag Group' }
+      let(:parameters) do
+        {
+          name: 'Test Tag Set',
+          tag_group_name: tag_group_name,
+          tag2_group_name: tag2_group.name
+        }
+      end
+
+      it 'sets an error message' do # rubocop:disable RSpec/MultipleExpectations
+        uat_action = described_class.new(parameters)
+        expect(uat_action.valid?).to be false
+        message = format(described_class::ERROR_TAG_GROUP_DOES_NOT_EXIST, tag_group_name)
+        expect(uat_action.errors[:tag_group_name]).to include(message)
+      end
+    end
+
+    context 'when tag2 group does not exist' do
+      let(:tag_group) { create(:tag_group) }
+      let(:tag2_group_name) { 'Nonexistent Tag2 Group' }
+      let(:parameters) do
+        {
+          name: 'Test Tag Set',
+          tag_group_name: tag_group.name,
+          tag2_group_name: tag2_group_name
+        }
+      end
+
+      it 'sets an error message' do # rubocop:disable RSpec/MultipleExpectations
+        expect(uat_action.valid?).to be false
+        message = format(described_class::ERROR_TAG2_GROUP_DOES_NOT_EXIST, tag2_group_name)
+        expect(uat_action.errors[:tag2_group_name]).to include(message)
       end
     end
   end
