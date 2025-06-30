@@ -1641,16 +1641,6 @@ Style/DocumentDynamicEvalDefinition:
     - 'features/support/api.rb'
     - 'lib/eventful_record.rb'
 
-# Offense count: 5
-# This cop supports safe autocorrection (--autocorrect).
-Style/EmptyCaseCondition:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler/actions.rb'
-    - 'app/api/core/io/json/grammar.rb'
-    - 'app/models/aliquot.rb'
-    - 'app/models/request/change_decision.rb'
-    - 'app/models/request_type.rb'
-
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AutoCorrect, EnforcedStyle, AllowComments.
