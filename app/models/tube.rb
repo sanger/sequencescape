@@ -102,17 +102,17 @@ class Tube < Labware
 
   private
 
-  # mutates 'attributes'
-  def extract_barcode(args, attributes)
-    barcode = args.first || attributes.delete(:barcode)
-    prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
-    [barcode, prefix]
-  end
-
   def validate_barcode(barcode, prefix)
     human = SBCF::SangerBarcode.new(prefix: prefix, number: barcode).human_barcode
     raise "Barcode: #{barcode} already used!" if Barcode.exists?(barcode: human)
   end
+end
+
+# mutates 'attributes'
+def extract_barcode(args, attributes)
+  barcode = args.first || attributes.delete(:barcode)
+  prefix = attributes.delete(:barcode_prefix)&.prefix || default_prefix
+  [barcode, prefix]
 end
 
 # Required for the descendants method to work when eager loading is off in test
