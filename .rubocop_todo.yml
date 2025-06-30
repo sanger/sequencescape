@@ -69,14 +69,6 @@ Lint/AmbiguousBlockAssociation:
     - 'test/controllers/admin_users_controller_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
-# Offense count: 2
-# This cop supports unsafe autocorrection (--autocorrect-all).
-# Configuration parameters: RequireParenthesesForMethodChains.
-Lint/AmbiguousRange:
-  Exclude:
-    - 'app/models/bulk_submission.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/upload/data.rb'
-
 # Offense count: 7
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Lint/BooleanSymbol:

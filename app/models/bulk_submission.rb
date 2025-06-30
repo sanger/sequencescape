@@ -94,7 +94,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index + 1...@csv_rows.length)
+    @csv_rows.slice((header_index + 1)...@csv_rows.length)
   end
   private :csv_data_rows
 
