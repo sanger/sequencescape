@@ -239,14 +239,6 @@ Lint/StructNewOverride:
   Exclude:
     - 'app/models/product_criteria/basic.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AutoCorrect, ContextCreatingMethods, MethodCreatingMethods, inherit_mode.
-# ContextCreatingMethods: class_methods, included, prepended, concern, concerning
-Lint/UselessAccessModifier:
-  Exclude:
-    - 'app/models/tube.rb'
-
 # Offense count: 64
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: AutoCorrect.
