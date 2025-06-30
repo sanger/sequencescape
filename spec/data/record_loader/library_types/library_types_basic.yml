@@ -1,0 +1,8 @@
+# This file was automatically generated via `rails g record_loader`
+# You should modify it to match your particular model.
+---
+Unique name 1:
+  name: name 1
+Unique name 2:
+  name: name 2
+
