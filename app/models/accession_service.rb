@@ -91,7 +91,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
           )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
-          raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}"
+          raise AccessionServiceError, "EBI Server Error. Could not get accession number: #{xml_result}"
         end
 
         xmldoc = Document.new(xml_result)
@@ -122,8 +122,12 @@ class AccessionService # rubocop:todo Metrics/ClassLength
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
+          current_error = errors.first
+          message = "Current error is: '#{current_error}'"
+          more_messages = "There are #{errors.length - 1} more errors." if errors.many?
           raise AccessionServiceError,
-                "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
+                ['Could not get accession number. Error in submitted data:', $!.to_s, message,
+                 more_messages].compact.join(' ')
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
