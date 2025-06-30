@@ -1670,16 +1670,6 @@ Style/EmptyLiteral:
     - 'app/models/submission/presenter_skeleton.rb'
     - 'app/models/transfer/from_plate_to_specific_tubes_by_pool.rb'
 
-# Offense count: 6
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: trailing_conditional, ternary
-Style/EmptyStringInsideInterpolation:
-  Exclude:
-    - 'features/support/step_definitions/web_form_steps.rb'
-    - 'lib/limber/helper.rb'
-    - 'test/unit/qc_metric_test.rb'
-
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
 Style/Encoding:
