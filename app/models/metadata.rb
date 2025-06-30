@@ -68,7 +68,7 @@ module Metadata
     )
   end
 
-  def include_tag(tag, options = Hash.new)
+  def include_tag(tag, options = {})
     tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
   end
 
