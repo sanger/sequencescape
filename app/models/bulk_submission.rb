@@ -275,7 +275,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
     Hash
-      .new { |h, i| h[i] = Array.new }
+      .new { |h, i| h[i] = [] }
       .tap do |submission|
         csv_data_rows.each_with_index do |row, index|
           next if row.all?(&:nil?)

@@ -1659,17 +1659,6 @@ Style/EmptyElse:
   Exclude:
     - 'app/controllers/requests/comments_controller.rb'
 
-# Offense count: 8
-# This cop supports safe autocorrection (--autocorrect).
-Style/EmptyLiteral:
-  Exclude:
-    - 'app/api/model_extensions/order.rb'
-    - 'app/models/api/base.rb'
-    - 'app/models/bulk_submission.rb'
-    - 'app/models/metadata.rb'
-    - 'app/models/submission/presenter_skeleton.rb'
-    - 'app/models/transfer/from_plate_to_specific_tubes_by_pool.rb'
-
 # Offense count: 4
 # This cop supports safe autocorrection (--autocorrect).
 Style/Encoding:
