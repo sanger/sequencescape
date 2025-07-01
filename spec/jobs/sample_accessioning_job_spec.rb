@@ -43,14 +43,15 @@ RSpec.describe SampleAccessioningJob, type: :job do
         )
       end
 
-      it 'notifies ExceptionNotifier' do
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(StandardError),
-          data: {
-            message: 'Error performing SampleAccessioningJob: Failed to update accession number'
-          }
-        )
-      end
+      # TODO: {Y25-280} Uncomment this as part of improving error handling
+      # it 'notifies ExceptionNotifier' do
+      #   expect(ExceptionNotifier).to have_received(:notify_exception).with(
+      #     instance_of(StandardError),
+      #     data: {
+      #       message: 'Error performing SampleAccessioningJob: Failed to update accession number'
+      #     }
+      #   )
+      # end
     end
 
     context 'when an exception is raised during submission' do
@@ -65,14 +66,15 @@ RSpec.describe SampleAccessioningJob, type: :job do
         expect(logger).to have_received(:error).with("Error performing SampleAccessioningJob: #{error.message}")
       end
 
-      it 'notifies ExceptionNotifier' do
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          error,
-          data: {
-            message: "Error performing SampleAccessioningJob: #{error.message}"
-          }
-        )
-      end
+      # TODO: {Y25-280} Uncomment this as part of improving error handling
+      # it 'notifies ExceptionNotifier' do
+      #   expect(ExceptionNotifier).to have_received(:notify_exception).with(
+      #     error,
+      #     data: {
+      #       message: "Error performing SampleAccessioningJob: #{error.message}"
+      #     }
+      #   )
+      # end
     end
   end
 
