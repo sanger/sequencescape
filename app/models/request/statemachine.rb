@@ -13,9 +13,9 @@ module Request::Statemachine
   SORT_ORDER = %w[pending blocked hold started passed failed cancelled].freeze
 
   class_methods do
-    def redefine_aasm(options = {}, &block)
+    def redefine_aasm(options = {}, &)
       destroy_aasm
-      aasm(options, &block)
+      aasm(options, &)
     end
 
     def destroy_aasm # rubocop:todo Metrics/MethodLength
@@ -175,7 +175,8 @@ module Request::Statemachine
     raise StandardError, 'Can only use change decision on passed or failed requests'
   end
   deprecate change_decision!:
-              'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!'
+              'Change decision is being deprecated in favour of retrospective_pass and retrospective_fail!',
+            deprecator: Rails.application.deprecators[:sequencescape]
 
   def on_failed
   end

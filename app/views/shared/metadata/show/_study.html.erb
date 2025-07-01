@@ -14,6 +14,10 @@
       <%= group.plain_value(:study_sra_hold) %>
     <% end %>
 
+    <%= metadata_fields.plain_value(:ebi_library_strategy) %>
+    <%= metadata_fields.plain_value(:ebi_library_source) %>
+    <%= metadata_fields.plain_value(:ebi_library_selection) %>
+
     <%= metadata_fields.plain_value(:contains_human_dna) %>
     <%= metadata_fields.plain_value(:contaminated_human_dna) %>
     <%= metadata_fields.plain_value(:commercially_available) %>
@@ -53,6 +57,9 @@
             <%= group.plain_value(:data_release_delay_reason_comment) %>
           <% end %>
         <% end %>
+      <% elsif study.study_metadata.delay_until_publication? %>
+        <%= group.plain_value(:data_release_timing_publication_comment) %>
+        <%= group.plain_value(:data_share_in_preprint) %>
       <% elsif study.study_metadata.never_release? %>
         <%= group.plain_value(:data_release_prevention_reason) %>
         <%= group.plain_value(:data_release_prevention_approval) %>

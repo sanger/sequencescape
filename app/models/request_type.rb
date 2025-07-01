@@ -85,7 +85,7 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates :morphology, numericality: { in: 0...MORPHOLOGIES.length }
   validates :request_class, presence: true, inclusion: { in: ->(_) { [Request, *Request.descendants] } }
 
-  serialize :request_parameters
+  serialize :request_parameters, coder: YAML
 
   delegate :accessioning_required?, :sequencing?, to: :request_class
 
@@ -173,10 +173,9 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def create_target_asset!(&)
-    case
-    when target_purpose.present?
+    if target_purpose.present?
       target_purpose.create!(&).receptacle
-    when target_asset_type.blank?
+    elsif target_asset_type.blank?
       nil
     else
       target_asset_type.constantize.create!(&)

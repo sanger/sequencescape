@@ -18,11 +18,11 @@ shared_examples_for 'ApiKeyAuthenticatable' do
       api_get base_endpoint, headers: client_headers
 
       expect(Rails.logger).to have_received(:info).with(/Request made without an API key/)
-      expect(Rails.logger).to have_received(:info).with(/:remote_ip=>"127.0.0.1"/)
-      expect(Rails.logger).to have_received(:info).with(/:user_agent=>"Test Agent"/)
-      expect(Rails.logger).to have_received(:info).with(/:origin=>"Test Origin"/)
-      expect(Rails.logger).to have_received(:info).with(%r{:original_url=>"http://www.example.com#{base_endpoint}"})
-      expect(Rails.logger).to have_received(:info).with(/:request_method=>"GET"/)
+      expect(Rails.logger).to have_received(:info).with(/remote_ip: "127.0.0.1"/)
+      expect(Rails.logger).to have_received(:info).with(/user_agent: "Test Agent"/)
+      expect(Rails.logger).to have_received(:info).with(/origin: "Test Origin"/)
+      expect(Rails.logger).to have_received(:info).with(%r{original_url: "http://www.example.com#{base_endpoint}"})
+      expect(Rails.logger).to have_received(:info).with(/request_method: "GET"/)
     end
   end
 
@@ -41,12 +41,12 @@ shared_examples_for 'ApiKeyAuthenticatable' do
       api_get(base_endpoint, headers:)
 
       expect(Rails.logger).to have_received(:info).with(/Request made with invalid API key/)
-      expect(Rails.logger).to have_received(:info).with(/:remote_ip=>"127.0.0.1"/)
-      expect(Rails.logger).to have_received(:info).with(/:user_agent=>"Test Agent"/)
-      expect(Rails.logger).to have_received(:info).with(/:origin=>"Test Origin"/)
-      expect(Rails.logger).to have_received(:info).with(%r{:original_url=>"http://www.example.com#{base_endpoint}"})
-      expect(Rails.logger).to have_received(:info).with(/:request_method=>"GET"/)
-      expect(Rails.logger).to have_received(:info).with(/:api_key=>"invalid-key"/)
+      expect(Rails.logger).to have_received(:info).with(/remote_ip: "127.0.0.1"/)
+      expect(Rails.logger).to have_received(:info).with(/user_agent: "Test Agent"/)
+      expect(Rails.logger).to have_received(:info).with(/origin: "Test Origin"/)
+      expect(Rails.logger).to have_received(:info).with(%r{original_url: "http://www.example.com#{base_endpoint}"})
+      expect(Rails.logger).to have_received(:info).with(/request_method: "GET"/)
+      expect(Rails.logger).to have_received(:info).with(/api_key: "invalid-key"/)
     end
   end
 

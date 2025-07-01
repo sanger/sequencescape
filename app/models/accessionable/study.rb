@@ -61,7 +61,7 @@ module Accessionable
             if StudyType.include?(study_type)
               xml.STUDY_TYPE(existing_study_type: study_type)
             else
-              xml.STUDY_TYPE(existing_study_type: ::Study::Other_type, new_study_type: study_type)
+              xml.STUDY_TYPE(existing_study_type: ::Study::OTHER_TYPE, new_study_type: study_type)
             end
           end
           xml.STUDY_ATTRIBUTES { tags.each { |tag| xml.STUDY_ATTRIBUTE { tag.build(xml) } } } if tags.present?
@@ -77,7 +77,7 @@ module Accessionable
     end
 
     def protect?(service)
-      service.study_visibility(@study) == AccessionService::Protect
+      service.study_visibility(@study) == AccessionService::PROTECT
     end
 
     def update_accession_number!(user, accession_number)

@@ -4,8 +4,8 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '!= 1.3.5' # due to rails/rails#54264, remove restriction after upgrade to rails 7.1
-  gem 'rails', '~> 7.0.8'
+  gem 'concurrent-ruby', '1.3.5'
+  gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
@@ -24,7 +24,7 @@ group :default do
   gem 'after_commit_everywhere', '~> 1.0'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rest-client' # curb substitute.
+  gem 'rest-client'
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
@@ -43,7 +43,7 @@ group :default do
   gem 'will_paginate-bootstrap'
 
   # Provides eg. error_messages_for previously in rails 2, now deprecated.
-  #gem 'dynamic_form'
+  # gem 'dynamic_form'
 
   gem 'daemons'
   gem 'puma'
@@ -95,7 +95,7 @@ group :default do
   gem 'bunny', '>= 2.22.0'
 
   # Provides message schema encoding and decoding for messages to RabbitMQ
-  gem 'avro', '~> 1.11.0'
+  gem 'avro'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
@@ -128,9 +128,9 @@ group :default do
   gem 'cancancan'
 
   # Feature flags
-  gem 'flipper', '~> 0.25.0'
-  gem 'flipper-active_record', '~> 0.25.0'
-  gem 'flipper-ui', '~> 0.25.0'
+  gem 'flipper', '~> 1.0'
+  gem 'flipper-active_record', '~> 1.0'
+  gem 'flipper-ui', '~> 1.0'
 end
 
 group :development do
@@ -218,6 +218,7 @@ group :test, :cucumber do
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda'
   gem 'simplecov', require: false
+  gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
 
   gem 'cucumber_github_formatter'

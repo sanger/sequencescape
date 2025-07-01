@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'test_helper'
-require 'batches_controller'
 
 class BatchesControllerTest < ActionController::TestCase
   context 'BatchesController' do
@@ -202,9 +201,9 @@ class BatchesControllerTest < ActionController::TestCase
                  'barcode_1' => '3980654321768'
                }
           assert_equal [
-                         'The tube at position 1 is incorrect: expected NT654321L.',
-                         'The tube at position 2 is incorrect: expected NT123456W.'
-                       ],
+            'The tube at position 1 is incorrect: expected NT654321L.',
+            'The tube at position 2 is incorrect: expected NT123456W.'
+          ],
                        flash[:error]
         end
 

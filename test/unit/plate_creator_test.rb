@@ -20,18 +20,18 @@ class CreatorTest < ActiveSupport::TestCase
     RestClient.expects(:post)
 
     assert creator.execute(
-             '',
-             barcode_printer,
-             scanned_user,
-             create_asset_group,
-             Plate::CreatorParameters.new(
-               'user_barcode' => '2470000099652',
-               'source_plates' => '',
-               'creator_id' => '1',
-               'dilution_factor' => '1',
-               'barcode_printer' => '1'
-             )
-           )
+      '',
+      barcode_printer,
+      scanned_user,
+      create_asset_group,
+      Plate::CreatorParameters.new(
+        'user_barcode' => '2470000099652',
+        'source_plates' => '',
+        'creator_id' => '1',
+        'dilution_factor' => '1',
+        'barcode_printer' => '1'
+      )
+    )
   end
 
   test 'should properly create plates' do
@@ -59,5 +59,19 @@ class CreatorTest < ActiveSupport::TestCase
              "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
       # rubocop:enable Layout/LineLength
     end
+  end
+
+  test 'should fail if source plate has no samples' do
+    scanned_source_barcode = 'SQPD-1'
+    empty_source_plate = create(:plate, barcode: scanned_source_barcode)
+
+    PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode))
+
+    error =
+      assert_raises(StandardError) do
+        @creator.send(:validate_plate_is_with_sample, empty_source_plate, scanned_source_barcode)
+      end
+
+    assert_match(/No samples were found in the scanned/, error.message)
   end
 end

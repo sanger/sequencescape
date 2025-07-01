@@ -178,7 +178,7 @@ module ApplicationHelper
   # rubocop:todo Metrics/ParameterLists
   def request_link(object, count, request_type, status = nil, options = {}, link_options = {})
     # rubocop:enable Metrics/ParameterLists
-    link_to_if((count != 0), count, request_list_path(object, request_type, status, options), link_options)
+    link_to_if(count != 0, count, request_list_path(object, request_type, status, options), link_options)
   end
 
   def request_list_path(object, request_type = nil, status = nil, options = {})
@@ -195,7 +195,7 @@ module ApplicationHelper
   end
 
   def display_follow(item, user, msg)
-    user.follower_of?(item) ? 'Unfollow ' + msg : 'Follow ' + msg
+    user.follower_of?(item) ? "Unfollow #{msg}" : "Follow #{msg}"
   end
 
   ## From Pipelines
@@ -355,6 +355,7 @@ end
 # <https://apidock.com/rails/ActionView/Helpers/ActiveRecordHelper/error_messages_for>
 def render_error_messages(object)
   return if object.errors.count.zero?
+
   contents = +''
   contents << error_message_header(object)
   contents << error_messages_ul_html_safe(object)

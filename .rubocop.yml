@@ -1,14 +1,14 @@
 inherit_from:
-  - node_modules/@prettier/plugin-ruby/rubocop.yml
   - .rubocop_todo.yml
 require:
   - test_prof/rubocop
+plugins:
+  - rubocop-capybara
+  - rubocop-factory_bot
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
-  - rubocop-capybara
-  - rubocop-factory_bot
 
 inherit_mode:
   merge:
@@ -28,17 +28,36 @@ AllCops:
     - node_modules/**/*
     - tmp/**/*
 
-RSpec/AggregateExamples:
-  # Aggregate examples can be useful, but the cop gets into nasty battles with
-  # other Spec cops, and is only really of value in expensive tests.
+Layout/EmptyLineAfterMagicComment:
   Enabled: false
-# Added exclude because api and feature specs do not have a specific class.
-RSpec/DescribeClass:
+
+Layout/EndAlignment:
+  EnforcedStyleAlignWith: start_of_line
+
+Layout/DefEndAlignment:
+  EnforcedStyleAlignWith: def
+
+Layout/LeadingCommentSpace:
+  AllowRBSInlineAnnotation: true
+
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented
+
+# There is so much existing inconsistent code that it is not worth enforcing this cop
+Naming/PredicateMethod:
+  Enabled: false
+
+# Step definitions are defined with Given /regex/ do ...
+# There is little ambiguity here, and brackets just break convention
+Lint/AmbiguousRegexpLiteral:
   Exclude:
-    - "spec/requests/**/*.rb"
-    - "spec/api/**/*.rb"
-    - "spec/features/**/*.rb"
-    - "spec/views/**/*.rb"
+    - features/support/step_definitions/**/*
+
+Rails:
+  Enabled: true
 
 Rails/SkipsModelValidations:
   Exclude:
@@ -46,16 +65,15 @@ Rails/SkipsModelValidations:
     - "db/migrate_asset_refactor/*.rb"
     - "features/support/step_definitions/*.rb"
 
+# This cop doesn't always increase clarity
+Style/CollectionQuerying:
+  Enabled: false
+
 Style/Documentation:
   Enabled: false
 
-Rails:
-  Enabled: true
-# Step definitions are defined with Given /regex/ do ...
-# There is little ambiguity here, and brackets just break convention
-Lint/AmbiguousRegexpLiteral:
-  Exclude:
-    - features/support/step_definitions/**/*
+Style/EmptyMethod:
+  EnforcedStyle: expanded
 
 # Only use shorthand hash syntax when all keys match the variables for better readability
 Style/HashSyntax:
@@ -113,6 +131,7 @@ Metrics/BlockLength:
     - redefine_aasm
     - model
     - step
+
 # We have a few custom find_by methods which we maintain.
 # At least for now. find_by_id_or_name is a bit clunky.
 Rails/DynamicFindBy:
@@ -124,6 +143,7 @@ Rails/DynamicFindBy:
     - find_by_id_or_name
     - find_by_id_or_name!
     - find_by_barcode
+
 # Method length limits make little sense when you are describing a table schema
 # or a view.
 Metrics/MethodLength:
@@ -133,8 +153,10 @@ Metrics/MethodLength:
     - array
     - hash
     - heredoc
+
 Style/ClassAndModuleChildren:
   Enabled: false
+
 Rails/UnknownEnv:
   Environments:
     - production
@@ -142,6 +164,20 @@ Rails/UnknownEnv:
     - test
     - cucumber
     - profile
+    - staging
+
+RSpec/AggregateExamples:
+  # Aggregate examples can be useful, but the cop gets into nasty battles with
+  # other Spec cops, and is only really of value in expensive tests.
+  Enabled: false
+
+# Added exclude because api and feature specs do not have a specific class.
+RSpec/DescribeClass:
+  Exclude:
+    - "spec/requests/**/*.rb"
+    - "spec/api/**/*.rb"
+    - "spec/features/**/*.rb"
+    - "spec/views/**/*.rb"
 
 RSpec/ExampleLength:
   inherit_mode:
@@ -174,6 +210,7 @@ RSpecRails/AvoidSetupHook:
 RSpec/MultipleExpectations:
   Exclude:
     - "spec/features/**/*"
+
 Lint/UnusedMethodArgument:
   # Unused keyword arguments are good for maintaining API compatibility, and
   # applying an underscore before the keyword name breaks that API.

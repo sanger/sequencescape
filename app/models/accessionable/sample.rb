@@ -106,15 +106,11 @@ module Accessionable
     end
 
     def protect?(service)
-      service.sample_visibility(@sample) == AccessionService::Protect
+      service.sample_visibility(@sample) == AccessionService::PROTECT
     end
 
-    def released?
-      @sample.released?
-    end
+    delegate :released?, to: :@sample
   end
-
-  private
 
   class ArrayExpressTag < Base::Tag
     def label

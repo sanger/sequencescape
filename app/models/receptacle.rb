@@ -184,7 +184,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   delegate :tag_count_name, to: :most_tagged_aliquot, allow_nil: true
 
   # def map_description
-  delegate :description, to: :map, prefix: true, allow_nil: true
+  delegate :description, to: :map, prefix: true, allow_nil: true # rubocop:todo Lint/DuplicateMethods
 
   def total_comment_count
     comments.size + labware_comment_count
@@ -279,7 +279,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
   alias attach_tags attach_tag
 
   # Contained samples also works on eg. plate
-  alias_attribute :contained_samples, :samples
+  alias contained_samples samples
 
   # We only support wells for the time being
   def latest_stock_metrics(_product, *_args)

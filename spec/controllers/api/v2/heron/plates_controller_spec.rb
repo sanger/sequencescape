@@ -37,7 +37,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
             study_uuid: study_uuid
           }
         }
-      }.to_h.with_indifferent_access
+      }.with_indifferent_access
     end
     let!(:before_plate_count) { Plate.count }
 

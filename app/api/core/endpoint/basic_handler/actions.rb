@@ -59,7 +59,7 @@ module Core::Endpoint::BasicHandler::Actions
     raise StandardError, 'Need an I/O class for this request' if request.io.nil?
   end
 
-  def does_not_require_an_io_class
+  def not_require_an_io_class?
     singleton_class.class_eval('def check_request_io_class!(_) ; end', __FILE__, __LINE__)
   end
 
@@ -103,11 +103,10 @@ module Core::Endpoint::BasicHandler::Actions
 
   def declare_action(name, options, &block) # rubocop:todo Metrics/MethodLength
     action_implementation_method =
-      case
-      when block
+      if block
         singleton_class.class_eval { define_method(:"_#{name}_internal", &block) }
         :"_#{name}_internal"
-      when options[:to]
+      elsif options[:to]
         options[:to]
       else
         raise StandardError, 'Block or :to option needed to declare action'

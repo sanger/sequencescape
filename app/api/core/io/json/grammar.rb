@@ -34,12 +34,11 @@ module Core::Io::Json::Grammar
         .uniq
         .each_with_object({}) do |k, store|
           cloned =
-            case
-            when @children.key?(k) && node.children.key?(k)
+            if @children.key?(k) && node.children.key?(k)
               node.children[k].merge(@children[k])
-            when @children.key?(k)
+            elsif @children.key?(k)
               @children[k]
-            when node.children.key?(k)
+            elsif node.children.key?(k)
               node.children[k]
             else
               raise 'Odd, how did that happen?'
@@ -130,8 +129,8 @@ module Core::Io::Json::Grammar
     end
 
     def merge(node)
-      super(node) do |children|
-        self.class.new(@name, children) # prettier-ignore
+      super do |children|
+        self.class.new(@name, children)
       end
     end
 
@@ -153,6 +152,7 @@ module Core::Io::Json::Grammar
       value =
         @attribute_path.inject(object) do |o, k|
           return if o.nil?
+
           o.send(k)
         end or return
 

@@ -49,7 +49,7 @@ module Accession
       tags.values.collect(&:label)
     end
 
-    def values
+    def values # rubocop:todo Lint/DuplicateMethods
       tags.values.collect(&:value)
     end
 
@@ -95,6 +95,7 @@ module Accession
 
     def factory_class_for(tag_yaml)
       return tag_yaml[:class_name].constantize if tag_yaml&.key?(:class_name)
+
       Accession::Tag
     end
 

@@ -4,10 +4,10 @@
 namespace :record_loader do
   desc 'Automatically generate PipelineRequestInformationType through PipelineRequestInformationTypeLoader'
   task pipeline_request_information_type: [
-         :environment,
-         'record_loader:pipeline',
-         'record_loader:request_information_type'
-       ] do
+    :environment,
+    'record_loader:pipeline',
+    'record_loader:request_information_type'
+  ] do
     RecordLoader::PipelineRequestInformationTypeLoader.new.create!
   end
 end

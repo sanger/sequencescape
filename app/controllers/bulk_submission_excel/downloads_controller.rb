@@ -5,6 +5,8 @@
 class BulkSubmissionExcel::DownloadsController < ApplicationController
   CONTENT_TYPE = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 
+  # Renders 'new' view with a form to download a bulk submission excel template
+  # This is called when the submission template is picked from the dropdown by the user
   def new
     @submission_template = SubmissionTemplate.find_by(id: params[:submission_template_id])
     @input_field_infos = @submission_template&.input_field_infos || []

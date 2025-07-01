@@ -47,6 +47,7 @@ module SampleManifestExcel
 
         # column_number is -1 if no column found by this name (returns NullColumn object from find)
         return nil if column_number.negative?
+
         at(column_number)
       end
 
@@ -63,7 +64,8 @@ module SampleManifestExcel
       def aliquot
         @aliquot ||= manifest_asset.aliquot
       end
-      deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.'
+      deprecate aliquot: 'Chromium manifests may have multiple aliquots. Please use aliquots instead.',
+                deprecator: Rails.application.deprecators[:sequencescape]
 
       def metadata
         @metadata ||= sample.sample_metadata
@@ -157,12 +159,13 @@ module SampleManifestExcel
 
         # check the columns exist, are valid, and at least one of the primary column options are present
         unless columns.present? && columns.valid? &&
-                 (primary_column_names.any? { |column_name| columns.names.include? column_name })
+            (primary_column_names.any? { |column_name| columns.names.include? column_name })
           return true
         end
 
         # it is mandatory to have a value in the primary column
         return true if primary_column_names.all? { |column_name| value(column_name).blank? }
+
         false
       end
 

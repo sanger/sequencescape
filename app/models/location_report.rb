@@ -6,9 +6,9 @@ class LocationReport < ApplicationRecord
   extend DbFile::Uploader
 
   # attributes / variables
-  serialize :faculty_sponsor_ids, Array
-  serialize :plate_purpose_ids, Array
-  serialize :barcodes, Array
+  serialize :faculty_sponsor_ids, type: Array, coder: YAML
+  serialize :plate_purpose_ids, type: Array, coder: YAML
+  serialize :barcodes, type: Array, coder: YAML
   self.per_page = 20
   enum :report_type, { type_selection: 0, type_labwhere: 1 }
 
@@ -97,7 +97,7 @@ class LocationReport < ApplicationRecord
 
   def generate!
     csv_options = { row_sep: "\r\n", force_quotes: true }
-    filename = ['locn_rpt', name].join('_') + '.csv'
+    filename = "#{['locn_rpt', name].join('_')}.csv"
 
     ActiveRecord::Base.transaction do
       Tempfile.open(filename) do |tempfile|

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-rt = rt = RequestType.find_by(key: 'qc_miseq_sequencing')
+rt = RequestType.find_by(key: 'qc_miseq_sequencing')
 tube = BarcodePrinterType.find_by(name: '1D Tube')
 plate = BarcodePrinterType.find_by(name: '96 Well PLate')
 
@@ -70,8 +70,7 @@ SubmissionTemplate.create!(
   name: 'MiSeq for TagQC',
   submission_class_name: 'LinearSubmission',
   submission_parameters: {
-    request_options: {
-    },
+    request_options: {},
     request_type_ids_list: [[rt.id]],
     info_differential: nil
   },
@@ -82,8 +81,7 @@ SubmissionTemplate.create!(
   name: 'MiSeq for QC',
   submission_class_name: 'LinearSubmission',
   submission_parameters: {
-    request_options: {
-    },
+    request_options: {},
     request_type_ids_list: [[rt.id]],
     info_differential: nil
   },

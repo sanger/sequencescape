@@ -1,0 +1,14 @@
+# Request types for RVIG Bait Capture Library
+---
+limber_rvig_bait_capture_library_prep:
+  name: Limber RVIG Bait Capture Library Preparation
+  asset_type: Well
+  order: 1
+  request_class_name: Pulldown::Requests::IscLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Bait Capture Library
+  library_types:
+    - RVIG-BCL
+  acceptable_purposes:
+    - RVI Cherrypick

@@ -94,10 +94,8 @@ class Robot::PickData
 
       # initialize the data_object for this pick if it doesn't exist already
       data_objects[pick_to_use] ||= {
-        'destination' => {
-        },
-        'source' => {
-        },
+        'destination' => {},
+        'source' => {},
         'time' => Time.zone.now,
         'user' => user.login
       }

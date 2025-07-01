@@ -46,6 +46,7 @@ class RequestType::Validator < ApplicationRecord
 
     def include?(option)
       return true if option.nil?
+
       request_type.flowcell_types.exists?(name: option)
     end
 
@@ -78,10 +79,7 @@ class RequestType::Validator < ApplicationRecord
       @array.send(method, ...)
     end
 
-    def include?(option)
-      # We have to define include specifically
-      @array.include?(option)
-    end
+    delegate :include?, to: :@array
 
     def to_a
       @array
@@ -106,7 +104,7 @@ class RequestType::Validator < ApplicationRecord
 
   belongs_to :request_type, optional: false
   validates :request_option, :valid_options, presence: true
-  serialize :valid_options
+  serialize :valid_options, coder: YAML
 
   delegate :include?, to: :valid_options
 
@@ -128,6 +126,7 @@ class RequestType::Validator < ApplicationRecord
 
   def allow_blank?
     return false unless valid_options.respond_to? :allow_blank?
+
     valid_options.allow_blank?
   end
 end

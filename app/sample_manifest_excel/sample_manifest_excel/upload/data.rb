@@ -105,7 +105,7 @@ module SampleManifestExcel
         return nil if sheet.nil? || start_row.nil?
 
         output = {}
-        (2..start_row - 1).each do |row_num|
+        (2..(start_row - 1)).each do |row_num|
           row = sheet.row(row_num)
           info_label = row[0]
           info_value = row[1]

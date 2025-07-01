@@ -53,8 +53,8 @@ class UatActions
       # raise error if any categories are not in the list
       all.each do |uat_action|
         unless CATEGORY_LIST.include?(uat_action.category)
-          raise "Category '#{uat_action.category}' from '#{uat_action}' is not in the list" \
-                  " of categories #{CATEGORY_LIST}"
+          raise "Category '#{uat_action.category}' from '#{uat_action}' is not in the list " \
+                "of categories #{CATEGORY_LIST}"
         end
       end
 
@@ -117,9 +117,7 @@ class UatActions
     @report ||= {}
   end
 
-  def form_fields
-    self.class.form_fields
-  end
+  delegate :form_fields, to: :class
 
   def save
     valid? && ActiveRecord::Base.transaction { perform }

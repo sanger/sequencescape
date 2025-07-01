@@ -137,9 +137,9 @@ plate_library:
     - :i7
     - :i5
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -195,9 +195,9 @@ plate_dual_index_tag_library:
     - :dual_index_tag_set
     - :dual_index_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -252,9 +252,9 @@ plate_chromium_library:
     - :chromium_tag_group
     - :chromium_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -523,9 +523,9 @@ tube_library_with_tag_sequences:
     - :i7
     - :i5
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -565,9 +565,9 @@ tube_chromium_library:
     - :chromium_tag_group
     - :chromium_tag_well
     - :reference_genome
-    - :library_type
-    - :insert_size_from
-    - :insert_size_to
+    - :library_type_required
+    - :insert_size_from_required
+    - :insert_size_to_required
     - :cohort
     - :volume
     - :concentration
@@ -830,6 +830,13 @@ scrna_core:
     - :volume
     - :retention_instruction
     - :sample_description
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :phenotype
+    - :gender
+    - :sample_ebi_accession_number
+    - :sample_taxon_id
+    - :sample_common_name
 tube_controls:
   heading: "Control tubes"
   asset_type: "1dtube"

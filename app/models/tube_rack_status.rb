@@ -7,7 +7,7 @@ class TubeRackStatus < ApplicationRecord
   validates :barcode, presence: true
   validates :status, presence: true
 
-  serialize :messages
+  serialize :messages, coder: YAML
 
   belongs_to :labware
 end

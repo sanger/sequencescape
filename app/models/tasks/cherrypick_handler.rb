@@ -107,7 +107,6 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     # rubocop:todo Metrics/BlockLength
     ActiveRecord::Base.transaction do
       # Determine if there is a standard plate to use.
-      partial_plate = nil
       plate_barcode = params[:plate_barcode]
       fluidigm_plate = params[:fluidigm_plate]
       partial_plate = Plate.find_from_barcode(fluidigm_plate.presence || plate_barcode)
@@ -181,7 +180,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
 
             request, well =
               request_and_well[request_id.gsub('well_', '').to_i] ||
-                raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
+              raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies
@@ -224,7 +223,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         }
       )
 
-      AssetLink::BuilderJob.create(links)
+      AssetLink::BuilderJob.create_now(links)
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)

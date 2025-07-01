@@ -41,7 +41,7 @@ class QcMetricTest < ActiveSupport::TestCase
       ['manually_failed', true, true],
       ['unprocessable', false, true]
     ].each do |qc_state, proceedable, set_suboptimal|
-      should "#{proceedable ? '' : 'not '}allow the proceed flag to be set to Y when #{qc_state}" do
+      should "#{'not ' unless proceedable}allow the proceed flag to be set to Y when #{qc_state}" do
         qc = create(:qc_metric, qc_decision: qc_state)
         qc.human_proceed = 'Y'
         assert_equal proceedable, qc.proceed
@@ -53,7 +53,7 @@ class QcMetricTest < ActiveSupport::TestCase
         assert_equal false, qc.proceed
       end
 
-      should "#{set_suboptimal ? '' : 'not '}flag the aliquot as suboptimal when #{qc_state}" do
+      should "#{'not ' unless set_suboptimal}flag the aliquot as suboptimal when #{qc_state}" do
         aliquot = create(:aliquot)
         well = create(:well)
         well.aliquots << aliquot

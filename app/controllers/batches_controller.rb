@@ -26,6 +26,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   filtered
                   swap
                   download_spreadsheet
+                  generate_sample_sheet
                 ]
   before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
 
@@ -306,16 +307,16 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def swap # rubocop:todo Metrics/AbcSize
     if @batch.swap(
-         current_user,
-         'batch_1' => {
-           'id' => params['batch']['1'],
-           'lane' => params['batch']['position']['1']
-         },
-         'batch_2' => {
-           'id' => params['batch']['2'],
-           'lane' => params['batch']['position']['2']
-         }
-       )
+      current_user,
+      'batch_1' => {
+        'id' => params['batch']['1'],
+        'lane' => params['batch']['position']['1']
+      },
+      'batch_2' => {
+        'id' => params['batch']['2'],
+        'lane' => params['batch']['position']['2']
+      }
+    )
       flash[:notice] = 'Successfully swapped lane positions'
       redirect_to batch_path(@batch)
     else
@@ -348,6 +349,14 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       @batch = Batch.find(batch_id)
       render action: 'show', format: :xml
     end
+  end
+
+  def generate_sample_sheet
+    csv_string = AvitiSampleSheet::SampleSheetGenerator.generate(@batch)
+    send_data csv_string.encode('UTF-8'),
+              type: 'text/csv',
+              filename: "batch_#{@batch.id}_run_manifest.csv",
+              disposition: 'attachment'
   end
 
   private

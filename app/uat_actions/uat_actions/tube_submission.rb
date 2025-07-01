@@ -30,8 +30,8 @@ class UatActions::TubeSubmission < UatActions
              label: 'Library Type',
              help:
                'Select the library type to use when creating the requests. ' \
-                 'Leave blank to automatically use the first library type found. ' \
-                 'Useful where the same request type has multiple library types.',
+               'Leave blank to automatically use the first library type found. ' \
+               'Useful where the same request type has multiple library types.',
              select_options: -> { LibraryType.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Using default library type...'
@@ -46,7 +46,7 @@ class UatActions::TubeSubmission < UatActions
              label: 'Number of pools',
              help:
                'Optional field to set the number_of_pools field on the ' \
-                 'submission request. Leave blank if not required.',
+               'submission request. Leave blank if not required.',
              options: {
                minimum: 0
              }
@@ -56,7 +56,7 @@ class UatActions::TubeSubmission < UatActions
              label: 'Cells per Chip Well',
              help:
                'Optional field to set the cells_per_chip_well field on the ' \
-                 'submission request. Leave blank if not required.',
+               'submission request. Leave blank if not required.',
              options: {
                minimum: 0
              }
@@ -123,6 +123,7 @@ class UatActions::TubeSubmission < UatActions
   # @return [void]
   def validate_tubes_exist
     return if tube_barcodes.blank? # already validated by presence
+
     barcodes =
       tube_barcodes
         .gsub(/(\\[trfvn])+/, ' ')
@@ -248,23 +249,17 @@ class UatActions::TubeSubmission < UatActions
   # Returns the study to use for UAT
   #
   # @return [Study] The study to use for UAT
-  def study
-    UatActions::StaticRecords.study
-  end
+  delegate :study, to: :'UatActions::StaticRecords'
 
   # Returns the project to use for UAT
   #
   # @return [Project] The project to use for UAT
-  def project
-    UatActions::StaticRecords.project
-  end
+  delegate :project, to: :'UatActions::StaticRecords'
 
   #
   # Returns the uat user
   #
   # @return [User] The UAT user can be used in any places where a user is expected.
-  def user
-    UatActions::StaticRecords.user
-  end
+  delegate :user, to: :'UatActions::StaticRecords'
 end
 # rubocop:enable Metrics/ClassLength

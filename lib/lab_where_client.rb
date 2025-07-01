@@ -18,6 +18,7 @@ module LabWhereClient
 
     def parse_json(str)
       return nil if str == 'null'
+
       JSON.parse(str)
     rescue JSON::ParserError => e
       raise LabwhereException.new(e), 'LabWhere is returning unexpected content', e.backtrace
@@ -53,7 +54,7 @@ module LabWhereClient
       attr_reader :endpoint
     end
 
-    def initialize(params) # rubocop:todo Style/RedundantInitialize
+    def initialize(params)
     end
   end
 

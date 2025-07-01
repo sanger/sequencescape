@@ -22,34 +22,34 @@
     <% end %>
 
     <%= panel :info, title:"Roles" do %>
-      <%= form_group do %>
-        <label for="role_administrator">Administrator</label>?
-        <%= check_box_tag "role[administrator]", "checked", @user.administrator? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[administrator]", "checked", @user.administrator?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_administrator">Administrator</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_manager">Manager</label>?
-        <%= check_box_tag "role[manager]", "checked", @user.manager? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[manager]", "checked", @user.manager?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_manager">Manager</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_lab">Lab</label>?
-        <%= check_box_tag "role[lab]", "checked", @user.lab? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[lab]", "checked", @user.lab?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_lab">Lab</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_lab_manager">Lab manager</label>?
-        <%= check_box_tag "role[lab_manager]", "checked", @user.lab_manager? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[lab_manager]", "checked", @user.lab_manager?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_lab_manager">Lab manager</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_owner">Owner</label>?
-        <%= check_box_tag "role[owner]", "checked", @user.owner? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[owner]", "checked", @user.owner?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_owner">Owner</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_slf_manager">SLF lab manager</label>?
-        <%= check_box_tag "role[slf_manager]", "checked", @user.slf_manager? %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[slf_manager]", "checked", @user.slf_manager?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_slf_manager">SLF lab manager</label>?
       <% end %>
-      <%= form_group do %>
-        <label for="role_slf_gel">SLF Gels</label>?</td>
-        <%= check_box_tag "role[slf_gel]", "checked", @user.slf_gel? %>
-       <% end %>
+      <%= form_group(classes='form-check') do %>
+        <%= check_box_tag "role[slf_gel]", "checked", @user.slf_gel?, class:'form-check-input' %>
+        <label class="form-check-label" for="role_slf_gel">SLF Gels</label>?
+      <% end %>
     <% end %>
   </div>
   <%= submit_tag "Update", class: 'btn btn-success' %> or <%= link_to 'cancel', "javascript:history.back();" %>

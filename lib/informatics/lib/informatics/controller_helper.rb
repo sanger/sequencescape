@@ -34,9 +34,7 @@ module ControllerHelper
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
-  def logger
-    Rails.logger
-  end
+  delegate :logger, to: :Rails
 
   private
 

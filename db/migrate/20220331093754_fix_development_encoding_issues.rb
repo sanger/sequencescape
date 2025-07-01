@@ -43,10 +43,10 @@ class FixDevelopmentEncodingIssues < ActiveRecord::Migration[6.0]
     # We've not actually done anything, but something has obviously gone wrong elsewhere and someone is having a
     # bad day. Lets get out of their way and reverse nothing.
     say "This migration makes no changes in #{Rails.env}. " \
-          'No schema changes have been made, but the migration has been removed from schema_migrations'
+        'No schema changes have been made, but the migration has been removed from schema_migrations'
   end
 
   def migrate?
-    Rails.env.development? || Rails.env.test?
+    Rails.env.local?
   end
 end

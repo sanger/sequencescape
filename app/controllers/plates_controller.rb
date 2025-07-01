@@ -11,6 +11,7 @@ class PlatesController < ApplicationController
   def show
     @plate = Plate.find(params[:id])
   end
+
   def new
     respond_to do |format|
       format.html
@@ -65,7 +66,7 @@ class PlatesController < ApplicationController
   end
 
   def tube_rack_barcodes
-    return [] unless params.dig(:plates).dig(:source_plates)
+    return [] unless params.dig(:plates, :source_plates)
 
     params[:plates][:source_plates].split(/[\s,]+/)
   end
