@@ -16,7 +16,8 @@ SampleAccessioningJob =
       submission.update_accession_number || raise(StandardError, 'Failed to update accession number')
     rescue StandardError => e
       Rails.logger.error("Error performing SampleAccessioningJob: #{e.message}")
-      ExceptionNotifier.notify_exception(e, data: { message: "Error performing SampleAccessioningJob: #{e.message}" })
+      # TODO: {Y25-280} Uncomment this as part of improving error handling
+      # ExceptionNotifier.notify_exception(e, data: { message: "Error performing SampleAccessioningJob: #{e.message}" })
     end
 
     def reschedule_at(current_time, _attempts)

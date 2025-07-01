@@ -506,9 +506,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession
-    unless configatron.accession_samples
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-    end
+    # TODO: {Y25-280} Uncomment this as part of improving error handling. If it proves problematic, it can be removed.
+    # unless configatron.accession_samples
+    #   raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    # end
 
     accessionable = build_accessionable
     validate_accessionable!(accessionable)
@@ -603,16 +604,19 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
-    raise AccessionService::AccessionValidationFailed, error_message
+    # TODO: {Y25-280} Uncomment this as part of improving error handling
+    # raise AccessionService::AccessionValidationFailed, error_message
   end
 
   def enqueue_accessioning_job!(accessionable)
     job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
     log_job_status(job)
   rescue StandardError => e
-    ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
+    # TODO: {Y25-280} Uncomment this as part of improving error handling
+    # ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
     Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
-    raise
+    # TODO: {Y25-280} Uncomment this as part of improving error handling
+    # raise
   end
 
   def log_job_status(job)

@@ -61,9 +61,10 @@ module Accession
       end
     end
 
-    def handle_exception(error, message)
+    def handle_exception(error, _message)
       Rails.logger.error(error.message)
-      ExceptionNotifier.notify_exception(error, { message: message, submission: submission.to_xml })
+      # TODO: {Y25-280} Uncomment this as part of improving error handling
+      # ExceptionNotifier.notify_exception(error, { message: _message, submission: submission.to_xml })
     end
   end
 end
