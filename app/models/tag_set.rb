@@ -59,11 +59,15 @@ class TagSet < ApplicationRecord
     errors.add(:tag_group, 'Adapter types of tag groups must match')
   end
 
+  # This method allows setting the tag_group by name if present.
+  # @return [void]
   def tag_group_name=(name)
-    self.tag_group = TagGroup.find_by!(name:)
+    self.tag_group = TagGroup.find_by!(name:) if name.present?
   end
 
+  # This method allows setting the tag2_group by name if present.
+  # @return [void]
   def tag2_group_name=(name)
-    self.tag2_group = TagGroup.find_by!(name:)
+    self.tag2_group = TagGroup.find_by!(name:) if name.present?
   end
 end

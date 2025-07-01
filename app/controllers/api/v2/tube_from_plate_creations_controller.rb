@@ -2,11 +2,11 @@
 
 module Api
   module V2
-    # Provides a JSON API controller for TagSet
+    # Provides a JSON API controller for Tube From Plate Creations
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
-    class TagSetsController < JSONAPI::ResourceController
+    class TubeFromPlateCreationsController < JSONAPI::ResourceController
       # By default JSONAPI::ResourceController provides most the standard
-      # behaviour, and in many cases this file may be left empty
+      # behaviour, and in many cases this file may be left empty.
     end
   end
 end
