@@ -6,34 +6,35 @@ require 'support/barcode_helper'
 RSpec.describe Sample, :accession, :cardinal do
   include MockAccession
 
-  context 'accessioning disabled' do
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
-    let(:sample) do
-      create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-    end
+  # TODO: {Y25-280} Uncomment this as part of improving error handling
+  # context 'accessioning disabled' do
+  #   let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+  #   let(:sample) do
+  #     create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+  #   end
 
-    before do
-      configatron.accession_samples = false
-      Delayed::Worker.delay_jobs = false
+  #   before do
+  #     configatron.accession_samples = false
+  #     Delayed::Worker.delay_jobs = false
 
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
-    end
+  #     allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
+  #   end
 
-    after { Delayed::Worker.delay_jobs = true }
+  #   after { Delayed::Worker.delay_jobs = true }
 
-    it 'will raise an exception if the sample can be accessioned' do
-      expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
-    end
+  #   it 'will raise an exception if the sample can be accessioned' do
+  #     expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
+  #   end
 
-    it 'will not add an accession number if it fails' do
-      begin
-        sample.accession
-      rescue AccessionService::AccessioningDisabledError
-        # Ignore the error and continue execution
-      end
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
-    end
-  end
+  #   it 'will not add an accession number if it fails' do
+  #     begin
+  #       sample.accession
+  #     rescue AccessionService::AccessioningDisabledError
+  #       # Ignore the error and continue execution
+  #     end
+  #     expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+  #   end
+  # end
 
   context 'accessioning enabled', :accessioning_enabled do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }

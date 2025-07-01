@@ -506,6 +506,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession
+    return unless configatron.accession_samples
+
     # TODO: {Y25-280} Uncomment this as part of improving error handling. If it proves problematic, it can be removed.
     # unless configatron.accession_samples
     #   raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
