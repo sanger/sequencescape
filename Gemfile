@@ -74,6 +74,7 @@ group :default do
   # This version is tested and compatible with Rails 7.1/7.2 and Ruby 3.2/3.3.
   gem 'sanger-jsonapi-resources', '~> 0.1.1'
 
+  # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 
   # Wraps bunny with connection pooling and consumer process handling
