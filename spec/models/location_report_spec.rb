@@ -114,6 +114,8 @@ RSpec.describe LocationReport do
     )
   end
 
+  let(:tube_rack) { create(:tube_rack, size: 96) }
+
   let(:headers_line) do
     %w[
       ScannedBarcode
@@ -271,7 +273,9 @@ RSpec.describe LocationReport do
             [plate_1.machine_barcode.to_s, 'Shelf 1', locn_prefix],
             [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
             [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix],
-            [tube_1.machine_barcode.to_s, 'Shelf 4', locn_prefix]
+            [tube_1.machine_barcode.to_s, 'Shelf 4', locn_prefix],
+            # Tube racks are filtered out so this should not show up
+            [tube_rack.machine_barcode.to_s, 'Shelf 5', locn_prefix]
           ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
             stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
           end
@@ -575,13 +579,19 @@ RSpec.describe LocationReport do
               lw_locn_name: 'Box 1',
               lw_locn_parentage: "#{locn_prefix} - Shelf 1"
             }
+            # Tube racks are filtered out so this should not show up
+            tr1 = {
+              lw_barcode: tube_rack.machine_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            }
             stub_lwclient_locn_find_by_bc(
               locn_barcode: 'locn-1-at-lvl-2',
               locn_name: 'Box 1',
               locn_parentage: "#{locn_prefix} - Shelf 1"
             )
             stub_lwclient_locn_children(location_barcode, [])
-            stub_lwclient_locn_labwares(location_barcode, [p1, p2, t1])
+            stub_lwclient_locn_labwares(location_barcode, [p1, p2, t1, tr1])
             stub_lwclient_labware_find_by_bc(p1)
             stub_lwclient_labware_find_by_bc(p2)
             stub_lwclient_labware_find_by_bc(t1)

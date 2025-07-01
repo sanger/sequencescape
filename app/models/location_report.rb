@@ -177,7 +177,9 @@ class LocationReport < ApplicationRecord
 
   def search_for_labware_by_selection
     params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes: }
-    Labware.search_for_labware(params)
+    # TODO: TubeRacks are not currently supported by this report. This is due to tube racks not having studies so
+    # the report would not be able to show or filter the study information which may be misleading to users.
+    Labware.search_for_labware(params).filter { |labware| !labware.is_a?(TubeRack) }
   end
 
   def search_for_labware_by_labwhere_locn_bc
@@ -189,7 +191,9 @@ class LocationReport < ApplicationRecord
     end
     return [] if @labware_barcodes.blank?
 
-    Labware.with_barcode(@labware_barcodes)
+    # TODO: TubeRacks are not currently supported by this report. This is due to tube racks not having studies so
+    # the report would not be able to show or filter the study information which may be misleading to users.
+    Labware.with_barcode(@labware_barcodes).filter { |labware| !labware.is_a?(TubeRack) }
   end
 
   def get_labwares_per_location(curr_locn_bc)
