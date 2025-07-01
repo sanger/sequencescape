@@ -11,7 +11,7 @@ class UatActions::GeneratePlateVolumes < UatActions
              label: 'Plate barcode',
              help:
                'Enter the barcode of the plate for which you want to add volumes. ' \
-                 'NB. only well containing aliquots will have volumes set.'
+               'NB. only well containing aliquots will have volumes set.'
   form_field :minimum_volume,
              :number_field,
              label: 'Minimum volume (µl)',

@@ -68,11 +68,11 @@ namespace :limber do
 
   desc 'Create the limber submission templates'
   task create_submission_templates: [
-         :environment,
-         'sequencing:novaseq:setup',
-         'sequencing:gbs_miseq:setup',
-         'sequencing:heron_miseq:setup'
-       ] do
+    :environment,
+    'sequencing:novaseq:setup',
+    'sequencing:gbs_miseq:setup',
+    'sequencing:heron_miseq:setup'
+  ] do
     puts 'Creating submission templates....'
 
     base_list = %w[

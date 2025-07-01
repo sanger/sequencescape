@@ -120,7 +120,7 @@ module ModelExtensions::Order
     end
 
     def to_hash
-      Hash.new.deep_merge(@store)
+      {}.deep_merge(@store)
     end
 
     def node_and_leaf(*keys)

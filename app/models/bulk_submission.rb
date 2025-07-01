@@ -94,7 +94,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index + 1...@csv_rows.length)
+    @csv_rows.slice((header_index + 1)...@csv_rows.length)
   end
   private :csv_data_rows
 
@@ -128,7 +128,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
 
     errors.add :spreadsheet,
                'You submitted an incompatible spreadsheet. Please ensure your spreadsheet contains ' \
-                 "the 'submission name' column"
+               "the 'submission name' column"
     false
   end
 
@@ -275,7 +275,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
     Hash
-      .new { |h, i| h[i] = Array.new }
+      .new { |h, i| h[i] = [] }
       .tap do |submission|
         csv_data_rows.each_with_index do |row, index|
           next if row.all?(&:nil?)
@@ -320,7 +320,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         errors.add(
           :spreadsheet,
           "#{field} should be identical for all requests in asset group '#{rows.first['asset group name']}'. " \
-            "Given values were: #{provided_values}."
+          "Given values were: #{provided_values}."
         )
       end
       [field, option.first]
@@ -463,7 +463,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     elsif found_assets.present? && found_assets != attributes[:asset_group].assets
       raise StandardError,
             "Asset Group '#{attributes[:asset_group].name}' contains different assets to those you specified. " \
-              'You may be reusing an asset group name'
+            'You may be reusing an asset group name'
     end
 
     add_study_to_assets(found_assets, study)

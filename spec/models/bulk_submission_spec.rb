@@ -18,8 +18,7 @@ shared_examples 'an invalid scRNA Bulk Submission' do |_, tube_count|
       submission_class_name: 'LinearSubmission',
       product_catalogue: 'Generic',
       submission_parameters: {
-        request_options: {
-        },
+        request_options: {},
         request_types: request_types.map(&:key)
       }
     }
@@ -381,8 +380,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -414,8 +412,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -428,7 +425,7 @@ describe BulkSubmission, with: :uploader do
         expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
           "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
-            "and Project name 'Test project', all rows for a specific study and project must have the same value"
+          "and Project name 'Test project', all rows for a specific study and project must have the same value"
         )
       end
     end
@@ -445,8 +442,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -491,8 +487,7 @@ describe BulkSubmission, with: :uploader do
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
-            request_options: {
-            },
+            request_options: {},
             request_types: request_types.map(&:key)
           }
         }
@@ -555,8 +550,7 @@ describe BulkSubmission, with: :uploader do
         submission_class_name: 'LinearSubmission',
         product_catalogue: 'Generic',
         submission_parameters: {
-          request_options: {
-          },
+          request_options: {},
           request_types: request_types.map(&:key)
         }
       }

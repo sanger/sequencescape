@@ -37,6 +37,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @return [void]
   def validate_scrna_core_cdna_prep_feasibility
     return unless validate_required_headers
+
     validate_scrna_core_cdna_prep_total_number_of_samples
     validate_scrna_core_cdna_prep_total_number_of_pools
     validate_scrna_core_cdna_prep_feasibility_by_samples
@@ -156,6 +157,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       max = scrna_config[:cdna_prep_maximum_number_of_samples_per_pool]
       pool_sizes.each do |size_type, pool_size|
         next if pool_size.between?(min, max)
+
         add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, pool_size, size_type)
       end
     end
