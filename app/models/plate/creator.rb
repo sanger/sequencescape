@@ -184,6 +184,12 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  def validate_plate_is_with_sample(plate, plate_barcode)
+    return unless plate.samples.empty?
+
+    fail_with_error("No samples were found in the scanned plate #{plate_barcode}")
+  end
+
   def create_plate(plate_purpose, plate_barcode)
     plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
       p.name = "#{plate_purpose.name} #{p.human_barcode}"
@@ -297,6 +303,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
             "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{target_purposes}]"
           )
         end
+        validate_plate_is_with_sample(plate, scanned)
         create_child_plates_from(plate, current_user, creator_parameters).tap do |destinations|
           add_created_plates(plate, destinations)
         end
