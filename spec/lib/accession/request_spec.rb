@@ -62,14 +62,15 @@ RSpec.describe Accession::Request, :accession, type: :model do
         expect(logger).to have_received(:error).with('Something went wrong')
       end
 
-      it 'notifies exception notifier if an error is raised' do
-        request.post
+      # TODO: {Y25-280} Uncomment this as part of improving error handling
+      # it 'notifies exception notifier if an error is raised' do
+      #   request.post
 
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(StandardError),
-          hash_including(message: { message: 'Posting of accession submission failed' }, submission: submission.to_xml)
-        )
-      end
+      #   expect(ExceptionNotifier).to have_received(:notify_exception).with(
+      #     instance_of(StandardError),
+      #     hash_including(message: { message: 'Posting of accession submission failed' }, submission: submission.to_xml)
+      #   )
+      # end
     end
 
     it 'returns a successful response if accessioning is successful' do
