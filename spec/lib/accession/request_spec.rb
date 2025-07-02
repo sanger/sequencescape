@@ -68,7 +68,8 @@ RSpec.describe Accession::Request, :accession, type: :model do
 
       #   expect(ExceptionNotifier).to have_received(:notify_exception).with(
       #     instance_of(StandardError),
-      #     hash_including(message: { message: 'Posting of accession submission failed' }, submission: submission.to_xml)
+      #     hash_including(message: { message: 'Posting of accession submission failed' },
+      #     submission: submission.to_xml)
       #   )
       # end
     end
