@@ -94,8 +94,6 @@ group :default do
   # aware of possible breaking changes.
   gem 'caxlsx'
 
-  gem 'rack', '< 3'
-
   # Excel file reading
   gem 'roo'
 
