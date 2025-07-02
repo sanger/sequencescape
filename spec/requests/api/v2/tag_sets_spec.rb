@@ -9,8 +9,6 @@ describe 'TagSets API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/tag_sets' }
   let(:resource_type) { model_class.name.demodulize.pluralize.underscore }
 
-  before { Flipper.enable(:y24_220_enable_tag_set_api) }
-
   it_behaves_like 'ApiKeyAuthenticatable'
 
   context 'with multiple TagSets' do

@@ -1,7 +1,7 @@
 ---
 Element Aviti:
   name: Element Aviti
-  sti_type: SequencingPipeline
+  sti_type: ElementAvitiSequencingPipeline
   validator_class_name: ElementAvitiValidator
   sorter: 10
   max_size: 2

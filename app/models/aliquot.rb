@@ -191,18 +191,17 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def matches?(object) # rubocop:todo Metrics/CyclomaticComplexity
     # NOTE: This function is directional, and assumes that the downstream aliquot
     # is checking the upstream aliquot
-    case
-    when sample_id != object.sample_id
+    if sample_id != object.sample_id
       false # The samples don't match
-    when object.library_id.present? && (library_id != object.library_id)
+    elsif object.library_id.present? && (library_id != object.library_id)
       false # Our libraries don't match.
-    when object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
+    elsif object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
       false # We have different bait libraries
-    when (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
+    elsif (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
       # rubocop:todo Layout/LineLength
       raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
       # rubocop:enable Layout/LineLength
-    when object.no_tags?
+    elsif object.no_tags?
       true # The upstream aliquot was untagged, we don't need to check tags
     else
       # rubocop:todo Layout/LineLength
