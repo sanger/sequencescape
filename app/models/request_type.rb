@@ -173,10 +173,9 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def create_target_asset!(&)
-    case
-    when target_purpose.present?
+    if target_purpose.present?
       target_purpose.create!(&).receptacle
-    when target_asset_type.blank?
+    elsif target_asset_type.blank?
       nil
     else
       target_asset_type.constantize.create!(&)
