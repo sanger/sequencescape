@@ -384,7 +384,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
       flash[:error] = truncate_flash(message)
       format.html { redirect_to pipeline_url(@pipeline) }
     end
-    nil
+    false
   end
 
   def transition_requests(requests, transition, message)
@@ -399,8 +399,20 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   # This is the expected create behaviour, and is only in a separate
   # method due to the overloading on the create endpoint.
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  def standard_create(requests) # rubocop:todo Metrics/CyclomaticComplexity
+  def standard_create(requests)
+    # Validate the request selection
+    return unless validate_requests_for_batch_creation(requests)
+
+    begin
+      create_batch_with_requests(requests)
+    rescue ActiveRecord::RecordNotUnique => e
+      handle_duplicate_requests_error(e, requests)
+    else
+      respond_with_success
+    end
+  end
+
+  def validate_requests_for_batch_creation(requests)
     unless @pipeline.all_requests_from_submissions_selected?(requests)
       return pipeline_error_on_batch_creation('All plates in a submission must be selected')
     end
@@ -409,34 +421,38 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
     return pipeline_error_on_batch_creation('Batches must contain at least one request') if requests.empty?
 
-    begin
-      ActiveRecord::Base.transaction { @batch = @pipeline.batches.create!(requests: requests, user: current_user) }
-    rescue ActiveRecord::RecordNotUnique => e
-      # We don't explicitly check for this on creation of batch_request for performance reasons, and the front end
-      # usually ensures this situation isn't possible. However if the user opens duplicate tabs it is possible.
-      # Fortunately we can detect the corresponding exception, and generate a friendly error message.
+    true # Return true if validation passes
+  end
 
-      # If this isn't the exception we're expecting, re-raise it.
-      raise e unless e.message.include?('request_id')
+  def create_batch_with_requests(requests)
+    ActiveRecord::Base.transaction do
+      # Create the batch and batch_requests based on the selected sequencing requests.
+      @batch = @pipeline.batches.create!(requests: requests, user: current_user)
 
-      # Find the requests which caused the clash.
-      batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
-
-      # And finally report the error
-      return(
-        pipeline_error_on_batch_creation(
-          "Could not create batch as requests were already in a batch: #{batched_requests.to_sentence}"
-        )
-      )
+      # If the pipeline requires a position, we set the position based on the asset barcode.
+      @batch.set_position_based_on_asset_barcode if @batch.requires_position?
     end
+  end
 
+  def handle_duplicate_requests_error(exception, requests)
+    # If this isn't the exception we're expecting, re-raise it.
+    raise exception unless exception.message.include?('request_id')
+
+    # Find the requests which caused the clash.
+    batched_requests = BatchRequest.where(request_id: requests.map(&:id)).pluck(:request_id)
+
+    # Report the error
+    pipeline_error_on_batch_creation(
+      "Could not create batch as requests were already in a batch: #{batched_requests.to_sentence}"
+    )
+  end
+
+  def respond_with_success
     respond_to do |format|
       format.html { redirect_to action: :show, id: @batch.id }
       format.xml { head :created, location: batch_url(@batch) }
     end
   end
-
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   def request_parameters
     params.permit(request: {}, request_group: {}).to_h
