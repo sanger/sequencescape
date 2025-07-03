@@ -112,7 +112,7 @@ class FluidigmFile
   def header_start_index
     @header_start_index ||=
       (0..@csv.size).detect { |i| @csv[i][0] == 'Experiment Information' } ||
-        raise(InvalidFile, 'Could not find header')
+      raise(InvalidFile, 'Could not find header')
   end
 
   def data_start_index

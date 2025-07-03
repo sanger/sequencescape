@@ -15,7 +15,7 @@ class LabwhereReception
             presence: {
               message:
                 'could not be found with that swipecard or barcode. ' \
-                  'You may need to update your swipecard in Sequencescape.'
+                'You may need to update your swipecard in Sequencescape.'
             }
 
   def initialize(user_code, location_barcode, asset_barcodes)

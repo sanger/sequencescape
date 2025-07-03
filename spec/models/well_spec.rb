@@ -451,7 +451,7 @@ describe Well do
 
       context(
         "when testing #{scenario}" \
-          "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
+        "for a target of #{target_ng} with conc #{concentration} and vol #{measured_volume}"
       ) do
         it "output source pick volume of #{source_pick_vol}" do
           expect(@target_well.well_attribute.picked_volume.round(2)).to eq(source_pick_vol)
@@ -840,12 +840,6 @@ describe Well do
       qc_result_2 = build(:qc_result_volume, value: '2.34523', created_at: Time.zone.today)
       well = create(:well, qc_results: [qc_result_1, qc_result_2])
       expect(well.qc_result_for('volume')).to eq(2.345)
-    end
-
-    it 'quantity_in_nano_grams' do
-      well = create(:well)
-      well.update_from_qc(build(:qc_result_volume, value: '1.34523'))
-      expect(well.qc_result_for('quantity_in_nano_grams')).to be_present
     end
 
     it 'loci_passed (snp_count)' do

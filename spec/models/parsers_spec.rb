@@ -23,6 +23,7 @@ describe Parsers do
         before do
           Parsers::PARSERS.each do |parser|
             next if parser == valid_parser
+
             allow(parser).to receive(:parses?).and_raise(StandardError)
           end
         end

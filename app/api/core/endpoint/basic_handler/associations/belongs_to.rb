@@ -34,7 +34,7 @@ module Core::Endpoint::BasicHandler::Associations::BelongsTo
 
       def merge(node)
         super do |children|
-          self.class.new(@endpoint_helper, children) # prettier-ignore
+          self.class.new(@endpoint_helper, children)
         end
       end
 

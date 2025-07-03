@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Submission::PresenterSkeleton
   class_attribute :attributes, instance_writer: false
-  self.attributes = Array.new
+  self.attributes = []
 
   delegate :not_ready_samples_names, to: :submission
 

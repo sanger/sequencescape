@@ -80,7 +80,7 @@ RSpec.describe Insdc::ImportCountries do
               </DESCRIPTOR>
         </CHECKLIST>
     </CHECKLIST_SET>
-    XML
+  XML
 
   describe '#download' do
     context 'when the file already exists' do

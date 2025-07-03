@@ -108,7 +108,10 @@ class PickList < ApplicationRecord
   end
 
   def create_batch!
-    Batch.create!(requests: submission.requests.reload, pipeline: pipeline, user: user)
+    batch = Batch.create!(requests: submission.requests.reload, pipeline: pipeline, user: user)
+
+    # If the pipeline requires a position, we set the position based on the asset barcode.
+    batch.set_position_based_on_asset_barcode if batch.requires_position?
   end
 
   def user

@@ -180,7 +180,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
 
             request, well =
               request_and_well[request_id.gsub('well_', '').to_i] ||
-                raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
+              raise(ActiveRecord::RecordNotFound, "Cannot find request #{request_id.inspect}")
 
             # NOTE: Performance enhancement here
             # This collects the wells together for the plate they should be on, and modifies
@@ -223,7 +223,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         }
       )
 
-      AssetLink::BuilderJob.create(links)
+      AssetLink::BuilderJob.create_now(links)
 
       # Now pass each of the requests we used and ditch any there weren't back into the inbox.
       used_requests.map(&:pass!)

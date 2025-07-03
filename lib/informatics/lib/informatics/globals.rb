@@ -25,7 +25,7 @@ module Informatics
     end
 
     def search_options
-      global_searchable_classes.map { |klass| [klass.name] * 2 } << ['All', nil]
+      global_searchable_classes.map { |klass| [klass.name, klass.name] } + [['Cost Code', 'Project'], ['All', nil]]
     end
   end
 end

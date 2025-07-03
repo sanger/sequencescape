@@ -64,6 +64,7 @@ class StudiesController < ApplicationController
       format.json { render json: @study.to_json }
     end
   end
+
   def new
     @study = Study.new
     respond_to { |format| format.html }

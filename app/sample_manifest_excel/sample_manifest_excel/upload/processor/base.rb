@@ -156,8 +156,10 @@ module SampleManifestExcel
 
         def _check_mandatory_field(mandatory_field) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize
           return unless upload.respond_to?(:rows)
+
           upload.rows.each do |row|
             next if row.columns.blank? || row.data.blank?
+
             col_num = row.columns.find_column_or_null(:name, mandatory_field).number
             next unless col_num.present? && col_num.positive?
 

@@ -24,6 +24,7 @@ class Admin::StudiesController < ApplicationController
       render nothing: true
     end
   end
+
   def update
     @study = Study.find(params[:id])
     flash.now[:warning] = @study.warnings if @study.warnings.present?

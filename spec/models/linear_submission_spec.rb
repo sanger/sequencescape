@@ -97,9 +97,9 @@ RSpec.describe LinearSubmission do
             it 'create requests but not comments' do
               # rubocop:todo RSpec/ChangeByZero
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1).and change(
-                      Comment,
-                      :count
-                    ).by(0)
+                Comment,
+                :count
+              ).by(0)
               # rubocop:enable RSpec/ChangeByZero
             end
 
@@ -121,9 +121,9 @@ RSpec.describe LinearSubmission do
             it 'create requests but not comments' do
               # rubocop:todo RSpec/ChangeByZero
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2).and change(
-                      Comment,
-                      :count
-                    ).by(0)
+                Comment,
+                :count
+              ).by(0)
               # rubocop:enable RSpec/ChangeByZero
             end
           end
@@ -194,9 +194,9 @@ RSpec.describe LinearSubmission do
       describe '#process!' do
         it 'create requests but not comments' do
           expect { submission.process! }.to change(Request, :count).by(sx_asset_count * 2).and change(
-                  Comment,
-                  :count
-                ).by(sx_asset_count * 2)
+            Comment,
+            :count
+          ).by(sx_asset_count * 2)
         end
 
         context 'when it has been run' do

@@ -71,6 +71,7 @@ class Qcable < ApplicationRecord
 
   def create_asset!
     return true if lot.nil?
+
     self.asset ||=
       if supplied_barcode.present?
         # Create using the supplied plate barcode

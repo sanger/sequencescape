@@ -14,7 +14,7 @@ RSpec.describe SpecificTubeCreation do
   shared_context 'with common test setup' do
     before do
       expect(specific_tube_creation.save).to (be true),
-      -> { "Failed to save: #{specific_tube_creation.errors.full_messages}" }
+                                             -> { "Failed to save: #{specific_tube_creation.errors.full_messages}" }
     end
 
     let(:first_child) { specific_tube_creation.children.first }

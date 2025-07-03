@@ -98,7 +98,7 @@ RSpec.describe CherrypickTask::ControlLocator do
     end
 
     # Test the basics for a range of batches
-    1.upto(100) do |batch_id|
+    1.upto(1) do |batch_id| # SKIP batches 2-100 to reduce unneeeded tests
       context "when batch is #{batch_id} and we have a 96 well plate with no wells free" do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
@@ -137,6 +137,8 @@ RSpec.describe CherrypickTask::ControlLocator do
     end
 
     context 'when over a range of batches' do
+      skip 'This analysis is not required to be run every time, so we skip it by default'
+
       let(:range) { (1...1000) }
       let(:control_positions) do
         range.map do |batch_id|

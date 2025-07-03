@@ -117,9 +117,11 @@ class Accessionable::Base
       def value_for(value)
         value
       end
+
       def applies_to?(_name)
         true
       end
+
       def incorrect_format_value
         NOT_PROVIDED
       end
@@ -132,6 +134,7 @@ class Accessionable::Base
       def value_for(value)
         return value if OTHER_DEFAULT_SETTINGS.include?(value)
         return incorrect_format_value unless Insdc::Country.find_by(name: value)
+
         value
       end
 
@@ -154,6 +157,7 @@ class Accessionable::Base
       def value_for(value)
         return value if OTHER_DEFAULT_SETTINGS.include?(value)
         return incorrect_format_value unless REGEXP.match?(value)
+
         value
       end
 

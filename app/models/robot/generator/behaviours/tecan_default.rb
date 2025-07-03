@@ -4,6 +4,7 @@
 module Robot::Generator::Behaviours::TecanDefault
   def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
+
     output_file_contents = [header(data_object)]
 
     buffer_data = buffers(data_object)

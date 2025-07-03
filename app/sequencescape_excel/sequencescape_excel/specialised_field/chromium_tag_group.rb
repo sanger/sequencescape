@@ -4,7 +4,7 @@ module SequencescapeExcel
   module SpecialisedField
     ##
     # ChromiumTagGroup
-    #This class represents a single index tag group for Chromium.
+    # This class represents a single index tag group for Chromium.
     class ChromiumTagGroup
       include Base
 

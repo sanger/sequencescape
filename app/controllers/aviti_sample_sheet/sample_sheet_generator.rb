@@ -14,11 +14,13 @@
 # Element recommends using a consistent sample name that clearly identifies the control sequences.
 #
 # Allowed characters in the output file name include: letters, numbers, dashes, dots, parentheses, and underscores.
+# In the next phase, we will add support for use cases where the samples in the pool have different index lengths(https://docs.elembio.io/docs/run-manifest/samples/#reconciling)
 
 module AvitiSampleSheet::SampleSheetGenerator
   def self.generate(batch)
     Generator.new(batch).generate
   end
+
   class Generator
     # These settings are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
     # They specify parameters for Bases2Fastq execution and are fixed for lab usage.
@@ -34,16 +36,19 @@ module AvitiSampleSheet::SampleSheetGenerator
       %w[R2AdapterTrim FALSE 1+2]
     ].freeze
 
-    # These controllers are defined in the Aviti sample sheet template used in our lab - check Confluence for details.
-    # This section is not dynamically generated because control metadata is not stored for the Aviti pipeline.
-    # Users can manually update this section if needed.
-    PHIX_SECTION = [
+    SAMPLE_SECTION_HEADERS = [
       ['[SAMPLES]'],
-      %w[SampleName Index1 Index2 Lane Project],
-      %w[Adept_CB1 ATGTCGCTAG CTAGCTCGTA],
-      %w[Adept_CB2 CACAGATCGT CACAGATCGT],
-      %w[Adept_CB3 GCACATAGTC GACTACTAGC],
-      %w[Adept_CB4 TGTGTCGACA TGTCTGACAG]
+      %w[SampleName Index1 Index2 Lane Project]
+    ].freeze
+
+    # The values are set according to the official documentation from Element Biosciences.
+    # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
+    # Users can manually modify this section if necessary.
+    PHIX_SECTION = [
+      %w[PhiX_Third ATGTCGCTAG CTAGCTCGTA],
+      %w[PhiX_Third CACAGATCGT ACGAGAGTCT],
+      %w[PhiX_Third GCACATAGTC GACTACTAGC],
+      %w[PhiX_Third TGTGTCGACA TGTCTGACAG]
     ].freeze
 
     def initialize(batch)
@@ -58,7 +63,8 @@ module AvitiSampleSheet::SampleSheetGenerator
     def generate
       CSV.generate(row_sep: "\r\n") do |csv|
         SETTINGS_SECTION.each { |row| csv << row }
-        PHIX_SECTION.each { |row| csv << row }
+        SAMPLE_SECTION_HEADERS.each { |row| csv << row }
+        phix_section_matching_sample_indexes.each { |row| csv << row }
         append_samples_section(csv)
       end
     end
@@ -66,7 +72,8 @@ module AvitiSampleSheet::SampleSheetGenerator
     private
 
     # Appends the dynamically generated sample section to the CSV.
-    # This section includes sample name, tags, combined lane positions, and study ID.
+    # This section includes sample name, tags (if present), combined lane positions, and study ID.
+    # For untagged samples, Index1 and Index2 will be empty.
     #
     # @param csv [CSV] the CSV object to append rows to.
     def append_samples_section(csv)
@@ -79,6 +86,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     end
 
     # Groups samples from the batch by identity (sample name, tag1, tag2, study).
+    # For untagged samples, tag1 and tag2 will be nil.
     # Excluding failed requests from the grouping.
     # This ensures that aliquots from the same logical sample group are combined,
     # and their positions aggregated.
@@ -100,6 +108,55 @@ module AvitiSampleSheet::SampleSheetGenerator
       grouped_samples = Hash.new { |hash, key| hash[key] = new_group_entry(key) }
       @batch.requests.reject(&:failed?).each { |request| add_request_to_grouped_samples(grouped_samples, request) }
       grouped_samples
+    end
+
+    # Returns the length of the longest sample index tag (tag1 or tag2) across all grouped samples.
+    #
+    # This method examines each group's tag1 and tag2 values, collects their lengths,
+    # and returns the maximum length found. If all tags are nil, it returns nil.
+    #
+    # @return [Integer, nil] the length of the longest tag, or nil if no tags are present
+    def longest_sample_index_length
+      index_lengths = group_samples_by_identity.values
+        .map { |group| [group[:tag1], group[:tag2]] }
+        .flatten
+        .compact
+        .map(&:length)
+
+      index_lengths.max # returns nil if index_lengths is empty (i.e., all tags are nil)
+    end
+
+    #
+    # Adjusts the PhiX control indexes to match the sample index length used in the batch.
+    # The PSD-assisted software supports sample index lengths of either 8 bp or 10 bp.
+    # The default PhiX control indexes are 10 bp long - adjusting them to match the batch's sample index length
+    # when necessary (sample index length is less than 10 bp).
+    #
+    # If the samples in the pool have no indexes, it removes the phix indexes from the generated sample sheet.
+    def phix_section_matching_sample_indexes
+      sample_index_length = longest_sample_index_length
+      if sample_index_length.nil?
+        remove_phix_control_tags
+      elsif sample_index_length < 10
+        truncated_phix_indexes(sample_index_length)
+      else
+        PHIX_SECTION
+      end
+    end
+
+    # Returns only the PhiX sample names (first column)
+    def remove_phix_control_tags
+      PHIX_SECTION.map { |row| [row[0]] }
+    end
+
+    # Truncates PhiX indexes to match the given sample index length
+    def truncated_phix_indexes(sample_index_length)
+      PHIX_SECTION.map do |row|
+        row = row.dup
+        row[1] = row[1][0, sample_index_length] if row[1]
+        row[2] = row[2][0, sample_index_length] if row[2]
+        row
+      end
     end
 
     # Initializes a new group entry hash for the given identity key.

@@ -1,0 +1,13 @@
+# Request types for Kinnex Prep pipeline.
+---
+kinnex_prep:
+  name: Kinnex Prep
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Short Read
+  acceptable_purposes:
+    - LRC GEM-X 5p cDNA PCR XP
+    - LRC GEM-X 5p cDNA Input

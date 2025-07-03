@@ -18,6 +18,7 @@ module Tasks::SetDescriptorsHandler
       end
 
       return false unless all_requests_processed?
+
       create_batch_events
 
       # We touch the batch to ensure any flowcell messages have an updated timestamp

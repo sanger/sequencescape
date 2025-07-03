@@ -184,6 +184,12 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  def validate_plate_is_with_sample(plate, plate_barcode)
+    return unless plate.samples.empty?
+
+    fail_with_error("No samples were found in the scanned plate #{plate_barcode}")
+  end
+
   def create_plate(plate_purpose, plate_barcode)
     plate_purpose.create!(sanger_barcode: plate_barcode, size: plate_purpose.size) do |p|
       p.name = "#{plate_purpose.name} #{p.human_barcode}"
@@ -195,6 +201,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     plate.wells_in_column_order.each do |well|
       tube = tubes.shift
       break if tube.nil?
+
       well.aliquots << tube.aliquots.map(&:dup)
       create_asset_link(tube, plate, duplicate_barcodes)
     end
@@ -205,6 +212,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     AssetLink.create_edge!(tube, plate)
   rescue ActiveRecord::ActiveRecordError => e
     raise e unless e.message.include?('No change')
+
     duplicate_barcodes << tube.human_barcode
   end
 
@@ -218,11 +226,13 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
         user_login: scanned_user.login
       )
     return if print_job.execute
+
     warnings_list << "Barcode labels failed to print for following plate type: #{plate_purpose.name}"
   end
 
   def handle_duplicates(duplicate_barcodes)
     return if duplicate_barcodes.empty?
+
     warnings_list << "Duplicate barcodes found in tubes: #{duplicate_barcodes.join(', ')}"
   end
 
@@ -285,7 +295,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       scanned_barcodes.flat_map do |scanned|
         plate =
           Plate.with_barcode(scanned).eager_load(wells: :aliquots).find_by_barcode(scanned) ||
-            fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
+          fail_with_error("Could not find plate with machine barcode #{scanned.inspect}")
 
         unless can_create_plates?(plate)
           target_purposes = plate_purposes.map(&:name).join(',')
@@ -293,6 +303,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
             "Scanned plate #{scanned} has a purpose #{plate.purpose.name} not valid for creating [#{target_purposes}]"
           )
         end
+        validate_plate_is_with_sample(plate, scanned)
         create_child_plates_from(plate, current_user, creator_parameters).tap do |destinations|
           add_created_plates(plate, destinations)
         end

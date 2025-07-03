@@ -6,6 +6,7 @@ class OrdersController < ApplicationController
 
     redirect_to @order.submission
   end
+
   def destroy
     # Check for ajax request...
     if request.xhr?

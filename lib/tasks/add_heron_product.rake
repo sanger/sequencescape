@@ -6,18 +6,12 @@ namespace :product_heron do
 
     ActiveRecord::Base.transaction do
       ADDITIONAL_CRITERIA = {
-        sanger_sample_id: {
-        },
-        sample_description: {
-        },
-        phenotype: {
-        },
-        plate_barcode: {
-        },
-        well_location: {
-        },
-        supplier_name: {
-        }
+        sanger_sample_id: {},
+        sample_description: {},
+        phenotype: {},
+        plate_barcode: {},
+        well_location: {},
+        supplier_name: {}
       }.freeze
 
       product = Product.create!(name: 'Heron')

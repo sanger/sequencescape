@@ -9,6 +9,7 @@ xml.study(api_data) do |study|
   %w[followers managers owners].each do |type_of_user|
     users, singular_user = @study.send(type_of_user), type_of_user.singularize
     next if users.empty?
+
     study.tag!(type_of_user) do |users_tag|
       users.each do |user|
         users_tag.tag!(singular_user) do |user_tag|

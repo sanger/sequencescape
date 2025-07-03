@@ -103,11 +103,10 @@ module Core::Endpoint::BasicHandler::Actions
 
   def declare_action(name, options, &block) # rubocop:todo Metrics/MethodLength
     action_implementation_method =
-      case
-      when block
+      if block
         singleton_class.class_eval { define_method(:"_#{name}_internal", &block) }
         :"_#{name}_internal"
-      when options[:to]
+      elsif options[:to]
         options[:to]
       else
         raise StandardError, 'Block or :to option needed to declare action'

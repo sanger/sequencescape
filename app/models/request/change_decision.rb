@@ -78,10 +78,9 @@ class Request::ChangeDecision
       # Really this toggle of states isn't ideal, as effectively it means
       # multiple requests in quick succession could toggle the state, which probably
       # wasn't the intended behaviour.
-      case
-      when request.failed?
+      if request.failed?
         request.retrospective_pass!
-      when request.passed?
+      elsif request.passed?
         request.retrospective_fail!
       else
         raise InvalidDecision, self

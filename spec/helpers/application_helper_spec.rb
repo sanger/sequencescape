@@ -103,8 +103,8 @@ describe ApplicationHelper do
       it 'works recursively' do
         expect(returned_html).to eq(
           '<dl><dt>Key a</dt><dd>String</dd>' \
-            '<dt>Key b</dt><dd><ul><li>a</li><li>b</li></ul></dd>' \
-            '<dt>Key c</dt><dd><dl><dt>nexted</dt><dd>object</dd></dl></dd></dl>'
+          '<dt>Key b</dt><dd><ul><li>a</li><li>b</li></ul></dd>' \
+          '<dt>Key c</dt><dd><dl><dt>nexted</dt><dd>object</dd></dl></dd></dl>'
         )
       end
     end

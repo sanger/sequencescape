@@ -41,10 +41,10 @@ module Limber::Helper
     def self.find_for(name, sequencing = nil)
       tc = TemplateConstructor.new(name:, sequencing:)
       [true, false].map do |cherrypick|
-          tc.sequencing.map do |sequencing_request_type|
-            SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
-          end
+        tc.sequencing.map do |sequencing_request_type|
+          SubmissionTemplate.find_by!(name: tc.name_for(cherrypick, sequencing_request_type))
         end
+      end
         .flatten
     end
 
@@ -112,7 +112,7 @@ module Limber::Helper
     #
     # @return [String] A name for the request type
     def name_for(cherrypick, sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name} - #{
         sequencing_request_type.name.gsub(PIPELINE_REGEX, '')
       }"
     end
@@ -199,7 +199,7 @@ module Limber::Helper
   #
   class LibraryOnlyTemplateConstructor < TemplateConstructor
     def name_for(cherrypick, _sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name}"
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name}"
     end
 
     def sequencing_request_types
@@ -220,7 +220,7 @@ module Limber::Helper
   #
   class LibraryAndMultiplexingTemplateConstructor < TemplateConstructor
     def name_for(cherrypick, _sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - Pool"
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name} - Pool"
     end
 
     def sequencing_request_types

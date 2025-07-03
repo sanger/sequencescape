@@ -109,6 +109,7 @@ module SampleManifestExcel
           # Check that a plate has only one retention instruction value
           retention_instruction_key = find_retention_instruction_key_for_value(row_retention_value)
           return "Invalid retention instruction #{retention_instruction_key}" if retention_instruction_key.blank?
+
           if retention_instructions.key?(plate_barcode)
             if retention_instructions[plate_barcode] != retention_instruction_key
               return "Plate (#{plate_barcode}) cannot have different retention instruction values."

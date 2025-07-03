@@ -25,7 +25,7 @@ class UatActions::GenerateQcResults < UatActions
              label: 'Labware barcode',
              help:
                'Enter the barcode of the plate or tube for which you want to add qc results. ' \
-                 'NB. only wells/tubes containing aliquots will have qc results set.'
+               'NB. only wells/tubes containing aliquots will have qc results set.'
   form_field :measured_attribute,
              :select,
              label: 'Measured attribute',

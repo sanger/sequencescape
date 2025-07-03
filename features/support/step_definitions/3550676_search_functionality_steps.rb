@@ -9,7 +9,7 @@ end
 
 Then /^the search results I should see are:$/ do |table|
   table.hashes.each do |row|
-    step "I should see \"1 #{row['section']}\""
+    step "I should see \"#{row['section count']} #{row['section']}\""
     step "I should see \"#{row['result']}\""
   end
 end

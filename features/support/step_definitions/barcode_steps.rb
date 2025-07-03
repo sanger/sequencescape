@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-#Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
+# Given /^the plate barcode webservice returns "([1-9][0-9]*)"$/ do |barcode|
 #  FakeBarcodeService.instance.barcode(barcode)
-#end
+# end
 
 Given /^the plate barcode webservice returns "([\w-]+)"$/ do |barcode|
   FakeBarcodeService.instance.barcode(barcode, 'DN')
@@ -16,13 +16,13 @@ Given(
   /^the Baracoda children barcode service for parent barcode "([\w-]+)" returns (\d+) barcodes?$/
 ) { |parent_barcode, count| FakeBarcodeService.instance.mock_child_barcodes(parent_barcode, count) }
 
-#Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
+# Given /^a plate barcode webservice is available and returns "(\d+)"$/ do |barcode|
 #  step("the plate barcode webservice returns \"#{barcode}\"")
-#end
+# end
 
 Given /^a plate barcode webservice is available and returns "([\w-]+)"$/ do |barcode|
   step("the Baracoda barcode service returns \"#{barcode}\"")
-  #step("the plate barcode webservice returns \"#{barcode}\"")
+  # step("the plate barcode webservice returns \"#{barcode}\"")
 end
 
 Given /^the plate barcode webservice returns "([1-9][0-9]*)\.\.([1-9][0-9]*)"$/ do |start, finish|

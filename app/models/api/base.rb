@@ -185,7 +185,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
         options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
       end
     end
-    self.associations = Hash.new if associations.empty?
+    self.associations = ({}) if associations.empty?
     associations[association.to_sym] = association_helper
   end
 
@@ -203,7 +203,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
         options[:decorator] && target_object ? options[:decorator].new(target_object) : target_object
       end
     end
-    self.nested_has_many_associations = Hash.new if nested_has_many_associations.empty?
+    self.nested_has_many_associations = ({}) if nested_has_many_associations.empty?
     nested_has_many_associations[association.to_sym] = association_helper
   end
 
@@ -237,7 +237,7 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   self.extra_json_attribute_handlers = []
 
   def self.extra_json_attributes(&block)
-    self.extra_json_attribute_handlers = Array.new if extra_json_attribute_handlers.empty?
+    self.extra_json_attribute_handlers = [] if extra_json_attribute_handlers.empty?
     extra_json_attribute_handlers.push(block)
   end
 

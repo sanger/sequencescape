@@ -29,13 +29,13 @@ class PlatePicksController < ApplicationController
         end
 
       render json: {
-               plate: {
-                 id: plate.id,
-                 barcode: plate.machine_barcode,
-                 batches: batches,
-                 control: plate.pick_as_control?
-               }
-             }
+        plate: {
+          id: plate.id,
+          barcode: plate.machine_barcode,
+          batches: batches,
+          control: plate.pick_as_control?
+        }
+      }
     else
       render json: { errors: 'Could not find plate in Sequencescape' }, status: 404
     end

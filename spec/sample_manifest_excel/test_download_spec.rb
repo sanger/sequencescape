@@ -9,8 +9,7 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
   let(:download) do
     described_class.new(
       columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
-      data: {
-      },
+      data: {},
       no_of_rows: 5,
       study: 'WTCCC',
       supplier: 'Test supplier',

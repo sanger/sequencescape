@@ -53,7 +53,7 @@ RSpec.describe UatActions, type: :model do
       expect { described_class.grouped_and_sorted_uat_actions }.to raise_error(RuntimeError)
       expect { described_class.grouped_and_sorted_uat_actions }.to raise_error(
         "Category 'unknown_category' from 'UatActions::GenerateBananas' is not in the list of categories " \
-          "#{UatActions::CATEGORY_LIST}"
+        "#{UatActions::CATEGORY_LIST}"
       )
     end
   end

@@ -317,10 +317,10 @@ bundle exec cucumber features/create_plates.feature
 
 ## Linting and formatting
 
-Rubocop is used for linting.
+Rubocop is used for linting and formatting.
 
 ```shell
-bundle exec rubocop
+bundle exec rubocop --autocorrect
 ```
 
 Note that permanent `Exclude`s should be defined in `.rubocop.yml`, with 'temporary' ones

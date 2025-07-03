@@ -49,6 +49,7 @@ class FakeBarcodeService
   def parent_barcode_start(parent_barcode, count)
     matching = parent_barcode.match(/([^-]*-[^-]*)-(\d*)/)
     return next_matching_barcode_start(matching[1], count) if matching
+
     [parent_barcode, 1, count]
   end
 

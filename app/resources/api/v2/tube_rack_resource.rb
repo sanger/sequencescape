@@ -170,6 +170,7 @@ module Api
         tube_locations.each do |coordinate, tube|
           tube_uuid = tube[:uuid]
           raise "No tube found for UUID '#{tube_uuid}'" unless tubes.key?(tube_uuid)
+
           RackedTube.create(coordinate: coordinate, tube: tubes[tube_uuid], tube_rack: @model)
         end
       end

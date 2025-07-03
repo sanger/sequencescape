@@ -44,7 +44,7 @@ def assert_label_exists(label_text, required = false)
   selector = "label#{required ? '.required' : ':not(.required)'}"
   assert(
     page.has_css?(selector, visible: :all, text: label_text),
-    "The #{label_text.inspect} should #{required ? '' : 'not '}be labeled as 'required' (class=\"required\")"
+    "The #{label_text.inspect} should #{'not ' unless required}be labeled as 'required' (class=\"required\")"
   )
 end
 

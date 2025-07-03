@@ -168,6 +168,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         # Add children to all but the target resource.
         resources.each do |resource|
           next if resource == target_resource
+
           resource.update(children: [create(:tube)]) # Tubes so we don't create more plates without children.
         end
 
@@ -182,6 +183,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         # Put all the other plates 2 days ago and filter for yesterday.
         resources.each do |resource|
           next if resource == target_resource
+
           resource.update(created_at: 2.days.ago)
         end
 
@@ -196,6 +198,7 @@ describe 'Labware Behaviour API', tags: :lighthouse, with: :api_v2 do
         # Put all the other plates 2 days ago and filter for yesterday.
         resources.each do |resource|
           next if resource == target_resource
+
           resource.update(updated_at: 2.days.ago)
         end
 

@@ -171,9 +171,9 @@ RSpec.describe SampleManifest, :sample_manifest do
 
           it 'create 1 MX tube' do
             expect { manifest.generate }.to change(LibraryTube, :count).by(count).and change(
-                    MultiplexedLibraryTube,
-                    :count
-                  ).by(1).and change(BroadcastEvent, :count).by(1)
+              MultiplexedLibraryTube,
+              :count
+            ).by(1).and change(BroadcastEvent, :count).by(1)
           end
 
           it 'creates sample manifest assets' do
@@ -283,8 +283,8 @@ RSpec.describe SampleManifest, :sample_manifest do
 
           it "creates #{count} tubes(s)" do
             expect { manifest.generate }.to change(SampleTube, :count).by(count).and change {
-                    manifest.assets.count
-                  }.by(count)
+              manifest.assets.count
+            }.by(count)
             expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
           end
 

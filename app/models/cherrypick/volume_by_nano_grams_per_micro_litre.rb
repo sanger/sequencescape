@@ -96,6 +96,7 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     if final_volume_desired.to_f <= 0.0
       raise Cherrypick::VolumeError, "Volume required (#{final_volume_desired.inspect}) should be greater than zero"
     end
+
     if final_conc_desired.to_f <= 0.0
       raise Cherrypick::ConcentrationError,
             "Concentration required (#{final_conc_desired.inspect}) should be greater than zero"

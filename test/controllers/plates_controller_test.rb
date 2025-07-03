@@ -36,8 +36,13 @@ class PlatesControllerTest < ActionController::TestCase
         session[:user] = @user.id
 
         @parent_plate = FactoryBot.create(:plate)
+        @parent_plate.wells << [create(:untagged_well)]
+
         @parent_plate2 = FactoryBot.create(:plate)
+        @parent_plate2.wells << [create(:untagged_well)]
+
         @parent_plate3 = FactoryBot.create(:plate)
+        @parent_plate3.wells << [create(:untagged_well)]
       end
 
       context '#new' do
@@ -75,6 +80,7 @@ class PlatesControllerTest < ActionController::TestCase
               @asset_group_count = AssetGroup.count
               @num_create = 2
               @plates = Array.new(@num_create) { @purpose.create! }
+              @plates.each { |plate| plate.wells << [create(:untagged_well)] }
               @plate_barcodes = @plates.map(&:barcodes).flatten.map(&:barcode)
               @create_params = {
                 plates: {

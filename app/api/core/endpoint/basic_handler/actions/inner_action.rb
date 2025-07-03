@@ -3,7 +3,7 @@ module Core::Endpoint::BasicHandler::Actions::InnerAction
   def initialize(name, options, &block)
     raise StandardError, "Cannot declare inner action #{name.inspect} without a block" unless block
 
-    super() do # prettier-ignore
+    super() do
     end
 
     @options, @handler = options, block

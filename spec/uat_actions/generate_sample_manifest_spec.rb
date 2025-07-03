@@ -82,8 +82,8 @@ describe UatActions::GenerateSampleManifest do
 
       it 'create tubes(s)' do
         expect { uat_action.generate_manifest(manifest) }.to change(SampleTube, :count).by(count).and change {
-                manifest.assets.count
-              }.by(count)
+          manifest.assets.count
+        }.by(count)
         expect(manifest.assets).to eq(SampleTube.with_barcode(manifest.barcodes).map(&:receptacle))
       end
 

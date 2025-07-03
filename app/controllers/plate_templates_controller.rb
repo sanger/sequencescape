@@ -25,6 +25,7 @@ class PlateTemplatesController < ApplicationController
     @plate_rows = Map::Coordinate.plate_length(@pattern.size)
     @plate_cols = Map::Coordinate.plate_width(@pattern.size)
   end
+
   def create # rubocop:todo Metrics/AbcSize
     if params[:name].blank?
       flash[:error] = 'Please enter a name'

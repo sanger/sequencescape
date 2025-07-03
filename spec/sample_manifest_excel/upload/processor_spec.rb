@@ -359,7 +359,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           row = rown + 1
           msg =
             "Retention instruction checks failed at row: #{row}. " \
-              "Tube (#{barcode}) cannot have different retention instruction value."
+            "Tube (#{barcode}) cannot have different retention instruction value."
           expect(processor.errors.full_messages).to include(msg)
         end
       end
@@ -813,7 +813,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(processor).not_to be_valid
             expect(processor.errors.full_messages).to include(
               'Retention instruction checks failed at row: 11. ' \
-                'Plate (SQPD-2) cannot have different retention instruction values.'
+              'Plate (SQPD-2) cannot have different retention instruction values.'
             )
           end
 
@@ -865,8 +865,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
             status: mock_microservices_response_status,
             body: JSON.generate(mock_microservice_responses[rack_barcode]),
-            headers: {
-            }
+            headers: {}
           )
         end
       end
@@ -1026,9 +1025,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                  RackedTube,
-                  :count
-                ).and not_change(Barcode, :count)
+            RackedTube,
+            :count
+          ).and not_change(Barcode, :count)
         end
       end
 
@@ -1045,9 +1044,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           RSpec::Matchers.define_negated_matcher :not_change, :change
 
           expect { processor.run(nil) }.to not_change(TubeRack, :count).and not_change(
-                  RackedTube,
-                  :count
-                ).and not_change(Barcode, :count)
+            RackedTube,
+            :count
+          ).and not_change(Barcode, :count)
         end
 
         it 'will have errors' do
@@ -1070,7 +1069,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).not_to be_empty
           expect(errors).to include(
             'Scan could not be retrieved for tube rack with barcode RK11111110. ' \
-              'Service responded with status code 404 and the following message: File not found'
+            'Service responded with status code 404 and the following message: File not found'
           )
         end
       end
@@ -1104,8 +1103,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             stub_request(:get, "#{configatron.tube_rack_scans_microservice_url}#{rack_barcode}").to_return(
               status: mock_microservices_response_status,
               body: mock_microservice_responses[rack_barcode],
-              headers: {
-              }
+              headers: {}
             )
           end
         end
@@ -1116,7 +1114,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(errors).not_to be_empty
           expect(errors[0]).to start_with(
             'Response when trying to retrieve scan (tube rack with barcode RK11111110) ' \
-              'was not valid JSON so could not be understood. Error message:'
+            'was not valid JSON so could not be understood. Error message:'
           )
         end
       end

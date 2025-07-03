@@ -11,6 +11,7 @@ class PlatesController < ApplicationController
   def show
     @plate = Plate.find(params[:id])
   end
+
   def new
     respond_to do |format|
       format.html

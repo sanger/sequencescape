@@ -43,6 +43,7 @@ class QcReport::File
 
   def valid? # rubocop:todo Metrics/MethodLength
     return invalid("#{filename} was not a csv file") unless is_a_csv?
+
     unless is_a_report?
       return(
         invalid(

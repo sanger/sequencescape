@@ -46,6 +46,7 @@ class RequestType::Validator < ApplicationRecord
 
     def include?(option)
       return true if option.nil?
+
       request_type.flowcell_types.exists?(name: option)
     end
 
@@ -125,6 +126,7 @@ class RequestType::Validator < ApplicationRecord
 
   def allow_blank?
     return false unless valid_options.respond_to? :allow_blank?
+
     valid_options.allow_blank?
   end
 end

@@ -200,11 +200,16 @@ Feature: The XML for the sequencescape API
           </descriptor>
           <descriptor><name>Contaminated Human Data Access Group</name><value></value></descriptor>
           <descriptor><name>Data access group</name><value>group1</value></descriptor>
+          <descriptor><name>EBI Library Selection</name><value>PCR</value></descriptor>
+          <descriptor><name>EBI Library Source</name><value>GENOMIC</value></descriptor>
+          <descriptor><name>EBI Library Strategy</name><value>WGS</value></descriptor>
           <descriptor><name>EGA DAC Accession Number</name></descriptor>
           <descriptor><name>EGA Policy Accession Number</name></descriptor>
           <descriptor><name>Policy Url</name></descriptor>
           <descriptor><name>Policy title</name></descriptor>
           <descriptor><name>ArrayExpress Accession Number</name></descriptor>
+          <descriptor><name>When do you anticipate sharing the data?</name><value></value></descriptor>
+          <descriptor><name>Are you planning to share the data as part of a preprint?</name></descriptor>
         </descriptors>
       </study>
       """

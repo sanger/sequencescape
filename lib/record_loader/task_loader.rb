@@ -26,6 +26,7 @@ module RecordLoader
       workflow_name = options.delete('workflow')
       workflow = find_workflow!(workflow_name, name)
       return unless workflow
+
       options[:pipeline_workflow_id] = workflow.id
       Task.create_with(options).find_or_create_by!(name: name, pipeline_workflow_id: workflow.id)
     end

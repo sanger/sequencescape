@@ -10,28 +10,31 @@ class NpgActions::AssetsController < ApplicationController
   before_action :login_required, except: %i[pass fail]
   before_action :find_asset, only: %i[pass fail]
   before_action :find_request, only: %i[pass fail]
-  before_action :find_last_event, only: %i[pass fail]
+  before_action :find_last_pass_or_fail_event, only: %i[pass fail]
   before_action :qc_information, only: %i[pass fail]
 
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
   rescue_from(NPGActionInvalid, ActionController::ParameterMissing, with: :rescue_error_bad_request)
 
+  # POST /npg_actions/assets/:asset_id/pass
   def fail
     action_for_qc_state('fail')
   end
 
+  # POST /npg_actions/assets/:asset_id/fail
   def pass
     action_for_qc_state('pass')
   end
 
   private
 
+  # Takes the state ('pass' or 'fail') and performs the necessary actions to record the QC decision.
   def action_for_qc_state(state)
     ActiveRecord::Base.transaction do
-      if @last_event.present?
-        # If we already have an event we check to see its state. If it matches,
-        # we just continue to rendering, otherwise we blow up.
-        raise NPGActionInvalid, 'NPG user run this action. Please, contact USG' if @last_event.family != state
+      if endpoint_previously_called?
+        # If the requested state matches the one previously recorded,
+        # we just continue to rendering, otherwise we raise an exception.
+        raise NPGActionInvalid, conflicting_state_message(state) if existing_state != state
       else
         generate_events(state)
       end
@@ -40,6 +43,15 @@ class NpgActions::AssetsController < ApplicationController
     end
   end
 
+  # Does a variety of things to do with passing / failing sequencing requests & batches, and recording an audit trail:
+  # - Sets the qc_state field of the lane receptacle
+  # - Sets the external_release field of the lane receptacle
+  # - Creates an Event (Sequencescape, not WH) against the lane receptacle to say external_release was updated
+  # - Creates an Event (Sequencescape, not WH) against the lane receptacle, with the qc_information from the API call
+  # - Changes the state of the request
+  # - Creates an Event (Sequencescape, not WH) against the request to record the qc complete state
+  # - If all the requests in the batch are now qc'd, updates the batch state and qc_state fields
+  # - Broadcasts a SequencingComplete event to the Events Warehouse
   def generate_events(state)
     state_str = "#{state}ed"
     batch = @request.batch || raise(ActiveRecord::RecordNotFound, 'Unable to find a batch for the Request')
@@ -74,10 +86,12 @@ class NpgActions::AssetsController < ApplicationController
     @request = requests.includes(batch: { requests: :asset }).first
   end
 
-  def find_last_event
-    @last_event = Event.family_pass_and_fail.npg_events(@request.id).first
+  def find_last_pass_or_fail_event
+    @last_pass_or_fail_event = Event.family_pass_and_fail.npg_events(@request.id).first
   end
 
+  # Requires a parameter to be passed in the request body, of the following form:
+  # { "qc_information": { "message": "..." } }
   def qc_information
     params.require(:qc_information).permit(:message)
   end
@@ -88,5 +102,24 @@ class NpgActions::AssetsController < ApplicationController
 
   def rescue_error_bad_request(exception)
     render xml: "<error><message>#{exception.message.split("\n").first}</message></error>", status: :bad_request
+  end
+
+  # If there is already a 'pass' or 'fail' event recorded,
+  # it implies this endpoint has already been called for this request.
+  def endpoint_previously_called?
+    @last_pass_or_fail_event.present?
+  end
+
+  # Returns the state previously recorded for the request,
+  # if the endpoint has been called before.
+  # Could be 'pass' or 'fail'.
+  def existing_state
+    @last_pass_or_fail_event.family
+  end
+
+  # Possible qc states are 'pass' and 'fail'
+  def conflicting_state_message(requested_state)
+    "The request on this lane has already been completed with qc state: '#{existing_state}'. " \
+      "Unable to set it to new qc state: '#{requested_state}'."
   end
 end

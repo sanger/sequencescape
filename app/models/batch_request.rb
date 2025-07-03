@@ -27,6 +27,10 @@ class BatchRequest < ApplicationRecord
   # Database validates uniqueness of request_id to ensure each request is only in one batch.
   # Constraint removed here for performance reasons
   # validates_uniqueness_of :request_id, message: '%{value} is already in a batch.'
+
+  # Sets the position on the request if it is required and not already set.
+  # NB. This sets the position on each batch_request one at a time, based on the maximum position
+  # used so far in the batch.
   before_validation(if: :requires_position?, unless: :position?) do |record|
     record.position = (record.batch.batch_requests.filter_map(&:position).max || 0) + 1
   end

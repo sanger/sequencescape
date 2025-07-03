@@ -122,6 +122,7 @@ class UatActions::GenerateFluidxBarcodes < UatActions
       # there is no duplication in the generated barcodes.
       barcodes.concat(filter_barcodes(build_barcodes(count, prefix, random, index))).uniq!
       return barcodes if barcodes.size == barcode_count.to_i
+
       count = barcode_count.to_i - barcodes.size # More to generate.
       index += barcode_count.to_i # Continue index.
     end

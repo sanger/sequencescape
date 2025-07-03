@@ -142,4 +142,102 @@ RSpec.describe Batch do
       expect(batch.errors[:base]).to be_empty
     end
   end
+
+  describe '#set_position_based_on_asset_barcode' do
+    let(:pipeline) { create(:pipeline) }
+    let(:batch) { create(:batch, pipeline:) }
+
+    it 'sorts requests by asset human barcode' do
+      # Create assets with specific barcodes to ensure consistent ordering
+      asset1 = create(:sample_tube, barcode: '111')
+      asset2 = create(:sample_tube, barcode: '222')
+      asset3 = create(:sample_tube, barcode: '333')
+
+      # Create requests with assets deliberately out of barcode order
+      request3 = create(:request, asset: asset3)
+      request1 = create(:request, asset: asset1)
+      request2 = create(:request, asset: asset2)
+
+      # Add requests to batch (order doesn't matter here)
+      batch.requests << [request3, request1, request2]
+
+      # Set up batch_requests with positions
+      batch.batch_requests.each_with_index { |br, i| br.update!(position: i + 1) }
+
+      # Set up spy for assign_positions_to_requests!
+      allow(batch).to receive(:assign_positions_to_requests!)
+
+      # Call the method under test
+      batch.set_position_based_on_asset_barcode
+
+      # Verify the method was called with correctly ordered request IDs
+      expect(batch).to have_received(:assign_positions_to_requests!).with([request1.id, request2.id, request3.id])
+    end
+  end
+
+  describe '#assign_positions_to_requests!' do
+    let(:pipeline) { create(:pipeline) }
+    let(:batch) { create(:batch, pipeline:) }
+
+    context 'when all requests in the batch are included in the requested order' do
+      it 'updates the positions of batch requests' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+        request3 = create(:request)
+
+        # Add requests to batch with initial positions
+        batch.batch_requests.create!(request: request1, position: 3)
+        batch.batch_requests.create!(request: request2, position: 1)
+        batch.batch_requests.create!(request: request3, position: 2)
+
+        # Re-order the requests
+        batch.assign_positions_to_requests!([request1.id, request2.id, request3.id])
+
+        # Reload batch and verify new positions
+        batch.reload
+        expect(batch.batch_requests.find_by(request_id: request1.id).position).to eq 1
+        expect(batch.batch_requests.find_by(request_id: request2.id).position).to eq 2
+        expect(batch.batch_requests.find_by(request_id: request3.id).position).to eq 3
+      end
+    end
+
+    context 'when some requests from the batch are missing in the requested order' do
+      it 'raises an error' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+        request3 = create(:request)
+
+        # Add all requests to batch
+        batch.requests << [request1, request2, request3]
+
+        # Try to re-order with one request missing
+        expect { batch.assign_positions_to_requests!([request1.id, request3.id]) }.to raise_error(
+          StandardError,
+          'Can only sort all the requests in the batch at once'
+        )
+      end
+    end
+
+    context 'when the requested order includes IDs not in the batch' do
+      it 'raises an error' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+
+        # Add only two requests to batch
+        batch.requests << [request1, request2]
+
+        # Create another request but don't add to batch
+        request3 = create(:request)
+
+        # Try to re-order including the third request
+        expect { batch.assign_positions_to_requests!([request1.id, request2.id, request3.id]) }.to raise_error(
+          StandardError,
+          'Can only sort all the requests in the batch at once'
+        )
+      end
+    end
+  end
 end

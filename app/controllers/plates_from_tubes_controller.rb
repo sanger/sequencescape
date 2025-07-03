@@ -102,8 +102,11 @@ class PlatesFromTubesController < ApplicationController
     source_tube_barcodes = extract_source_tube_barcodes
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
+
     found_tubes = find_tubes(source_tube_barcodes)
     return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
+    return unless validate_tubes_with_samples?(found_tubes)
+
     create_plates(scanned_user, barcode_printer, found_tubes)
     handle_successful_creation
   end
@@ -160,7 +163,31 @@ class PlatesFromTubesController < ApplicationController
     true
   end
 
+  # Ensures that all provided tubes contain at least one sample.
+  #
+  # If any tubes are found to be empty (i.e., have no samples), this method:
+  # - Sets an error message in the flash, listing the barcodes of empty tubes.
+  # - Renders the defined VIEW_PATH to allow the user to correct the issue.
+  #
+  # @param tubes [Array<Tube>] the collection of tube objects to check
+  # @return [Boolean] true if all tubes have samples, false otherwise
+  def validate_tubes_with_samples?(tubes)
+    empty_tubes = tubes.select { |tube| tube.samples.empty? }
+    return true if empty_tubes.empty?
+
+    respond_to do |format|
+      handle_empty_tubes(empty_tubes)
+      format.html { render(VIEW_PATH) }
+    end
+    false
+  end
+
   # rubocop: todo Rails/ActionControllerFlashBeforeRender
+  def handle_empty_tubes(empty_tubes)
+    barcodes = Barcode.where(asset_id: empty_tubes.map(&:id)).pluck(:barcode)
+    flash[:error] = "No samples were found in the following tubes: #{barcodes.join(', ')}"
+  end
+
   def handle_invalid_user
     flash[:error] = 'Please enter a valid user barcode'
   end
@@ -213,6 +240,7 @@ class PlatesFromTubesController < ApplicationController
       end
     end
     return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
+
     # The logic is the same for all plate creators, so we can just use the first one
     @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
   end

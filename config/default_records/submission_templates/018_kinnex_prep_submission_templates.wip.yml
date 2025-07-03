@@ -1,0 +1,9 @@
+# This submission template is associated with the Limber Kinnex Prep pipeline.
+---
+# Kinnex Prep submission template
+Limber-Htp - Kinnex Prep:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["kinnex_prep"]
+    product_line_name: Short Read
+    product_catalogue_name: scRNA Core

@@ -9,6 +9,7 @@ module RetentionInstructionHelper
   def find_retention_instruction_from_key(key)
     value = I18n.t("retention_instructions.#{key}")
     return nil if value.include?('Translation missing:')
+
     value
   end
 
@@ -30,6 +31,7 @@ module RetentionInstructionHelper
     elsif labware.custom_metadatum_collection.present? && metadata.key?('retention_instruction')
       return find_retention_instruction_key_for_value(metadata['retention_instruction'])
     end
+
     nil
   end
 end

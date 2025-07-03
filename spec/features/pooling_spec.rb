@@ -41,14 +41,14 @@ describe 'Pooling', :js, :poolings do
         page
         # rubocop:todo Layout/LineLength
       ).to have_content "Sample #{sample1.friendly_name} Library #{untagged_lb_tube1.external_identifier} Scanned Tube #{untagged_lb_tube1.human_barcode}",
-                   # rubocop:enable Layout/LineLength
-                   normalize_ws: true
+                        # rubocop:enable Layout/LineLength
+                        normalize_ws: true
       expect(
         page
         # rubocop:todo Layout/LineLength
       ).to have_content "Sample #{sample2.friendly_name} Library #{untagged_lb_tube2.external_identifier} Scanned Tube #{untagged_lb_tube2.human_barcode}",
-                   # rubocop:enable Layout/LineLength
-                   normalize_ws: true
+                        # rubocop:enable Layout/LineLength
+                        normalize_ws: true
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
