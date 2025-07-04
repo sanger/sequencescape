@@ -6,22 +6,41 @@ require 'support/barcode_helper'
 RSpec.describe Sample, :accession, :cardinal do
   include MockAccession
 
-  context 'accessioning' do
+  context 'accessioning disabled' do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+    let(:sample) do
+      create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+    end
 
     before do
-      configatron.accession_samples = true
+      configatron.accession_samples = false
       Delayed::Worker.delay_jobs = false
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
+
+      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
     end
 
-    after do
-      Delayed::Worker.delay_jobs = true
-      configatron.accession_samples = false
+    after { Delayed::Worker.delay_jobs = true }
+
+    it 'will raise an exception if the sample can be accessioned' do
+      expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
     end
+
+    it 'will not add an accession number if it fails' do
+      begin
+        sample.accession
+      rescue AccessionService::AccessioningDisabledError
+        # Ignore the error and continue execution
+      end
+      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+    end
+  end
+
+  context 'accessioning enabled', :accessioning_enabled do
+    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+
+    before { Delayed::Worker.delay_jobs = false }
+
+    after { Delayed::Worker.delay_jobs = true }
 
     it 'will not proceed if the sample is not suitable' do
       sample =
@@ -36,6 +55,8 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
       sample =
         create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+      sample.accession
+
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
@@ -43,7 +64,8 @@ RSpec.describe Sample, :accession, :cardinal do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
       sample =
         build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect { sample.save! }.to raise_error(StandardError)
+      sample.save!
+
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
   end

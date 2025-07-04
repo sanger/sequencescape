@@ -556,7 +556,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession_all_samples
-    samples.find_each(&:accession) if accession_number?
+    samples.find_each do |sample|
+      sample.accession if accession_number?
+    rescue AccessionService::AccessionServiceError => e
+      errors.add(:base, e.message)
+    end
   end
 
   def abbreviation

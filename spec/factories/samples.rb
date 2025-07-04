@@ -4,6 +4,9 @@ FactoryBot.define do
   factory :sample do
     name { generate(:sample_name) }
 
+    # Accessioning is triggered on sample saving, unless processing_manifest is true
+    before(:create) { Sample::Current.processing_manifest = true }
+
     factory :sample_with_well do
       sequence(:sanger_sample_id, &:to_s)
 
