@@ -69,19 +69,18 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
           study.reload
         end
 
-        # TODO: {Y25-280} Uncomment this as part of improving error handling
-        # it 'adds errors to the sample model' do
-        #   expect(study.errors.full_messages).to eq(
-        #     [
-        #       "Accessionable is invalid for sample 'Sample6': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-        #       "Accessionable is invalid for sample 'Sample7': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-        #       "Accessionable is invalid for sample 'Sample8': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}."
-        #     ]
-        #   )
-        # end
+        it 'adds errors to the sample model' do
+          expect(study.errors.full_messages).to eq(
+            [
+              "Accessionable is invalid for sample 'Sample6': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample7': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample8': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}."
+            ]
+          )
+        end
 
         it 'accessions only the samples with accession numbers' do
           expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }).to eq(
@@ -104,19 +103,18 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
           study.reload
         end
 
-        # TODO: {Y25-280} Uncomment this as part of improving error handling
-        # it 'adds errors to the sample model' do
-        #   expect(study.errors.full_messages).to eq(
-        #     [
-        #       "Accessionable is invalid for sample 'Sample1': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-        #       "Accessionable is invalid for sample 'Sample2': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-        #       "Accessionable is invalid for sample 'Sample3': " \
-        #       "Sample does not have the required metadata: #{missing_metadata_for_study}."
-        #     ]
-        #   )
-        # end
+        it 'adds errors to the sample model' do
+          expect(study.errors.full_messages).to eq(
+            [
+              "Accessionable is invalid for sample 'Sample1': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample2': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}.",
+              "Accessionable is invalid for sample 'Sample3': " \
+              "Sample does not have the required metadata: #{missing_metadata_for_study}."
+            ]
+          )
+        end
 
         it 'does not accession samples without accession numbers' do
           expect(study.samples.count { |sample| sample.sample_metadata.sample_ebi_accession_number.nil? }).to eq(
