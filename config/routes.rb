@@ -65,6 +65,7 @@ Rails.application.routes.draw do
       jsonapi_resources :sample_manifests
       jsonapi_resources :sample_metadata
       jsonapi_resources :specific_tube_creations, except: %i[update]
+      jsonapi_resources :specific_tube_rack_creations, except: %i[update]
       jsonapi_resources :state_changes, except: %i[update]
       jsonapi_resources :studies
       jsonapi_resources :submission_pools
@@ -83,6 +84,7 @@ Rails.application.routes.draw do
       jsonapi_resources :tube_from_tube_creations, except: %i[update]
       jsonapi_resources :tube_from_plate_creations, except: %i[update]
       jsonapi_resources :tube_purposes
+      jsonapi_resources :tube_rack_purposes
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
       jsonapi_resources :tubes
