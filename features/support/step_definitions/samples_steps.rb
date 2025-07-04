@@ -138,7 +138,7 @@ end
 
 When /^I (create|update) an? accession number for sample "([^"]+)"$/ do |action_type, sample_name|
   step "I am on the show page for sample \"#{sample_name}\""
-  action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update Accession Number (EBI Sample Data)'
+  action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update Sample Data for Accessioning'
   step("I follow \"#{action_str}\"")
 end
 
