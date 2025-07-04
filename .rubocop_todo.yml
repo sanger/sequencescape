@@ -2088,7 +2088,6 @@ Style/SuperArguments:
     - 'app/api/model_extensions/order.rb'
     - 'app/models/broadcast_event/plate_cherrypicked.rb'
     - 'app/models/pipeline.rb'
-    - 'app/models/plate_purpose/additional_input.rb'
     - 'app/models/qc_result_factory.rb'
     - 'app/sample_manifest_excel/sample_manifest_excel/upload/processor/tube_rack.rb'
     - 'features/support/accession_service.rb'
