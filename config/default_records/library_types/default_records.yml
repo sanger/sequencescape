@@ -1,0 +1,16 @@
+# Add entries to this file to generate them automatically upon running
+# rake record_loader:all or rake record_loader:library_type
+# If you want entries which are only created in development mode then simply
+# create a file in this directory ending in '.dev.yml'
+# You can add as many additional .yml files to this directory as you wish.
+# ---
+# Unique name 1:
+#   name: name 1
+# Unique name 2:
+#   name: name 2
+
+SPLADE-seq:
+  name: SPLADE-seq
+
+Spatial Genomics Dev:
+  name: Spatial Genomics Dev
