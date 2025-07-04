@@ -64,5 +64,5 @@ jobs:
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          disable_search: true
+          disable-search: true
           files: ${{ github.workspace }}/lcov.info
