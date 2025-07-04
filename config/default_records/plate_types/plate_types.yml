@@ -5,6 +5,8 @@ ABgene_0800:
   maximum_volume: 180
 FluidX075:
   maximum_volume: 500
+FluidX 0.5µl:
+  maximum_volume: 520
 FluidX03:
   maximum_volume: 280
 KingFisher 96 2ml:
