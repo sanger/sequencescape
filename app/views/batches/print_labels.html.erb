@@ -7,6 +7,7 @@
 <div class="content">
   <div class="info">
     <form action='/batches/print_barcodes' method='POST'>
+      <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
       <%= render partial: "shared/print" %>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>

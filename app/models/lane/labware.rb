@@ -21,6 +21,14 @@ class Lane::Labware < Labware
     source_request.try(:flowcell_barcode)
   end
 
+  # Respond to 'machine_barcode' to avoid errors in case the lane labware is
+  # accessed in the batch tube label printing. The chip barcode associated with
+  # the lane is already returned by the 'human_barcode' method.
+  # @return [nil]
+  def machine_barcode
+    nil
+  end
+
   def generate_barcode
     # NOOP
   end
