@@ -6,7 +6,7 @@ FactoryBot.define do
     sample_common_name { 'A common name' }
     donor_id { '1' }
     gender { 'Unknown' }
-    phenotype { 'Indescribeable' }
+    phenotype { 'Indescribable' }
     growth_condition { 'No' }
     sample_public_name { 'Sample 666' }
     disease_state { 'Awful' }
