@@ -42,8 +42,28 @@ class WorkCompletion < ApplicationRecord
 
   private
 
+  # @!method pass_and_attach_requests
+  #   Determines the appropriate processing class based on the target labware type
+  #   and invokes its `process` method to handle request passing and linking.
+  #
+  #   @return [void]
+  #
+  #   @example
+  #     pass_and_attach_requests
+  #
+  #   The method selects the processing class as follows:
+  #   - If the target labware responds to `racked_tubes`, it uses `TubeRackCompletion`.
+  #   - If the target labware responds to `wells`, it uses `PlateCompletion`.
+  #   - Otherwise, it defaults to `TubeCompletion`.
   def pass_and_attach_requests
-    processing_class = target.respond_to?(:wells) ? PlateCompletion : TubeCompletion
+    processing_class =
+      if target.respond_to?(:wells)
+        PlateCompletion
+      elsif target.respond_to?(:racked_tubes)
+        TubeRackCompletion
+      else
+        TubeCompletion
+      end
     processing_class.new(target, submission_ids, self).process
   end
 end
