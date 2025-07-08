@@ -14,12 +14,14 @@ RSpec.describe Sample, :accession, :cardinal do
 
     before do
       configatron.accession_samples = false
-      Delayed::Worker.delay_jobs = false
-
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
     end
 
-    after { Delayed::Worker.delay_jobs = true }
+    around do |example|
+      Delayed::Worker.delay_jobs = false
+      example.run
+      Delayed::Worker.delay_jobs = true
+    end
 
     it 'will raise an exception if the sample can be accessioned' do
       expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
@@ -37,36 +39,38 @@ RSpec.describe Sample, :accession, :cardinal do
 
   context 'accessioning enabled', :accessioning_enabled do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+    let(:accessionable_sample) do
+      create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+    end
+    let(:unaccessionable_sample) do
+      create(:sample_for_accessioning_with_open_study,
+             sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
+    end
 
-    before { Delayed::Worker.delay_jobs = false }
-
-    after { Delayed::Worker.delay_jobs = true }
+    around do |example|
+      Delayed::Worker.delay_jobs = false
+      example.run
+      Delayed::Worker.delay_jobs = true
+    end
 
     it 'will not proceed if the sample is not suitable' do
-      sample =
-        create(
-          :sample_for_accessioning_with_open_study,
-          sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
-        )
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      accessionable_sample.accession
+
+      expect(unaccessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
     it 'will add an accession number if successful' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
-      sample =
-        create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      sample.accession
+      accessionable_sample.accession
 
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
+      expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
     it 'will not add an accession number if it fails' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      sample =
-        build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      sample.save!
+      accessionable_sample.save!
 
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
   end
 
