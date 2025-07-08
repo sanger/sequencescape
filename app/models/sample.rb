@@ -506,6 +506,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession
+    # Flag set in the deployment project to allow per-environment enabling of accessioning
     unless configatron.accession_samples
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end

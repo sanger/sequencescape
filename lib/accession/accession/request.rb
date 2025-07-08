@@ -48,7 +48,7 @@ module Accession
 
     private
 
-    # This is horribe but necessary.
+    # This is horrible but necessary.
     # Set the proxy to ensure you don't get a bad request error.
     def set_proxy # rubocop:todo Metrics/AbcSize
       if configatron.disable_web_proxy == true
