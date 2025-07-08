@@ -6,15 +6,17 @@
   <thead>
     <tr>
       <th>status</th>
+      <th>last error summary</th>
       <th>type</th>
       <th>priority</th>
       <th>attempts</th>
-      <th>Scheduled at</th>
+      <th>scheduled at</th>
     </tr>
     <tbody>
       <% @jobs.each do |job| %>
         <tr>
           <td><%= job_status(job) %></td>
+          <td><%= job_last_error(job) %></td>
           <td><%= job_type(job) %></td>
           <td><%= job.priority%></td>
           <td><%= job.attempts%></td>
@@ -24,4 +26,3 @@
     </tbody>
   </thead>
 </table>
-
