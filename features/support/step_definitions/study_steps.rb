@@ -257,7 +257,7 @@ end
 
 When /^I update an? accession number for study "([^"]+)"$/ do |study_name|
   step "I am on the information page for study \"#{study_name}\""
-  step('I follow "Update EBI Study data"')
+  step('I follow "Update Study Data for Accessioning"')
 end
 
 Given /^the study "([^"]+)" has a valid policy$/ do |study_name|
