@@ -16,8 +16,6 @@ RSpec.describe 'batches/print_labels.html.erb', type: :view do
     let(:tube) { create(:multiplexed_library_tube) }
     let(:request) { create(:sequencing_request, target_asset: lane, asset: tube.receptacle) }
     let(:batch) { create(:batch).tap { |batch| batch.requests << request } }
-    let(:printable) { { request.id => 'on' } }
-    let(:options) { { count: '1', printable: printable, batch: batch, stock: false } }
 
     it 'shows the parent tube barcode' do
       expect(rendered).to include(tube.human_barcode)
