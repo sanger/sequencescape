@@ -15,6 +15,8 @@
         </tr>
 
         <% @batch.requests.index_by(&:target_asset).each do |target_asset, request| -%>
+          <!-- Use the parent tube receptacle if target_asset is a lane. -->
+          <% target_asset = target_asset.labware.parent.receptacle if target_asset.is_a? Lane %>
           <% next unless target_asset.respond_to?(:human_barcode) %>
           <tr>
             <td width="35%" class="item"><label for="printable[<%= request.id %>]">Tube <%= target_asset.human_barcode %></label></td>
