@@ -174,6 +174,15 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   delegate :location, :location_id, :location_id=, :printable_target, :source_plate, to: :plate, allow_nil: true
   delegate :column_order, :row_order, to: :map, allow_nil: true
 
+  def diluent_molarity
+    qc_result_for(:molarity)
+  end
+
+  # Update the molarity in qc_results
+  def diluent_molarity=(value)
+    qc_results.create!(key: :molarity, value: value.to_f)
+  end
+
   class << self
     def delegate_to_well_attribute(attribute, options = {})
       class_eval <<-END_OF_METHOD_DEFINITION
