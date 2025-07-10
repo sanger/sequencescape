@@ -45,6 +45,12 @@ module Api
       #   This metadata allows for the flexible extension of study attributes.
       has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
 
+      # @!attribute [rw] study_metadata
+      #   @return [StudyMetadataResource] The metadata associated with this sample, containing additional
+      #     details like faculty sponsor
+      #   @note Optional relationship.
+      has_one :study_metadata, class_name: 'StudyMetadata', foreign_key_on: :related
+
       ###
       # Filters
       ###
