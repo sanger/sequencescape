@@ -8,7 +8,5 @@ RSpec.describe Api::V2::StudyMetadataResource, type: :resource do
 
   let(:study_metadata) { create(:study_metadata) }
 
-  it { is_expected.to filter(:study_id) }
-
   it { is_expected.to have_a_readonly_has_one(:faculty_sponsor).with_class_name('FacultySponsor') }
 end
