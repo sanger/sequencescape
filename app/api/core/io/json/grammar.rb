@@ -34,12 +34,11 @@ module Core::Io::Json::Grammar
         .uniq
         .each_with_object({}) do |k, store|
           cloned =
-            case
-            when @children.key?(k) && node.children.key?(k)
+            if @children.key?(k) && node.children.key?(k)
               node.children[k].merge(@children[k])
-            when @children.key?(k)
+            elsif @children.key?(k)
               @children[k]
-            when node.children.key?(k)
+            elsif node.children.key?(k)
               node.children[k]
             else
               raise 'Odd, how did that happen?'

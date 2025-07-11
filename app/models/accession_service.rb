@@ -3,8 +3,10 @@
 require 'rexml/document'
 
 # The EBI operates two key AccessionServices
+#
 # {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
+#
 # We also submit information to ArrayExpress, but this happens indirectly via the accession services above.
 # @see https://www.ebi.ac.uk/ega/submission#which_archive
 #
@@ -24,7 +26,7 @@ require 'rexml/document'
 # {Accessionable::Policy} Details about how the data may be used. (EGA)
 #
 # Accessioning of samples has been partially migrated to {Accession 'a separate accession library'}
-class AccessionService # rubocop:todo Metrics/ClassLength
+class AccessionService
   include REXML
 
   # We overide this in testing to do a bit of evesdropping
@@ -62,8 +64,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   self.no_study_accession_needed = false
   self.operational = false
 
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
-  def submit(user, *accessionables) # rubocop:todo Metrics/CyclomaticComplexity
+  def submit(user, *accessionables)
     ActiveRecord::Base.transaction do
       submission = Accessionable::Submission.new(self, user, *accessionables)
 
@@ -88,7 +89,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
           )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
-          raise AccessionServiceError, "EBI Server Error. Couldnt get accession number: #{xml_result}"
+          raise AccessionServiceError, "EBI Server Error. Couldn't get accession number: #{xml_result}"
         end
 
         xmldoc = Document.new(xml_result)
@@ -131,8 +132,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
     accessionables.map(&:accession_number)
   end
-
-  # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength, Metrics/AbcSize
 
   def submit_sample_for_user(sample, user)
     # TODO: commented out line as not used without error handling
@@ -198,8 +197,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
 
   private
 
-  # rubocop:todo Metrics/MethodLength
-  def accession_submission_xml(submission, accession_number) # rubocop:todo Metrics/AbcSize
+  def accession_submission_xml(submission, accession_number)
     xml = Builder::XmlMarkup.new
     xml.instruct!
     xml.SUBMISSION(
@@ -230,8 +228,6 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     xml.target!
   end
 
-  # rubocop:enable Metrics/MethodLength
-
   def accession_options
     raise NotImplemented, 'abstract method'
   end
@@ -240,8 +236,7 @@ class AccessionService # rubocop:todo Metrics/ClassLength
     rest_client_class.new(configatron.accession.url!, accession_options)
   end
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-  def post_files(file_params) # rubocop:todo Metrics/CyclomaticComplexity
+  def post_files(file_params)
     rc = rest_client_resource
 
     if configatron.disable_web_proxy == true
@@ -279,5 +274,4 @@ class AccessionService # rubocop:todo Metrics/ClassLength
   rescue StandardError => e
     raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end
