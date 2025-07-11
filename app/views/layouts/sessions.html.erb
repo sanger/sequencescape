@@ -27,8 +27,7 @@
       <header></header><%# No header for login page, but helps with spacing %>
 
       <main id="login-panel">
-        <% environment = Rails.env %>
-        <%= vite_image_tag "images/logo-gradient-#{environment}.svg", class: "card-img-top", alt: "Sequencescape Logo for #{environment}." %>
+        <%= vite_image_tag sequencescape_logo, class: "card-img-top", alt: "Sequencescape Logo" %>
         <%= yield %>
       </main>
 
