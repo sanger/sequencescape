@@ -8,7 +8,7 @@ FactoryBot.define do
     before(:create) { Sample::Current.processing_manifest = true }
 
     factory :sample_with_well do
-      sequence(:sanger_sample_id, &:to_s)
+      sanger_sample_id { generate(:sanger_sample_id) }
 
       after(:build) { |sample, _evaluator| sample.wells = create_list(:well_with_sample_and_plate, 1, sample:) }
     end
@@ -19,7 +19,7 @@ FactoryBot.define do
 
     factory :sample_with_sanger_sample_id do
       updated_by_manifest { true }
-      sequence(:sanger_sample_id, &:to_s)
+      sanger_sample_id { generate(:sanger_sample_id) }
     end
 
     factory :accessioned_sample do
