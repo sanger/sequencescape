@@ -39,22 +39,24 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
-          "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': Failed to update accession number"
+          "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': " \
+          'EBI failed to update accession number, data may be invalid'
         )
       end
 
       it 'notifies ExceptionNotifier' do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(StandardError),
+          instance_of(AccessionService::AccessionServiceError),
           data: {
-            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': Failed to update accession number"
+            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': " \
+                     'EBI failed to update accession number, data may be invalid'
           }
         )
       end
     end
 
     context 'when an exception is raised during submission' do
-      let(:error) { StandardError.new('Something went wrong') }
+      let(:error) { AccessionService::AccessionServiceError.new('Something went wrong') }
 
       before do
         allow(submission).to receive(:post).and_raise(error)
@@ -62,14 +64,17 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'logs the error' do
-        expect(logger).to have_received(:error).with("Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': #{error.message}")
+        expect(logger).to have_received(:error).with(
+          "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': #{error.message}"
+        )
       end
 
       it 'notifies ExceptionNotifier' do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
           error,
           data: {
-            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': #{error.message}"
+            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': " \
+                     "#{error.message}"
           }
         )
       end
