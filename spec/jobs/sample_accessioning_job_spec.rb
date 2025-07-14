@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe SampleAccessioningJob, type: :job do
-  let(:accessionable) { instance_double(Sample, id: 1) }
+  let(:accessionable) { create(:sample_with_sanger_sample_id) }
   let(:user) { instance_double(User, id: 1) }
   let(:submission) { instance_double(Accession::Submission) }
   let(:job) { described_class.new(accessionable) }
@@ -39,7 +39,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
-          'Error performing SampleAccessioningJob: Failed to update accession number'
+          "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': Failed to update accession number"
         )
       end
 
@@ -47,7 +47,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
           instance_of(StandardError),
           data: {
-            message: 'Error performing SampleAccessioningJob: Failed to update accession number'
+            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': Failed to update accession number"
           }
         )
       end
@@ -62,14 +62,14 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'logs the error' do
-        expect(logger).to have_received(:error).with("Error performing SampleAccessioningJob: #{error.message}")
+        expect(logger).to have_received(:error).with("Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': #{error.message}")
       end
 
       it 'notifies ExceptionNotifier' do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
           error,
           data: {
-            message: "Error performing SampleAccessioningJob: #{error.message}"
+            message: "Error performing SampleAccessioningJob for sample '#{accessionable.sanger_sample_id}': #{error.message}"
           }
         )
       end
