@@ -16,7 +16,7 @@ SampleAccessioningJob =
       accession_error_message = 'EBI failed to update accession number, data may be invalid'
       submission.update_accession_number || raise(AccessionService::AccessionServiceError, accession_error_message)
     rescue AccessionService::AccessionServiceError => e
-      sample_id = accessionable.sanger_sample_id
+      sample_id = accessionable.sample.sanger_sample_id
       job_error_message = "Error performing SampleAccessioningJob for sample '#{sample_id}': #{e.message}"
       Rails.logger.error(job_error_message)
       ExceptionNotifier.notify_exception(e, data: { message: job_error_message })
