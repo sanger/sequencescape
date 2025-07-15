@@ -81,7 +81,7 @@ module RecordLoader
     def parent_purposes(options)
       options.fetch('parent_purposes', [])
         .each_with_object([]) do |purpose_name, purposes|
-          purposes << PlatePurpose.find_by(name: purpose_name)
+          purposes << PlatePurpose.find_by!(name: purpose_name)
         end
     end
 
