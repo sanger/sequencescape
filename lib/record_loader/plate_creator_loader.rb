@@ -56,8 +56,8 @@ module RecordLoader
     # @return [Plate::Creator] The found or newly created Plate::Creator.
     def create_plate_creator_if_does_not_exist(name, options)
       Plate::Creator.find_or_create_by(name:) do |creator|
-        creator.plate_creator_purposes = purposes(options)
-        creator.parent_purpose_relationships = parent_purposes(options)
+        creator.plate_creator_purposes = purposes(options, creator)
+        creator.parent_purpose_relationships = parent_purposes(options, creator)
       end
     end
 
@@ -66,10 +66,15 @@ module RecordLoader
     # @param options [Hash] Options hash expected to contain a 'purposes' array.
     # @return [Array<PlatePurpose>] Array of PlatePurpose records matching the names.
     # @raise [ActiveRecord::RecordNotFound] if any purpose name is not found.
-    def purposes(options)
+    def purposes(options, plate_creator)
       options.fetch('purposes', [])
-        .each_with_object([]) do |purpose_name, purposes|
-          purposes << PlatePurpose.find_by!(name: purpose_name)
+        .each_with_object([]) do |purpose_name, purpose_relationships|
+          PlatePurpose.find_by!(name: purpose_name) do |plate_purpose|
+            purpose_relationships << Plate::Creator::PurposeRelationship.new(
+              plate_creator:,
+              plate_purpose:
+            )
+          end
         end
     end
 
@@ -78,10 +83,15 @@ module RecordLoader
     # @param options [Hash] Options hash expected to contain a 'parent_purposes' array.
     # @return [Array<PlatePurpose>] Array of PlatePurpose records matching the names.
     #         If a parent purpose name is not found, it is skipped (returns nil).
-    def parent_purposes(options)
+    def parent_purposes(options, plate_creator)
       options.fetch('parent_purposes', [])
-        .each_with_object([]) do |purpose_name, purposes|
-          purposes << PlatePurpose.find_by!(name: purpose_name)
+        .each_with_object([]) do |purpose_name, parent_purpose_relationships|
+          PlatePurpose.find_by!(name: purpose_name) do |plate_purpose|
+            parent_purpose_relationships << Plate::Creator::ParentPurposeRelationship.new(
+              plate_creator:,
+              plate_purpose:
+            )
+          end
         end
     end
 
