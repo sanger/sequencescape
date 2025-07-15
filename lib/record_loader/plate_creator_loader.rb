@@ -55,9 +55,16 @@ module RecordLoader
     # @param options [Hash] Options hash containing purposes and parent_purposes arrays.
     # @return [Plate::Creator] The found or newly created Plate::Creator.
     def create_plate_creator_if_does_not_exist(name, options)
-      Plate::Creator.find_or_create_by(name:) do |creator|
-        creator.plate_creator_purposes = purposes(options, creator)
-        creator.parent_purpose_relationships = parent_purposes(options, creator)
+      creator = Plate::Creator.find_by(name:)
+      if creator
+        Rails.logger.warn("Plate::Creator with name '#{name}' already exists. No changes made.")
+        return creator
+      end
+
+      Plate::Creator.create!(name:).tap do |new_creator|
+        new_creator.plate_creator_purposes = purposes(options, new_creator)
+        new_creator.parent_purpose_relationships = parent_purposes(options, new_creator)
+        Rails.logger.info("Plate::Creator with name '#{name}' created.")
       end
     end
 
