@@ -2,7 +2,7 @@
 module RecordLoader
   # == Schema Information
   #
-  # Table name: your_table_name
+  # Table name: plate_creators
   #
   #  id            :integer          not null, primary key, auto-increment
   #  name          :string(255)      not null
@@ -15,20 +15,6 @@ module RecordLoader
   # - Timestamps are nullable and can be automatically managed with `t.timestamps` in migrations.
   # - Plate::Creator has a has-many relationship with Plate::Creator::PurposeRelationship
   #   and `Plate::Creator::ParentPurposeRelationship`
-  #
-  # Configuration for Stock RNA Plate
-  #
-  # name: 'Stock RNA Plate'
-  #
-  # valid_options:
-  #   valid_dilution_factors:
-  #     - 1.0
-  #
-  # purposes:
-  #   - 'Stock RNA Plate'
-  #
-  # parent_purposes:
-  #   (none specified)
   class PlateCreatorLoader < ApplicationRecordLoader
     config_folder 'plate_creators'
 
