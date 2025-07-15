@@ -3,7 +3,11 @@
 FactoryBot.define do
   factory :tube_rack do
     size { 96 }
+
+    purpose factory: %i[tube_rack_purpose]
+
     transient { barcode { create(:barcode) } }
+
     after(:create) { |rack, evaluator| rack.barcodes << evaluator.barcode }
 
     factory :tube_rack_with_tubes do
