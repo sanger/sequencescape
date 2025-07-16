@@ -68,10 +68,10 @@ module RecordLoader
       end
     end
 
-    # Parses the purposes from the options hash and finds the corresponding PlatePurpose records.
+    # Parses the purposes from the options hash and creates corresponding Plate::Creator::PurposeRelationship objects.
     #
     # @param options [Hash] Options hash expected to contain a 'purposes' array.
-    # @return [Array<PlatePurpose>] Array of PlatePurpose records matching the names.
+    # @return [Array<Plate::Creator::PurposeRelationship>] Array of Plate::Creator::PurposeRelationship objects.
     # @raise [ActiveRecord::RecordNotFound] if any purpose name is not found.
     def purposes(options, plate_creator)
       options.fetch('purposes', [])
