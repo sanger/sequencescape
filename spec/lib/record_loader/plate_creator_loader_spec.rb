@@ -59,4 +59,21 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
       expect { a_new_record_loader.create! }.to raise_error(StandardError)
     end
   end
+
+  context 'when valid options are not provided' do
+    let(:selected_files) { '002_example' }
+
+    before do
+      create(:plate_purpose, name: 'Stock RNA Plate')
+      a_new_record_loader.create!
+    end
+
+    it 'does not raise an error' do
+      expect(Plate::Creator.where(name: 'Stock RNA Plate')&.count).to eq(1)
+    end
+
+    it 'leaves valid options empty' do
+      expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.valid_options).to eq({})
+    end
+  end
 end
