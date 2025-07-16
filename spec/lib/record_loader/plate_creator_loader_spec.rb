@@ -12,7 +12,7 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
 
   let(:test_directory) { Rails.root.join('spec/data/record_loader/plate_creators') }
 
-  context 'when create is invoked' do
+  context 'when create is invoked for a creator that does not exist' do
     let(:selected_files) { '000_example' }
 
     before do
@@ -22,6 +22,18 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
 
     it 'creates a new plate creator' do
       expect(Plate::Creator.where(name: 'Stock RNA Plate').count).to eq(1)
+    end
+  end
+
+  context 'when create is invoked for a creator that does exist' do
+    let(:selected_files) { '001_example' }
+
+    before do
+      create(:plate_creator, name: 'Stock Plate')
+    end
+
+    it 'does not create a new plate creator' do
+      expect { a_new_record_loader.create! }.not_to(change(Plate::Creator, :count))
     end
   end
 end
