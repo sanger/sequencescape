@@ -23,12 +23,16 @@ module RecordLoader
     # If a Plate::Creator with the given name does not exist, it is created and associated
     # with the specified purposes and parent purposes. If it exists, no changes are made.
     #
+    # The base class handles the transaction management, ensuring that the operation
+    # is atomic and consistent. If any part of the creation fails, the entire transaction
+    # is rolled back.
+    #
     # @param name [String] The name of the Plate::Creator.
     # @param options [Hash] Options hash containing purposes and parent_purposes arrays.
     # @return [Plate::Creator] The found or newly created Plate::Creator.
     def create_or_update!(name, options)
-      ActiveRecord::Base.transaction do
-        create_plate_creator_if_does_not_exist(name, options)
+      create_plate_creator_if_does_not_exist(name, options).tap do |creator|
+        raise StandardError, "Failed to create or find Plate::Creator with name '#{name}'" if creator.nil?
       end
     end
 
