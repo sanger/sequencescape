@@ -275,12 +275,15 @@ describe BulkSubmission, with: :uploader do
   end
 
   context 'with accessioning enabled' do
-    before do
+    around do |example|
       # Ensure accessioning check is enabled
       configatron.disable_accession_check = false
+      example.run
+      # Reset the configuration after the test
+      configatron.disable_accession_check = true
     end
 
-    context 'is invalid if the samples dont have accession numbers and the study requies accessioning' do
+    context "when the samples don't have accession numbers" do
       # Setup the conditions for accessioning validation
       # Create a request type where accessioning is required
       let(:request_types) { [create(:well_request_type), create(:sequencing_request_type, read_lengths: [54, 100])] }
@@ -318,7 +321,7 @@ describe BulkSubmission, with: :uploader do
       end
     end
 
-    context 'is valid if the samples have accession numbers and the study requies accessioning' do
+    context 'when the samples have accession numbers' do
       # Setup the conditions for accessioning validation
       # Create a request type where accessioning is required
       let(:request_types) { [create(:well_request_type), create(:sequencing_request_type, read_lengths: [54, 100])] }
