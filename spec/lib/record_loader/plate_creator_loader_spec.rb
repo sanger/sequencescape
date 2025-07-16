@@ -23,6 +23,10 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
     it 'creates a new plate creator' do
       expect(Plate::Creator.where(name: 'Stock RNA Plate').count).to eq(1)
     end
+
+    it 'populates purpose_relationship table' do
+      expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.plate_creator_purposes&.count).to eq(1)
+    end
   end
 
   context 'when create is invoked for a creator that does exist' do
