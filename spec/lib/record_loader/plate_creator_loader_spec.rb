@@ -29,7 +29,7 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
       expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.plate_creator_purposes&.count).to eq(1)
     end
 
-    it 'populates parent_urpose_relationship table' do
+    it 'populates parent_purpose_relationship table' do
       expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.parent_purpose_relationships&.count).to eq(1)
     end
   end
