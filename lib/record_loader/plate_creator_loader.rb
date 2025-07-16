@@ -86,10 +86,10 @@ module RecordLoader
     end
 
     # Parses the parent purposes from the options hash and finds the corresponding PlatePurpose records.
-    #
+    # If a parent purpose name is not found, it is skipped (returns nil).
     # @param options [Hash] Options hash expected to contain a 'parent_purposes' array.
-    # @return [Array<Plate::Creator::ParentPurposeRelationship>] Array of Plate::Creator::ParentPurposeRelationship objects.
-    #         If a parent purpose name is not found, it is skipped (returns nil).
+    # @return [Array<Plate::Creator::ParentPurposeRelationship>] Array of Plate::Creator::ParentPurposeRelationship
+    #   objects.
     def parent_purposes(options, plate_creator)
       options.fetch('parent_purposes', [])
         .each_with_object([]) do |purpose_name, parent_purpose_relationships|
