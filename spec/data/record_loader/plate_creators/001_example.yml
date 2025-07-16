@@ -4,4 +4,4 @@ Stock Plate:
     valid_dilution_factors:
       - 1.0
   purposes:
-    - "Stock RNA Plate"
+    - "Stock Plate"
