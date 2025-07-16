@@ -109,7 +109,7 @@ module RecordLoader
     # converted to a string, ensuring a consistent return type.
     #
     # @param options [Hash] The options hash, expected to possibly contain a 'valid_options' key.
-    # @return [Hash] The value of 'valid_options' as a string, or an empty string if not present.
+    # @return [Hash] The value of 'valid_options' as a hash, or an empty hash if not present.
     def valid_options(options)
       options.fetch('valid_options', {}).to_h
     end
