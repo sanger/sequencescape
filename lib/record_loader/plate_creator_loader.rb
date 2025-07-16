@@ -32,13 +32,13 @@ module RecordLoader
       end
     end
 
-    # Finds or creates a Plate::Creator by name, and assigns purposes and parent purposes.
+    # Finds or creates a Plate::Creator by name.
     #
-    # If the Plate::Creator does not exist, it is created and associated with the given
-    # purposes and parent purposes. If it exists, it is returned as-is.
+    # If a Plate::Creator with the given name exists, logs a warning and returns it.
+    # Otherwise, creates a new Plate::Creator with the provided options.
     #
     # @param name [String] The name of the Plate::Creator.
-    # @param options [Hash] Options hash containing purposes and parent_purposes arrays.
+    # @param options [Hash] Options hash containing purposes, parent_purposes, and valid_options.
     # @return [Plate::Creator] The found or newly created Plate::Creator.
     def create_plate_creator_if_does_not_exist(name, options)
       creator = Plate::Creator.find_by(name:)
@@ -47,9 +47,23 @@ module RecordLoader
         return creator
       end
 
+      create_plate_creator!(name, options)
+    end
+
+    # Creates a new Plate::Creator and assigns purposes and parent purposes.
+    #
+    # Sets valid_options, associates purposes and parent purposes, saves the record,
+    # and logs creation. Raises if creation fails.
+    #
+    # @param name [String] The name of the Plate::Creator.
+    # @param options [Hash] Options hash containing purposes, parent_purposes, and valid_options.
+    # @return [Plate::Creator] The newly created Plate::Creator.
+    def create_plate_creator!(name, options)
       Plate::Creator.create!(name:).tap do |new_creator|
+        new_creator.valid_options = valid_options(options)
         new_creator.plate_creator_purposes = purposes(options, new_creator)
         new_creator.parent_purpose_relationships = parent_purposes(options, new_creator)
+        new_creator.save!
         Rails.logger.info("Plate::Creator with name '#{name}' created.")
       end
     end
@@ -95,9 +109,9 @@ module RecordLoader
     # converted to a string, ensuring a consistent return type.
     #
     # @param options [Hash] The options hash, expected to possibly contain a 'valid_options' key.
-    # @return [String] The value of 'valid_options' as a string, or an empty string if not present.
+    # @return [Hash] The value of 'valid_options' as a string, or an empty string if not present.
     def valid_options(options)
-      options.fetch('valid_options', '').to_s
+      options.fetch('valid_options', {}).to_h
     end
   end
 end

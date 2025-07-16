@@ -32,6 +32,12 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
     it 'populates parent_purpose_relationship table' do
       expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.parent_purpose_relationships&.count).to eq(1)
     end
+
+    it 'populates valid_options' do
+      expect(
+        Plate::Creator.find_by(name: 'Stock RNA Plate')&.valid_options
+      ).to eq({ 'valid_dilution_factors' => [1.0] })
+    end
   end
 
   context 'when create is invoked for a creator that does exist' do
