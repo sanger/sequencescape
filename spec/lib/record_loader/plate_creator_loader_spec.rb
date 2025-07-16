@@ -17,6 +17,7 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
 
     before do
       create(:plate_purpose, name: 'Stock RNA Plate')
+      create(:plate_purpose, name: 'Parent Stock Plate')
       a_new_record_loader.create!
     end
 
@@ -26,6 +27,10 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
 
     it 'populates purpose_relationship table' do
       expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.plate_creator_purposes&.count).to eq(1)
+    end
+
+    it 'populates parent_urpose_relationship table' do
+      expect(Plate::Creator.find_by(name: 'Stock RNA Plate')&.parent_purpose_relationships&.count).to eq(1)
     end
   end
 
