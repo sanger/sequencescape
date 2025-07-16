@@ -36,4 +36,12 @@ RSpec.describe RecordLoader::PlateCreatorLoader, :loader, type: :model do
       expect { a_new_record_loader.create! }.not_to(change(Plate::Creator, :count))
     end
   end
+
+  context 'when the plate purpose does not exist' do
+    let(:selected_files) { '000_example' }
+
+    it 'raises an error' do
+      expect { a_new_record_loader.create! }.to raise_error(StandardError)
+    end
+  end
 end
