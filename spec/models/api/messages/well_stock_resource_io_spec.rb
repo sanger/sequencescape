@@ -13,12 +13,11 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   let(:sample) { create(:sample) }
   let(:sample2) { create(:sample) }
   let(:plate_barcode) { build(:plate_barcode) }
-  let(:plate) { create(:plate, barcode: plate_barcode.barcode) }
   let(:well) do
     create(
       :well,
       map: Map.find_by!(description: 'A1', asset_shape: AssetShape.default, asset_size: 96),
-      plate: plate,
+      plate: create(:plate, barcode: plate_barcode.barcode),
       well_attribute: create(:complete_well_attribute)
     )
   end
