@@ -11,6 +11,7 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   after { Timecop.return }
 
   let(:sample) { create(:sample) }
+  let(:sample2) { create(:sample) }
   let(:plate_barcode) { build(:plate_barcode) }
   let(:well) do
     create(
@@ -22,14 +23,19 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   end
   let(:study) { create(:study) }
   let(:aliquot) { create(:aliquot, study: study, sample: sample, receptacle: well) }
+  let(:aliquot2) { create(:aliquot, study: study, sample: sample2, receptacle: well) }
 
-  before { aliquot } # rubocop:todo RSpec/ScatteredSetup
+  before do # rubocop:todo RSpec/ScatteredSetup
+    aliquot
+    aliquot2
+  end
 
   let(:expected_json) do
     {
       'created_at' => '2012-03-11T10:22:42+00:00',
       'updated_at' => '2012-03-11T10:22:42+00:00',
-      'samples' => [{ 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid }],
+      'samples' => [{ 'id_sample_tmp' => sample.id, 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid },
+                    { 'id_sample_tmp' => sample2.id, 'sample_uuid' => sample2.uuid, 'study_uuid' => study.uuid }],
       'stock_resource_id' => well.id,
       'stock_resource_uuid' => well.uuid,
       'machine_barcode' => plate_barcode.barcode,
