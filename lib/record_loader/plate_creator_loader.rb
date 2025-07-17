@@ -18,7 +18,7 @@ module RecordLoader
   class PlateCreatorLoader < ApplicationRecordLoader
     config_folder 'plate_creators'
 
-    # Creates or updates a Plate::Creator record within a database transaction.
+    # Creates or updates a Plate::Creator record.
     #
     # If a Plate::Creator with the given name does not exist, it is created and associated
     # with the specified purposes and parent purposes. If it exists, no changes are made.
@@ -109,8 +109,8 @@ module RecordLoader
     # Returns the 'valid_options' value from the options hash as a string.
     #
     # This method fetches the 'valid_options' key from the provided options hash.
-    # If the key is not present, it returns an empty string. The result is always
-    # converted to a string, ensuring a consistent return type.
+    # If the key is not present, it returns an empty hash. The result is always
+    # converted to a hash, ensuring a consistent return type.
     #
     # @param options [Hash] The options hash, expected to possibly contain a 'valid_options' key.
     # @return [Hash] The value of 'valid_options' as a hash, or an empty hash if not present.
