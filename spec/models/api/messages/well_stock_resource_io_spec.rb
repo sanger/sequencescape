@@ -29,7 +29,7 @@ RSpec.describe Api::Messages::WellStockResourceIo do
     {
       'created_at' => '2012-03-11T10:22:42+00:00',
       'updated_at' => '2012-03-11T10:22:42+00:00',
-      'samples' => [{ 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid }],
+      'samples' => [{ 'id_sample_tmp' => sample.id, 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid }],
       'stock_resource_id' => well.id,
       'stock_resource_uuid' => well.uuid,
       'machine_barcode' => plate_barcode.barcode,
