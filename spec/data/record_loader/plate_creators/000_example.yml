@@ -1,0 +1,9 @@
+---
+Stock RNA Plate:
+  valid_options:
+    valid_dilution_factors:
+      - 1.0
+  purposes:
+    - "Stock RNA Plate"
+  parent_purposes:
+    - "Parent Stock Plate"

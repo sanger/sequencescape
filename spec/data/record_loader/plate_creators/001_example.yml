@@ -1,0 +1,7 @@
+---
+Stock Plate:
+  valid_options:
+    valid_dilution_factors:
+      - 1.0
+  purposes:
+    - "Stock Plate"
