@@ -309,7 +309,7 @@ GEM
     mocha (2.7.1)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
-    multi_json (1.15.0)
+    multi_json (1.16.0)
     multi_test (1.1.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
