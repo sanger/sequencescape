@@ -5,9 +5,9 @@
   <%= cherrypick_strategy_radio_button :cherrypick, :strategy, :nano_grams, 'Pick by amount (ng)' %>
 
   <%= fields_for :nano_grams do |nano_grams_fields| %>
-    <%= cherrypick_form_group_text nano_grams_fields, :total_nano_grams, 'Quantity to pick (ng)', 1000, type: 'number', step: 0.1, min: 0 %>
-    <%= cherrypick_form_group_text nano_grams_fields, :minimum_volume, 'Minimum Target Volume (µl)', 10, type: 'number', step: 0.1, min: 0 %>
-    <%= cherrypick_form_group_text nano_grams_fields, :maximum_volume, 'Maximum Target Volume (µl)', 50, type: 'number', step: 0.1, min: 0 %>
+    <%= cherrypick_form_group_text nano_grams_fields, :total_nano_grams, 'Quantity to pick (ng)', '1000' %>
+    <%= cherrypick_form_group_text nano_grams_fields, :minimum_volume, 'Minimum Volume (µl)', '10' %>
+    <%= cherrypick_form_group_text nano_grams_fields, :maximum_volume, 'Maximum Volume (µl)', '50' %>
     <%= cherrypick_form_group_text nano_grams_fields, :robot_minimum_picking_volume, 'Robot Minimum Picking Volume (µl)', 5.0, type: 'number', step: 0.1, min: 1, max: 9 %>
   <% end %>
 

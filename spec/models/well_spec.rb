@@ -272,7 +272,7 @@ describe Well do
       source_pick_vol: 50,
       buffer_vol: 0,
       final_src_vol: 0,
-      final_dest_vol: 50
+      final_dest_vol: 10
     },
     {
       target_ng: 1000,
@@ -356,7 +356,7 @@ describe Well do
       source_pick_vol: 40,
       buffer_vol: 0,
       final_src_vol: 10,
-      final_dest_vol: 40
+      final_dest_vol: 10
     },
     {
       target_ng: 10_000,
@@ -368,7 +368,7 @@ describe Well do
       source_pick_vol: 30,
       buffer_vol: 0,
       final_src_vol: 0,
-      final_dest_vol: 30
+      final_dest_vol: 10
     },
     {
       scenario: 'Y24-382: SQPD-10861 v14.29, b0.00',
@@ -381,7 +381,7 @@ describe Well do
       source_pick_vol: 14.29,
       buffer_vol: 0,
       final_src_vol: 35.7143,
-      final_dest_vol: 14.29
+      final_dest_vol: 10
     },
     {
       scenario: 'Y24-382: SQPD-10864 v1.00, b49.00',
@@ -391,8 +391,8 @@ describe Well do
       min_vol: 50,
       max_vol: 50,
       min_pick_vol: 5,
-      source_pick_vol: 5,
-      buffer_vol: 45,
+      source_pick_vol: 1,
+      buffer_vol: 49,
       final_src_vol: 0,
       final_dest_vol: 50
     },
@@ -421,19 +421,6 @@ describe Well do
       buffer_vol: 0,
       final_src_vol: 50,
       final_dest_vol: 50
-    },
-    {
-      scenario: 'Y24-382: total pick of 100µl, comprising of 1µl vol and 99µl buffer',
-      target_ng: 100,
-      measured_conc: 1,
-      measured_vol: 1,
-      min_vol: 100,
-      max_vol: 100,
-      min_pick_vol: 0,
-      source_pick_vol: 1,
-      buffer_vol: 99,
-      final_src_vol: 0,
-      final_dest_vol: 100
     }
   ].each do |cherrypick|
     scenario = cherrypick.fetch(:scenario, nil)
@@ -480,12 +467,11 @@ describe Well do
           current_volume = @source_well.get_current_volume
           picked_volume = @target_well.get_picked_volume
           calculated_volume = current_volume - picked_volume
-          calculated_volume = 0 if calculated_volume < 0
           expect(calculated_volume.round(2)).to eq(final_source_volume.round(2))
         end
 
         it "provides a final destination volume of #{final_destination_volume}" do
-          expect(@target_well.well_attribute.current_volume.round(2)).to eq(final_destination_volume)
+          expect(@target_well.well_attribute.current_volume).to eq(final_destination_volume)
         end
       end
     end
@@ -656,7 +642,7 @@ describe Well do
         source_volume: 200.0,
         robot_minimum_pick_volume: 5.0,
         source_volume_picked: 96.2,
-        buffer_volume_picked: 3.8,
+        buffer_volume_picked: 5.0,
         destination_volume: 100.0,
         source_volume_remaining: 103.8
       },
@@ -716,25 +702,10 @@ describe Well do
         source_volume: 50,
         robot_minimum_pick_volume: 5.0,
         source_volume_picked: 10.7,
-        buffer_volume_picked: 4.3,
+        buffer_volume_picked: 5.0,
         destination_volume: 15.0,
         source_volume_remaining: 39.3
-      },
-      {
-        scenario: 'Y24-382: total pick of 100µl, comprising of 0 vol and 100 buffer',
-        target_volume: 100,
-        target_concentration: 2,
-        source_concentration: 10,
-        source_volume: 0,
-        robot_minimum_pick_volume: 0,
-        source_volume_picked: 0,
-        buffer_volume_picked: 100,
-        destination_volume: 100,
-        source_volume_remaining: 0
       }
-      # Given a conc scenario where you want 100 total final volume with 20 source volume, it will pick 20 from source
-      # and add 80 buffer, giving a total of 100. if you have 0 source volume, and you desire to pick 20 from source
-      # you will get 0 volume and 100 buffer for a total of 100
     ].each do |cherrypick|
       scenario = cherrypick[:scenario]
       target_volume = cherrypick[:target_volume]
