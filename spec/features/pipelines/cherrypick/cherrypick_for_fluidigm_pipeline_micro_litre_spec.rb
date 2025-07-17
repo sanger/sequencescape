@@ -61,7 +61,7 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
     first(:button, 'Submit').click
     click_link 'Select Plate Template'
     select('testtemplate', from: 'Plate Template')
-    fill_in('Volume to pick (µl)', with: 13)
+    fill_in('Volume (µl)', with: 13)
     click_button 'Next step'
     click_button 'Next step'
     click_button 'Release this batch'
