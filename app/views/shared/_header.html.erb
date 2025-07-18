@@ -1,6 +1,6 @@
 <nav class="main-nav">
-  <div id="logo_container">
-    <div id="sequencescape_logo"><%= link_to vite_image_tag("images/sequencescape.gif"), '/' %></div>
+  <div id="logo-container">
+    <%= link_to vite_image_tag(sequencescape_logo), '/' %>
     <div id="app_name">
       <% if Rails.env.production? %>
         <%= link_to t('application.name').upcase, '/' %>
