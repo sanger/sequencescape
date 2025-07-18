@@ -1,5 +1,6 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
-require 'date'
 
 RSpec.describe Deployed::RepoData do
   subject(:repo_data) { described_class.new }
