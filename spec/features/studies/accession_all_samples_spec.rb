@@ -2,22 +2,16 @@
 
 require 'rails_helper'
 
-describe 'Accession all samples' do
+describe 'Accession all samples', :accessioning_enabled do
   let!(:user) { create(:user, api_key: configatron.accession_local_key) }
   let!(:study) { create(:open_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5)) }
 
   before do
     Delayed::Worker.delay_jobs = false
-    configatron.accession_samples = true
-    Accession.configure do |config|
-      config.folder = File.join('spec', 'data', 'accession')
-      config.load!
-    end
     allow(Accession::Request).to receive(:post).and_return(build(:successful_accession_response))
   end
 
   after do
-    configatron.accession_samples = false
     Delayed::Worker.delay_jobs = true
     SampleManifestExcel.reset!
   end

@@ -277,6 +277,7 @@ describe BulkSubmission, with: :uploader do
   context 'with accessioning enabled' do
     around do |example|
       # Ensure accessioning check is enabled
+      # Note: this is different from `configatron.accession_samples` which disables accessioning itself
       configatron.disable_accession_check = false
       example.run
       # Reset the configuration after the test

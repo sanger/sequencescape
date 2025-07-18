@@ -36,7 +36,7 @@ class ApplicationRecord < ActiveRecord::Base
 
     def find_by_id_or_name(id, name)
       return find(id) if id.present?
-      raise StandardError, 'Must specify at least ID or name' if name.blank?
+      raise StandardError, "Must specify #{self.name.downcase} ID or name" if name.blank?
 
       find_by(name:)
     end
