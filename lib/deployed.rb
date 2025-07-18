@@ -24,6 +24,14 @@ module Deployed
       @release_url ||= read_file('REPO').strip
     end
 
+    # Return the time of the release as a modified ISO 8601 string.
+    # If the release name is a 14 digit string (e.g. 20231025123000), it is assumed to be a timestamp.
+    def release_timestamp
+      return unless release.match?(/^\d{14}$/)
+
+      DateTime.strptime(release, '%Y%m%d%H%M%S').strftime('%FT%H:%M:%S')
+    end
+
     def revision_short
       @revision_short ||= revision&.slice 0..6
     end
@@ -98,6 +106,7 @@ module Deployed
 
   APP_NAME = 'Sequencescape'
   RELEASE_NAME = REPO_DATA.release.presence || 'LOCAL'
+  RELEASE_TIMESTAMP = REPO_DATA.release_timestamp
 
   MAJOR = REPO_DATA.major
   MINOR = REPO_DATA.minor
