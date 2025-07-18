@@ -11,9 +11,12 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
+    @page_name = @user.name
   end
 
   def edit
+    @user = User.find(params[:id])
+    @page_name = "#{action_name}: #{@user.name}"
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)
