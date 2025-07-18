@@ -7,12 +7,16 @@
   @extend .bg-development; // development and unknown environments
   @extend .navbar-expand-lg;
 
-  #logo_container {
+  #logo-container {
     @extend .navbar-brand;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.2);
     padding: 3px;
+
     img {
-      vertical-align: top;
+      width: 98px;
+      height: 24px;
+      object-fit: cover;
+      display: block;
     }
   }
 }
