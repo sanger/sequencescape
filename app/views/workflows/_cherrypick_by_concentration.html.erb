@@ -6,7 +6,7 @@
 
   <%= fields_for :nano_grams_per_micro_litre do |nano_grams_per_micro_litre_fields| %>
     <%= cherrypick_form_group_text nano_grams_per_micro_litre_fields, :volume_required, 'Target Volume Required (µl)', 65, type: 'number', step: 0.1, min: 0 %>
-    <%= cherrypick_form_group_text nano_grams_per_micro_litre_fields, :concentration_required, 'Target Concentration Required (ng/µl)', 50, type: 'number', step: 0.1, min: 0 %>
+    <%= cherrypick_form_group_text nano_grams_per_micro_litre_fields, :concentration_required, 'Target Concentration Required (ng/µl)', 50, type: 'number', step: 0.01, min: 0 %>
     <%= cherrypick_form_group_text nano_grams_per_micro_litre_fields, :robot_minimum_picking_volume, 'Robot Minimum Picking Volume (µl)', 5.0, type: 'number', step: 0.1, min: 1, max: 9 %>
   <% end %>
 
