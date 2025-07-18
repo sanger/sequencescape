@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Admin::UsersController < ApplicationController
+class Admin::UsersController < ApplicationController # rubocop:todo Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -11,9 +11,12 @@ class Admin::UsersController < ApplicationController
   end
 
   def show
+    @page_name = @user.name
   end
 
   def edit
+    @user = User.find(params[:id])
+    @page_name = "#{action_name}: #{@user.name}"
     @all_roles = Role.keys
     @users_roles = @user.study_and_project_roles.order(name: :asc)
     @studies = Study.order(:id)

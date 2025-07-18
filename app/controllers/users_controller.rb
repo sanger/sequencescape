@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   authorize_resource
 
   def show
+    @page_name = @user.name
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 

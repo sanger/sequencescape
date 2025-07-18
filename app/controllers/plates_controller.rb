@@ -10,6 +10,7 @@ class PlatesController < ApplicationController
 
   def show
     @plate = Plate.find(params[:id])
+    @page_name = @plate.name
   end
 
   def new
