@@ -3,7 +3,7 @@ en:
   metadata:
     # These are default translations for anything that is not set specifically on a field.
     defaults:
-      unspecified: "Not specified"
+      unspecified: "[not specified]"
       edit_info: ""
       help: ""
       label: "Unlabelled field"
