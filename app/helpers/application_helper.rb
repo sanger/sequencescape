@@ -53,6 +53,12 @@ module ApplicationHelper
     end
   end
 
+  # Return the appropriate Sequencescape logo for the current environment
+  # @return [String] The path to the logo image
+  def sequencescape_logo
+    "images/logo-gradient#{icon_suffix}.svg"
+  end
+
   # Return the appropriate favicon for the current environment
   # @return [String] The path to the favicon
   def favicon
