@@ -7,6 +7,16 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/jsonapi-resources.git
+  revision: be2fb43f5f8da2e632fb5f48200928b2dd3d8bf9
+  branch: develop
+  specs:
+    jsonapi-resources (0.9.0)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      railties (>= 4.1)
+
+GIT
   remote: https://github.com/sanger/record_loader
   revision: 9e7481f4d2342f042ab13465962e5d6689863198
   specs:
@@ -260,10 +270,6 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.13.0)
-    jsonapi-resources (0.9.0)
-      activerecord (>= 4.1)
-      concurrent-ruby
-      railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
     knapsack_pro (8.3.1)
@@ -508,11 +514,6 @@ GEM
       logger
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
-    sanger-jsonapi-resources (0.1.1)
-      activerecord (>= 4.1)
-      concurrent-ruby
-      csv
-      railties (>= 4.1)
     sanger_warren (0.5.0)
       bunny (~> 2.17)
       connection_pool (~> 2.2)
@@ -655,6 +656,7 @@ DEPENDENCIES
   flipper-ui (~> 1.0)
   formtastic
   json
+  jsonapi-resources!
   jsonapi-resources-matchers
   knapsack_pro
   launchy
@@ -699,7 +701,6 @@ DEPENDENCIES
   rubocop-rspec_rails
   ruby-prof
   ruby-units
-  sanger-jsonapi-resources (~> 0.1.1)
   sanger_barcode_format!
   sanger_warren
   selenium-webdriver (~> 4.1)
