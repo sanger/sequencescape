@@ -1,8 +1,8 @@
 /* Colours defined per environment */
-$production: $primary !default;
-$training: $green !default;
-$staging: $red !default;
-$development: $gray-600 !default;
+$production: $primary;
+$training: #1b5e20; // Sanger dark green to match logo
+$staging: $red;
+$development: $gray-600;
 
 @mixin colour-badge($base_colour, $text_colour) {
   background-color: $base_colour;
