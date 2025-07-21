@@ -58,14 +58,14 @@ module Cherrypick::VolumeByNanoGrams
     source_volume = source_well.well_attribute.estimated_volume
 
     desired_volume = source_volume
-    unless source_concentration.zero?
-      desired_volume = [(target_ng.to_f / source_concentration), robot_minimum_picking_volume].max
-    end
+    desired_volume = (target_ng.to_f / source_concentration) unless source_concentration.zero?
+
     requested_volume = [source_volume, desired_volume].min
-    buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume, robot_minimum_picking_volume)
+    requested_volume = [requested_volume, robot_minimum_picking_volume].max
+    buffer_volume = calculate_buffer_volume(minimum_volume, requested_volume)
     requested_volume = maximum_volume if requested_volume > maximum_volume
 
-    well_attribute.current_volume = minimum_volume
+    well_attribute.current_volume = requested_volume + buffer_volume
     well_attribute.requested_volume = minimum_volume
     well_attribute.picked_volume = requested_volume
     well_attribute.buffer_volume = buffer_volume
@@ -78,11 +78,10 @@ module Cherrypick::VolumeByNanoGrams
 
   private
 
-  def calculate_buffer_volume(final_volume_desired, volume_so_far, robot_minimum_picking_volume)
+  def calculate_buffer_volume(final_volume_desired, volume_so_far)
     buffer_to_add = final_volume_desired - volume_so_far
     return 0 if buffer_to_add <= 0
 
-    # If we're adding buffer, it needs to be at least the robot_minimum_picking_volume
-    buffer_to_add.clamp(robot_minimum_picking_volume..)
+    buffer_to_add
   end
 end
