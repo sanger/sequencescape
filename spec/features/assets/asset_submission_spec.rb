@@ -223,7 +223,7 @@ describe 'Asset submission', :js do
       # The redirected page displays an error message detailing the issue
       # encountered. In this particular case, the study does not have an
       # accession number.
-      expect(page).to have_content "#{study.name} and all samples must have accession numbers"
+      expect(page).to have_content "'#{study.name}' and all samples must have accession numbers"
     end
   end
 

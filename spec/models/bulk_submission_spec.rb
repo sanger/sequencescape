@@ -317,7 +317,7 @@ describe BulkSubmission, with: :uploader do
       it 'sets an error message' do
         subject.process
         expect(subject.errors.messages[:base][0]).to eq(
-          'Validation failed: Orders study abc123_study and all samples must have accession numbers'
+          "Validation failed: Orders study 'abc123_study' and all samples must have accession numbers"
         )
       end
     end
