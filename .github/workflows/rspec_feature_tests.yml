@@ -64,7 +64,7 @@ jobs:
       - name: Setup stable Chrome
         uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
-          chrome-version: 128
+          chrome-version: stable
           install-chromedriver: true
           install-dependencies: true
 
