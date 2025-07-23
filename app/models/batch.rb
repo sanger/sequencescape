@@ -202,10 +202,20 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     control.present?
   end
 
-  # Sets the position of the requests in the batch to their index in the array.
+  # Sets the position of the requests in the batch based on their asset barcodes.
+  # This was done at Lab request to make it easier to order the tubes in the batch.
+  def set_position_based_on_asset_barcode
+    request_ids_in_position_order = requests.sort_by { |r| r.asset.human_barcode }.map(&:id)
+    assign_positions_to_requests!(request_ids_in_position_order)
+  end
+
+  # Sets the position of the requests in the batch to their index in the supplied array.
   def assign_positions_to_requests!(request_ids_in_position_order)
-    disparate_ids = batch_requests.map(&:request_id) - request_ids_in_position_order
-    raise StandardError, 'Can only sort all requests at once' unless disparate_ids.empty?
+    request_ids_in_batch = batch_requests.map(&:request_id)
+    # checking for both missing and extra requests
+    missing_requests = request_ids_in_batch.any? { |id| request_ids_in_position_order.exclude?(id) }
+    extra_requests = request_ids_in_position_order.any? { |id| request_ids_in_batch.exclude?(id) }
+    raise StandardError, 'Can only sort all the requests in the batch at once' if missing_requests || extra_requests
 
     BatchRequest.transaction do
       batch_requests.each do |batch_request|

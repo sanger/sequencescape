@@ -46,6 +46,10 @@ Layout/MultilineMethodCallIndentation:
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 
+# There is so much existing inconsistent code that it is not worth enforcing this cop
+Naming/PredicateMethod:
+  Enabled: false
+
 # Step definitions are defined with Given /regex/ do ...
 # There is little ambiguity here, and brackets just break convention
 Lint/AmbiguousRegexpLiteral:
@@ -60,6 +64,10 @@ Rails/SkipsModelValidations:
     - "db/migrate/*.rb"
     - "db/migrate_asset_refactor/*.rb"
     - "features/support/step_definitions/*.rb"
+
+# This cop doesn't always increase clarity
+Style/CollectionQuerying:
+  Enabled: false
 
 Style/Documentation:
   Enabled: false
