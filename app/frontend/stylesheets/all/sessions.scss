@@ -1,10 +1,7 @@
 body.sessions {
   @extend .container-fluid;
-  @extend .d-flex;
-  @extend .flex-column;
   @extend .justify-content-between;
   @extend .align-items-center;
-  @extend .min-vh-100;
   @extend .p-0;
 
   background-color: #039be5; // fallback for gradient
