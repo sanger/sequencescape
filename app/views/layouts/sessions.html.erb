@@ -23,18 +23,14 @@
   </head>
 
   <body class="sessions">
-    <div class="container-fluid p-0 d-flex flex-column justify-content-between align-items-center min-vh-100">
-      <header></header><%# No header for login page, but helps with spacing %>
+    <header></header><%# No header for login page, but helps with spacing %>
 
-      <main id="login-panel">
-        <%= vite_image_tag sequencescape_logo, class: "card-img-top", alt: "Sequencescape Logo" %>
-        <%= yield %>
-      </main>
+    <main id="login-panel">
+      <%= vite_image_tag sequencescape_logo, class: "card-img-top", alt: "Sequencescape Logo" %>
+      <%= yield %>
+    </main>
 
-      <footer id="main-footer" class="w-100">
-        <%= render partial: 'shared/footer' %>
-      </footer>
-    </div>
+    <footer class="w-100"><%= render partial: 'shared/footer' %></footer>
   </body>
 
 </html>
