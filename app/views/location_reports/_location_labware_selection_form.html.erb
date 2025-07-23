@@ -32,8 +32,8 @@
   </div>
 
   <div class='form-group'>
-    <%= f.label 'plate_purpose_ids', 'Plate purposes (can select multiple)' %>
-    <%= f.select :plate_purpose_ids, options_for_select(PlatePurpose.alphabetical.pluck(:name, :id), location_report_form.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+    <%= f.label 'plate_purpose_ids', 'Labware purposes (can select multiple)' %>
+    <%= f.select :plate_purpose_ids, options_for_select(Purpose.alphabetical.pluck(:name, :id), location_report_form.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
 
   <div class="form-group">
