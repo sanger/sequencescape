@@ -41,20 +41,21 @@
   <body class="<%= Rails.env %> <%= DeploymentEnvironment.role %>">
     <header><%= render partial: 'shared/header' %></header>
     <%= render_flashes %>
+
     <div id='main-content'>
-
-      <section class="row">
+      <div class="row">
         <section id="page-content">
-          <div id="yield">
-            <%= yield %>
-          </div>
+          <%= yield %>
         </section>
-        <div id="menu">
-          <%= render partial: 'shared/sidebar' %>
-        </div>
-      </section>
 
-      <footer id="main-footer"><%= render partial: 'shared/footer' %></footer>
+        <aside id="menu">
+          <%= render partial: 'shared/sidebar' %>
+        </aside>
+      </div>
+    </div>
+
+    <div id="main-footer">
+      <footer><%= render partial: 'shared/footer' %></footer>
     </div>
   </body>
 </html>
