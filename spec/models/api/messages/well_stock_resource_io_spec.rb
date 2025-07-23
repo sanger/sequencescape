@@ -25,8 +25,10 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   let(:aliquot) { create(:aliquot, study: study, sample: sample, receptacle: well) }
   let(:aliquot2) { create(:aliquot, study: study, sample: sample2, receptacle: well) }
 
-  before { aliquot } # rubocop:todo RSpec/ScatteredSetup
-  before { aliquot2 } # rubocop:todo RSpec/ScatteredSetup
+  before do # rubocop:todo RSpec/ScatteredSetup
+    aliquot
+    aliquot2
+  end
 
   let(:expected_json) do
     {
