@@ -1,10 +1,10 @@
-footer#main-footer {
+footer {
+  @extend .row;
+  @extend .p-3;
   @extend .bg-white;
   @extend .text-muted;
   @extend .border-top;
   @extend .font-weight-light;
-  @extend .row;
-  @extend .p-3;
   font-size: small;
 
   ul {

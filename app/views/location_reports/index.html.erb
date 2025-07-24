@@ -1,6 +1,6 @@
-<h2>Plate Location Reports</h2>
+<h2>Labware Location Reports</h2>
 <p>
-	Generates a report listing plates by barcodes, with their locations, studies and owners. 
+	Generates a report listing plates and tubes by barcodes, with their locations, studies and owners. 
 </p>
 <div class="row justify-content-between">
 	<div class="col-md">
@@ -11,7 +11,7 @@
   
 	<div class="col-md">
 	<%= panel(:info,title: "Create a report by selection",class: "creation",id: "new_location_report_from_selection") do %>
-	  <%= render partial: 'location_plate_selection_form', locals: { location_report_form: @location_report_form } %>
+	  <%= render partial: 'location_labware_selection_form', locals: { location_report_form: @location_report_form } %>
 	<% end %>
 	</div>
 </div>

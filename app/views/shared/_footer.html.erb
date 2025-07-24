@@ -3,10 +3,10 @@
   <li>A tool from <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
 </ul>
 <ul id="version-info">
-  <li><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %></li>
-  <li><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
+  <li title='version'><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %></li>
+  <li title='release'><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
 </ul>
 <ul id="deployment-info">
-  <li><%= icon('far', 'calendar', Deployed::RELEASE_NAME) %></li>
-  <li><%= icon('fas','server', Deployed::HOSTNAME) %></li>
+  <li title='deployed at'><%= icon('far', 'calendar', Deployed::RELEASE_TIMESTAMP) %></li>
+  <li title='host'><%= icon('fas','server', Deployed::HOSTNAME) %></li>
 </ul>

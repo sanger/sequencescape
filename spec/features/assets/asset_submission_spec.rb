@@ -223,7 +223,7 @@ describe 'Asset submission', :js do
       # The redirected page displays an error message detailing the issue
       # encountered. In this particular case, the study does not have an
       # accession number.
-      expect(page).to have_content "#{study.name} and all samples must have accession numbers"
+      expect(page).to have_content "'#{study.name}' and all samples must have accession numbers"
     end
   end
 
@@ -264,7 +264,7 @@ describe 'Asset submission', :js do
     let(:user) { create(:admin) }
 
     # Create a study that requires accessioning, but does not have an accession number.
-    let(:study) { create(:open_study, enforce_accessioning: true, accession_number: nil) }
+    let(:study) { create(:open_study, accession_number: nil) }
 
     it_behaves_like 'it shows an error message about study'
   end
