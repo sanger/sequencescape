@@ -557,6 +557,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   delegate :consent_withdrawn, :consent_withdrawn?, :consent_withdrawn=, to: :sample_metadata
   delegate :date_of_consent_withdrawn, :date_of_consent_withdrawn=, to: :sample_metadata
   delegate :user_id_of_consent_withdrawn, :user_id_of_consent_withdrawn=, to: :sample_metadata
+  delegate :supplier_name, :supplier_name=, to: :sample_metadata
 
   def friendly_name
     sanger_sample_id || name
