@@ -20,6 +20,7 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
   end
 
   def show
+    @page_name = @project.name
     respond_to do |format|
       format.html
       format.xml

@@ -43,6 +43,8 @@ class PipelinesController < ApplicationController
     expires_now
     @show_held_requests = (params[:view] == 'all')
 
+    @page_name = @pipeline.name
+
     @pending_batches = @pipeline.batches.pending_for_ui.includes_for_ui
     @batches_in_progress = @pipeline.batches.in_progress_for_ui.includes_for_ui
     @completed_batches = @pipeline.batches.completed_for_ui.includes_for_ui

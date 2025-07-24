@@ -14,6 +14,8 @@ class Studies::InformationController < ApplicationController
   before_action :discover_study
 
   def show # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    @page_name = @study.name
+
     @summary = params[:summary] || 'sample-progress'
     @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
     @summaries = BASIC_TABS + @request_types.pluck(:key, :name)
