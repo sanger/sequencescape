@@ -552,7 +552,7 @@ GEM
       rbtree
       set (~> 1.0)
     ssrf_filter (1.2.0)
-    syntax_tree (6.2.0)
+    syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
       haml (>= 5.2)
