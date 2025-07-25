@@ -629,7 +629,7 @@ RSpec.describe BulkSubmission, with: :uploader do
             study_name: 'Study 1',
             project_name: 'Project 1',
             number_of_samples_in_smallest_pool: 5,
-            final_resuspension_volume: '59.4',
+            final_resuspension_volume: '46.9',
             full_allowance: '100.0',
             scope: i18n_scope
           )
@@ -649,7 +649,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      let(:group_1_cells_per_chip_well) { 41_250 }
+      let(:group_1_cells_per_chip_well) { 26_250 }
 
       # rubocop:disable RSpec/MultipleExpectations
       it 'adds the warning message' do
@@ -668,7 +668,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      let(:group_1_cells_per_chip_well) { 30_000 }
+      let(:group_1_cells_per_chip_well) { 20_000 }
 
       # rubocop:disable RSpec/MultipleExpectations
       it 'does not add the warning message' do
@@ -699,7 +699,7 @@ RSpec.describe BulkSubmission, with: :uploader do
               study_name: study_name,
               project_name: project_name,
               number_of_samples_in_smallest_pool: 5,
-              final_resuspension_volume: '59.4',
+              final_resuspension_volume: '46.9',
               full_allowance: '100.0',
               scope: i18n_scope
             )
