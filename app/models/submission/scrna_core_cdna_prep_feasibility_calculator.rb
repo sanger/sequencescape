@@ -104,7 +104,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   # @return [Integer] the total cells in 300ul
   def calculate_total_cells_in_300ul(count_of_samples_in_pool)
     (count_of_samples_in_pool * scrna_config[:required_number_of_cells_per_sample_in_pool]) *
-      scrna_config[:wastage_factor]
+      scrna_config[:wastage_factor].call(count_of_samples_in_pool)
   end
 
   private
