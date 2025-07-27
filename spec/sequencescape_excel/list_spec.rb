@@ -21,6 +21,7 @@ RSpec.describe SequencescapeExcel::List, :sample_manifest, :sample_manifest_exce
 
   class MyList
     include SequencescapeExcel::List
+
     list_for :list_items, keys: %i[attr_a attr_b attr_c]
   end
 

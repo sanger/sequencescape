@@ -5,6 +5,7 @@ require 'rails_helper'
 class TestSeed
   include ActiveModel::Model
   include ActiveModel::AttributeMethods
+
   define_attribute_methods :uuid,
                            :friendly_name,
                            :subject_type,

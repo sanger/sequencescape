@@ -45,7 +45,7 @@ class QcReport::File
     return invalid("#{filename} was not a csv file") unless is_a_csv?
 
     unless is_a_report?
-      return(
+      return (
         invalid(
           # rubocop:todo Layout/LineLength
           "#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed."
@@ -54,7 +54,7 @@ class QcReport::File
       )
     end
     unless qc_report
-      return(
+      return (
         invalid(
           "Couldn't find the report #{report_identifier}. Check that the report identifier has not been modified."
         )
