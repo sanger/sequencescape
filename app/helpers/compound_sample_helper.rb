@@ -23,7 +23,6 @@ module CompoundSampleHelper
   # Returns the supplier name shared by all source aliquots, if they are consistent.
   #
   # @return [String, nil] the supplier name if all source aliquots share the same one; nil otherwise
-
   def extract_consistent_supplier_name_from_source_aliquots
     supplier_names = @source_aliquots.map(&:sample).map(&:sample_metadata).map(&:supplier_name).uniq
     return unless supplier_names.length == 1
