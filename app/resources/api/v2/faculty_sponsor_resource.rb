@@ -10,7 +10,7 @@ module Api
     # of the JSON:API standard.
     class FacultySponsorResource < BaseResource
       # @!attribute [rw] name
-      #   @return [UserResource] The name of the faculty sponsor.
+      #   @return [String] The name of the faculty sponsor.
       attribute :name
     end
   end

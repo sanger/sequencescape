@@ -25,7 +25,7 @@ module Api
       ###
 
       # @!attribute [r] faculty_sponsor
-      #   @return [String] The faculty sponsor based on faculty_sponsor_id
+      #   @return [Api::V2::FacultySponsorResource] The faculty sponsor based on faculty_sponsor_id
       has_one :faculty_sponsor, foreign_key_on: :related, readonly: true
     end
   end
