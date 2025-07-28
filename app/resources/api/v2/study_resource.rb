@@ -72,6 +72,12 @@ module Api
       #   @example GET /api/v2/studies?filter[user]=456
       #   @param user_id [String] The ID of the user to filter by.
       filter :user, apply: lambda { |records, value, _options| records.by_user(value) }
+
+      # @!method uuid
+      #   A filter to return only studies with the given UUID.
+      #   @example Filtering users by UUID
+      #     GET /api/v2/studies?filter[uuid]=11111111-2222-3333-4444-555555666666
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(value) }
     end
   end
 end
