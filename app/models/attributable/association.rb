@@ -5,6 +5,7 @@ module Attributable
       def self.extended(base)
         base.class_eval do
           include InstanceMethods
+
           scope :for_selection, -> { order(:name) }
         end
       end

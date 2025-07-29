@@ -7,6 +7,7 @@ class Item < ApplicationRecord
   include Uuid::Uuidable
   include EventfulRecord
   extend EventfulRecord
+
   has_many_events
   has_many_lab_events
 

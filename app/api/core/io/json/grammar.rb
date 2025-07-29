@@ -113,6 +113,7 @@ module Core::Io::Json::Grammar
 
   class Node
     include Intermediate
+
     attr_reader :name
 
     def initialize(name, children = nil)

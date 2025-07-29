@@ -52,6 +52,7 @@ end
 
 class ActiveRecord::ActiveRecordError
   include ::Core::Service::Error::Behaviour
+
   self.api_error_code = 500
 end
 
@@ -95,6 +96,7 @@ end
 
 class IllegalOperation < RuntimeError
   include ::Core::Service::Error::Behaviour
+
   self.api_error_code = 501
   self.api_error_message = 'requested action is not supported on this resource'
 end
