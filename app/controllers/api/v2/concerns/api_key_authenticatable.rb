@@ -74,11 +74,11 @@ module Api
         #
         # A route is considered permissive if the 'permissive' path parameter is present in the request
         # and the HTTP request method is 'GET'.
-        # Path paramters are defined next to the route in routes.rb e.g. jsonapi_resources :samples, permissive: true
+        # Path parameters are defined next to the route in routes.rb e.g. jsonapi_resources :samples, permissive: true
         #
         # @return [Boolean] true if the route is permissive, false otherwise.
         def permissive_route
-          # Use path_parameters as standard parameters are overridable by requestors
+          # Use path_parameters as standard parameters are overridable by requesters
           request.path_parameters.fetch(:permissive, false) && request.get?
         end
       end
