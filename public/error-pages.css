@@ -1,0 +1,78 @@
+body.sessions {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 400;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #039be5;
+  background-image: url('/images/sanger-pattern-corner.svg'), linear-gradient(45deg, #039be5 0%, #8bc34a 100%);
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: cover;
+}
+
+#main-panel {
+  max-width: 28em;
+  margin: 80px auto 0 auto;
+  background: #fff;
+  border-radius: 0.3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  padding: 0 0 24px 0;
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 400;
+  overflow: hidden;
+}
+
+.error-logo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  margin: 0 0 16px 0;
+  display: block;
+  border-top-left-radius: 0.3rem;
+  border-top-right-radius: 0.3rem;
+}
+
+h1 {
+  color: #212529;
+  font-size: 2.5rem;
+  font-family: 'Segoe UI', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  margin-bottom: 0.5em;
+  line-height: 1.2;
+}
+
+.status-code {
+  font-size: 1.2em;
+  color: #8bc34a;
+  margin-bottom: 1em;
+  font-weight: 500;
+}
+
+.error-message {
+  font-size: 1em;
+  color: #495057;
+  margin-bottom: 1.5em;
+  font-weight: 400;
+}
+
+.suggestion {
+  color: #6c757d;
+  margin-bottom: 1.5em;
+  font-size: 1em;
+  font-weight: 400;
+}
+
+.freshservice-link {
+  display: inline-block;
+  margin-top: 1em;
+  color: #039be5;
+  text-decoration: underline;
+  font-weight: 500;
+  font-size: 1em;
+}
