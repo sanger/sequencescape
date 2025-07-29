@@ -117,6 +117,7 @@ describe 'Plate Creations API', with: :api_v2 do
     # Mock the plate barcode service because it is not available in the test environment.
     # This wasn't needed above because the only records being created were via the factory which supplies a barcode.
     include BarcodeHelper
+
     before { mock_plate_barcode_service }
 
     context 'with a valid payload' do

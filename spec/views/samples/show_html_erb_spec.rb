@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'samples/show.html.erb' do
   include AuthenticatedSystem
+
   let(:user) { create(:user) }
 
   context 'when rendering a sample' do

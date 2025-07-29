@@ -351,6 +351,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   extend Metadata
+
   has_metadata {}
 
   def height
