@@ -3,6 +3,7 @@ module Api
   module V2
     module Concerns
       # Provides the tools needed to confirm that a valid API key was provided for the header X-Sequencescape-Client-Id.
+      # - Skips the check if the endpoint specifies permissve GETs
       # - Where the API key is in the request and exists in among ApiApplication, allow the request to be served.
       # - Where the API key is in the request but does not exist, log the attempt and render an unauthorized response.
       # - Where the API key is not in the request, respond normally (for now) and log the system that made the request.
@@ -12,6 +13,9 @@ module Api
         included { prepend_before_action :authenticate_with_api_key }
 
         def authenticate_with_api_key
+          # Check if the route requires an API key
+          return if permissive_route
+
           http_env_api_key = 'HTTP_X_SEQUENCESCAPE_CLIENT_ID'
 
           if request.env.key? http_env_api_key
@@ -64,6 +68,18 @@ module Api
                      }
                    ]
                  } and return
+        end
+
+        # Checks if the current request is a permissive route.
+        #
+        # A route is considered permissive if the 'permissive' path parameter is present in the request
+        # and the HTTP request method is 'GET'.
+        # Path paramters are defined next to the route in routes.rb e.g. jsonapi_resources :samples, permissive: true
+        #
+        # @return [Boolean] true if the route is permissive, false otherwise.
+        def permissive_route
+          # Use path_parameters as standard parameters are overridable by requestors
+          request.path_parameters.fetch(:permissive, false) && request.get?
         end
       end
     end
