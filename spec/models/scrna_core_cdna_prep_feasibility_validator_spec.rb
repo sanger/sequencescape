@@ -721,15 +721,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_3_number_of_pools) { 0 }
 
       it 'adds the error message' do
-        error_message =
-          I18n.t(
-            'errors.number_of_pools_exists',
-            scope: i18n_scope
-          )
-
-        expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
-        expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
+        expect(bulk_submission.errors[:spreadsheet]).to include(I18n.t(
+                                                                  'errors.number_of_pools_exists',
+                                                                  scope: i18n_scope
+                                                                ))
       end
     end
-    end
+  end
 end

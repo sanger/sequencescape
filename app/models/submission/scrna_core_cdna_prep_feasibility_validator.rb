@@ -54,17 +54,17 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # adds errors and warnings to the bulk submission if necessary.
   #
   # @return [void]
-    def validate_scrna_core_cdna_prep_feasibility
-      return unless validate_required_headers
+  def validate_scrna_core_cdna_prep_feasibility
+    return unless validate_required_headers
 
-      return unless validate_total_number_of_pools_is_not_zero?
+    return unless validate_total_number_of_pools_is_not_zero?
 
-      validate_scrna_core_cdna_prep_total_number_of_samples
-      validate_scrna_core_cdna_prep_total_number_of_pools
-      validate_scrna_core_cdna_prep_feasibility_by_samples
-      validate_scrna_core_cdna_prep_feasibility_by_donors
-      validate_scrna_core_cdna_prep_full_allowance if errors.empty?
-    end
+    validate_scrna_core_cdna_prep_total_number_of_samples
+    validate_scrna_core_cdna_prep_total_number_of_pools
+    validate_scrna_core_cdna_prep_feasibility_by_samples
+    validate_scrna_core_cdna_prep_feasibility_by_donors
+    validate_scrna_core_cdna_prep_full_allowance if errors.empty?
+  end
 
   private
 
