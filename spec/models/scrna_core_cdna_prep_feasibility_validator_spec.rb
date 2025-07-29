@@ -724,8 +724,9 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect do
           bulk_submission.process
         rescue ActiveRecord::RecordInvalid
-          # expected – do nothing
-        end.to change { bulk_submission.errors[:spreadsheet] }.to include(I18n.t('errors.number_of_pools_exists', scope: i18n_scope))
+          # expected to raise RecordInvalid
+        end.to change { bulk_submission.errors[:spreadsheet] }
+          .to include(I18n.t('errors.number_of_pools_exists', scope: i18n_scope))
       end
     end
   end
