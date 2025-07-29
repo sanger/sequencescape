@@ -101,6 +101,7 @@ module Barcode::FormatHandlers
   # for prefix, number and suffix. This regex should be assigned to self.format
   class BaseRegExBarcode
     include Ean13Incompatible
+
     attr_reader :human_barcode
 
     class_attribute :format

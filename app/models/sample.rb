@@ -86,8 +86,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # it tells our own
 
   extend Metadata
+
   has_metadata do
     include ReferenceGenome::Associations
+
     association(:reference_genome, :name, required: true)
 
     custom_attribute(:organism)
