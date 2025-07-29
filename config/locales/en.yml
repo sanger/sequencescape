@@ -200,6 +200,9 @@ en:
           other: >
             The total number of pools in the submission must be between %{min} and %{max} (inclusive).
             However, %{count} pools were found.
+        # Validation: The total number of pools in the submission must be specified, or set to 0.
+        number_of_pools_exists:
+          The total number of pools has not been specified in the submission.
         # Validation: The number of pools requested must be feasible given the number of samples.
         # size_type is either 'smallest' and 'biggest'.
         # study_name and project_name are the values of respective fields from the spreadsheet.

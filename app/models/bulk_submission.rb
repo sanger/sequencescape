@@ -165,7 +165,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
       # the allowance band is calculated for each study and project combination.
       # Otherwise, an empty hash is assigned.
-      @allowance_bands = calculate_allowance_bands
+      @allowance_bands = calculate_allowance_bands unless errors.count > 0
 
       raise ActiveRecord::RecordInvalid, self if errors.count > 0
 
