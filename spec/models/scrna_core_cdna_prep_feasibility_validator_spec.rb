@@ -712,20 +712,21 @@ RSpec.describe BulkSubmission, with: :uploader do
 
   describe '#validate_scrna_core_cdna_prep_total_number_of_pools_is_not_zero?' do
     context 'when the number of pools is zero in any study-project group' do
-      let(:group_1_number_of_samples) { 5 }
-      let(:group_2_number_of_samples) { 0 }
-      let(:group_3_number_of_samples) { 0 }
-
       let(:group_1_number_of_pools) { 0 }
       let(:group_2_number_of_pools) { 0 }
       let(:group_3_number_of_pools) { 0 }
 
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'adds the error message' do
-        expect(bulk_submission.errors[:spreadsheet]).to include(I18n.t(
-                                                                  'errors.number_of_pools_exists',
-                                                                  scope: i18n_scope
-                                                                ))
+        error_message =
+          I18n.t(
+            'errors.number_of_pools_exists',
+            scope: i18n_scope
+          )
+        expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
+      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
   end
 end
