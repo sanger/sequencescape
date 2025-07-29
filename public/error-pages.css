@@ -1,14 +1,14 @@
 body.sessions {
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-size: 1rem;
   font-weight: 400;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background-color: #039be5;
-  background-image: url('/images/sanger-pattern-corner.svg'), linear-gradient(45deg, #039be5 0%, #8bc34a 100%);
+  background-image: url("/images/sanger-pattern-corner.svg"), linear-gradient(45deg, #039be5 0%, #8bc34a 100%);
   background-repeat: no-repeat;
   background-position: center right;
   background-size: cover;
@@ -40,7 +40,7 @@ body.sessions {
 h1 {
   color: #212529;
   font-size: 2.5rem;
-  font-family: 'Segoe UI', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  font-family: "Segoe UI", "Lucida Grande", Helvetica, Arial, sans-serif;
   font-weight: 300;
   letter-spacing: 0.01em;
   margin-bottom: 0.5em;
