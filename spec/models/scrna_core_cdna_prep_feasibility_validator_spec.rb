@@ -716,17 +716,17 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 0 }
       let(:group_3_number_of_pools) { 0 }
 
-      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-      it 'adds the error message' do
-        error_message =
-          I18n.t(
-            'errors.number_of_pools_exists',
-            scope: i18n_scope
-          )
+      it 'raises a RecordInvalid error' do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
-        expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
+
+      it 'adds the error message' do
+        expect do
+          bulk_submission.process
+        rescue ActiveRecord::RecordInvalid
+          # expected – do nothing
+        end.to change { bulk_submission.errors[:spreadsheet] }.to include(I18n.t('errors.number_of_pools_exists', scope: i18n_scope))
+      end
     end
   end
 end
