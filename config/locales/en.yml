@@ -200,8 +200,6 @@ en:
           other: >
             The total number of pools in the submission must be between %{min} and %{max} (inclusive).
             However, %{count} pools were found.
-        # Validation: The total number of pools in the submission must be specified, or set to 0.
-        number_of_pools_exists: The total number of pools has not been specified in the submission.
         # Validation: The number of pools requested must be feasible given the number of samples.
         # size_type is either 'smallest' and 'biggest'.
         # study_name and project_name are the values of respective fields from the spreadsheet.
@@ -229,6 +227,13 @@ en:
           The number of samples with the same donor ID must be less than or equal to the requested number of pools.
           However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
           The samples with the same donor ID follow: %{barcodes_or_well_locations}.
+        # Validation: Ensures that all values in a specific column are unique and non-zero,
+        # grouped by study and project.
+        # `study_name` and `project_name` refer to the respective fields from the spreadsheet.
+        # `column_header` is the name of the column as it appears in the spreadsheet.
+        unique_and_non_zero_values: >
+          Invalid values for column %{column_header} for the study %{study_name} and the project %{project_name}.
+          All rows for a specific study and project must have the same non-zero value.
       warnings:
         # Validation: There is not enough material for two repeat pooling attempts
         # study_name and project_name are the values of respective fields from the spreadsheet.

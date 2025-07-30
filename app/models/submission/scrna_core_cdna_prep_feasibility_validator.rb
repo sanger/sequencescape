@@ -29,25 +29,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     required.all? { |header| headers.include?(header) }
   end
 
-  def total_number_of_pools
-    group_rows_by_study_and_project.sum do |(_study_project, rows)|
-      rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
-    end
-  end
-
-  def validate_total_number_of_pools_is_not_zero?
-    return true unless total_number_of_pools.zero?
-
-    errors.add(
-      :spreadsheet,
-      I18n.t(
-        'errors.number_of_pools_exists',
-        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
-      )
-    )
-    false
-  end
-
   # This method checks the feasibility of scRNA Core cDNA Prep bulk submission.
   # If the submission spreadsheet does not contain the necessary headers, the
   # method returns early. Otherwise, it performs a series of validations and
@@ -56,8 +37,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @return [void]
   def validate_scrna_core_cdna_prep_feasibility
     return unless validate_required_headers
-
-    return unless validate_total_number_of_pools_is_not_zero?
 
     validate_scrna_core_cdna_prep_total_number_of_samples
     validate_scrna_core_cdna_prep_total_number_of_pools

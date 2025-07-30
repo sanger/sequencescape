@@ -713,8 +713,8 @@ RSpec.describe BulkSubmission, with: :uploader do
   describe '#validate_scrna_core_cdna_prep_total_number_of_pools_is_not_zero?' do
     context 'when the number of pools is zero in any study-project group' do
       let(:group_1_number_of_pools) { 0 }
-      let(:group_2_number_of_pools) { 0 }
-      let(:group_3_number_of_pools) { 0 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
 
       it 'raises a RecordInvalid error' do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
@@ -724,9 +724,11 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect do
           bulk_submission.process
         rescue ActiveRecord::RecordInvalid
-          # expected to raise RecordInvalid
+          # expected to display error message
         end.to change { bulk_submission.errors[:spreadsheet] }
-          .to include(I18n.t('errors.number_of_pools_exists', scope: i18n_scope))
+          .to include(I18n.t('errors.unique_and_non_zero_values', scope: i18n_scope, study_name: 'Study 1',
+                                                                  project_name: 'Project 1',
+                                                                  column_header: 'scrna core number of pools'))
       end
     end
   end
