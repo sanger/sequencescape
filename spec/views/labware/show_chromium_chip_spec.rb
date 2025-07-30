@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'labware/show.html.erb' do
   include AuthenticatedSystem
+
   let(:user) { create(:user) }
 
   context 'when rendering a Chromium Chip 16-well plate' do

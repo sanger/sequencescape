@@ -5,6 +5,7 @@
 # Background explained in Y24-170 (https://github.com/sanger/sequencescape/issues/4160)
 class TagSet < ApplicationRecord
   include Uuid::Uuidable
+
   # For dual index tags, tag_group is i7 oligos and tag2_group is i5 oligos
   belongs_to :tag_group, class_name: 'TagGroup', optional: false
 

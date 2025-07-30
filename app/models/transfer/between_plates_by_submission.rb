@@ -3,6 +3,7 @@
 # into the same well on the destination plate.
 class Transfer::BetweenPlatesBySubmission < Transfer
   extend ::ModelExtensions::Plate::NamedScopeHelpers
+
   include_plate_named_scope :source
   include_plate_named_scope :destination
 
@@ -10,6 +11,7 @@ class Transfer::BetweenPlatesBySubmission < Transfer
   include ControlledDestinations
 
   include Asset::Ownership::ChangesOwner
+
   set_target_for_owner(:destination)
 
   #--

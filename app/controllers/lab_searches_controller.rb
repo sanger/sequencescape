@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 class LabSearchesController < ApplicationController
   include SearchBehaviour
+
   alias new search
 
   def index
