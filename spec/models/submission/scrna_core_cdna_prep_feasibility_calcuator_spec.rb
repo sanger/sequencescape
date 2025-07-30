@@ -55,20 +55,10 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
       end
       .new
   end
-  let(:scrna_config) do
-    {
-      desired_chip_loading_concentration: 2400,
-      desired_number_of_runs: 2,
-      volume_taken_for_cell_counting: 10,
-      wastage_volume: 5,
-      required_number_of_cells_per_sample_in_pool: 30_000,
-      wastage_factor: 0.95
-    }
-  end
 
   allowance_bands = Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS
 
-  before { allow(calculator).to receive(:scrna_config).and_return(scrna_config) }
+  before { allow(calculator).to receive(:scrna_config).and_return(Rails.application.config.scrna_config) }
 
   describe '#calculate_allowance_band' do
     context 'when validation to run calculate_allowance_band fails' do
@@ -112,7 +102,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '13000'
+            # Max number of cells per chip well before going to the next allowance band based on full_allowance_table
+            '37_500'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -152,7 +143,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '53428'
+            # Min number of cells per chip well before going to full allowance band based on full_allowance_table
+            '26_251'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -192,7 +184,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '19400'
+            # Number of cells per chip well
+            '8000'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -232,7 +225,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '82857'
+            # Number of cells per chip well
+            '40000'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -271,6 +265,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
+            # Number of cells per chip well
             '3000'
           ]
         ]
