@@ -14,7 +14,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
-  let(:user) { create(:user) }
+  let(:user) { create(:user, api_key: configatron.accession_local_key) }
 
   after(:all) { SampleManifestExcel.reset! }
 
@@ -178,6 +178,36 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       download.save(test_file_name)
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
+    end
+
+    it 'will gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
+      download =
+        build(
+          :test_download_plates,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+          study: create(:open_study, accession_number: 'acc')
+        )
+      download.save(test_file_name)
+      Delayed::Worker.delay_jobs = false
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+
+      # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
+      allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
+        .to receive(:sample_ebi_accession_number)
+        .and_return('existing_accession_number')
+      allow(Rails.logger).to receive(:warn)
+
+      # When uploading the same manifest again, it should raise an error
+      uploader.run!
+      expect(uploader).to be_processed
+      expect(uploader.upload.sample_manifest).to be_completed
+
+      # Check for warning being logged
+      expect(Rails.logger).to have_received(:warn).with(
+        "Accessionable is invalid for sample 'sample_1': Sample has already been accessioned. " \
+        'Skipping accessioning for changed samples.'
+      )
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do
