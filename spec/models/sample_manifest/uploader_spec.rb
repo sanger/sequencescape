@@ -193,7 +193,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
 
       # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
-      allow_any_instance_of(Sample::Metadata)
+      allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
         .to receive(:sample_ebi_accession_number)
         .and_return('existing_accession_number')
       allow(Rails.logger).to receive(:warn)
