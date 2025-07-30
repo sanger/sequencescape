@@ -180,7 +180,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
     end
 
-    it 'will raise gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
+    it 'will gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
       download =
         build(
           :test_download_plates,
