@@ -5,6 +5,7 @@ class WorkOrder
   # Currently only supports single request type submissions.
   class Factory
     include ActiveModel::Validations
+
     attr_reader :submission
 
     validates :number_of_request_types, numericality: { equal_to: 1 }

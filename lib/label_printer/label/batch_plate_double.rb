@@ -7,6 +7,7 @@ module LabelPrinter
   module Label
     class BatchPlateDouble < BasePlateDouble
       include Label::BatchPlates
+
       attr_reader :count, :printable, :batch
 
       def initialize(options)

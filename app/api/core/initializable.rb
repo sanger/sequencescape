@@ -21,6 +21,7 @@ module Core::Initializable
   def self.extended(base)
     base.class_eval do
       include InstanceMethods
+
       const_set(:Initializer, Class.new(Core::Initializable::Initializer))
     end
   end

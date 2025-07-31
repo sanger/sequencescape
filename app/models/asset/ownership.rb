@@ -5,6 +5,7 @@ module Asset::Ownership
     def self.included(base)
       base.class_eval do
         extend ClassMethods
+
         after_create :assign_owner
         has_many :owners, as: :eventable
       end

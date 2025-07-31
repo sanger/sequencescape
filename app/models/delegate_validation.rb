@@ -85,6 +85,7 @@ module DelegateValidation
   # A composite validator that will perform multiple validations across several validator classes.
   class CompositeValidator
     include ActiveModel::Validations
+
     class_attribute :validator_classes, instance_writer: false
 
     def self.construct(*validator_classes)
