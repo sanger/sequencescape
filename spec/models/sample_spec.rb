@@ -85,11 +85,41 @@ RSpec.describe Sample, :accession, :cardinal do
       expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
-    it 'will not add an accession number if it fails' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      accessionable_sample.save!
+    context 'when accessioning fails' do
+      before do
+        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+      end
 
-      expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      it 'will not add an accession number' do
+        accessionable_sample.save!
+
+        expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      end
+
+      it 'will log an error' do
+        allow(Rails.logger).to receive(:error).and_call_original
+        accessionable_sample.accession
+
+        expect(Rails.logger).to have_received(:error).with(
+          "SampleAccessioningJob failed for sample '#{accessionable_sample.name}' " \
+          "accessioned by user '#{user.name}' (#{user.login}): " \
+          'EBI failed to update accession number, data may be invalid'
+        )
+      end
+
+      it 'will send an exception notification' do
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        accessionable_sample.accession
+
+        expect(ExceptionNotifier).to have_received(:notify_exception).with(
+          instance_of(AccessionService::AccessionServiceError),
+          data: { cause_message: 'EBI failed to update accession number, data may be invalid',
+                  sample_name: accessionable_sample.name, # 'Sample1'
+                  service_provider: 'ENA',
+                  user_login: user.login, # 'user_abc1'
+                  user_username: user.name } # 'first_name last_name'
+        )
+      end
     end
   end
 
