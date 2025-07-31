@@ -11,13 +11,9 @@ class ErrorsController < ApplicationController
     render status: :not_found # 404 Not Found
   end
 
-  #  def unacceptable
-  #    render status: :not_acceptable # 406 Not Acceptable
-  #  end
+  # TODO: Implement the `unacceptable` method to handle 406 Not Acceptable errors if needed in the future.
 
-  #  def unprocessable
-  #    render status: :unprocessable_content # 422 Unprocessable Entity
-  #  end
+  # TODO: Implement the `unprocessable` method to handle 422 Unprocessable Entity errors if needed in the future.
 
   def internal_server
     render status: :internal_server_error # 500 Internal Server Error
