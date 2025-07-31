@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
 
   # Provide authentication, and "remember me"
   include AuthenticatedSystem
+
   before_action :login_required
   before_action :extract_header_info
 

@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'tube_rack_summaries/show.html.erb' do
   include AuthenticatedSystem
+
   let(:user) { create(:user) }
 
   context 'when rendering a tube rack summary' do

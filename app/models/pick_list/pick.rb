@@ -7,6 +7,7 @@
 # is billed this may be less useful)
 class PickList::Pick
   include ActiveModel::Model
+
   attr_accessor :source_receptacle
   attr_writer :study, :project, :user
 

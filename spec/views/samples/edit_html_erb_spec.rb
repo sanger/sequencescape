@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe 'samples/edit.html.erb' do
   include AuthenticatedSystem
   include RSpecHtmlMatchers
+
   let(:user) { create(:user) }
 
   context 'when rendering the edit view' do

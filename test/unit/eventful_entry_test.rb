@@ -4,6 +4,7 @@ require 'test_helper'
 
 class EventfulEntry < ApplicationRecord
   extend EventfulRecord
+
   has_many_events
   has_many_lab_events
 

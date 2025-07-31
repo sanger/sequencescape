@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
   include AuthenticatedSystem
+
   let(:user) { create(:user) }
 
   shared_examples 'retention instruction' do
