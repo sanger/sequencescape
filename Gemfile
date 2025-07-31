@@ -116,6 +116,9 @@ group :default do
   # Authorization
   gem 'cancancan'
 
+  # Send exception notifications via email and other channels
+  gem 'exception_notification'
+
   # Feature flags
   gem 'flipper', '~> 1.0'
   gem 'flipper-active_record', '~> 1.0'
@@ -215,7 +218,6 @@ group :test, :cucumber do
 end
 
 group :deployment do
-  gem 'exception_notification'
   gem 'slack-notifier'
   gem 'whenever', require: false
 end

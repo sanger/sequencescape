@@ -1,10 +1,21 @@
 /* This is the canonical CSS file for Sequencescape. */
+body {
+  @extend .min-vh-100;
+  @extend .d-flex;
+  @extend .flex-column;
+}
+
 li a:visited {
   color: #444488;
 }
 
 #main-content {
   @extend .container-fluid;
+}
+
+#main-footer {
+  @extend .container-fluid;
+  @extend .mt-auto;
 }
 
 #page-content {

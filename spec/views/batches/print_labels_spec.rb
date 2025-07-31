@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'batches/print_labels.html.erb', type: :view do
   include AuthenticatedSystem
+
   let(:current_user) { create(:user) }
 
   before do

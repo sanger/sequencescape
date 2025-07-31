@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe 'labware/retention_instruction.html.erb' do
   include AuthenticatedSystem
   include RetentionInstructionHelper
+
   let(:user) { create(:user) }
 
   shared_examples 'displaying retention instruction' do

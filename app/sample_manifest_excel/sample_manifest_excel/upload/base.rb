@@ -103,6 +103,8 @@ module SampleManifestExcel
 
       def trigger_accessioning
         changed_samples.each(&:accession)
+      rescue AccessionService::AccessioningDisabledError, AccessionService::AccessionValidationFailed => e
+        Rails.logger.warn "#{e.message} Skipping accessioning for changed samples."
       end
 
       # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH

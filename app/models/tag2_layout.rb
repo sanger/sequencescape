@@ -4,6 +4,7 @@
 # Applies a single tag 2 to the entire plate
 class Tag2Layout < ApplicationRecord
   include Uuid::Uuidable
+
   serialize :target_well_locations, coder: YAML
 
   ##

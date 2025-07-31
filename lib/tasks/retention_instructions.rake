@@ -5,6 +5,7 @@ require_relative '../../app/helpers/retention_instruction_helper'
 
 namespace :retention_instructions do
   include RetentionInstructionHelper
+
   desc 'Backfill retention instructions'
 
   task :backfill, %i[batch_size limit] => :environment do |_, args|
