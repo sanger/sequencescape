@@ -16,8 +16,6 @@ Rails.application.routes.draw do
 
   # Error handling endpoints
   get '/404', to: 'errors#not_found'
-  # get '/406', to: 'errors#unacceptable'
-  # get '/422', to: 'errors#unprocessable'
   get '/500', to: 'errors#internal_server'
   get '/503', to: 'errors#service_unavailable'
 
