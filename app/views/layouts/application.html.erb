@@ -17,7 +17,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>
-      Sequencescape : <%= controller.controller_name.capitalize %> - <%= @page_name || controller.action_name %>
+      Sequencescape | <%= controller.controller_name.humanize.titleize %> (<%= @page_name || controller.action_name.titleize %>)
     </title>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <%= vite_client_tag %>
