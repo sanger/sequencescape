@@ -59,6 +59,17 @@ RSpec.describe Sample, :accession, :cardinal do
       expect(unaccessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
+    it 'will provide debug information if the sample is not suitable for accessioning' do
+      sample_name = unaccessionable_sample.name
+
+      expect { unaccessionable_sample.accession }.to raise_error(AccessionService::AccessionServiceError) do |error|
+        expect(error.message).to eq(
+          "Accessionable is invalid for sample '#{sample_name}': " \
+          'Sample does not have the required metadata: sample-taxon-id.'
+        )
+      end
+    end
+
     it 'will not proceed if accessioning for the study is disabled' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
       accessionable_sample.ena_study.enforce_accessioning = false
