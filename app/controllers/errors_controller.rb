@@ -4,6 +4,8 @@
 
 class ErrorsController < ApplicationController
 
+  skip_before_action :login_required
+
   layout false
 
  def not_found
