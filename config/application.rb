@@ -36,6 +36,9 @@ module Sequencescape
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
+    config.exceptions_app = self.routes
+
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = 'utf-8'
 
