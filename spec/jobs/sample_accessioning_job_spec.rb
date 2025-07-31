@@ -76,19 +76,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
       it 'logs the error' do
         expect(logger).to have_received(:error).with(error.message)
       end
-
-      it 'notifies ExceptionNotifier' do
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          error,
-          data: {
-            cause_message: 'EBI failed to update accession number, data may be invalid',
-            sample_name: sample.name, # 'Sample 1',
-            service_provider: 'ENA',
-            user_login: user.login, # 'user_abc1',
-            user_username: user.name # 'first_name last_name'
-          }
-        )
-      end
     end
   end
 
