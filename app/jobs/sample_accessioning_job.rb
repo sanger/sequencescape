@@ -13,13 +13,24 @@ SampleAccessioningJob =
 
       # update_accession_number returns true if an accession has been supplied, and the sample has been saved.
       # If this returns false, then we fail the job. This should catch any failure situations
-      accession_error_message = 'EBI failed to update accession number, data may be invalid'
-      submission.update_accession_number || raise(AccessionService::AccessionServiceError, accession_error_message)
-    rescue AccessionService::AccessionServiceError => e
       sample_id = accessionable.sample.sanger_sample_id
-      job_error_message = "Error performing SampleAccessioningJob for sample '#{sample_id}': #{e.message}"
+      user = submission.user
+      cause = 'EBI failed to update accession number, data may be invalid'
+      message = "SampleAccessioningJob failed for sample '#{sample_id}' by user '#{user.username}' (#{user.id}): #{cause}"
+
+      submission.update_accession_number || raise(AccessionService::AccessionServiceError, message)
+    rescue AccessionService::AccessionServiceError => e
       Rails.logger.error(job_error_message)
-      ExceptionNotifier.notify_exception(e, data: { message: job_error_message })
+      ExceptionNotifier.notify_exception(e, data: {
+                                           cause_message: cause,
+                                           sample_id: sample_id,
+                                           user_id: user.id,
+                                           user_username: user.username,
+                                           job_class: self.class.name,
+                                           job_id: jid,
+                                           accessionable_id: accessionable.id,
+                                           accessionable_type: accessionable.class.name
+                                         })
     end
 
     def reschedule_at(current_time, _attempts)
