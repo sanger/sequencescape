@@ -57,6 +57,7 @@ h1 {
 .error-message {
   font-size: 1em;
   color: #495057;
+  padding: 0 1em;
   margin-bottom: 1.5em;
   font-weight: 400;
 }
@@ -64,6 +65,7 @@ h1 {
 .suggestion {
   color: #6c757d;
   margin-bottom: 1.5em;
+  padding: 0 1em;
   font-size: 1em;
   font-weight: 400;
 }
