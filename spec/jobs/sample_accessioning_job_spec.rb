@@ -5,13 +5,15 @@ require 'rails_helper'
 
 RSpec.describe SampleAccessioningJob, type: :job do
   let(:user) { create(:user, api_key: configatron.accession_local_key) }
-  let(:sample) { create(:sample_with_sanger_sample_id) }
+  let(:sample) do
+    create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+  end
   let(:accessionable) { create(:accession_sample, sample:) }
-  let(:submission) { build(:accession_submission, user:, sample:) }
+  let(:submission) { build(:accession_submission, user:) }
   let(:job) { described_class.new(accessionable) }
 
   let(:logger) { instance_double(Logger, error: nil) }
-  let(:exception_notifier) { class_double(ExceptionNotifier, notify_exception: nil) }
+  let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
     allow(Rails).to receive(:logger).and_return(logger)
@@ -21,7 +23,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
   describe '#perform' do
     context 'when the submission is successful' do
       before do
-        allow(submission).to receive(:post)
         allow(submission).to receive(:update_accession_number).and_return(true)
       end
 
@@ -32,14 +33,14 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
     context 'when the submission fails to update the accession number' do
       before do
-        allow(submission).to receive(:post)
         allow(submission).to receive(:update_accession_number).and_return(false)
         job.perform
       end
 
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
-          "Error performing SampleAccessioningJob for sample '#{sample.sanger_sample_id}': " \
+          "SampleAccessioningJob failed for sample '#{sample.name}' " \
+          "accessioned by user '#{user.name}' (#{user.login}): " \
           'EBI failed to update accession number, data may be invalid'
         )
       end
@@ -48,15 +49,24 @@ RSpec.describe SampleAccessioningJob, type: :job do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
           instance_of(AccessionService::AccessionServiceError),
           data: {
-            message: "Error performing SampleAccessioningJob for sample '#{sample.sanger_sample_id}': " \
-                     'EBI failed to update accession number, data may be invalid'
+            cause_message: 'EBI failed to update accession number, data may be invalid',
+            sample_name: sample.name, # 'Sample 1',
+            service_provider: 'ENA',
+            user_login: user.login, # 'user_abc1',
+            user_username: user.name # 'first_name last_name'
           }
         )
       end
     end
 
     context 'when an exception is raised during submission' do
-      let(:error) { AccessionService::AccessionServiceError.new('Something went wrong') }
+      let(:error) do
+        AccessionService::AccessionServiceError.new(
+          "SampleAccessioningJob failed for sample '#{sample.name}' " \
+          "accessioned by user '#{user.name}' (#{user.login}): " \
+          'EBI failed to update accession number, data may be invalid'
+        )
+      end
 
       before do
         allow(submission).to receive(:post).and_raise(error)
@@ -64,17 +74,18 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'logs the error' do
-        expect(logger).to have_received(:error).with(
-          "Error performing SampleAccessioningJob for sample '#{sample.sanger_sample_id}': #{error.message}"
-        )
+        expect(logger).to have_received(:error).with(error.message)
       end
 
       it 'notifies ExceptionNotifier' do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
           error,
           data: {
-            message: "Error performing SampleAccessioningJob for sample '#{sample.sanger_sample_id}': " \
-                     "#{error.message}"
+            cause_message: 'EBI failed to update accession number, data may be invalid',
+            sample_name: sample.name, # 'Sample 1',
+            service_provider: 'ENA',
+            user_login: user.login, # 'user_abc1',
+            user_username: user.name # 'first_name last_name'
           }
         )
       end
