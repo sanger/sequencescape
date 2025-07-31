@@ -1,20 +1,19 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
+# See additional related tests in spec/models/sample_spec.rb
+
 RSpec.describe SampleAccessioningJob, type: :job do
+  let(:user) { create(:user, api_key: configatron.accession_local_key) }
   let(:sample) { create(:sample_with_sanger_sample_id) }
-  let(:accessionable) { instance_double(Accession::Sample, sample:) }
-  let(:user) { create(:user) }
-  let(:submission) { instance_double(Accession::Submission) }
+  let(:accessionable) { create(:accession_sample, sample:) }
+  let(:submission) { build(:accession_submission, user:, sample:) }
   let(:job) { described_class.new(accessionable) }
 
   let(:logger) { instance_double(Logger, error: nil) }
   let(:exception_notifier) { class_double(ExceptionNotifier, notify_exception: nil) }
 
   before do
-    allow(User).to receive(:find_by).with(api_key: configatron.accession_local_key).and_return(user)
-    allow(Accession::Submission).to receive(:new).with(user, accessionable).and_return(submission)
-
     allow(Rails).to receive(:logger).and_return(logger)
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
