@@ -13,6 +13,28 @@ RSpec.describe ErrorsController, type: :controller do
     it 'returns 404 status' do
       expect(response).to have_http_status(:not_found)
     end
+
+    context 'when the request format is HTML' do
+      it 'renders HTML format' do
+        expect(response.content_type).to include('text/html')
+      end
+    end
+
+    context 'when the request format is JSON' do
+      before { request.format = :json }
+
+      it 'still renders HTML format' do
+        expect(response.content_type).to include('text/html')
+      end
+    end
+
+    context 'when the request format is an image' do
+      before { request.format = :png }
+
+      it 'still renders HTML format' do
+        expect(response.content_type).to include('text/html')
+      end
+    end
   end
 
   describe 'GET #internal_server' do
