@@ -8,7 +8,6 @@ body.sessions {
   display: flex;
   flex-direction: column;
   background-color: #039be5;
-  background-image: url("/images/sanger-pattern-corner.svg"), linear-gradient(45deg, #039be5 0%, #8bc34a 100%);
   background-repeat: no-repeat;
   background-position: center right;
   background-size: cover;

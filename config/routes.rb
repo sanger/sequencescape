@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Error handling endpoints
+  get '/404', to: 'errors#not_found'
+  get '/500', to: 'errors#internal_server'
+  get '/503', to: 'errors#service_unavailable'
+
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
