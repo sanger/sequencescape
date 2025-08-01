@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ErrorsController, type: :controller do
-  errors =  %i[not_found internal_server_error service_unavailable]
+  errors = %i[not_found internal_server_error service_unavailable]
   formats = [nil, :html, :json, :png, :unknown]
 
   shared_examples 'renders error as HTML with status' do |error|
