@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe ErrorsController, type: :controller do
-
   describe 'GET #not_found' do
     before { get :not_found }
 
