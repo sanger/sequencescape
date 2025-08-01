@@ -3,39 +3,32 @@
 require 'rails_helper'
 
 RSpec.describe ErrorsController, type: :controller do
-  describe 'GET #not_found' do
-    before { get :not_found }
+  errors = %i[not_found internal_server_error service_unavailable]
+  formats = [nil, :html, :json, :png, :unknown]
 
-    it 'renders the not_found template' do
-      expect(response).to render_template(:not_found)
-    end
+  shared_examples 'renders error as HTML with status' do |error|
+    formats.each do |format|
+      context "when the request format is #{format}" do
+        before { get error, format: }
 
-    it 'returns 404 status' do
-      expect(response).to have_http_status(:not_found)
+        it 'returns HTML response' do
+          expect(response.content_type).to include('text/html')
+        end
+
+        it "renders the #{error} template" do
+          expect(response).to render_template(error)
+        end
+
+        it "returns #{error} status" do
+          expect(response).to have_http_status(error)
+        end
+      end
     end
   end
 
-  describe 'GET #internal_server' do
-    before { get :internal_server }
-
-    it 'renders the internal_server template' do
-      expect(response).to render_template(:internal_server)
-    end
-
-    it 'returns 500 status' do
-      expect(response).to have_http_status(:internal_server_error)
-    end
-  end
-
-  describe 'GET #service_unavailable' do
-    before { get :service_unavailable }
-
-    it 'renders the service_unavailable template' do
-      expect(response).to render_template(:service_unavailable)
-    end
-
-    it 'returns 503 status' do
-      expect(response).to have_http_status(:service_unavailable)
+  errors.each do |error|
+    describe "GET ##{error}" do
+      it_behaves_like 'renders error as HTML with status', error
     end
   end
 end
