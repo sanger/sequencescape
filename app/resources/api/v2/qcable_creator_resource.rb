@@ -4,20 +4,34 @@ module Api
   module V2
     # Provides a JSON:API representation of {QcableCreator} which represents ...
     #
+    # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/qcable_creators/` endpoint.
     #
     #
     # @example POST request to create a {QcableCreator}.
-    #    to do
-    #
-    # @example PATCH request to change the {Asset} of a {QcableCreator}.
-    #   to do
+    # TODO: Add example of creating a QcableCreator with barcodes and count.
+    #   POST /api/v2/qcable_creators/
+    #   {
+    #     "data": {
+    #       "type": "qcable_creators",
+    #       "attributes": {
+    #       },
+    #      "relationships": {
+    #         "lot": {
+    #         "data": { "type": "lots", "id": 1 }
+    #       },
+    #       "user": {
+    #           "data": { "type": "users", "id": 1 }
+    #       }
+    #     }
+    #   }
+    # }
     #
     # @example GET request for all {QcableCreator} resources
-    #   to do
+    #   GET /api/v2/qcable_creators/
     #
     # @example GET request for a {QcableCreator} with ID 123
-    #   to do
+    #   GET /api/v2/qcable_creators/123/
     #
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -57,7 +71,7 @@ module Api
 
       # @!attribute [r] qcables
       #   @return [Array<QcableResource>] the {Qcable} resources created by this {QcableCreator}.
-      has_many :qcables, class_name: 'QcableResource', read_only: true
+      # has_many :qcables, class_name: 'QcableResource', read_only: true
 
       ###
       # Filters
