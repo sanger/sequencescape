@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe ErrorsController, type: :controller do
-  render_views
 
   describe 'GET #not_found' do
     before { get :not_found }
