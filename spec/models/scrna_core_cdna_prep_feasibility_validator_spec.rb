@@ -710,7 +710,7 @@ RSpec.describe BulkSubmission, with: :uploader do
     end
   end
 
-  describe '#validate_scrna_core_cdna_prep_total_number_of_pools_is_not_zero?' do
+  describe '#validate_unique_and_non_zero_values?' do
     context 'when the number of pools is zero in any study-project group' do
       let(:group_1_number_of_pools) { 0 }
       let(:group_2_number_of_pools) { 1 }
