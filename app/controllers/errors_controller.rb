@@ -26,7 +26,7 @@ class ErrorsController < ApplicationController
   # TODO: Implement the `unprocessable` method to handle 422 Unprocessable Entity errors
 
   # 500 Internal Server Error
-  def internal_server
+  def internal_server_error
     render status: :internal_server_error, formats: [:html]
   end
 
