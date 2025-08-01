@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Error handling endpoints
+  get '/404', to: 'errors#not_found'
+  get '/500', to: 'errors#internal_server_error'
+  get '/503', to: 'errors#service_unavailable'
+
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
@@ -31,9 +36,9 @@ Rails.application.routes.draw do
 
       jsonapi_resources :barcode_printers
       jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments
+      jsonapi_resources :comments, defaults: { permissive: true }
       jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware
+      jsonapi_resources :labware, defaults: { permissive: true }
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
@@ -52,7 +57,7 @@ Rails.application.routes.draw do
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
       jsonapi_resources :purposes
-      jsonapi_resources :qc_assays
+      jsonapi_resources :qc_assays, defaults: { permissive: true }
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
@@ -72,7 +77,7 @@ Rails.application.routes.draw do
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
-      jsonapi_resources :tag_groups
+      jsonapi_resources :tag_groups, defaults: { permissive: true }
       jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
