@@ -15,24 +15,56 @@ RSpec.describe ErrorsController, type: :controller do
     end
 
     context 'when the request format is HTML' do
+      before do
+        get :not_found, format: :html
+      end
+
       it 'renders HTML format' do
         expect(response.content_type).to include('text/html')
+      end
+
+      it 'renders the not_found template' do
+        expect(response).to render_template(:not_found)
+      end
+
+      it 'returns 404 status' do
+        expect(response).to have_http_status(:not_found)
       end
     end
 
     context 'when the request format is JSON' do
-      before { request.format = :json }
+      before do
+        get :not_found, format: :json
+      end
 
       it 'still renders HTML format' do
         expect(response.content_type).to include('text/html')
       end
+
+      it 'renders the not_found template' do
+        expect(response).to render_template(:not_found)
+      end
+
+      it 'returns 404 status' do
+        expect(response).to have_http_status(:not_found)
+      end
     end
 
     context 'when the request format is an image' do
-      before { request.format = :png }
+      before do
+        get :not_found, format: :png
+      end
 
       it 'still renders HTML format' do
         expect(response.content_type).to include('text/html')
+      end
+
+      it 'renders the not_found template' do
+        expect(response).to render_template(:not_found)
+      end
+
+      it 'returns 404 status' do
+        expect(response).to have_http_status(:not_found)
       end
     end
   end
