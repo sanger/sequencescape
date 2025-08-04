@@ -13,13 +13,11 @@ SampleAccessioningJob =
 
       # update_accession_number returns true if an accession has been supplied, and the sample has been saved.
       # If this returns false, then we fail the job. This should catch any failure situations
-      accession_error_message = 'EBI failed to update accession number, data may be invalid'
-      submission.update_accession_number || raise(AccessionService::AccessionServiceError, accession_error_message)
+      cause = 'EBI failed to update accession number, data may be invalid'
+
+      submission.update_accession_number || raise_accession_error(submission, cause)
     rescue AccessionService::AccessionServiceError => e
-      sample_id = accessionable.sample.sanger_sample_id
-      job_error_message = "Error performing SampleAccessioningJob for sample '#{sample_id}': #{e.message}"
-      Rails.logger.error(job_error_message)
-      ExceptionNotifier.notify_exception(e, data: { message: job_error_message })
+      handle_accession_error(e, submission, cause)
     end
 
     def reschedule_at(current_time, _attempts)
@@ -32,5 +30,31 @@ SampleAccessioningJob =
 
     def queue_name
       'sample_accessioning'
+    end
+
+    private
+
+    def raise_accession_error(submission, cause)
+      sample_name = submission.sample.sample.name
+      user = submission.user
+      message = "SampleAccessioningJob failed for sample '#{sample_name}' " \
+                "accessioned by user '#{user.name}' (#{user.login}): #{cause}"
+
+      raise(AccessionService::AccessionServiceError, message)
+    end
+
+    def handle_accession_error(error, submission, cause)
+      sample_name = submission.sample.sample.name
+      user = submission.user
+      service = submission.service
+
+      Rails.logger.error(error.message)
+      ExceptionNotifier.notify_exception(error, data: {
+                                           cause_message: cause,
+                                           sample_name: sample_name,
+                                           user_login: user.login,
+                                           user_username: user.name,
+                                           service_provider: service.provider.to_s
+                                         })
     end
   end
