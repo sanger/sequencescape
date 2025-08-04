@@ -18,10 +18,11 @@ module Api
     #       },
     #      "relationships": {
     #         "lot": {
-    #         "data": { "type": "lots", "id": 1 }
-    #       },
-    #       "user": {
+    #           "data": { "type": "lots", "id": 1 }
+    #         },
+    #         "user": {
     #           "data": { "type": "users", "id": 1 }
+    #         }
     #       }
     #     }
     #   }

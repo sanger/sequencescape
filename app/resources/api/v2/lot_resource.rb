@@ -97,6 +97,16 @@ module Api
       has_one :tag_layout_template, eager_load_on_include: false
 
       ###
+      # Filters
+      ###
+
+      # @!method uuid
+      #   A filter to return only lots with the given UUID.
+      #   @example Filtering lots by UUID
+      #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
+      filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
+
+      ###
       # Custom Methods
       ###
 
