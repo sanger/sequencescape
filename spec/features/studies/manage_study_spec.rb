@@ -11,7 +11,7 @@ describe 'Manage a study' do
     visit study_path(study)
     click_link 'Manage'
     expect(page).to have_content('Original name')
-    fill_in 'Study name', with: 'Updated name'
+    fill_in 'Study name', with: 'Updated name', fill_options: { clear: :backspace }
     click_on 'Update'
     expect(page).to have_content('Updated name')
     expect(page).to have_no_content('Original name')

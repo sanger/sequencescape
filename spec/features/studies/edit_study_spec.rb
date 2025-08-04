@@ -26,7 +26,8 @@ describe 'Edit a study' do
     login_user(user)
     visit study_path(study)
     click_link 'Edit'
-    fill_in 'S3 email list', with: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk'
+    fill_in 'S3 email list', with: 'aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk',
+                             fill_options: { clear: :backspace }
     select('3 months', from: 'Data deletion period')
     click_button 'Save Study'
     expect(page).to have_content('Your study has been updated')
