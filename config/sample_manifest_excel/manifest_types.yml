@@ -828,7 +828,6 @@ scrna_core:
     - :donor_id_mandatory
     - :supplier_name
     - :volume
-    - :retention_instruction
     - :sample_description
     - :date_of_sample_collection
     - :country_of_origin
