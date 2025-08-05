@@ -67,6 +67,10 @@ module Api
       #   @return [String] The lot number.
       attribute :lot_number, write_once: true
 
+      # @!attribute [r] lot_type_name
+      #   @return [String] The name of the lot type associated with this lot.
+      attribute :lot_type_name, readonly: true
+
       ###
       # Relationships
       ###
@@ -105,6 +109,14 @@ module Api
       #   @example Filtering lots by UUID
       #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
       filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
+
+      ###
+      # Getters and Setters
+      ###
+
+      def lot_type_name
+        lot_type&.name
+      end
 
       ###
       # Custom Methods
