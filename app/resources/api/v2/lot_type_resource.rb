@@ -47,6 +47,10 @@ module Api
       #   @return [String] The template type.
       attribute :template_type, write_once: true
 
+      # @!attribute [r] qcable_name
+      #   The name of the QCable associated with this lot type.
+      attribute :qcable_name, read_only: true
+
       ###
       # Relationships
       ###
@@ -56,6 +60,14 @@ module Api
       #   @todo This resource is immutable; Update relationship to be read-only.
       #   @return [PurposeResource] The associated purpose of this lot type.
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
+
+      ###
+      # Getters and Setters
+      ###
+
+      def qcable_name
+        target_purpose&.name
+      end
 
       ###
       # Custom Methods
