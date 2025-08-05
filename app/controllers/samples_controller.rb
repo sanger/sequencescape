@@ -153,13 +153,13 @@ class SamplesController < ApplicationController
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
   rescue ActiveRecord::RecordInvalid => e
-    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
+    flash[:error] = truncate_flash("Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}")
   rescue AccessionService::NumberNotRequired => e
-    flash[:warning] = e.message || 'An accession number is not required for this study'
+    flash[:warning] = truncate_flash(e.message || 'An accession number is not required for this study')
   rescue AccessionService::NumberNotGenerated => e
-    flash[:warning] = "No accession number was generated: #{e.message}"
+    flash[:warning] = truncate_flash("No accession number was generated: #{e.message}")
   rescue AccessionService::AccessionServiceError => e
-    flash[:error] = "Accessioning Service Failed: #{e.message}"
+    flash[:error] = truncate_flash("Accessioning Service Failed: #{e.message}")
   ensure
     redirect_to(sample_path(@sample))
   end
