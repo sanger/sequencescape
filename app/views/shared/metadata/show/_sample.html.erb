@@ -1,7 +1,7 @@
 
 <%# NOTE[xxx]: Kind of a hack because we're not actually building a form %>
 <%= fields_for(sample) do |form| %>
-  <%= form.fields_for(:sample_metadata, builder: Metadata::ViewBuilder, plain_value: 'shared/metadata/plain_field_b') do |metadata_fields| %>
+  <%= form.fields_for(:sample_metadata, builder: Metadata::ViewBuilder) do |metadata_fields| %>
     <%# Fields for 'Microarray genotyping' %>
     <%= metadata_fields.plain_value(:cohort) %>
     <%= metadata_fields.plain_value(:gender) %>
