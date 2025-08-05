@@ -39,8 +39,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
-          "SampleAccessioningJob failed for sample '#{sample.name}' " \
-          "accessioned by user '#{user.name}' (#{user.login}): " \
+          "SampleAccessioningJob failed for sample '#{sample.name}': " \
           'EBI failed to update accession number, data may be invalid'
         )
       end
@@ -51,9 +50,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
           data: {
             cause_message: 'EBI failed to update accession number, data may be invalid',
             sample_name: sample.name, # 'Sample 1',
-            service_provider: 'ENA',
-            user_login: user.login, # 'user_abc1',
-            user_username: user.name # 'first_name last_name'
+            service_provider: 'ENA'
           }
         )
       end
@@ -62,8 +59,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
     context 'when an exception is raised during submission' do
       let(:error) do
         AccessionService::AccessionServiceError.new(
-          "SampleAccessioningJob failed for sample '#{sample.name}' " \
-          "accessioned by user '#{user.name}' (#{user.login}): " \
+          "SampleAccessioningJob failed for sample '#{sample.name}': " \
           'EBI failed to update accession number, data may be invalid'
         )
       end

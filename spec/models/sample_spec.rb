@@ -101,8 +101,7 @@ RSpec.describe Sample, :accession, :cardinal do
         accessionable_sample.accession
 
         expect(Rails.logger).to have_received(:error).with(
-          "SampleAccessioningJob failed for sample '#{accessionable_sample.name}' " \
-          "accessioned by user '#{user.name}' (#{user.login}): " \
+          "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
           'EBI failed to update accession number, data may be invalid'
         )
       end
@@ -115,9 +114,7 @@ RSpec.describe Sample, :accession, :cardinal do
           instance_of(AccessionService::AccessionServiceError),
           data: { cause_message: 'EBI failed to update accession number, data may be invalid',
                   sample_name: accessionable_sample.name, # 'Sample1'
-                  service_provider: 'ENA',
-                  user_login: user.login, # 'user_abc1'
-                  user_username: user.name } # 'first_name last_name'
+                  service_provider: 'ENA' }
         )
       end
     end

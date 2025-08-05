@@ -36,24 +36,19 @@ SampleAccessioningJob =
 
     def raise_accession_error(submission, cause)
       sample_name = submission.sample.sample.name
-      user = submission.user
-      message = "SampleAccessioningJob failed for sample '#{sample_name}' " \
-                "accessioned by user '#{user.name}' (#{user.login}): #{cause}"
+      message = "SampleAccessioningJob failed for sample '#{sample_name}': #{cause}"
 
       raise(AccessionService::AccessionServiceError, message)
     end
 
     def handle_accession_error(error, submission, cause)
       sample_name = submission.sample.sample.name
-      user = submission.user
       service = submission.service
 
       Rails.logger.error(error.message)
       ExceptionNotifier.notify_exception(error, data: {
                                            cause_message: cause,
                                            sample_name: sample_name,
-                                           user_login: user.login,
-                                           user_username: user.name,
                                            service_provider: service.provider.to_s
                                          })
     end
