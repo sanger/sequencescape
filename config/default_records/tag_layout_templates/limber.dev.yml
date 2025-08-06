@@ -166,11 +166,3 @@ TSsc384-PCR2-nCoV-2019/V5/B:
   :tag2_group_name: sc384tempi5
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
-Ultima P1:
-  :tag_group_name: Ultima P1
-  :direction_algorithm: TagLayout::InColumns
-  :walking_algorithm: TagLayout::WalkWellsOfPlate
-Ultima P2:
-  :tag_group_name: Ultima P2
-  :direction_algorithm: TagLayout::InColumns
-  :walking_algorithm: TagLayout::WalkWellsOfPlate
