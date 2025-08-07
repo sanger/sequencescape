@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'report_fails/index.html.erb' do
   include AuthenticatedSystem
+
   let(:user) { create(:user) }
 
   context 'when rendering the index' do

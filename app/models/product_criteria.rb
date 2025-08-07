@@ -8,6 +8,7 @@ class ProductCriteria < ApplicationRecord
   self.table_name = ('product_criteria')
 
   include HasBehaviour
+
   has_behaviour Advanced, behaviour_name: 'Advanced'
   has_behaviour Basic, behaviour_name: 'Basic'
 

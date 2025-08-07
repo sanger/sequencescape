@@ -107,7 +107,7 @@ module Accession
 
     def check_required_fields
       unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing}.")
+        errors.add(:sample, "does not have the required metadata: #{tags.missing.to_sentence.dasherize}.")
       end
     end
 

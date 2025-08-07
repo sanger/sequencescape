@@ -1,11 +1,21 @@
 /* This is the canonical CSS file for Sequencescape. */
-/* Please use it instead of screen.css which is deprecated. */
+body {
+  @extend .min-vh-100;
+  @extend .d-flex;
+  @extend .flex-column;
+}
+
 li a:visited {
   color: #444488;
 }
 
 #main-content {
   @extend .container-fluid;
+}
+
+#main-footer {
+  @extend .container-fluid;
+  @extend .mt-auto;
 }
 
 #page-content {
@@ -408,13 +418,6 @@ table#plate-samples-table .well_location {
 
 #qc_indent {
   padding-left: 10px;
-}
-
-#sequencescape_logo {
-  width: 98px;
-  height: 24px;
-  display: block;
-  margin: auto;
 }
 
 #user_links ul {

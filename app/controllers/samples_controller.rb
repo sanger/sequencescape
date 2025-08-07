@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'exception_notification'
+
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -17,6 +20,7 @@ class SamplesController < ApplicationController
   def show
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
+    @page_name = @sample.name
 
     respond_to do |format|
       format.html
@@ -97,6 +101,9 @@ class SamplesController < ApplicationController
       cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
     end
 
+    # Show warnings from accessioning
+    flash.now[:warning] = @sample.errors if @sample.errors.present?
+
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
       redirect_to sample_path(@sample)
@@ -146,18 +153,15 @@ class SamplesController < ApplicationController
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-    redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
-    redirect_to(edit_sample_path(@sample))
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-    redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-    redirect_to(sample_path(@sample))
   rescue AccessionService::AccessionServiceError => e
-    flash[:error] = e.message
+    flash[:error] = "Accessioning Service Failed: #{e.message}"
+  ensure
     redirect_to(sample_path(@sample))
   end
 
