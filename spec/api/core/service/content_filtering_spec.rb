@@ -20,6 +20,7 @@ RSpec.describe Core::Service::ContentFiltering::Helpers do
   let(:helpers_instance) do
     Class.new do
       include Core::Service::ContentFiltering::Helpers
+
       def request
       end
     end.new
