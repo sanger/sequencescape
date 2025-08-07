@@ -71,6 +71,10 @@ module Api
       #   @return [String] The name of the lot type associated with this lot.
       attribute :lot_type_name, readonly: true
 
+      # @!attribute [r] template_name
+      #   @return [String] The name of the template associated with this lot.
+      attribute :template_name, readonly: true
+
       ###
       # Relationships
       ###
@@ -108,7 +112,7 @@ module Api
       #   A filter to return only lots with the given UUID.
       #   @example Filtering lots by UUID
       #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
-      filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
 
       ###
       # Getters and Setters
@@ -116,6 +120,10 @@ module Api
 
       def lot_type_name
         lot_type&.name
+      end
+
+      def template_name
+        template&.name
       end
 
       ###

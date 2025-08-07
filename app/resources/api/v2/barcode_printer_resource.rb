@@ -66,7 +66,7 @@ module Api
       #   A filter to return only barcode printers with the given UUID.
       #   @example Filtering barcode printers by UUID
       #     GET /api/v2/barcode_printers?filter[uuid]=11111111-2222-3333-4444-555555666666
-      filter :uuid, apply: lambda { |records, value, _options| records.with_uuid(*value) }
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
     end
   end
 end
