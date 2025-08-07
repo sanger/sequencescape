@@ -1,5 +1,6 @@
 Ultima P1:
   visible: true
+  adapter_type_name: Ultima
   tags:
     1: CAGCTCGAATGCGAT
     2: CATGTGCAGCCATCGAT
@@ -100,6 +101,7 @@ Ultima P1:
 
 Ultima P2:
   visible: true
+  adapter_type_name: Ultima
   tags:
     1: CAGTCAGTTGCAGAT
     2: CAACAGATGTATGAT
