@@ -2,31 +2,60 @@
 
 module Api
   module V2
-    # Provides a JSON:API representation of {QcableCreator} which represents ...
+    # Provides a JSON:API representation of {QcableCreator} which is a factory for creating {Qcable}s (tag plates).
     #
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
     # @note Access this resource via the `/api/v2/qcable_creators/` endpoint.
     #
-    #
-    # @example POST request to create a {QcableCreator}.
-    # TODO: Add example of creating a QcableCreator with barcodes and count.
+    # @example POST request to create a {QcableCreator}, using 'count'.
     #   POST /api/v2/qcable_creators/
     #   {
     #     "data": {
     #       "type": "qcable_creators",
     #       "attributes": {
+    #         "count": 3
     #       },
-    #      "relationships": {
+    #       "relationships": {
     #         "lot": {
-    #           "data": { "type": "lots", "id": 1 }
+    #           "data": {
+    #             "type": "lots",
+    #             "id": 1
+    #           }
     #         },
     #         "user": {
-    #           "data": { "type": "users", "id": 1 }
+    #           "data": {
+    #             "type": "users",
+    #             "id": 1
+    #           }
     #         }
     #       }
     #     }
     #   }
-    # }
+    #
+    # @example POST request to create a {QcableCreator}, using 'barcodes'.
+    #   POST /api/v2/qcable_creators/
+    #   {
+    #     "data": {
+    #       "type": "qcable_creators",
+    #       "attributes": {
+    #         "barcodes": "SQPD-11111,SQPD-22222,SQPD-33333"
+    #       },
+    #       "relationships": {
+    #         "lot": {
+    #           "data": {
+    #             "type": "lots",
+    #             "id": 1
+    #           }
+    #         },
+    #         "user": {
+    #           "data": {
+    #             "type": "users",
+    #             "id": 1
+    #           }
+    #         }
+    #       }
+    #     }
+    #   }
     #
     # @example GET request for all {QcableCreator} resources
     #   GET /api/v2/qcable_creators/
@@ -50,7 +79,8 @@ module Api
 
       # @!attribute [rw] barcodes
       #   Either this or 'count' is passed in when creating a {QcableCreator}.
-      #   @return [Array<String>] the barcodes to use when creating the associated {Qcable}s.
+      #   @return [String] a string containing the barcodes to use when creating the associated {Qcable}s,
+      #    or the barcodes of any existing {QCable}s.
       attribute :barcodes
 
       # @!attribute [rw] count
