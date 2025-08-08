@@ -76,6 +76,29 @@ module Api
       attribute :template_name, readonly: true
 
       ###
+      # Getters and Setters
+      ###
+
+      def lot_type_name
+        lot_type&.name
+      end
+
+      def template_name
+        template&.name
+      end
+
+      ###
+      # Custom Methods
+      ###
+
+      # Retrieves the template ID for the associated tag layout template.
+      #
+      # @return [String, nil] The template ID, or `nil` if no template is set.
+      def tag_layout_template_id
+        template_id
+      end
+
+      ###
       # Relationships
       ###
 
@@ -113,29 +136,6 @@ module Api
       #   @example Filtering lots by UUID
       #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
-
-      ###
-      # Getters and Setters
-      ###
-
-      def lot_type_name
-        lot_type&.name
-      end
-
-      def template_name
-        template&.name
-      end
-
-      ###
-      # Custom Methods
-      ###
-
-      # Retrieves the template ID for the associated tag layout template.
-      #
-      # @return [String, nil] The template ID, or `nil` if no template is set.
-      def tag_layout_template_id
-        template_id
-      end
     end
   end
 end

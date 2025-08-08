@@ -52,26 +52,12 @@ module Api
       attribute :qcable_name, read_only: true
 
       ###
-      # Relationships
-      ###
-
-      # @!attribute [rw] target_purpose
-      #   The {Purpose} that this lot type is associated with
-      #   @todo This resource is immutable; Update relationship to be read-only.
-      #   @return [PurposeResource] The associated purpose of this lot type.
-      has_one :target_purpose, write_once: true, class_name: 'Purpose'
-
-      ###
       # Getters and Setters
       ###
 
       def qcable_name
         target_purpose&.name
       end
-
-      ###
-      # Custom Methods
-      ###
 
       # Retrieves the template type based on the internal class name.
       #
@@ -80,6 +66,16 @@ module Api
         template_type = _model.template_class.underscore
         self.class._model_hints[template_type] || template_type
       end
+
+      ###
+      # Relationships
+      ###
+
+      # @!attribute [rw] target_purpose
+      #   The {Purpose} that this lot type is associated with
+      #   @todo This resource is immutable; Update relationship to be read-only.
+      #   @return [PurposeResource] The associated purpose of this lot type.
+      has_one :target_purpose, write_once: true, class_name: 'Purpose'
     end
   end
 end
