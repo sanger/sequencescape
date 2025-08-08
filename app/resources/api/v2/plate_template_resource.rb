@@ -4,7 +4,7 @@ module Api
   module V2
     # @todo Is this resource required? It fails when fetching any plate templates. Gatekeeper may need this
     # resource in the future when switched to SS API v2, but it is not currently used in the API.
-    # @note It is used in the Lot Resource in the template_name method. However, probably is part of the 
+    # @note It is used in the Lot Resource in the template_name method. However, probably is part of the
     # chunk of Gatekeeper functionality that is not used and can be deprecated. See Y24-185.
     #
     # Provides a JSON:API representation of {PlateTemplate}.
