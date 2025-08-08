@@ -67,6 +67,37 @@ module Api
       #   @return [String] The lot number.
       attribute :lot_number, write_once: true
 
+      # @!attribute [r] lot_type_name
+      #   @return [String] The name of the lot type associated with this lot.
+      attribute :lot_type_name, readonly: true
+
+      # @!attribute [r] template_name
+      #   @return [String] The name of the template associated with this lot.
+      attribute :template_name, readonly: true
+
+      ###
+      # Getters and Setters
+      ###
+
+      def lot_type_name
+        lot_type&.name
+      end
+
+      def template_name
+        template&.name
+      end
+
+      ###
+      # Custom Methods
+      ###
+
+      # Retrieves the template ID for the associated tag layout template.
+      #
+      # @return [String, nil] The template ID, or `nil` if no template is set.
+      def tag_layout_template_id
+        template_id
+      end
+
       ###
       # Relationships
       ###
@@ -85,27 +116,29 @@ module Api
 
       # @!attribute [rw] template
       #   The template associated with this lot, which may vary depending on the lot type.
-      #   This is a polymorphic relationship, meaning it can be linked to different types of templates.
+      #   This is a polymorphic relationship, meaning it can be linked to different entity types
+      #   (TagLayoutTemplate, Tag2LayoutTemplate and Labware/PlateTemplate at time of writing).
       #   @return [TemplateResource] The associated template.
       #   @note This relationship is required when creating a lot.
       has_one :template, polymorphic: true
 
       # @!attribute [r] tag_layout_template
       #   A tag layout template associated with this lot, used for specific processing workflows.
+      #   This represents the same entity as `template` above,
+      #   but is only relevant when template_type is `TagLayoutTemplate`.
       #   @return [TagLayoutTemplateResource] The associated tag layout template.
       #   @note This relationship is loaded only when explicitly included.
       has_one :tag_layout_template, eager_load_on_include: false
 
       ###
-      # Custom Methods
+      # Filters
       ###
 
-      # Retrieves the template ID for the associated tag layout template.
-      #
-      # @return [String, nil] The template ID, or `nil` if no template is set.
-      def tag_layout_template_id
-        template_id
-      end
+      # @!method uuid
+      #   A filter to return only lots with the given UUID.
+      #   @example Filtering lots by UUID
+      #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
     end
   end
 end

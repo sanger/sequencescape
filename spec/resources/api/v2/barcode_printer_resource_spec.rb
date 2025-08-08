@@ -16,4 +16,7 @@ RSpec.describe Api::V2::BarcodePrinterResource, type: :resource do
   it { is_expected.to have_readonly_attribute :name }
   it { is_expected.to have_readonly_attribute :print_service }
   it { is_expected.to have_readonly_attribute :uuid }
+
+  # Filters
+  it { is_expected.to filter(:uuid) }
 end
