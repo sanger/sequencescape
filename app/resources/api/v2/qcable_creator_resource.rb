@@ -102,7 +102,7 @@ module Api
 
       # @!attribute [r] qcables
       #   @return [Array<QcableResource>] the {Qcable} resources created by this {QcableCreator}.
-      has_many :qcables, read_only: true
+      has_many :qcables, readonly: true
 
       ###
       # Filters

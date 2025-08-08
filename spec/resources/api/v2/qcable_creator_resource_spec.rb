@@ -13,6 +13,8 @@ RSpec.describe Api::V2::QcableCreatorResource, type: :resource do
 
   # Attributes
   it { is_expected.to have_readonly_attribute :uuid }
+  it { is_expected.to have_readwrite_attribute :count }
+  it { is_expected.to have_readwrite_attribute :barcodes }
 
   # Relationships
   it { is_expected.to have_a_writable_has_one(:user).with_class_name('User') }

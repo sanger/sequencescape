@@ -116,13 +116,15 @@ module Api
 
       # @!attribute [rw] template
       #   The template associated with this lot, which may vary depending on the lot type.
-      #   This is a polymorphic relationship, meaning it can be linked to different types of templates.
+      #   This is a polymorphic relationship, meaning it can be linked to different entity types 
+      #   (TagLayoutTemplate, Tag2LayoutTemplate and Labware/PlateTemplate at time of writing).
       #   @return [TemplateResource] The associated template.
       #   @note This relationship is required when creating a lot.
       has_one :template, polymorphic: true
 
       # @!attribute [r] tag_layout_template
       #   A tag layout template associated with this lot, used for specific processing workflows.
+      #   This represents the same entity as `template` above, but is only relevant when template_type is `TagLayoutTemplate`.
       #   @return [TagLayoutTemplateResource] The associated tag layout template.
       #   @note This relationship is loaded only when explicitly included.
       has_one :tag_layout_template, eager_load_on_include: false

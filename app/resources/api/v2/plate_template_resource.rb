@@ -34,6 +34,10 @@ module Api
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The UUID of the plate template.
       attribute :uuid, readonly: true
+
+      # @!attribute [r] name
+      #   @return [String] The name of the plate template.
+      attribute :name, readonly: true
     end
   end
 end
