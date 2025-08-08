@@ -11,6 +11,7 @@ class Admin::StudiesController < ApplicationController
 
   def show
     @study = Study.find(params[:id])
+    @page_name = @study.name
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
