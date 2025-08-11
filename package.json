@@ -11,7 +11,7 @@
     "datatables.net-buttons-bs4": "^2.1.1",
     "datatables.net-fixedcolumns-bs4": "^4.0.1",
     "datatables.net-fixedheader-bs4": "^3.2.1",
-    "datatables.net-responsive-bs4": "^2.2.9",
+    "datatables.net-responsive-bs4": "^2.5.1",
     "datatables.net-rowgroup-bs4": "^1.1.4",
     "datatables.net-rowreorder-bs4": "^1.2.8",
     "jquery": "^3.7.1",
