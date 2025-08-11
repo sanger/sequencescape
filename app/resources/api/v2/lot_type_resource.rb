@@ -55,13 +55,21 @@ module Api
       # Getters and Setters
       ###
 
-      def qcable_name
+      # Retrieves the name of the target purpose associated with this lot type.
+      # This is the type of labware that end up being created under this lot type.
+      # The method (along with naming) was added for consistency with the v1 API
+      # when converting Gatekeeper to use the v2 API.
+      #
+      # @return [String, nil] The name of the target purpose, or `nil` if no target purpose is set.
+      # e.g. 'Tag Plate'
+      def target_purpose_name
         target_purpose&.name
       end
 
       # Retrieves the template type based on the internal class name.
       #
-      # @return [String] The template type e.g 'tag_layout_template'
+      # @return [String] The template type 
+      # e.g 'TagLayoutTemplate'
       def template_type
         template_type = _model.template_class.underscore
         self.class._model_hints[template_type] || template_type

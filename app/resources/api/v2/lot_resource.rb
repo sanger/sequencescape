@@ -79,10 +79,19 @@ module Api
       # Getters and Setters
       ###
 
+      # Retrieves the name of the lot type associated with this lot.
+      #
+      # @return [String, nil] The name of the lot type, or `nil` if no lot type is set.
+      # e.g. 'Pre Stamped Tags'
       def lot_type_name
         lot_type&.name
       end
 
+      # Retrieves the name of the template associated with this lot.
+      # See template association below for more details.
+      #
+      # @return [String, nil] The name of the template, or `nil` if no template is set.
+      # e.g. 'TSsc384-PCR2-nCoV-2019/V3/B'
       def template_name
         template&.name
       end
