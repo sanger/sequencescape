@@ -68,7 +68,7 @@ module Api
 
       # Retrieves the template type based on the internal class name.
       #
-      # @return [String] The template type 
+      # @return [String] The template type
       # e.g 'TagLayoutTemplate'
       def template_type
         template_type = _model.template_class.underscore
