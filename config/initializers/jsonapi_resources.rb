@@ -17,4 +17,10 @@ Rails.application.config.after_initialize do
   JSONAPI::ResourceController.include(Api::V2::Concerns::ApiKeyAuthenticatable)
   JSONAPI::ResourceController.include(Api::V2::Concerns::DisableCsrfTokenAuthentication)
   JSONAPI::ResourceController.include(Api::V2::Concerns::DisableDestroyAction)
+
+  # TODO: This is a temporary fix to allow the use of 422 Unprocessable Entity status code
+  # in JSONAPI::Resources. This should be removed once the issue is resolved in the
+  # JSONAPI::Resources gem.
+  # See: https://github.com/cerebris/jsonapi-resources/issues/1456
+  Rack::Utils::SYMBOL_TO_STATUS_CODE[:unprocessable_entity] = 422
 end
