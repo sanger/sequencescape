@@ -21,6 +21,7 @@ class CherrypickRequest < CustomerRequest
 
     subtracted_volume = target_asset.get_picked_volume
     new_volume = asset.get_current_volume - subtracted_volume
+    new_volume = 0 if new_volume.negative?
     asset.set_current_volume(new_volume)
   end
 
