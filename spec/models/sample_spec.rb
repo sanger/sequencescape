@@ -59,6 +59,17 @@ RSpec.describe Sample, :accession, :cardinal do
       expect(unaccessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
+    it 'will provide debug information if the sample is not suitable for accessioning' do
+      sample_name = unaccessionable_sample.name
+
+      expect { unaccessionable_sample.accession }.to raise_error(AccessionService::AccessionServiceError) do |error|
+        expect(error.message).to eq(
+          "Accessionable is invalid for sample '#{sample_name}': " \
+          'Sample does not have the required metadata: sample-taxon-id.'
+        )
+      end
+    end
+
     it 'will not proceed if accessioning for the study is disabled' do
       allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
       accessionable_sample.ena_study.enforce_accessioning = false
@@ -74,11 +85,38 @@ RSpec.describe Sample, :accession, :cardinal do
       expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
     end
 
-    it 'will not add an accession number if it fails' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      accessionable_sample.save!
+    context 'when accessioning fails' do
+      before do
+        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+      end
 
-      expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      it 'will not add an accession number' do
+        accessionable_sample.save!
+
+        expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      end
+
+      it 'will log an error' do
+        allow(Rails.logger).to receive(:error).and_call_original
+        accessionable_sample.accession
+
+        expect(Rails.logger).to have_received(:error).with(
+          "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
+          'EBI failed to update accession number, data may be invalid'
+        )
+      end
+
+      it 'will send an exception notification' do
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        accessionable_sample.accession
+
+        expect(ExceptionNotifier).to have_received(:notify_exception).with(
+          instance_of(AccessionService::AccessionServiceError),
+          data: { cause_message: 'EBI failed to update accession number, data may be invalid',
+                  sample_name: accessionable_sample.name, # 'Sample1'
+                  service_provider: 'ENA' }
+        )
+      end
     end
   end
 
