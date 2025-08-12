@@ -62,7 +62,7 @@ module Api
       #
       # @return [String, nil] The name of the target purpose, or `nil` if no target purpose is set.
       # e.g. 'Tag Plate'
-      def target_purpose_name
+      def qcable_name
         target_purpose&.name
       end
 
