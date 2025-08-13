@@ -30,15 +30,6 @@ Rails.application.config.scrna_config = {
   desired_number_of_runs: 2,
   # Volume taken for cell counting in microlitres
   volume_taken_for_cell_counting: 10.0,
-  # Full allowance table, keyed on numbers of samples with values for number of cells per chip well
-  full_allowance_table: {
-    5 => 26_250,
-    6 => 37_500,
-    7 => 48_750,
-    8 => 60_000,
-    9 => 71_250,
-    10 => 82_500
-  },
   # Key for the required number of cells metadata stored on Study (in poly_metadata)
   study_required_number_of_cells_per_sample_in_pool_key: 'scrna_core_pbmc_donor_pooling_required_number_of_cells',
   # Default viability threshold when passing/failing samples (in percent)
