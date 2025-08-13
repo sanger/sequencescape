@@ -12,4 +12,9 @@ RSpec.describe Api::V2::StudyResource, type: :resource do
     expect(resource).to have_attribute :name
     expect(resource).to have_attribute :uuid
   end
+
+  it { is_expected.to filter :uuid }
+  it { is_expected.to filter :state }
+  it { is_expected.to filter :name }
+  it { is_expected.to filter :user }
 end
