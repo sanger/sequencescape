@@ -9,7 +9,7 @@
     <tbody>
       <% @sample.compound_samples.each do |sample| %>
         <tr>
-          <td><%= link_to "Sample #{sample.id}" %>:<%= sample.name||'un-named' %></td>
+          <td><%= link_to "Sample #{sample.id}" %> <%= sample.name || 'Un-named' %></td>
         </tr>
       <% end %>
     </tbody>
