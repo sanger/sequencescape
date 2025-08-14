@@ -227,6 +227,13 @@ en:
           The number of samples with the same donor ID must be less than or equal to the requested number of pools.
           However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
           The samples with the same donor ID follow: %{barcodes_or_well_locations}.
+        # Validation: Ensures that all values in a specific column are unique and non-zero,
+        # grouped by study and project.
+        # `study_name` and `project_name` refer to the respective fields from the spreadsheet.
+        # `column_header` is the name of the column as it appears in the spreadsheet.
+        unique_and_non_zero_values: >
+          Invalid values for column %{column_header} for the study %{study_name} and the project %{project_name}.
+          All rows for a specific study and project must have the same non-zero value.
       warnings:
         # Validation: There is not enough material for two repeat pooling attempts
         # study_name and project_name are the values of respective fields from the spreadsheet.

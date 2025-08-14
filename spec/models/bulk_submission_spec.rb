@@ -425,8 +425,8 @@ describe BulkSubmission, with: :uploader do
       it 'raises an error and sets an error message' do
         expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
-          "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
-          "and Project name 'Test project', all rows for a specific study and project must have the same value"
+          'Invalid values for column scrna core number of pools for the study  ' \
+          "and the project . All rows for a specific study and project must have the same non-zero value.\n"
         )
       end
     end
