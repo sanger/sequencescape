@@ -16,12 +16,12 @@ class NpgActions::AssetsController < ApplicationController
   rescue_from(ActiveRecord::RecordNotFound, with: :rescue_error)
   rescue_from(NPGActionInvalid, ActionController::ParameterMissing, with: :rescue_error_bad_request)
 
-  # POST /npg_actions/assets/:asset_id/pass
+  # POST /npg_actions/assets/:asset_id/fail
   def fail
     action_for_qc_state('fail')
   end
 
-  # POST /npg_actions/assets/:asset_id/fail
+  # POST /npg_actions/assets/:asset_id/pass
   def pass
     action_for_qc_state('pass')
   end
