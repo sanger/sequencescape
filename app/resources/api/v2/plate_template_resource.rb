@@ -4,6 +4,8 @@ module Api
   module V2
     # @todo Is this resource required? It fails when fetching any plate templates. Gatekeeper may need this
     # resource in the future when switched to SS API v2, but it is not currently used in the API.
+    # @note It is used in the Lot Resource in the template_name method. However, probably is part of the
+    # chunk of Gatekeeper functionality that is not used and can be deprecated. See Y24-185.
     #
     # Provides a JSON:API representation of {PlateTemplate}.
     #
@@ -34,6 +36,10 @@ module Api
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The UUID of the plate template.
       attribute :uuid, readonly: true
+
+      # @!attribute [r] name
+      #   @return [String] The name of the plate template.
+      attribute :name, readonly: true
     end
   end
 end

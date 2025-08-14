@@ -8,14 +8,13 @@ RSpec.describe Api::V2::LotResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:lot) }
 
-  # Test attributes
-  it 'has attributes', :aggregate_failures do
-    expect(resource).to have_attribute :uuid
-    expect(resource).to have_attribute :lot_number
+  # Test attributes and relationships
+  it 'has attributes and relationships', :aggregate_failures do
+    expect(resource).to have_readonly_attribute :uuid
+    expect(resource).to have_readonly_attribute :lot_type_name
+    expect(resource).to have_readonly_attribute :template_name
 
-    expect(resource).not_to have_updatable_field(:id)
-    expect(resource).not_to have_updatable_field(:uuid)
-    expect(resource).not_to have_updatable_field(:lot_number)
+    expect(resource).to have_write_once_attribute :lot_number
 
     expect(resource).to have_a_writable_has_one(:lot_type).with_class_name('LotType')
     expect(resource).to have_a_writable_has_one(:tag_layout_template).with_class_name('TagLayoutTemplate')
