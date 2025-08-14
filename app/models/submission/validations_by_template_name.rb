@@ -46,9 +46,11 @@ module Submission::ValidationsByTemplateName
     case submission_template_name
     # this validation is for the scRNA pipeline cDNA submission
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
-      validate_consistent_column_value(HEADER_NUMBER_OF_POOLS)
-      validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
-      validate_scrna_core_cdna_prep_feasibility
+      validate_consistent_column_value(HEADER_NUMBER_OF_POOLS, check_zero: true)
+      if errors.empty?
+        validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
+        validate_scrna_core_cdna_prep_feasibility
+      end
     end
   end
 
@@ -66,17 +68,23 @@ module Submission::ValidationsByTemplateName
   # Validates that the specified column is consistent for all rows with the same study and project name.
   #
   # This method groups the rows in the CSV data by the study name and project name, and checks if the specified column
-  # has the same value for all rows within each group. If inconsistencies are found, an error is
-  # added to the errors collection.
+  # has the same value for all rows within each group. If `check_zero` is true, it also ensures that the value
+  # is not zero.
+  # If inconsistencies or zero values are found (depending on the check), an error is added to the errors collection.
   #
   # @param column_header [String] The header of the column to validate.
+  # @param check_zero [Boolean] Whether to also validate that the value is not zero. Defaults to false.
   # @return [void]
-  def validate_consistent_column_value(column_header)
+  def validate_consistent_column_value(column_header, check_zero: false)
     index_of_column = headers.index(column_header)
     grouped_rows = group_rows_by_study_and_project
 
     grouped_rows.each do |study_project, rows|
-      validate_unique_values(study_project, rows, index_of_column, column_header)
+      if check_zero
+        validate_unique_and_non_zero_values(study_project, rows, index_of_column, column_header)
+      else
+        validate_unique_values(study_project, rows, index_of_column, column_header)
+      end
     end
   end
 
@@ -93,14 +101,50 @@ module Submission::ValidationsByTemplateName
   # @param column_header [String] The header of the column to validate.
   # @return [void]
   def validate_unique_values(study_project, rows, index_of_column, column_header)
-    unique_values = rows.pluck(index_of_column).uniq
-    return unless unique_values.size > 1
+    return unless unique_column_values(rows, index_of_column).size > 1
 
     errors.add(
       :spreadsheet,
       "Inconsistent values for column '#{column_header}' for Study name '#{study_project[0]}' and Project name " \
       "'#{study_project[1]}', all rows for a specific study and project must have the same value"
     )
+  end
+
+  #
+  # Validates if the values in the given column are both unique and non-zero across all rows belonging
+  # to the same study and project. If multiple unique values are found or if the only value is zero, an error
+  # is added to the spreadsheet errors.
+  #
+  # @param study_project [Array<String>] A tuple containing the study name and project name.
+  # @param rows [Array<Array>] The collection of spreadsheet rows for the specified study and project.
+  # @param index_of_column [Integer] The index of the column to validate.
+  # @param column_header [String] The name of the column being validated, used in the error message.
+  # @return [void]
+  def validate_unique_and_non_zero_values(study_project, rows, index_of_column, column_header)
+    # If there are multiple unique values or any zero present, it's invalid
+    unique_values = unique_column_values(rows, index_of_column)
+    return unless unique_values.size > 1 || unique_values.first.to_i.zero?
+
+    errors.add(
+      :spreadsheet,
+      I18n.t(
+        'errors.unique_and_non_zero_values',
+        study_name: study_project[0],
+        project_name: study_project[1],
+        column_header: column_header,
+        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
+      )
+    )
+  end
+
+  # Extracts and returns the unique values from a specified column in the given set of rows.
+  #
+  # @param rows [Array<Array>] A 2D array where each sub-array represents a row of values.
+  # @param index_of_column [Integer] The index of the column to extract values from.
+  # @return [Array] An array of unique values found in the specified column.
+  def unique_column_values(rows, index_of_column)
+    values = rows.pluck(index_of_column)
+    values.uniq
   end
 
   # Finds the tubes using the provided barcodes.
