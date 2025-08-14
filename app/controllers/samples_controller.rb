@@ -20,6 +20,7 @@ class SamplesController < ApplicationController
   def show
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
+    @page_name = @sample.name
 
     respond_to do |format|
       format.html

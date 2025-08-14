@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
   # Error handling endpoints
   get '/404', to: 'errors#not_found'
-  get '/500', to: 'errors#internal_server'
+  get '/500', to: 'errors#internal_server_error'
   get '/503', to: 'errors#service_unavailable'
 
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
