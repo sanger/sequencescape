@@ -34,7 +34,9 @@
 
 <div class="columnize">
   <%= render partial: 'summary', locals: { sample: @sample } %>
-  <%= render partial: 'component_samples', locals: { sample: @sample } %>
+  <% if @sample.component_samples.any? %>
+    <%= render partial: 'component_samples', locals: { sample: @sample } %>
+  <% end %>
   <%= render partial: 'studies', locals: { sample: @sample, studies: @studies } %>
   <%= render partial: 'receptacles', locals: { sample: @sample } %>
   <%= render partial: 'asset_groups', locals: { sample: @sample } %>
