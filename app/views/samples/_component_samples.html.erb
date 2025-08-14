@@ -1,0 +1,17 @@
+<%= panel do %>
+  <h3>Component Samples <%= counter_badge @sample.component_samples.length %></h3>
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @sample.component_samples.each do |sample| %>
+        <tr>
+          <td><%= link_to "Sample #{sample.id}", sample_path(sample) %> <%= sample.name|| 'Un-named' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
