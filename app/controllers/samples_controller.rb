@@ -148,7 +148,14 @@ class SamplesController < ApplicationController
 
   # rubocop:todo Metrics/MethodLength
   def accession # rubocop:todo Metrics/AbcSize
+    # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
+
+    # Flag set in the deployment project to allow per-environment enabling of accessioning
+    unless configatron.accession_samples
+      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    end
+
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
 
