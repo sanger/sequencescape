@@ -40,6 +40,10 @@ module Api
       #   @return [String] The lot type name.
       attribute :name, write_once: true
 
+      # @!attribute [r] template_class
+      #   The class of the template associated with this lot type.
+      attribute :template_class, read_only: true
+
       # @!attribute [rw] template_type
       #   The type of template associated with this lot type. This is derived dynamically based on the internal
       #   class name of the template.
