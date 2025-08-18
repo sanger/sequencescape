@@ -27,51 +27,49 @@
     </tbody>
   </table>
 
-<%# --- Pagination links --- %>
-<div class="pagination" style="margin-top: 1rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.3rem;">
-  <% total_pages = (sample.component_samples.count.to_f / per_page).ceil %>
-  <% window_size = 5 %>
-  <% start_page = [page - 2, 1].max %>
-  <% end_page = [start_page + window_size - 1, total_pages].min %>
-  <% start_page = [end_page - window_size + 1, 1].max %>
+  <%# --- Pagination links --- %>
+  <div class="pagination" style="margin-top: 1rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.3rem;">
+    <% total_pages = (sample.component_samples.count.to_f / per_page).ceil %>
+    <% window_size = 5 %>
+    <% start_page = [page - 2, 1].max %>
+    <% end_page = [start_page + window_size - 1, total_pages].min %>
+    <% start_page = [end_page - window_size + 1, 1].max %>
 
-  <%# Previous link %>
-  <% if page > 1 %>
-    <%= link_to "←", params.merge(page: page - 1),
-          style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
-  <% end %>
-
-  <%# Sliding page number links %>
-  <% (start_page..end_page).each do |p| %>
-    <% if p == page %>
-      <span style="padding: 0.4rem 0.9rem; border: 1px solid #333; border-radius: 6px; background: #333; color: #fff;"><%= p %></span>
-    <% else %>
-      <%= link_to p, params.merge(page: p),
+    <%# Previous link %>
+    <% if page > 1 %>
+      <%= link_to "←", params.merge(page: page - 1),
             style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
     <% end %>
-  <% end %>
 
-  <%# Next link %>
-  <% if page < total_pages %>
-    <%= link_to "→", params.merge(page: page + 1),
-          style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
-  <% end %>
-
-  <%# Jump to page box with clickable first and last page %>
-  <form method="get" style="display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; margin-left: 1rem;">
-    <% params.except(:page).each do |k,v| %>
-      <input type="hidden" name="<%= k %>" value="<%= v %>">
+    <%# Sliding page number links %>
+    <% (start_page..end_page).each do |p| %>
+      <% if p == page %>
+        <span style="padding: 0.4rem 0.9rem; border: 1px solid #333; border-radius: 6px; background: #333; color: #fff;"><%= p %></span>
+      <% else %>
+        <%= link_to p, params.merge(page: p),
+              style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+      <% end %>
     <% end %>
-    <span>Jump to page:</span>
-    <input type="number" name="page" min="1" max="<%= total_pages %>" value="<%= page %>" 
-           style="width: 60px; padding: 0.3rem; border-radius: 6px; border: 1px solid #ccc;">
 
-  <span>of <%= total_pages %><span>
+    <%# Next link %>
+    <% if page < total_pages %>
+      <%= link_to "→", params.merge(page: page + 1),
+            style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+    <% end %>
 
-    <button type="submit" style="padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; background: #f9f9f9;">Go</button>
-  </form>
-</div>
+    <%# Jump to page box with clickable first and last page %>
+    <form method="get" style="display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; margin-left: 1rem;">
+      <% params.except(:page).each do |k,v| %>
+        <input type="hidden" name="<%= k %>" value="<%= v %>">
+      <% end %>
+      <span>Jump to page:</span>
+      <input type="number" name="page" min="1" max="<%= total_pages %>" value="<%= page %>" 
+            style="width: 60px; padding: 0.3rem; border-radius: 6px; border: 1px solid #ccc;">
 
+    <span>of <%= total_pages %><span>
 
+      <button type="submit" style="padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; background: #f9f9f9;">Go</button>
+    </form>
+  </div>
 <% end %>
 <%  %>
