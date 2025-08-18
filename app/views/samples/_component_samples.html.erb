@@ -37,7 +37,7 @@
 
   <%# Previous link %>
   <% if page > 1 %>
-    <%= link_to "← Previous", params.merge(page: page - 1),
+    <%= link_to "←", params.merge(page: page - 1),
           style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
   <% end %>
 
@@ -53,7 +53,7 @@
 
   <%# Next link %>
   <% if page < total_pages %>
-    <%= link_to "Next →", params.merge(page: page + 1),
+    <%= link_to "→", params.merge(page: page + 1),
           style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
   <% end %>
 
