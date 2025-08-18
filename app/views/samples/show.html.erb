@@ -9,10 +9,10 @@
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
 <% end %>
 <% if can? :release, @sample %>
-  <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) }, { confirm: "Do you want to flag this sample for public release?" }   -%>
+  <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) } -%>
 <% end %>
 <% if can? :accession, @sample %>
-  <% add :menu, { @sample.accession_number? ? "Update Sample Data for Accessioning" : "Generate Accession Number" => url_for({controller: 'samples', action: 'accession', id: @sample.id}) }, { confirm: "Do you want to request an accession for this sample?" }  -%>
+  <% add :menu, { @sample.accession_number? ? "Update Sample Data for Accessioning" : "Generate Accession Number" => url_for({controller: 'samples', action: 'accession', id: @sample.id}) } -%>
 <% end %>
 
 <% if @sample.accession_number? %>
