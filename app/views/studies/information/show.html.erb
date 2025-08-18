@@ -29,7 +29,9 @@
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
 <% if can? :accession, @study %>
-  <% add :menu, @study.accession_number? ? "Update Study Data for Accessioning" : "Generate Accession Number" => url_for(controller: '/studies', action: 'accession', id: @study.id) -%>
+  <% add :menu,
+    @study.accession_number? ? "Update Study Data for Accessioning" : "Generate Accession Number" =>
+     (configatron.accession_samples ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
   <% add :menu, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
   <% add :menu, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
 <% end -%>
@@ -47,7 +49,7 @@
 <% add :menu, "QC Reports" => qc_reports_path -%>
 <% add :menu, "Study QC Reports" => study_reports_study_path(@study) -%>
 
-<% add :menu, "Accession all Samples" => accession_all_samples_study_path(@study) -%>
+<% add :menu, "Accession all Samples" => configatron.accession_samples ? accession_all_samples_study_path(@study) : 'disabled' -%>
 
 <% add :legend_option, icon('fas', 'hourglass-start', 'Pending') => "" -%>
 <% add :legend_option, icon('fas', 'cog', 'Started') => "" -%>
