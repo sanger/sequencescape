@@ -1,0 +1,7 @@
+UPF Cherrypicked:
+  type: PlatePurpose::Input
+  stock_plate: true
+  default_state: passed
+  cherrypickable_target: true
+  target_type: Plate
+  size: 96
