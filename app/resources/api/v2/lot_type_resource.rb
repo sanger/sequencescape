@@ -42,7 +42,7 @@ module Api
 
       # @!attribute [r] template_class
       #   The class of the template associated with this lot type.
-      attribute :template_class, read_only: true
+      attribute :template_class, readonly: true
 
       # @!attribute [rw] template_type
       #   The type of template associated with this lot type. This is derived dynamically based on the internal
@@ -53,14 +53,14 @@ module Api
 
       # @!attribute [r] qcable_name
       #   The name of the QCable associated with this lot type.
-      attribute :qcable_name, read_only: true
+      attribute :qcable_name, readonly: true
 
       # @!attribute [r] printer_type
       #   The type of printer used for this lot type.
       #   This is retrieved from the LotType model.
       #   @return [String] The printer type.
       #   e.g. '96 Well Plate'
-      attribute :printer_type, read_only: true
+      attribute :printer_type, readonly: true
 
       ###
       # Getters and Setters

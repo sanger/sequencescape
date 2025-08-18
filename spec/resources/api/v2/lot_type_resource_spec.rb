@@ -14,11 +14,13 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
     expect(resource).to have_attribute :uuid
     expect(resource).to have_attribute :name
     expect(resource).to have_attribute :template_type
+    expect(resource).to have_readonly_attribute(:template_class)
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)
     expect(resource).not_to have_updatable_field(:name)
     expect(resource).not_to have_updatable_field(:template_type)
     expect(resource).to have_a_write_once_has_one(:target_purpose).with_class_name('Purpose')
+
   end
 
   # Custom method tests

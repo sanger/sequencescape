@@ -88,7 +88,7 @@ module Api
       #     used in the scRNA Core pipeline, it is specified at the Study-Project
       #     level: it will have the same value for all Requests that share the
       #     same Study and Project.
-      attribute :allowance_band, read_only: true
+      attribute :allowance_band, readonly: true
     end
   end
 end
