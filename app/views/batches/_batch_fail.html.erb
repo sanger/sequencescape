@@ -64,9 +64,16 @@
                 <% end %>
               <% end -%>
             <% else -%>
-              <td colspan='<%=  request_actions.length %>'>
-                <%= badge('failed') %>
-              </td>
+              <% request_actions.each_with_index do |action, index| %>
+                  <% if index == 0 %>
+                    <td colspan='<%=  request_actions.length %>'>
+                      <%= badge('failed') %>
+                    </td>
+                <% else %>
+<!--                  This is just to ensure that the datatable has same number of headers and data columns-->
+                  <td></td>
+                 <% end%>
+              <% end %>
             <% end -%>
           </tr>
         <% end -%>
