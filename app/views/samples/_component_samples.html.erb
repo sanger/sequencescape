@@ -57,7 +57,7 @@
           style: "padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
   <% end %>
 
-  <%# Jump to page box with first and last page numbers %>
+  <%# Jump to page box with clickable first and last page %>
   <form method="get" style="display: flex; gap: 0.3rem; flex-wrap: wrap; align-items: center; margin-left: 1rem;">
     <% params.except(:page).each do |k,v| %>
       <input type="hidden" name="<%= k %>" value="<%= v %>">
@@ -65,10 +65,19 @@
     <span>Jump to page:</span>
     <input type="number" name="page" min="1" max="<%= total_pages %>" value="<%= page %>" 
            style="width: 60px; padding: 0.3rem; border-radius: 6px; border: 1px solid #ccc;">
-    <span>of 1 - <%= total_pages %></span>
+
+    <span>
+      <%= link_to "1", params.merge(page: 1),
+            style: "margin: 0 0.2rem; padding: 0.3rem 0.6rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+      -
+      <%= link_to total_pages, params.merge(page: total_pages),
+            style: "margin: 0 0.2rem; padding: 0.3rem 0.6rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+    </span>
+
     <button type="submit" style="padding: 0.3rem 0.6rem; border-radius: 6px; border: 1px solid #ccc; background: #f9f9f9;">Go</button>
   </form>
 </div>
+
 
 <% end %>
 <%  %>
