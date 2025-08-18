@@ -27,7 +27,6 @@
     </tbody>
   </table>
 
-  <%# --- Extracted pagination styling --- %>
   <style>
     .pagination {
       margin-top: 1rem;
@@ -112,7 +111,6 @@
       <% params.except(:page).each do |k, v| %>
         <input type="hidden" name="<%= k %>" value="<%= v %>">
       <% end %>
-      <span>Jump to page:</span>
       <input type="number" name="page" min="1" max="<%= total_pages %>" value="<%= page %>" class="page-input">
       <span>of <%= total_pages %></span>
       <button type="submit" class="go-btn">Go</button>
