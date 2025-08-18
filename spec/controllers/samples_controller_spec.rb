@@ -106,4 +106,22 @@ RSpec.describe SamplesController do
       end
     end
   end
+
+  describe '#accession' do
+    context 'when accessioning is disabled' do
+      before do
+        get :accession,
+            params: { id: sample.id },
+            session: { user: current_user.id }
+      end
+
+      it 'redirects to the sample page' do
+        expect(response).to redirect_to(sample_path(sample.id))
+      end
+
+      it 'displays an error message indicating accessioning is not enabled' do
+        expect(flash[:error]).to eq('Accessioning Service Failed: Accessioning is not enabled in this environment.')
+      end
+    end
+  end
 end
