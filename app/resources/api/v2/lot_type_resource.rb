@@ -84,6 +84,17 @@ module Api
       #   @todo This resource is immutable; Update relationship to be read-only.
       #   @return [PurposeResource] The associated purpose of this lot type.
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
+
+      ###
+      # Filters
+      ###
+
+      # @!method active
+      #   Filter to return only active lot types.
+      #   This filter allows users to specify if only active lot types should be returned.
+      #   @example Using the filter: `GET /api/v2/lot_types?active=true`
+      #   @return [Boolean] Whether the lot type is active or not.
+      filter :active, default: true
     end
   end
 end
