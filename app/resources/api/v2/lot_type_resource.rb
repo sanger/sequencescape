@@ -51,6 +51,13 @@ module Api
       #   The name of the QCable associated with this lot type.
       attribute :qcable_name, read_only: true
 
+      # @!attribute [r] printer_type
+      #   The type of printer used for this lot type.
+      #   This is retrieved from the LotType model.
+      #   @return [String] The printer type.
+      #   e.g. '96 Well Plate'
+      attribute :printer_type, read_only: true
+
       ###
       # Getters and Setters
       ###
