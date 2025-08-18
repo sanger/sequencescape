@@ -1,5 +1,14 @@
 <%= panel do %>
-  <h3>Component Samples <%= counter_badge @sample.component_samples.length %></h3>
+  <h3>
+    Component Samples <%= counter_badge sample.component_samples.count %>
+  </h3>
+
+  <% page     = (params[:page] || 1).to_i %>
+  <% per_page = 25 %>
+  <% offset   = (page - 1) * per_page %>
+
+  <% paginated_samples = sample.component_samples[offset, per_page] || [] %>
+
   <table width='100%'>
     <thead>
       <tr>
@@ -7,11 +16,32 @@
       </tr>
     </thead>
     <tbody>
-      <% @sample.component_samples.each do |sample| %>
+      <% paginated_samples.each do |cs| %>
         <tr>
-          <td><%= link_to "Sample #{sample.id}", sample_path(sample) %> <%= sample.name || 'Un-named' %></td>
+          <td>
+            <%= link_to "Sample #{cs.id}", sample_path(cs) %>
+            <%= cs.name || 'Un-named' %>
+          </td>
         </tr>
       <% end %>
     </tbody>
   </table>
+
+  <%# --- Pagination links --- %>
+  <div class="pagination">
+    <% total_pages = (sample.component_samples.count.to_f / per_page).ceil %>
+
+      <div style="margin-top: 1rem; text-align: center;">
+        <% if page > 1 %>
+          <%= link_to "← Previous", params.merge(page: page - 1),
+                style: "margin: 0 0.5rem; padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+        <% end %>
+
+        <% if page < total_pages %>
+          <%= link_to "Next →", params.merge(page: page + 1),
+                style: "margin: 0 0.5rem; padding: 0.4rem 0.9rem; border: 1px solid #ccc; border-radius: 6px; text-decoration: none; background: #f9f9f9; color: #333;" %>
+        <% end %>
+      </div>
+  </div>
 <% end %>
+<%  %>
