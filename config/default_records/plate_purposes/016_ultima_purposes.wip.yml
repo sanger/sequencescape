@@ -1,3 +1,5 @@
+---
+# 96 well input plates
 UPF Cherrypicked:
   type: PlatePurpose::Input
   stock_plate: true
