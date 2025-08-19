@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe StudiesController do
+  include MockAccession
+
   let(:data_release_study_type) { create(:data_release_study_type, name: 'genomic sequencing') }
   let(:reference_genome) { create(:reference_genome) }
   let(:study) { create(:study) }
@@ -92,6 +94,77 @@ RSpec.describe StudiesController do
     it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
       expect(subject).to respond_with :ok
       expect(subject).to set_flash.now.to('Role added')
+    end
+  end
+
+  describe '#accession' do
+    let(:study_metadata) { create(:study_metadata) }
+    let(:study) { create(:open_study, study_metadata: create(:study_metadata_for_accessioning)) }
+
+    context 'when accessioning is enabled', :accessioning_enabled do
+      before do
+        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
+
+        get :accession, params: { id: study.id }
+      end
+
+      it 'does not raise an error' do
+        expect { study.reload }.not_to raise_error
+      end
+
+      it 'retrieves an accession number' do
+        expect(study.reload.ebi_accession_number).to be_present
+      end
+
+      it 'displays a success message' do
+        expect(flash[:notice]).to eq('Accession number generated: EGA00002000345')
+      end
+
+      it 'does not display an warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'does not display an error message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'redirects to the study page' do
+        expect(response).to redirect_to(study_path(study.id))
+      end
+    end
+
+    context 'when accessioning is disabled' do
+      before do
+        get :accession, params: { id: study.id }
+      end
+
+      it 'does not raise an error' do
+        expect { study.reload }.not_to raise_error
+      end
+
+      it 'does not retrieve an accession number' do
+        expect(study.reload.ebi_accession_number).to be_nil
+      end
+
+      it 'does not display an info message' do
+        expect(flash[:info]).to be_nil
+      end
+
+      it 'does not display an notice message' do
+        expect(flash[:notice]).to be_nil
+      end
+
+      it 'does not display an warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'displays an error message' do
+        expect(flash[:error]).to eq('Accessioning is not enabled in this environment.')
+      end
+
+      it 'redirects to the study page' do
+        expect(response).to redirect_to(edit_study_path(study.id))
+      end
     end
   end
 

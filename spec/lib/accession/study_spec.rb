@@ -13,7 +13,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
 
   before do
     Delayed::Worker.delay_jobs = false
-    allow(Accession::Request).to receive(:post).and_return(build(:successful_accession_response))
+    allow(Accession::Request).to receive(:post).and_return(build(:successful_sample_accession_response))
   end
 
   after do

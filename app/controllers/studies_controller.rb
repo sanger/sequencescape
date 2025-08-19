@@ -224,7 +224,7 @@ class StudiesController < ApplicationController
     flash[:warning] = e.message || 'An accession number is not required for this study'
     redirect_to(study_path(@study))
   rescue AccessionService::NumberNotGenerated => e
-    flash[:warning] = 'No accession number was generated'
+    flash[:warning] = "No accession number was generated: #{e.message}"
     redirect_to(study_path(@study))
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
