@@ -9,14 +9,21 @@
 # This is the insects in ethanol plate for the start of the Lysate pipeline
 # It is the original source plate that has come in from the suppliers around the UK.
 LILYS-96 Stock:
-  type: PlatePurpose::Input
+  input_plate: true
   stock_plate: true
   cherrypickable_target: false
-# This is the lysed material plate, ready for the Library prep pipeline. These plates
-# are either prepared by the faculty team manually, or are created on the Beckman robot
-# from the LILYS-96 Stock parent.
-# These plates include controls.
+# This is the lysed material plate, ready for the Library prep pipeline.
+# This version of the Lysate plate is created on the Beckman robot from
+# the LILYS-96 Stock parent.
+# These plates include 2 added controls.
 LBSN-96 Lysate:
-  type: PlatePurpose::AdditionalInput
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false
+# This is the lysed material plate, ready for the Library prep pipeline.
+# This version of the Lysate plate is created by the faculty team manually,
+# and input via manifest.
+LBSN-96 Lysate Input:
+  input_plate: true
   stock_plate: true
   cherrypickable_target: false
