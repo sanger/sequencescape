@@ -28,12 +28,4 @@ class UltimaSequencingRequest < SequencingRequest
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
   delegate :ot_recipe, to: :request_metadata
-
-  # class UltimaRequestOptionsValidator < DelegateValidation::Validator
-  #   delegate :ot_recipe, to: :target
-  # end
-
-  # def self.delegate_validator
-  #   UltimaSequencingRequest::UltimaRequestOptionsValidator
-  # end
 end
