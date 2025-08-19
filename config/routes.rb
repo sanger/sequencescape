@@ -61,6 +61,7 @@ Rails.application.routes.draw do
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
+      jsonapi_resources :qcable_creators, except: %i[update]
       jsonapi_resources :racked_tubes
       jsonapi_resources :receptacles
       jsonapi_resources :request_metadata
@@ -232,7 +233,6 @@ Rails.application.routes.draw do
   get 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
 
   get 'samples/accession/:id' => 'samples#accession'
-  get 'samples/accession/show/:id' => 'samples#show_accession'
   get 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
 
   resources :studies do

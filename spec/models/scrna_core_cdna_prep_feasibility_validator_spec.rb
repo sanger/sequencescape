@@ -709,4 +709,48 @@ RSpec.describe BulkSubmission, with: :uploader do
       # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
   end
+
+  describe '#validate_unique_and_non_zero_values?' do
+    context 'when the number of pools is zero in any study-project group' do
+      let(:group_1_number_of_pools) { 0 }
+      let(:group_2_number_of_pools) { 1 }
+      let(:group_3_number_of_pools) { 1 }
+
+      it 'raises a RecordInvalid error' do
+        expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'adds the error message' do
+        expect do
+          bulk_submission.process
+        rescue ActiveRecord::RecordInvalid
+          # expected to display error message
+        end.to change { bulk_submission.errors[:spreadsheet] }
+          .to include(I18n.t('errors.unique_and_non_zero_values', scope: i18n_scope, study_name: 'Study 1',
+                                                                  project_name: 'Project 1',
+                                                                  column_header: 'scrna core number of pools'))
+      end
+    end
+
+    context 'when the cell per chip well is zero in any study-project group' do
+      let(:group_1_cells_per_chip_well) { 90_000 }
+      let(:group_2_cells_per_chip_well) { 0 }
+      let(:group_3_cells_per_chip_well) { 90_000 }
+
+      it 'raises a RecordInvalid error' do
+        expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'adds the error message' do
+        expect do
+          bulk_submission.process
+        rescue ActiveRecord::RecordInvalid
+          # expected to display error message
+        end.to change { bulk_submission.errors[:spreadsheet] }
+          .to include(I18n.t('errors.unique_and_non_zero_values', scope: i18n_scope, study_name: 'Study 2',
+                                                                  project_name: 'Project 2',
+                                                                  column_header: 'scrna core cells per chip well'))
+      end
+    end
+  end
 end
