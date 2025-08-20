@@ -44,7 +44,7 @@ PhiX Concentration (pM):
   name: PhiX Concentration (pM)
   task: Loading
   workflow: Element Aviti
-  kind: Date
+  kind: Text
   required: false
   sorter: 6
 PhiX %:
