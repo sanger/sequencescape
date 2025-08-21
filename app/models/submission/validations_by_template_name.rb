@@ -48,7 +48,7 @@ module Submission::ValidationsByTemplateName
     when SCRNA_CORE_CDNA_PREP_GEM_X_5P
       validate_consistent_column_value(HEADER_NUMBER_OF_POOLS, check_zero: true)
       if errors.empty?
-        validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL)
+        validate_consistent_column_value(HEADER_CELLS_PER_CHIP_WELL, check_zero: true)
         validate_scrna_core_cdna_prep_feasibility
       end
     end

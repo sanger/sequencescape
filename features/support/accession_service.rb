@@ -21,6 +21,10 @@ class FakeAccessionService
   def self.install_hooks(target, tags) # rubocop:todo Metrics/AbcSize
     target.instance_eval do
       Before(tags) do |_scenario|
+        # Enable accessioning
+        @accessioning_enabled_initially = configatron.accession_samples
+        configatron.accession_samples = true
+
         # Set up our evesdropper
         AccessionService.rest_client_class = EvesdropResource
 
@@ -48,6 +52,9 @@ class FakeAccessionService
 
         # Remove the evesdropper
         AccessionService.rest_client_class = RestClient::Resource
+
+        # Revert accessioning
+        configatron.accession_samples = @accession_samples_initially
       end
     end
   end

@@ -147,11 +147,11 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   # It feels like we should be able to do this with just includes and order, but oddly this causes more disruption
   # downstream
-  scope :in_column_major_order, -> { joins(:map).order('column_order ASC').select_table.select('column_order') }
-  scope :in_row_major_order, -> { joins(:map).order('row_order ASC').select_table.select('row_order') }
+  scope :in_column_major_order, -> { joins(:map).order(:column_order).select_table.select('column_order') }
+  scope :in_row_major_order, -> { joins(:map).order(:row_order).select_table.select('row_order') }
   scope :in_inverse_column_major_order,
-        -> { joins(:map).order('column_order DESC').select_table.select('column_order') }
-  scope :in_inverse_row_major_order, -> { joins(:map).order('row_order DESC').select_table.select('row_order') }
+        -> { joins(:map).order(column_order: :desc).select_table.select('column_order') }
+  scope :in_inverse_row_major_order, -> { joins(:map).order(row_order: :desc).select_table.select('row_order') }
   scope :in_plate_column,
         ->(col, size) do
           joins(:map).where(maps: { description: Map::Coordinate.descriptions_for_column(col, size), asset_size: size })
@@ -285,7 +285,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   def update_gender_markers!(gender_markers, resource) # rubocop:todo Metrics/AbcSize
     if well_attribute.gender_markers == gender_markers
-      gender_marker_event = events.where(family: 'update_gender_markers').order('id desc').first
+      gender_marker_event = events.where(family: 'update_gender_markers').order(id: :desc).first
       if gender_marker_event.blank?
         events.update_gender_markers!(resource)
       elsif resource == 'SNP' && gender_marker_event.content != resource

@@ -47,5 +47,11 @@ FactoryBot.define do
     factory :study_metadata_for_study_list_remove_x_and_autosomes do
       remove_x_and_autosomes { 'Yes' }
     end
+
+    factory :study_metadata_for_accessioning do
+      study_study_title { 'A New Study' }
+      study_abstract { 'A long time ago in a galaxy far, far away...' }
+      study_type
+    end
   end
 end
