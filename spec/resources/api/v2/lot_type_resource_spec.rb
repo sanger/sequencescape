@@ -14,6 +14,9 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
     expect(resource).to have_attribute :uuid
     expect(resource).to have_attribute :name
     expect(resource).to have_attribute :template_type
+    expect(resource).to have_readonly_attribute(:template_class)
+    expect(resource).to have_readonly_attribute(:qcable_name)
+    expect(resource).to have_readonly_attribute(:printer_type)
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)
     expect(resource).not_to have_updatable_field(:name)
@@ -44,4 +47,7 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
       it { is_expected.to eq 'tag2_layout_template' }
     end
   end
+
+  # Filters
+  it { is_expected.to filter(:active) }
 end
