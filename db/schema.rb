@@ -637,6 +637,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_18_131035) do
     t.integer "target_purpose_id", null: false
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
+    t.boolean "active", default: true
     t.index ["target_purpose_id"], name: "fk_lot_types_to_plate_purposes"
   end
 

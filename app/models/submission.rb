@@ -74,7 +74,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         end
 
-  scope :latest_first, -> { order('id DESC') }
+  scope :latest_first, -> { order(id: :desc) }
 
   scope :for_search_query, ->(query) { where(name: query) }
 

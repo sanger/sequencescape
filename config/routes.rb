@@ -233,7 +233,6 @@ Rails.application.routes.draw do
   get 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
 
   get 'samples/accession/:id' => 'samples#accession'
-  get 'samples/accession/show/:id' => 'samples#show_accession'
   get 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
 
   resources :studies do

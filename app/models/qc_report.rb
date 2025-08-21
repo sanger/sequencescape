@@ -133,7 +133,7 @@ class QcReport < ApplicationRecord
 
   after_create :schedule_report
 
-  scope :for_report_page, ->(conditions) { order('id desc').where(conditions).joins(:product_criteria) }
+  scope :for_report_page, ->(conditions) { order(id: :desc).where(conditions).joins(:product_criteria) }
 
   validates :product_criteria, :study, :state, presence: true
 

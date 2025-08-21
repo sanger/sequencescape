@@ -40,6 +40,10 @@ module Api
       #   @return [String] The lot type name.
       attribute :name, write_once: true
 
+      # @!attribute [r] template_class
+      #   The class of the template associated with this lot type.
+      attribute :template_class, readonly: true
+
       # @!attribute [rw] template_type
       #   The type of template associated with this lot type. This is derived dynamically based on the internal
       #   class name of the template.
@@ -49,7 +53,14 @@ module Api
 
       # @!attribute [r] qcable_name
       #   The name of the QCable associated with this lot type.
-      attribute :qcable_name, read_only: true
+      attribute :qcable_name, readonly: true
+
+      # @!attribute [r] printer_type
+      #   The type of printer used for this lot type.
+      #   This is retrieved from the LotType model.
+      #   @return [String] The printer type.
+      #   e.g. '96 Well Plate'
+      attribute :printer_type, readonly: true
 
       ###
       # Getters and Setters
@@ -84,6 +95,17 @@ module Api
       #   @todo This resource is immutable; Update relationship to be read-only.
       #   @return [PurposeResource] The associated purpose of this lot type.
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
+
+      ###
+      # Filters
+      ###
+
+      # @!method active
+      #   Filter to return only active lot types.
+      #   This filter allows users to specify if only active lot types should be returned.
+      #   @example Using the filter: `GET /api/v2/lot_types?active=true`
+      #   @return [Boolean] Whether the lot type is active or not.
+      filter :active, default: true
     end
   end
 end
