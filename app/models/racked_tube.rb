@@ -9,5 +9,5 @@ class RackedTube < ApplicationRecord
 
   # TODO: This sort will fail and will perform an alphanumeric sort, returning
   # eg. A1, A10, A11, A12, A2 ...
-  scope :in_column_major_order, -> { order('coordinate ASC') }
+  scope :in_column_major_order, -> { order(:coordinate) }
 end

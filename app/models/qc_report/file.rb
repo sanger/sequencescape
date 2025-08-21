@@ -66,7 +66,9 @@ class QcReport::File
 
   # The report to which the file corresponds
   def qc_report
-    @qc_report ||= QcReport.find_by(report_identifier:)
+    return @qc_report if defined?(@qc_report)
+
+    @qc_report = QcReport.find_by(report_identifier:)
   end
 
   # A hash of the header section

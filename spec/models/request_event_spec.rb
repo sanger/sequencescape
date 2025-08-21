@@ -38,7 +38,7 @@ describe RequestEvent do
       end
 
       it 'sets a current_to stamp on old events' do
-        old_event = request.request_events.order('id ASC').first
+        old_event = request.request_events.order(:id).first
         expect(old_event.current_to.present?).to be true
         new_event = request.current_request_event
         expect(new_event.current_to.nil?).to be true
