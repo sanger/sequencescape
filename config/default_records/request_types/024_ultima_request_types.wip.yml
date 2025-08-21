@@ -8,8 +8,8 @@ ultima_sequencing:
   product_line_name: Ultima
   request_class_name: UltimaSequencingRequest
   request_purpose: standard
-limber_ultima_pcr_free_bespoke:
-  name: Limber Ultima PCR Free Bespoke
+limber_ultima_htp_pcr_free_bespoke:
+  name: Limber Ultima HTP PCR Free Bespoke
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   asset_type: Well
