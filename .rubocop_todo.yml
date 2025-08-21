@@ -1435,30 +1435,6 @@ Rails/NegateInclude:
   Exclude:
     - 'app/controllers/admin/studies_controller.rb'
 
-# Offense count: 28
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/OrderArguments:
-  Exclude:
-    - 'app/controllers/plates_controller.rb'
-    - 'app/controllers/plates_from_tubes_controller.rb'
-    - 'app/controllers/quad_stamp_controller.rb'
-    - 'app/controllers/requests/comments_controller.rb'
-    - 'app/models/asset.rb'
-    - 'app/models/map.rb'
-    - 'app/models/qc_metric.rb'
-    - 'app/models/qc_report.rb'
-    - 'app/models/racked_tube.rb'
-    - 'app/models/request.rb'
-    - 'app/models/study.rb'
-    - 'app/models/submission.rb'
-    - 'app/models/tag.rb'
-    - 'app/models/tag_group.rb'
-    - 'app/models/task.rb'
-    - 'app/models/well.rb'
-    - 'app/models/workflow.rb'
-    - 'spec/models/request_event_spec.rb'
-    - 'test/unit/qc_report_file_test.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Include.
