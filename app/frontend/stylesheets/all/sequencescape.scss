@@ -1386,6 +1386,7 @@ section {
 
 .unspecified {
   @extend .text-muted;
+  @extend .text-lowercase;
 
   // Add [ ] before and after the text
   &:before {
