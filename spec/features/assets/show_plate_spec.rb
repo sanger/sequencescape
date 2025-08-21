@@ -11,7 +11,7 @@ describe 'Show plate', :js do
       plate # has been created
     end
 
-    it 'shows the samples table shows empty wells' do
+    it 'shows the samples table with empty wells' do
       login_user user
       visit labware_path(plate)
       expect(fetch_table('#plate-samples-table')).to eq(
