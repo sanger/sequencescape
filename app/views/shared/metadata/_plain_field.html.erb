@@ -2,6 +2,6 @@
 <table width="100%" cellspacing="0" cellpadding="0" class="property_group_<%= group.blank? ? 'general' : group %>">
   <tr>
     <td class="item" width="40%"><%= (sections.label) %>:</td>
-    <td class="<%= "text-muted" if value.blank?%>" width="60%"><%= h(value.blank? ? sections.unspecified : value) %></td>
+    <td class="<%= "unspecified" if value.blank?%>" width="60%"><%= h(value.blank? ? sections.unspecified : value) %></td>
   </tr>
 </table>
