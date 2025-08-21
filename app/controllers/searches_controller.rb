@@ -5,6 +5,7 @@ class SearchesController < ApplicationController
   before_action :evil_parameter_hack!
   include Informatics::Globals
   include SearchBehaviour
+
   alias index search
 
   private

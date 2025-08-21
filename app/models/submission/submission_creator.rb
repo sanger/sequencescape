@@ -83,7 +83,9 @@ class Submission::SubmissionCreator < Submission::PresenterSkeleton # rubocop:to
   end
 
   def project
-    @project ||= Project.find_by(name: @project_name)
+    return @project if defined?(@project)
+
+    @project = Project.find_by(name: @project_name)
   end
 
   # Creates a new submission and adds an initial order on the submission using

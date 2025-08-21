@@ -60,10 +60,14 @@ class UatActions::GenerateTagPlates < UatActions
   end
 
   def lot_type
-    @lot_type ||= LotType.find_by(name: lot_type_name)
+    return @lot_type if defined?(@lot_type)
+
+    @lot_type = LotType.find_by(name: lot_type_name)
   end
 
   def tag_layout_template
-    @tag_layout_template ||= TagLayoutTemplate.find_by(name: tag_layout_template_name)
+    return @tag_layout_template if defined?(@tag_layout_template)
+
+    @tag_layout_template = TagLayoutTemplate.find_by(name: tag_layout_template_name)
   end
 end

@@ -4,6 +4,7 @@
 # @see Labware
 class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLength
   include RetentionInstructionHelper
+
   before_action :discover_asset, only: %i[show edit update summary print_assets print history retention_instruction]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -30,6 +31,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   def show
+    @page_name = @asset.display_name
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html { @aliquots = @asset.aliquots.include_summary.paginate(page: params[:page], per_page: 384) }
@@ -125,6 +127,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def show_plate
     @asset = Plate.find(params[:id])
+    @page_name = @asset.display_name
   end
 
   def lookup # rubocop:todo Metrics/AbcSize, Metrics/MethodLength

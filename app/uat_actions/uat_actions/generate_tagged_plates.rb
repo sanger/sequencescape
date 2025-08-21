@@ -84,7 +84,9 @@ class UatActions::GenerateTaggedPlates < UatActions::GeneratePlates
   end
 
   def tag_group
-    @tag_group ||= TagGroup.find_by(name: tag_group_name)
+    return @tag_group if defined?(@tag_group)
+
+    @tag_group = TagGroup.find_by(name: tag_group_name)
   end
 
   def tag2_group

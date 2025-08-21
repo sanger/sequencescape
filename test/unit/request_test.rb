@@ -4,6 +4,7 @@ require 'test_helper'
 
 class RequestTest < ActiveSupport::TestCase
   include AASM
+
   context 'A Request' do
     should belong_to :user
     should belong_to(:request_type).required

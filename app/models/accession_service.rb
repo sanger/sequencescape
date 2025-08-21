@@ -33,7 +33,10 @@ class AccessionService
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
 
+  # Define custom error classes for the AccessionService
   AccessionServiceError = Class.new(StandardError)
+  AccessioningDisabledError = Class.new(AccessionServiceError)
+  AccessionValidationFailed = Class.new(AccessionServiceError)
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
 
@@ -89,7 +92,7 @@ class AccessionService
           )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
-          raise AccessionServiceError, "EBI Server Error. Couldn't get accession number: #{xml_result}"
+          raise AccessionServiceError, "EBI Server Error. Could not get accession number: #{xml_result}"
         end
 
         xmldoc = Document.new(xml_result)
@@ -120,8 +123,12 @@ class AccessionService
           raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
+          current_error = errors.first
+          message = "Current error is: '#{current_error}'"
+          more_messages = "There are #{errors.length - 1} more errors." if errors.many?
           raise AccessionServiceError,
-                "Could not get accession number. Error in submitted data: #{$!} #{errors.map { |e| "\n  - #{e}" }}"
+                ['Could not get accession number. Error in submitted data:', $!.to_s, message,
+                 more_messages].compact.join(' ')
         else
           raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
         end
@@ -142,6 +149,11 @@ class AccessionService
 
   def submit_study_for_user(study, user)
     raise NumberNotRequired, 'An accession number is not required for this study' unless study.accession_required?
+
+    # Flag set in the deployment project to allow per-environment enabling of accessioning
+    unless configatron.accession_samples
+      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    end
 
     # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]

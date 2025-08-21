@@ -69,6 +69,7 @@ class Core::Endpoint::Base
     # @abstract Sub-classed automatically for each model endpoint, and effectively acts as a controller.
     class Handler < Core::Endpoint::BasicHandler
       include Core::Endpoint::BasicHandler::Paged
+
       standard_action(:read)
 
       private
