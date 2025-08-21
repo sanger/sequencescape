@@ -8,8 +8,8 @@ FactoryBot.define do
 
     initialize_with { new(response) }
 
-    factory :successful_accession_response do
-      response { MockAccession.successful_accession_response }
+    factory :successful_sample_accession_response do
+      response { MockAccession.successful_sample_accession_response }
     end
 
     factory :failed_accession_response do

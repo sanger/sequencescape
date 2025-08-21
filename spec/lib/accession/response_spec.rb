@@ -29,7 +29,7 @@ RSpec.describe Accession::Response, :accession, type: :model do
   end
 
   it 'has an accession number if accessioning has been successful' do
-    response = described_class.new(successful_accession_response)
+    response = described_class.new(successful_sample_accession_response)
     expect(response).to be_accessioned
     expect(response.accession_number).to eq('EGA00001000240')
     expect(response.errors).not_to be_present

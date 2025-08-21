@@ -74,7 +74,8 @@ RSpec.describe Accession::Request, :accession, type: :model do
 
     it 'returns a successful response if accessioning is successful' do
       request = described_class.new(submission)
-      allow(request.resource).to receive(:post).with(submission.payload.files).and_return(successful_accession_response)
+      allow(request.resource).to receive(:post).with(submission.payload.files)
+        .and_return(successful_sample_accession_response)
 
       expect(request.post).to be_accessioned
     end
