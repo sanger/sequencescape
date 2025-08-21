@@ -1,5 +1,5 @@
 ---
-UPF EqVol Pool:
+UPF EqVol Norm:
   # Even though this is Ultima, not Illumina, the MX tube has the same behaviour
   type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube

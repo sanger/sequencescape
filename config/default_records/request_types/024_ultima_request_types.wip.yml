@@ -1,6 +1,6 @@
 ---
-limber_ultima_htp_pcr_free_bespoke:
-  name: Limber Ultima HTP PCR Free Bespoke
+limber_ultima_htp_pcr_free:
+  name: Limber Ultima HTP PCR Free
   order: 1
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   asset_type: Well
@@ -11,14 +11,14 @@ limber_ultima_htp_pcr_free_bespoke:
     - UPF Cherrypicked
   library_types:
     - Ultima High Throughput PCR Free 96
-limber_multiplexing_ultima_htp_pcr_free:
-  name: Limber Multiplexing Ultima HTP PCR Free
+limber_multiplexing_ultima:
+  name: Limber Multiplexing Ultima
   asset_type: Well
   order: 2
   request_class_name: Request::Multiplexing
   for_multiplexing: true
   product_line_name: Ultima
-  target_purpose_name: UPF EqVol Pool
+  target_purpose_name: UPF EqVol Norm
 ultima_sequencing:
   name: Ultima sequencing
   asset_type: LibraryTube
