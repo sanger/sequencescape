@@ -1294,23 +1294,6 @@ Rails/FilePath:
     - 'test/unit/import_fluidigm_data_test.rb'
     - 'test/unit/qc_report_file_test.rb'
 
-# Offense count: 15
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Rails/FindByOrAssignmentMemoization:
-  Exclude:
-    - 'app/models/qc_report/file.rb'
-    - 'app/models/sample_manifest.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'app/sample_manifest_excel/sample_manifest_excel/upload/row.rb'
-    - 'app/sequencescape_excel/sequencescape_excel/specialised_field/reference_genome.rb'
-    - 'app/sequencescape_excel/sequencescape_excel/specialised_field/tag2_index.rb'
-    - 'app/sequencescape_excel/sequencescape_excel/specialised_field/tag_index.rb'
-    - 'app/uat_actions/uat_actions/generate_primer_panel.rb'
-    - 'app/uat_actions/uat_actions/generate_tag_group.rb'
-    - 'app/uat_actions/uat_actions/generate_tag_layout_template.rb'
-    - 'app/uat_actions/uat_actions/generate_tag_plates.rb'
-    - 'app/uat_actions/uat_actions/generate_tagged_plates.rb'
-
 # Offense count: 124
 # Configuration parameters: Include.
 # Include: **/app/models/**/*.rb

@@ -182,7 +182,9 @@ module SampleManifestExcel
       private
 
       def manifest_asset
-        @manifest_asset ||= cache.find_by(sanger_sample_id:)
+        return @manifest_asset if defined?(@manifest_asset)
+
+        @manifest_asset = cache.find_by(sanger_sample_id:)
       end
 
       def sanger_sample_id_exists?
