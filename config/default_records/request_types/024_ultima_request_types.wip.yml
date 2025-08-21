@@ -10,7 +10,7 @@ limber_ultima_htp_pcr_free_bespoke:
   acceptable_purposes:
     - UPF Cherrypicked
   library_types:
-    - Ultima High Throughput PCR Free
+    - Ultima High Throughput PCR Free 96
 limber_multiplexing_ultima_htp_pcr_free:
   name: Limber Multiplexing Ultima HTP PCR Free
   asset_type: Well
