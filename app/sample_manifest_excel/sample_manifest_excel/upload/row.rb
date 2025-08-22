@@ -159,7 +159,7 @@ module SampleManifestExcel
 
         # check the columns exist, are valid, and at least one of the primary column options are present
         unless columns.present? && columns.valid? &&
-            (primary_column_names.any? { |column_name| columns.names.include? column_name })
+            primary_column_names.any? { |column_name| columns.names.include? column_name }
           return true
         end
 
@@ -182,7 +182,9 @@ module SampleManifestExcel
       private
 
       def manifest_asset
-        @manifest_asset ||= cache.find_by(sanger_sample_id:)
+        return @manifest_asset if defined?(@manifest_asset)
+
+        @manifest_asset = cache.find_by(sanger_sample_id:)
       end
 
       def sanger_sample_id_exists?

@@ -35,7 +35,7 @@ class QcMetric < ApplicationRecord
   scope :stock_metric,
         -> { joins(qc_report: :product_criteria).where(product_criteria: { stage: ProductCriteria::STAGE_STOCK }) }
 
-  scope :most_recent_first, -> { order('created_at DESC, id DESC') }
+  scope :most_recent_first, -> { order(created_at: :desc, id: :desc) }
 
   before_save :update_aliquot_quality
 

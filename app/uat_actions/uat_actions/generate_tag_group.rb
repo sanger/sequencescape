@@ -90,7 +90,9 @@ class UatActions::GenerateTagGroup < UatActions
   # Any helper methods
 
   def existing_tag_group
-    @tag_group ||= TagGroup.find_by(name:)
+    return @tag_group if defined?(@tag_group)
+
+    @tag_group = TagGroup.find_by(name:)
   end
 
   #

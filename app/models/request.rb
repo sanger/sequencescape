@@ -251,7 +251,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :without_asset, -> { where('asset_id is null') }
   scope :without_target, -> { where('target_asset_id is null') }
   scope :excluding_states, ->(states) { where.not(state: states) }
-  scope :ordered, -> { order('id ASC') }
+  scope :ordered, -> { order(:id) }
 
   # NOTE: These scopes use preload due to a limitation in the way rails handles custom selects with eager loading
   # https://github.com/rails/rails/issues/15185

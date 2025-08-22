@@ -72,16 +72,21 @@ class UatActions::GenerateTagLayoutTemplate < UatActions
   end
 
   def existing_tag_layout_template
-    @existing_tag_layout_template ||= TagLayoutTemplate.find_by(name:)
+    return @existing_tag_layout_template if defined?(@existing_tag_layout_template)
+
+    @existing_tag_layout_template = TagLayoutTemplate.find_by(name:)
   end
 
   def tag_group
-    @tag_group ||= TagGroup.find_by(name: tag_group_name)
+    return @tag_group if defined?(@tag_group)
+
+    @tag_group = TagGroup.find_by(name: tag_group_name)
   end
 
   def tag2_group
     return nil if tag2_group_name.blank?
+    return @tag2_group if defined?(@tag2_group)
 
-    @tag2_group ||= TagGroup.find_by(name: tag2_group_name)
+    @tag2_group = TagGroup.find_by(name: tag2_group_name)
   end
 end

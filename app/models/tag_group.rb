@@ -5,7 +5,7 @@ class TagGroup < ApplicationRecord
   include Uuid::Uuidable
   include SharedBehaviour::Named
 
-  has_many :tags, -> { order('map_id ASC') } # rubocop:todo Rails/HasManyOrHasOneDependent
+  has_many :tags, -> { order(:map_id) } # rubocop:todo Rails/HasManyOrHasOneDependent
   belongs_to :adapter_type, class_name: 'TagGroup::AdapterType', optional: true
 
   scope :include_tags, -> { includes(:tags) }

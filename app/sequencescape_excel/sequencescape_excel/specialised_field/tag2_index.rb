@@ -25,11 +25,12 @@ module SequencescapeExcel
       private
 
       def tag
-        @tag ||=
-          ::Tag
-            .where.not(tag_group_id: nil)
-            .where.not(map_id: nil)
-            .find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value)
+        return @tag if defined?(@tag)
+
+        @tag = ::Tag
+          .where.not(tag_group_id: nil)
+          .where.not(map_id: nil)
+          .find_by(tag_group_id: sf_tag2_group.tag2_group_id, map_id: value)
       end
 
       # check the index exists within the group exists here, check the group/index combination later

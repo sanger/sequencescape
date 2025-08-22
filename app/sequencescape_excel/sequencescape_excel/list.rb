@@ -172,7 +172,7 @@ module SequencescapeExcel
     private
 
     def create_list
-      list_model.new(*(keys.collect { |_k| {} }))
+      list_model.new(*keys.collect { |_k| {} })
     end
   end
 end

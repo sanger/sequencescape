@@ -73,7 +73,7 @@ class Asset < ApplicationRecord
   scope :include_requests_as_target, -> { includes(:requests_as_target) }
   scope :include_requests_as_source, -> { includes(:requests_as_source) }
 
-  scope :sorted, -> { order('map_id ASC') }
+  scope :sorted, -> { order(:map_id) }
 
   scope :recent_first, -> { order(id: :desc) }
 

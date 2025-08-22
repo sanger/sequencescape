@@ -264,10 +264,10 @@ class Map < ApplicationRecord
     map.description
   end
 
-  scope :in_row_major_order, -> { order('row_order ASC') }
-  scope :in_reverse_row_major_order, -> { order('row_order DESC') }
-  scope :in_column_major_order, -> { order('column_order ASC') }
-  scope :in_reverse_column_major_order, -> { order('column_order DESC') }
+  scope :in_row_major_order, -> { order(:row_order) }
+  scope :in_reverse_row_major_order, -> { order(row_order: :desc) }
+  scope :in_column_major_order, -> { order(:column_order) }
+  scope :in_reverse_column_major_order, -> { order(column_order: :desc) }
 
   class << self
     # Walking in column major order goes by the columns: A1, B1, C1, ... A2, B2, ...

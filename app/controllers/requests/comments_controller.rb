@@ -4,7 +4,7 @@ class Requests::CommentsController < ApplicationController
 
   def index
     commentables = [@request, @request.asset, @request.asset&.labware].compact
-    @comments = Comment.where(commentable: commentables).order('created_at ASC')
+    @comments = Comment.where(commentable: commentables).order(:created_at)
     if request.xhr?
       render partial: 'simple_list', locals: { descriptions: @comments.pluck(:description) }
     else

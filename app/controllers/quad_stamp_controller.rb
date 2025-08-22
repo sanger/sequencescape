@@ -47,16 +47,16 @@ class QuadStampController < ApplicationController
   # Selects the appropriate plate purposes for the user to choose from.
   # In this case they must be 384-well stock plates.
   def set_plate_purposes
-    @plate_purposes = Purpose.order(:name).where(size: 384, stock_plate: true).order('name asc')
+    @plate_purposes = Purpose.order(:name).where(size: 384, stock_plate: true).order(:name)
   end
 
   # Selects barcode printers for the user to choose from.
   # Attempts to first get 384-well label specific printers (384-well plates take narrow 6mm labels)
   def set_barcode_printers
     @barcode_printers =
-      BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order('name asc')
+      BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType384DoublePlate.all).order(:name)
     if @barcode_printers.blank?
-      @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order('name asc')
+      @barcode_printers = BarcodePrinter.where(barcode_printer_type_id: BarcodePrinterType96Plate.all).order(:name)
     end
   end
 

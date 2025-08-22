@@ -8,6 +8,7 @@
 
 import $ from "jquery";
 import { cssSelectors, defaults } from "./config";
+import DataTable from "datatables.net-bs4";
 
 const extractIds = (dataTable) =>
   dataTable
@@ -43,9 +44,10 @@ const saveButton = {
   },
   text: "Save",
 };
+
 $(function () {
-  // Batches page, allows re-ordering
-  $(cssSelectors.BatchEditConfig).DataTable({
+  const tableElement = document.querySelector(cssSelectors.BatchEditConfig);
+  new DataTable(tableElement, {
     ...defaults,
     rowReorder: { selector: "tr" },
     order: [[0, "asc"]],
@@ -54,6 +56,10 @@ $(function () {
       { orderable: true, className: "reorder", targets: 0 },
       { orderable: false, targets: "_all" },
     ],
-    buttons: [saveButton],
+    layout: {
+      bottom: {
+        buttons: [saveButton],
+      },
+    },
   });
 });

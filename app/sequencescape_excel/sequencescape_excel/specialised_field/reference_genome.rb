@@ -17,7 +17,9 @@ module SequencescapeExcel
       end
 
       def reference_genome
-        @reference_genome ||= ::ReferenceGenome.find_by(name: value)
+        return @reference_genome if defined?(@reference_genome)
+
+        @reference_genome = ::ReferenceGenome.find_by(name: value)
       end
 
       private

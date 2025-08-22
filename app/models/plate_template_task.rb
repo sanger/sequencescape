@@ -36,7 +36,7 @@ class PlateTemplateTask < Task
     private
 
     def mapped_plate_wells
-      (Hash.new { |h, k| h[k] = {} }).tap do |parsed_plates|
+      Hash.new { |h, k| h[k] = {} }.tap do |parsed_plates|
         CSV.parse(csv_string, headers: :first_row) do |row|
           parse_spreadsheet_row(
             row['Request ID'],

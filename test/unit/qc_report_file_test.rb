@@ -98,7 +98,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'not adjust the qc_decision flag' do
         @qcr_file.process
-        assert_equal %w[passed failed], @report.qc_metrics.order('asset_id ASC').map(&:qc_decision)
+        assert_equal %w[passed failed], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
       teardown { @file.close unless @file.nil? }
