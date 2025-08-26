@@ -7,8 +7,9 @@ module Api
     #
     # @note Access this resource via the `/api/v2/qc_files/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
-    # @note Known issues:
-    #  - Occasionally, encoding failures may occur resulting in 500 Internal Server errors
+    # @note Known issue
+    #
+    #    Occasionally, encoding failures may occur resulting in 500 Internal Server errors
     #    mentioning `from ASCII-8BIT to UTF-8`. If this occurs, try re-requesting the resource
     #    without including the `contents` attribute, for example:
     #    `/api/v2/qc_files/1?fields[qc_files]=filename,uuid,created_at`
