@@ -4,7 +4,7 @@
 # part of taking a Batch through a Pipeline
 class Workflow < ApplicationRecord
   has_many :tasks,
-           lambda { order('sorted') },
+           lambda { order(:sorted) },
            dependent: :destroy,
            foreign_key: :pipeline_workflow_id,
            inverse_of: :workflow
