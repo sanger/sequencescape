@@ -96,9 +96,19 @@ module Api
       attribute :contents, write_once: true
       attr_writer :contents # Do not store the value on the model. It is stored by the CarrierWave gem via a Tempfile.
 
+      # Returns the file contents as UTF-8.
+      #
+      # Not all uploaded files contain encoding information, causing encoding errors on less-common characters.
+      # File encoding is detected using the CharlockHolmes gem and converted to UTF-8 where possible.
+      #
+      # See background at https://yehudakatz.com/2010/05/05/ruby-1-9-encodings-a-primer-and-the-solution-for-rails/
+      #
+      # @return [String] The contents of the QC file as a UTF-8 encoded string.
       def contents
         # The contents comes from the uploaded_data managed by CarrierWave.
-        @model.current_data
+        contents = @model.current_data
+        detection = CharlockHolmes::EncodingDetector.detect(contents)
+        CharlockHolmes::Converter.convert(contents, detection[:encoding], 'UTF-8')
       end
 
       # @!attribute [rw] filename
