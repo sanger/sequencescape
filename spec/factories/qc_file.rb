@@ -6,7 +6,7 @@ FactoryBot.define do
       filename { 'qc_file.csv' }
       contents { "A1,A2,A3\n1,2,3\n4,5,6\n" }
       tempfile do
-        Tempfile.new.tap do |file|
+        Tempfile.new(binmode: true).tap do |file|
           file.write(contents)
           file.rewind # Be polite, ensure the file pointer is at the beginning
         end
