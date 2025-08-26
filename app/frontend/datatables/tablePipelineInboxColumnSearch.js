@@ -1,5 +1,6 @@
 import $ from "jquery";
 import { cssSelectors, defaults } from "./config";
+import DataTable from "datatables.net-bs4";
 
 $(document).ready(function () {
   // This function extracts the text contents of the html provided
@@ -26,14 +27,13 @@ $(document).ready(function () {
     var select = $('<select><option value=""> No filter </option></select>')
       .appendTo($(column.footer()).empty())
       .on("change", function () {
-        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+        var val = $.fn.dataTable.util.escapeRegex($(this).val()); //sabrine legacy fn need s to be rep;aced , escapeRegex too
 
         column.search(val ? "^" + val + "$" : "", true, false).draw();
       });
     return select;
   }
-
-  $(cssSelectors.PipelineInboxConfig).DataTable({
+  new DataTable($(cssSelectors.PipelineInboxConfig), {
     ...defaults,
     initComplete: function () {
       this.api()
