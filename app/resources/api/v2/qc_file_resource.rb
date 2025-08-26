@@ -109,12 +109,8 @@ module Api
         contents = @model.current_data
         detection = CharlockHolmes::EncodingDetector.detect(contents)
 
-        # force to UTF-8, replacing invalid/undefined characters with '�'
-        if detection[:encoding].nil?
-          return contents
-              .force_encoding('ASCII-8BIT')
-              .encode('UTF-8', invalid: :replace, undef: :replace, replace: '�')
-        end
+        # if no encoding detected, return contents unchanged, but force UTF-8
+        return contents.force_encoding('UTF-8') if detection[:encoding].nil?
 
         CharlockHolmes::Converter.convert(contents, detection[:encoding], 'UTF-8')
       end
