@@ -21,6 +21,7 @@ class SamplesController < ApplicationController
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
     @page_name = @sample.name
+    @component_samples = @sample.component_samples.paginate({ page: params[:page], per_page: 25 })
 
     respond_to do |format|
       format.html
