@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'charlock_holmes'
+
 module Api
   module V2
     # Provides a JSON:API representation of {QcFile} which contains the QC data previously added to a piece of
