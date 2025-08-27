@@ -17,7 +17,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  def show
+  def show # rubocop:disable Metrics/AbcSize
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
     @page_name = @sample.name
