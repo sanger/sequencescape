@@ -45,6 +45,9 @@
               <td><%= link_to well.map.description, receptacle_path(well) %></td>
               <td>[Empty]</td>
               <td></td>
+              <% if @asset.plate_purpose.cherrypickable_target %>
+                <td></td>
+              <% end %>
               <td></td>
               <td></td>
               <td></td>
