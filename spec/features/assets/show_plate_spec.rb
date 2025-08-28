@@ -17,9 +17,9 @@ describe 'Show plate', :js do
       expect(fetch_table('#plate-samples-table')).to eq(
         [
           ['Well', 'Sample Name', 'Sanger Sample Id', 'Sample Supplier Name', 'Tag', 'Tag2', 'Control?'],
-          ['A1', '[Empty]', '', '', '', ''],
-          ['B1', '[Empty]', '', '', '', ''],
-          ['C1', '[Empty]', '', '', '', '']
+          ['A1', '[Empty]', '', '', '', '', ''],
+          ['B1', '[Empty]', '', '', '', '', ''],
+          ['C1', '[Empty]', '', '', '', '', '']
         ]
       )
     end
