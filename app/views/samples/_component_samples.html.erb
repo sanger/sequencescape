@@ -1,0 +1,28 @@
+<%= panel do %>
+  <h3>
+    Component Samples <%= counter_badge @component_samples.count %>
+  </h3>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @component_samples.each do |cs| %>
+        <tr>
+          <td>
+            <%= link_to "Sample #{cs.id}", sample_path(cs) %>
+            <%= cs.name || 'Un-named' %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 25px;">
+    <%= pagination @component_samples %>
+  </div>
+<% end %>
+<%  %>
