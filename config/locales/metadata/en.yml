@@ -76,6 +76,9 @@ en:
         percent_phix_requested:
           label: "% PhiX requested"
 
+        ot_recipe:
+          label: OT Recipe
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -99,6 +102,9 @@ en:
       <<: *REQUEST
 
     element_aviti_sequencing_request:
+      <<: *REQUEST
+
+    ultima_sequencing_request:
       <<: *REQUEST
 
     pulldown:
