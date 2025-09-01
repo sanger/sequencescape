@@ -4,13 +4,7 @@ FactoryBot.define do
   factory :qc_file, class: 'QcFile' do
     transient do
       filename { 'qc_file.csv' }
-      contents { "A1,A2,A3\n1,2,3\n4,5,6\n" }
-      tempfile do
-        Tempfile.new(binmode: true).tap do |file|
-          file.write(contents)
-          file.rewind # Be polite, ensure the file pointer is at the beginning
-        end
-      end
+      tempfile { Tempfile.new.tap { |file| file.write("A1,A2,A3\n1,2,3\n4,5,6\n") } }
     end
 
     uploaded_data { { tempfile:, filename: } }
