@@ -9,6 +9,21 @@ describe CompoundSampleHelper do
     let!(:component_samples) { create_list(:sample, 3) }
     let!(:aliquots) { create_list(:aliquot, 2) }
 
+    context 'when @source_aliquots is nil' do
+      before do
+        helper.instance_variable_set(:@source_aliquots, nil)
+      end
+
+      it 'creates a new compound sample without error' do
+        expect { helper.find_or_create_compound_sample(study, component_samples) }.to change(Sample, :count).by(1)
+      end
+
+      it 'does not assign a supplier name to the compound sample' do
+        result = helper.find_or_create_compound_sample(study, component_samples)
+        expect(result.supplier_name).to be_nil
+      end
+    end
+
     context 'when a compound sample does not exist' do
       before do
         helper.instance_variable_set(:@source_aliquots, aliquots)
