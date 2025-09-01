@@ -45,10 +45,10 @@ module AvitiSampleSheet::SampleSheetGenerator
     # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
     # Users can manually modify this section if necessary.
     PHIX_SECTION = [
-      %w[PhiX_Third ATGTCGCTAG CTAGCTCGTA],
-      %w[PhiX_Third CACAGATCGT ACGAGAGTCT],
-      %w[PhiX_Third GCACATAGTC GACTACTAGC],
-      %w[PhiX_Third TGTGTCGACA TGTCTGACAG]
+      ['PhiX_Third', 'ATGTCGCTAG', 'CTAGCTCGTA', '1+2', nil],
+      ['PhiX_Third', 'CACAGATCGT', 'ACGAGAGTCT', '1+2', nil],
+      ['PhiX_Third', 'GCACATAGTC', 'GACTACTAGC', '1+2', nil],
+      ['PhiX_Third', 'TGTGTCGACA', 'TGTCTGACAG', '1+2', nil]
     ].freeze
 
     def initialize(batch)

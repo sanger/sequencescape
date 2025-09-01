@@ -1394,3 +1394,16 @@ section {
   padding: 0 !important;
   width: auto !important;
 }
+
+.unspecified {
+  @extend .text-muted;
+  @extend .text-lowercase;
+
+  // Add [ ] before and after the text
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
+}

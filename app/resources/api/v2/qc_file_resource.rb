@@ -104,7 +104,8 @@ module Api
       # @return [String] The contents of the QC file.
       def contents
         # The contents comes from the uploaded_data managed by CarrierWave.
-        @model.current_data
+        contents = @model.current_data
+        JsonEncoder.convert_to_utf8(contents)
       end
 
       # @!attribute [rw] filename
