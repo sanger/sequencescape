@@ -36,10 +36,7 @@ group :default do
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
 
-  # File uploading and support
   gem 'carrierwave'
-  gem 'charlock_holmes'
-
   gem 'net-ldap'
 
   # Will paginate clashes awkwardly with bootstrap
