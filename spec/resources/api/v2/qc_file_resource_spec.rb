@@ -58,10 +58,10 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
 
     context 'when the contents are not encoded and contain invalid bytes' do
       let(:encoding) { 'ASCII-8BIT' }
-      let(:contents) { 'GIF87a this looks like a gif to Charlock Holmes ²'.b }
+      let(:contents) { 'GIF87a this looks like a gif ²'.b }
 
       it 'returns the string as is' do
-        expect(resource.contents).to eq("GIF87a this looks like a gif to Charlock Holmes \xC2\xB2")
+        expect(resource.contents).to eq("GIF87a this looks like a gif \xC2\xB2")
       end
 
       it 'returns the contents as a binary representation in UTF-8 for API usage' do

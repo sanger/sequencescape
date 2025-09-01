@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'charlock_holmes'
-
 module Api
   module V2
     # Provides a JSON:API representation of {QcFile} which contains the QC data previously added to a piece of
@@ -101,20 +99,12 @@ module Api
       # Returns the file contents as UTF-8.
       #
       # Not all uploaded files contain encoding information, causing encoding errors on less-common characters.
-      # File encoding is detected using the CharlockHolmes gem and converted to UTF-8 where possible.
-      #
       # See background at https://yehudakatz.com/2010/05/05/ruby-1-9-encodings-a-primer-and-the-solution-for-rails/
       #
-      # @return [String] The contents of the QC file as a UTF-8 encoded string.
+      # @return [String] The contents of the QC file.
       def contents
         # The contents comes from the uploaded_data managed by CarrierWave.
-        contents = @model.current_data
-        detection = CharlockHolmes::EncodingDetector.detect(contents)
-
-        # if no encoding detected, return contents unchanged, but force UTF-8
-        return contents.force_encoding('UTF-8') if detection[:encoding].nil?
-
-        CharlockHolmes::Converter.convert(contents, detection[:encoding], 'UTF-8')
+        @model.current_data
       end
 
       # @!attribute [rw] filename
