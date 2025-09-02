@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
 # Detect encodings of arbitrary strings for later conversion.
+#
+# This is a naive implementation that works by trying to encode the string
+# to UTF-8 using a list of known encodings, and scoring the results based
+# on the number of invalid characters and total length of the resulting string.
+# The shorter the resulting string, the more likely it is to be valid.
+# Invalid characters are penalised more heavily to avoid false positives and
+# assist with UTF-16 detection (which produces shorter strings).
 module EncodingDetector
   # A later encoding will ONLY be chosen IF it scores better than an earlier one
   ENCODINGS = %w[UTF-8 ISO-8859-1 UTF-16].freeze
@@ -9,9 +16,9 @@ module EncodingDetector
   INVALID_CHARACTER = '�'
 
   # Detect the encoding of the given content from the list of known encodings.
+  #
   # @param content [String] The string whose encoding is to be detected
   # @return [Hash] A hash containing the detected encoding and inverted_score level
-  # Note: This is a very naive implementation and will not cover all edge cases.
   def self.detect(content)
     best_guess = { inverted_score: MAX_SCORE, encoding: 'UNKNOWN' }
     ENCODINGS.each do |encoding|
@@ -52,6 +59,12 @@ module EncodingDetector
     { encoding:, inverted_score: }
   end
 
+  # Convert the given content to UTF-8, using the detected encoding if possible.
+  # If the encoding cannot be detected, invalid characters will be replaced with
+  # the unicode replacement character (�).
+  #
+  # @param content [String] The string to be converted to UTF-8
+  # @return [String] The content converted to UTF-8, with invalid characters replaced
   def self.convert_to_utf8(content)
     detection = detect(content)
     if detection[:inverted_score] < MAX_SCORE
