@@ -105,7 +105,7 @@ module Api
       def contents
         # The contents comes from the uploaded_data managed by CarrierWave.
         contents = @model.current_data
-        JsonEncoder.convert_to_utf8(contents)
+        EncodingDetector.convert_to_utf8(contents)
       end
 
       # @!attribute [rw] filename

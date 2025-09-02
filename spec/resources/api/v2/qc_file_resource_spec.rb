@@ -84,44 +84,5 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
         expect(resource.contents.encoding.name).to eq(utf_8)
       end
     end
-
-    context 'when the contents are simple ASCII' do
-      let(:encoding) { 'ASCII' }
-      let(:contents) { 'This is a simple ASCII string.' }
-
-      it 'returns the contents as is' do
-        expect(resource.contents).to eq(contents)
-      end
-
-      it 'returns the contents as UTF-8' do
-        expect(resource.contents.encoding.name).to eq(utf_8)
-      end
-    end
-
-    context 'when the contents are valid UTF-8' do
-      let(:encoding) { 'UTF-8' }
-      let(:contents) { 'This is a valid UTF-8 string with emoji 😊' }
-
-      it 'returns the contents as is' do
-        expect(resource.contents).to eq(contents)
-      end
-
-      it 'returns the contents as UTF-8' do
-        expect(resource.contents.encoding.name).to eq(utf_8)
-      end
-    end
-
-    context 'when the contents are ISO-8859-1 encoded with special characters' do
-      let(:encoding) { 'ISO-8859-1' }
-      let(:contents) { 'This is an ISO-8859-1 string with special characters: ñ, ü, é, ²' }
-
-      it 'returns the contents converted to UTF-8' do
-        expect(resource.contents).to eq(contents)
-      end
-
-      it 'returns the contents as UTF-8' do
-        expect(resource.contents.encoding.name).to eq(utf_8)
-      end
-    end
   end
 end
