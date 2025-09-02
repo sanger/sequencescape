@@ -1362,6 +1362,7 @@ Rails/HelperInstanceVariable:
   Exclude:
     - 'app/helpers/tag_substitution_helper.rb'
     - 'app/helpers/workflows_helper.rb'
+    - 'app/helpers/compound_sample_helper.rb'
 
 # Offense count: 19
 # This cop supports safe autocorrection (--autocorrect).
