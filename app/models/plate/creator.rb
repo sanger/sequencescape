@@ -149,18 +149,18 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
   # @param [Array<Plate>] created_plates The array to store the created plates information.
   # @return [void]
-  def create_plates_from_tubes!(tubes, created_plates, scanned_user, barcode_printer)
+  def create_plates_from_tubes!(tubes_map, created_plates, scanned_user, barcode_printer)
     plate_purpose = plate_purposes.first
     plate_barcode = PlateBarcode.create_barcode
-    tubes_dup = tubes.dup
     plate = create_plate(plate_purpose, plate_barcode)
     return if plate.blank?
 
-    duplicate_barcodes = process_tubes(tubes, plate)
-    print_labels(plate, plate_purpose, barcode_printer, scanned_user)
+    duplicate_barcodes = process_positional_tubes(tubes_map, plate)
+    # print_labels(plate, plate_purpose, barcode_printer, scanned_user)
     handle_duplicates(duplicate_barcodes)
 
-    created_plates << { source: tubes_dup, destinations: [plate] }
+    tubes = tubes_map.pluck(:tube)
+    created_plates << { source: tubes, destinations: [plate] }
   end
 
   def create_asset_group(created_plates) # rubocop:todo Metrics/MethodLength
@@ -202,6 +202,17 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
       tube = tubes.shift
       break if tube.nil?
 
+      well.aliquots << tube.aliquots.map(&:dup)
+      create_asset_link(tube, plate, duplicate_barcodes)
+    end
+    duplicate_barcodes
+  end
+
+  def process_positional_tubes(tubes_map, plate)
+    duplicate_barcodes = []
+    tubes_map.each do |tm|
+      well = plate.wells.find { |well| well.map_description == tm[:position] }
+      tube = tm[:tube]
       well.aliquots << tube.aliquots.map(&:dup)
       create_asset_link(tube, plate, duplicate_barcodes)
     end

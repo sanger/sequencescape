@@ -56,7 +56,7 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def find_duplicate_tubes(tube_barcodes)
-    tube_barcodes.group_by { |e| e }.select { |_, v| v.size > 1 }.keys
+    tube_barcodes.group_by { |tb| tb[:barcode] }.select { |_, v| v.size > 1 }.keys
   end
 
   def set_plate_creators
@@ -172,7 +172,7 @@ class PlatesFromTubesController < ApplicationController
   # @param tubes [Array<Tube>] the collection of tube objects to check
   # @return [Boolean] true if all tubes have samples, false otherwise
   def validate_tubes_with_samples?(tubes)
-    empty_tubes = tubes.select { |tube| tube.samples.empty? }
+    empty_tubes = tubes.select { |tube| tube[:tube].samples.empty? }
     return true if empty_tubes.empty?
 
     respond_to do |format|
@@ -205,24 +205,36 @@ class PlatesFromTubesController < ApplicationController
   #
   # @return [Array<String>] An array of source tube barcodes.
   def extract_source_tube_barcodes
-    params[:plates_from_tubes][:source_tubes]&.split(/[\s,]+/)&.map(&:strip) || []
+    # Split tubes by each line. We want to preserve empty lines to ensure we keep the positions intact even if blank
+    tubes = params[:plates_from_tubes][:source_tubes]&.split("\r\n")
+    return [] if tubes.nil?
+
+    # Convert tubes to array of position and barcode
+    tubes.each_with_index.filter_map do |barcode, idx|
+      row = ('A'.ord + (idx / 12)).chr
+      col = (idx % 12) + 1
+      barcode = barcode.strip
+      next if barcode.empty?
+
+      { position: "#{row}#{col}", barcode: barcode }
+    end
   end
 
-  # Finds tubes based on the provided barcodes and stores them in found_tubes.
+  # Finds tubes based on the provided barcodes and stores them in tubes_map.
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [void]
   def find_tubes(source_tube_barcodes)
-    found_tubes = []
+    tubes_map = []
     source_tube_barcodes.each do |tube_barcode|
-      tube = Tube.find_by_barcode(tube_barcode)
+      tube = Tube.find_by_barcode(tube_barcode[:barcode])
       if tube.nil?
         flash[:error] = "Tube with barcode #{tube_barcode} not found"
         break
       end
-      found_tubes << tube
+      tubes_map << { position: tube_barcode[:position], tube: tube }
     end
-    found_tubes
+    tubes_map
   end
 
   # Creates plates from the found tubes and stores them in @created_plates.
@@ -231,12 +243,12 @@ class PlatesFromTubesController < ApplicationController
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
   # @return [void]
-  def create_plates(scanned_user, barcode_printer, found_tubes)
+  def create_plates(scanned_user, barcode_printer, tubes_map)
     @created_plates = []
     @asset_groups = []
     ActiveRecord::Base.transaction do
       @plate_creator.each do |creator|
-        creator.create_plates_from_tubes!(found_tubes.dup, @created_plates, scanned_user, barcode_printer)
+        creator.create_plates_from_tubes!(tubes_map.dup, @created_plates, scanned_user, barcode_printer)
       end
     end
     return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
