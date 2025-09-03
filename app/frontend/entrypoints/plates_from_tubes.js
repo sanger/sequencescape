@@ -79,25 +79,20 @@ $(() => {
     theme: "eclipse", // Set the editor theme
   });
 
-  // CodeMirror does not have a built-in way to limit the number of lines,
-  // so we enforce a maximum of 96 lines (for an 8x12 plate) manually.
-  // const enforceMaxLines = function(cm, change) {
-  //   // 95 as max, because 8 rows of 12 = 96 plate, but we start counting at 0
-  //   var maxLength = 95;
-  //   if (maxLength && change.update) {
-  //       var str = change.text.join("\n");
-  //       var delta = str.length-(cm.indexFromPos(change.to) - cm.indexFromPos(change.from));
-  //       if (delta <= 0) { return true; }
-  //       delta = cm.getValue().length+delta-maxLength;
-  //       if (delta > 0) {
-  //           str = str.substr(0, str.length-delta);
-  //           change.update(change.from, change.to, str.split("\n"));
-  //       }
-  //   }
-  //   return true;
-  // }
+  /**
+   * Event listener for beforeChange in the CodeMirror editor.
+   * Prevents adding more than 96 lines (8 rows x 12 columns) for a 96 well plate.
+   */
+  editor.on("beforeChange", function (instance, change) {
+    const addedLines = change.text.length - 1;
+    const currentLines = instance.lineCount();
+    const MAX_LINES = 96; // Maximum lines for a 96 well plate
 
-  // editor.on("beforeChange", enforceMaxLines);
+    if (currentLines + addedLines > MAX_LINES) {
+      // Prevent the change if it would exceed 5 lines
+      change.cancel();
+    }
+  });
 
   /**
    * Event listener for changes in the CodeMirror editor.

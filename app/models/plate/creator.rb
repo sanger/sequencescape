@@ -197,22 +197,13 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def process_tubes(tubes, plate)
-    duplicate_barcodes = []
-    plate.wells_in_column_order.each do |well|
-      tube = tubes.shift
-      break if tube.nil?
-
-      well.aliquots << tube.aliquots.map(&:dup)
-      create_asset_link(tube, plate, duplicate_barcodes)
-    end
-    duplicate_barcodes
-  end
-
   def process_positional_tubes(tubes_map, plate)
     duplicate_barcodes = []
     tubes_map.each do |tm|
       well = plate.wells.find { |well| well.map_description == tm[:position] }
+
+      fail_with_error("Tube position #{tm[:position]} is not valid") if well.blank?
+
       tube = tm[:tube]
       well.aliquots << tube.aliquots.map(&:dup)
       create_asset_link(tube, plate, duplicate_barcodes)

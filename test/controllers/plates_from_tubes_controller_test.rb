@@ -60,6 +60,50 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
         end
+        should 'create put the tubes in the correct positions on the new plate' do
+          # Well A1
+          assert_equal @tube1.samples.first, Plate.last.wells.first.samples.first
+          # Well A2
+          assert_equal @tube2.samples.first, Plate.last.wells.second.samples.first
+        end
+      end
+
+      context 'on POST to create a stock plate with blank wells' do
+        setup do
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          # Initial plate count in the in-memory database
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: "\r\n\r\n\r\n#{@tube1.barcodes.first.barcode}\r\n\r\n#{@tube2.barcodes.first.barcode}"
+                 }
+               }
+        end
+
+        should 'create a plate and increase the plate count' do
+          assert_equal @plate_count + 1, Plate.count
+        end
+        should respond_with :ok
+        should 'create a plate with the correct barcode' do
+          assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+        end
+        should 'create put the tubes in the correct positions on the new plate' do
+          # Well A4
+          # A4 because there are several empty tube positions before the first tube
+          assert_equal @tube1.samples.first, Plate.last.wells[3].samples.first
+          # Well A6
+          # A6 because source_tubes param has an empty line between the two tubes (coordinate based index)
+          assert_equal @tube2.samples.first, Plate.last.wells[5].samples.first
+        end
       end
 
       context 'on POST to create the asset links (as well as the plate)' do
@@ -246,6 +290,26 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
                    source_tubes: 'SHRODINGERS_TUBE_BARCODE'
+                 }
+               }
+        end
+
+        should 'not create a plate' do
+          assert_equal @plate_count, Plate.count
+        end
+        should set_flash[:error].to(/Tube with barcode/)
+      end
+
+      context 'on POST to create a stock plate with no tubes' do
+        setup do
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes: '\r\n\r\n\r\n\r\n\r\n'
                  }
                }
         end
