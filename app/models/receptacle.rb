@@ -45,7 +45,7 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
 
   # Keeps event behaviour consistent
   delegate :subject_type, to: :labware
-  delegate :public_name, to: :labware
+  delegate :public_name, to: :labware, allow_nil: true # allow_nil, added for legacy data
 
   # This really doesn't make sense any more. Should probably migrate legacy data
   # to a barcode type and retire this
