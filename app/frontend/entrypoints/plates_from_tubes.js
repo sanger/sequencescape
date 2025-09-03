@@ -62,13 +62,13 @@ $(() => {
   // Select the source tubes input field
   const sourceTubesInput = $("#plates_from_tubes_source_tubes");
 
-  const aCharCode = 'A'.charCodeAt(0)
+  const aCharCode = "A".charCodeAt(0);
   // Custom line number formatter to convert line numbers to plate positions (e.g., 1 -> A1, 2 -> A2, ..., 13 -> B1)
   const lineNumberFormatter = (line) => {
-    const rowNum = Math.floor((line - 1) / 12)
-    const row = String.fromCharCode(rowNum + aCharCode)
-    const col = ((line -1) % 12) + 1
-    return `${row}${col}`
+    const rowNum = Math.floor((line - 1) / 12);
+    const row = String.fromCharCode(rowNum + aCharCode);
+    const col = ((line - 1) % 12) + 1;
+    return `${row}${col}`;
   };
 
   // Initialize the CodeMirror editor with custom settings

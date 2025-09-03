@@ -146,7 +146,8 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   # This was declared a bang method as it mutates the receiver (i.e. the `tubes` list).
   #
-  # @param [Array<Tube>] tubes The array of tubes to be transferred to the plate.
+  # @param [Array<Hash{position: String, tube: Tube}>] tubes_map
+  #        The array of tubes to be transferred to the plate by position
   # @param [Array<Plate>] created_plates The array to store the created plates information.
   # @return [void]
   def create_plates_from_tubes!(tubes_map, created_plates, scanned_user, barcode_printer)
@@ -156,7 +157,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return if plate.blank?
 
     duplicate_barcodes = process_positional_tubes(tubes_map, plate)
-    # print_labels(plate, plate_purpose, barcode_printer, scanned_user)
+    print_labels(plate, plate_purpose, barcode_printer, scanned_user)
     handle_duplicates(duplicate_barcodes)
 
     tubes = tubes_map.pluck(:tube)

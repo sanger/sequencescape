@@ -56,7 +56,7 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def find_duplicate_tubes(tube_barcodes)
-    tube_barcodes.group_by { |tb| tb[:barcode] }.select { |_, v| v.size > 1 }.keys
+    tube_barcodes.group_by { |e| e }.select { |_, v| v.size > 1 }.keys
   end
 
   def set_plate_creators
@@ -99,15 +99,19 @@ class PlatesFromTubesController < ApplicationController
   #
   # @return [void]
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
-    source_tube_barcodes = extract_source_tube_barcodes
+    # Map of barcodes and positions
+    source_tube_barcodes_map = extract_source_tube_barcodes
+    # List of tube barcodes
+    source_tube_barcodes = source_tube_barcodes_map.pluck(:barcode)
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
 
-    found_tubes = find_tubes(source_tube_barcodes)
-    return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
-    return unless validate_tubes_with_samples?(found_tubes)
+    # Map of tubes and positions
+    found_tubes_map = find_tubes(source_tube_barcodes_map)
+    return unless validate_missing_tubes?(found_tubes_map, source_tube_barcodes)
+    return unless validate_tubes_with_samples?(found_tubes_map)
 
-    create_plates(scanned_user, barcode_printer, found_tubes)
+    create_plates(scanned_user, barcode_printer, found_tubes_map)
     handle_successful_creation
   end
 
@@ -169,10 +173,10 @@ class PlatesFromTubesController < ApplicationController
   # - Sets an error message in the flash, listing the barcodes of empty tubes.
   # - Renders the defined VIEW_PATH to allow the user to correct the issue.
   #
-  # @param tubes [Array<Tube>] the collection of tube objects to check
+  # @param tubes_map [Array<Hash{position: String, tube: Tube}>] the collection of tube objects by position to check
   # @return [Boolean] true if all tubes have samples, false otherwise
-  def validate_tubes_with_samples?(tubes)
-    empty_tubes = tubes.select { |tube| tube[:tube].samples.empty? }
+  def validate_tubes_with_samples?(tubes_map)
+    empty_tubes = tubes_map.select { |tm| tm[:tube].samples.empty? }.pluck(:tube)
     return true if empty_tubes.empty?
 
     respond_to do |format|
@@ -202,8 +206,10 @@ class PlatesFromTubesController < ApplicationController
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
 
   # Extracts source tube barcodes from the parameters.
+  # Assigns them to a plate cooridnate based on their index
+  # This is required because of the plates_from_tubes user input method
   #
-  # @return [Array<String>] An array of source tube barcodes.
+  # @return [Array<Hash{position => String, barcode => String}>] An array of source tube barcodes with their position.
   def extract_source_tube_barcodes
     # Split tubes by each line. We want to preserve empty lines to ensure we keep the positions intact even if blank
     tubes = params[:plates_from_tubes][:source_tubes]&.split("\r\n")
@@ -222,11 +228,12 @@ class PlatesFromTubesController < ApplicationController
 
   # Finds tubes based on the provided barcodes and stores them in tubes_map.
   #
-  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
+  # @param [Array<Hash{position: String, barcode: String}>] source_tube_barcodes_map
+  #         An array of source tube barcodes with position.
   # @return [void]
-  def find_tubes(source_tube_barcodes)
+  def find_tubes(source_tube_barcodes_map)
     tubes_map = []
-    source_tube_barcodes.each do |tube_barcode|
+    source_tube_barcodes_map.each do |tube_barcode|
       tube = Tube.find_by_barcode(tube_barcode[:barcode])
       if tube.nil?
         flash[:error] = "Tube with barcode #{tube_barcode} not found"
