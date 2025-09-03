@@ -78,7 +78,7 @@ group :default do
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 
   # Wraps bunny with connection pooling and consumer process handling
-  gem 'sanger_warren'
+  gem 'sanger_warren', github: 'sanger/warren', branch: 'y25-433-spike-to-test-full-message-broadcast'
 
   # Use bunny for simple RabbitMQ publishing operations
   gem 'bunny', '>= 2.22.0'

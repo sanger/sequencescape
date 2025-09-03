@@ -5,7 +5,7 @@
 # `WARREN_TYPE=broadcast bundle exec rails s`
 # This will override the setting in warren.yml
 development:
-  type: log
+  type: broadcast
   # Log mode does not actually use this configuration, but
   # it is provided for convenience when broadcast mode is enabled.
   # The provided settings are the default options of RabbitMQ
