@@ -6,7 +6,11 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     prepare_manifest_pagination
   end
 
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def create
+    start_time = Time.zone.now
+    Rails.logger.info("SampleManifestUploadWithTagSequencesController#create started at #{start_time}")
+
     return error('No file attached') if params[:upload].blank?
 
     if upload_manifest
@@ -16,7 +20,12 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     end
   rescue AccessionService::AccessionValidationFailed => e
     error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
+  ensure
+    end_time = Time.zone.now
+    Rails.logger.info("SampleManifestUploadWithTagSequencesController#create finished at
+      #{end_time} (Duration: #{(end_time - start_time).round(2)} seconds)")
   end
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def create_uploader
     SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
