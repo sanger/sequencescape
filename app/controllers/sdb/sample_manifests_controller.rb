@@ -15,12 +15,19 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   def uploaded_spreadsheet
+    start_time = Time.now
+    Rails.logger.info("Sdb::SampleManifestsController#uploaded_spreadsheet started at #{start_time}")
+
     @manifest = SampleManifest.find(params[:id])
     send_data(
       @manifest.uploaded_document.current_data,
       filename: @manifest.uploaded_document.filename,
       type: @manifest.uploaded_document.content_type || 'application/vnd.ms-excel'
     )
+  ensure
+    end_time = Time.now
+    duration = end_time - start_time
+    Rails.logger.info("Sdb::SampleManifestsController#uploaded_spreadsheet finished at #{end_time} (Duration: #{duration.round(2)} seconds)")
   end
 
   def index
