@@ -89,10 +89,10 @@ class CreatorTest < ActiveSupport::TestCase
       plate_count = Plate.count
       @created_plates = []
 
-      source_tube_barcodes_map = [
-        { position: 'A1', tube: tube1 },
-        { position: 'A2', tube: tube2 }
-      ]
+      source_tube_barcodes_map = {
+        'A1' => tube1,
+        'A2' => tube2
+      }
 
       response = @creator.create_plates_from_tubes!(
         source_tube_barcodes_map,
@@ -125,12 +125,12 @@ class CreatorTest < ActiveSupport::TestCase
       plate_count = Plate.count
       @created_plates = []
 
-      source_tube_barcodes_map = [
-        { position: 'A1', tube: tube1 },
-        { position: 'A2', tube: tube2 },
-        { position: 'B1', tube: tube1 },
-        { position: 'B2', tube: tube2 }
-      ]
+      source_tube_barcodes_map = {
+        'A1' => tube1,
+        'A2' => tube2,
+        'B1' => tube1,
+        'B2' => tube2
+      }
 
       @creator.create_plates_from_tubes!(
         source_tube_barcodes_map,
@@ -162,10 +162,10 @@ class CreatorTest < ActiveSupport::TestCase
       user = create(:user)
       @created_plates = []
 
-      source_tube_barcodes_map = [
-        { position: 'A0', tube: tube1 },
-        { position: 'A2', tube: tube2 }
-      ]
+      source_tube_barcodes_map = {
+        'A0' => tube1,
+        'A2' => tube2
+      }
 
       error =
         assert_raises(StandardError) do
