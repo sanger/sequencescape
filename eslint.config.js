@@ -1,18 +1,16 @@
 import vitest from "eslint-plugin-vitest";
-import pluginVue from "eslint-plugin-vue";
 import eslintConfigPrettier from "eslint-config-prettier";
 import js from "@eslint/js";
 import globals from "globals";
 
 export default [
-  ...pluginVue.configs["flat/recommended"],
   js.configs.recommended,
   eslintConfigPrettier,
   {
     env: {
       "vitest/env": true,
     },
-    files: ["**/*.js,**/*.vue,**/*.cjs"],
+    files: ["**/*.js,**/*.cjs"],
     plugins: {
       vitest,
     },
