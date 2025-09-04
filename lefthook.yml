@@ -11,7 +11,7 @@ pre-commit:
       glob: "{*.{rb,arb,axlsx,builder,fcgi,gemfile,gemspec,god,jb,jbuilder,mspec,opal,pluginspec,podspec,rabl,rake,rbuild,rbw,rbx,ru,ruby,spec,thor,watchr},.irbrc,.pryrc,.simplecov,buildfile,Appraisals,Berksfile,Brewfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,*Fastfile,Gemfile,Guardfile,Jarfile,Mavenfile,Podfile,Puppetfile,Rakefile,rakefile,Snapfile,Steepfile,Thorfile,Vagabondfile,Vagrantfile}"
       run: rubocop --display-style-guide --extra-details --force-exclusion --parallel {staged_files} || (echo 'Run `lefthook run fix` to run autocorrect on staged files only'; exit 1)
     eslint:
-      glob: "app/frontend/**/*.{vue,js}"
+      glob: "app/frontend/**/*.{js}"
       run: yarn lintOnly {staged_files} || (echo 'Run `lefthook run fix` to run autocrrect on staged files only'; exit 1)
 
 fix:
@@ -23,7 +23,7 @@ fix:
       glob: "{*.{rb,arb,axlsx,builder,fcgi,gemfile,gemspec,god,jb,jbuilder,mspec,opal,pluginspec,podspec,rabl,rake,rbuild,rbw,rbx,ru,ruby,spec,thor,watchr},.irbrc,.pryrc,.simplecov,buildfile,Appraisals,Berksfile,Brewfile,Buildfile,Capfile,Cheffile,Dangerfile,Deliverfile,Fastfile,*Fastfile,Gemfile,Guardfile,Jarfile,Mavenfile,Podfile,Puppetfile,Rakefile,rakefile,Snapfile,Steepfile,Thorfile,Vagabondfile,Vagrantfile}"
       run: rubocop --display-style-guide --extra-details --auto-correct --force-exclusion {staged_files}
     eslint:
-      glob: "app/frontend/**/*.{vue,js}"
+      glob: "app/frontend/**/*.{js}"
       run: yarn lintOnly {staged_files} --fix
 # EXAMPLE USAGE
 # Refer for explanation to following link:
