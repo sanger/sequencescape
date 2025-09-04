@@ -236,7 +236,7 @@ class PlatesFromTubesController < ApplicationController
     source_tube_barcodes_map.each do |tube_barcode|
       tube = Tube.find_by_barcode(tube_barcode[:barcode])
       if tube.nil?
-        flash[:error] = "Tube with barcode #{tube_barcode} not found"
+        flash[:error] = "Tube with barcode #{tube_barcode[:barcode]} not found"
         break
       end
       tubes_map << { position: tube_barcode[:position], tube: tube }

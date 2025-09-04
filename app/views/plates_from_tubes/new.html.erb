@@ -25,7 +25,6 @@
         <%= form.input :plate_type, as: :radio, collection: plate_options_for_creating_from_tubes , label: false, wrapper_html: { class: 'no-choices-group' } %>
         <%= form.input :barcode_printer, as: :select, collection: @barcode_printers, input_html: { class: 'form-control select2'} %>
         <%= form.input :create_asset_group, as: :select, collection: ['Yes', 'No'], label: 'Group results for reprinting barcodes?', input_html: { class: 'form-control select2'} %>
-        <%#= form.action(:submit, disable_with: 'Please wait...', id: 'submit_button') %>
         <%= form.submit 'Submit', disable_with: 'Please wait...', id: 'submit_button' %>
       <% end %>
     <% end %>

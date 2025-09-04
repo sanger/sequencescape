@@ -297,7 +297,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should 'not create a plate' do
           assert_equal @plate_count, Plate.count
         end
-        should set_flash[:error].to(/Tube with barcode/)
+        should set_flash[:error].to(/Tube with barcode SHRODINGERS_TUBE_BARCODE not found/)
       end
 
       context 'on POST to create a stock plate with no tubes' do
