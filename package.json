@@ -50,6 +50,6 @@
   "scripts": {
     "test": "vitest run --passWithNoTests",
     "lint": "eslint app/frontend",
-    "lintOnly": "eslint --ext .js --ext"
+    "lintOnly": "eslint --ext .js"
   }
 }
