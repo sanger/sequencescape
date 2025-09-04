@@ -22,7 +22,7 @@ describe WellAttribute do
     expect { well_attribute.update(concentration: 200) }.to change(Warren.handler.messages, :count).from(
       current_message_count
     )
-    expect(Warren.handler.messages_matching("queue_broadcast.messenger.#{warehouse_message.id}")).to be 2
+    expect(Warren.handler.messages_matching("saved.well.#{warehouse_message.id}")).to be 2
   end
 
   describe '#estimated_volume' do
