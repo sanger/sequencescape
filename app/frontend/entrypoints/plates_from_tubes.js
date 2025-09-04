@@ -123,4 +123,22 @@ $(() => {
       }
     }
   });
+
+  const form = $("#plates_from_tubes_form");
+  const hiddenMap = $("#plates_from_tubes_source_tubes_map")[0];
+  // We dynamically build barcode map on submit because we don't want to send the controller
+  // a messy string of barcodes and empty lines. We want a clean JSON map of well positions to barcodes.
+  form.on("submit", function () {
+    // Split by line breaks, trim, and filter out empty lines
+    const barcodes = editor.getValue().split(/\r?\n/);
+    const barcodeMap = {};
+    barcodes.forEach((barcode, idx) => {
+      // idx+1 because lineNumberFormatter starts at 1 not 0
+      const position = lineNumberFormatter(idx + 1);
+      if (barcode.trim() === "") return; // Skip empty lines
+
+      barcodeMap[position] = barcode.trim();
+    });
+    hiddenMap.value = JSON.stringify(barcodeMap);
+  });
 });

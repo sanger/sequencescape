@@ -51,10 +51,6 @@ class PlatesFromTubesController < ApplicationController
     flash.clear
   end
 
-  def valid_number_of_tubes?(tube_barcodes)
-    tube_barcodes.size <= @max_wells
-  end
-
   def find_duplicate_tubes(tube_barcodes)
     tube_barcodes.group_by { |e| e }.select { |_, v| v.size > 1 }.keys
   end
@@ -100,9 +96,11 @@ class PlatesFromTubesController < ApplicationController
   # @return [void]
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
     # Map of barcodes and positions
-    source_tube_barcodes_map = extract_source_tube_barcodes
-    # List of tube barcodes
-    source_tube_barcodes = source_tube_barcodes_map.pluck(:barcode)
+    source_tube_barcodes_map, json_error = extract_source_tube_barcodes
+    return if json_error
+
+    # List of tube barcodes via hash values
+    source_tube_barcodes = source_tube_barcodes_map.values
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
 
@@ -127,10 +125,16 @@ class PlatesFromTubesController < ApplicationController
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [Boolean] Returns true if the number of tubes is valid, false otherwise.
-  def validate_tube_count?(source_tube_barcodes)
-    unless valid_number_of_tubes?(source_tube_barcodes)
+  def validate_tube_count?(source_tube_barcodes) # rubocop:disable Metrics/MethodLength
+    if source_tube_barcodes.empty?
       respond_to do |format|
-        handle_invalid_tube_count
+        flash[:error] = 'No tubes to transfer'
+        format.html { render(VIEW_PATH) }
+      end
+      return false
+    elsif source_tube_barcodes.size > @max_wells
+      respond_to do |format|
+        flash[:error] = 'Number of tubes exceeds the maximum number of wells'
         format.html { render(VIEW_PATH) }
       end
       return false
@@ -173,10 +177,10 @@ class PlatesFromTubesController < ApplicationController
   # - Sets an error message in the flash, listing the barcodes of empty tubes.
   # - Renders the defined VIEW_PATH to allow the user to correct the issue.
   #
-  # @param tubes_map [Array<Hash{position: String, tube: Tube}>] the collection of tube objects by position to check
+  # @param tubes_map [Hash{position<String> => tube<Tube>}] the collection of tube objects by position to check
   # @return [Boolean] true if all tubes have samples, false otherwise
   def validate_tubes_with_samples?(tubes_map)
-    empty_tubes = tubes_map.select { |tm| tm[:tube].samples.empty? }.pluck(:tube)
+    empty_tubes = tubes_map.select { |_position, tube| tube.samples.empty? }.map { |_position, tube| tube }
     return true if empty_tubes.empty?
 
     respond_to do |format|
@@ -196,50 +200,39 @@ class PlatesFromTubesController < ApplicationController
     flash[:error] = 'Please enter a valid user barcode'
   end
 
-  def handle_invalid_tube_count
-    flash[:error] = 'Number of tubes exceeds the maximum number of wells'
-  end
-
   def handle_duplicate_tubes(duplicate_tubes)
     flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
   end
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
 
-  # Extracts source tube barcodes from the parameters.
-  # Assigns them to a plate cooridnate based on their index
-  # This is required because of the plates_from_tubes user input method
+  # Extracts source tubes map from the parameters.
   #
-  # @return [Array<Hash{position => String, barcode => String}>] An array of source tube barcodes with their position.
+  # @return [Hash{position<String> => barcode<String>}] A hash of source tube barcodes with their position.
+  # @return [Boolean] true if there was an error parsing the JSON.
   def extract_source_tube_barcodes
-    # Split tubes by each line. We want to preserve empty lines to ensure we keep the positions intact even if blank
-    tubes = params[:plates_from_tubes][:source_tubes]&.split("\r\n")
-    return [] if tubes.nil?
-
-    # Convert tubes to array of position and barcode
-    tubes.each_with_index.filter_map do |barcode, idx|
-      row = ('A'.ord + (idx / 12)).chr
-      col = (idx % 12) + 1
-      barcode = barcode.strip
-      next if barcode.empty?
-
-      { position: "#{row}#{col}", barcode: barcode }
+    begin
+      tubes = JSON.parse(params[:plates_from_tubes][:source_tubes_map])
+    rescue JSON::JSONError => e
+      flash[:error] = "Source tubes input is not valid JSON. Error message: #{e.message}"
+      return {}, true
     end
+    [tubes.presence || {}, false]
   end
 
   # Finds tubes based on the provided barcodes and stores them in tubes_map.
   #
-  # @param [Array<Hash{position: String, barcode: String}>] source_tube_barcodes_map
-  #         An array of source tube barcodes with position.
-  # @return [void]
+  # @param [Hash{String => String}] source_tube_barcodes_map
+  #         A hash mapping positions to source tube barcodes.
+  # @return [Hash{String => Tube}] A hash mapping positions to found Tube objects.
   def find_tubes(source_tube_barcodes_map)
-    tubes_map = []
-    source_tube_barcodes_map.each do |tube_barcode|
-      tube = Tube.find_by_barcode(tube_barcode[:barcode])
+    tubes_map = {}
+    source_tube_barcodes_map.each do |position, barcode|
+      tube = Tube.find_by_barcode(barcode)
       if tube.nil?
-        flash[:error] = "Tube with barcode #{tube_barcode[:barcode]} not found"
+        flash[:error] = "Tube with barcode #{barcode} not found"
         break
       end
-      tubes_map << { position: tube_barcode[:position], tube: tube }
+      tubes_map[position] = tube
     end
     tubes_map
   end

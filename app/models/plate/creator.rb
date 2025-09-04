@@ -160,7 +160,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     print_labels(plate, plate_purpose, barcode_printer, scanned_user)
     handle_duplicates(duplicate_barcodes)
 
-    tubes = tubes_map.pluck(:tube)
+    tubes = tubes_map.values
     created_plates << { source: tubes, destinations: [plate] }
   end
 
@@ -199,12 +199,11 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def process_positional_tubes(tubes_map, plate)
     duplicate_barcodes = []
-    tubes_map.each do |tm|
-      well = plate.wells.find { |well| well.map_description == tm[:position] }
+    tubes_map.each do |position, tube|
+      well = plate.wells.find { |well| well.map_description == position }
 
-      fail_with_error("Tube position #{tm[:position]} is not valid") if well.blank?
+      fail_with_error("Tube position #{position} is not valid") if well.blank?
 
-      tube = tm[:tube]
       well.aliquots << tube.aliquots.map(&:dup)
       create_asset_link(tube, plate, duplicate_barcodes)
     end
