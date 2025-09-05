@@ -31,13 +31,11 @@
     "@vitejs/plugin-legacy": "^1.8",
     "eslint": "^9.19",
     "eslint-config-prettier": "^8.10",
-    "eslint-plugin-vitest": "^0.5.4",
     "globals": "^15.14",
     "jsdom": "^26.0",
     "prettier": "^3.3",
     "vite": "^5.4",
-    "vite-plugin-ruby": "^5.1",
-    "vitest": "^3.0"
+    "vite-plugin-ruby": "^5.1"
   },
   "_comment": "Required to address https://github.com/npm/cli/issues/4828",
   "optionalDependencies": {
@@ -46,7 +44,6 @@
     "@rollup/rollup-win32-x64-msvc": "*"
   },
   "scripts": {
-    "test": "vitest run --passWithNoTests",
     "lint": "eslint app/frontend",
     "lintOnly": "eslint --ext .js"
   }
