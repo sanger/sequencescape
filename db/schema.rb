@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_08_18_125034) do
+ActiveRecord::Schema[7.1].define(version: 2025_08_18_131035) do
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1180,6 +1180,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_18_125034) do
     t.string "allowance_band"
     t.boolean "low_diversity"
     t.integer "percent_phix_requested"
+    t.integer "ot_recipe"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1455,15 +1456,15 @@ ActiveRecord::Schema[7.1].define(version: 2025_08_18_125034) do
   create_table "specific_tube_rack_creation_children", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "specific_tube_rack_creation_id", null: false
     t.integer "tube_rack_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "specific_tube_rack_creation_purposes", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "specific_tube_rack_creation_id", null: false
     t.integer "tube_rack_purpose_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "stamp_qcables", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
