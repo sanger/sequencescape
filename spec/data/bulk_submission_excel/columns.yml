@@ -296,3 +296,22 @@ low_diversity:
     range_name: :low_diversity
   conditional_formattings:
     empty_cell:
+ot_recipe:
+  heading: "OT Recipe"
+  unlocked: true
+  attribute: :ot_recipe
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "OT Recipe"
+      error: "You must enter a value from the list provided."
+      promptTitle: "OT Recipe"
+      prompt: "Select a value type from the approved list"
+    range_name: :ot_recipe
+  conditional_formattings:
+    empty_cell:
