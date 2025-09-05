@@ -284,29 +284,25 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
 
           source_tubes = (1..3).map { |_| FactoryBot.create(:sample_tube).barcodes.first.barcode }
 
-          @error = assert_raises(Plate::Creator::PlateCreationError) do
-            post :create,
-                 params: {
-                   plates_from_tubes: {
-                     user_barcode: '1234567',
-                     barcode_printer: @barcode_printer.id,
-                     plate_type: 'Stock Plate',
-                     source_tubes_map: {
-                       A13: source_tubes[0],
-                       H0: source_tubes[1],
-                       J1: source_tubes[2]
-                     }.to_json
-                   }
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes_map: {
+                     A13: source_tubes[0],
+                     H0: source_tubes[1],
+                     J1: source_tubes[2]
+                   }.to_json
                  }
-          end
+               }
         end
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end
 
-        should 'error' do
-          assert_equal 'Tube position A13 is not valid', @error.message
-        end
+        should set_flash[:error].to(/Plate creation failed: Tube position A13 is not valid/)
       end
 
       context 'on POST to create a stock plate with missing tubes' do

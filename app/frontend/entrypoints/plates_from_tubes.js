@@ -129,13 +129,14 @@ $(() => {
   // We dynamically build barcode map on submit because we don't want to send the controller
   // a messy string of barcodes and empty lines. We want a clean JSON map of well positions to barcodes.
   form.on("submit", function () {
-    // Split by line breaks, trim, and filter out empty lines
+    // Split by line break
     const barcodes = editor.getValue().split(/\r?\n/);
     const barcodeMap = {};
     barcodes.forEach((barcode, idx) => {
       // idx+1 because lineNumberFormatter starts at 1 not 0
       const position = lineNumberFormatter(idx + 1);
-      if (barcode.trim() === "") return; // Skip empty lines
+      // Skip empty lines
+      if (barcode.trim() === "") return;
 
       barcodeMap[position] = barcode.trim();
     });

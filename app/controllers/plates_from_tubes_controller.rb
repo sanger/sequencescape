@@ -110,7 +110,6 @@ class PlatesFromTubesController < ApplicationController
     return unless validate_tubes_with_samples?(found_tubes_map)
 
     create_plates(scanned_user, barcode_printer, found_tubes_map)
-    handle_successful_creation
   end
 
   def handle_successful_creation
@@ -243,18 +242,34 @@ class PlatesFromTubesController < ApplicationController
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
   # @return [void]
-  def create_plates(scanned_user, barcode_printer, tubes_map)
+  def create_plates(scanned_user, barcode_printer, tubes_map) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @created_plates = []
     @asset_groups = []
     ActiveRecord::Base.transaction do
       @plate_creator.each do |creator|
         creator.create_plates_from_tubes!(tubes_map.dup, @created_plates, scanned_user, barcode_printer)
+      rescue Plate::Creator::PlateCreationError => e
+        # Rollback if we get an exceptions
+        flash[:error] = "Plate creation failed: #{e}"
+        raise ActiveRecord::Rollback
       end
     end
-    return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
 
-    # The logic is the same for all plate creators, so we can just use the first one
-    @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
+    # Return failure if created_plates is empty
+    if @created_plates.blank?
+      respond_to do |format|
+        @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
+        format.html { render(VIEW_PATH) }
+      end
+      return false
+    end
+
+    if params[:plates_from_tubes][:create_asset_group] == 'Yes'
+      # The logic is the same for all plate creators, so we can just use the first one
+      @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
+    end
+
+    handle_successful_creation
   end
 end
 # rubocop:enable Metrics/ClassLength
