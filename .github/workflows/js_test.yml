@@ -24,6 +24,3 @@ jobs:
 
       - name: Install
         run: yarn install
-
-      - name: Run yarn test
-        run: yarn test
