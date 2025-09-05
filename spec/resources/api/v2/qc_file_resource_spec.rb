@@ -49,4 +49,40 @@ RSpec.describe Api::V2::QcFileResource, type: :resource do
       expect(described_class).to have_received(:new).with(qc_file, context)
     end
   end
+
+  describe '#contents' do
+    let(:utf_8) { 'UTF-8' } # rubocop:disable Naming/VariableNumber
+    let(:encoding) { utf_8 }
+    let(:encoded_contents) { contents.encode(encoding) }
+    let(:resource_model) { create(:qc_file, contents: encoded_contents) }
+
+    context 'when the contents are not encoded and contain invalid bytes' do
+      let(:encoding) { 'ASCII-8BIT' }
+      let(:contents) { 'GIF87a this looks like a gif ²'.b }
+
+      it 'returns the string as is' do
+        expect(resource.contents).to eq("GIF87a this looks like a gif \xC2\xB2")
+      end
+
+      it 'returns the contents as a binary representation in UTF-8 for API usage' do
+        expect(resource.contents.encoding.name).to eq(utf_8)
+      end
+    end
+
+    context 'when the contents are not encoded, but decipherable' do
+      let(:encoding) { 'ASCII-8BIT' }
+      let(:contents) do
+        "The coefficient of micro-determination (\xCE\xBC\xC2\xB2). Yukihiro Matsumoto " \
+        "\xE3\x81\xBE\xE3\x81\xA4\xE3\x82\x82\xE3\x81\xA8\xE3\x82\x86\xE3\x81\x8D\xE3\x81\xB2\xE3\x82\x8D".b
+      end
+
+      it 'returns the string, with invalid characters replaced' do
+        expect(resource.contents).to eq('The coefficient of micro-determination (μ²). Yukihiro Matsumoto まつもとゆきひろ')
+      end
+
+      it 'returns the contents as UTF-8' do
+        expect(resource.contents.encoding.name).to eq(utf_8)
+      end
+    end
+  end
 end

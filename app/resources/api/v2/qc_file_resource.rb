@@ -7,26 +7,32 @@ module Api
     #
     # @note Access this resource via the `/api/v2/qc_files/` endpoint.
     # @note This resource cannot be modified after creation: its endpoint will not accept `PATCH` requests.
+    # @note Known issue
+    #
+    #    Occasionally, encoding failures may occur resulting in 500 Internal Server errors
+    #    mentioning `from ASCII-8BIT to UTF-8`. If this occurs, try re-requesting the resource
+    #    without including the `contents` attribute, for example:
+    #    `/api/v2/qc_files/1?fields[qc_files]=filename,uuid,created_at`
     #
     # @example POST request
     #   POST /api/v2/qc_files/
     #   {
     #     "data": {
-    #         "type": "qc_files",
-    #         "attributes": {
-    #             "filename": "a_test_file.csv",
-    #             "contents": "Hello"
-    #         },
-    #         "relationships": {
-    #             // "asset": {
-    #             //     "data": {
-    #             //         "type": "labware",
-    #             //         "id": 26
-    #             //     }
-    #             // }
-    #         }
+    #       "type": "qc_files",
+    #       "attributes": {
+    #         "filename": "a_test_file.csv",
+    #         "contents": "Hello"
+    #       },
+    #       "relationships": {
+    #         // "asset": {
+    #         //   "data": {
+    #         //     "type": "labware",
+    #         //     "id": 26
+    #         //   }
+    #         // }
+    #       }
     #     }
-    # }
+    #   }
     #
     # @example GET request for all QcFile resources
     #   GET /api/v2/qc_files/
@@ -90,9 +96,16 @@ module Api
       attribute :contents, write_once: true
       attr_writer :contents # Do not store the value on the model. It is stored by the CarrierWave gem via a Tempfile.
 
+      # Returns the file contents as UTF-8.
+      #
+      # Not all uploaded files contain encoding information, causing encoding errors on less-common characters.
+      # See background at https://yehudakatz.com/2010/05/05/ruby-1-9-encodings-a-primer-and-the-solution-for-rails/
+      #
+      # @return [String] The contents of the QC file.
       def contents
         # The contents comes from the uploaded_data managed by CarrierWave.
-        @model.current_data
+        contents = @model.current_data
+        EncodingDetector.convert_to_utf8(contents)
       end
 
       # @!attribute [rw] filename
