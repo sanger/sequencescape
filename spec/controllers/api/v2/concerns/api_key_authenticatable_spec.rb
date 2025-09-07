@@ -37,4 +37,35 @@ RSpec.describe Api::V2::Concerns::ApiKeyAuthenticatable do
       end
     end
   end
+
+  describe '#authenticate_with_api_key' do
+    before do
+      allow(controller.request).to receive_messages(env: {}, path_parameters: {}, get?: true)
+      allow(controller).to receive(:render_unauthorized)
+    end
+
+    context 'when feature flag is enabled' do
+      before do
+        Flipper.enable(:y25_442_make_api_key_mandatory)
+      end
+
+      it 'renders unauthorized when no API key is provided' do
+        controller.send(:authenticate_with_api_key)
+
+        expect(controller).to have_received(:render_unauthorized)
+      end
+    end
+
+    context 'when feature flag is disabled' do
+      before do
+        Flipper.disable(:y25_442_make_api_key_mandatory)
+      end
+
+      it 'does not render unauthorized when no API key is provided' do
+        controller.send(:authenticate_with_api_key)
+
+        expect(controller).not_to have_received(:render_unauthorized)
+      end
+    end
+  end
 end
