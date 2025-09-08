@@ -201,12 +201,6 @@ Lint/MissingSuper:
     - 'test/unit/tasks/plate_transfer_task_test.rb'
 
 # Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/MixedCaseRange:
-  Exclude:
-    - 'lib/limber/helper.rb'
-
-# Offense count: 1
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Lint/NestedMethodDefinition:
   Exclude:
