@@ -2015,12 +2015,6 @@ Style/RedundantArgument:
     - 'features/support/step_definitions/samples_steps.rb'
     - 'spec/features/shared_examples/cherrypicking.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Style/RedundantRegexpEscape:
-  Exclude:
-    - 'features/support/step_definitions/web_steps.rb'
-
 # Offense count: 7
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
