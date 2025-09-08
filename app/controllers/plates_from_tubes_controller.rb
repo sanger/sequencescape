@@ -249,7 +249,7 @@ class PlatesFromTubesController < ApplicationController
       @plate_creator.each do |creator|
         creator.create_plates_from_tubes!(tubes_map.dup, @created_plates, scanned_user, barcode_printer)
       rescue Plate::Creator::PlateCreationError => e
-        # Rollback if we get an exceptions
+        # Rollback if we get an exception
         flash[:error] = "Plate creation failed: #{e}"
         raise ActiveRecord::Rollback
       end

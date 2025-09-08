@@ -89,7 +89,7 @@ $(() => {
     const MAX_LINES = 96; // Maximum lines for a 96 well plate
 
     if (currentLines + addedLines > MAX_LINES) {
-      // Prevent the change if it would exceed 5 lines
+      // Prevent the change if it would exceed 96 lines
       change.cancel();
     }
   });
