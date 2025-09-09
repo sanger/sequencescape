@@ -98,7 +98,7 @@ Then /^(?:|I )should not see "([^"]*)"(?: within "([^"]*)")?$/ do |text, selecto
   with_scope(selector) { expect(page).to have_no_text(text) }
 end
 
-Then %r{^(?:|I )should not see /([^\/]*)/(?: within "([^"]*)")?$} do |regexp, selector|
+Then %r{^(?:|I )should not see /([^/]*)/(?: within "([^"]*)")?$} do |regexp, selector|
   regexp = Regexp.new(regexp)
   with_scope(selector) { assert page.has_no_xpath?('//*', text: regexp) }
 end

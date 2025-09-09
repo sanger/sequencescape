@@ -25,28 +25,17 @@
     "sass": "^1.77.6",
     "select2": "^4.1.0-rc.0",
     "sortablejs": "^1.15.6",
-    "terser": "^5.31.1",
-    "vue": "^2.7.16",
-    "vue-loader": "^15.11.1",
-    "vue-template-compiler": "^2.7.16",
-    "vuex": "^3.6.2",
-    "whatwg-fetch": "^3.6.20"
+    "terser": "^5.31.1"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^1.8",
-    "@vue/test-utils": "^1.3",
     "eslint": "^9.19",
     "eslint-config-prettier": "^8.10",
-    "eslint-plugin-vitest": "^0.5.4",
-    "eslint-plugin-vue": "^9.32",
     "globals": "^15.14",
     "jsdom": "^26.0",
-    "miragejs": "^0.1.48",
     "prettier": "^3.3",
     "vite": "^5.4",
-    "vite-plugin-ruby": "^5.1",
-    "vite-plugin-vue2": "^1.9",
-    "vitest": "^3.0"
+    "vite-plugin-ruby": "^5.1"
   },
   "_comment": "Required to address https://github.com/npm/cli/issues/4828",
   "optionalDependencies": {
@@ -55,8 +44,7 @@
     "@rollup/rollup-win32-x64-msvc": "*"
   },
   "scripts": {
-    "test": "vitest run",
     "lint": "eslint app/frontend",
-    "lintOnly": "eslint --ext .js --ext .vue"
+    "lintOnly": "eslint --ext .js"
   }
 }
