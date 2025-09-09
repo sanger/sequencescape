@@ -8,6 +8,15 @@ export default defineConfig({
     emptyOutDir: true,
     target: ["chrome65", "es2019"],
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        quietDeps: true,
+        silenceDeprecations: ["import", "color-functions", "global-builtin"],
+        verbose: false,
+      },
+    },
+  },
   plugins: [RubyPlugin(), legacy({ targets: ["defaults"] })],
   resolve: {
     alias: {
