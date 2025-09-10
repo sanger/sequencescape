@@ -22,7 +22,7 @@ RSpec.describe Api::Messages::CommentIo do
   let(:request)      { create(:request, target_asset: lane, submission: submission) }
   let(:submission) { Submission.create!(user:) }
   let(:user) { create(:user) }
-  let(:batch) { create(:batch) }
+  let(:batch) { create(:batch, id: 1) }
   let(:batch_request) { create(:batch_request, batch: batch, request: request, position: 1) }
 
   let(:poly_metadatum) do
