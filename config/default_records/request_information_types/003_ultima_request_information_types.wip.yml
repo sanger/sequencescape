@@ -1,0 +1,7 @@
+---
+ot_recipe:
+  name: OT recipe
+  key: ot_recipe
+  label: OT recipe
+  width: 5
+  hide_in_inbox: 0
