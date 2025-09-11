@@ -5,9 +5,9 @@ describe UltimaValidator do
   describe '#validate' do
     subject(:validator) { described_class.new }
 
-    let(:record) { create(:batch, request_count: 2) }
-
     context 'when batch contains two requests' do
+      let(:record) { create(:batch, request_count: 2) }
+
       it 'is valid' do
         validator.validate(record)
         expect(validator.validate(record)).to be_nil
@@ -15,9 +15,7 @@ describe UltimaValidator do
     end
 
     context 'when batch contains a single request' do
-      let(:request) { create(:request, request_metadata: create(:request_metadata, read_length: 75)) }
-
-      before { record.requests = [request] }
+      let(:record) { create(:batch, request_count: 1) }
 
       it 'is invalid' do
         validator.validate(record)

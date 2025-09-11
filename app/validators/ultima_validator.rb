@@ -9,6 +9,6 @@ class UltimaValidator < ActiveModel::Validator
   def validate(record)
     return if record.requests.size == 2
 
-    record.errors.add(:base, 'Batches must contain exactly two requests')
+    record.errors.add(:base, 'Batches must contain exactly two requests.')
   end
 end
