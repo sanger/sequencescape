@@ -1,7 +1,7 @@
 ---
 Ultima:
   name: Ultima Sequencing
-  # sti_type: UltimaSequencingPipeline
+  sti_type: UltimaSequencingPipeline
   validator_class_name: UltimaValidator
   sorter: 10
   max_size: 2
