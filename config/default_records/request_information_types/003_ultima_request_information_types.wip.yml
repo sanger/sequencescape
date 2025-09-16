@@ -5,3 +5,17 @@ ot_recipe:
   label: OT recipe
   width: 5
   hide_in_inbox: 0
+
+fragment_size_required_from:
+  name: Fragment size required(from)
+  key: fragment_size_required_from
+  label: Fragment size required(from)
+  width: 5
+  hide_in_inbox: 0
+
+fragment_size_required_to:
+  name: Fragment size required(to)
+  key: fragment_size_required_to
+  label: Fragment size required(to)
+  width: 5
+  hide_in_inbox: 0
