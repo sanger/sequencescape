@@ -10,6 +10,7 @@ module ModelExtensions::Order
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
+
         delegate_validation :request_options_for_validation,
                             as: 'request_options',
                             to: :request_types,

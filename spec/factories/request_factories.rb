@@ -87,6 +87,19 @@ FactoryBot.define do
     end
   end
 
+  factory :ultima_sequencing_request, class: 'UltimaSequencingRequest' do
+    request_type factory: %i[ultima_sequencing]
+    request_purpose { :standard }
+    sti_type { 'SequencingPipeline' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        ot_recipe: 'Free'
+      }
+    end
+  end
+
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
     asset factory: %i[sample_tube]
     request_type factory: %i[library_creation_request_type]

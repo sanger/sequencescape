@@ -25,6 +25,10 @@ module Api
 
       default_includes :uuid_object
 
+      # Associations:
+      has_many :requests
+
+      # Attributes
       # @!attribute [r] uuid
       #   @return [String] The unique identifier of the request type.
       #   @note This field is readonly as this resource is immutable.

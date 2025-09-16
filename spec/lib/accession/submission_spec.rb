@@ -50,7 +50,8 @@ RSpec.describe Accession::Submission, :accession, type: :model do
   it 'posts the submission and return an appropriate response' do
     submission = described_class.new(user, sample)
 
-    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
+    allow(Accession::Request).to receive(:post).with(submission)
+      .and_return(build(:successful_sample_accession_response))
     submission.post
     expect(submission).to be_accessioned
 
@@ -64,9 +65,24 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     submission.update_accession_number
     expect(submission.sample).not_to be_accessioned
 
-    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:successful_accession_response))
+    allow(Accession::Request).to receive(:post).with(submission)
+      .and_return(build(:successful_sample_accession_response))
     submission.post
     submission.update_accession_number
     expect(submission.sample).to be_accessioned
+  end
+
+  it 'raise error message if the submission is invalid' do
+    submission = described_class.new(nil, nil)
+    error_message = "Accessionable submission is invalid: User can't be blank, Sample can't be blank"
+    expect(submission).not_to be_valid
+    expect(submission.errors.full_messages).to include("User can't be blank", "Sample can't be blank")
+    expect { submission.post }.to raise_error(StandardError, error_message)
+
+    submission = described_class.new(user, build(:invalid_accession_sample))
+    error_message = 'Accessionable submission is invalid: Sample has already been accessioned.'
+    expect(submission).not_to be_valid
+    expect(submission.errors.full_messages).to include('Sample has already been accessioned.')
+    expect { submission.post }.to raise_error(StandardError, error_message)
   end
 end

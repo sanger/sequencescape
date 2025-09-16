@@ -25,7 +25,7 @@ class Tag < ApplicationRecord
 
   broadcast_with_warren
 
-  scope :sorted, -> { order('map_id ASC') }
+  scope :sorted, -> { order(:map_id) }
 
   def name
     "Tag #{map_id}"

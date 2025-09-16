@@ -157,7 +157,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :items, -> { distinct }, through: :requests
   has_many :projects, -> { distinct }, through: :orders
   has_many :comments, as: :commentable
-  has_many :events, -> { order('created_at ASC, id ASC') }, as: :eventful
+  has_many :events, -> { order(:created_at, :id) }, as: :eventful
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
@@ -556,7 +556,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession_all_samples
-    samples.find_each(&:accession) if accession_number?
+    samples.find_each do |sample|
+      sample.accession if accession_number?
+    rescue AccessionService::AccessionServiceError => e
+      errors.add(:base, e.message)
+    end
   end
 
   def abbreviation

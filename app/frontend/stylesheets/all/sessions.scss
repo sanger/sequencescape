@@ -1,4 +1,9 @@
 body.sessions {
+  @extend .container-fluid;
+  @extend .justify-content-between;
+  @extend .align-items-center;
+  @extend .p-0;
+
   background-color: #039be5; // fallback for gradient
   // Sanger patterns
   background-position: center right;

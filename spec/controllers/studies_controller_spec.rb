@@ -3,6 +3,8 @@
 require 'rails_helper'
 
 RSpec.describe StudiesController do
+  include MockAccession
+
   let(:data_release_study_type) { create(:data_release_study_type, name: 'genomic sequencing') }
   let(:reference_genome) { create(:reference_genome) }
   let(:study) { create(:study) }
@@ -92,6 +94,149 @@ RSpec.describe StudiesController do
     it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
       expect(subject).to respond_with :ok
       expect(subject).to set_flash.now.to('Role added')
+    end
+  end
+
+  describe '#accession' do
+    let(:study_metadata) { create(:study_metadata) }
+    let(:study) { create(:open_study, study_metadata: create(:study_metadata_for_accessioning)) }
+
+    context 'when accessioning is enabled', :accessioning_enabled do
+      before do
+        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
+
+        get :accession, params: { id: study.id }
+      end
+
+      it 'does not raise an error' do
+        expect { study.reload }.not_to raise_error
+      end
+
+      it 'retrieves an accession number' do
+        expect(study.reload.ebi_accession_number).to be_present
+      end
+
+      it 'displays a success message' do
+        expect(flash[:notice]).to eq('Accession number generated: EGA00002000345')
+      end
+
+      it 'does not display an warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'does not display an error message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'redirects to the study page' do
+        expect(response).to redirect_to(study_path(study.id))
+      end
+    end
+
+    context 'when accessioning is disabled' do
+      before do
+        get :accession, params: { id: study.id }
+      end
+
+      it 'does not raise an error' do
+        expect { study.reload }.not_to raise_error
+      end
+
+      it 'does not retrieve an accession number' do
+        expect(study.reload.ebi_accession_number).to be_nil
+      end
+
+      it 'does not display an info message' do
+        expect(flash[:info]).to be_nil
+      end
+
+      it 'does not display an notice message' do
+        expect(flash[:notice]).to be_nil
+      end
+
+      it 'does not display an warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'displays an error message' do
+        expect(flash[:error]).to eq('Accessioning is not enabled in this environment.')
+      end
+
+      it 'redirects to the study page' do
+        expect(response).to redirect_to(edit_study_path(study.id))
+      end
+    end
+  end
+
+  describe '#accession_all_samples', :accessioning_enabled do
+    let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
+    let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
+
+    before { post :accession_all_samples, params: { id: study.id } }
+
+    context 'when the accessioning succeeds' do
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
+      end
+
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+      end
+    end
+
+    context 'when the accessioning of samples fails' do
+      let(:number_of_samples) { 5 }
+      # tags provided for managed study, when open study is expected
+      let(:samples) { create_list(:sample_for_accessioning_with_managed_study, number_of_samples) }
+
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
+      end
+
+      it 'does not set a flash notice message' do
+        expect(flash[:notice]).to be_nil
+      end
+
+      it 'sets a flash error message' do
+        expect(flash[:error]).to eq(
+          [
+            'The samples in this study could not be accessioned, please check the following errors:',
+            "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
+            "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies."
+          ]
+        )
+      end
+
+      context 'when the study has many samples' do
+        let(:number_of_samples) { 10 }
+
+        it 'does not set a flash notice message' do
+          expect(flash[:notice]).to be_nil
+        end
+
+        it 'sets a flash error message' do
+          expect(flash[:error]).to eq(
+            [
+              'The samples in this study could not be accessioned, please check the following errors:',
+              "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies.",
+              "Accessionable is invalid for sample 'Sample6': Sample has no appropriate studies.",
+              '...',
+              'Only the first 6 of 10 errors are shown.'
+            ]
+          )
+        end
+      end
     end
   end
 end

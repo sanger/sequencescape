@@ -13,6 +13,7 @@ class ProductCatalogue < ApplicationRecord
   # - Classes get loaded properly
   # - Ruby Class loading can't be exploited to instantiate global classes
   include HasBehaviour
+
   has_behaviour LibraryDriven, behaviour_name: 'LibraryDriven'
   has_behaviour Manual, behaviour_name: 'Manual'
   has_behaviour SingleProduct, behaviour_name: 'SingleProduct'

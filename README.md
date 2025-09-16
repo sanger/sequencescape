@@ -1,4 +1,4 @@
-# ![logo](https://github.com/sanger/sequencescape/raw/master/app/assets/images/sequencescape.gif) Sequencescape
+# <img src="app/frontend/images/logo-gradient.svg" alt="logo" style="height:1em;vertical-align:middle;"> Sequencescape
 
 ![Ruby Test](https://github.com/sanger/sequencescape/workflows/Ruby%20Test/badge.svg)
 ![Javascript testing](https://github.com/sanger/sequencescape/workflows/Javascript%20testing/badge.svg)

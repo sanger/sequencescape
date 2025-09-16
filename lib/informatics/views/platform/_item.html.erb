@@ -1,5 +1,7 @@
 <% if item.link == '' %>
 	<li><%= item.text.html_safe %></li>
+<% elsif item.link == 'disabled' %>
+  <li><span class="disabled"><%= item.text.html_safe %></span></li>
 <% elsif item.confirm.nil? -%>
   <li><%= link_to item.text.html_safe, item.link %></li>
 <% else %>

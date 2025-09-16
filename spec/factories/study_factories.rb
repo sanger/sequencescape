@@ -32,6 +32,8 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Study#{n}: Manages" }
     state { 'active' }
+    enforce_accessioning { true }
+    enforce_data_release { true }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update!(
@@ -46,6 +48,8 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Study#{n}: Open" }
     state { 'active' }
+    enforce_accessioning { true }
+    enforce_data_release { true }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update!(

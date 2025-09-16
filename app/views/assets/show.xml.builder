@@ -19,7 +19,7 @@ xml.asset(api_data) do
     @asset.aliquots.each { |aliquot| output_aliquot(xml, aliquot) }
   end
 
-  xml.children { @asset.children.each { |child_asset| xml.id child_asset.id } }
+  xml.children { @asset.children&.each { |child_asset| xml.id child_asset.id } }
   xml.parents { @asset.parents.each { |parent_asset| xml.id parent_asset.id } }
   if @exclude_nested_resource
     # just send the ids

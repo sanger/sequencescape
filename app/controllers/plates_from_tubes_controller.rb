@@ -92,7 +92,7 @@ class PlatesFromTubesController < ApplicationController
   # Set the barcode printers based on the user's selection on the radio buttons
   def set_barcode_printers
     @barcode_printers = BarcodePrinterType96Plate.first.barcode_printers
-    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
+    @barcode_printers = BarcodePrinter.order(:name) if @barcode_printers.blank?
   end
 
   # Transfers tubes to a plate and creates plates from the given tubes.

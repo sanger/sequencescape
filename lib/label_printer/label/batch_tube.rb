@@ -21,14 +21,13 @@ module LabelPrinter
       end
 
       def tubes
-        @tubes ||=
-          if stock.present?
-            # all info on a label including barcode is about target_asset stock asset
-            requests.map { |request| request.target_labware.stock_asset }
-          else
-            # all info on a label including barcode is about target_asset
-            requests.map(&:target_labware)
-          end
+        # If target_asset is a lane, use its parent tube.
+        # If stock is present, all label info (including barcode) is about the stock asset;
+        # otherwise, all label info is about the target_labware.
+        @tubes ||= begin
+          targets = requests.map { |r| r.target_asset.is_a?(Lane) ? r.target_labware.parent : r.target_labware }
+          stock.present? ? targets.map(&:stock_asset) : targets
+        end
       end
 
       private
