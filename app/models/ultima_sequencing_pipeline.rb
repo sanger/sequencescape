@@ -2,13 +2,8 @@
 
 # Specialized sequencing pipeline for Ultima
 class UltimaSequencingPipeline < SequencingPipeline
-  def ot_recipe_consistent_for_batch?(batch) # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity
+  def ot_recipe_consistent_for_batch?(batch)
     batch.requests.map { |r| r.request_metadata&.ot_recipe }
-
-    if batch.requests.empty? || batch.requests.first.request_metadata.nil?
-      # No requests selected or the pipeline doesn't contain metadata to check
-      return true
-    end
 
     ot_recipe_list = batch.requests.filter_map { |request| request.request_metadata.ot_recipe }
 

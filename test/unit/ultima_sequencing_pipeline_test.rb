@@ -44,5 +44,14 @@ class UltimaSequencingPipelineTest < ActiveSupport::TestCase
 
       assert_not @pipeline.ot_recipe_consistent_for_batch?(batch)
     end
+
+    should 'return true when no requests have ot_recipe' do
+      batch = @pipeline.batches.build
+      r1 = create(:sequencing_request, request_metadata_attributes: {})
+      r2 = create(:sequencing_request, request_metadata_attributes: {})
+      batch.requests << [r1, r2]
+
+      assert @pipeline.ot_recipe_consistent_for_batch?(batch)
+    end
   end
 end
