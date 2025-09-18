@@ -14,7 +14,6 @@ limber_bioscan_library_prep:
   name: Bioscan Library Preparation
   asset_type: Well
   order: 1
-  # TODO: is this correct request class?
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
   billable: true
   product_line_name: Illumina-HTP
@@ -22,3 +21,4 @@ limber_bioscan_library_prep:
     - Bioscan
   acceptable_purposes:
     - LBSN-96 Lysate
+    - LBSN-96 Lysate Input
