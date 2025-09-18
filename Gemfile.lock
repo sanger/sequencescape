@@ -687,6 +687,7 @@ DEPENDENCIES
   rainbow
   record_loader!
   rest-client
+  rexml
   roo
   rspec-collection_matchers
   rspec-github
