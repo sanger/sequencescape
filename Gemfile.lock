@@ -693,7 +693,7 @@ DEPENDENCIES
   rspec-html-matchers
   rspec-json_expectations
   rspec-longrun
-  rspec-rails
+  rspec-rails (~> 7.1.0)
   rubocop
   rubocop-capybara
   rubocop-factory_bot
