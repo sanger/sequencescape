@@ -22,6 +22,7 @@ module Api
             validate_api_key request.env[http_env_api_key]
           else
             log_request_without_key
+            render_unauthorized if Flipper.enabled?(:y25_442_make_api_key_mandatory)
           end
         end
 
