@@ -28,8 +28,7 @@ module StateChanger
         transfer_requests_as_target: [
           { associated_requests: %i[request_type request_events] },
           :target_aliquot_requests
-        ],
-        requests_as_source: %i[request_type request_events]
+        ]
       )
     end
 
@@ -43,7 +42,7 @@ module StateChanger
     end
 
     def pending_orders
-      associated_requests.select(&:pending?).pluck(:order_id).uniq
+      receptacles.flat_map(&:aliquot_requests).uniq.select(&:pending?).pluck(:order_id).uniq
     end
 
     def generate_events_for(orders)
@@ -91,8 +90,6 @@ module StateChanger
     end
 
     # Pulls out the requests associated with the wells.
-    # This includes both aliquot.request (the request that created this well) and
-    # requests_as_source (the requests from submissions made on this well).
     # Note: Do *NOT* go through labware here, as you'll pull out all requests
     # not just those associated with the wells in the 'contents' array
     # e.g. contents might be just the wells you are failing.
@@ -104,13 +101,7 @@ module StateChanger
       # uniq is present here in case more than one well shares the same request
       # e.g. a parent well was split into multiple child wells
       # aliquot.request holds the request that created this well
-      aliquot_requests = receptacles.flat_map(&:aliquot_requests).uniq
-
-      # requests_as_source are new requests made on this well, e.g. a submission
-      requests_as_source = receptacles.flat_map(&:requests_as_source).uniq
-
-      # we are changing the state of both
-      aliquot_requests + requests_as_source
+      receptacles.flat_map(&:aliquot_requests).uniq
     end
 
     # Checks if the transfer requests have an associated submission, and thus
