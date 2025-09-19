@@ -11,11 +11,15 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     'This may produce odd results for some pipelines.'
   self.category = :setup_and_test
 
+  include UatActions::Shared::StudyHelper
+
   ERROR_SUBMISSION_TEMPLATE_DOES_NOT_EXIST = "Submission template '%s' does not exist."
   ERROR_PLATE_DOES_NOT_EXIST = 'Plate with barcode %s does not exist.'
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
   ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
   ERROR_PRIMER_PANEL_DOES_NOT_EXIST = "Primer panel '%s' does not exist."
+  ERROR_STUDY_DOES_NOT_EXIST = "Study '%s' does not exist."
+  ERROR_PROJECT_DOES_NOT_EXIST = "Project '%s' does not exist."
 
   # Form fields
   form_field :submission_template_name,
@@ -63,6 +67,26 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              options: {
                include_blank: 'Primer panel selection...'
              }
+  form_field :study_name,
+             :select,
+             label: 'Study',
+             help:
+               'The study under which samples will be created. List includes all active studies. ' \
+               'Leave blank to use the default study.',
+             select_options: -> { Study.active.alphabetical.pluck(:name) },
+             options: {
+               include_blank: 'Study selection...'
+             }
+  form_field :project_name,
+             :select,
+             label: 'Project',
+             help:
+               'The project under which orders will be created. List includes all active projects. ' \
+               'Leave blank to use the default project.',
+             select_options: -> { Project.active.alphabetical.pluck(:name) },
+             options: {
+               include_blank: 'Order Project selection...'
+             }
   form_field :number_of_wells_with_samples,
              :number_field,
              label: 'Number of wells with samples',
@@ -106,6 +130,8 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   validate :validate_plate_purpose_exists
   validate :validate_library_type_exists
   validate :validate_primer_panel_exists
+  validate :validate_study_exists
+  validate :validate_project_exists
 
   #
   # Returns a default copy of the UatAction which will be used to fill in the form
@@ -142,10 +168,13 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
       )
     report['plate_barcode_0'] = labware.human_barcode
     report['submission_id'] = order.submission.id
-    report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present?
+    report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present? &&
+      order.request_options[:library_type] != 0
     report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[
       :primer_panel_name
     ].present?
+    report['study_name'] = order.study.name
+    report['project_name'] = order.project.name
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
     report['number_of_samples_in_each_well'] = labware.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
@@ -222,6 +251,30 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     errors.add(:primer_panel_name, message)
   end
 
+  # Validates that the study exists for the specified study name.
+  # It is skipped if no study name is provided and the default will be used.
+  #
+  # return [void]
+  def validate_study_exists
+    return if study_name.blank? # default set from StaticRecords will be used
+    return if Study.exists?(name: study_name)
+
+    message = format(ERROR_STUDY_DOES_NOT_EXIST, study_name)
+    errors.add(:study_name, message)
+  end
+
+  # Validates that the project exists for the specified project name.
+  # It is skipped if no project name is provided and the default will be used.
+  #
+  # return [void]
+  def validate_project_exists
+    return if project_name.blank? # default set from StaticRecords will be used
+    return if Project.exists?(name: project_name)
+
+    message = format(ERROR_PROJECT_DOES_NOT_EXIST, project_name)
+    errors.add(:project_name, message)
+  end
+
   def submission_template
     @submission_template = SubmissionTemplate.find_by(name: submission_template_name)
   end
@@ -284,6 +337,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     generator.well_count = determine_well_count
     generator.well_layout = 'Random'
     generator.number_of_samples_in_each_well = num_samples_per_well
+    generator.study_name = study_name if study_name.present?
     generator
   end
 
@@ -323,12 +377,10 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
 
   # Any helper methods
 
-  def study
-    UatActions::StaticRecords.study
-  end
-
   def project
-    UatActions::StaticRecords.project
+    return UatActions::StaticRecords.project if project_name.blank?
+
+    Project.find_by(name: project_name) || UatActions::StaticRecords.project
   end
 
   #

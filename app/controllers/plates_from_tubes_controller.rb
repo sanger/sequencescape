@@ -51,10 +51,6 @@ class PlatesFromTubesController < ApplicationController
     flash.clear
   end
 
-  def valid_number_of_tubes?(tube_barcodes)
-    tube_barcodes.size <= @max_wells
-  end
-
   def find_duplicate_tubes(tube_barcodes)
     tube_barcodes.group_by { |e| e }.select { |_, v| v.size > 1 }.keys
   end
@@ -99,16 +95,21 @@ class PlatesFromTubesController < ApplicationController
   #
   # @return [void]
   def transfer_tubes_to_plate(scanned_user, barcode_printer)
-    source_tube_barcodes = extract_source_tube_barcodes
+    # Map of barcodes and positions
+    source_tube_barcodes_map, json_error = extract_source_tube_barcodes
+    return if json_error
+
+    # List of tube barcodes via hash values
+    source_tube_barcodes = source_tube_barcodes_map.values
     return unless validate_tube_count?(source_tube_barcodes)
     return unless validate_duplicate_tubes?(source_tube_barcodes)
 
-    found_tubes = find_tubes(source_tube_barcodes)
-    return unless validate_missing_tubes?(found_tubes, source_tube_barcodes)
-    return unless validate_tubes_with_samples?(found_tubes)
+    # Map of tubes and positions
+    found_tubes_map = find_tubes(source_tube_barcodes_map)
+    return unless validate_missing_tubes?(found_tubes_map, source_tube_barcodes)
+    return unless validate_tubes_with_samples?(found_tubes_map)
 
-    create_plates(scanned_user, barcode_printer, found_tubes)
-    handle_successful_creation
+    create_plates(scanned_user, barcode_printer, found_tubes_map)
   end
 
   def handle_successful_creation
@@ -123,10 +124,16 @@ class PlatesFromTubesController < ApplicationController
   #
   # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
   # @return [Boolean] Returns true if the number of tubes is valid, false otherwise.
-  def validate_tube_count?(source_tube_barcodes)
-    unless valid_number_of_tubes?(source_tube_barcodes)
+  def validate_tube_count?(source_tube_barcodes) # rubocop:disable Metrics/MethodLength
+    if source_tube_barcodes.empty?
       respond_to do |format|
-        handle_invalid_tube_count
+        flash[:error] = 'No tubes to transfer'
+        format.html { render(VIEW_PATH) }
+      end
+      return false
+    elsif source_tube_barcodes.size > @max_wells
+      respond_to do |format|
+        flash[:error] = 'Number of tubes exceeds the maximum number of wells'
         format.html { render(VIEW_PATH) }
       end
       return false
@@ -169,10 +176,10 @@ class PlatesFromTubesController < ApplicationController
   # - Sets an error message in the flash, listing the barcodes of empty tubes.
   # - Renders the defined VIEW_PATH to allow the user to correct the issue.
   #
-  # @param tubes [Array<Tube>] the collection of tube objects to check
+  # @param tubes_map [Hash{position<String> => tube<Tube>}] the collection of tube objects by position to check
   # @return [Boolean] true if all tubes have samples, false otherwise
-  def validate_tubes_with_samples?(tubes)
-    empty_tubes = tubes.select { |tube| tube.samples.empty? }
+  def validate_tubes_with_samples?(tubes_map)
+    empty_tubes = tubes_map.select { |_position, tube| tube.samples.empty? }.map { |_position, tube| tube }
     return true if empty_tubes.empty?
 
     respond_to do |format|
@@ -192,37 +199,41 @@ class PlatesFromTubesController < ApplicationController
     flash[:error] = 'Please enter a valid user barcode'
   end
 
-  def handle_invalid_tube_count
-    flash[:error] = 'Number of tubes exceeds the maximum number of wells'
-  end
-
   def handle_duplicate_tubes(duplicate_tubes)
     flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
   end
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
 
-  # Extracts source tube barcodes from the parameters.
+  # Extracts source tubes map from the parameters.
   #
-  # @return [Array<String>] An array of source tube barcodes.
+  # @return [Hash{position<String> => barcode<String>}] A hash of source tube barcodes with their position.
+  # @return [Boolean] true if there was an error parsing the JSON.
   def extract_source_tube_barcodes
-    params[:plates_from_tubes][:source_tubes]&.split(/[\s,]+/)&.map(&:strip) || []
+    begin
+      tubes = JSON.parse(params[:plates_from_tubes][:source_tubes_map])
+    rescue JSON::JSONError => e
+      flash[:error] = "Source tubes input is not valid JSON. Error message: #{e.message}"
+      return {}, true
+    end
+    [tubes.presence || {}, false]
   end
 
-  # Finds tubes based on the provided barcodes and stores them in found_tubes.
+  # Finds tubes based on the provided barcodes and stores them in tubes_map.
   #
-  # @param [Array<String>] source_tube_barcodes An array of source tube barcodes.
-  # @return [void]
-  def find_tubes(source_tube_barcodes)
-    found_tubes = []
-    source_tube_barcodes.each do |tube_barcode|
-      tube = Tube.find_by_barcode(tube_barcode)
+  # @param [Hash{String => String}] source_tube_barcodes_map
+  #         A hash mapping positions to source tube barcodes.
+  # @return [Hash{String => Tube}] A hash mapping positions to found Tube objects.
+  def find_tubes(source_tube_barcodes_map)
+    tubes_map = {}
+    source_tube_barcodes_map.each do |position, barcode|
+      tube = Tube.find_by_barcode(barcode)
       if tube.nil?
-        flash[:error] = "Tube with barcode #{tube_barcode} not found"
+        flash[:error] = "Tube with barcode #{barcode} not found"
         break
       end
-      found_tubes << tube
+      tubes_map[position] = tube
     end
-    found_tubes
+    tubes_map
   end
 
   # Creates plates from the found tubes and stores them in @created_plates.
@@ -231,18 +242,34 @@ class PlatesFromTubesController < ApplicationController
   # @param [User] scanned_user The user who scanned the tubes.
   # @param [BarcodePrinter] barcode_printer The barcode printer to use.
   # @return [void]
-  def create_plates(scanned_user, barcode_printer, found_tubes)
+  def create_plates(scanned_user, barcode_printer, tubes_map) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @created_plates = []
     @asset_groups = []
     ActiveRecord::Base.transaction do
       @plate_creator.each do |creator|
-        creator.create_plates_from_tubes!(found_tubes.dup, @created_plates, scanned_user, barcode_printer)
+        creator.create_plates_from_tubes!(tubes_map.dup, @created_plates, scanned_user, barcode_printer)
+      rescue Plate::Creator::PlateCreationError => e
+        # Rollback if we get an exception
+        flash[:error] = "Plate creation failed: #{e}"
+        raise ActiveRecord::Rollback
       end
     end
-    return unless params[:plates_from_tubes][:create_asset_group] == 'Yes'
 
-    # The logic is the same for all plate creators, so we can just use the first one
-    @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
+    # Return failure if created_plates is empty
+    if @created_plates.blank?
+      respond_to do |format|
+        @plate_creator.each { |creator| flash[:warning] = creator.warnings if creator.warnings.present? }
+        format.html { render(VIEW_PATH) }
+      end
+      return false
+    end
+
+    if params[:plates_from_tubes][:create_asset_group] == 'Yes'
+      # The logic is the same for all plate creators, so we can just use the first one
+      @asset_groups << @plate_creator.first.create_asset_group(@created_plates)
+    end
+
+    handle_successful_creation
   end
 end
 # rubocop:enable Metrics/ClassLength

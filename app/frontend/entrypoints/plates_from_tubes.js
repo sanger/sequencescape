@@ -62,11 +62,36 @@ $(() => {
   // Select the source tubes input field
   const sourceTubesInput = $("#plates_from_tubes_source_tubes");
 
+  const aCharCode = "A".charCodeAt(0);
+  // Custom line number formatter to convert line numbers to plate positions (e.g., 1 -> A1, 2 -> A2, ..., 13 -> B1)
+  const lineNumberFormatter = (line) => {
+    const rowNum = (line - 1) % 8;
+    const row = String.fromCharCode(rowNum + aCharCode);
+    const col = Math.floor((line - 1) / 8) + 1;
+    return `${row}${col}`;
+  };
+
   // Initialize the CodeMirror editor with custom settings
   let editor = CodeMirror.fromTextArea(sourceTubesInput[0], {
     lineNumbers: true, // Enable line numbers
+    lineNumberFormatter: lineNumberFormatter, // Custom line number formatter
     mode: "barcode_reader", // Use the custom "barcode_reader" mode
     theme: "eclipse", // Set the editor theme
+  });
+
+  /**
+   * Event listener for beforeChange in the CodeMirror editor.
+   * Prevents adding more than 96 lines (8 rows x 12 columns) for a 96 well plate.
+   */
+  editor.on("beforeChange", function (instance, change) {
+    const addedLines = change.text.length - 1;
+    const currentLines = instance.lineCount();
+    const MAX_LINES = 96; // Maximum lines for a 96 well plate
+
+    if (currentLines + addedLines > MAX_LINES) {
+      // Prevent the change if it would exceed 96 lines
+      change.cancel();
+    }
   });
 
   /**
@@ -97,5 +122,24 @@ $(() => {
         $("#submit_button").prop("disabled", false);
       }
     }
+  });
+
+  const form = $("#plates_from_tubes_form");
+  const hiddenMap = $("#plates_from_tubes_source_tubes_map")[0];
+  // We dynamically build barcode map on submit because we don't want to send the controller
+  // a messy string of barcodes and empty lines. We want a clean JSON map of well positions to barcodes.
+  form.on("submit", function () {
+    // Split by line break
+    const barcodes = editor.getValue().split(/\r?\n/);
+    const barcodeMap = {};
+    barcodes.forEach((barcode, idx) => {
+      // idx+1 because lineNumberFormatter starts at 1 not 0
+      const position = lineNumberFormatter(idx + 1);
+      // Skip empty lines
+      if (barcode.trim() === "") return;
+
+      barcodeMap[position] = barcode.trim();
+    });
+    hiddenMap.value = JSON.stringify(barcodeMap);
   });
 });
