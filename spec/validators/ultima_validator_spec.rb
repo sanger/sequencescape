@@ -10,7 +10,7 @@ describe UltimaValidator do
 
       it 'is valid' do
         validator.validate(record)
-        expect(validator.validate(record)).to be_nil
+        expect(record.errors[:base]).to be_empty
       end
     end
 
