@@ -72,8 +72,11 @@ group :default do
   # Version 0.1.1 was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
   # This version is tested and compatible with Rails 7.1/7.2 and Ruby 3.2/3.3.
-  gem 'sanger-jsonapi-resources', '~> 0.1.1'
-
+  # gem 'sanger-jsonapi-resources', '~> 0.1.1'
+  # rubocop:disable Layout/LineLength
+  gem 'sanger-jsonapi-resources', git: 'https://github.com/sanger/jsonapi-resources.git',
+                                  branch: 'y25-319-from-develop-as-psd-we-need-to-fix-the-json-api-resource-incompatibility-with-rack-which-is-causing-422-errors-to-fail-with-a-status-of-0'
+  # rubocop:enable Layout/LineLength
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 

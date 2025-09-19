@@ -7,6 +7,17 @@ GIT
       activerecord (>= 4.0.0)
 
 GIT
+  remote: https://github.com/sanger/jsonapi-resources.git
+  revision: 21092b05ff00155878c55edca7971a87028dbb7c
+  branch: y25-319-from-develop-as-psd-we-need-to-fix-the-json-api-resource-incompatibility-with-rack-which-is-causing-422-errors-to-fail-with-a-status-of-0
+  specs:
+    sanger-jsonapi-resources (0.1.2)
+      activerecord (>= 4.1)
+      concurrent-ruby
+      csv
+      railties (>= 4.1)
+
+GIT
   remote: https://github.com/sanger/record_loader
   revision: 9e7481f4d2342f042ab13465962e5d6689863198
   specs:
@@ -511,11 +522,6 @@ GEM
       logger
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
-    sanger-jsonapi-resources (0.1.1)
-      activerecord (>= 4.1)
-      concurrent-ruby
-      csv
-      railties (>= 4.1)
     sanger_warren (0.5.0)
       bunny (~> 2.17)
       connection_pool (~> 2.2)
@@ -703,7 +709,7 @@ DEPENDENCIES
   rubocop-rspec_rails
   ruby-prof
   ruby-units
-  sanger-jsonapi-resources (~> 0.1.1)
+  sanger-jsonapi-resources!
   sanger_barcode_format!
   sanger_warren
   selenium-webdriver (~> 4.1)
