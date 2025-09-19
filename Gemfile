@@ -97,8 +97,9 @@ group :default do
   # Excel file reading
   gem 'roo'
 
-  # Used in XML generation.
+  # Used in XML generation and parsing
   gem 'builder'
+  gem 'rexml' # NOTE: Would be good to remove this due to frequent security issues
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
