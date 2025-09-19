@@ -17,12 +17,6 @@ FactoryBot.define do
     end
   end
 
-  factory(:purpose_additional_input, class: 'PlatePurpose::AdditionalInput') do
-    name { generate(:purpose_name) }
-    target_type { 'Plate' }
-    size { '96' }
-  end
-
   factory :strip_tube_purpose, class: 'PlatePurpose' do
     prefix { 'LS' }
     name { generate(:purpose_name) }
