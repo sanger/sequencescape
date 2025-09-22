@@ -42,7 +42,7 @@ module StateChanger
     end
 
     def pending_orders
-      receptacles.flat_map(&:aliquot_requests).uniq.select(&:pending?).pluck(:order_id).uniq
+      associated_requests.select(&:pending?).pluck(:order_id).uniq
     end
 
     def generate_events_for(orders)
