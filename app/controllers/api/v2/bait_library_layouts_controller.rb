@@ -40,7 +40,7 @@ module Api
       private
 
       def respond_with_errors(title, details, status)
-        status_code = Rack::Utils::SYMBOL_TO_STATUS_CODE[status]
+        status_code = Rack::Utils.status_code(status)
 
         errors = details.map { |detail| { title: title, detail: detail, code: status_code, status: status_code } }
 
