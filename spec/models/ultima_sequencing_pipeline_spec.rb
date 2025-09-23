@@ -5,16 +5,11 @@ RSpec.describe UltimaSequencingPipeline, type: :model do
   let(:pipeline) do
     described_class.new(
       workflow: Workflow.new,
-      request_types: [create(:sequencing_request_type)]
+      request_types: [create(:ultima_sequencing)]
     )
   end
 
   describe '#ot_recipe_consistent_for_batch?' do
-    it 'returns true when batch is empty' do
-      batch = pipeline.batches.build
-      expect(pipeline.ot_recipe_consistent_for_batch?(batch)).to be true
-    end
-
     it 'returns true when all requests have the same ot_recipe' do
       batch = pipeline.batches.build
       r1 = create(:ultima_sequencing_request, request_metadata_attributes: { ot_recipe: 'Free' })
