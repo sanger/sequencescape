@@ -3,8 +3,6 @@
 # Specialized sequencing pipeline for Ultima
 class UltimaSequencingPipeline < SequencingPipeline
   def ot_recipe_consistent_for_batch?(batch)
-    batch.requests.map { |r| r.request_metadata&.ot_recipe }
-
     ot_recipe_list = batch.requests.filter_map { |request| request.request_metadata.ot_recipe }
 
     # The pipeline doen't contain the ot_recipe attribute
