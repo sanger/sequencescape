@@ -46,5 +46,4 @@ class BatchCreationValidator < ActiveModel::Validator
 
     record.errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
   end
-
 end

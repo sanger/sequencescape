@@ -11,7 +11,7 @@ describe UltimaValidator do
       let(:request1) { create(:ultima_sequencing_request, request_metadata_attributes: { ot_recipe: 'Free' }) }
       let(:request2) { create(:ultima_sequencing_request, request_metadata_attributes: { ot_recipe: 'Free' }) }
 
-      before do   
+      before do
         batch.requests << [request1, request2]
       end
 
@@ -31,7 +31,7 @@ describe UltimaValidator do
         batch.requests << [request1, request2]
       end
 
-      it "is invalid due to ot_recipe mismatch" do
+      it 'is invalid due to ot_recipe mismatch' do
         validator.validate(batch)
         expect(batch.errors[:base]).to include(described_class::OT_RECIPE_CONSISTENT_MSG)
       end
@@ -51,6 +51,5 @@ describe UltimaValidator do
         expect(batch.errors[:base]).to include(described_class::TWO_REQUESTS_MSG)
       end
     end
-
   end
 end
