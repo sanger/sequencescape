@@ -36,7 +36,7 @@ Rails.application.routes.draw do
 
       jsonapi_resources :barcode_printers
       jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments, defaults: { permissive: %i[post] }
+      jsonapi_resources :comments, defaults: { permissive: %i[get post] }
       jsonapi_resources :custom_metadatum_collections
       jsonapi_resources :labware, defaults: { permissive: %i[get] }
       jsonapi_resources :lanes
@@ -57,7 +57,7 @@ Rails.application.routes.draw do
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
       jsonapi_resources :purposes
-      jsonapi_resources :qc_assays, defaults: { permissive: %i[post] }
+      jsonapi_resources :qc_assays, defaults: { permissive: %i[get post] }
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
