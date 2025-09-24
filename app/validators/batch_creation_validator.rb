@@ -10,7 +10,6 @@ class BatchCreationValidator < ActiveModel::Validator
     batch_meets_minimum_size(record)
     all_requests_are_ready?(record)
     requests_have_same_target_purpose(record)
-    # requests_have_same_ot_recipe(record) if record.pipeline.is_a?(UltimaSequencingPipeline)
   end
 
   private
@@ -48,9 +47,4 @@ class BatchCreationValidator < ActiveModel::Validator
     record.errors.add :base, "The selected requests must have the same values in their 'Flowcell Requested' field."
   end
 
-  # def requests_have_same_ot_recipe(record)
-  #   return if record.pipeline.ot_recipe_consistent_for_batch?(record)
-
-  #   record.errors.add :base, "The selected requests must have the same values in their 'OT Recipe' field."
-  # end
 end
