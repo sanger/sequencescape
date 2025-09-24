@@ -5,14 +5,33 @@ require 'rails_helper'
 shared_examples_for 'ApiKeyAuthenticatable' do
   let(:client_headers) { { 'User-Agent' => 'Test Agent', 'Origin' => 'Test Origin' } }.freeze
   let(:permissive_route) do
-    Rails.application.routes.recognize_path(base_endpoint, method: :get).fetch(:permissive, false)
+    Rails.application.routes.recognize_path(base_endpoint, method: :get).fetch(:permissive, []).include?(:get)
   end
 
   context 'without an API key' do
-    it 'gets a success response' do
-      api_get base_endpoint, headers: client_headers
+    context 'when feature flag is disabled' do
+      before { Flipper.disable :y25_442_make_api_key_mandatory }
 
-      expect(response).to have_http_status(:success)
+      it 'gets a success response' do
+        api_get base_endpoint, headers: client_headers
+
+        expect(response).to have_http_status(:success)
+      end
+    end
+
+    context 'when feature flag is enabled' do
+      before { Flipper.enable :y25_442_make_api_key_mandatory }
+
+      it 'gets an unauthorized response' do
+        api_get base_endpoint, headers: client_headers
+
+        # Permissive routes are successful without API keys
+        if permissive_route
+          expect(response).to have_http_status(:success)
+        else
+          expect(response).to have_http_status(:unauthorized)
+        end
+      end
     end
 
     it 'logs the request with client details' do

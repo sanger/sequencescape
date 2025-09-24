@@ -3,10 +3,10 @@ module Api
   module V2
     module Concerns
       # Provides the tools needed to confirm that a valid API key was provided for the header X-Sequencescape-Client-Id.
-      # - Skips the check if the endpoint specifies permissve GETs
+      # - Skips the check if the endpoint specifies permissive methods names.
       # - Where the API key is in the request and exists in among ApiApplication, allow the request to be served.
       # - Where the API key is in the request but does not exist, log the attempt and render an unauthorized response.
-      # - Where the API key is not in the request, respond normally (for now) and log the system that made the request.
+      # - Where the API key is not in the request, log the attempt and render an unauthorized response.
       module ApiKeyAuthenticatable
         extend ActiveSupport::Concern
 
@@ -74,14 +74,14 @@ module Api
         # Checks if the current request is a permissive route.
         #
         # A route is considered permissive if the 'permissive' path parameter is present in the request
-        # and the HTTP request method is 'GET'.
+        # and the HTTP request method is specified in the array of permissive methods.
         # Path parameters can be defined via defaults next to the route in routes.rb
-        # e.g. jsonapi_resources :samples, defaults: { permissive: true }
+        # e.g. jsonapi_resources :samples, defaults: { permissive: [:get, :post] }
         #
         # @return [Boolean] true if the route is permissive, false otherwise.
         def permissive_route
           # Use path_parameters as standard parameters are overridable by requesters
-          request.path_parameters.fetch(:permissive, false) && request.get?
+          request.path_parameters.fetch(:permissive, []).include?(request.method.downcase.to_sym)
         end
       end
     end
