@@ -10,84 +10,89 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
         data: [
           {
             type: 'poly_metadata',
-            attributes: {
-              key: 'key_1',
-              value: 'value_1'
-            },
+            attributes: { key: 'key_1', value: 'value_1' },
             relationships: {
-              metadatable: {
-                data: { type: 'aliquot', id: aliquot.id.to_s }
-              }
+              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
             }
           },
           {
             type: 'poly_metadata',
-            attributes: {
-              key: 'key_2',
-              value: 'value_2'
-            },
+            attributes: { key: 'key_2', value: 'value_2' },
             relationships: {
-              metadatable: {
-                data: { type: 'aliquot', id: aliquot.id.to_s }
-              }
+              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
             }
           }
         ]
       }
     end
 
-    let(:expected_returned_data) do
-      [
-      {
-        "id" => PolyMetadatum.first.id.to_s,
-        "type" => "poly_metadata",
-        "attributes" => { "key" => "key_1", "value" => "value_1" },
-        "relationships" => {
-          "metadatable" => {
-            "data" => { "type" => "aliquot", "id" => aliquot.id.to_s }
-          }
-        }
-      },
-      {
-        "id" => PolyMetadatum.second.id.to_s,
-        "type" => "poly_metadata",
-        "attributes" => { "key" => "key_2", "value" => "value_2" },
-        "relationships" => {
-          "metadatable" => {
-            "data" => { "type" => "aliquot", "id" => aliquot.id.to_s }
-          }
-        }
-      }
-    ]
+    describe 'with valid payload' do
+      before do
+        post '/api/v2/poly_metadata/bulk_create', params: valid_payload, as: :json
       end
 
-    it 'creates multiple poly metadata records' do
-      expect do
-        post '/api/v2/poly_metadata/bulk_create',
-             params: valid_payload,
-             as: :json
-      end.to change(PolyMetadatum, :count).by(2)
+      it 'creates the expected number of records' do
+        expect(PolyMetadatum.count).to eq(2)
+      end
 
-      expect(response).to have_http_status(:created)
-      body = JSON.parse(response.body)
+      it 'returns status created' do
+        expect(response).to have_http_status(:created)
+      end
 
-      expect(body["data"]).to match_array(expected_returned_data)
+      it 'returns the created poly_metadata records' do
+        body = response.parsed_body
+        ids = PolyMetadatum.pluck(:id).map(&:to_s)
+
+        expect(body['data']).to contain_exactly({
+                                                  'id' => ids.first,
+                                                  'type' => 'poly_metadata',
+                                                  'attributes' => { 'key' => 'key_1', 'value' => 'value_1' },
+                                                  'relationships' => {
+                                                    'metadatable' => {
+                                                      'data' => { 'type' => 'aliquot', 'id' => aliquot.id.to_s }
+                                                    }
+                                                  }
+                                                }, {
+                                                  'id' => ids.second,
+                                                  'type' => 'poly_metadata',
+                                                  'attributes' => { 'key' => 'key_2', 'value' => 'value_2' },
+                                                  'relationships' => {
+                                                    'metadatable' => {
+                                                      'data' => { 'type' => 'aliquot', 'id' => aliquot.id.to_s }
+                                                    }
+                                                  }
+                                                })
+      end
     end
 
-    it 'rolls back transaction if one record fails' do
-      bad_payload = valid_payload.dup
-      bad_payload[:data] << {
-        type: 'poly_metadata',
-        attributes: { key: nil, value: 'missing key' }, # invalid
-        relationships: { metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } } }
-      }
-      expect do
+    describe 'with invalid payload' do
+      let(:bad_payload) do
+        valid_payload.deep_dup.tap do |payload|
+          payload[:data] << {
+            type: 'poly_metadata',
+            attributes: { key: nil, value: 'missing key' }, # invalid
+            relationships: {
+              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
+            }
+          }
+        end
+      end
+
+      it 'does not create any records' do
+        expect do
+          suppress(Exception) do
+            post '/api/v2/poly_metadata/bulk_create', params: bad_payload, as: :json
+          end
+        end.not_to change(PolyMetadatum, :count)
+      end
+
+      it 'raises a validation error' do
         expect do
           post '/api/v2/poly_metadata/bulk_create',
                params: bad_payload,
                as: :json
         end.to raise_error(ActiveRecord::RecordInvalid, /Key can't be blank/)
-      end.not_to change(PolyMetadatum, :count)
+      end
     end
   end
 end
