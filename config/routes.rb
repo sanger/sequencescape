@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
 
       jsonapi_resources :poly_metadata
+      post 'poly_metadata/bulk_create', to: 'poly_metadata#bulk_create'
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
