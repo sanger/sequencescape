@@ -19,7 +19,7 @@ describe UltimaValidator do
 
       it 'is invalid' do
         validator.validate(record)
-        expect(record.errors[:base]).to include('Batches must contain exactly two requests.')
+        expect(record.errors[:base]).to include(described_class::ERROR_MSG)
       end
     end
   end
