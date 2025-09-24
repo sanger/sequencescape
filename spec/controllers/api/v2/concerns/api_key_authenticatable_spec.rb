@@ -7,9 +7,9 @@ RSpec.describe Api::V2::Concerns::ApiKeyAuthenticatable do
   end
 
   describe '#permissive_route' do
-    context 'when permissive param is present and request is GET' do
+    context 'when permissive param includes :get and request method is GET' do
       before do
-        allow(controller.request).to receive_messages(path_parameters: { permissive: true }, get?: true)
+        allow(controller.request).to receive_messages(path_parameters: { permissive: [:get] }, method: 'GET')
       end
 
       it 'returns true' do
@@ -17,9 +17,9 @@ RSpec.describe Api::V2::Concerns::ApiKeyAuthenticatable do
       end
     end
 
-    context 'when permissive param is present but request is not GET' do
+    context 'when permissive param includes :get but request method is not GET' do
       before do
-        allow(controller.request).to receive_messages(path_parameters: { permissive: true }, get?: false)
+        allow(controller.request).to receive_messages(path_parameters: { permissive: [:get] }, method: 'POST')
       end
 
       it 'returns false' do
@@ -29,7 +29,7 @@ RSpec.describe Api::V2::Concerns::ApiKeyAuthenticatable do
 
     context 'when permissive param is not present' do
       before do
-        allow(controller.request).to receive_messages(path_parameters: {}, get?: true)
+        allow(controller.request).to receive_messages(path_parameters: {}, method: 'GET')
       end
 
       it 'returns false' do
