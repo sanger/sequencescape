@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 class UltimaValidator < ActiveModel::Validator
-  ERROR_MSG = 'Batches must contain exactly two requests.'
+  TWO_REQUESTS_MSG = 'Batches must contain exactly two requests.'
+  OT_RECIPE_CONSISTENT_MSG = 'OT Recipe must be the same for both requests.'
+  
   # Used in _pipeline_limit.html to display custom validation warnings
   def self.validation_info
     'OT Recipe must be the same for both requests.'
@@ -8,8 +10,19 @@ class UltimaValidator < ActiveModel::Validator
 
   # Validates that a batch contains the two requests.
   def validate(record)
-    return if record.requests.size == 2
+    validate_exactly_two_requests(record)
+    requests_have_same_ot_recipe(record)
+  end
+  
+  private
 
-    record.errors.add(:base, ERROR_MSG)
+  def validate_exactly_two_requests(record)
+    return if record.requests.size == 2
+    record.errors.add(:base, TWO_REQUESTS_MSG)
+  end
+
+  def requests_have_same_ot_recipe(record)
+    return if record.pipeline.ot_recipe_consistent_for_batch?(record)
+    record.errors.add(:base, OT_RECIPE_CONSISTENT_MSG)
   end
 end
