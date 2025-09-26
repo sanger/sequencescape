@@ -1,0 +1,12 @@
+---
+FragmentSizeRequiredFromInformationTypeForUltima:
+  pipeline_name: Ultima
+  request_information_type_key: fragment_size_required_from
+
+FragmentSizeRequiredToInformationTypeForUltima:
+  pipeline_name: Ultima
+  request_information_type_key: fragment_size_required_to
+
+OTRecipeInformationTypeForUltima:
+  pipeline_name: Ultima
+  request_information_type_key: ot_recipe
