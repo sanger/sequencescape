@@ -13,11 +13,11 @@ import DataTable from "datatables.net-bs4";
 
 $(function () {
   document.querySelectorAll(cssSelectors.DefaultConfig).forEach((table) => {
-    new DataTable(table, defaults);
+    new DataTable(table, { ...defaults, order: [] });
   });
 
   // If we update the DOM via ajax we want to mount the included components
   $(document.body).on("ajaxDomUpdate", function (_event, target) {
-    new DataTable($(target).find(cssSelectors.AjaxConfig), defaults);
+    new DataTable($(target).find(cssSelectors.AjaxConfig), { ...defaults, order: [] });
   });
 });
