@@ -16,6 +16,8 @@ class PolyMetadatum < ApplicationRecord
   # Associations
   belongs_to :metadatable, polymorphic: true, optional: false
 
+  include Api::Messages::CommentIo::PolyMetadatumBatchAliquots
+
   # Validations
   validates :key, presence: true # otherwise nil is a valid key
   validates :value, presence: true
@@ -30,8 +32,22 @@ class PolyMetadatum < ApplicationRecord
   # metadatable_id is the database id of the model instance
   validates :key, uniqueness: { scope: %i[metadatable_type metadatable_id], case_sensitive: false }
 
+  after_commit :broadcast_under_rep_batch_aliquot
+
   # Methods
   def to_h
     { key => value }
+  end
+
+  def related_batches
+    return [] unless metadatable_type == 'Request'
+
+    metadatable.submission.batches
+  end
+
+  def broadcast_under_rep_batch_aliquot
+    return unless key == 'under_represented' && related_batches.any?
+
+    Messenger.create!(target: self, template: 'CommentIo', root: 'comment').broadcast
   end
 end
