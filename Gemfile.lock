@@ -511,7 +511,7 @@ GEM
       logger
     ruby2_keywords (0.0.5)
     rubyzip (2.4.1)
-    sanger-jsonapi-resources (0.1.1)
+    sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
       csv
@@ -704,7 +704,7 @@ DEPENDENCIES
   rubocop-rspec_rails
   ruby-prof
   ruby-units
-  sanger-jsonapi-resources (~> 0.1.1)
+  sanger-jsonapi-resources (~> 0.1.2)
   sanger_barcode_format!
   sanger_warren
   selenium-webdriver (~> 4.1)
