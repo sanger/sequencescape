@@ -72,7 +72,7 @@ group :default do
   # Version 0.1.1 was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
   # This version is tested and compatible with Rails 7.1/7.2 and Ruby 3.2/3.3.
-  gem 'sanger-jsonapi-resources', '~> 0.1.1'
+  gem 'sanger-jsonapi-resources', '~> 0.1.2'
 
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
@@ -97,8 +97,9 @@ group :default do
   # Excel file reading
   gem 'roo'
 
-  # Used in XML generation.
+  # Used in XML generation and parsing
   gem 'builder'
+  gem 'rexml' # NOTE: Would be good to remove this due to frequent security issues
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
@@ -206,7 +207,7 @@ group :test, :cucumber do
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'rspec-rails', require: false
+  gem 'rspec-rails', '~> 7.1.0', require: false # TODO: Update to '~> 8.0' when we move to Rails 8
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda'
   gem 'simplecov', require: false
