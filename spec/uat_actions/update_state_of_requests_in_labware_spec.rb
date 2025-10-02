@@ -3,11 +3,11 @@
 require 'rails_helper'
 
 describe UatActions::UpdateStateOfRequestsInLabware do
-  let(:tube_barcode) { tube&.barcodes&.first&.barcode }
+  let(:tube_barcode) { tube.barcodes&.first&.barcode }
   let(:request_type_name) { request_sequencing1.request_type.name }
   let(:new_state) { 'passed' }
 
-  let(:request_type_sequencing) { create :request_type, key: 'rt_sequencing' }
+  let(:request_type_sequencing) { create(:request_type, key: 'rt_sequencing') }
 
   let(:submission) { create(:submission) }
   let(:submission_id) { submission.id }
@@ -15,21 +15,27 @@ describe UatActions::UpdateStateOfRequestsInLabware do
   # multiplexing requests passed, sequencing requests pending
   let(:request_multiplexing1) { create(:multiplex_request, state: 'passed', submission_id: submission_id) }
   let(:request_multiplexing2) { create(:multiplex_request, state: 'passed', submission_id: submission_id) }
-  let(:request_sequencing1) { create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id) }
-  let(:request_sequencing2) { create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id) }
+  let(:request_sequencing1) do
+    create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id)
+  end
+  let(:request_sequencing2) do
+    create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id)
+  end
 
   # create 2 aliquots for the tube, one for each multiplexing request
-  let(:aliquot1) { create :aliquot, request: request_multiplexing1 }
-  let(:aliquot2) { create :aliquot, request: request_multiplexing2 }
+  let(:aliquot1) { create(:aliquot, request: request_multiplexing1) }
+  let(:aliquot2) { create(:aliquot, request: request_multiplexing2) }
 
   # create a receptacle
-  let(:receptacle) { create(:receptacle, aliquots: [aliquot1, aliquot2], requests_as_source: [request_sequencing1, request_sequencing2]) }
+  let(:receptacle) do
+    create(:receptacle, aliquots: [aliquot1, aliquot2], requests_as_source: [request_sequencing1, request_sequencing2])
+  end
 
   # create a tube with the aliquots, and the sequencing requests in requests_as_source
   let(:tube) do
     create(
       :multiplexed_library_tube,
-      receptacle: receptacle
+      receptacle:
     )
   end
 
@@ -93,9 +99,15 @@ describe UatActions::UpdateStateOfRequestsInLabware do
         }
       end
 
-      it 'can be saved' do
+      it 'returns true when saved' do
         expect(saved_action).to be true
+      end
+
+      it 'sets the correct report after save' do
         expect(uat_action.report).to eq expected_report
+      end
+
+      it 'updates all tube requests to the new state' do
         expect(tube.requests_as_source.pluck(:state)).to all(eq 'passed')
       end
     end
@@ -104,18 +116,17 @@ describe UatActions::UpdateStateOfRequestsInLabware do
   context 'with invalid options' do
     context 'when an invalid barcode is provided' do
       let(:tube) { nil }
-      let(:invalid_labware_barcode) { 'INVALID' }
-
-      before do
-        allow(Labware).to receive(:find_by_barcode).with(invalid_labware_barcode).and_return(nil)
-      end
-
       let(:parameters) do
         {
           labware_barcode: invalid_labware_barcode,
           request_type_name: request_type_name,
           new_state: new_state
         }
+      end
+      let(:invalid_labware_barcode) { 'INVALID' }
+
+      before do
+        allow(Labware).to receive(:find_by_barcode).with(invalid_labware_barcode).and_return(nil)
       end
 
       it 'is invalid' do
@@ -128,18 +139,13 @@ describe UatActions::UpdateStateOfRequestsInLabware do
 
       it 'adds an error' do
         expect(uat_action.errors.full_messages).to include(
-          "Labware not found."
+          'Labware not found.'
         )
       end
     end
 
     context 'when an invalid request type name is provided' do
       let(:invalid_request_type_name) { 'INVALID' }
-
-      before do
-        allow(RequestType).to receive(:find_by).with(name: invalid_request_type_name).and_return(nil)
-      end
-
       let(:parameters) do
         {
           labware_barcode: tube_barcode,
@@ -148,6 +154,10 @@ describe UatActions::UpdateStateOfRequestsInLabware do
         }
       end
 
+      before do
+        allow(RequestType).to receive(:find_by).with(name: invalid_request_type_name).and_return(nil)
+      end
+
       it 'is invalid' do
         expect(uat_action.valid?).to be false
       end
@@ -158,7 +168,7 @@ describe UatActions::UpdateStateOfRequestsInLabware do
 
       it 'adds an error' do
         expect(uat_action.errors.full_messages).to include(
-          "Request type not found."
+          'Request type not found.'
         )
       end
     end
