@@ -860,12 +860,20 @@ data-urls@^5.0.0:
     whatwg-mimetype "^4.0.0"
     whatwg-url "^14.0.0"
 
-datatables.net-bs4@>=1.11.0, datatables.net-bs4@^2, datatables.net-bs4@^2.2.2:
+datatables.net-bs4@>=1.11.0, datatables.net-bs4@^2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-2.3.3.tgz#f4fabcd5ff78bad36bbda0ea62d6433cd9272a70"
   integrity sha512-LFXCaB1nzsW0cXpRRctzfBnJtw4NbBpkcHehfdkeV8MuXnD0F9D1OkLIHLe/EnXbuWX7J1qk3QikigGHnox1LA==
   dependencies:
     datatables.net "2.3.3"
+    jquery ">=1.7"
+
+datatables.net-bs4@^2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-2.3.4.tgz#1b16474517a0eae0adb440e7cc0035789dfbbdee"
+  integrity sha512-uWcVr8OQeqK6gWIbZDIebm+gtBT3KsDynKduZSUHM8hL3TIsWAyYzb7LxVHSpVRy9iqRqIvpVDEw0tx/IrnxrA==
+  dependencies:
+    datatables.net "2.3.4"
     jquery ">=1.7"
 
 datatables.net-buttons-bs4@^3.2.2:
@@ -974,6 +982,13 @@ datatables.net@2.3.3, datatables.net@>=1.11.0, datatables.net@^2:
   version "2.3.3"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-2.3.3.tgz#fe4f96bdbc4cf47c8d11162a7af525ca6a3683d2"
   integrity sha512-SWL3za6nheY6gdoiLgCc++tYmxbwrmv2bjrEiII9rXBWXXSbOZct6pjR3FueMVRM5jmt7pQcXiGovfuFDnutQg==
+  dependencies:
+    jquery ">=1.7"
+
+datatables.net@2.3.4:
+  version "2.3.4"
+  resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-2.3.4.tgz#8cf69f2e6cb8d271be3d5c4f75a479684d20f253"
+  integrity sha512-fKuRlrBIdpAl2uIFgl9enKecHB41QmFd/2nN9LBbOvItV/JalAxLcyqdZXex7wX4ZXjnJQEnv6xeS9veOpKzSw==
   dependencies:
     jquery ">=1.7"
 
