@@ -51,6 +51,8 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     @labware ||= Labware.find_by_barcode(labware_barcode&.strip)
   end
 
+  # Finds the request type by name.
+  # @return [RequestType, nil] the request type if found, nil otherwise
   def request_type
     return @request_type if defined?(@request_type)
 
@@ -61,6 +63,8 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     labware.blank? || request_type.blank?
   end
 
+  # Updates the state of the requests to the new state.
+  # @param requests [Array<Request>] the requests to check for updating
   def update_requests(requests)
     modified_requests_count = safely_update_requests(requests)
 
@@ -69,6 +73,9 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     modified_requests_count != false
   end
 
+  # Safely updates the state of the requests, handling any errors that may occur.
+  # @param requests [Array<Request>] the requests to check for updating
+  # @return [int, false] the number of requests updated, or false if an error occurred
   def safely_update_requests(requests)
     modified_requests_count = 0
 
@@ -83,6 +90,9 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     end
   end
 
+  # Updates the state of the request if it matches the specified request type.
+  # @param request [Request] the request to update
+  # @return [int] 1 if the request was updated, 0 otherwise
   def update_request_state(request)
     if request.request_type.name == request_type.name
       request.update!(state: new_state)
@@ -111,8 +121,12 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     requests
   end
 
-  # Adds the supplier ID to the report.
-  # @param labware_barcode [String] the barcode of the labware
+  # Adds the following information to the report:
+  # - labware barcode of the labware processed
+  # - request type name used to filter which requests were updated
+  # - new state the requests were updated to
+  # - number of requests updated to the new state
+  # @param requests_count [int] the number of requests processed with updated states
   # @return [void]
   def print_report(requests_count)
     report['labware_barcode'] = labware_barcode
