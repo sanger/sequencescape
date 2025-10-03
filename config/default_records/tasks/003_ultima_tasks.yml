@@ -1,0 +1,19 @@
+---
+Opentron:
+  name: Opentron
+  workflow: Ultima
+  sorted: 0
+  lab_activity: true
+  sti_type: SetDescriptorsTask
+Amp:
+  name: Amp
+  workflow: Ultima
+  sorted: 1
+  lab_activity: true
+  sti_type: SetDescriptorsTask
+UG 100 Sequencer:
+  name: UG 100 Sequencer
+  workflow: Ultima
+  sorted: 2
+  lab_activity: true
+  sti_type: SetDescriptorsTask
