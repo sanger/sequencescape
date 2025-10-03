@@ -14,6 +14,8 @@ module Api
 
         render json: { data: created.map { |p| serialize_poly_metadatum(p) } },
                status: :created
+      rescue StandardError => e
+        render json: { error: "PolyMetadatum bulk creation failed: #{e.message}" }, status: :internal_server_error
       end
 
       private
@@ -40,7 +42,7 @@ module Api
           },
           relationships: {
             metadatable: {
-              data: { type: poly.metadatable_type.underscore, id: poly.metadatable_id.to_s }
+              data: { type: poly.metadatable_type.underscore.pluralize, id: poly.metadatable_id.to_s }
             }
           }
         }

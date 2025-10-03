@@ -12,14 +12,14 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
             type: 'poly_metadata',
             attributes: { key: 'key_1', value: 'value_1' },
             relationships: {
-              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
+              metadatable: { data: { type: 'aliquots', id: aliquot.id.to_s } }
             }
           },
           {
             type: 'poly_metadata',
             attributes: { key: 'key_2', value: 'value_2' },
             relationships: {
-              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
+              metadatable: { data: { type: 'aliquots', id: aliquot.id.to_s } }
             }
           }
         ]
@@ -49,7 +49,7 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
                                                   'attributes' => { 'key' => 'key_1', 'value' => 'value_1' },
                                                   'relationships' => {
                                                     'metadatable' => {
-                                                      'data' => { 'type' => 'aliquot', 'id' => aliquot.id.to_s }
+                                                      'data' => { 'type' => 'aliquots', 'id' => aliquot.id.to_s }
                                                     }
                                                   }
                                                 }, {
@@ -58,7 +58,7 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
                                                   'attributes' => { 'key' => 'key_2', 'value' => 'value_2' },
                                                   'relationships' => {
                                                     'metadatable' => {
-                                                      'data' => { 'type' => 'aliquot', 'id' => aliquot.id.to_s }
+                                                      'data' => { 'type' => 'aliquots', 'id' => aliquot.id.to_s }
                                                     }
                                                   }
                                                 })
@@ -72,26 +72,23 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
             type: 'poly_metadata',
             attributes: { key: nil, value: 'missing key' }, # invalid
             relationships: {
-              metadatable: { data: { type: 'aliquot', id: aliquot.id.to_s } }
+              metadatable: { data: { type: 'aliquots', id: aliquot.id.to_s } }
             }
           }
         end
       end
 
+      before do
+        post '/api/v2/poly_metadata/bulk_create', params: bad_payload, as: :json
+      end
+
       it 'does not create any records' do
-        expect do
-          suppress(Exception) do
-            post '/api/v2/poly_metadata/bulk_create', params: bad_payload, as: :json
-          end
-        end.not_to change(PolyMetadatum, :count)
+        expect(PolyMetadatum.count).to eq(0)
       end
 
       it 'raises a validation error' do
-        expect do
-          post '/api/v2/poly_metadata/bulk_create',
-               params: bad_payload,
-               as: :json
-        end.to raise_error(ActiveRecord::RecordInvalid, /Key can't be blank/)
+        expect(response.parsed_body['error']).to
+        eq("PolyMetadatum bulk creation failed: Validation failed: Key can't be blank")
       end
     end
   end
