@@ -1,70 +1,70 @@
 ---
 OTR carrier barcode:
   name: OTR carrier barcode
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 0
 OTR carrier expiry:
   name: OTR carrier expiry
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Date
   required: false
   sorter: 1
 Reaction mix 7 barcode:
   name: Reaction mix 7 barcode
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 2
 Reaction mix 7 expiry:
   name: Reaction mix 7 expiry
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Date
   required: false
   sorter: 3
 NFW barcode:
   name: NFW barcode
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 4
 NFW expiry:
   name: NFW expiry
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Date
   required: false
   sorter: 5
 Oil barcode:
   name: Oil barcode
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 6
 Oil expiry:
   name: Oil expiry
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Date
   required: false
   sorter: 7
 Pipette carousel:
   name: Pipette carousel
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 8
 Opentrons Inst. Name:
   name: Opentrons Inst. Name
-  task: Opentron
+  task: Opentrons
   workflow: Ultima
   kind: Text
   required: true

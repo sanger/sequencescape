@@ -1,6 +1,6 @@
 ---
-Opentron:
-  name: Opentron
+Opentrons:
+  name: Opentrons
   workflow: Ultima
   sorted: 0
   lab_activity: true
