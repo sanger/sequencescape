@@ -121,6 +121,10 @@ module Api
       #   @return [LibraryResource] The library associated with this aliquot.
       has_one :library
 
+      # @!attribute [rw] poly_metadata
+      #   @return [PolyMetadatumResource] The poly_metadata associated with this aliquot.
+      has_many :poly_metadata
+
       ###
       # Getters and Setters
       ###
