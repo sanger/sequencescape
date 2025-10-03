@@ -87,8 +87,8 @@ RSpec.describe Api::V2::PolyMetadataController, type: :request do
       end
 
       it 'raises a validation error' do
-        expect(response.parsed_body['error']).to
-        eq("PolyMetadatum bulk creation failed: Validation failed: Key can't be blank")
+        expect(response.parsed_body['error']).to eq('PolyMetadatum bulk creation failed: ' \
+                                                    "Validation failed: Key can't be blank")
       end
     end
   end
