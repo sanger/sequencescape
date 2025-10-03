@@ -4,3 +4,8 @@ UPF EqVol Norm:
   type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube
   stock_plate: false
+UPF Balanced Norm:
+  # TODO: unsure if multiplexing is correct here
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
