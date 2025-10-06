@@ -48,6 +48,7 @@ class Api::Messages::CommentIo < Api::Base
     # @param batch_request [BatchRequest]
     # @return [Array<Hash>] entries for matching aliquots
     def aliquots_for_batch_request(batch, batch_request)
+      byebug
       matching_aliquots(batch_request).map do |aliquot|
         build_entry(batch, batch_request, aliquot)
       end
@@ -61,7 +62,7 @@ class Api::Messages::CommentIo < Api::Base
     # @return [Array<Aliquot>] aliquots with matching sample IDs
     def matching_aliquots(batch_request)
       batch_request.request.asset.samples.select do |a|
-        sample_ids_with_poly_metadata.include?(a.sample_id)
+        sample_ids_with_poly_metadata.include?(a.id)
       end
     end
 
