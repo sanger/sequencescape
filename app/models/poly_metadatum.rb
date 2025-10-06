@@ -48,6 +48,6 @@ class PolyMetadatum < ApplicationRecord
   def broadcast_under_rep_batch_aliquot
     return unless key == 'under_represented' && related_batches.any?
 
-    Messenger.create!(target: self, template: 'CommentIo', root: 'comment').broadcast
+    Messenger.create!(target: self, template: 'CommentIo', root: 'PolyMetadatum').broadcast
   end
 end
