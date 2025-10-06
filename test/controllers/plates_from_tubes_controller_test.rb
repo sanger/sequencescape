@@ -48,7 +48,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube2.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end
@@ -59,6 +62,51 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should respond_with :ok
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+        end
+        should 'create put the tubes in the correct positions on the new plate' do
+          # Well A1
+          assert_equal @tube1.samples.first, Plate.last.wells.first.samples.first
+          # Well A2
+          assert_equal @tube2.samples.first, Plate.last.wells.second.samples.first
+        end
+      end
+
+      context 'on POST to create a stock plate with blank wells' do
+        setup do
+          @tube1 = FactoryBot.create(:sample_tube)
+          @tube2 = FactoryBot.create(:sample_tube)
+
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          # Initial plate count in the in-memory database
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes_map: {
+                     A4: @tube1.barcodes.first.barcode,
+                     A6: @tube2.barcodes.first.barcode
+                   }.to_json
+                 }
+               }
+        end
+
+        should 'create a plate and increase the plate count' do
+          assert_equal @plate_count + 1, Plate.count
+        end
+        should respond_with :ok
+        should 'create a plate with the correct barcode' do
+          assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
+        end
+        should 'create put the tubes in the correct positions on the new plate' do
+          # Well A4
+          assert_equal @tube1.samples.first, Plate.last.wells[3].samples.first
+          # Well A6
+          assert_equal @tube2.samples.first, Plate.last.wells[5].samples.first
         end
       end
 
@@ -77,7 +125,9 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: @tube1.barcodes.first.barcode.to_s
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end
@@ -111,7 +161,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock RNA Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube2.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end
@@ -144,7 +197,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'All of the above',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube2.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end
@@ -176,7 +232,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}",
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube2.barcodes.first.barcode
+                   }.to_json,
                    create_asset_group: 'Yes'
                  }
                }
@@ -202,10 +261,11 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes:
-                     "#{@tube1.barcodes.first.barcode}
-                        \r\n#{@tube1.barcodes.first.barcode}
-                        \r\n#{@tube2.barcodes.first.barcode}"
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube1.barcodes.first.barcode,
+                     A3: @tube2.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end
@@ -217,27 +277,39 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should set_flash[:error].to(/Duplicate tubes found/)
       end
 
-      context 'on POST to create a stock plate with too many tubes' do
+      context 'on POST to create a stock plate with a tube with invalid positions' do
         setup do
-          source_tubes = (1..100).map { |_| FactoryBot.create(:sample_tube).barcodes.first.barcode }.join("\r\n")
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          source_tubes = (1..3).map { |_| FactoryBot.create(:sample_tube).barcodes.first.barcode }
+
           post :create,
                params: {
                  plates_from_tubes: {
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: source_tubes
+                   source_tubes_map: {
+                     A13: source_tubes[0],
+                     H0: source_tubes[1],
+                     J1: source_tubes[2]
+                   }.to_json
                  }
                }
         end
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end
-        should set_flash[:error].to(/Number of tubes exceeds the maximum number of wells/)
+
+        should set_flash[:error].to(/Plate creation failed: Tube position A13 is not valid/)
       end
 
       context 'on POST to create a stock plate with missing tubes' do
         setup do
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
           @plate_count = Plate.count
           post :create,
                params: {
@@ -245,7 +317,9 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes: 'SHRODINGERS_TUBE_BARCODE'
+                   source_tubes_map: {
+                     A1: 'SHRODINGERS_TUBE_BARCODE'
+                   }.to_json
                  }
                }
         end
@@ -253,7 +327,56 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
         should 'not create a plate' do
           assert_equal @plate_count, Plate.count
         end
-        should set_flash[:error].to(/Tube with barcode/)
+        should set_flash[:error].to(/Tube with barcode SHRODINGERS_TUBE_BARCODE not found/)
+      end
+
+      context 'on POST to create a stock plate with no tubes' do
+        setup do
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes_map: {}.to_json
+                 }
+               }
+        end
+
+        should 'not create a plate' do
+          assert_equal @plate_count, Plate.count
+        end
+        should set_flash[:error].to(/No tubes to transfer/)
+      end
+
+      context 'on POST to create a stock plate with bad json' do
+        setup do
+          # Stubbing the barcode generation call for the new plate generated
+          PlateBarcode.stubs(:create_barcode).returns(build(:plate_barcode, barcode: 'SQPD-1234567'))
+
+          @plate_count = Plate.count
+          post :create,
+               params: {
+                 plates_from_tubes: {
+                   user_barcode: '1234567',
+                   barcode_printer: @barcode_printer.id,
+                   plate_type: 'Stock Plate',
+                   source_tubes_map: '{bad json : }}'
+                 }
+               }
+        end
+
+        should 'not create a plate' do
+          assert_equal @plate_count, Plate.count
+        end
+
+        should set_flash[:error].to(
+          "Source tubes input is not valid JSON. Error message: expected object key, got 'bad' at line 1 column 2"
+        )
       end
 
       context 'without a user barcode' do
@@ -276,7 +399,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                      user_barcode: nil,
                      barcode_printer: @barcode_printer.id,
                      plate_type: 'Stock Plate',
-                     source_tubes: "#{@tube1.barcodes.first.barcode}\r\n#{@tube2.barcodes.first.barcode}"
+                     source_tubes_map: {
+                       A1: @tube1.barcodes.first.barcode,
+                       A2: @tube2.barcodes.first.barcode
+                     }.to_json
                    }
                  }
           end
@@ -301,9 +427,10 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                    user_barcode: '1234567',
                    barcode_printer: @barcode_printer.id,
                    plate_type: 'Stock Plate',
-                   source_tubes:
-                     "#{@tube1.barcodes.first.barcode}
-                        \r\n#{@tube2.barcodes.first.barcode}"
+                   source_tubes_map: {
+                     A1: @tube1.barcodes.first.barcode,
+                     A2: @tube2.barcodes.first.barcode
+                   }.to_json
                  }
                }
         end

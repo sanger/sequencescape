@@ -36,9 +36,9 @@ Rails.application.routes.draw do
 
       jsonapi_resources :barcode_printers
       jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments, defaults: { permissive: true }
+      jsonapi_resources :comments, defaults: { permissive: %i[get post] }
       jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware, defaults: { permissive: true }
+      jsonapi_resources :labware, defaults: { permissive: %i[get] }
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
@@ -52,12 +52,13 @@ Rails.application.routes.draw do
       post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
 
       jsonapi_resources :poly_metadata
+      post 'poly_metadata/bulk_create', to: 'poly_metadata#bulk_create'
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
       jsonapi_resources :purposes
-      jsonapi_resources :qc_assays, defaults: { permissive: true }
+      jsonapi_resources :qc_assays, defaults: { permissive: %i[get post] }
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
@@ -78,7 +79,7 @@ Rails.application.routes.draw do
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
-      jsonapi_resources :tag_groups, defaults: { permissive: true }
+      jsonapi_resources :tag_groups, defaults: { permissive: %i[get] }
       jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
