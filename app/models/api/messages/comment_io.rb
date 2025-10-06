@@ -60,7 +60,7 @@ class Api::Messages::CommentIo < Api::Base
     # @param batch_request [BatchRequest]
     # @return [Array<Aliquot>] aliquots with matching sample IDs
     def matching_aliquots(batch_request)
-      batch_request.request.target_asset.aliquots.select do |a|
+      batch_request.request.asset.samples.select do |a|
         sample_ids_with_poly_metadata.include?(a.sample_id)
       end
     end
