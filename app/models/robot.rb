@@ -55,6 +55,7 @@ class Robot < ApplicationRecord
       'Hamilton' => Robot::Generator::Hamilton,
       'Tecan' => Robot::Generator::Tecan,
       'TecanV2' => Robot::Generator::TecanV2,
+      'TecanV3' => Robot::Generator::TecanV3,
       'Beckman' => Robot::Generator::Beckman
     }.fetch(generation_behaviour_property&.value, Robot::Generator::Tecan)
   end
