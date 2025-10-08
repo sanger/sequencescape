@@ -39,15 +39,22 @@ class PolyMetadatum < ApplicationRecord
     { key => value }
   end
 
-  def related_batches
+  def related_released_batches
     return [] unless metadatable_type == 'Request'
 
-    metadatable.submission.batches
+    metadatable.submission.batches.filter { :released? }
   end
 
+  # This method is called after a PolyMetadatum record is created or updated.
+  #
+  # If the PolyMetadatum has the key 'under_represented', is associated with a 'Request',
+  # and that request is linked to any released batches, a Messenger notification is created.
+  # The template is used to construct the JSON payload for the message,
+  # and the root specifies the type of object the message refers to.
+  # Messenger notification are picked up by a background job which sends the message to the MLWH.
   def broadcast_under_rep_batch_aliquot
-    return unless key == 'under_represented' && related_batches.any?
+    return unless key == 'under_represented' && related_released_batches.any?
 
-    Messenger.create!(target: self, template: 'CommentIo', root: 'PolyMetadatum').broadcast
+    Messenger.create!(target: self, template: 'CommentIo', root: 'PolyMetadatum')
   end
 end

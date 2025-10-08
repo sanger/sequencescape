@@ -2,15 +2,18 @@
 
 ##
 # Api::Messages::CommentIo is responsible for serializing and exposing
-# comment-related metadata linked to PolyMetadatum records. It maps domain
-# attributes (such as batch, position, and tag index) into JSON for API
-# consumption.
-# PolyMetadatum object is expected to be of metadatable_type 'Request',
-# and the request is expected to be assoicated to a batch.
-# The included PolyMetadatumBatchAliquots module provides helper methods
-# for traversing from PolyMetadatum → Batch → BatchRequest → Aliquots,
-# filtering aliquots by those associated with the given PolyMetadatum.
+# comment-related metadata linked to PolyMetadatum records for message passing.
+# This serialization serves as an interface between systems rather than for
+# direct API consumption. The consumer de-serializes and morphs the message
+# into a Rails model, which is later serialized into an SQL query through
+# ActiveRecord abstractions.
 #
+# The PolyMetadatum object is expected to have a metadatable_type of 'Request',
+# and that request should be associated with a batch.
+#
+# The included PolyMetadatumBatchAliquots module provides helper methods for
+# traversing from PolyMetadatum → Batch → BatchRequest → Aliquots,
+# filtering aliquots to those associated with the given PolyMetadatum.
 class Api::Messages::CommentIo < Api::Base
   renders_model(::PolyMetadatum)
 
@@ -29,7 +32,7 @@ class Api::Messages::CommentIo < Api::Base
     #
     # @return [Array<Hash>] a list of hashes, each containing batch_id, position, and tag_index.
     def batch_aliquots
-      related_batches.flat_map { |batch| aliquots_for_batch(batch) }
+      related_released_batches.flat_map { |batch| aliquots_for_batch(batch) }
     end
 
     ##
@@ -60,7 +63,7 @@ class Api::Messages::CommentIo < Api::Base
     # @param batch_request [BatchRequest]
     # @return [Array<Aliquot>] aliquots with matching sample IDs
     def matching_aliquots(batch_request)
-      batch_request.request.asset.aliquots.select do |a|
+      batch_request.request.target_asset.aliquots.select do |a|
         sample_ids_with_poly_metadata.include?(a.sample_id)
       end
     end
