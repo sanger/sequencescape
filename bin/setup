@@ -12,10 +12,32 @@ FileUtils.chdir APP_ROOT do
   # This script is a way to set up or update your development environment automatically.
   # This script is idempotent, so that you can run it at any time and get an expectable outcome.
   # Add necessary setup steps to this file.
+  puts '== Checking basics'
+  expected_version = (/[\d.]+/.match(File.read('.ruby-version')))[0]
+  unless RUBY_VERSION == expected_version
+    puts "Expected ruby #{expected_version} got #{RUBY_VERSION}"
+    puts "Please install ruby #{expected_version}"
+    puts 'You may want to install a ruby version manager'
+    puts 'https://github.com/rbenv/rbenv'
+  end
 
   puts "== Installing dependencies =="
   system! "gem install bundler --conservative"
   system("bundle check") || system!("bundle install")
+
+  # Set SKIP_AUTOMATIC_GEM_INSTALLATION to disable bundle install here on the CI
+  # suite as we've already done it, and this section gets a little clever.
+  unless ENV['SKIP_AUTOMATIC_GEM_INSTALLATION']
+    system! 'gem install bundler --conservative'
+
+    system('bundle check') || system!('bundle install --jobs 4 --retry 3')
+  end
+
+  # Install JavaScript dependencies if using Yarn
+  system('bin/yarn')
+
+  puts "\n== Setting credentials =="
+  system 'bin/rails credentials:edit'
 
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")

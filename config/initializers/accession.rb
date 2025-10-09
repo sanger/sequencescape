@@ -7,3 +7,6 @@ unless Rails.env.test?
     config.load!
   end
 end
+
+# add ena requirement fields here
+config.ena_requirement_fields = config_for(:ena_requirement_fields)
