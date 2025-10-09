@@ -14,7 +14,6 @@ Limber-Htp - Ultima PCR Free - Rebalancing:
     order_role: PCR Free
     product_line_name: Ultima
     product_catalogue_name: GenericNoPCR
-# TODO: requires automated sequencing presenter story for UPF Balanced Norm tube
 Limber-Htp - Ultima PCR Free - Ultima sequencing Automated:
   submission_class_name: "LinearSubmission"
   related_records:

@@ -7,19 +7,45 @@ describe UatActions::UpdateStateOfRequestsInLabware do
   let(:request_type_name) { request_sequencing1.request_type.name }
   let(:new_state) { 'passed' }
 
-  let(:request_type_sequencing) { create(:request_type, key: 'rt_sequencing') }
+  let(:request_type_multiplexing) { create(:multiplex_request_type, name: 'RT Multiplexing', key: 'rt_multiplexing') }
+  let(:request_type_sequencing) { create(:request_type, name: 'RT Sequencing', key: 'rt_sequencing') }
 
   let(:submission) { create(:submission) }
   let(:submission_id) { submission.id }
 
   # multiplexing requests passed, sequencing requests pending
-  let(:request_multiplexing1) { create(:multiplex_request, state: 'passed', submission_id: submission_id) }
-  let(:request_multiplexing2) { create(:multiplex_request, state: 'passed', submission_id: submission_id) }
+  let(:request_multiplexing1) do
+    create(
+      :multiplex_request,
+      request_type: request_type_multiplexing,
+      state: 'passed',
+      submission_id: submission_id
+    )
+  end
+  let(:request_multiplexing2) do
+    create(
+      :multiplex_request,
+      request_type: request_type_multiplexing,
+      state: 'passed',
+      submission_id: submission_id
+    )
+  end
+
   let(:request_sequencing1) do
-    create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id)
+    create(
+      :sequencing_request,
+      request_type: request_type_sequencing,
+      state: 'pending',
+      submission_id: submission_id
+    )
   end
   let(:request_sequencing2) do
-    create(:sequencing_request, request_type: request_type_sequencing, state: 'pending', submission_id: submission_id)
+    create(
+      :sequencing_request,
+      request_type: request_type_sequencing,
+      state: 'pending',
+      submission_id: submission_id
+    )
   end
 
   # create 2 aliquots for the tube, one for each multiplexing request
@@ -67,7 +93,70 @@ describe UatActions::UpdateStateOfRequestsInLabware do
     end
   end
 
-  context 'with valid options' do
+  context 'with valid options when request is in aliquot.request' do
+    let(:request_multiplexing1) do
+      create(
+        :multiplex_request,
+        request_type: request_type_multiplexing,
+        state: 'pending',
+        submission_id: submission_id
+      )
+    end
+    let(:expected_report) do
+      # A report is a hash of key value pairs which get returned to the user.
+      # It should include information such as barcodes and identifiers
+      {
+        'labware_barcode' => tube_barcode,
+        'request_type_name' => request_type_name,
+        'new_state' => new_state,
+        'updated_requests_count' => 2
+      }
+    end
+    let(:request_multiplexing2) do
+      create(
+        :multiplex_request,
+        request_type: request_type_multiplexing,
+        state: 'pending',
+        submission_id: submission_id
+      )
+    end
+    let(:receptacle) do
+      create(:receptacle, aliquots: [aliquot1, aliquot2], requests_as_source: [])
+    end
+
+    let(:request_type_name) { request_multiplexing1.request_type.name }
+
+    before do
+      allow(Labware).to receive(:find_by_barcode).with(tube_barcode).and_return(tube)
+      allow(RequestType).to receive(:find_by).with(name: request_type_name).and_return(request_type_multiplexing)
+    end
+
+    context 'when valid parameters are provided' do
+      let(:parameters) do
+        {
+          labware_barcode: tube_barcode,
+          request_type_name: request_type_name,
+          new_state: new_state
+        }
+      end
+
+      it 'returns true when saved' do
+        expect(saved_action).to be true
+      end
+
+      it 'sets the correct report after save' do
+        expect(uat_action.report).to eq expected_report
+      end
+
+      it 'updates all tube requests to the new state' do
+        expect(
+          tube.aliquots.flat_map { |a| Array(a.request) }.compact.map(&:state)
+        ).to all(eq 'passed')
+      end
+    end
+  end
+
+  context 'with valid options when requests are in requests_as_source' do
     before do
       # Ensure the tube and its requests are created before the UAT action is run
       # NB. had to go through receptacle for a tube as tube.requests_as_source was not working

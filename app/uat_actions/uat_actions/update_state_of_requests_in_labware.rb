@@ -37,7 +37,7 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
   # Updates the requests and reports success in the report.
   # @return [Boolean] true if the UAT action was successful, false otherwise.
   def perform
-    return false if invalid_labware_or_request_type?
+    return false unless valid?
 
     requests = find_active_requests(labware, request_type)
     return false if requests.blank?
@@ -57,10 +57,6 @@ class UatActions::UpdateStateOfRequestsInLabware < UatActions
     return @request_type if defined?(@request_type)
 
     @request_type = RequestType.find_by(name: request_type_name&.strip)
-  end
-
-  def invalid_labware_or_request_type?
-    labware.blank? || request_type.blank?
   end
 
   # Updates the state of the requests to the new state.
