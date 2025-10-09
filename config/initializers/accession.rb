@@ -9,4 +9,5 @@ unless Rails.env.test?
 end
 
 # add ena requirement fields here
-config.ena_requirement_fields = config_for(:ena_requirement_fields)
+ena_requirement_fields = YAML.load_file('config/ena_requirement_fields.yml')
+Rails.application.config.ena_requirement_fields = ena_requirement_fields

@@ -1,3 +1,4 @@
 # frozen_string_literal: true
 
-config.phi_x = config_for(:phi_x).with_indifferent_access
+phi_x_config = YAML.load_file('config/phi_x.yml')
+Rails.application.config.phi_x = phi_x_config.with_indifferent_access
