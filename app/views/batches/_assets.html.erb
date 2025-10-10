@@ -25,20 +25,12 @@
           <% if show_pick_data %>
             <td>
               <div class="btn-group btn-group-sm">
-                <%= link_to icon('fas', 'print', 'Print worksheet'),
-                              url_for(controller: :batches,
-                                      action: :print,
-                                      id: @batch.id,
-                                      barcode: labware.human_barcode),
-                              title: "Print worksheet for Plate #{labware.human_barcode}",
-                              class: 'btn btn-primary' %>
-                <% unless @robots.empty? %>
-                  <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                          aria-haspopup="true" aria-expanded="false">
-                    <span class="sr-only">Toggle Dropdown</span>
-                  </button>
-                  <div class="dropdown-menu">
-                    <% @robots.each do |robot| %>
+                <button type="button" class="btn btn-primary dropdown-toggle"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <%= icon('fas', 'print') %> Print Worksheet
+                </button>
+                <div class="dropdown-menu">
+                  <% @robots.each do |robot| %>
                     <%= link_to "Print #{robot.name} worksheet",
                                 url_for(controller: :batches,
                                         action: :print,
@@ -47,9 +39,8 @@
                                         robot_id: robot.id),
                                 title: "Print worksheet for Plate #{labware.human_barcode}",
                                 class: 'dropdown-item' %>
-                    <% end %>
-                  </div>
-                <% end %>
+                  <% end %>
+                </div>
               </div>
             </td>
             <td>
@@ -58,25 +49,18 @@
               <% else -%>
                 <% @robot.pick_numbers(@batch, labware.human_barcode).each do |pick| %>
                   <div class="btn-group btn-group-sm">
-                    <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File (Pick #{pick})"),
-                                batch_robot_driver_file_path(@batch, @robot, barcode: labware.human_barcode, pick_number: pick),
-                                title: "#{@robot.name} file for Plate #{labware.human_barcode}",
-                                class: 'btn btn-primary'
-                    %>
-                    <% unless @robots.empty? %>
-                      <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown"
-                              aria-haspopup="true" aria-expanded="false">
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
-                      <div class="dropdown-menu">
-                        <% @robots.each do |robot| %>
+                    <button type="button" class="btn btn-primary dropdown-toggle"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <%= icon('fas', 'file-download') %> Download Robot File (Pick <%= pick %>)
+                    </button>
+                    <div class="dropdown-menu">
+                      <% @robots.each do |robot| %>
                         <%= link_to "Download #{robot.name} file",
                                     batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
                                     title: "#{robot.name} for Plate #{labware.human_barcode}",
                                     class: 'dropdown-item' %>
-                        <% end %>
-                      </div>
-                    <% end %>
+                      <% end %>
+                    </div>
                   </div>
                 <% end %>
               <% end -%>
