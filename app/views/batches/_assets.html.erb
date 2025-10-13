@@ -31,6 +31,7 @@
                 </button>
                 <div class="dropdown-menu">
                   <% @robots.each do |robot| %>
+                    <% selected_robot = @robot.id == robot.id %> <%# Flag the selected robot in previous steps %>
                     <%= link_to "Print #{robot.name} worksheet",
                                 url_for(controller: :batches,
                                         action: :print,
@@ -38,7 +39,7 @@
                                         barcode: labware.human_barcode,
                                         robot_id: robot.id),
                                 title: "Print worksheet for Plate #{labware.human_barcode}",
-                                class: 'dropdown-item' %>
+                                class: "dropdown-item#{' btn-selected-robot' if selected_robot}" %>
                   <% end %>
                 </div>
               </div>
