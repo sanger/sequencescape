@@ -57,7 +57,7 @@ class Robot < ApplicationRecord
   # @param generator_id [Integer] The ID of the generation_behaviour_property to look up.
   # @return [Class] The corresponding Robot::Generator class.
   # @raise [ActiveRecord::RecordNotFound] if no property with the given ID exists.
-  def generation_behaviour(_geneator_id)
+  def generation_behaviour(generator_id)
     property = generation_behaviour_properties.find(generator_id)
     {
       'Hamilton' => Robot::Generator::Hamilton,
@@ -79,7 +79,7 @@ class Robot < ApplicationRecord
   def generator(batch:, plate_barcode:, pick_number:, generator_id:)
     picking_data = Robot::PickData.new(batch, max_beds:).picking_data_hash(plate_barcode)[pick_number]
     layout = verification_behaviour.layout_data_object(picking_data)
-    generation_behaviour.new(batch:, plate_barcode:, picking_data:, layout:, generator_id:)
+    generation_behaviour(generator_id).new(batch:, plate_barcode:, picking_data:, layout:)
   end
 
   def self.default_for_verification
