@@ -55,28 +55,28 @@
                     </button>
                     <div class="dropdown-menu">
                       <% @robots.each do |robot| %>
-                        <% if robot.name.start_with?('Tecan') %>
-                        <div class="dropdown-submenu">
-                          <button type="button" class="dropdown-toggle dropdown-item bg-success text-white"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          Download <%= robot.name %> File
-                          </button>
-                          <div class="dropdown-menu" style="position:relative;padding-top:0;padding-bottom:0;width:100%;border-left:0;border-right:0;border-radius:0;">
-                             <%= link_to "TecanV2",
-                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
+                        <% selected_robot = @robot.id == robot.id %> <%# Flag the selected robot in previous steps %>
+                        <% if robot.generation_behaviour_properties.length == 1 %>
+                          <% property = robot.generation_behaviour_properties.first %>
+                          <%= link_to "Download #{robot.name} file",
+                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick, generator_id: property.id),
                                     title: "#{robot.name} for Plate #{labware.human_barcode}",
-                                    class: 'dropdown-item' %>
-                              <%= link_to "TecanV3",
-                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
-                                    title: "#{robot.name} for Plate #{labware.human_barcode}",
-                                    class: 'dropdown-item' %>
-                          </div>
-                        </div>
+                                    class: "dropdown-item#{' btn-selected-robot' if selected_robot}" %>
                         <% else %>
-                        <%= link_to "Download #{robot.name} file",
-                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
-                                    title: "#{robot.name} for Plate #{labware.human_barcode}",
-                                    class: 'dropdown-item' %>
+                          <div class="dropdown-submenu">
+                            <button type="button" class="dropdown-toggle dropdown-item bg-success text-white"
+                              data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Download <%= robot.name %> File
+                            </button>
+                            <div class="dropdown-menu" style="position:relative;padding-top:0;padding-bottom:0;width:100%;border-left:0;border-right:0;border-radius:0;">
+                              <% robot.generation_behaviour_properties.each do |property| %>
+                                <%= link_to "#{property.value}",
+                                        batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick, generator_id: property.id),
+                                        title: "#{robot.name} for Plate #{labware.human_barcode}",
+                                        class: "dropdown-item#{' btn-selected-robot' if selected_robot}" %>
+                              <% end %>
+                            </div>
+                          </div>
                         <% end %>
                       <% end %>
                     </div>
