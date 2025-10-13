@@ -39,7 +39,7 @@
                                         barcode: labware.human_barcode,
                                         robot_id: robot.id),
                                 title: "Print worksheet for Plate #{labware.human_barcode}",
-                                class: "dropdown-item #{'bg-success text-white' if selected_robot}" %>
+                                class: "dropdown-item #{'btn-selected-robot' if selected_robot}" %>
                   <% end %>
                 </div>
               </div>
@@ -62,14 +62,14 @@
                           <%= link_to "Download #{robot.name} file",
                                     batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick, generator_id: property.id),
                                     title: "#{property.value} version of #{robot.name} driver file for Plate #{labware.human_barcode}",
-                                    class: "dropdown-item #{'bg-success text-white' if selected_robot}" %>
+                                    class: "dropdown-item #{'btn-selected-robot' if selected_robot}" %>
                         <% else %>
                           <div class="dropdown-submenu">
-                            <button type="button" class="dropdown-toggle dropdown-item <%= 'bg-success text-white' if selected_robot%>"
+                            <button type="button" class="dropdown-toggle dropdown-item <%= 'btn-selected-robot' if selected_robot%>"
                               data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Download <%= robot.name %> File
                             </button>
-                            <div class="dropdown-menu" style="position:relative;padding-top:0;padding-bottom:0;width:100%;border-left:0;border-right:0;border-radius:0;">
+                            <div class="dropdown-menu robot-submenu-menu">
                               <% robot.generation_behaviour_properties.each do |property| %>
                                 <%= link_to "#{property.value}",
                                         batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick, generator_id: property.id),
