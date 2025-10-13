@@ -48,17 +48,36 @@
                 <%= link_to 'Fluidigm file', url_for(controller: :plates, action: :fluidigm_file, id: labware.id,  format: :csv), type: 'text/csv', title: "Fluidigm file for Plate #{labware.fluidigm_barcode}" %>
               <% else -%>
                 <% @robot.pick_numbers(@batch, labware.human_barcode).each do |pick| %>
-                  <div class="btn-group btn-group-sm">
+                  <div class="dropdown btn-group btn-group-sm">
                     <button type="button" class="btn btn-primary dropdown-toggle"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <%= icon('fas', 'file-download') %> Download Robot File (Pick <%= pick %>)
                     </button>
                     <div class="dropdown-menu">
                       <% @robots.each do |robot| %>
+                        <% if robot.name.start_with?('Tecan') %>
+                        <div class="dropdown-submenu">
+                          <button type="button" class="dropdown-toggle dropdown-item bg-success text-white"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Download <%= robot.name %> File
+                          </button>
+                          <div class="dropdown-menu" style="position:relative;padding-top:0;padding-bottom:0;width:100%;border-left:0;border-right:0;border-radius:0;">
+                             <%= link_to "TecanV2",
+                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
+                                    title: "#{robot.name} for Plate #{labware.human_barcode}",
+                                    class: 'dropdown-item' %>
+                              <%= link_to "TecanV3",
+                                    batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
+                                    title: "#{robot.name} for Plate #{labware.human_barcode}",
+                                    class: 'dropdown-item' %>
+                          </div>
+                        </div>
+                        <% else %>
                         <%= link_to "Download #{robot.name} file",
                                     batch_robot_driver_file_path(@batch, robot, barcode: labware.human_barcode, pick_number: pick),
                                     title: "#{robot.name} for Plate #{labware.human_barcode}",
                                     class: 'dropdown-item' %>
+                        <% end %>
                       <% end %>
                     </div>
                   </div>
@@ -81,3 +100,4 @@
     <% end -%>
   </tbody>
 </table>
+<%= vite_javascript_tag 'robot_behaviours' %>
