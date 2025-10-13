@@ -11,7 +11,8 @@ class DriverFilesController < ApplicationController
 
   def show
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    generator = @robot.generator(batch: @batch, plate_barcode: @plate_barcode, pick_number: pick_number)
+    generator = @robot.generator(batch: @batch, plate_barcode: @plate_barcode, pick_number: pick_number,
+                                 generator_id: generator_id)
     base_filename = "#{@batch.id}_batch_#{@plate_barcode}_#{pick_number}"
     send_data generator.as_text,
               type: generator.type,
@@ -20,6 +21,10 @@ class DriverFilesController < ApplicationController
   end
 
   private
+
+  def generator_id
+    params.require(:generator_id).to_i
+  end
 
   def pick_number
     params.require(:pick_number).to_i
