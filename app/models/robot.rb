@@ -8,7 +8,7 @@ class Robot < ApplicationRecord
   has_many :robot_properties
   has_one :max_plates_property, -> { where(key: 'max_plates') }, class_name: 'RobotProperty'
   has_one :verification_behaviour_property, -> { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
-  has_one :generation_behaviour_property, -> { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
+  has_many :generation_behaviour_properties, -> { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
 
   scope :with_barcode,
         ->(barcode) do
@@ -50,20 +50,36 @@ class Robot < ApplicationRecord
     @verification_behaviour ||= verification_class.new
   end
 
-  def generation_behaviour
+  # Returns the generation behaviour class for the given generator_id
+  # Looks up the RobotProperty with the give generator_id and returns the
+  # corresponding Robot::Generator class.
+  #
+  # @param generator_id [Integer] The ID of the generation_behaviour_property to look up.
+  # @return [Class] The corresponding Robot::Generator class.
+  # @raise [ActiveRecord::RecordNotFound] if no property with the given ID exists.
+  def generation_behaviour(_geneator_id)
+    property = generation_behaviour_properties.find(generator_id)
     {
       'Hamilton' => Robot::Generator::Hamilton,
       'Tecan' => Robot::Generator::Tecan,
       'TecanV2' => Robot::Generator::TecanV2,
       'TecanV3' => Robot::Generator::TecanV3,
       'Beckman' => Robot::Generator::Beckman
-    }.fetch(generation_behaviour_property&.value, Robot::Generator::Tecan)
+    }.fetch(property.value)
   end
 
-  def generator(batch:, plate_barcode:, pick_number:)
+  # Returns an instance of the generation behaviour for the given parameters.
+  #
+  # @param batch [Batch] The Batch for which to generate the pick list.
+  # @param plate_barcode [String] The barcode of the destination plate.
+  # @param pick_number [String] The pick number to generate the pick list for.
+  # @param generator_id [Integer] The ID of the generation_behaviour_property to use.
+  # @return [Robot::Generator] An instance of the corresponding Robot::Generator class.
+  # @raise [ActiveRecord::RecordNotFound] if no property with the given ID exists.
+  def generator(batch:, plate_barcode:, pick_number:, generator_id:)
     picking_data = Robot::PickData.new(batch, max_beds:).picking_data_hash(plate_barcode)[pick_number]
     layout = verification_behaviour.layout_data_object(picking_data)
-    generation_behaviour.new(batch:, plate_barcode:, picking_data:, layout:)
+    generation_behaviour.new(batch:, plate_barcode:, picking_data:, layout:, generator_id:)
   end
 
   def self.default_for_verification
