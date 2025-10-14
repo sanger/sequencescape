@@ -10,4 +10,4 @@ end
 
 # add ena requirement fields here
 ena_requirement_fields = YAML.load_file('config/ena_requirement_fields.yml')
-Rails.application.config.ena_requirement_fields = ena_requirement_fields
+Rails.application.config.ena_requirement_fields = ena_requirement_fields.with_indifferent_access
