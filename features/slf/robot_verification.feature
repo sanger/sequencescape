@@ -76,7 +76,7 @@ Feature: RobotVerification
 
     """
     And I press "Verify"
-    Then I should see "Download Myrobot File"
+    Then I should see "Download myrobot File"
     Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "SQPD-99999" is
     """
