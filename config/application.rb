@@ -66,6 +66,16 @@ module Sequencescape
     config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])] # rubocop:disable Rails/RootPathnameMethods
     I18n.enforce_available_locales = false
 
+    ###
+    # Adds image/webp to the list of content types Active Storage considers as an image
+    # Prevents automatic conversion to a fallback PNG, and assumes clients support WebP,
+    # as they support gif, jpeg, and png.
+    # This is possible due to broad browser support for WebP, but older browsers and
+    # email clients may still not support WebP.
+    # Requires imagemagick/libvips built with WebP support.
+    #++
+    Rails.application.config.active_storage.web_image_content_types = %w[image/png image/jpeg image/gif]
+
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: true,
