@@ -18,6 +18,15 @@ module Sequencescape
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # Configure the default encoding used in templates for Ruby 1.9.
+    config.encoding = 'utf-8'
+
+    # Default options which predate the Rails 5 switch
+    # Due to loading order, set these here and not in an initializer, see https://github.com/rails/rails/issues/23589
+    config.active_record.belongs_to_required_by_default = false
+    config.action_controller.forgery_protection_origin_check = false
+    config.action_controller.per_form_csrf_tokens = false
+
     # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
     config.exceptions_app = routes
 
