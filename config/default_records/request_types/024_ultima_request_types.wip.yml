@@ -28,11 +28,3 @@ ultima_sequencing:
   product_line_name: Ultima
   request_class_name: UltimaSequencingRequest
   request_purpose: standard
-limber_rebalancing_ultima:
-  name: Ultima Rebalancing
-  asset_type: Well
-  order: 3
-  request_class_name: Request::Multiplexing
-  for_multiplexing: true
-  product_line_name: Ultima
-  target_purpose_name: UPF Balanced Norm
