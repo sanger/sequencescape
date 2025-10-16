@@ -176,7 +176,7 @@ C; DEST1 = SQPD-99999
 
     """
     And I press "Verify"
-    Then I should see "Download Myrobot File"
+    Then I should see "Download myrobot File"
     Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "SQPD-99999" is
     """
@@ -358,7 +358,7 @@ Scenario: Source volumes should be updated once
 
     """
     And I press "Verify"
-    Then I should see "Download Myrobot File"
+    Then I should see "Download myrobot File"
     Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "SQPD-99999" is
     """
@@ -425,7 +425,7 @@ C; DEST1 = SQPD-99999
     Then I should see "Scan Robot Beds And Plates"
 
     And I press "Verify"
-    Then I should see "Download Myrobot File"
+    Then I should see "Download myrobot File"
     Then I follow "Download myrobot File"
     Then the downloaded robot file for batch "550000555760" and plate "SQPD-99999" is
 """
