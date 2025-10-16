@@ -65,6 +65,7 @@ Given(/^a robot exists with barcode "([^"]*)"$/) do |robot_barcode|
   robot.robot_properties.create(key: 'SCRC2', value: '2')
   robot.robot_properties.create(key: 'SCRC3', value: '3')
   robot.robot_properties.create(key: 'DEST1', value: '20')
+  robot.robot_properties.create(key: 'generation_behaviour', value: 'Tecan')
 end
 
 When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/) do |plate_purpose_name|
