@@ -5,6 +5,8 @@
 # newer version of cucumber-rails. Consider adding your own code to a new file
 # instead of editing this one. Cucumber will automatically load all features/**/*.rb
 # files.
+# UPDATE: as of cucumber-rails v1.1.0 this file will not be regenerated.
+# See https://github.com/cucumber/cucumber-rails/blob/f027440965b96b780e84e50dd47203a2838e8d7d/History.md
 
 require 'uri'
 require 'cgi'
@@ -19,10 +21,12 @@ World(WithinHelpers)
 
 Given /^(?:|I )am on (.+)$/ do |page_name|
   visit path_to(page_name)
+  step "I should be on #{page_name}"
 end
 
 When /^(?:|I )go to (.+)$/ do |page_name|
   visit path_to(page_name)
+  step "I should be on #{page_name}"
 end
 
 When /^(?:|I )press "([^"]*)"(?: within "([^"]*)")?$/ do |button, selector|
