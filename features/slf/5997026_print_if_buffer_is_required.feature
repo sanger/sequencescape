@@ -6,7 +6,7 @@ Feature: Print buffer is required (or not)
   Scenario: The plates doesn't need any buffer. nothing should be printed
     Given I have a released cherrypicking batch with 1 plate which doesnt need buffer
     And I am on the last batch show page
-    When I click button "Print worksheet" within "#output_assets"
+    When I press "Print worksheet" within "#output_assets"
     When I follow "Print Hamilton STAR 6 worksheet"
     Then I should see "Destination plate"
     And I should not see "Buffer Required"
@@ -15,7 +15,7 @@ Feature: Print buffer is required (or not)
   Scenario: One plate needs a buffer. buffer required should be printed
     Given I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1.0"
     And I am on the last batch show page
-    When I click button "Print worksheet" within "#output_assets"
+    When I press "Print worksheet" within "#output_assets"
     When I follow "Print Hamilton STAR 6 worksheet"
     Then I should see "Destination plate"
     And I should see "Buffer Required"

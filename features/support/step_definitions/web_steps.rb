@@ -182,9 +182,3 @@ end
 When 'I click the header {string}' do |text|
   find('th', text:).click
 end
-
-When('I click button {string} within {string}') do |button_text, selector|
-  within(selector) do
-    first('button', text: button_text).click
-  end
-end

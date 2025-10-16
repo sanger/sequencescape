@@ -63,6 +63,9 @@ module Robot::Generator::Behaviours::TecanDefault
     dyn_mappings
   end
 
+  # Adds a Comment command between the buffer and sample addition steps.
+  #
+  # @return [String] the buffer separator string
   def buffer_separator
     'C;'
   end

@@ -8,6 +8,7 @@ class Robot < ApplicationRecord
   has_many :robot_properties
   has_one :max_plates_property, -> { where(key: 'max_plates') }, class_name: 'RobotProperty'
   has_one :verification_behaviour_property, -> { where(key: 'verification_behaviour') }, class_name: 'RobotProperty'
+  # The following allows multiple generation behaviours to be associated with a robot.
   has_many :generation_behaviour_properties, -> { where(key: 'generation_behaviour') }, class_name: 'RobotProperty'
 
   scope :with_barcode,
