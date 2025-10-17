@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# NB. Search for 'scRNA Core Pooling Developer Documentation' page in Confluence (public)
+# for a more verbose explanation of the calculations tested here.
 RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
   let(:calculator) do
     Class
