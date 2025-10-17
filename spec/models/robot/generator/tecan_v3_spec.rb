@@ -118,20 +118,20 @@ describe Robot::Generator::TecanV3 do
   context 'when Cherrypick has a mix of buffer and sample additions' do
     # For some wells, take the full volume of sample, do not add any buffer
     # i.e. these wells do not require diluting
-    # case_7: 10 sources wells, 5 with buffer additions, 5 without
+    # case_6: 10 sources wells, 5 with buffer additions, 5 without
     let(:indexes) { 1..10 }
     let(:no_buffer_indexes) { 1..5 }
-    let(:case_num) { 7 }
+    let(:case_num) { 6 }
 
     it_behaves_like 'a TecanV3 generator'
   end
 
   context 'when Cherrypick run that is just sample additions for all transfers' do
     # no buffer additions at all (use the pick by volume approach?)
-    # case_8: 10 source wells, all without buffer additions
+    # case_7: 10 source wells, all without buffer additions
     let(:indexes) { 1..10 }
     let(:no_buffer_indexes) { 1..10 }
-    let(:case_num) { 8 }
+    let(:case_num) { 7 }
 
     it_behaves_like 'a TecanV3 generator'
   end
