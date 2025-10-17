@@ -27,13 +27,13 @@
 import $ from "jquery";
 $(function () {
   $(".dropdown-submenu > button").on("click", function (e) {
-    const $submenuMenu = $(this).next(".dropdown-menu");
-    const isOpen = $submenuMenu.hasClass("show");
+    const submenuMenu = $(this).next(".dropdown-menu");
+    const isOpen = submenuMenu.hasClass("show");
     // Close all submenus
     $(".dropdown-submenu .dropdown-menu").removeClass("show");
     // Only open if it was not already open
     if (!isOpen) {
-      $submenuMenu.addClass("show");
+      submenuMenu.addClass("show");
     }
     e.stopPropagation();
   });
