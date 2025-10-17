@@ -14,8 +14,7 @@
 #    additions at all (use the pick by volume approach?)
 # 8. Run a cherrypick where at least 1 channel has been disabled on the
 #    Tecan [N/A: It is disabled on the instrument itself]
-# 9. Cherrypick from >1 source plate [N/A: More pick files is generated with
-#    the same dest plate]
+# 9. Cherrypick from >1 source plate
 describe Robot::Generator::TecanV3 do
   let(:total_volume_to_cherrypick) { 180 }
   let(:batch) { instance_double(Batch, total_volume_to_cherrypick:) }
@@ -24,16 +23,19 @@ describe Robot::Generator::TecanV3 do
   let(:source_barcode) { 'SQPD-9001U' }
   let(:dest_barcode) { 'SQPD-9999U' }
   let(:plate_size) { 96 }
+  let(:source_data) do
+    {
+      source_barcode => {
+        'name' => 'ABgene 0765',
+        'plate_size' => plate_size
+      }
+    }
+  end
   let(:data_object) do
     {
       'user' => 'user',
       'time' => 'Tue Oct 16 10:10:10 2025',
-      'source' => {
-        source_barcode => {
-          'name' => 'ABgene 0765',
-          'plate_size' => plate_size
-        }
-      },
+      'source' => source_data,
       'destination' => {
         dest_barcode => {
           'name' => 'ABgene 0800',
@@ -132,6 +134,45 @@ describe Robot::Generator::TecanV3 do
     let(:indexes) { 1..10 }
     let(:no_buffer_indexes) { 1..10 }
     let(:case_num) { 7 }
+
+    it_behaves_like 'a TecanV3 generator'
+  end
+
+  context 'when Cherrypick from >1 source plate' do
+    # case_9: 2 source plates, each with 9 source wells, with buffer additions
+    let(:indexes) { 1..9 } # same for both plates
+    let(:source2_barcode) { 'SQPD-9002U' }
+    let(:case_num) { 9 } # to find the fixture file
+    let(:source_data) do
+      {
+        source_barcode => {
+          'name' => 'ABgene 0765',
+          'plate_size' => plate_size
+        },
+        source2_barcode => {
+          'name' => 'ABgene 0765',
+          'plate_size' => plate_size
+        }
+      }
+    end
+    # Mapping data for multiple source plates.
+    let(:mapping_data) do
+      dst_index = 1
+      result = []
+      source_data.each_key do |src_barcode|
+        src_map = indexes.filter_map do |index|
+          dst_index += 1
+          src_location = Map::Coordinate.vertical_position_to_description(index, plate_size)
+          dst_location = Map::Coordinate.vertical_position_to_description(dst_index, plate_size)
+          volume = total_volume_to_cherrypick - 1 - index
+          buffer_volume = total_volume_to_cherrypick - volume
+          { 'src_well' => [src_barcode, src_location], 'dst_well' => dst_location,
+            'volume' => volume, 'buffer_volume' => buffer_volume }
+        end
+        result.concat(src_map)
+      end
+      result
+    end
 
     it_behaves_like 'a TecanV3 generator'
   end
