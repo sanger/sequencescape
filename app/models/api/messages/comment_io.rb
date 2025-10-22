@@ -8,103 +8,40 @@
 # into a Rails model, which is later serialized into an SQL query through
 # ActiveRecord abstractions.
 #
-# The PolyMetadatum object is expected to have a metadatable_type of 'Request',
-# and that request should be associated with a batch.
+# Each `PolyMetadatum` is expected to have a `metadatable_type` of `'Request'`,
+# and its associated request should belong to a released batch.
+
+# A single batch can contain multiple comments. Since the current serialization
+# model does not support mapping an array of objects directly to a single resource,
+# this serializer uses a nested `has_many` association to represent multiple comments
+# linked to one batch.
 #
-# The included PolyMetadatumBatchAliquots module provides helper methods for
-# traversing from PolyMetadatum → Batch → BatchRequest → Aliquots,
-# filtering aliquots to those associated with the given PolyMetadatum.
+# The serialized message follows this structure:
+# {
+#   "comment": {
+#     "comments": [
+#       {
+#         "comment_type": "under_represented",
+#         "comment_value": "true",
+#         "last_updated": "2024-05-01T12:34:56Z",
+#         "batch_id": 123,
+#         "position": 1,
+#         "tag_index": 2
+#       },
+#       ...
+#     ]
+#   }
+# }
+# ```
 class Api::Messages::CommentIo < Api::Base
-  renders_model(::PolyMetadatum)
+  renders_model(::Batch)
 
-  module PolyMetadatumBatchAliquots
-    ##
-    # Collects all sample IDs from aliquots associated with the PolyMetadatum's
-    # target asset.
-    #
-    # @return [Array<Integer>] sample IDs for this PolyMetadatum
-    def sample_ids_with_poly_metadata
-      metadatable.target_asset.aliquots.flat_map(&:sample_id)
-    end
-
-    ##
-    # Collects all aliquot entries across related batches.
-    #
-    # @return [Array<Hash>] a list of hashes, each containing batch_id, position, and tag_index.
-    def batch_aliquots
-      related_released_batches.flat_map { |batch| aliquots_for_batch(batch) }
-    end
-
-    ##
-    # Collects aliquots belonging to a single batch.
-    #
-    # @param batch [Batch] the batch object
-    # @return [Array<Hash>] built entries for each matching aliquot
-    def aliquots_for_batch(batch)
-      batch.batch_requests.flat_map { |br| aliquots_for_batch_request(batch, br) }
-    end
-
-    ##
-    # Collects aliquots belonging to a single batch request and builds entries.
-    #
-    # @param batch [Batch]
-    # @param batch_request [BatchRequest]
-    # @return [Array<Hash>] entries for matching aliquots
-    def aliquots_for_batch_request(batch, batch_request)
-      matching_aliquots(batch_request).map do |aliquot|
-        build_entry(batch, batch_request, aliquot)
-      end
-    end
-
-    ##
-    # Selects aliquots from a batch request that match this PolyMetadatum's
-    # sample IDs.
-    #
-    # @param batch_request [BatchRequest]
-    # @return [Array<Aliquot>] aliquots with matching sample IDs
-    def matching_aliquots(batch_request)
-      batch_request.request.target_asset.aliquots.select do |a|
-        sample_ids_with_poly_metadata.include?(a.sample_id)
-      end
-    end
-
-    # Builds a hash entry for a given aliquot, including batch, request position,
-    # and aliquot index value.
-    #
-    # @param batch [Batch]
-    # @param batch_request [BatchRequest]
-    # @param aliquot [Aliquot]
-    # @return [Hash] entry with :batch_id, :position, and :tag_index
-    def build_entry(batch, batch_request, aliquot)
-      {
-        batch_id: batch.id,
-        position: batch_request.position,
-        tag_index: aliquot.aliquot_index_value
-      }
-    end
-
-    def current_entry
-      # Return the first entry, as only one aliquot is expected
-      # for the PolyMetadatum of Request type.
-      @current_entry ||= batch_aliquots.first || {}
-    end
-
-    def batch_id
-      current_entry[:batch_id]
-    end
-
-    def position
-      current_entry[:position]
-    end
-
-    def tag_index
-      current_entry[:tag_index]
-    end
+  with_nested_has_many_association(:comments, as: 'comments') do
+    map_attribute_to_json_attribute(:key, 'comment_type')
+    map_attribute_to_json_attribute(:value, 'comment_value')
+    map_attribute_to_json_attribute(:updated_at, 'last_updated')
+    map_attribute_to_json_attribute(:batch_id, 'batch_id')
+    map_attribute_to_json_attribute(:position, 'position')
+    map_attribute_to_json_attribute(:tag_index, 'tag_index')
   end
-  map_attribute_to_json_attribute(:key, 'comment_type')
-  map_attribute_to_json_attribute(:value, 'comment_value')
-  map_attribute_to_json_attribute(:updated_at, 'last_updated')
-  map_attribute_to_json_attribute(:batch_id, 'batch_id')
-  map_attribute_to_json_attribute(:position, 'position')
-  map_attribute_to_json_attribute(:tag_index, 'tag_index')
 end
