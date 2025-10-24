@@ -2,6 +2,8 @@
 
 # This module provides methods for calculating the full allowance volume and the
 # final resuspension volume for scRNA core cDNA prep feasibility validations.
+# NB. Search for 'scRNA Core Pooling Developer Documentation' page in Confluence (public)
+# for a more verbose explanation of the calculations used here.
 module Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
   SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
   # Constants for the headers in the bulk submission for scRNA core cDNA prep.
