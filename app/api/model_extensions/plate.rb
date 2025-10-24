@@ -2,19 +2,19 @@
 # Included in {Plate}
 # The intent of this file was to provide methods specific to the V1 API
 module ModelExtensions::Plate
-  module NamedScopeHelpers
-    def include_plate_named_scope(plate_association)
-      scope :"include_#{plate_association}",
-            lambda { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }
-    end
-  end
+  # module NamedScopeHelpers
+  #   def include_plate_named_scope(plate_association)
+  #     scope :"include_#{plate_association}",
+  #           lambda { includes(plate_association.to_sym => ::ModelExtensions::Plate::PLATE_INCLUDES) }
+  #   end
+  # end
 
   PLATE_INCLUDES = [:plate_metadata, { wells: %i[map transfer_requests_as_target uuid_object] }].freeze
 
   def self.included(base)
     base.class_eval do
-      scope :include_plate_purpose, -> { includes(:plate_purpose) }
-      scope :include_plate_metadata, -> { includes(:plate_metadata) }
+      # scope :include_plate_purpose, -> { includes(:plate_purpose) }
+      # scope :include_plate_metadata, -> { includes(:plate_metadata) }
       delegate :pool_id_for_well, to: :plate_purpose, allow_nil: true
     end
   end
