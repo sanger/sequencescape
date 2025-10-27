@@ -8,9 +8,10 @@ class LabwhereReception
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :asset_barcodes, :user_code, :location_barcode
+  attr_accessor :user_code
+  attr_reader :asset_barcodes, :location_barcode
 
-  validates :asset_barcodes, :user_code, presence: true
+  validates :asset_barcodes, presence: true
   validates :user,
             presence: {
               message:
