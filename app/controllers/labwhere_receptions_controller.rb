@@ -6,7 +6,6 @@ class LabwhereReceptionsController < ApplicationController
     @labwhere_reception = LabwhereReception.new(params[:user_code], params[:location_barcode], [])
   end
 
-  # rubocop: todo Metrics/AbcSize
   def create
     # user_barcode,location_barcode,asset_barcodes
     input = params[:labwhere_reception] || {}
@@ -18,5 +17,4 @@ class LabwhereReceptionsController < ApplicationController
       flash.now[:error] = @labwhere_reception.errors.full_messages.join('; ')
     end
   end
-  # rubocop: enable Metrics/AbcSize
 end
