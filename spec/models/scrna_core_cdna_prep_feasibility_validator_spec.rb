@@ -629,7 +629,7 @@ RSpec.describe BulkSubmission, with: :uploader do
             study_name: 'Study 1',
             project_name: 'Project 1',
             number_of_samples_in_smallest_pool: 5,
-            final_resuspension_volume: '46.9',
+            final_resuspension_volume: '54.7',
             full_allowance: '100.0',
             scope: i18n_scope
           )
@@ -699,7 +699,7 @@ RSpec.describe BulkSubmission, with: :uploader do
               study_name: study_name,
               project_name: project_name,
               number_of_samples_in_smallest_pool: 5,
-              final_resuspension_volume: '46.9',
+              final_resuspension_volume: '54.7',
               full_allowance: '100.0',
               scope: i18n_scope
             )
