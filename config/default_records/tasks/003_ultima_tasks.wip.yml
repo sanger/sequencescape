@@ -11,9 +11,3 @@ Amp:
   sorted: 1
   lab_activity: true
   sti_type: SetDescriptorsTask
-UG 100 Sequencer:
-  name: UG 100 Sequencer
-  workflow: Ultima
-  sorted: 2
-  lab_activity: true
-  sti_type: SetDescriptorsTask

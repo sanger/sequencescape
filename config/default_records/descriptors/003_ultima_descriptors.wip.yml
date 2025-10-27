@@ -83,10 +83,3 @@ UG AMP Inst. Name:
   kind: Text
   required: true
   sorter: 1
-UG 100 Inst. Name:
-  name: UG 100 Inst. Name
-  task: UG 100 Sequencer
-  workflow: Ultima
-  kind: Text
-  required: true
-  sorter: 0
