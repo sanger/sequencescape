@@ -13,6 +13,7 @@ class LabwhereReceptionsController < ApplicationController
     @labwhere_reception = LabwhereReception.new(input[:user_code], input[:location_barcode], input[:barcodes])
     if @labwhere_reception.save
       flash.now[:notice] = 'Locations updated!'
+      @labwhere_reception = LabwhereReception.new # Reset form fields
     else
       flash.now[:error] = @labwhere_reception.errors.full_messages.join('; ')
     end
