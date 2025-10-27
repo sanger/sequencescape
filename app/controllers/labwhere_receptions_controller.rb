@@ -17,7 +17,6 @@ class LabwhereReceptionsController < ApplicationController
     else
       flash.now[:error] = @labwhere_reception.errors.full_messages.join('; ')
     end
-    @labwhere_reception.user_code = ''
   end
   # rubocop: enable Metrics/AbcSize
 end

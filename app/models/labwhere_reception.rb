@@ -77,7 +77,10 @@ class LabwhereReception
       BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: })
     end
 
-    valid?
+    result = valid?
+    @user_code = ''
+
+    result
   end
 
   # rubocop:enable Metrics/MethodLength
