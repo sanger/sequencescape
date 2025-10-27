@@ -45,7 +45,10 @@ class LabwhereReception
   # This maintains compatibility with rails
   # rubocop:todo Metrics/MethodLength
   def save # rubocop:todo Metrics/AbcSize
-    errors.add(:base, 'Please provide a valid user code.') if user_code.blank?
+    if user_code.blank?
+      errors.add(:base, 'Please provide a valid user code.')
+      return false
+    end
     return false unless valid?
 
     begin
