@@ -1,6 +1,6 @@
 ---
-OTR carrier barcode:
-  name: OTR carrier barcode
+"OTR carrier Lot #":
+  name: "OTR carrier Lot #"
   task: Opentrons
   workflow: Ultima
   kind: Text
@@ -13,22 +13,22 @@ OTR carrier expiry:
   kind: Date
   required: false
   sorter: 1
-Reaction mix 7 barcode:
-  name: Reaction mix 7 barcode
+"Reaction Mix 7 Lot #":
+  name: "Reaction Mix 7 Lot #"
   task: Opentrons
   workflow: Ultima
   kind: Text
   required: false
   sorter: 2
-Reaction mix 7 expiry:
-  name: Reaction mix 7 expiry
+Reaction Mix 7 expiry:
+  name: Reaction Mix 7 expiry
   task: Opentrons
   workflow: Ultima
   kind: Date
   required: false
   sorter: 3
-NFW barcode:
-  name: NFW barcode
+"NFW Lot #":
+  name: "NFW Lot #"
   task: Opentrons
   workflow: Ultima
   kind: Text
@@ -41,8 +41,8 @@ NFW expiry:
   kind: Date
   required: false
   sorter: 5
-Oil barcode:
-  name: Oil barcode
+"Oil Lot #":
+  name: "Oil Lot #"
   task: Opentrons
   workflow: Ultima
   kind: Text
