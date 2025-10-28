@@ -2,6 +2,9 @@
 
 # This module encapsulates logic for identifying and generating comment data
 # related to "under-represented" wells within a released batch.
+# Works for pipelines where all requests (library prep, multiplexing, sequencing) share a single submission (e.g., WGS).
+# Other pipelines may differ, as they can involve multiple submissions at different stages.
+# Left as-is for this WGS proof of concept; future extensions may require refactoring.
 #
 # It:
 #   - Extracts requests containing "under_represented" metadata.
@@ -98,11 +101,13 @@ module UnderRepWellCommentsToBroadcast
   #
   # The starting point is the request that holds the poly_metadatum for the
   # under-represented well. This request is typically a LibraryRequest, whose
-  # asset corresponds to the under-represented well.
+  # target_asset corresponds to the under-represented well.
   #
   # From there, we traverse to the Lane asset via `request.asset.descendants`.
   # The Lane provides access to the `batch_request` (through `lane.source_request`),
   # which contains the lane position information used in the generated comment.
+  # This linkage is not fully guaranteed for more complex pipelines where
+  # descendant relationships may differ.
   #
   # @param request [Request] the request that owns the poly_metadatum
   # @param poly_meta [PolyMetadatum] the metadata record for under-represented wells
