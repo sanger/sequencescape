@@ -1,0 +1,248 @@
+---
+title: Accessioning Call Graph
+---
+%%{ init: { 
+    'flowchart': { 'curve': 'curvy' },
+    'theme': 'neutral'
+  }
+}%%
+flowchart LR
+    %% Legend
+    subgraph Legend [Legend]
+        direction TB
+        L_User(fa:fa-user User)
+        L_External(fa:fa-globe External System)
+        L_API(fa:fa-arrow-right-to-bracket API)
+        L_Interface(fa:fa-computer-mouse User Interface)
+        L_Model(fa:fa-square-caret-down Model)
+        L_Controller(fa:fa-arrows-spin Controller)
+        L_Function(fa:fa-caret-right Function)
+        L_Config(fa:fa-screwdriver-wrench Configuration)
+        L_Resource(fa:fa-file Resource)
+        L_Library(fa:fa-book Library)
+        L_Async(fa:fa-clock Asynchronous Process)
+    
+        L_User ~~~ L_External ~~~ L_API ~~~ L_Interface ~~~ L_Resource ~~~ L_Async 
+        L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_Function ~~~ L_Library
+    
+        InvisibleNodeA[ ] -..-> | Data flow | InvisibleNodeB[ ] -- Function calls --> InvisibleNodeC[ ] == Accessioning function calls ==> InvisibleNodeD[ ]
+    end
+
+    Legend ~~~ Providers
+    %% End Legend
+
+    %% Nodes
+    %% Users
+    User_SeqOps(fa:fa-user SeqOps)
+    User_Neil(fa:fa-user Neil)
+    User_SSR(fa:fa-user SSRs)
+    User_LB_Users(fa:fa-user LB Users)
+    User_Developers(fa:fa-user Developers)
+    User_SS_Users(fa:fa-user SS Users)
+    External_EBI(fa:fa-globe EBI)
+
+    %% User Interfaces
+    UI_LB_Charge_and_Pass(fa:fa-computer-mouse Charge and Pass)
+    UI_SS_Sample_GAN(fa:fa-computer-mouse Generate Accession Number)
+    UI_SS_Study_GAN(fa:fa-computer-mouse Generate Accession Number)
+    UI_SS_Study_AAS(fa:fa-computer-mouse Accession all Samples)
+    UI_SS_Manifest_Upload(fa:fa-computer-mouse Manifest Upload)
+
+    %% Models   
+    MD_SS_Order(fa:fa-square-caret-down Order)
+    %% MD_SS_AccessionService(fa:fa-square-caret-down AccessionService)
+    MD_SS_Submission_AccessionBehaviour(fa:fa-square-caret-down Submission::AccessionBehaviour)
+    %% MD_SS_Sample(fa:fa-square-caret-down Sample)
+    %% MD_SS_Study(fa:fa-square-caret-down Study)
+    MD_SS_SampleManifest_Uploader(fa:fa-square-caret-down SampleManifest::Uploader)
+
+    %% Controllers
+    %% CT_SS_Samples(fa:fa-arrows-spin Samples Controller)
+    %% CT_SS_Studies(fa:fa-arrows-spin Studies Controller)
+
+    %% Functions
+    FN_SS_AccessionService_submit_sample_for_user(fa:fa-caret-right submit_sample_for_user)
+    FN_SS_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
+    FN_SS_AccessionService_submit(fa:fa-caret-right submit)
+    FN_SS_Sample_accession(fa:fa-caret-right accession)
+    FN_SS_Sample_validate_accessionable(fa:fa-caret-right validate_accessionable!)
+    FN_SS_Sample_validate_ena_required_fields(fa:fa-caret-right validate_ena_required_fields!)
+    FN_SS_Samples_accession(fa:fa-caret-right accession)
+    FN_SS_Study_accession_all_samples(fa:fa-caret-right accession_all_samples)
+    FN_SS_Studies_accession_all_samples(fa:fa-caret-right accession_all_samples)
+    FN_SS_Studies_accession(fa:fa-caret-right accession)
+    FN_SS_Studies_validate_ena_required_fields(fa:fa-caret-right validate_ena_required_fields!)
+    FN_SS_Studies_rescue_accession_errors(fa:fa-caret-right rescue_accession_errors)
+
+    %% Other Components
+    API_SS_OrderResource(fa:fa-arrow-right-to-bracket Order Resource)
+    CP_SS_Delayed_Job_Accessioning(fa:fa-clock DelayedJob::SampleAccessioningJob)
+    CP_SS_AccessionSubmission(fa:fa-book Accession::Submission)
+    CP_SS_AccessionRequest(fa:fa-book Accession::Request)
+    CP_SS_SampleManifestExcel_Upload(SampleManifestExcel::Upload)
+
+    %% Config
+    CF_SS_accession_samples(fa:fa-screwdriver-wrench accession_samples)
+    CF_SS_disable_accession_check(fa:fa-screwdriver-wrench disable_accession_check)
+
+    %% Resources
+    RES_Manifest(fa:fa-file Manifest)
+
+    %% Groupings of nodes
+    subgraph Providers
+        User_SeqOps
+        User_Neil
+        User_SSR
+    end
+    subgraph Application_Limber[Limber Application]
+        UI_LB_Charge_and_Pass
+    end
+    subgraph Application_Sequencescape[Sequencescape Application]
+        UI_SS_Manifest_Upload
+        MD_SS_SampleManifest_Uploader
+        CP_SS_SampleManifestExcel_Upload
+        MD_SS_Order
+        MD_SS_Submission_AccessionBehaviour
+        CF_SS_accession_samples
+        CF_SS_disable_accession_check
+        CP_SS_Delayed_Job_Accessioning
+
+        subgraph Samples
+            UI_SS_Sample_GAN
+        end        
+        subgraph Studies
+            UI_SS_Study_GAN
+            UI_SS_Study_AAS
+        end
+        subgraph SS_API["SS API"]
+            API_SS_OrderResource
+        end
+        subgraph CT_SS_Studies[fa:fa-arrows-spin Studies Controller]
+            FN_SS_Studies_accession_all_samples
+            FN_SS_Studies_accession
+            FN_SS_Studies_validate_ena_required_fields
+            FN_SS_Studies_rescue_accession_errors
+        end
+        subgraph MD_SS_Study[fa:fa-square-caret-down Study Model]
+            FN_SS_Study_accession_all_samples
+        end
+        subgraph CT_SS_Samples[fa:fa-arrows-spin Samples Controller]
+            FN_SS_Samples_accession
+        end
+        subgraph LB_SS_Accession[fa:fa-book Accession - newer]
+            CP_SS_AccessionSubmission
+            CP_SS_AccessionRequest
+        end
+        subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - older]
+            FN_SS_AccessionService_submit_sample_for_user
+            FN_SS_AccessionService_submit_study_for_user
+            FN_SS_AccessionService_submit
+        end
+        subgraph MD_SS_Sample[fa:fa-square-caret-down Sample Model]
+            FN_SS_Sample_accession
+            FN_SS_Sample_validate_accessionable
+            FN_SS_Sample_validate_ena_required_fields
+        end
+    end
+    subgraph Consumers
+        User_LB_Users
+        User_SS_Users
+        User_Developers
+    end
+
+    %% Edge connections between nodes
+
+    Providers ~~~ Application_Limber ~~~ Consumers
+    Providers ~~~ Application_Sequencescape ~~~ Consumers
+
+    CT_SS_Studies ~~~ MD_SS_Study ~~~ CT_SS_Samples ~~~ MD_SS_Sample
+    FN_SS_Samples_accession ~~~ FN_SS_AccessionService_submit_study_for_user
+
+    %% Limber-related
+    User_SeqOps --> UI_LB_Charge_and_Pass -...-> User_LB_Users
+    UI_LB_Charge_and_Pass --> API_SS_OrderResource --> MD_SS_Order
+    MD_SS_Order --> MD_SS_Submission_AccessionBehaviour
+    MD_SS_Submission_AccessionBehaviour --> CF_SS_disable_accession_check
+    MD_SS_Submission_AccessionBehaviour -..-> | exception email | User_Developers
+
+    %% Manifest upload
+    User_SSR --> RES_Manifest -..-> UI_SS_Manifest_Upload --> MD_SS_SampleManifest_Uploader 
+    MD_SS_SampleManifest_Uploader --> CP_SS_SampleManifestExcel_Upload ---> FN_SS_Sample_accession
+    
+    %% Sample generate accession number
+    User_SSR --> UI_SS_Sample_GAN
+    User_Neil --> UI_SS_Sample_GAN
+    FN_SS_Samples_accession --> | 1. |CF_SS_accession_samples
+    UI_SS_Sample_GAN --> FN_SS_Samples_accession
+    FN_SS_Samples_accession --> | 2. | FN_SS_Sample_validate_ena_required_fields 
+    FN_SS_Samples_accession ==> | 3. Validation Passed | FN_SS_AccessionService_submit_sample_for_user
+    FN_SS_AccessionService_submit_sample_for_user ==> FN_SS_AccessionService_submit
+    FN_SS_AccessionService_submit ==> External_EBI
+    FN_SS_Sample_validate_ena_required_fields -- Validation Failed --> FN_SS_Samples_accession
+    External_EBI -..-> | FROM AccessionService.submit | FN_SS_AccessionService_submit
+    FN_SS_AccessionService_submit -..-> | FROM submit_sample_for_user | FN_SS_Samples_accession
+    FN_SS_Samples_accession -..-> | flash message | User_SS_Users
+
+    %% Study accession all samples
+    User_SSR  --> UI_SS_Study_AAS
+    User_Neil --> UI_SS_Study_AAS
+    UI_SS_Study_AAS --> FN_SS_Studies_accession_all_samples 
+    FN_SS_Studies_accession_all_samples -->  FN_SS_Study_accession_all_samples
+    FN_SS_Study_accession_all_samples -..-> | error messages | FN_SS_Studies_accession_all_samples
+    FN_SS_Studies_accession_all_samples -..-> | flash message | User_SS_Users
+    FN_SS_Study_accession_all_samples --> FN_SS_Sample_accession
+    FN_SS_Sample_accession -..-> | FROM accession_all_samples, error messages | FN_SS_Study_accession_all_samples
+    FN_SS_Sample_accession --> | 1. | CF_SS_accession_samples
+    FN_SS_Sample_accession --> | 2. | FN_SS_Sample_validate_accessionable
+    FN_SS_Sample_accession ==> | 3. > NO FEEDBACK > | CP_SS_Delayed_Job_Accessioning
+    CP_SS_Delayed_Job_Accessioning -..-> | exception email | User_Developers
+    CP_SS_Delayed_Job_Accessioning ==> CP_SS_AccessionSubmission ==> CP_SS_AccessionRequest ==> External_EBI
+    External_EBI -..-> | FROM Accession::Request | CP_SS_Delayed_Job_Accessioning
+
+    %% Study generate accession number
+    User_Neil --> UI_SS_Study_GAN
+    UI_SS_Study_GAN --> FN_SS_Studies_accession
+    FN_SS_Studies_accession --> | 1. | FN_SS_Studies_validate_ena_required_fields
+    FN_SS_Studies_accession --> | 2. | FN_SS_AccessionService_submit_study_for_user
+    FN_SS_Studies_accession -..-> | 3. IF success -- flash message | User_SS_Users
+    FN_SS_Studies_accession --> | IF error | FN_SS_Studies_rescue_accession_errors
+    FN_SS_AccessionService_submit_study_for_user --> CF_SS_accession_samples
+    FN_SS_AccessionService_submit_study_for_user ==> FN_SS_AccessionService_submit
+    FN_SS_AccessionService_submit -..-> | FROM submit_study_for_user | FN_SS_Studies_accession
+    FN_SS_Studies_rescue_accession_errors -..-> | flash message | User_SS_Users
+
+    User_Developers -.-> | slack / email | User_SS_Users
+
+    %% Subgraph styling
+
+    %% lemon-chiffon: #fbf8cc
+    %% champagne-pink: #fde4cf
+    %% tea-rose-red: #ffcfd2
+    %% pink-lavender: #f1c0e8
+    %% mauve: #cfbaf0
+    %% jordy-blue: #a3c4f3
+    %% non-photo-blue: #90dbf4
+    %% electric-blue: #8eecf5
+    %% aquamarine: #98f5e1
+    %% celadon: #b9fbc0
+
+    classDef default fill:#fafafa,stroke:#333,stroke-width:1px;
+
+    classDef invisible fill:transparent,stroke:transparent;
+    classDef legendTransparent fill:transparent,stroke:#333,stroke-width:1px;
+    classDef application fill:#90dbf4;
+    classDef configuration fill:#fbf8cc;
+    classDef railsModel fill:#98f5e1;
+    classDef railsController fill:#b9fbc0;
+    classDef users fill:#f1c0e8;
+    classDef userInterface fill:#a3c4f3;
+
+    class InvisibleNodeA,InvisibleNodeB,InvisibleNodeC,InvisibleNodeD invisible;
+    class Legend legendTransparent;
+    class Application_Sequencescape,Application_Limber application;
+    class L_Config,CF_SS_disable_accession_check,CF_SS_accession_samples configuration;
+    class SS_API,DelayedJob,Samples,Studies,Submissions SequencescapeSection;
+    class L_Model,MD_SS_Study,MD_SS_AccessionService,MD_SS_Sample,MD_SS_SampleManifest_Uploader,MD_SS_Order,MD_SS_Submission_AccessionBehaviour railsModel;
+    class L_Controller,CT_SS_Samples,CT_SS_Studies railsController;
+    class L_User,User_SeqOps,User_Neil,User_SSR,User_LB_Users,User_SS_Users,User_Developers users;
+    class L_Interface,UI_LB_Charge_and_Pass,UI_SS_Sample_GAN,UI_SS_Study_GAN,UI_SS_Study_AAS,UI_SS_Manifest_Upload userInterface;
