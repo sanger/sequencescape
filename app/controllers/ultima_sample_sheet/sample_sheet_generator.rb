@@ -160,6 +160,8 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns a mapping of tags to their respective 1-based index numbers.
+    # This sorts the tags implicitly by their tag group ID and map ID to ensure consistent ordering.
+    # The former is done by the batch_tag_groups method; the latter by the TagGroup's has_many :tags association.
     # @return [Hash{Tag => Integer}] mapping of tags to index numbers
     def tag_index_map
       @tag_index_map ||= batch_tag_groups.flat_map(&:tags).each_with_index.to_h { |tag, i| [tag, i + 1] }
@@ -172,9 +174,10 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns the tag groups used in the batch.
+    # This sorts the tag groups by their ID to ensure consistent ordering.
     # @return [Array<TagGroup>] the tag groups of the batch's requests
     def batch_tag_groups
-      @batch_tag_groups ||= batch_requests.map { |request| request.asset.aliquots.first.tag.tag_group }
+      @batch_tag_groups ||= batch_requests.map { |request| request.asset.aliquots.first.tag.tag_group }.sort_by(&:id)
     end
 
     # Returns the requests associated with the batch.
