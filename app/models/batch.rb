@@ -8,6 +8,7 @@ require 'aasm'
 class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Api::BatchIo::Extensions
   include Api::Messages::FlowcellIo::Extensions
+  include Api::Messages::UseqWaferIo::Extensions
   include AASM
   include SequencingQcBatch
   include Commentable
