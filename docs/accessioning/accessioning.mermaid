@@ -197,7 +197,8 @@ flowchart LR
     FN_SS_Sample_accession ==> | 3. > NO FEEDBACK > | CP_SS_Delayed_Job_Accessioning
     CP_SS_Delayed_Job_Accessioning -..-> | exception email | User_Developers
     CP_SS_Delayed_Job_Accessioning ==> CP_SS_AccessionSubmission ==> CP_SS_AccessionRequest ==> External_EBI
-    External_EBI -..-> | FROM Accession::Request | CP_SS_Delayed_Job_Accessioning
+    %% External_EBI .-> | FROM Accession::Request | CP_SS_Delayed_Job_Accessioning  ...struggling to reverse the arrow here...
+    CP_SS_Delayed_Job_Accessioning -.- | <-- FROM Accession::Request | External_EBI
 
     %% Study generate accession number
     User_Neil --> UI_SS_Study_GAN
