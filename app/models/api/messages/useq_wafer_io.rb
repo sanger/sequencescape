@@ -26,10 +26,6 @@ class Api::Messages::UseqWaferIo < Api::Base
   module LaneExtensions
     def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
-        def wafer_barcode
-          detect_descriptor(flowcell_identifier)
-        end
-
         # Lot numbers for opentron and amp
         def otr_carrier_lot_number
           detect_descriptor('OTR carrier Lot #')
@@ -82,29 +78,12 @@ class Api::Messages::UseqWaferIo < Api::Base
     end
   end
 
-  # Included in Batch model
-  module Extensions
-    module ClassMethods
-    end
-
-    def self.included(base)
-      base.class_eval do
-        extend ClassMethods
-
-        def wafer_barcode
-          requests.first&.flowcell_barcode
-        end
-      end
-    end
-  end
-
   # Batch is the main / top-level model that contributes to the message sent to the MLWH.
   renders_model(::Batch)
 
   # The following section maps attributes on Sequencescape models to attributes in the json message that is passed to
   # the MLWH.
   # The following methods come from the Batch model or the relevant module above.
-  map_attribute_to_json_attribute(:wafer_barcode)
   map_attribute_to_json_attribute(:id, 'wafer_id')
 
   map_attribute_to_json_attribute(:updated_at)

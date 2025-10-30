@@ -68,7 +68,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
 
       let(:request_data) do
         {
-          'Chip Barcode' => 'wb',
           'OTR carrier Lot #' => 'OTR1',
           'OTR carrier expiry' => Time.zone.today.to_s,
           'Reaction Mix 7 Lot #' => 'RM71',
@@ -86,7 +85,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
 
       let(:expected_json) do
         {
-          'wafer_barcode' => 'wb',
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
@@ -132,7 +130,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
     context 'with full request data' do
       let(:request_data) do
         {
-          'Chip Barcode' => 'wb',
           'OTR carrier Lot #' => 'OTR1',
           'OTR carrier expiry' => Time.zone.today.to_s,
           'Reaction Mix 7 Lot #' => 'RM71',
@@ -150,7 +147,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
 
       let(:expected_json) do
         {
-          'wafer_barcode' => 'wb',
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
@@ -196,7 +192,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
     context 'with some missing request data' do
       let(:request_data) do
         {
-          'Chip Barcode' => 'wb',
           'UG AMP Inst. Name' => 'UG Amp 1',
           'Opentrons Inst. Name' => 'OTR Inst 1'
         }
@@ -204,7 +199,6 @@ RSpec.describe Api::Messages::UseqWaferIo do
 
       let(:expected_json) do
         {
-          'wafer_barcode' => 'wb',
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
