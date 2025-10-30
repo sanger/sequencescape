@@ -35,13 +35,13 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
       it { is_expected.to eq 'tag_layout_template' }
     end
 
-    context 'with a TagLayoutTemplate' do
+    context 'with a PlateTemplate' do
       let(:template_class) { 'PlateTemplate' }
 
       it { is_expected.to eq 'plate_template' }
     end
 
-    context 'with a TagLayoutTemplate' do
+    context 'with a Tag2LayoutTemplate' do
       let(:template_class) { 'Tag2LayoutTemplate' }
 
       it { is_expected.to eq 'tag2_layout_template' }
