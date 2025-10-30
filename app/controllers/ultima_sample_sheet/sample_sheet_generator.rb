@@ -149,7 +149,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param aliquot [Aliquot] the aliquot whose tag group plate number is needed
     # @return [Integer] the barcode plate number
     def barcode_plate_num_for(aliquot)
-      tag_group_map[aliquot.tag.tag_group]
+      tag_group_index_map[aliquot.tag.tag_group]
     end
 
     # Returns the barcode plate well for the given aliquot's tag.
