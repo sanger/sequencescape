@@ -82,62 +82,6 @@ class Api::Messages::UseqWaferIo < Api::Base
     end
   end
 
-  # Included in ControlRequest model
-  module ControlLaneExtensions
-    def self.included(base) # rubocop:todo Metrics/MethodLength
-      base.class_eval do
-        # Lot numbers for opentron and amp
-        def otr_carrier_lot_number
-          nil
-        end
-
-        def otr_carrier_expiry
-          nil
-        end
-
-        def otr_reaction_mix_7_lot_number
-          nil
-        end
-
-        def otr_reaction_mix_7_expiry
-          nil
-        end
-
-        def otr_nfw_lot_number
-          nil
-        end
-
-        def otr_nfw_expiry
-          nil
-        end
-
-        def otr_oil_lot_number
-          nil
-        end
-
-        def otr_oil_expiry
-          nil
-        end
-
-        def otr_pipette_carousel
-          nil
-        end
-
-        def otr_instrument_name
-          nil
-        end
-
-        def amp_assign_control_bead_tube
-          nil
-        end
-
-        def amp_instrument_name
-          nil
-        end
-      end
-    end
-  end
-
   # Included in Batch model
   module Extensions
     module ClassMethods
@@ -199,19 +143,6 @@ class Api::Messages::UseqWaferIo < Api::Base
       with_association(:primer_panel) { map_attribute_to_json_attribute(:name, 'primer_panel') }
       with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
-    end
-
-    # The following methods come from the Aliquot model or the relevant module above.
-    # They are included in the MLWH message under 'controls'.
-    with_nested_has_many_association(:controls) do
-      with_association(:tag) do
-        map_attribute_to_json_attribute(:oligo, 'tag_sequence')
-      end
-      map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
-      with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
-      with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
-      with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
-      map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
     end
   end
 end
