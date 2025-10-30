@@ -106,6 +106,7 @@ class Api::Messages::UseqWaferIo < Api::Base
     map_attribute_to_json_attribute(:otr_oil_expiry)
     map_attribute_to_json_attribute(:otr_pipette_carousel)
     map_attribute_to_json_attribute(:amp_assign_control_bead_tube)
+    map_attribute_to_json_attribute(:ot_recipe)
 
     # The following methods come from the Aliquot model or the relevant module above.
     # They are included in the MLWH message under 'samples'.
