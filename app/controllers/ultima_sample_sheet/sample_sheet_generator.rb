@@ -30,6 +30,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       Barcode_Plate_Num
       Barcode_Plate_Well
       application_type
+      study_id
     ].freeze
     NUM_COLUMS = SAMPLES_HEADERS.size
 
@@ -117,7 +118,8 @@ module UltimaSampleSheet::SampleSheetGenerator
           index_barcode_sequence_for(aliquot),
           barcode_plate_num_for(aliquot),
           barcode_plate_well_for(aliquot),
-          'native' # application_type
+          'native', # application_type
+          study_id_for(aliquot)
         ]
       end
     end
@@ -159,6 +161,10 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [String] the barcode plate well
     def barcode_plate_well_for(aliquot)
       Map.find(aliquot.tag.map_id).description
+    end
+
+    def study_id_for(aliquot)
+      aliquot.study_id.to_s
     end
 
     # Returns a mapping of tags to their respective 1-based index numbers.
