@@ -158,6 +158,7 @@ class SamplesController < ApplicationController
 
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
+    # TODO: remove this line and replace with reference to @sample.accession
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
   rescue ActiveRecord::RecordInvalid => e

@@ -1,0 +1,32 @@
+# frozen_string_literal: true
+
+# Designed to track the status of Sample accessioning requests in order to provide feedback to users.
+# It could be expanded to track other accessionable types in the future.
+#
+# Associations:
+#  belongs_to :sample - The sample being accessioned
+#  belongs_to :status_group - The group of accessioning requests this status belongs to
+#
+# Attributes:
+#  sample_id: integer - The ID of the sample being accessioned
+#  status: string - The current status of the accessioning request (eg: 'queued', 'failed')
+#  message: text - Any message associated with the status (eg: error messages)
+
+class Accession::Status < ApplicationRecord
+  belongs_to :sample, class_name: '::Sample'
+  belongs_to :status_group, class_name: 'Accession::StatusGroup'
+
+  validates :status, presence: true, inclusion: { in: %w[queued failed] }
+
+  def self.create_for_sample(sample, status_group)
+    create!(
+      sample: sample,
+      status_group: status_group,
+      status: 'queued'
+    )
+  end
+
+  def mark_failed(message)
+    update(status: 'failed', message: message)
+  end
+end
