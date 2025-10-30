@@ -134,7 +134,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param aliquot [Aliquot] the aliquot whose tag z-index number is needed
     # @return [String] the barcode index number
     def index_barcode_num_for(aliquot)
-      "Z#{tag_index_map[aliquot.tag]}"
+      format('Z%04d', tag_index_map[aliquot.tag])
     end
 
     # Returns the barcode sequence for the given aliquot's tag.
