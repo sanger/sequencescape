@@ -91,7 +91,7 @@ class Api::Messages::UseqWaferIo < Api::Base
   # The following methods come from the Request model or the relevant module above.
   # They are included in the MLWH message under 'lanes'.
   with_nested_has_many_association(:requests, as: :lanes) do
-    map_attribute_to_json_attribute(:position)
+    map_attribute_to_json_attribute(:position, 'lane')
     map_attribute_to_json_attribute(:mx_library, 'id_pool_lims')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
     map_attribute_to_json_attribute(:otr_instrument_name)
