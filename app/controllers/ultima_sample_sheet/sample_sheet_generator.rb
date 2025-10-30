@@ -130,7 +130,9 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns the barcode index number for the given aliquot's tag.
-    # This number is incremented across all tags in the batch.
+    # This number is incremented across all tags in the batch. If no aliquot
+    # matches a certain tag, the corresponding number is simply skipped in the
+    # file.
     # @param aliquot [Aliquot] the aliquot whose tag z-index number is needed
     # @return [String] the barcode index number
     def index_barcode_num_for(aliquot)
