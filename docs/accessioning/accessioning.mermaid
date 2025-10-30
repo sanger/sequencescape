@@ -178,7 +178,7 @@ flowchart LR
     FN_SS_Samples_accession ==> | 3. Validation Passed | FN_SS_AccessionService_submit_sample_for_user
     FN_SS_AccessionService_submit_sample_for_user ==> FN_SS_AccessionService_submit
     FN_SS_AccessionService_submit ==> External_EBI
-    FN_SS_Sample_validate_ena_required_fields -- Validation Failed --> FN_SS_Samples_accession
+    FN_SS_Sample_validate_ena_required_fields -..-> | Validation Failed | FN_SS_Samples_accession
     External_EBI -..-> | FROM AccessionService.submit | FN_SS_AccessionService_submit
     FN_SS_AccessionService_submit -..-> | FROM submit_sample_for_user | FN_SS_Samples_accession
     FN_SS_Samples_accession -..-> | flash message | User_SS_Users
