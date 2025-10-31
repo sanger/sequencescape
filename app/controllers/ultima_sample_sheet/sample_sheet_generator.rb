@@ -14,6 +14,7 @@ module UltimaSampleSheet::SampleSheetGenerator
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
   class Generator
+    PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
     HEADER_TITLE = ['[Header]'].freeze
     GLOBAL_TITLE = ['[Global]'].freeze
     GLOBAL_HEADERS = %w[
@@ -56,6 +57,21 @@ module UltimaSampleSheet::SampleSheetGenerator
       zip_stream.string
     end
 
+    # Generates the CSV string for a single request.
+    # @param request [UltimaSequencingRequest] the request to generate the CSV for
+    # @return [String] the CSV content as a string with CRLF line endings
+    def csv_string(request)
+      CSV.generate(row_sep: "\r\n", force_quotes: false, quote_empty: false) do |csv|
+        add_header_section(csv, request)
+        csv << pad # empty row
+        add_global_section(csv, request)
+        csv << pad
+        add_samples_section(csv, request)
+      end
+    end
+
+    private
+
     # Returns the ZIP entry name for the given request's sample sheet.
     # @param request [UltimaSequencingRequest] the request whose entry name is needed
     # @return [String] the ZIP entry name
@@ -70,25 +86,12 @@ module UltimaSampleSheet::SampleSheetGenerator
       "batch_#{@batch.id}_sample_sheets"
     end
 
-    # Generates the CSV string for a single request.
-    # @param request [UltimaSequencingRequest] the request to generate the CSV for
-    # @return [String] the CSV content as a string with CRLF line endings
-    def csv_string(request)
-      CSV.generate(row_sep: "\r\n") do |csv|
-        add_header_section(csv, request)
-        csv << pad # empty row
-        add_global_section(csv, request)
-        csv << pad
-        add_samples_section(csv, request)
-      end
-    end
-
     # Adds the header section to the CSV. The free form text includes the batch ID and asset barcode.
     # @param csv [CSV] the CSV object to append rows to
     # @param request [UltimaSequencingRequest] the request whose header data is to be added
     def add_header_section(csv, request)
       csv << pad(HEADER_TITLE)
-      free_form_text = "Batch #{@batch.id} #{request.asset.human_barcode} "
+      free_form_text = "Batch #{@batch.id} #{request.asset.human_barcode}"
       csv << pad([free_form_text])
     end
 
@@ -157,10 +160,11 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns the barcode plate well for the given aliquot's tag.
+    # @note This method assumes 96-well tag plates with 8 rows (A-H).
     # @param aliquot [Aliquot] the aliquot whose tag's map description is needed
     # @return [String] the barcode plate well
     def barcode_plate_well_for(aliquot)
-      Map.find(aliquot.tag.map_id).description
+      Map::Coordinate.vertical_position_to_description(aliquot.tag.map_id, PLATE_LENGTH)
     end
 
     def study_id_for(aliquot)
@@ -183,6 +187,7 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Returns the tag groups used in the batch.
     # This sorts the tag groups by their ID to ensure consistent ordering.
+    # @note This assumes all tags of a tube belong to the same tag group.
     # @return [Array<TagGroup>] the tag groups of the batch's requests
     def batch_tag_groups
       @batch_tag_groups ||= batch_requests.map { |request| request.asset.aliquots.first.tag.tag_group }.sort_by(&:id)
