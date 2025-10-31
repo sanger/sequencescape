@@ -792,3 +792,40 @@ pools_plate:
     - :well
     - :sanger_sample_id
     - :supplier_name
+plate_without_country_of_origin:
+  heading: "Default Plate"
+  asset_type: "plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :cohort
+    - :volume
+    - :concentration
+    - :gender
+    - :geographical_region
+    - :ethnicity
+    - :dna_source
+    - :date_of_sample_collection
+    - :date_of_sample_extraction
+    - :sample_extraction_method
+    - :sample_purified
+    - :purification_method
+    - :concentration_determined_by
+    - :sample_storage_conditions
+    - :mother
+    - :father
+    - :sibling
+    - :gc_content
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+    - :sample_strain_att
+    - :sample_type
+    - :sample_ebi_accession_number
+    - :donor_id
+    - :phenotype
+    - :control_type

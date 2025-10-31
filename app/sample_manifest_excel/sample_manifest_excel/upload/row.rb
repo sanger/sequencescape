@@ -19,6 +19,8 @@ module SampleManifestExcel
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
+      validate :country_of_origin_has_correct_case,
+               if: -> { data.present? && columns.present? && columns.names.include?('country_of_origin') }
 
       delegate :present?, to: :sample, prefix: true
       delegate :aliquots, :asset, to: :manifest_asset
@@ -180,6 +182,41 @@ module SampleManifestExcel
       end
 
       private
+
+      # The EBI country of origin values are case sensitive. This extra validation checks that the value
+      # provided in the upload matches the allowed values with correct case.
+      def country_of_origin_has_correct_case
+        country_column = find_country_of_origin_column
+        # If not found will be a NullColumn with number -1
+        return unless valid_country_column?(country_column)
+
+        value = at(country_column.number)
+        return unless needs_country_of_origin_error?(value)
+
+        add_country_of_origin_error(value)
+      end
+
+      def find_country_of_origin_column
+        columns.find_column_or_null(:name, 'country_of_origin')
+      end
+
+      def valid_country_column?(country_column)
+        country_column.number >= 0
+      end
+
+      def needs_country_of_origin_error?(value)
+        # Using exclude (case sensitive) to check if country matches to Insdc EBI list of countries
+        value.present? && Insdc::Country.options.exclude?(value)
+      end
+
+      # Format user friendly error message for country of origin value
+      def add_country_of_origin_error(value)
+        suggestion = Insdc::Country.options.find { |c| c.casecmp(value).zero? }
+        message = "#{row_title} Country of Origin value '#{value}' does not match any allowed value " \
+                  '(NB. case-sensitive).'
+        message += " Did you mean '#{suggestion}'?" if suggestion
+        errors.add(:base, message)
+      end
 
       def manifest_asset
         return @manifest_asset if defined?(@manifest_asset)
