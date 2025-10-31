@@ -22,7 +22,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.5.1)
+    aasm (5.5.2)
       concurrent-ruby (~> 1.0)
     actioncable (7.1.5.2)
       actionpack (= 7.1.5.2)
@@ -113,7 +113,7 @@ GEM
       activesupport
     amq-protocol (2.3.3)
     ast (2.4.3)
-    avro (1.12.0)
+    avro (1.12.1)
       multi_json (~> 1.0)
     backports (3.25.2)
     base64 (0.3.0)

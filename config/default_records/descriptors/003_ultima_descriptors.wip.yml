@@ -1,0 +1,85 @@
+---
+"OTR carrier Lot #":
+  name: "OTR carrier Lot #"
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 0
+OTR carrier expiry:
+  name: OTR carrier expiry
+  task: Opentrons
+  workflow: Ultima
+  kind: Date
+  required: false
+  sorter: 1
+"Reaction Mix 7 Lot #":
+  name: "Reaction Mix 7 Lot #"
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 2
+Reaction Mix 7 expiry:
+  name: Reaction Mix 7 expiry
+  task: Opentrons
+  workflow: Ultima
+  kind: Date
+  required: false
+  sorter: 3
+"NFW Lot #":
+  name: "NFW Lot #"
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 4
+NFW expiry:
+  name: NFW expiry
+  task: Opentrons
+  workflow: Ultima
+  kind: Date
+  required: false
+  sorter: 5
+"Oil Lot #":
+  name: "Oil Lot #"
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 6
+Oil expiry:
+  name: Oil expiry
+  task: Opentrons
+  workflow: Ultima
+  kind: Date
+  required: false
+  sorter: 7
+Pipette carousel:
+  name: Pipette carousel
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 8
+Opentrons Inst. Name:
+  name: Opentrons Inst. Name
+  task: Opentrons
+  workflow: Ultima
+  kind: Text
+  required: true
+  sorter: 9
+Assign Control Bead Tube:
+  name: Assign Control Bead Tube
+  task: Amp
+  workflow: Ultima
+  kind: Text
+  required: false
+  sorter: 0
+UG AMP Inst. Name:
+  name: UG AMP Inst. Name
+  task: Amp
+  workflow: Ultima
+  kind: Text
+  required: true
+  sorter: 1
