@@ -189,19 +189,19 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns the requests associated with the batch.
+    # This method rejects failed requests.
     # @return [Array<UltimaSequencingRequest>] the requests of the batch
     # @todo Reject failed and cancelled requests
     def batch_requests
-      @batch.requests
+      @batch.requests.reject(&:failed?)
     end
 
     # Returns a new unique sample_ID and increments the counter.
-    # The ID is in the format 'sN', where N is a sequential integer.
-    # @return [String] the new sample ID
+    # @return [Integer] the new sample ID
     def new_sample_id
       num = @counter
       @counter += 1
-      "s#{num}"
+      num.to_s
     end
 
     # Pads the given row with empty columns to match the CSV number of columns.
