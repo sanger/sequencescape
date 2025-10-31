@@ -182,7 +182,7 @@ FactoryBot.define do
     workflow { build(:lab_workflow_for_pipeline) }
 
     after(:build) do |pipeline|
-      pipeline.request_types << create(:ultima_sequencing_request_type)
+      pipeline.request_types << create(:ultima_sequencing)
       pipeline.validator_class_name { 'UltimaValidator' }
       pipeline.add_control_request_type
     end
