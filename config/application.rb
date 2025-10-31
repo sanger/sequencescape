@@ -27,6 +27,12 @@ module Sequencescape
     config.action_controller.forgery_protection_origin_check = false
     config.action_controller.per_form_csrf_tokens = false
 
+    # Enable YJIT by default if running Ruby 3.3+
+    # YJIT is Ruby's JIT compiler that is available in CRuby since Ruby 3.1. It can provide significant performance improvements for Rails applications, offering 15-25% latency improvements.
+    # In Rails 7.2, YJIT is enabled by default if running Ruby 3.3 or newer.
+    # You can disable YJIT by setting:
+    Rails.application.config.yjit = false
+
     # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
     config.exceptions_app = routes
 
