@@ -90,7 +90,7 @@ FactoryBot.define do
   factory :ultima_sequencing_request, class: 'UltimaSequencingRequest' do
     request_type factory: %i[ultima_sequencing]
     request_purpose { :standard }
-    sti_type { 'SequencingPipeline' }
+    sti_type { 'UltimaSequencingRequest' }
     request_metadata_attributes do
       {
         fragment_size_required_from: 150,
