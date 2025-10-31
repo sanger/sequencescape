@@ -98,7 +98,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # Adds the global section to the CSV.
     # The request parameter is currently unused but may be needed for future.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose global data is to be added
+    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, _request)
       csv << pad(GLOBAL_TITLE)
       csv << pad(GLOBAL_HEADERS)
