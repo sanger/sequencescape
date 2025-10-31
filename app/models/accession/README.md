@@ -9,19 +9,31 @@ In an attempt to reduce the number of execution paths for the accessioning of sa
 
 ## Accessioning demand
 
+Looking at accessioning logs for the delayed jobs path over the last month shows that 4 workers process sample accessions in parallel at a combined rate of ~1000 samples/second. While the number of accessions submitted at a time can vary, it is not uncommon to receive requests to process ~5000 samples at a time.
+
 ## Multiple APIs
 
-## Performance limitations
+Sequencescape currently uses the original v1 accessioning API provided by EBI (https://ena-docs.readthedocs.io/en/latest/submit/general-guide/webin-v1.html). This has been replaced with a v2 API (https://ena-docs.readthedocs.io/en/latest/submit/general-guide/programmatic.html) which has better support for large submissions.
+
+## Robustness
+
+The delayed job queue allows many accessions to be submitted, but will also retry them should the submission fail. This is particularly helpful if there is an outage on the EBI side.
 
 ## Model design
 
-Designed to track the status of Sample accessioning requests in order to provide feedback to users.
-Feedback is provided once all items within a given status group have been processed.
-It could be expanded to track other accessionable types in the future.
+To address the lack of feedback outlined above, two new models and database tables are to be created:
 
-A user would submit a sample manifest, accession all samples within a study, or accession individual samples.
-Each of these actions would create a single Accession:StatusGroup record and an individual Accession::Status record for each item to be accessioned.
-If the accessioning process succeeds, the accession number would be updated on the object itself.
-If the accessioning process fails, the status record would be updated to 'failed' with the given error message.
-Once all items within a group (e.g., all samples in a manifest) have either succeeded or failed, the user would be notified of the overall result.
-All successful statuses would be removed after notification, while failed statuses would be retained for user reference.
+- `Accession:Status` tracks the status and feedback from individual sample accessions
+- `Accession:StatusGroup` tracks groups of accessions to allow individual responses to be collated and returned in a single action
+
+While this is currently intended to be used only with sample accessions, there is no reason why it could not be used for other accession types in the future.
+
+This is intended to work as follows:
+
+1. A user would submit a sample manifest, accession all samples within a study, or accession individual samples.
+2. Each of these actions would create a single Accession:StatusGroup record and an individual Accession::Status record for each item to be accessioned.
+3. If the accessioning process succeeds, the accession number would be updated on the object itself.
+4. If the accessioning process fails, the status record would be updated to 'failed' with the given error message.
+5. Once all items within a group (e.g., all samples in a manifest) have either succeeded or failed, the user would be notified of the overall result.
+6. All successful statuses would be removed after notification, while failed statuses would be retained for user reference.
+7. Status and status-groups would be deleted after a rolling period of time, say 30 days.
