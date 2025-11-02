@@ -23,10 +23,10 @@ module RecordLoader
     # @raise [ActiveRecord::RecordNotFound] If the Workflow is not found in environments other than
     # `development`, `staging`, or `cucumber`.
     def create_or_update!(name, options)
-      # Each section name in the record definition YAML files must be unique
-      # across all files in the config folder for this loader. If a record
-      # definition explicitly specifies a 'name' attribute, that value is used
-      # as the record's name. Otherwise, the section name is used as a fallback.
+      # Each section name in the YAML config must be unique across all files in
+      # the loader's config folder. If a record definition provides a 'name', it
+      # is used as the record name; otherwise, the section name is used as a
+      # fallback.
       options['name'] = name if options['name'].nil?
       workflow_name = options.delete('workflow')
       workflow = find_workflow!(workflow_name, name)
