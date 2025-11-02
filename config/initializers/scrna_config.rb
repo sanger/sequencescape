@@ -5,7 +5,7 @@
 # Stores constants used in pooling and chip loading calculations for samples in the scRNA Core pipeline.
 Rails.application.config.scrna_config = {
   # Maximum volume to take into the pools plate for each sample (in microlitres)
-  maximum_sample_volume: 60.0,
+  maximum_sample_volume: 70.0,
   # Minimum volume to take into the pools plate for each sample (in microlitres)
   minimum_sample_volume: 5.0,
   # Minimum volume required for resuspension in microlitres
@@ -13,7 +13,7 @@ Rails.application.config.scrna_config = {
   # Conversion factor from millilitres to microlitres
   millilitres_to_microlitres: 1_000.0,
   # Number of cells required for each sample going into the pool
-  required_number_of_cells_per_sample_in_pool: 30_000,
+  required_number_of_cells_per_sample_in_pool: 35_000,
   # Factor accounting for wastage of material when transferring between labware
   wastage_factor: lambda { |number_of_samples_in_pool|
     return 0.75 if number_of_samples_in_pool <= 13
