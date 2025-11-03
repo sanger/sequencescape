@@ -10,6 +10,9 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       config.tag_group = 'My Magic Tag Group'
       config.load!
     end
+
+    # create country of origin entry
+    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:test_file_name) { 'test_file.xlsx' }
