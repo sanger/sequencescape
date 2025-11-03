@@ -8,8 +8,6 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-
-    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:user) { create(:user, login: 'test_user') }
@@ -21,6 +19,10 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
   after(:all) { SampleManifestExcel.reset! }
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
+
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
 
   it 'is valid if all of the headings relate to a column' do
     download =

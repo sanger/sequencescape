@@ -9,8 +9,6 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       config.tag_group = 'My Magic Tag Group'
       config.load!
     end
-
-    create(:insdc_country, name: 'United Kingdom')
   end
 
   after do
@@ -19,6 +17,10 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   after(:all) { SampleManifestExcel.reset! }
+
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
 
   context 'library tube sample manifest with tag sequences' do
     let!(:user) { create(:admin) }

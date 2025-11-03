@@ -8,8 +8,6 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
-
-    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:test_file_name) { 'test_file.xlsx' }
@@ -19,6 +17,10 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
   after(:all) { SampleManifestExcel.reset! }
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
+
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
 
   it 'is not valid without some data' do
     expect(described_class.new(nil, columns)).not_to be_valid
