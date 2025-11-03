@@ -14,7 +14,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
   let(:fake_upload) { Struct.new(:name, :id) }
 
-  before(:all) do
+  before do
     create(:insdc_country, name: 'United Kingdom')
   end
 
