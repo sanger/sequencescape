@@ -8,6 +8,8 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
+
+    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:test_file_name) { 'test_file.xlsx' }
