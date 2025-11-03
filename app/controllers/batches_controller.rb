@@ -277,6 +277,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   def verify_tube_layout # rubocop:todo Metrics/AbcSize
+    # scanned tube barcode params from page are called barcode_0, barcode_1, ... barcode_n
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
 
     if @batch.verify_tube_layout(tube_barcodes, current_user)
