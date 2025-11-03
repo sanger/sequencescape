@@ -11,7 +11,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       config.load!
     end
 
-    # create country of origin entry
     create(:insdc_country, name: 'United Kingdom')
   end
 

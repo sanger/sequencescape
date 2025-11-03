@@ -9,7 +9,6 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       config.load!
     end
 
-    # create country of origin entry
     create(:insdc_country, name: 'United Kingdom')
   end
 

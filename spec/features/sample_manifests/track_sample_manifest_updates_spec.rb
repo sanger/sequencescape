@@ -12,9 +12,6 @@ describe 'track SampleManifest updates', :sample_manifest do
       config.tag_group = create(:tag_group).name
       config.load!
     end
-
-    # create country of origin entry
-    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:user) { create(:user, login: 'john') }
@@ -24,6 +21,7 @@ describe 'track SampleManifest updates', :sample_manifest do
   let!(:study) { create(:study) }
 
   before do
+    create(:insdc_country, name: 'United Kingdom')
     travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0))
     login_user user
     load_manifest_spec
