@@ -8,7 +8,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   before_action :evil_parameter_hack!
 
-  before_action :login_required, except: %i[released]
+  # generate_sample_sheet checks if the download is allowed without login.
+  before_action :login_required, except: %i[released generate_sample_sheet]
   before_action :find_batch_by_id,
                 only: %i[
                   show
@@ -351,9 +352,20 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  # Checks if the current user is allowed to download the sample sheet for
+  # the batch. Ultima sample sheets are allowed to be downloaded without
+  # authentication. For all other pipelines, the user must be logged in.
+  #
+  # @return [Boolean] true if download is allowed, false otherwise
+  def allow_sample_sheet_download?
+    @batch.pipeline.is_a?(UltimaSequencingPipeline) || logged_in?
+  end
+
   # Generates and sends the appropriate sample sheet(s) for the batch.
   # @return [void]
   def generate_sample_sheet
+    return redirect_to(login_path) unless allow_sample_sheet_download?
+
     if @batch.pipeline.is_a?(ElementAvitiSequencingPipeline)
       generate_element_aviti_sample_sheet
     elsif @batch.pipeline.is_a?(UltimaSequencingPipeline)

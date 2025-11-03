@@ -65,8 +65,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     end
 
     it 'generates valid zip entries' do
-      # The sample manifest (csv file) is generated on user request per pool.
-      # The name should be uniquely identifiable (file name : batchId_NT_number)
+      # Test: The sample manifest (csv file) is generated on user request per pool.
+      # Test: The name should be uniquely identifiable (file name : batchId_NT_number)
       expect(zip_hash.keys).to contain_exactly(zip_entry1_name, zip_entry2_name)
     end
 
@@ -85,6 +85,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     # Parse the generated CSV for the tubes into rows and columns.
     let(:csv1) { CSV.parse(generator.csv_string(request1), row_sep: "\r\n", nil_value: '') }
     let(:csv2) { CSV.parse(generator.csv_string(request2), row_sep: "\r\n", nil_value: '') }
+
+    # Test: Adding study_id column to the existing column (study_id per sample)
 
     # Expected sample rows
     let(:csv1_samples) do
@@ -117,7 +119,7 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       end
     end
 
-    # Helper to returns the well description (e.g., "A1") for a given map ID,
+    # Helper to return the well description (e.g., "A1") for a given map ID,
     # which is in colum-order and one-based on a 96-well plate. This is used for
     # finding where tag is located on a tag plate.
     # @param map_id [Integer] the one-based map ID
@@ -138,6 +140,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     end
 
     it 'generates global sections' do # rubocop:disable RSpec/MultipleExpectations
+      # Test: Add the following hardcoded values, Application(WGS native gDNA),
+      # sequencing_recipe(UG_116cycles_Baseline_1.8.5.2) and analysis_recipe(wgs1)
       expect(csv1[3].compact_blank).to eq(generator.class::GLOBAL_TITLE)
       expect(csv1[4].compact_blank).to eq(generator.class::GLOBAL_HEADERS)
       expect(csv1[5].compact_blank).to eq(['WGS native gDNA', 'UG_116cycles_Baseline_1.8.5.2', 'wgs1'])
