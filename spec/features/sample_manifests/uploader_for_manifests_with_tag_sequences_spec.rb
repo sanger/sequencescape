@@ -9,6 +9,9 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       config.tag_group = 'My Magic Tag Group'
       config.load!
     end
+
+    # create country of origin entry
+    create(:insdc_country, name: 'United Kingdom')
   end
 
   after do

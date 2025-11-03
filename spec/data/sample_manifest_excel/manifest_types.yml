@@ -793,7 +793,7 @@ pools_plate:
     - :sanger_sample_id
     - :supplier_name
 plate_without_country_of_origin:
-  heading: "Default Plate"
+  heading: "Plate without Country of Origin"
   asset_type: "plate"
   columns:
     - :sanger_plate_id
