@@ -12,6 +12,9 @@ describe 'track SampleManifest updates', :sample_manifest do
       config.tag_group = create(:tag_group).name
       config.load!
     end
+
+    # create country of origin entry
+    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:user) { create(:user, login: 'john') }
