@@ -10,14 +10,23 @@ module LabelPrinter
     class BatchPlateAmp
       include Label::MultipleLabels
 
-      def build_label(barcode)
+      attr_reader :count
+
+      def initialize(options)
+        super()
+        @count = options[:count].to_i
+        @printable = options[:printable]
+        @batch = options[:batch]
+      end
+
+      def build_label(parent_tube_barcode)
         {
           top_left: date_today,
-          bottom_left: barcode,
-          top_right: nil,
+          bottom_left: plate_barcode(parent_tube_barcode),
+          top_right: top_right,
           bottom_right: nil,
           top_far_right: nil,
-          barcode: barcode,
+          barcode: plate_barcode(parent_tube_barcode),
           label_name: 'main_label'
         }
       end
@@ -26,14 +35,23 @@ module LabelPrinter
         Time.zone.today.strftime('%e-%^b-%Y')
       end
 
-      def plate_barcodes
-        printable.select { |_barcode, check| check == 'on' }. # name or id from checkbox
+      def top_right
+        @batch.studies.first.abbreviation
+      end
+
+      def plate_barcode(tube_barcode)
+        "#{@batch.id}_#{tube_barcode}"
+      end
+
+      def parent_tube_barcodes
+        # comes from checkboxes selected on the page
+        @printable.select { |_barcode, check| check == 'on' }.keys
       end
 
       # Not really assets, just identifiers for off-LIMS plates,
       # but method name kept for compatibility with MultipleLabels module
       def assets
-        plate_barcodes
+        parent_tube_barcodes
       end
     end
   end

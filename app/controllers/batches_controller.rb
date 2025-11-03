@@ -250,6 +250,15 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  def print_plate_amp_barcodes
+    if @batch.requests.empty?
+      flash[:notice] = 'Your batch contains no requests.'
+      redirect_to controller: 'batches', action: 'show', id: @batch.id
+    else
+      print_handler(LabelPrinter::Label::BatchPlateAmp)
+    end
+  end
+
   # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @task = Task.find_by(id: params[:task_id])
