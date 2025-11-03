@@ -8,6 +8,9 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
+
+    # create country of origin entry
+    create(:insdc_country, name: 'United Kingdom')
   end
 
   let(:user) { create(:user, login: 'test_user') }
