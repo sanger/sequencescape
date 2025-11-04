@@ -85,6 +85,12 @@ module Api
       #   @example Using the filter: `GET /api/v2/tag_layout_templates?enabled=true`
       #   @return [Boolean] Whether the tag layout template is enabled or not.
       filter :enabled, default: true
+
+      # @!method uuid
+      #   A filter to return only lots with the given UUID.
+      #   @example Filtering lots by UUID
+      #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
     end
   end
 end
