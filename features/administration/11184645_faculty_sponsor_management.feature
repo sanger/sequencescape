@@ -96,7 +96,7 @@ Feature: Manage a list of faculty sponsors
 
   Scenario Outline: Only admins can manage faculty sponsors
     Given I am a "<role>" user logged in as "user"
-      And I am on the faculty sponsor homepage
+      And I allow redirects and am on the faculty sponsor homepage
     Then I should see "Sorry, you are not authorized to index this Faculty sponsor"
     Examples:
       | role          |
