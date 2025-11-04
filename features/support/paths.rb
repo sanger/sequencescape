@@ -115,7 +115,7 @@ module NavigationHelpers
     when /the sample logistics homepage/
       sample_logistics_path
     when /the delayed jobs admin page/
-      url_for(controller: 'admin/delayed_jobs', action: :index)
+      admin_delayed_jobs_path
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
       page_for_model(Study, 'properties', name)

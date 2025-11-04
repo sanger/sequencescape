@@ -3,7 +3,7 @@ Feature: Studies have a release agreement
   Background:
     Given I am an "administrator" user logged in as "John Smith"
     Given a faculty sponsor called "Jack Sponsor" exists
-    Given I am on the study creation page
+    Given I allow redirects and am on the study creation page
     And I fill in "Study name" with "Testing release agreements"
     And I select "Jack Sponsor" from "Faculty Sponsor"
     And I select "General" from "Program"
@@ -38,4 +38,3 @@ Feature: Studies have a release agreement
     When I press "Create"
     Then I should be on the study information page for "Testing release agreements"
     And I should see "Your study has been created"
-

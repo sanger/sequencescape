@@ -16,7 +16,7 @@ Feature: Bulk Submission
     # And the study "abc123_study" has an asset group called "assetgroup123"
     And the study "abc123_study" has an asset group of 5 samples in SampleTubes called "assetgroup123"
     And sample tubes are barcoded sequentially from 1
-    When I go to the create bulk submissions page
+    When I allow redirects and go to the create bulk submissions page
     Then I should see "Bulk Submission New"
 
   Scenario: Uploading a valid file with 1 submission
