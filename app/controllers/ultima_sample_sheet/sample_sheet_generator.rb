@@ -187,12 +187,14 @@ module UltimaSampleSheet::SampleSheetGenerator
       @tag_group_index_map ||= batch_tag_groups.each_with_index.to_h { |tg, i| [tg, i + 1] }
     end
 
-    # Returns the tag groups used in the batch.
+    # Returns all unique tag groups used in the batch.
     # This sorts the tag groups by their ID to ensure consistent ordering.
-    # @note This assumes all tags of a tube belong to the same tag group.
     # @return [Array<TagGroup>] the tag groups of the batch's requests
     def batch_tag_groups
-      @batch_tag_groups ||= batch_requests.map { |request| request.asset.aliquots.first.tag.tag_group }.sort_by(&:id)
+      @batch_tag_groups ||= batch_requests
+        .flat_map { |request| request.asset.aliquots.map { |aliquot| aliquot.tag.tag_group } }
+        .uniq
+        .sort_by(&:id)
     end
 
     # Returns the requests associated with the batch.
