@@ -201,7 +201,7 @@ end
 
 group :test, :cucumber do
   gem 'capybara'
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
