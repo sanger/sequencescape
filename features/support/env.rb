@@ -11,9 +11,9 @@ if selected_env != 'cucumber'
   puts "This can cause problems with gem loading. Please use 'cucumber' instead."
 end
 
+require_relative 'simplecov' # loading order is important
 require 'cucumber/rails'
 require_relative 'parameter_types' # does not seem to be automatically loaded correctly...
-require_relative 'simplecov' # does not seem to be automatically loaded correctly...
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
