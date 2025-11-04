@@ -35,21 +35,20 @@ module UltimaSampleSheet::SampleSheetGenerator
     ].freeze
     NUM_COLUMS = SAMPLES_HEADERS.size
 
-    # Initializes the generator with the given batch. This sets up a counter
-    # for generating unique sample IDs.
+    # Initializes the generator with the given batch.
     # @param batch [UltimaSequencingBatch] the batch to generate sample sheets for
     # @return [void]
     def initialize(batch)
       @batch = batch
-      @counter = 1
     end
 
     # Generates a ZIP archive containing individual sample sheet CSV files
-    # for each request in the batch.
+    # for each request in the batch. This sorts the requests by id to ensure
+    # consistent ordering of CSV files in the zip archive.
     # @return [String] the ZIP archive as a binary string
     def generate
       zip_stream = Zip::OutputStream.write_buffer do |zip|
-        @batch.requests.each do |request|
+        batch_requests.sort_by(&:id).each do |request|
           zip.put_next_entry(entry_name(request))
           zip.write(csv_string(request).encode('UTF-8'))
         end
@@ -96,7 +95,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Adds the global section to the CSV.
-    # The request parameter is currently unused but may be needed for future.
+    # The request parameter is currently unused.
     # @param csv [CSV] the CSV object to append rows to
     # @param _request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, _request)
@@ -202,9 +201,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [Array<TagGroup>] the tag groups of the batch's requests
     def batch_tag_groups
       @batch_tag_groups ||= batch_requests
-        .flat_map { |request| request.asset.aliquots.map { |aliquot| aliquot.tag.tag_group } }
-        .uniq
-        .sort_by(&:id)
+        .flat_map { |request| request.asset.aliquots.map { |aliquot| aliquot.tag.tag_group } }.uniq.sort_by(&:id)
     end
 
     # Returns the requests associated with the batch.
@@ -214,10 +211,9 @@ module UltimaSampleSheet::SampleSheetGenerator
       @batch.requests.reject(&:failed?)
     end
 
-    # Returns a mapping of aliquots to 1-based index numbers. This is used for
-    # generating unique sample IDs across the entire batch. This sorts aliquots
-    # by their ID to ensure consistent ordering.
-    # # @return [Integer] the new sample ID
+    # Returns a mapping of aliquots to 1-based index numbers.
+    # This sorts aliquots by their ID to ensure consistent ordering.
+    # @return [Hash{Aliquot => Integer}] mapping of aliquots to index numbers
     def sample_id_index_map
       @sample_id_index_map ||= begin
         aliquots = batch_requests.flat_map { |request| request.asset.aliquots.sort_by(&:id) }
@@ -230,8 +226,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param row [Array<String>] the row to pad (defaults to an empty array)
     # @return [Array<String>] the padded row
     def pad(row = [])
-      pad = NUM_COLUMS - row.size
-      pad.positive? ? row + Array.new(pad, '') : row
+      row + Array.new(NUM_COLUMS - row.size, '')
     end
   end
 end
