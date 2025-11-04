@@ -127,6 +127,13 @@ module UltimaSampleSheet::SampleSheetGenerator
       end
     end
 
+    # Returns a unique sample_ID for the given aliquot.
+    # @param aliquot [Aliquot] the aliquot whose sample ID is needed
+    # @return [String] the sample ID
+    def sample_id_for(aliquot)
+      sample_id_index_map[aliquot].to_s
+    end
+
     # Returns the library name for the given aliquot's sample.
     # @param aliquot [Aliquot] the aliquot whose sample name is needed
     # @return [String] the library name
@@ -167,6 +174,9 @@ module UltimaSampleSheet::SampleSheetGenerator
       Map::Coordinate.vertical_position_to_description(aliquot.tag.map_id, PLATE_LENGTH)
     end
 
+    # Returns the study ID for the given aliquot.
+    # @param aliquot [Aliquot] the aliquot whose study ID is needed
+    # @return [String] the study ID
     def study_id_for(aliquot)
       aliquot.study_id.to_s
     end
@@ -204,12 +214,15 @@ module UltimaSampleSheet::SampleSheetGenerator
       @batch.requests.reject(&:failed?)
     end
 
-    # Returns a new unique sample_ID and increments the counter.
-    # @return [Integer] the new sample ID
-    def new_sample_id
-      num = @counter
-      @counter += 1
-      num.to_s
+    # Returns a mapping of aliquots to 1-based index numbers. This is used for
+    # generating unique sample IDs across the entire batch. This sorts aliquots
+    # by their ID to ensure consistent ordering.
+    # # @return [Integer] the new sample ID
+    def sample_id_index_map
+      @sample_id_index_map ||= begin
+        aliquots = batch_requests.flat_map { |request| request.asset.aliquots.sort_by(&:id) }
+        aliquots.each_with_index.to_h { |aliquot, i| [aliquot, i + 1] }
+      end
     end
 
     # Pads the given row with empty columns to match the CSV number of columns.
