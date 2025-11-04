@@ -198,7 +198,6 @@ module UltimaSampleSheet::SampleSheetGenerator
     # Returns the requests associated with the batch.
     # This method rejects failed requests.
     # @return [Array<UltimaSequencingRequest>] the requests of the batch
-    # @todo Reject failed and cancelled requests
     def batch_requests
       @batch.requests.reject(&:failed?)
     end
