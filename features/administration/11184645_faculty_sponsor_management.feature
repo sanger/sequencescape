@@ -84,7 +84,7 @@ Feature: Manage a list of faculty sponsors
     Given a faculty sponsor called "Jack Sponsor" exists
     Given I am a "administrator" user logged in as "user"
       And I have an active study called "Test study"
-      And I am on the show page for study "Test study"
+      And I allow redirects and am on the show page for study "Test study"
     When I follow "Study details"
     Then I should see "John Doe"
     When I follow "Edit"
