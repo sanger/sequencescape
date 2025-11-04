@@ -523,6 +523,46 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
         ''
       ]
     end
+    let(:data_empty_value) do
+      [
+        plate.human_barcode,
+        'A1',
+        sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+        'SAMPLE_1',
+        'Destroy after 2 years',
+        'Cohort 1',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'Nov-16',
+        'Nov-16',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '1',
+        'Human',
+        'Sample description',
+        '',
+        '',
+        '',
+        '',
+        'Sample phenotype',
+        '',
+        '',
+        ''
+      ]
+    end
 
     before do
       create(:insdc_country, name: 'United Kingdom')
@@ -573,6 +613,12 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
       it 'is valid' do
         expect(described_class.new(number: 1, data: data_valid_no_country_of_origin, columns: columns)).to be_valid
+      end
+    end
+
+    context 'when country of origin column is empty' do
+      it 'is valid' do
+        expect(described_class.new(number: 1, data: data_empty_value, columns: columns)).to be_valid
       end
     end
 

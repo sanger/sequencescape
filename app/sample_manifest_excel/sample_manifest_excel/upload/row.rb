@@ -205,7 +205,9 @@ module SampleManifestExcel
       end
 
       def needs_country_of_origin_error?(value)
-        # Using exclude (case sensitive) to check if country matches to Insdc EBI list of countries
+        # Skip the error creation if the value is blank. The column is mandatory by default and the mandatory column
+        # validation will catch this scenario. And if the column is optional, then blank is acceptable.
+        # Using exclude here (which is case sensitive) to check if country matches to Insdc EBI list of countries
         value.present? && Insdc::Country.options.exclude?(value)
       end
 
