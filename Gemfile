@@ -209,7 +209,8 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'rspec-rails', '~> 7.1.0', require: false # TODO: Update to '~> 8.0' when we move to Rails 8
   gem 'selenium-webdriver', '~> 4.1', require: false
-  gem 'shoulda'
+  gem 'shoulda-context', '~> 3.0.0.rc1'
+  gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
