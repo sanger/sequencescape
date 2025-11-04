@@ -22,7 +22,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    aasm (5.5.1)
+    aasm (5.5.2)
       concurrent-ruby (~> 1.0)
     actioncable (7.1.5.2)
       actionpack (= 7.1.5.2)
@@ -113,7 +113,7 @@ GEM
       activesupport
     amq-protocol (2.3.3)
     ast (2.4.3)
-    avro (1.12.0)
+    avro (1.12.1)
       multi_json (~> 1.0)
     backports (3.25.2)
     base64 (0.3.0)
@@ -122,7 +122,7 @@ GEM
     bootsnap (1.18.6)
       msgpack (~> 1.2)
     builder (3.3.0)
-    bullet (8.0.8)
+    bullet (8.1.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bunny (2.24.0)
@@ -159,7 +159,7 @@ GEM
     concurrent-ruby (1.3.5)
     configatron (4.5.1)
     connection_pool (2.5.4)
-    crack (1.0.0)
+    crack (1.0.1)
       bigdecimal
       rexml
     crass (1.0.6)
@@ -244,7 +244,7 @@ GEM
       temple (>= 0.8.2)
       thor
       tilt
-    hashdiff (1.1.2)
+    hashdiff (1.2.1)
     htmlentities (4.3.4)
     http-accept (1.7.0)
     http-cookie (1.0.5)
@@ -351,7 +351,7 @@ GEM
       pry (>= 0.13.0)
     psych (3.3.4)
     public_suffix (6.0.2)
-    puma (7.0.3)
+    puma (7.1.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.20)
@@ -430,9 +430,12 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    roo (2.10.1)
+    roo (3.0.0)
+      base64 (~> 0.2)
+      csv (~> 3)
+      logger (~> 1)
       nokogiri (~> 1)
-      rubyzip (>= 1.3.0, < 3.0.0)
+      rubyzip (>= 3.0.0, < 4.0.0)
     rspec (3.13.0)
       rspec-core (~> 3.13.0)
       rspec-expectations (~> 3.13.0)
@@ -511,7 +514,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (2.4.1)
+    rubyzip (3.2.1)
     sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -526,7 +529,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.35.0)
+    selenium-webdriver (4.38.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -584,7 +587,7 @@ GEM
     unicode-display_width (3.2.0)
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
-    uniform_notifier (1.17.0)
+    uniform_notifier (1.18.0)
     uuidtools (3.0.0)
     vite_rails (3.0.19)
       railties (>= 5.1, < 9)
@@ -595,7 +598,7 @@ GEM
       mutex_m
       rack-proxy (~> 0.6, >= 0.6.1)
       zeitwerk (~> 2.2)
-    webmock (3.25.1)
+    webmock (3.26.1)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
