@@ -115,7 +115,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       csv << pad(SAMPLES_HEADERS)
       request.asset.aliquots.each do |aliquot|
         csv << [
-          new_sample_id,
+          sample_id_for(aliquot),
           library_name_for(aliquot),
           index_barcode_num_for(aliquot),
           index_barcode_sequence_for(aliquot),
