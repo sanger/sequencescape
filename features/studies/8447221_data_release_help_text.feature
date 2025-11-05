@@ -4,7 +4,7 @@ Feature: Update the data release fields for creating a study
   Background:
     Given I am a "manager" user logged in as "user"
     Given a faculty sponsor called "Jack Sponsor" exists
-    And I allow redirects and am on the new study page
+    And I am on the studies page
 
   Scenario Outline: Add help text opposite delay drop down (4044305)
     When I choose "<release strategy>" from "What is the data release strategy for this study?"

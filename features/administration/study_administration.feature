@@ -45,7 +45,7 @@ Feature: Study administration
   @javascript
   Scenario: Administrator edits study ethical approval
     Given I am an "administrator" user logged in as "xyz1"
-    Given I allow redirects and am on the show page for study "Study B"
+    Given I am on the information page for study "Study B"
     And I follow "Manage"
     When I attach the relative file "test/data/blah.fasta" to "study_uploaded_data"
     And I press "Update"

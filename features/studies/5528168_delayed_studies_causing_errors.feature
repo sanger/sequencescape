@@ -7,7 +7,7 @@ Feature: Delayed studies causing errors
   Scenario Outline: Study is delayed
     Given the study "Testing delayed studies" is delayed for <period> months because "It's not working"
 
-    Given I allow redirects and am on the show page for study "Testing delayed studies"
+    Given I am on the information page for study "Testing delayed studies"
     When I follow "Study details"
     Then I should see "<period> months"
 

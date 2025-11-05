@@ -98,7 +98,7 @@ module NavigationHelpers
     when /the Submissions Inbox page/
       submissions_path
     when /the create bulk submissions page/
-      '/bulk_submissions'
+      new_bulk_submission_path
     when /the show page for the last submission/
       submission = Submission.last!
       submission_path(submission)
