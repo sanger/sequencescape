@@ -280,11 +280,6 @@ FactoryBot.define do
     asset_shape { AssetShape.default }
   end
 
-  factory :plate_template do
-    name { 'testtemplate' }
-    size { 96 }
-  end
-
   factory :asset_link do
     # Asset links get annoyed if created between nodes which have
     # not been persisted.
