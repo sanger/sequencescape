@@ -29,7 +29,9 @@ class ReportContractTest < ActiveSupport::TestCase
     .each do |view|
       context "View #{view}" do
         should 'respond to Select * from' do
-          assert ActiveRecord::Base.with_connection.execute("SELECT * FROM #{view};")
+          assert ActiveRecord::Base.with_connection do |connection|
+            connection.execute("SELECT * FROM #{view};")
+          end
         end
       end
     end
