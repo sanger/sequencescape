@@ -74,6 +74,11 @@ FactoryBot.define do
     end
   end
 
+  factory :plate_template do
+    name { 'testtemplate' }
+    size { 96 }
+  end
+
   factory :plate_template_with_well, class: 'PlateTemplate' do
     sequence(:name) { |n| "testtemplate#{n}" }
     size { 96 }
