@@ -1,10 +1,4 @@
 ---
-LoadingUltima:
-  name: Loading
-  workflow: Ultima
-  sorted: 0
-  lab_activity: true
-  sti_type: SetDescriptorsTask
 Opentrons:
   name: Opentrons
   workflow: Ultima
