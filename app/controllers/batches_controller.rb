@@ -18,6 +18,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   fail
                   print_labels
                   print_plate_labels
+                  print_plate_amp_labels
                   print
                   verify
                   verify_tube_layout
@@ -28,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   download_spreadsheet
                   generate_sample_sheet
                 ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_plate_amp_barcodes print_barcodes]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?

@@ -91,12 +91,17 @@ module Presenters
       cherrypicking?
     end
 
+    def ultima?
+      @pipeline.is_a?(UltimaSequencingPipeline)
+    end
+
     def load_pipeline_options
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
 
       # Printing of labels is enabled for anybody
       add_submenu_option 'Print labels', :print_labels
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
+      add_submenu_option 'Print plate amp labels', :print_plate_amp_labels if ultima?
 
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
