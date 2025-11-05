@@ -151,7 +151,7 @@ When /^I select "([^"]+)" from "([^"]+)" for the "([^"]+)" request type$/ do |va
 end
 
 Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_name, table|
-  submission_template = SubmissionTemplate.find_by(name: template_name)
+  submission_template = SubmissionTemplate.find_by!(name: template_name)
   params = table.rows_hash
   request_options = {}
   request_type_ids = submission_template.new_order.request_types
