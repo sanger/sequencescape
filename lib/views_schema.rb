@@ -50,18 +50,15 @@ module ViewsSchema
   end
 
   def self.all_views
-    ActiveRecord::Base
-      .with_connection do |connection|
-      connection.execute(<<~SQL.squish)
+    ActiveRecord::Base.with_connection do |connection|
+      view_names = <<~SQL.squish
         SELECT TABLE_NAME AS name
         FROM INFORMATION_SCHEMA.VIEWS
-        WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.with_connection.current_database}';
+        WHERE TABLE_SCHEMA = '#{connection.current_database}';
       SQL
-        .map do |v|
-        # Behaviour depends on ruby version, so we need to work out what we have
-        v.is_a?(Hash) ? v['name'] : v.first
-      end
-        .flatten
+      connection
+        .execute(view_names)
+        .map(&:first)
     end
   end
 
