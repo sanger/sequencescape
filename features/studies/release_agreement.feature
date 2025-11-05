@@ -26,7 +26,7 @@ Feature: Studies have a release agreement
   Scenario: Using a non-standard agreement but no file uploaded
     Given I choose "No" from "Will you be using WTSI's standard access agreement?"
     When I press "Create"
-    Then I should be on the study creation page
+    Then I should be on the studies page
     #TODO: This is not ideal. It would be better without the 'study metadata' bit.
     # Problem is changing this here has impact on the API messages
     # Once we're fully upgraded we should look at the proper way of handling this
