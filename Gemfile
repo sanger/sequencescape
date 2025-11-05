@@ -201,7 +201,7 @@ end
 
 group :test, :cucumber do
   gem 'capybara'
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
@@ -209,7 +209,8 @@ group :test, :cucumber do
   gem 'nokogiri', require: false
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
-  gem 'shoulda'
+  gem 'shoulda-context', '~> 3.0.0.rc1'
+  gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
