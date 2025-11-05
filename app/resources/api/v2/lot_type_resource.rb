@@ -82,8 +82,7 @@ module Api
       # @return [String] The template type
       # e.g 'TagLayoutTemplate'
       def template_type
-        template_type = _model.template_class.underscore
-        self.class._model_hints[template_type] || template_type
+        _model.template_class.underscore
       end
 
       ###
