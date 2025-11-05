@@ -17,23 +17,18 @@ module RecordLoader
     # If the Workflow is found, it assigns its ID to the `pipeline_workflow_id` attribute
     # and creates or updates the Task.
     #
-    # @param name [String] The section name of the Task in the configuration file.
+    # @param name [String] The name of the Task.
     # @param options [Hash] The options for creating or updating the Task.
     # @return [Task, nil] The created Task, or `nil` if the Workflow is not found in specific environments.
     # @raise [ActiveRecord::RecordNotFound] If the Workflow is not found in environments other than
     # `development`, `staging`, or `cucumber`.
     def create_or_update!(name, options)
-      # Each section name in the YAML config must be unique across all files in
-      # the loader's config folder. If a record definition provides a 'name', it
-      # is used as the record name; otherwise, the section name is used as a
-      # fallback.
-      options['name'] = name if options['name'].nil?
       workflow_name = options.delete('workflow')
       workflow = find_workflow!(workflow_name, name)
       return unless workflow
 
       options[:pipeline_workflow_id] = workflow.id
-      Task.create_with(options).find_or_create_by!(name: options['name'], pipeline_workflow_id: workflow.id)
+      Task.create_with(options).find_or_create_by!(name: name, pipeline_workflow_id: workflow.id)
     end
 
     private
