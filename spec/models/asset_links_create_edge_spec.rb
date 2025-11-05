@@ -44,10 +44,10 @@ RSpec.describe AssetLink, type: :model do
       # be created.
 
       # Parent
-      ActiveRecord::Base.with_connection.reconnect!
+      ActiveRecord::Base.connection.reconnect!
       @ancestor = ancestor = create(:labware)
       @descendant = descendant = create(:labware)
-      ActiveRecord::Base.with_connection.commit_db_transaction
+      ActiveRecord::Base.connection.commit_db_transaction
 
       # Create a duplex pipe for IPC.
       first_socket, second_socket = UNIXSocket.pair
@@ -55,7 +55,7 @@ RSpec.describe AssetLink, type: :model do
       # First child
       pid1 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
 
           find_link_call_count = 0
           # Patch find_link method
@@ -78,13 +78,13 @@ RSpec.describe AssetLink, type: :model do
           end
           described_class.create_edge(ancestor, descendant)
 
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Second child
       pid2 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
 
@@ -93,7 +93,7 @@ RSpec.describe AssetLink, type: :model do
           described_class.create_edge(ancestor, descendant)
           message = 'resume' # Notify the first child
           second_socket.send(message, 0)
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Parent
@@ -106,7 +106,7 @@ RSpec.describe AssetLink, type: :model do
       expect(edge.direct).to be_truthy
       expect(edge.count).to eq(1)
 
-      ActiveRecord::Base.with_connection.close
+      ActiveRecord::Base.connection.close
     end
 
     it 'handles unique validation error' do
@@ -117,10 +117,10 @@ RSpec.describe AssetLink, type: :model do
       # Failing process should use the existing link.
 
       # Parent
-      ActiveRecord::Base.with_connection.reconnect!
+      ActiveRecord::Base.connection.reconnect!
       @ancestor = ancestor = create(:labware)
       @descendant = descendant = create(:labware)
-      ActiveRecord::Base.with_connection.commit_db_transaction
+      ActiveRecord::Base.connection.commit_db_transaction
 
       # Create a duplex pipe for IPC.
       first_socket, second_socket = UNIXSocket.pair
@@ -128,7 +128,7 @@ RSpec.describe AssetLink, type: :model do
       # First child
       pid1 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
           find_link_call_count = 0
           allow(described_class).to receive(:find_link).and_wrap_original do |m, *args|
             find_link_call_count += 1
@@ -157,13 +157,13 @@ RSpec.describe AssetLink, type: :model do
           expect(described_class).to have_received(:unique_validation_error?)
           expect(unique_validation_error_return_value).to be_truthy
 
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Second child
       pid2 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
 
@@ -172,7 +172,7 @@ RSpec.describe AssetLink, type: :model do
           described_class.create_edge(ancestor, descendant)
           message = 'resume' # Notify the first child
           second_socket.send(message, 0)
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Parent
@@ -194,10 +194,10 @@ RSpec.describe AssetLink, type: :model do
       # violation. Failing process should use the existing link.
 
       # Parent
-      ActiveRecord::Base.with_connection.reconnect!
+      ActiveRecord::Base.connection.reconnect!
       @ancestor = ancestor = create(:labware)
       @descendant = descendant = create(:labware)
-      ActiveRecord::Base.with_connection.commit_db_transaction
+      ActiveRecord::Base.connection.commit_db_transaction
 
       # Create a duplex pipe for IPC.
       first_socket, second_socket = UNIXSocket.pair
@@ -205,7 +205,7 @@ RSpec.describe AssetLink, type: :model do
       # First child
       pid1 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
           find_link_call_count = 0
           allow(described_class).to receive(:find_link).and_wrap_original do |m, *args|
             find_link_call_count += 1
@@ -251,13 +251,13 @@ RSpec.describe AssetLink, type: :model do
           expect(described_class).to have_received(:unique_violation_error?)
           expect(unique_violation_error_return_value).to be_truthy
 
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Second child
       pid2 =
         fork do
-          ActiveRecord::Base.with_connection.reconnect!
+          ActiveRecord::Base.connection.reconnect!
           message = 'child2: Timeout waiting for paused message'
           raise StandardError, message unless second_socket.wait_readable(10)
 
@@ -266,7 +266,7 @@ RSpec.describe AssetLink, type: :model do
           described_class.create_edge(ancestor, descendant)
           message = 'resume' # Notify the first child
           second_socket.send(message, 0)
-          ActiveRecord::Base.with_connection.close
+          ActiveRecord::Base.connection.close
         end
 
       # Parent
@@ -279,7 +279,7 @@ RSpec.describe AssetLink, type: :model do
       expect(edge.direct).to be_truthy
       expect(edge.count).to eq(1)
 
-      ActiveRecord::Base.with_connection.close
+      ActiveRecord::Base.connection.close
     end
   end
   # rubocop:enable RSpec/InstanceVariable,Metrics/MethodLength,RSpec/ExampleLength,RSpec/MultipleExpectations

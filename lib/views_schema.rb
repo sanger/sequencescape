@@ -38,9 +38,11 @@ module ViewsSchema
 
   def self.each_view
     all_views.each do |name|
-      query = ActiveRecord::Base.with_connection.exec_query("SHOW CREATE TABLE #{name}").first
-      matched = REGEXP.match(query['Create View'])
-      yield(name, matched[:statement], matched[:algorithm], matched[:security])
+      query = ActiveRecord::Base.with_connection do |connection|
+        connection.exec_query("SHOW CREATE TABLE #{name}").first
+        matched = REGEXP.match(query['Create View'])
+        yield(name, matched[:statement], matched[:algorithm], matched[:security])
+      end
     end
   rescue ActiveRecord::StatementInvalid => e
     puts Rainbow(WARNING).red.inverse
@@ -49,18 +51,19 @@ module ViewsSchema
 
   def self.all_views # rubocop:todo Metrics/MethodLength
     ActiveRecord::Base
-      .connection
-      .execute(
+      .with_connection do |connection|
+      connection.execute(
         "
       SELECT TABLE_NAME AS name
       FROM INFORMATION_SCHEMA.VIEWS
       WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.with_connection.current_database}';"
       )
-      .map do |v|
+        .map do |v|
         # Behaviour depends on ruby version, so we need to work out what we have
         v.is_a?(Hash) ? v['name'] : v.first
       end
-      .flatten
+        .flatten
+    end
   end
 
   #
@@ -95,7 +98,9 @@ module ViewsSchema
   def self.drop_view(name)
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
-    ActiveRecord::Base.with_connection.execute("DROP VIEW IF EXISTS `#{name}`;")
+    ActiveRecord::Base.with_connection do |connection|
+      connection.execute("DROP VIEW IF EXISTS `#{name}`;")
+    end
   end
 
   # Generates the SQL for view creation/updating
@@ -111,6 +116,8 @@ module ViewsSchema
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
     args[:statement] = args[:statement].to_sql if args[:statement].respond_to?(:to_sql)
-    ActiveRecord::Base.with_connection.execute(VIEW_STATEMENT % args)
+    ActiveRecord::Base.with_connection do |connection|
+      connection.execute(VIEW_STATEMENT % args)
+    end
   end
 end

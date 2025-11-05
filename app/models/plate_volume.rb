@@ -108,13 +108,15 @@ class PlateVolume < ApplicationRecord
           instance.save
         ensure
           unless instance.nil?
-            ActiveRecord::Base.with_connection.execute(
-              "
-                  UPDATE plate_volumes
-                  SET uploaded_file_name='#{bugfix_filename_duplicate_back_to_normal(instance.uploaded_file_name)}'
-                  WHERE plate_volumes.id=#{instance.id}
+            ActiveRecord::Base.with_connection do |connection|
+              connection.execute(
                 "
-            )
+                    UPDATE plate_volumes
+                    SET uploaded_file_name='#{bugfix_filename_duplicate_back_to_normal(instance.uploaded_file_name)}'
+                    WHERE plate_volumes.id=#{instance.id}
+                  "
+              )
+            end
           end
         end
     end
