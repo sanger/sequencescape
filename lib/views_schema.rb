@@ -38,7 +38,7 @@ module ViewsSchema
 
   def self.each_view
     all_views.each do |name|
-      query = ActiveRecord::Base.connection.exec_query("SHOW CREATE TABLE #{name}").first
+      query = ActiveRecord::Base.with_connection.exec_query("SHOW CREATE TABLE #{name}").first
       matched = REGEXP.match(query['Create View'])
       yield(name, matched[:statement], matched[:algorithm], matched[:security])
     end
@@ -54,7 +54,7 @@ module ViewsSchema
         "
       SELECT TABLE_NAME AS name
       FROM INFORMATION_SCHEMA.VIEWS
-      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.connection.current_database}';"
+      WHERE TABLE_SCHEMA = '#{ActiveRecord::Base.with_connection.current_database}';"
       )
       .map do |v|
         # Behaviour depends on ruby version, so we need to work out what we have
@@ -95,7 +95,7 @@ module ViewsSchema
   def self.drop_view(name)
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
-    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
+    ActiveRecord::Base.with_connection.execute("DROP VIEW IF EXISTS `#{name}`;")
   end
 
   # Generates the SQL for view creation/updating
@@ -111,6 +111,6 @@ module ViewsSchema
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
     args[:statement] = args[:statement].to_sql if args[:statement].respond_to?(:to_sql)
-    ActiveRecord::Base.connection.execute(VIEW_STATEMENT % args)
+    ActiveRecord::Base.with_connection.execute(VIEW_STATEMENT % args)
   end
 end

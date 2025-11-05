@@ -108,7 +108,7 @@ class PlateVolume < ApplicationRecord
           instance.save
         ensure
           unless instance.nil?
-            ActiveRecord::Base.connection.execute(
+            ActiveRecord::Base.with_connection.execute(
               "
                   UPDATE plate_volumes
                   SET uploaded_file_name='#{bugfix_filename_duplicate_back_to_normal(instance.uploaded_file_name)}'

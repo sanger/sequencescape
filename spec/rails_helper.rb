@@ -35,7 +35,7 @@ require 'rspec/longrun'
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
 
 # Added with rails 6 update, the problem almost certainly exists elsewhere.
-ActiveRecord::Base.connection.reconnect!
+ActiveRecord::Base.with_connection.reconnect!
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove these lines.
 begin
