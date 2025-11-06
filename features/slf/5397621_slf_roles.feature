@@ -6,7 +6,7 @@ Feature: Set roles for SLF functionality
   @gel
   Scenario Outline: View Gel page with invalid role
     Given I am an "<role>" user logged in as "john"
-    And I am on the gel QC page
+    And I allow redirects and am on the gel QC page
     Then I should not see "Find gel plate"
     Examples:
     | role        |
@@ -56,7 +56,7 @@ Feature: Set roles for SLF functionality
   @slf
   Scenario Outline: View SLF homepage with invalid role
     Given I am an "<role>" user logged in as "john"
-    And I am on the sample logistics homepage
+    And I allow redirects and am on the sample logistics homepage
     Then I should not see "Sample Management"
     Examples:
     | role        |
