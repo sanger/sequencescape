@@ -591,6 +591,24 @@ class BatchesControllerTest < ActionController::TestCase
                batch_id: @batch.id.to_s
              }
       end
+
+      should '#print_plate_amp_barcodes should send print request' do
+        sequencing_request = create(:sequencing_request_with_assets)
+        tube = sequencing_request.asset
+        @batch = create(:batch)
+        @batch.requests << sequencing_request
+        printable = { tube.human_barcode => 'on' }
+
+        RestClient.expects(:post)
+
+        post :print_plate_amp_barcodes,
+             params: {
+               printer: barcode_printer.name,
+               count: '3',
+               printable: printable,
+               batch_id: @batch.id.to_s
+             }
+      end
     end
   end
 end
