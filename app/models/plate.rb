@@ -130,7 +130,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   #
   # @return [String] Name of the state the plate is in
   def state
-    plate_purpose.state_of(self)
+    plate_purpose&.state_of(self)
   end
 
   # Modifies the recorded volume information of all wells on a plate by volume_change
