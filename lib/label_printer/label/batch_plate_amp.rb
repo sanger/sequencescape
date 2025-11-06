@@ -23,7 +23,7 @@ module LabelPrinter
         {
           top_left: date_today,
           bottom_left: plate_barcode(parent_tube_barcode),
-          top_right: top_right,
+          top_right: nil,
           bottom_right: nil,
           top_far_right: nil,
           barcode: plate_barcode(parent_tube_barcode),
@@ -33,10 +33,6 @@ module LabelPrinter
 
       def date_today
         Time.zone.today.strftime('%e-%^b-%Y')
-      end
-
-      def top_right
-        @batch.studies.first.abbreviation
       end
 
       def plate_barcode(tube_barcode)
