@@ -26,11 +26,13 @@ namespace :db do
         ActiveRecord::Tasks::DatabaseTasks.env
       ) do |config|
         ActiveRecord::Base.establish_connection(config)
+        ActiveRecord::Base.connection.verify!
         load Rails.root.join('db/views_schema.rb')
       end
 
       # Ensure we switch back to the main dev database.
       ActiveRecord::Base.establish_connection
+      ActiveRecord::Base.connection.verify!
     end
   end
 end
