@@ -27,6 +27,7 @@ class Api::Messages::UseqWaferIo < Api::Base
     def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         # Lot numbers for opentron and amp
+        # Matching descriptors from config/default_records/descriptors/003_ultima_descriptors.yml
         def otr_carrier_lot_number
           detect_descriptor('OTR carrier Lot #')
         end
