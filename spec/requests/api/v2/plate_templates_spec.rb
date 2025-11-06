@@ -43,6 +43,9 @@ describe 'PlateTemplates API', with: :api_v2 do
 
     it 'sends an individual PlateTemplate' do
       api_get "#{base_endpoint}/#{resource_model.id}"
+
+      puts response.body
+
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('plate_templates')
     end
@@ -50,6 +53,9 @@ describe 'PlateTemplates API', with: :api_v2 do
     # Remove if immutable
     it 'allows update of a PlateTemplate' do
       api_patch "#{base_endpoint}/#{resource_model.id}", payload
+
+      puts response.body
+
       expect(response).to have_http_status(:success)
       expect(json.dig('data', 'type')).to eq('plate_templates')
       # Double check at least one of the attributes
