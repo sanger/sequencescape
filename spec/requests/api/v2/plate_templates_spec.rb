@@ -19,8 +19,13 @@ describe 'PlateTemplates API', with: :api_v2 do
       # test for the 200 status-code
       expect(response).to have_http_status(:success)
 
-      # check to make sure the right amount of messages are returned
+      # check to make sure the right number of results are returned
       expect(json['data'].length).to eq(5)
+
+      # check that each result is a plate_template
+      json['data'].each do |result|
+        expect(result['type']).to eq('plate_templates')
+      end
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
