@@ -355,11 +355,11 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   has_metadata {}
 
   def height
-    asset_shape.plate_height(size)
+    asset_shape&.plate_height(size)
   end
 
   def width
-    asset_shape.plate_width(size)
+    asset_shape&.plate_width(size)
   end
 
   # This method returns a map from the wells on the plate to their stock well.
