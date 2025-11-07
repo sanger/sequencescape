@@ -74,7 +74,7 @@ FactoryBot.define do
     end
   end
 
- factory :plate_template, class: 'PlateTemplate' do
+  factory :plate_template, class: 'PlateTemplate' do
     name { 'test_plate_template' }
     size { 96 }
 
