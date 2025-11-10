@@ -18,7 +18,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   fail
                   print_labels
                   print_plate_labels
-                  print_plate_amp_labels
+                  print_amp_plate_labels
                   print
                   verify
                   verify_tube_layout
@@ -29,7 +29,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   download_spreadsheet
                   generate_sample_sheet
                 ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_plate_amp_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_amp_plate_barcodes print_barcodes]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?
@@ -218,7 +218,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def print_labels
   end
 
-  def print_plate_amp_labels
+  def print_amp_plate_labels
   end
 
   def print_plate_labels # rubocop:todo Metrics/MethodLength
@@ -254,7 +254,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def print_plate_amp_barcodes
+  def print_amp_plate_barcodes
     if @batch.requests.empty?
       flash[:notice] = 'Your batch contains no requests.'
       redirect_to controller: 'batches', action: 'show', id: @batch.id

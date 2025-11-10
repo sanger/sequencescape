@@ -58,7 +58,7 @@ module Presenters
       add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
       add_submenu_option 'Print labels', :print_labels
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-      add_submenu_option 'Print plate amp labels', :print_plate_amp_labels if ultima?
+      add_submenu_option 'Print AMP plate batch ID', :print_amp_plate_labels if ultima?
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
       add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"

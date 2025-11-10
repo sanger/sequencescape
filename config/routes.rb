@@ -189,7 +189,7 @@ Rails.application.routes.draw do
     member do
       get :print_labels
       get :print_plate_labels
-      get :print_plate_amp_labels
+      get :print_amp_plate_labels
       get :filtered
       post :swap
       post :fail_items
@@ -209,7 +209,7 @@ Rails.application.routes.draw do
     collection do
       post :print_barcodes
       post :print_plate_barcodes
-      post :print_plate_amp_barcodes
+      post :print_amp_plate_barcodes
       post :sort
       get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end

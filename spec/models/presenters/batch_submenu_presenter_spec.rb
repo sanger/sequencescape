@@ -7,18 +7,18 @@ RSpec.describe Presenters::BatchSubmenuPresenter, type: :model do
   context 'when we are in the Ultima sequencing pipeline' do
     let(:current_user) { create(:user) }
     let(:batch) { create(:ultima_sequencing_batch) }
-    let(:plate_amp_labels_option) do
-      { label: 'Print plate amp labels', url: "/batches/#{batch.id}/print_plate_amp_labels" }
+    let(:amp_plate_labels_option) do
+      { label: 'Print AMP plate batch ID', url: "/batches/#{batch.id}/print_amp_plate_labels" }
     end
 
-    it 'includes a link to print plate amp labels' do
-      found_plate_amp_labels_option = false
+    it 'includes a link to print AMP plate labels' do
+      found_amp_plate_labels_option = false
 
       batch_submenu_presenter.each_option do |option|
-        found_plate_amp_labels_option = true if option == plate_amp_labels_option
+        found_amp_plate_labels_option = true if option == amp_plate_labels_option
       end
 
-      expect(found_plate_amp_labels_option).to be true
+      expect(found_amp_plate_labels_option).to be true
     end
   end
 end

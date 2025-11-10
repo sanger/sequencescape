@@ -1,13 +1,13 @@
 
-<% add :about, "Print Amp labels" -%>
+<% add :about, "Print AMP plate batch ID" -%>
 <% add :back_menu, "Back to batch" => batch_path(@batch) -%>
 
-<%= page_title 'Print Amp Labels', "Batch #{@batch.id}" %>
+<%= page_title 'Print AMP plate batch ID', "Batch #{@batch.id}" %>
 
 <div class="content">
   <div class="info">
     <!-- TODO: replace form tag with Railsy version, so that it sends the CSRF token -->
-    <form action='/batches/print_plate_amp_barcodes' method='POST'>
+    <form action='/batches/print_amp_plate_barcodes' method='POST'>
       <%= render partial: "shared/print" %>
       <table width="100%" cellspacing="0" cellpadding="0">
         <tr>

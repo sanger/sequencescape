@@ -4,7 +4,7 @@ require_relative 'batch_plates'
 
 module LabelPrinter
   module Label
-    # Label for printing plates specific to the Amp step in the Ultima sequencing pipeline
+    # Label for printing plates specific to the AMP step in the Ultima sequencing pipeline
     # These particular plates don't exist as Labware in the system, we're just creating barcode labels for them,
     # based off the batch id and parent tube barcodes.
     class BatchPlateAmp
