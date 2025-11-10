@@ -195,11 +195,9 @@ GEM
     cucumber-tag-expressions (6.1.2)
     cucumber_github_formatter (0.1.0)
     daemons (1.4.1)
-    database_cleaner (2.1.0)
-      database_cleaner-active_record (>= 2, < 3)
-    database_cleaner-active_record (2.2.0)
+    database_cleaner-active_record (2.2.2)
       activerecord (>= 5.a)
-      database_cleaner-core (~> 2.0.0)
+      database_cleaner-core (~> 2.0)
     database_cleaner-core (2.0.1)
     date (3.4.1)
     delayed_job (4.1.13)
@@ -536,12 +534,9 @@ GEM
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
     set (1.1.1)
-    shoulda (4.0.0)
-      shoulda-context (~> 2.0)
-      shoulda-matchers (~> 4.0)
-    shoulda-context (2.0.0)
-    shoulda-matchers (4.5.1)
-      activesupport (>= 4.2.0)
+    shoulda-context (3.0.0.rc1)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -579,7 +574,7 @@ GEM
     thor (1.4.0)
     tilt (2.6.1)
     timecop (0.9.10)
-    timeout (0.4.3)
+    timeout (0.4.4)
     traceroute (0.8.1)
       rails (>= 3.0.0)
     tzinfo (2.0.6)
@@ -653,7 +648,7 @@ DEPENDENCIES
   cucumber-rails
   cucumber_github_formatter
   daemons
-  database_cleaner
+  database_cleaner-active_record
   delayed_job_active_record
   drb
   exception_notification
@@ -712,7 +707,8 @@ DEPENDENCIES
   sanger_barcode_format!
   sanger_warren
   selenium-webdriver (~> 4.1)
-  shoulda
+  shoulda-context (~> 3.0.0.rc1)
+  shoulda-matchers (~> 6.0)
   simplecov
   simplecov-lcov
   sinatra

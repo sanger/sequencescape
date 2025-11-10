@@ -37,8 +37,8 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
     it 'sets attributes on the created records' do
       record_loader.create!
 
-      rec1 = SubmissionTemplate.find_by(name: 'test_submission_template_1')
-      rec2 = SubmissionTemplate.find_by(name: 'test_submission_template_2')
+      rec1 = SubmissionTemplate.find_by!(name: 'test_submission_template_1')
+      rec2 = SubmissionTemplate.find_by!(name: 'test_submission_template_2')
 
       # NB. the project name in the test file is 'my_project', which does not exist, so it defaults to the UAT project
       expect(rec1).to have_attributes(
