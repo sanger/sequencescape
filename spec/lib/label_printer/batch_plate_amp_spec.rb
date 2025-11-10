@@ -2,7 +2,7 @@
 require 'rails_helper'
 
 RSpec.describe LabelPrinter::Label::BatchPlateAmp, type: :model do
-  subject{ described_class.new(options) }
+  subject(:batch_plate_amp) { described_class.new(options) }
 
   context 'with one tube' do
     let(:tube) { create(:multiplexed_library_tube) }
@@ -31,7 +31,7 @@ RSpec.describe LabelPrinter::Label::BatchPlateAmp, type: :model do
         barcode: expected_barcode,
         label_name: 'main_label'
       }
-      expect(subject.labels.first).to eq label
+      expect(batch_plate_amp.labels.first).to eq label
     end
   end
 end
