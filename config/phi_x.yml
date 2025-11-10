@@ -12,6 +12,7 @@ default: &DEFAULT
   studies:
     - Illumina Controls
     - Heron PhiX
+    - Comp PhiX
   default_study_option: Illumina Controls
 
 development:
