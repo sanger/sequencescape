@@ -1,0 +1,50 @@
+C;
+C; This file created by user on Tue Oct 16 10:10:10 2025
+C;
+A;BUFF Trough;;Trough 100ml;1;;2.0
+D;SQPD-9999U;;ABgene 0800;1;;2.0
+W;
+A;BUFF Trough;;Trough 100ml;2;;3.0
+D;SQPD-9999U;;ABgene 0800;2;;3.0
+W;
+A;BUFF Trough;;Trough 100ml;3;;4.0
+D;SQPD-9999U;;ABgene 0800;3;;4.0
+W;
+A;BUFF Trough;;Trough 100ml;4;;5.0
+D;SQPD-9999U;;ABgene 0800;4;;5.0
+W;
+A;BUFF Trough;;Trough 100ml;5;;6.0
+D;SQPD-9999U;;ABgene 0800;5;;6.0
+W;
+A;BUFF Trough;;Trough 100ml;6;;7.0
+D;SQPD-9999U;;ABgene 0800;6;;7.0
+W;
+A;BUFF Trough;;Trough 100ml;7;;8.0
+D;SQPD-9999U;;ABgene 0800;7;;8.0
+W;
+B;
+A;SQPD-9001U;;ABgene 0765;1;;178.0
+D;SQPD-9999U;;ABgene 0800;1;;178.0
+W;
+A;SQPD-9001U;;ABgene 0765;2;;177.0
+D;SQPD-9999U;;ABgene 0800;2;;177.0
+W;
+A;SQPD-9001U;;ABgene 0765;3;;176.0
+D;SQPD-9999U;;ABgene 0800;3;;176.0
+W;
+A;SQPD-9001U;;ABgene 0765;4;;175.0
+D;SQPD-9999U;;ABgene 0800;4;;175.0
+W;
+A;SQPD-9001U;;ABgene 0765;5;;174.0
+D;SQPD-9999U;;ABgene 0800;5;;174.0
+W;
+A;SQPD-9001U;;ABgene 0765;6;;173.0
+D;SQPD-9999U;;ABgene 0800;6;;173.0
+W;
+A;SQPD-9001U;;ABgene 0765;7;;172.0
+D;SQPD-9999U;;ABgene 0800;7;;172.0
+W;
+C;
+C; SCRC1 = SQPD-9001U
+C;
+C; DEST1 = SQPD-9999U
