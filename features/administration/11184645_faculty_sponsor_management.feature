@@ -84,7 +84,7 @@ Feature: Manage a list of faculty sponsors
     Given a faculty sponsor called "Jack Sponsor" exists
     Given I am a "administrator" user logged in as "user"
       And I have an active study called "Test study"
-      And I am on the show page for study "Test study"
+      And I am on the information page for study "Test study"
     When I follow "Study details"
     Then I should see "John Doe"
     When I follow "Edit"
@@ -96,7 +96,7 @@ Feature: Manage a list of faculty sponsors
 
   Scenario Outline: Only admins can manage faculty sponsors
     Given I am a "<role>" user logged in as "user"
-      And I am on the faculty sponsor homepage
+      And I allow redirects and am on the faculty sponsor homepage
     Then I should see "Sorry, you are not authorized to index this Faculty sponsor"
     Examples:
       | role          |
