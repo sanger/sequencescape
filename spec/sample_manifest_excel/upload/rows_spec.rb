@@ -18,6 +18,10 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
+
   it 'is not valid without some data' do
     expect(described_class.new(nil, columns)).not_to be_valid
   end

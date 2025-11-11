@@ -98,6 +98,16 @@ FactoryBot.define do
         ot_recipe: 'Free'
       }
     end
+
+    factory(:complete_ultima_sequencing_request) do
+      transient { event_descriptors { { 'Chip Barcode' => 'wb' } } }
+      asset factory: %i[library_tube]
+      target_asset factory: %i[lane]
+
+      after(:build) do |request, evaluator|
+        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
+      end
+    end
   end
 
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
