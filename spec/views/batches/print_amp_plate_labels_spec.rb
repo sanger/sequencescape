@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'batches/print_plate_amp_labels.html.erb', type: :view do
+RSpec.describe 'batches/print_amp_plate_labels.html.erb', type: :view do
   include AuthenticatedSystem
 
   let(:current_user) { create(:user) }

@@ -592,7 +592,7 @@ class BatchesControllerTest < ActionController::TestCase
              }
       end
 
-      should '#print_plate_amp_barcodes should send print request' do
+      should '#print_amp_plate_barcodes should send print request' do
         sequencing_request = create(:sequencing_request_with_assets)
         tube = sequencing_request.asset
         @batch = create(:batch)
@@ -601,7 +601,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         RestClient.expects(:post)
 
-        post :print_plate_amp_barcodes,
+        post :print_amp_plate_barcodes,
              params: {
                printer: barcode_printer.name,
                count: '3',
