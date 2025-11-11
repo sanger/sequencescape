@@ -5,9 +5,9 @@ shared_examples 'a cherrypicking procedure' do
   attr_reader :batch_barcode
 
   it 'running the cherrypicking pipeline' do
+    login_user(user)
     step 'Setting up the batch' do
       step 'Access the Cherrypicking pipeline' do
-        login_user(user)
         visit pipeline_path(pipeline)
         expect(page).to have_content("Pipeline #{pipeline.name}")
       end
@@ -115,7 +115,10 @@ shared_examples 'a cherrypicking procedure' do
             step 'get the file' do
               within('#output_assets table tbody') do
                 row = page.first('tr', text: /#{destination_barcode}/)
-                within(row) { click_link 'Print worksheet' }
+                within(row) do
+                  click_button 'Print worksheet'
+                  click_link "Print #{robot.name} worksheet"
+                end
               end
 
               expect(page).to have_content('This worksheet was generated')
@@ -246,7 +249,7 @@ shared_examples 'a cherrypicking procedure' do
             current_destination_plate = Plate.find_by_barcode(destination_barcode)
 
             # robot file generation differs by generator
-            case robot.generation_behaviour_property.value
+            case robot.generation_behaviour_properties.first.value
             when 'Hamilton'
               # for Robot::Generator::Hamilton
               # Hamilton files comprise a column headers row plus one row per transfer e.g.
