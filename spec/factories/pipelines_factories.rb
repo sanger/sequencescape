@@ -175,6 +175,18 @@ FactoryBot.define do
     end
   end
 
+  factory :ultima_sequencing_pipeline do
+    name { generate(:pipeline_name) }
+    active { true }
+
+    workflow { build(:lab_workflow_for_pipeline) }
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:ultima_sequencing)
+      pipeline.add_control_request_type
+    end
+  end
+
   factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do
     request_type do
       create(
