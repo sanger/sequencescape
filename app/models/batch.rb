@@ -318,7 +318,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
       unless tube_barcode_matches(request, scanned_barcode)
         expected_barcode = request.asset.human_barcode
-        errors.add(:base, "The barcode at position #{request.position} is incorrect: expected #{expected_barcode}.")
+        errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
       end
     end
 
