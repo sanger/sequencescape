@@ -2,13 +2,26 @@
 <% add :menu, "Sample Management homepage" => lab_sample_logistics_path %>
 <%= form_for :robot_verifications, url: {action: "finish"} do |f| %>
 <%= page_title "Download #{@robot.name} File", 'Step 3 of 3' %>
-<%= link_to icon('fas', 'file-download', "Download #{@robot.name} File"),
-            batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id, pick_number: @pick_number),
-            class: 'btn btn-success btn-lg'
-%>
-
-
-
+<% if @robot.generation_behaviour_properties.length == 1 %>
+    <% property = @robot.generation_behaviour_properties.first %>
+    <%= link_to icon('fas', 'file-download', "Download #{@robot.name} File"),
+                batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id, pick_number: @pick_number, generator_id: property.id),
+                class: 'btn btn-success btn-lg'
+    %>
+<% else %>
+    <div class="dropdown btn-group">
+        <button type="button" class="btn btn-success btn-lg dropdown-toggle"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <%= icon('fas', 'file-download') %> Download <%= @robot.name %> File
+        </button>
+        <div class="dropdown-menu">
+            <% @robot.generation_behaviour_properties.each do |property| %>
+            <%= link_to "#{property.value}",
+                batch_robot_driver_file_path(@batch, @robot, barcode: @destination_plate_id, pick_number: @pick_number, generator_id: property.id),
+                class: 'dropdown-item' %>
+            <% end %>
+        </div>
+    </div>
+<% end %>
 <%= link_to "Verify more plates", robot_verifications_path, class: 'btn btn-lg btn-secondary' %>
-
 <% end %>
