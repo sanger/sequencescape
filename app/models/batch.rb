@@ -313,20 +313,22 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @return [Bool] true if the layout is correct, false otherwise
   #
   def verify_tube_layout(barcodes, user = nil)
-    requests.each do |request|
-      scanned_barcode = barcodes[request.position - 1]
-
-      unless tube_barcode_matches(request, scanned_barcode)
-        expected_barcode = request.asset.human_barcode
-        errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
-      end
-    end
+    requests.each { |request| verify_tube_position(request, barcodes) }
 
     if errors.empty?
       lab_events.create(description: 'Tube layout verified', user: user)
       true
     else
       false
+    end
+  end
+
+  def verify_tube_position(request, barcodes)
+    scanned_barcode = barcodes[request.position - 1]
+
+    unless tube_barcode_matches(request, scanned_barcode)
+      expected_barcode = request.asset.human_barcode
+      errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
     end
   end
 
@@ -343,21 +345,23 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @return [Bool] true if the layout is correct, false otherwise
   #
   def verify_amp_plate_layout(barcodes, user = nil)
-    requests.each do |request|
-      scanned_barcode = barcodes[request.position - 1]
-      scanned_batch_id, tube_barcode = scanned_barcode.split('_')
-
-      unless batch_id_matches(scanned_batch_id) && tube_barcode_matches(request, tube_barcode)
-        expected_barcode = "#{id}_#{request.asset.human_barcode}"
-        errors.add(:base, "The barcode at position #{request.position} is incorrect: expected #{expected_barcode}.")
-      end
-    end
+    requests.each { |request| verify_amp_plate_position(request, barcodes) }
 
     if errors.empty?
       lab_events.create(description: 'AMP plate layout verified', user: user)
       true
     else
       false
+    end
+  end
+
+  def verify_amp_plate_position(request, barcodes)
+    scanned_barcode = barcodes[request.position - 1]
+    scanned_batch_id, tube_barcode = scanned_barcode.split('_')
+
+    unless batch_id_matches(scanned_batch_id) && tube_barcode_matches(request, tube_barcode)
+      expected_barcode = "#{id}_#{request.asset.human_barcode}"
+      errors.add(:base, "The barcode at position #{request.position} is incorrect: expected #{expected_barcode}.")
     end
   end
 
