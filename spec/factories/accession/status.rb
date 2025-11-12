@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :accession_status_group, class: 'Accession::StatusGroup' do
-    submitting_user factory: %i[user]
     accession_group { nil }
     accession_group_type { nil }
   end

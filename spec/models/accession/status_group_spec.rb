@@ -3,11 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe Accession::StatusGroup, type: :model do
-  let(:user) { create(:user) }
-  let(:status_group) { described_class.create!(submitting_user: user) }
+  let(:status_group) { described_class.create! }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:submitting_user).class_name('User') }
     it { is_expected.to belong_to(:accession_group).optional }
     it { is_expected.to have_many(:statuses).class_name('Accession::Status').dependent(:destroy) }
   end

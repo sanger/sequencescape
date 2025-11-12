@@ -4,13 +4,10 @@
 # Feedback is provided once all items within a given status group have been processed.
 #
 # Attributes:
-#  submitting_user_id: integer - The ID of the user who submitted the accessioning request
 #  accession_group_type: string - The type of accession group, if applicable (e.g., 'SampleManifest', 'Study')
 #  accession_group_id: integer - The ID of the accession group, if applicable
 
 class Accession::StatusGroup < ApplicationRecord
-  belongs_to :submitting_user, class_name: 'User'
-
   # Polymorphic association of the status group (e.g., SampleManifest, Study)
   belongs_to :accession_group, polymorphic: true, optional: true
 

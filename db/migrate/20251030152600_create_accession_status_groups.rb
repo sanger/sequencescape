@@ -2,7 +2,6 @@
 class CreateAccessionStatusGroups < ActiveRecord::Migration[7.1]
   def change
     create_table :accession_status_groups do |t|
-      t.references :submitting_user, null: false, foreign_key: { to_table: :users }, type: :integer
       t.string :accession_group_type
       t.bigint :accession_group_id
       t.timestamps

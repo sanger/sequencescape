@@ -3,8 +3,7 @@ require 'rails_helper'
 
 RSpec.describe Accession::Status, type: :model do
   let(:sample) { create(:sample) }
-  let(:user) { create(:user) }
-  let(:status_group) { create(:accession_status_group, submitting_user: user) }
+  let(:status_group) { create(:accession_status_group) }
 
   describe 'associations' do
     it { is_expected.to belong_to(:sample) }
