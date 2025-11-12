@@ -312,7 +312,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   # @return [Bool] true if the layout is correct, false otherwise
   #
-  def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
+  def verify_tube_layout(barcodes, user = nil)
     requests.each do |request|
       scanned_barcode = barcodes[request.position - 1]
 

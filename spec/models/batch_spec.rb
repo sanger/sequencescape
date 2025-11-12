@@ -97,6 +97,9 @@ RSpec.describe Batch do
 
     let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request]) }
 
+    let(:expected_barcode) { "#{batch.id}_#{tube.human_barcode}" }
+    let(:error_message) { "The barcode at position 1 is incorrect: expected #{expected_barcode}." }
+
     before do
       expect(LabEvent.count).to eq(0)
     end
@@ -112,33 +115,30 @@ RSpec.describe Batch do
 
       context 'with wrong batch id' do
         let(:scanned_barcodes) { ["wrongbatchid_#{tube.human_barcode}"] }
-        let(:expected_barcode) { "#{batch.id}_#{tube.human_barcode}" }
 
         it 'returns false and reports errors' do
           expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
-          expect(batch.errors[:base]).to include("The barcode at position 1 is incorrect: expected #{expected_barcode}.")
+          expect(batch.errors[:base]).to include(error_message)
           expect(LabEvent.count).to eq(0)
         end
       end
 
       context 'with wrong tube barcode' do
         let(:scanned_barcodes) { ["#{batch.id}_wrongtubebarcode"] }
-        let(:expected_barcode) { "#{batch.id}_#{tube.human_barcode}" }
 
         it 'returns false and reports errors' do
           expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
-          expect(batch.errors[:base]).to include("The barcode at position 1 is incorrect: expected #{expected_barcode}.")
+          expect(batch.errors[:base]).to include(error_message)
           expect(LabEvent.count).to eq(0)
         end
       end
 
       context 'with wrong format barcode' do
         let(:scanned_barcodes) { ['5487498572'] }
-        let(:expected_barcode) { "#{batch.id}_#{tube.human_barcode}" }
 
         it 'returns false and reports errors' do
           expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
-          expect(batch.errors[:base]).to include("The barcode at position 1 is incorrect: expected #{expected_barcode}.")
+          expect(batch.errors[:base]).to include(error_message)
           expect(LabEvent.count).to eq(0)
         end
       end
@@ -157,7 +157,12 @@ RSpec.describe Batch do
         )
       end
 
-      let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request, request2]) }
+      let!(:batch) do
+        create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request, request2])
+      end
+
+      let(:expected_barcode2) { "#{batch.id}_#{tube2.human_barcode}" }
+      let(:error_message2) { "The barcode at position 2 is incorrect: expected #{expected_barcode2}." }
 
       let(:scanned_barcodes) { ["#{batch.id}_#{tube.human_barcode}", "#{batch.id}_#{tube2.human_barcode}"] }
 
@@ -169,24 +174,21 @@ RSpec.describe Batch do
 
       context 'with plates in wrong position' do
         let(:scanned_barcodes) { ["#{batch.id}_#{tube2.human_barcode}", "#{batch.id}_#{tube.human_barcode}"] }
-        let(:expected_barcode_1) { "#{batch.id}_#{tube.human_barcode}" }
-        let(:expected_barcode_2) { "#{batch.id}_#{tube2.human_barcode}" }
 
         it 'returns false and reports errors' do
           expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
-          expect(batch.errors[:base]).to include("The barcode at position 1 is incorrect: expected #{expected_barcode_1}.")
-          expect(batch.errors[:base]).to include("The barcode at position 2 is incorrect: expected #{expected_barcode_2}.")
+          expect(batch.errors[:base]).to include(error_message)
+          expect(batch.errors[:base]).to include(error_message2)
           expect(LabEvent.count).to eq(0)
         end
       end
 
       context 'with one wrong barcode' do
         let(:scanned_barcodes) { ["#{batch.id}_#{tube.human_barcode}", "#{batch.id}_wrongtubebarcode"] }
-        let(:expected_barcode) { "#{batch.id}_#{tube2.human_barcode}" }
 
         it 'returns false and reports errors' do
           expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
-          expect(batch.errors[:base]).to include("The barcode at position 2 is incorrect: expected #{expected_barcode}.")
+          expect(batch.errors[:base]).to include(error_message2)
           expect(LabEvent.count).to eq(0)
         end
       end
