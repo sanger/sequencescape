@@ -40,7 +40,7 @@ RSpec.describe TaxaController, type: :controller do
     end
 
     context 'with a term that does not exist' do
-      let(:id_from_text) { 0 }
+      let(:id_from_text) { nil }
       let(:term) { 'nonexistent_organism' }
 
       it 'returns 404 Not Found' do

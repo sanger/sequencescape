@@ -26,7 +26,8 @@ class HTTPClients::ENATaxaClient < HTTPClient
     # @param suggestion [String] The organism name or suggestion (eg: 'human')
     # @return [Integer] The ENA taxon ID (eg: 9606)
     response = @conn.get("suggest-for-submission/#{suggestion}")
-    response.body.first['taxId'].to_i
+    first_taxon = response.body.first
+    first_taxon['taxId'].to_i if first_taxon
   end
 
   def name_from_id(id)
