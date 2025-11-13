@@ -438,4 +438,204 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       expect(mx_library_tube.requests_as_target).to all be_passed
     end
   end
+
+  context 'when checking column country of origin' do
+    let(:columns) { configuration.columns.plate_default.dup }
+    let(:sample_manifest) { create(:plate_sample_manifest_with_manifest_assets) }
+    let(:plate) { sample_manifest.labware.first }
+    let(:data_valid) do
+      [
+        plate.human_barcode,
+        'A1',
+        sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+        'SAMPLE_1',
+        'Destroy after 2 years',
+        'Cohort 1',
+        '',
+        '',
+        '',
+        'United Kingdom',
+        '',
+        '',
+        '',
+        'Nov-16',
+        'Nov-16',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '1',
+        'Human',
+        'Sample description',
+        '',
+        '',
+        '',
+        '',
+        'Sample phenotype',
+        '',
+        '',
+        ''
+      ]
+    end
+    let(:data_invalid) do
+      [
+        plate.human_barcode,
+        'A1',
+        sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+        'SAMPLE_1',
+        'Destroy after 2 years',
+        'Cohort 1',
+        '',
+        '',
+        '',
+        'UNITED KINGDOM',
+        '',
+        '',
+        '',
+        'Nov-16',
+        'Nov-16',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '1',
+        'Human',
+        'Sample description',
+        '',
+        '',
+        '',
+        '',
+        'Sample phenotype',
+        '',
+        '',
+        ''
+      ]
+    end
+    let(:data_empty_value) do
+      [
+        plate.human_barcode,
+        'A1',
+        sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+        'SAMPLE_1',
+        'Destroy after 2 years',
+        'Cohort 1',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        'Nov-16',
+        'Nov-16',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '1',
+        'Human',
+        'Sample description',
+        '',
+        '',
+        '',
+        '',
+        'Sample phenotype',
+        '',
+        '',
+        ''
+      ]
+    end
+
+    before do
+      create(:insdc_country, name: 'United Kingdom')
+    end
+
+    context 'when country of origin column is not present' do
+      let(:columns) { configuration.columns.plate_without_country_of_origin.dup }
+
+      let(:data_valid_no_country_of_origin) do
+        [
+          plate.human_barcode,
+          'A1',
+          sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+          'SAMPLE_1',
+          'Destroy after 2 years',
+          'Cohort 1',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          'Nov-16',
+          'Nov-16',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '',
+          '1',
+          'Human',
+          'Sample description',
+          '',
+          '',
+          '',
+          '',
+          'Sample phenotype',
+          '',
+          '',
+          ''
+        ]
+      end
+
+      it 'is valid' do
+        expect(described_class.new(number: 1, data: data_valid_no_country_of_origin, columns: columns)).to be_valid
+      end
+    end
+
+    context 'when country of origin column is empty' do
+      it 'is valid' do
+        expect(described_class.new(number: 1, data: data_empty_value, columns: columns)).to be_valid
+      end
+    end
+
+    it 'is valid if country of origin is the correct case' do
+      expect(described_class.new(number: 1, data: data_valid, columns: columns)).to be_valid
+    end
+
+    it 'is not valid if country of origin is the incorrect case' do
+      expect(described_class.new(number: 1, data: data_invalid, columns: columns)).not_to be_valid
+    end
+
+    it 'returns the expected error message when country of origin is the incorrect case' do
+      row = described_class.new(number: 1, data: data_invalid, columns: columns)
+      row.valid?
+      expect(row.errors.full_messages).to include("Row 1 - Country of Origin value 'UNITED KINGDOM' does " \
+                                                  'not match any allowed value (NB. case-sensitive). Did ' \
+                                                  "you mean 'United Kingdom'?")
+    end
+  end
 end
