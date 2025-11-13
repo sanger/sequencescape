@@ -6,6 +6,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
+  VERIFICATION_FLAVOUR_TO_FORM_ACTION = {
+    tube: :verify_tube_layout,
+    amp_plate: :verify_amp_plate_layout
+  }
+
   before_action :evil_parameter_hack!
 
   before_action :login_required, except: %i[released]
@@ -19,8 +24,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   print_labels
                   print_plate_labels
                   print
-                  verify
+                  verify_tube
+                  verify_amp_plate
                   verify_tube_layout
+                  verify_amp_plate_layout
                   reset_batch
                   previous_qc_state
                   filtered
@@ -270,7 +277,14 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def verify
+  def verify_tube
+    @requests = @batch.ordered_requests
+    @pipeline = @batch.pipeline
+    @count = @requests.length
+    @form_action = VERIFICATION_FLAVOUR_TO_FORM_ACTION[@verification_flavour]
+  end
+
+  def verify_amp_plate
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
     @count = @requests.length
