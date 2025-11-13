@@ -147,8 +147,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def accession # rubocop:todo Metrics/AbcSize
+  def accession # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
