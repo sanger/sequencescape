@@ -6,9 +6,11 @@ module HTTPClients
   # Retrieves taxonomic information from NCBI's Taxonomy database.
   #
   # Usage:
+  #   ```rb
   #   client = HTTPClients::NCBITaxaClient.new
   #   client.id_from_text('human') # returns 9606
   #   client.name_from_id(9606) # returns 'homo sapiens'
+  #   ```
   class NCBITaxaClient < BaseClient
     # Make Faraday connection injectable for easier testing.
     def initialize(conn = nil)

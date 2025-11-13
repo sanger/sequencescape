@@ -6,9 +6,6 @@ module HTTPClients
   # A generic client that communicates to external services over HTTP.
   #
   # Subclass this class to create clients for specific services with custom behaviours.
-  #
-  # Usage:
-  #   client = HTTPClient.new(base_url: 'http://example.com', headers: { 'Authorization' => 'token' })
   class BaseClient
     # Make Faraday connection injectable for easier testing.
     def initialize(conn = nil)
