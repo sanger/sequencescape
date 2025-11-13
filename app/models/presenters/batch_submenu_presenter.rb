@@ -56,7 +56,7 @@ module Presenters
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
       load_pipeline_options
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
-      return unless aviti_run_manifest?
+      return unless aviti_run_manifest? || ultima_run_manifest?
 
       add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches, action: :generate_sample_sheet
     end
@@ -74,6 +74,14 @@ module Presenters
       @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
     end
     # rubocop: enable Performance/RedundantEqualityComparisonBlock
+
+    def ultima_run_manifest?
+      @batch.released? && ultima_requests?
+    end
+
+    def ultima_requests?
+      @batch.requests.any?(UltimaSequencingRequest)
+    end
 
     def cherrypicking?
       @pipeline.is_a?(CherrypickingPipeline)
