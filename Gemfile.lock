@@ -207,7 +207,6 @@ GEM
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.6.2)
     docile (1.4.0)
-    domain_name (0.6.20240107)
     drb (2.2.3)
     dry-cli (1.2.0)
     erubi (1.13.1)
@@ -219,6 +218,12 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
+    faraday (2.14.0)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.2)
+      net-http (~> 0.5)
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
@@ -244,9 +249,6 @@ GEM
       tilt
     hashdiff (1.2.1)
     htmlentities (4.3.4)
-    http-accept (1.7.0)
-    http-cookie (1.0.5)
-      domain_name (~> 0.5)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
@@ -288,9 +290,6 @@ GEM
     matrix (0.4.3)
     memoist3 (1.0.0)
     method_source (1.1.0)
-    mime-types (3.5.2)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.0305)
     mini_magick (5.2.0)
       benchmark
       logger
@@ -309,6 +308,8 @@ GEM
     mutex_m (0.3.0)
     mysql2 (0.5.7)
       bigdecimal
+    net-http (0.7.0)
+      uri
     net-imap (0.5.9)
       date
       net-protocol
@@ -321,7 +322,6 @@ GEM
       timeout
     net-smtp (0.5.1)
       net-protocol
-    netrc (0.11.0)
     nio4r (2.7.4)
     nokogiri (1.18.10-arm64-darwin)
       racc (~> 1.4)
@@ -422,11 +422,6 @@ GEM
     regexp_parser (2.11.3)
     reline (0.6.2)
       io-console (~> 0.5)
-    rest-client (2.1.0)
-      http-accept (>= 1.7.0, < 2.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     rexml (3.4.4)
     roo (3.0.0)
       base64 (~> 0.2)
@@ -583,6 +578,7 @@ GEM
       unicode-emoji (~> 4.1)
     unicode-emoji (4.1.0)
     uniform_notifier (1.18.0)
+    uri (1.1.1)
     uuidtools (3.0.0)
     vite_rails (3.0.19)
       railties (>= 5.1, < 9)
@@ -653,6 +649,7 @@ DEPENDENCIES
   drb
   exception_notification
   factory_bot_rails
+  faraday
   flipper (~> 1.0)
   flipper-active_record (~> 1.0)
   flipper-ui (~> 1.0)
@@ -685,7 +682,6 @@ DEPENDENCIES
   rails-perftest
   rainbow
   record_loader!
-  rest-client
   rexml
   roo
   rspec-collection_matchers

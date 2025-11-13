@@ -5,6 +5,9 @@ source 'https://rubygems.org'
 group :default do
   gem 'bootsnap'
   gem 'concurrent-ruby', '1.3.5'
+  gem 'configatron'
+  gem 'faraday'
+  gem 'formtastic'
   gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
@@ -19,12 +22,7 @@ group :default do
 
   # State machine
   gem 'aasm'
-
-  # Required by AASM
-  gem 'after_commit_everywhere', '~> 1.0'
-  gem 'configatron'
-  gem 'formtastic'
-  gem 'rest-client'
+  gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'

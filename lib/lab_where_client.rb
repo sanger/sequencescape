@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'rest-client'
 
 module LabWhereClient
   LabwhereException = Class.new(StandardError)
