@@ -95,8 +95,16 @@ module Presenters
       @batch.has_limit? and !@batch.has_event('Tube layout verified')
     end
 
+    def amp_plate_layout_not_verified?
+      @batch.has_limit? and !@batch.has_event('AMP plate layout verified')
+    end
+
     def plate_labels?
       cherrypicking?
+    end
+
+    def ultima?
+      @pipeline.is_a?(UltimaSequencingPipeline)
     end
 
     def load_pipeline_options
@@ -108,7 +116,8 @@ module Presenters
 
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
-      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
+      add_submenu_option 'Verify tube layout', :verify_tube if tube_layout_not_verified? && can?(:verify)
+      add_submenu_option 'Verify AMP plate layout', :verify_amp_plate if ultima? && amp_plate_layout_not_verified? && can?(:verify)
     end
   end
 end
