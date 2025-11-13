@@ -19,8 +19,8 @@ class HTTPClients::NCBITaxaClient < HTTPClient
     ))
   end
 
-  def id_from_text(term)
-    response = @conn.get('/esearch.fcgi', { db: 'taxonomy', term: term })
+  def id_from_text(suggestion)
+    response = @conn.get('/esearch.fcgi', { db: 'taxonomy', term: suggestion })
     response.body
   end
 

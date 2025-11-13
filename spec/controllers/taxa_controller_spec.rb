@@ -3,43 +3,54 @@
 require 'rails_helper'
 
 RSpec.describe TaxaController, type: :controller do
-  let(:remote_status) { 200 }
-  let(:remote_body) { 'taxon lookup result' }
+  let(:taxa_client) { instance_double(HTTPClients::ENATaxaClient) }
 
   before do
-    # we haven't got a nice way to inject the Faraday client, so we'll monkeypatch it instead
-    response_dbl = instance_double(Faraday::Response)
-    allow(response_dbl).to receive_messages(status: remote_status, body: remote_body)
-    allow_any_instance_of(Faraday::Connection).to receive(:get).and_return(response_dbl) # rubocop:disable RSpec/AnyInstance
-  end
+    # Inject the mocked client into the controller
+    allow(taxa_client).to receive(:id_from_text) do |*|
+      raise Faraday::ConnectionFailed unless defined?(id_from_text)
 
-  around do |example|
-    configatron_tmp = configatron.dup
-    configatron.disable_web_proxy = true
-    configatron.proxy = nil
+      id_from_text
+    end
+    allow(taxa_client).to receive(:name_from_id) do |*|
+      raise Faraday::ConnectionFailed unless defined?(name_from_id)
 
-    example.run
-
-    configatron.replace(configatron_tmp)
+      name_from_id
+    end
+    allow(controller).to receive(:client).and_return(taxa_client)
   end
 
   describe 'GET #index' do
-    context 'with term param' do
-      let(:remote_body) { 'homo sapiens' }
-      let(:term) { 'human' }
+    let(:term) { 'human' }
 
-      before do
-        get :index, params: { term: }
-      end
+    before do
+      get :index, params: { term: }
+    end
+
+    context 'with term parameter well defined' do
+      let(:id_from_text) { 9606 }
 
       it 'returns 200 OK' do
-        puts response.inspect
-
         expect(response).to have_http_status(:ok)
       end
 
       it 'returns the lookup result' do
-        expect(response.body).to eq(remote_body)
+        expect(response.body).to eq(id_from_text.to_s)
+      end
+    end
+
+    context 'with a term that does not exist' do
+      let(:id_from_text) { 0 }
+      let(:term) { 'nonexistent_organism' }
+
+      it 'returns 404 Not Found' do
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when Faraday raises a connection error' do
+      it 'returns 502 Bad Gateway' do
+        expect(response).to have_http_status(:bad_gateway)
       end
     end
 
@@ -56,18 +67,6 @@ RSpec.describe TaxaController, type: :controller do
         expect(response.body).to eq('Missing required parameter: term')
       end
     end
-
-    context 'when Faraday raises an error' do
-      before do
-        allow_any_instance_of(Faraday::Connection).to receive(:get).and_raise(Faraday::Error) # rubocop:disable RSpec/AnyInstance
-
-        get :index, params: { term: 'foo' }
-      end
-
-      it 'returns 502 Bad Gateway' do
-        expect(response).to have_http_status(:bad_gateway)
-      end
-    end
   end
 
   describe 'GET #show' do
@@ -77,21 +76,31 @@ RSpec.describe TaxaController, type: :controller do
       get :show, params: { id: }
     end
 
-    it 'returns 200 OK' do
-      expect(response).to have_http_status(:ok)
+    context 'with a valid id' do
+      let(:name_from_id) { 'homo sapiens' }
+
+      it 'returns 200 OK' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns the lookup result' do
+        expect(response.body).to eq(name_from_id)
+      end
     end
 
-    it 'returns the lookup result' do
-      expect(response.body).to eq(remote_body)
+    context 'with an id that does not exist' do
+      let(:name_from_id) { '' }
+
+      it 'returns 404 Not Found' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns the lookup result' do
+        expect(response.body).to eq(name_from_id)
+      end
     end
 
     context 'when Faraday raises an error' do
-      before do
-        allow_any_instance_of(Faraday::Connection).to receive(:get).and_raise(Faraday::Error) # rubocop:disable RSpec/AnyInstance
-
-        get :show, params: { id: }
-      end
-
       it 'returns 502 Bad Gateway' do
         expect(response).to have_http_status(:bad_gateway)
       end
