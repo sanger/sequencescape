@@ -18,10 +18,10 @@ module HTTPClients
     private
 
     def default_headers
-      # convert HTTPClient to HTTP Client, LabwareClient to Labware Client, ExternalAPIClient to External API Client, etc.
+      # convert HTTPClients::TestHTTPClient to Test HTTP Client
       client_name = self.class.name.demodulize.underscore.humanize.titleize
       {
-        'User-Agent' => "Sequencescape #{client_name}"
+        'User-Agent' => "Sequencescape #{client_name}" # Required by some APIs
       }
     end
 
