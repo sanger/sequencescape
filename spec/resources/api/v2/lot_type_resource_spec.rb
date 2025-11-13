@@ -22,6 +22,7 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
     expect(resource).not_to have_updatable_field(:name)
     expect(resource).not_to have_updatable_field(:template_type)
     expect(resource).to have_a_write_once_has_one(:target_purpose).with_class_name('Purpose')
+    expect(resource).to have_a_writable_has_many(:lots)
   end
 
   # Custom method tests

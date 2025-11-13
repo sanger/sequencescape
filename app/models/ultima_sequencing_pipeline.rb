@@ -10,4 +10,10 @@ class UltimaSequencingPipeline < SequencingPipeline
 
     (ot_recipe_list.uniq.size == 1)
   end
+
+  def post_release_batch(batch, _user)
+    # Same logic as the superclass, but with a different Messenger root and template
+    batch.assets.compact.uniq.each(&:index_aliquots)
+    Messenger.create!(target: batch, template: 'UseqWaferIo', root: 'useq_wafer')
+  end
 end
