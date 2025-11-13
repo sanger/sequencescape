@@ -8,7 +8,8 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   before_action :evil_parameter_hack!
 
-  before_action :login_required, except: %i[released]
+  # generate_sample_sheet checks if the download is allowed without login.
+  before_action :login_required, except: %i[released generate_sample_sheet]
   before_action :find_batch_by_id,
                 only: %i[
                   show
@@ -365,7 +366,35 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  # Checks if the current user is allowed to download the sample sheet for
+  # the batch. Ultima sample sheets are allowed to be downloaded without
+  # authentication. For all other pipelines, the user must be logged in.
+  #
+  # @return [Boolean] true if download is allowed, false otherwise
+  def allow_sample_sheet_download?
+    @batch.pipeline.is_a?(UltimaSequencingPipeline) || logged_in?
+  end
+
+  # Generates and sends the appropriate sample sheet(s) for the batch.
+  # @return [void]
   def generate_sample_sheet
+    return redirect_to(login_path) unless allow_sample_sheet_download?
+
+    if @batch.pipeline.is_a?(ElementAvitiSequencingPipeline)
+      generate_element_aviti_sample_sheet
+    elsif @batch.pipeline.is_a?(UltimaSequencingPipeline)
+      generate_ultima_sample_sheet
+    else
+      flash[:error] = 'Sample sheet generation is not supported for this pipeline.'
+      redirect_to controller: 'batches', action: 'show', id: @batch.id
+    end
+  end
+
+  private
+
+  # Generates and sends the Element Aviti sample sheet CSV for the batch.
+  # @return [void]
+  def generate_element_aviti_sample_sheet
     csv_string = AvitiSampleSheet::SampleSheetGenerator.generate(@batch)
     send_data csv_string.encode('UTF-8'),
               type: 'text/csv',
@@ -373,7 +402,15 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
               disposition: 'attachment'
   end
 
-  private
+  # Generates and sends the Ultima sample sheet ZIP archive for the batch.
+  # @return [void]
+  def generate_ultima_sample_sheet
+    zip_string = UltimaSampleSheet::SampleSheetGenerator.generate(@batch)
+    send_data zip_string,
+              type: 'application/zip',
+              filename: "batch_#{@batch.id}_run_manifest.zip",
+              disposition: 'attachment'
+  end
 
   def print_handler(print_class) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     print_job =
