@@ -20,7 +20,7 @@ RSpec.describe LabelPrinter::Label::BatchPlateAmp, type: :model do
     end
 
     it 'returns the correct label format' do
-      expected_barcode = "#{batch.id}_#{tube.human_barcode}"
+      expected_barcode = "#{batch.id}-#{tube.human_barcode}"
 
       label = {
         top_left: ' 9-JUL-2025', # TODO: why is there a leading space?

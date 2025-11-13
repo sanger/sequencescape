@@ -36,7 +36,7 @@ module LabelPrinter
       end
 
       def plate_barcode(tube_barcode)
-        "#{@batch.id}_#{tube_barcode}"
+        "#{@batch.id}-#{tube_barcode}"
       end
 
       def parent_tube_barcodes
