@@ -91,9 +91,9 @@ const validateOrganism = function (common_name_field, taxon_id_field) {
   // Lookup the real 'common name' and 'taxon ID' based on the common name entered.  This involves
   // two Ajax calls: one for the original common name to 'taxon ID', the other from the 'taxon ID'
   // to the real 'common name'.  Obviously these need to be performed sequentially.
-  ajaxXMLRequest("/taxon_lookup_by_term/" + common_name_field.value, "Id", {
+  ajaxXMLRequest("/taxa?term=" + common_name_field.value, "Id", {
     found: function (taxon_id) {
-      ajaxXMLRequest("/taxon_lookup_by_id/" + taxon_id, "ScientificName", {
+      ajaxXMLRequest("/taxa/" + taxon_id, "ScientificName", {
         found: function (scientific_name) {
           if (common_name_field.value != scientific_name) {
             common_name_field.value = scientific_name;

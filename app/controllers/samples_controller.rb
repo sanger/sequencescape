@@ -173,40 +173,6 @@ class SamplesController < ApplicationController
     redirect_to(sample_path(@sample))
   end
 
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def taxon_lookup # rubocop:todo Metrics/AbcSize
-    if params[:term]
-      url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
-    elsif params[:id]
-      url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
-    else
-      return
-    end
-
-    rc = RestClient::Resource.new(URI.parse(url).to_s)
-    if configatron.disable_web_proxy == true
-      RestClient.proxy = nil
-    elsif configatron.fetch(:proxy).present?
-      RestClient.proxy = configatron.proxy
-      rc.headers['User-Agent'] = 'Internet Explorer 5.0'
-    elsif ENV['http_proxy'].present?
-      RestClient.proxy = ENV['http_proxy']
-    end
-
-    # rc.verbose = true
-    body = rc.get.body
-
-    respond_to do |format|
-      format.js { render plain: body }
-      format.xml { render plain: body }
-      #      format.html {render :nothing}
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
-
   private
 
   def default_permitted_metadata_fields
