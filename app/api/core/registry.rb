@@ -2,7 +2,6 @@
 
 class Core::Registry
   include ::Singleton
-  include ::Core::Logging
 
   RegistryError = Class.new(StandardError)
   AlreadyRegisteredError = Class.new(RegistryError)
