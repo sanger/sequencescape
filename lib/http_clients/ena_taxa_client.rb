@@ -32,6 +32,7 @@ module HTTPClients
     # @param suggestion [String] The organism name or suggestion (e.g., 'human')
     # @return [Hash, nil] A hash with 'taxId', 'scientificName', and 'commonName' if found, or nil if not found.
     def taxon_from_text(suggestion)
+      suggestion = ERB::Util.url_encode(suggestion)
       response = @conn.get("suggest-for-submission/#{suggestion}")
       first_taxon = response.body.first
       return unless first_taxon
