@@ -44,6 +44,10 @@ FactoryBot.define do
       end
       pipeline factory: %i[cherrypick_pipeline]
     end
+
+    factory :ultima_sequencing_batch do
+      pipeline factory: %i[ultima_sequencing_pipeline]
+    end
   end
 
   factory :pac_bio_sequencing_batch, class: 'Batch' do
