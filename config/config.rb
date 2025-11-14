@@ -38,7 +38,6 @@ configatron.phix_tag.tag_map_id = 888
 configatron.r_and_d_division = 'RandD'
 configatron.site_url = 'localhost:3000'
 configatron.sta_plate_purpose_name = 'STA'
-configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
 configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
@@ -80,7 +79,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.disable_web_proxy = true
   configatron.proxy = 'http://example.com'
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
   configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
@@ -139,7 +137,6 @@ if Rails.env.test? || Rails.env.cucumber?
 
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
   configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
