@@ -26,23 +26,38 @@ module HTTPClients
       end)
     end
 
-    # Returns the ENA taxon ID for a given organism suggestion string.
+    # Returns the ENA taxon information for a given organism suggestion string.
     #
-    # @param suggestion [String] The organism name or suggestion (eg: 'human')
-    # @return [Integer] The ENA taxon ID (eg: 9606)
-    def id_from_text(suggestion)
+    #
+    # @param suggestion [String] The organism name or suggestion (e.g., 'human')
+    # @return [Hash, nil] A hash with 'taxId', 'scientificName', and 'commonName' if found, or nil if not found.
+    def taxon_from_text(suggestion)
       response = @conn.get("suggest-for-submission/#{suggestion}")
       first_taxon = response.body.first
-      first_taxon['taxId'].to_i if first_taxon
+      return unless first_taxon
+
+      # extract taxId, scientificName, commonName from first_taxon and return as a hash
+      {
+        'taxId' => first_taxon['taxId'],
+        'scientificName' => first_taxon['scientificName'],
+        'commonName' => first_taxon['commonName']
+      }
     end
 
-    # Returns the common name for a given ENA taxon ID.
+    # Returns the taxon information for a given ENA taxon ID.
     #
     # @param id [Integer, String] The ENA taxon ID (eg: 9606)
-    # @return [String] The common name (eg: 'homo sapiens')
-    def name_from_id(id)
+    # @return [Hash] A hash with 'taxId', 'scientificName', and 'commonName'.
+    def taxon_from_id(id)
       response = @conn.get("tax-id/#{id}")
-      response.body['commonName']
+      results = response.body
+
+      # extract taxId, scientificName, commonName from the results and return as a hash
+      {
+        'taxId' => results['taxId'],
+        'scientificName' => results['scientificName'],
+        'commonName' => results['commonName']
+      }
     end
   end
 end

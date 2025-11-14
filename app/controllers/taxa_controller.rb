@@ -8,23 +8,23 @@ class TaxaController < ApplicationController
 
     # Lookup by term and render results
     term = params[:term].parameterize.underscore
-    id = client.id_from_text(term)
+    taxon = client.taxon_from_text(term)
 
-    return head :not_found if id.zero?
+    return head :not_found if taxon.nil?
 
-    render plain: id
+    render json: taxon
   rescue Faraday::Error
     head :bad_gateway
   end
 
   def show
-    # Lookup and render the taxon
+    # Lookup by id and render the taxon
     id = params[:id] # the given taxon ID
-    name = client.name_from_id(id)
+    taxon = client.taxon_from_id(id)
 
-    return head :not_found if name.blank?
+    return head :not_found if taxon['taxId'].nil?
 
-    render plain: name
+    render json: taxon
   rescue Faraday::Error
     head :bad_gateway
   end

@@ -12,7 +12,7 @@ RSpec.describe HTTPClients::ENATaxaClient do
   end
   let(:client) { described_class.new(conn) }
 
-  describe '#id_from_text' do
+  describe '#taxon_from_text' do
     before do
       stubs.get("suggest-for-submission/#{suggestion}") { [200, {}, response_body] }
     end
@@ -42,24 +42,24 @@ RSpec.describe HTTPClients::ENATaxaClient do
         }]
       end
 
-      it 'returns the first taxon id as integer' do
-        expect(client.id_from_text(suggestion)).to eq(9606)
+      it 'returns the taxId, scientificName, and commonName of the first taxon' do
+        expect(client.taxon_from_text(suggestion)).to eq(
+          { 'commonName' => 'human', 'scientificName' => 'Homo sapiens', 'taxId' => '9606' }
+        )
       end
     end
 
     context 'when no results are found' do
       let(:suggestion) { 'Supercalifragilisticexpialidocious' }
-      let(:response_body) do
-        []
-      end
+      let(:response_body) { [] }
 
       it 'returns nil' do
-        expect(client.id_from_text(suggestion)).to be_nil
+        expect(client.taxon_from_text(suggestion)).to be_nil
       end
     end
   end
 
-  describe '#name_from_id' do
+  describe '#taxon_from_id' do
     let(:taxon_id) { '9606' }
 
     before do
@@ -86,16 +86,36 @@ RSpec.describe HTTPClients::ENATaxaClient do
         }
       end
 
-      it 'returns the common name if present' do
-        expect(client.name_from_id(taxon_id)).to eq('human')
+      it 'returns taxId, scientificName, and commonName' do
+        expect(client.taxon_from_id(taxon_id)).to eq(
+          { 'commonName' => 'human', 'scientificName' => 'Homo sapiens', 'taxId' => '9606' }
+        )
       end
     end
 
     context 'with a partial response' do
-      let(:response_body) { { 'comment' => 'commonName is missing' } }
+      let(:response_body) do
+        {
+          'taxId' => '9606',
+          'scientificName' => 'Homo sapiens',
+          'comment' => 'commonName is missing'
+        }
+      end
 
-      it 'returns nil if common name is missing' do
-        expect(client.name_from_id(taxon_id)).to be_nil
+      it 'returns nils if common name is missing' do
+        expect(client.taxon_from_id(taxon_id)).to eq(
+          { 'commonName' => nil, 'scientificName' => 'Homo sapiens', 'taxId' => '9606' }
+        )
+      end
+    end
+
+    context 'with no responses' do
+      let(:response_body) { {} }
+
+      it 'returns nils if no responses are returned' do
+        expect(client.taxon_from_id(taxon_id)).to eq(
+          { 'commonName' => nil, 'scientificName' => nil, 'taxId' => nil }
+        )
       end
     end
   end
