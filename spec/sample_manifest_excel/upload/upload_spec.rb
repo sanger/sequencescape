@@ -20,6 +20,10 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
 
   after { File.delete(test_file_name) if File.exist?(test_file_name) }
 
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
+
   it 'is valid if all of the headings relate to a column' do
     download =
       build(

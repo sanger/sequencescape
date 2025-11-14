@@ -61,6 +61,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
   end
 
   context 'when checking uploads' do
+    before do
+      create(:insdc_country, name: 'United Kingdom')
+    end
+
     after { Delayed::Worker.delay_jobs = true }
 
     it 'will upload a valid 1d tube sample manifest' do
@@ -383,6 +387,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
   end
 
   context 'when checking sample manifest state' do
+    before do
+      create(:insdc_country, name: 'United Kingdom')
+    end
+
     after { Delayed::Worker.delay_jobs = true }
 
     it 'will not be valid if the sample_manifest is already being processed' do

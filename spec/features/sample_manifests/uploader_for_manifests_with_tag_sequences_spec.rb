@@ -18,6 +18,10 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
   after(:all) { SampleManifestExcel.reset! }
 
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
+
   context 'library tube sample manifest with tag sequences' do
     let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
