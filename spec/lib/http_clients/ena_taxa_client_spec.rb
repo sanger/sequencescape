@@ -92,17 +92,9 @@ RSpec.describe HTTPClients::ENATaxaClient do
     end
 
     context 'with a partial response' do
-      let(:response_body) { { 'scientificName' => 'Homo sapiens' } }
+      let(:response_body) { { 'comment' => 'commonName is missing' } }
 
-      it 'returns the scientific name if common name is missing' do
-        expect(client.name_from_id(taxon_id)).to eq('Homo sapiens')
-      end
-    end
-
-    context 'with a minimal response' do
-      let(:response_body) { {} }
-
-      it 'returns nil if neither name is present' do
+      it 'returns nil if common name is missing' do
         expect(client.name_from_id(taxon_id)).to be_nil
       end
     end

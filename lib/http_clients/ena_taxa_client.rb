@@ -42,7 +42,7 @@ module HTTPClients
     # @return [String] The common name (eg: 'homo sapiens')
     def name_from_id(id)
       response = @conn.get("tax-id/#{id}")
-      response.body['commonName'] || response.body['scientificName']
+      response.body['commonName']
     end
   end
 end
