@@ -5,6 +5,9 @@ require 'faraday'
 module HTTPClients
   # Retrieves taxonomic information from NCBI's Taxonomy database.
   #
+  # This is the original source of taxonomy information,
+  # but is likely to be replaced by ENA due to not being reliable
+  #
   # Usage:
   #   ```rb
   #   client = HTTPClients::NCBITaxaClient.new
