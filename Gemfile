@@ -6,7 +6,6 @@ group :default do
   gem 'bootsnap'
   gem 'concurrent-ruby', '1.3.5'
   gem 'configatron'
-  gem 'faraday'
   gem 'formtastic'
   gem 'rails', '~> 7.1.5.1'
 
@@ -15,6 +14,11 @@ group :default do
   gem 'logger'
   gem 'mutex_m'
   gem 'syslog'
+
+  # Connections to external HTTP services
+  # See lib/http_clients for examples of usage
+  gem 'faraday'
+  gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
