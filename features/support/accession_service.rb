@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'singleton'
+require 'rest-client'
 
 class FakeAccessionService
   include Singleton
