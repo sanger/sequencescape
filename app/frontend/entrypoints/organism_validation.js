@@ -1,31 +1,3 @@
-/*====================================================================
- *  Author: Tony Cox (avc@sanger.ac.uk)
- *  Copyright (c) 2009: Genome Research Ltd.
- * This is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * or see the on-line version at http://www.gnu.org/copyleft/gpl.txt
- *====================================================================
- * (c) Tony Cox (Sanger Institute, UK) avc@sanger.ac.uk
- *
- * Description: Provides interface for monitoring data in the Sanger
- * Illumina production pipeline
- *
- * Exported functions: None
- * HISTORY:
- *====================================================================
- */
-
 document.addEventListener("DOMContentLoaded", function () {
   // Attach validation to all .validate_organism controls
   document.querySelectorAll(".validate_organism").forEach(function (button) {
@@ -40,14 +12,14 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-function highlightField(state, field) {
+function highlightField(field, state) {
   field.style.transition = "background-color 0.25s, color 0.25s";
   // Remove any previous Bootstrap validation classes and inline styles
   field.classList.remove("is-valid", "is-invalid", "bg-success", "bg-danger", "text-white");
 
-  if (state === "good") {
+  if (state === "success") {
     field.classList.add("is-valid", "bg-success", "text-white");
-  } else if (state === "bad") {
+  } else if (state === "failure") {
     field.classList.add("is-invalid", "bg-danger", "text-white");
   }
 
@@ -72,44 +44,27 @@ function fetchTaxonByName(name) {
     .catch(() => null);
 }
 
-function fetchTaxonById(id) {
-  // expected result:
-  // {
-  // "taxId": "9606",
-  // "scientificName": "Homo sapiens",
-  // "commonName": "human"
-  // }
-  return fetch(`/taxa/${encodeURIComponent(id)}`, {
-    headers: { Accept: "application/json" },
-  })
-    .then((response) => (response.ok ? response.json() : null))
-    .catch(() => null);
-}
-
 function validateOrganism(commonNameField, taxonIdField) {
   const inputName = commonNameField.value;
   if (!inputName) return;
 
   fetchTaxonByName(inputName).then(function (taxon) {
-    if (!taxon || !taxon.taxId) {
-      highlightField("bad", commonNameField);
-      highlightField("bad", taxonIdField);
+    // Check that response contains the expected fields
+    if (!taxon || !taxon.taxId || !taxon.scientificName) {
+      highlightField(commonNameField, "failure");
+      highlightField(taxonIdField, "failure");
       return;
     }
-    fetchTaxonById(taxon.taxId).then(function (taxonDetails) {
-      if (!taxonDetails || !taxonDetails.scientificName) {
-        highlightField("bad", commonNameField);
-        highlightField("bad", taxonIdField);
-        return;
-      }
-      if (commonNameField.value !== taxonDetails.scientificName) {
-        commonNameField.value = taxonDetails.scientificName;
-        highlightField("good", commonNameField);
-      }
-      if (taxonIdField.value !== taxon.taxId) {
-        taxonIdField.value = taxon.taxId;
-        highlightField("good", taxonIdField);
-      }
-    });
+    // If the common name field is not equal to the found scientific name, set the value to the found scientific name
+    if (commonNameField.value !== taxon.scientificName) {
+      // Yes the field is called common name, yes this is confusing, no I have no idea why we do it this way...
+      commonNameField.value = taxon.scientificName;
+      highlightField(commonNameField, "success");
+    }
+    // If the given taxon id is not equal to the found taxon id, set the value to the found taxon id
+    if (taxonIdField.value !== taxon.taxId) {
+      taxonIdField.value = taxon.taxId;
+      highlightField(taxonIdField, "success");
+    }
   });
 }

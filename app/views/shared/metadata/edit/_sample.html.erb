@@ -47,7 +47,9 @@
       <fieldset id="subject">
         <div class="form-group row sqs-form">
           <div class="offset-md-2 col-md-10">
-            <input class='btn btn-default validate_organism' type='button' value='Lookup Taxon'/>
+            <button type="button" class="btn btn-info validate_organism">
+              <i class="fa fa-search"></i> Lookup Taxon from Common Name
+            </button>
           </div>
         </div>
       </fieldset>
@@ -93,4 +95,4 @@
   <% end %>
 <% end %>
 
-<%= organism_validation_javascript %>
+<%= vite_javascript_tag 'organism_validation' %>
