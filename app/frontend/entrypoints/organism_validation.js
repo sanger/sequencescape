@@ -26,95 +26,86 @@
  *====================================================================
  */
 
-const $ = window.jQuery;
-
-$(function () {
-  // Any validate_organism control needs to be setup to update the 'common name' and the 'taxon ID' fields.
-  // It is assumed that the 'common name' and 'taxon ID' fields are paired in order: in other words, the
-  // first 'common name' field goes with the first 'taxon ID' field.  If this is not true then you should
-  // write your own method and call validateSingleOrganism yourself.
-  $(".validate_organism").each(function (pos, control) {
-    $(control).on("click", function (event) {
+document.addEventListener("DOMContentLoaded", function () {
+  // Attach validation to all .validate_organism controls
+  document.querySelectorAll(".validate_organism").forEach(function (button) {
+    button.addEventListener("click", function (event) {
       event.preventDefault();
-      var common_names = $('input[data-organism="common_name"]');
-      var taxon_ids = $('input[data-organism="taxon_id"]');
-
-      common_names.each(function (index, common_name) {
-        validateOrganism(common_name, taxon_ids[index]);
+      const commonNames = document.querySelectorAll('input[data-organism="common_name"]');
+      const taxonIds = document.querySelectorAll('input[data-organism="taxon_id"]');
+      commonNames.forEach(function (commonNameInput, idx) {
+        validateOrganism(commonNameInput, taxonIds[idx]);
       });
     });
   });
 });
 
-const highlight_field = function (state, field) {
-  if (state == "good") {
-    $(field).css("background-color", "#ffff99").animate({ backgroundColor: "#ffffff" }, 1500);
-    //Element.highlight(field, { startcolor: '#ffff99', endcolor: '#ffffff', restorecolor: '#ffffff'});
-  } else if (state == "bad") {
-    $(field).css("background-color", "#A80000").animate({ backgroundColor: "#ff6666" }, 1500);
-    //Element.highlight(field, { startcolor: '#A80000', endcolor: '#ffffff', restorecolor: '#ff6666'});
+function highlightField(state, field) {
+  if (state === "good") {
+    field.style.backgroundColor = "#ffff99";
+    setTimeout(() => {
+      field.style.backgroundColor = "#ffffff";
+    }, 1500);
+  } else if (state === "bad") {
+    field.style.backgroundColor = "#A80000";
+    setTimeout(() => {
+      field.style.backgroundColor = "#ff6666";
+    }, 1500);
   }
-};
+}
 
-const ajaxXMLRequest = function (url, field, callbacks) {
-  var xmlSelect = function (element, name) {
-    let elements = $(name, element);
-    if (elements.length == 0) {
-      return undefined;
+function fetchTaxonByName(name) {
+  // expected result:
+  // {
+  // "taxId": "9606",
+  // "scientificName": "Homo sapiens",
+  // "commonName": "human"
+  // }
+  return fetch(`/taxa?term=${encodeURIComponent(name)}`, {
+    headers: { Accept: "application/json" },
+  })
+    .then((response) => (response.ok ? response.json() : null))
+    .catch(() => null);
+}
+
+function fetchTaxonById(id) {
+  // expected result:
+  // {
+  // "taxId": "9606",
+  // "scientificName": "Homo sapiens",
+  // "commonName": "human"
+  // }
+  return fetch(`/taxa/${encodeURIComponent(id)}`, {
+    headers: { Accept: "application/json" },
+  })
+    .then((response) => (response.ok ? response.json() : null))
+    .catch(() => null);
+}
+
+function validateOrganism(commonNameField, taxonIdField) {
+  const inputName = commonNameField.value;
+  if (!inputName) return;
+
+  fetchTaxonByName(inputName).then(function (taxon) {
+    if (!taxon || !taxon.taxId) {
+      highlightField("bad", commonNameField);
+      highlightField("bad", taxonIdField);
+      return;
     }
-    return elements[0].text || elements[0].textContent || undefined;
-  };
-
-  $.ajax(url, {
-    headers: { Accept: "application/xml,text/xml" },
-    success: function (response) {
-      let value = xmlSelect(response.responseXML, field);
-      if (value == undefined) {
-        callbacks.unfound();
-      } else {
-        callbacks.found(value);
+    fetchTaxonById(taxon.taxId).then(function (taxonDetails) {
+      if (!taxonDetails || !taxonDetails.scientificName) {
+        highlightField("bad", commonNameField);
+        highlightField("bad", taxonIdField);
+        return;
       }
-    },
-    error: function () {
-      callbacks.unfound();
-    },
-    timeout: 5000,
+      if (commonNameField.value !== taxonDetails.scientificName) {
+        commonNameField.value = taxonDetails.scientificName;
+        highlightField("good", commonNameField);
+      }
+      if (taxonIdField.value !== taxon.taxId) {
+        taxonIdField.value = taxon.taxId;
+        highlightField("good", taxonIdField);
+      }
+    });
   });
-};
-
-const validateOrganism = function (common_name_field, taxon_id_field) {
-  // Empty fields can be ignored
-  if (common_name_field.value == "" || common_name_field.value == undefined) {
-    return;
-  }
-
-  // Lookup the real 'common name' and 'taxon ID' based on the common name entered.  This involves
-  // two Ajax calls: one for the original common name to 'taxon ID', the other from the 'taxon ID'
-  // to the real 'common name'.  Obviously these need to be performed sequentially.
-  ajaxXMLRequest("/taxa?term=" + common_name_field.value, "Id", {
-    found: function (taxon_id) {
-      ajaxXMLRequest("/taxa/" + taxon_id, "ScientificName", {
-        found: function (scientific_name) {
-          if (common_name_field.value != scientific_name) {
-            common_name_field.value = scientific_name;
-            highlight_field("good", common_name_field);
-          }
-          if (taxon_id_field.value != taxon_id) {
-            taxon_id_field.value = taxon_id;
-            highlight_field("good", taxon_id_field);
-          }
-        },
-
-        unfound: function () {
-          highlight_field("bad", common_name_field);
-          highlight_field("bad", taxon_id_field);
-        },
-      });
-    },
-
-    unfound: function () {
-      highlight_field("bad", common_name_field);
-      highlight_field("bad", taxon_id_field);
-    },
-  });
-};
+}
