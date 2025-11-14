@@ -53,12 +53,13 @@ module Accession
   require_relative 'accession/tag'
   require_relative 'accession/tag_list'
   require_relative 'accession/submission'
-  require_relative 'accession/request'
-  require_relative 'accession/response'
-  require_relative 'accession/null_response'
   require_relative 'accession/configuration'
 
   String.include CoreExtensions::String
+
+  # Generic high-level accessioning error
+  # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
+  class Error < StandardError; end
 
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
