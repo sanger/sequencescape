@@ -13,6 +13,8 @@
 
 ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.uncountable %w[health sample_metadata request_metadata study_metadata labware]
+  inflect.acronym 'ENA'
+  inflect.acronym 'HTTP'
 end
 
 # These inflection rules are supported but not enabled by default:
