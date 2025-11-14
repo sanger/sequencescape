@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Supplier < ApplicationRecord
   include Uuid::Uuidable
-  include ::Io::Supplier::ApiIoSupport
+  # include ::Io::Supplier::ApiIoSupport
   include SampleManifest::Associations
   include SharedBehaviour::Named
 
