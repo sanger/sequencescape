@@ -41,17 +41,21 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 function highlightField(state, field) {
+  field.style.transition = "background-color 0.25s, color 0.25s";
+  // Remove any previous Bootstrap validation classes and inline styles
+  field.classList.remove("is-valid", "is-invalid", "bg-success", "bg-danger", "text-white");
+
   if (state === "good") {
-    field.style.backgroundColor = "#ffff99";
-    setTimeout(() => {
-      field.style.backgroundColor = "#ffffff";
-    }, 1500);
+    field.classList.add("is-valid", "bg-success", "text-white");
   } else if (state === "bad") {
-    field.style.backgroundColor = "#A80000";
-    setTimeout(() => {
-      field.style.backgroundColor = "#ff6666";
-    }, 1500);
+    field.classList.add("is-invalid", "bg-danger", "text-white");
   }
+
+  // Remove highlights and text color after 1.5s
+  // Validity classes remain for user reference
+  setTimeout(() => {
+    field.classList.remove("bg-success", "bg-danger", "text-white");
+  }, 1500);
 }
 
 function fetchTaxonByName(name) {
