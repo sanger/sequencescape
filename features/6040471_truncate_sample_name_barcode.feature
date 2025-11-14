@@ -6,7 +6,7 @@ Feature: Print truncated sanger sample id on sample tube barcode
     And I have a study called "Test Study"
     And user "john" is a "manager" of study "Test Study"
     And I have an asset group "Test asset group" which is part of "Test Study"
-    Given I am on the show page for study "Test Study"
+    Given I allow redirects and am on the show page for study "Test Study"
     And the "1D Tube" barcode printer "xyz" exists
     When I follow "Asset groups"
 

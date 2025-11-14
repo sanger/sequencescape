@@ -21,7 +21,7 @@ Feature: Manage a list of bait libraries
 
   Scenario: Non-administrators should not see the bait library editor
     Given I am logged in as "user"
-      And I go to the bait library management page
+      And I allow redirects and go to the bait library management page
     Then I should not see "Bait Libraries Index"
 
   Scenario: Administrators should be able to edit bait libraries
