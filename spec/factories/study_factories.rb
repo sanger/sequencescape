@@ -38,7 +38,10 @@ FactoryBot.define do
     after(:create) do |study, evaluator|
       study.study_metadata.update!(
         data_release_strategy: 'managed',
-        study_ebi_accession_number: evaluator.accession_number
+        study_ebi_accession_number: evaluator.accession_number,
+        study_abstract: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        study_study_title: 'A managed study for testing purposes',
+        study_type: create(:study_type)
       )
     end
   end

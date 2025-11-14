@@ -61,6 +61,7 @@ class AbilityAnalysis
     'Supplier' => [:create],
     'TagGroup' => [:create],
     'TagLayoutTemplate' => [:create],
+    # NOTE: TagSet is missing from this list, not sure if this was intentional or not
     'User' => [:administer]
   }.freeze
 

@@ -22,7 +22,7 @@ And I have a "full" authorised user with the key "cucumber"
     And I have a reporter lot type for testing called "Test Reporter Lot Type"
     And the lot exists with the attributes:
     | lot_number | lot_type               | received_at | template        |
-    | 1234567891 | Test Reporter Lot Type | 2014-02-01  | testtemplate    |
+    | 1234567891 | Test Reporter Lot Type | 2014-02-01  | test_plate_template    |
 
     And I have a qc library created
 
@@ -56,7 +56,7 @@ And I have a "full" authorised user with the key "cucumber"
     And I have a reporter lot type for testing called "Test Reporter Lot Type"
     And the lot exists with the attributes:
     | lot_number | lot_type               | received_at | template        |
-    | 1234567891 | Test Reporter Lot Type | 2014-02-01  | testtemplate    |
+    | 1234567891 | Test Reporter Lot Type | 2014-02-01  | test_plate_template    |
 
     And I have a qc library created
     And the library is testing a reporter
@@ -75,7 +75,7 @@ And I have a "full" authorised user with the key "cucumber"
         {
           "lot":{
             "lot_number":"1234567891",
-            "template_name":"testtemplate"
+            "template_name":"test_plate_template"
           }
         }
     """

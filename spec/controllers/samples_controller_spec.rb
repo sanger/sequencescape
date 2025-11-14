@@ -108,19 +108,71 @@ RSpec.describe SamplesController do
   end
 
   describe '#accession' do
-    context 'when accessioning is disabled' do
-      before do
-        get :accession,
-            params: { id: sample.id },
-            session: { user: current_user.id }
-      end
+    before do
+      get :accession,
+          params: { id: sample.id },
+          session: { user: current_user.id }
+    end
 
+    context 'when accessioning is disabled' do
       it 'redirects to the sample page' do
         expect(response).to redirect_to(sample_path(sample.id))
       end
 
       it 'displays an error message indicating accessioning is not enabled' do
         expect(flash[:error]).to eq('Accessioning Service Failed: Accessioning is not enabled in this environment.')
+      end
+    end
+
+    context 'when accessioning is enabled', :accessioning_enabled do
+      context 'when required fields are missing for accessioning' do
+        let(:studies) { [create(:managed_study, accession_number: 'ENA123')] }
+        let(:sample_metadata) { create(:minimal_sample_metadata_for_accessioning) } # sample missing required metadata
+        let(:sample) { create(:sample, sample_metadata:, studies:) }
+
+        it 'asserts that the associated study is valid for accessioning' do
+          expect(sample.ena_study).to be_valid(:accession)
+        end
+
+        it 'asserts that the phenotype is missing' do
+          expect(sample.sample_metadata.phenotype).to be_nil
+        end
+
+        it 'asserts that the gender is missing' do
+          expect(sample.sample_metadata.gender).to be_nil
+        end
+
+        it 'asserts that the sample is valid on accession' do
+          expect(sample).to be_valid(:accession)
+        end
+
+        it 'asserts that the sample is valid on ENA accession' do
+          expect(sample).to be_valid(:ENA)
+        end
+
+        it 'asserts that the sample is NOT valid on EGA accession' do
+          expect(sample).not_to be_valid(:EGA)
+        end
+
+        it 'redirects to the sample page' do
+          expect(response).to redirect_to(sample_path(sample.id))
+        end
+
+        it 'does not display a notice message' do
+          expect(flash[:notice]).to be_nil
+        end
+
+        it 'does not display a warning message' do
+          expect(flash[:warning]).to be_nil
+        end
+
+        it 'displays an error message with helpful errors' do
+          expect(flash[:error]).to eq(<<~MSG.squish)
+            Please fill in the required fields:
+            Sample metadata gender is required, Sample metadata phenotype is required,
+            Sample metadata donor is required, Sample metadata is invalid
+          MSG
+        end
       end
     end
   end

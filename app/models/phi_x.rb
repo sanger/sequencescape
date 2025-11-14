@@ -42,7 +42,7 @@ module PhiX
   #
   # @return [Hash] Configuration. See above.
   def self.configuration
-    Rails.configuration.phi_x
+    Rails.application.config.phi_x
   end
 
   # Returns the tag_options configured.
