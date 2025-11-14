@@ -77,6 +77,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"
 
+  configatron.disable_web_proxy = true
   configatron.proxy = 'http://example.com'
 
   configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
