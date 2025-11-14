@@ -11,6 +11,9 @@ module HTTPClients
   #   client.id_from_text('human') # returns 9606
   #   client.name_from_id(9606) # returns 'homo sapiens'
   #   ````
+  #
+  # API usage guide: https://ena-docs.readthedocs.io/en/latest/retrieval/programmatic-access/taxon-based-search.html
+  # Swagger docs: https://www.ebi.ac.uk/ena/taxonomy/rest/swagger-ui/index.html
   class ENATaxaClient < BaseClient
     def initialize(conn = nil)
       # Make Faraday connection injectable for easier testing.
