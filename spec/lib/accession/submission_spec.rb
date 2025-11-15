@@ -87,7 +87,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       let(:mock_client) { nil } # Client should not be called
 
       it 'raises an error with a message' do
-        error_message = "Accessionable submission is invalid: User can't be blank, Sample can't be blank"
+        error_message = "Accessionable submission is invalid: Contact user can't be blank, Sample can't be blank"
         expect { invalid_submission.submit_and_update_accession_number }.to raise_error(StandardError, error_message)
       end
 

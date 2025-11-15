@@ -6,20 +6,20 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    attr_reader :user, :sample, :service, :contact
+    attr_reader :contact_user, :sample, :service, :contact
 
     delegate :accessioned?, :ebi_alias, :ebi_alias_datestamped, to: :sample
 
-    validates_presence_of :user, :sample
+    validates_presence_of :contact_user, :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
 
-    def initialize(user, sample)
-      @user = user
+    def initialize(contact_user, sample)
+      @contact_user = contact_user
       @sample = sample
 
       if valid?
         @service = sample.service
-        @contact = Contact.new(user)
+        @contact = Contact.new(contact_user)
       end
     end
 
