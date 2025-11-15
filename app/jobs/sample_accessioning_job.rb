@@ -23,7 +23,8 @@ SampleAccessioningJob =
     rescue StandardError => e
       handle_job_error(e, submission)
 
-      raise(JobFailed) # Raising an error to Delayed::Job will signal that the job should be retried at a later time
+      # Raising an error to Delayed::Job will signal that the job should be retried at a later time
+      raise JobFailed.new(e.message), e.backtrace
     end
 
     def reschedule_at(current_time, _attempts)
@@ -88,8 +89,10 @@ SampleAccessioningJob =
       case error
       when Accession::ExternalValidationError, ActiveModel::ValidationError
         error.message
+      when Faraday::Error
+        'A network error occurred during accessioning and no response was received.'
       else
-        'An internal error occurred during accessioning and no response was received.'
+        'An internal error occurred during accessioning.'
       end
     end
 
