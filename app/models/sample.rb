@@ -321,6 +321,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
+  has_many :accession_statuses, class_name: 'Accession::Status'
+
   belongs_to :sample_manifest, inverse_of: :samples
 
   # This is a natural join to sample_manifest_asset based on a shared sanger_sample_id.
@@ -542,6 +544,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e
+  end
+
+  def current_accession_status
+    accession_statuses.last
   end
 
   def sample_reference_genome
