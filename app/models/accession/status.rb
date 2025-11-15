@@ -16,7 +16,7 @@ class Accession::Status < ApplicationRecord
   belongs_to :sample, class_name: '::Sample'
   belongs_to :status_group, class_name: 'Accession::StatusGroup'
 
-  validates :status, presence: true, inclusion: { in: %w[queued failed] }
+  validates :status, presence: true, inclusion: { in: %w[queued processing failed aborted] }
 
   def self.create_for_sample(sample, status_group)
     create!(
@@ -26,7 +26,20 @@ class Accession::Status < ApplicationRecord
     )
   end
 
+  def self.latest_for_sample!(sample)
+    # raises ActiveRecord::RecordNotFound if not found
+    where(sample:).order(created_at: :desc).first!
+  end
+
+  def mark_in_progress
+    update(status: 'processing')
+  end
+
   def mark_failed(message)
     update(status: 'failed', message: message)
+  end
+
+  def mark_aborted
+    update(status: 'aborted') # update status, but preserve any existing message
   end
 end

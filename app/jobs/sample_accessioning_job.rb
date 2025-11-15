@@ -7,6 +7,7 @@ JobFailed = Class.new(StandardError) unless defined?(JobFailed)
 
 # Sends sample data to the ENA or EGA in order to generate an accession number
 # Records the generated accession number on the sample
+# Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
   Struct.new(:accessionable) do
@@ -20,7 +21,7 @@ SampleAccessioningJob =
       submission = Accession::Submission.new(contact_user, accessionable)
       submission.submit_and_update_accession_number
     rescue StandardError => e
-      handle_accession_error(e, submission)
+      handle_job_error(e, submission)
 
       raise(JobFailed) # Raising an error to Delayed::Job will signal that the job should be retried at a later time
     end
@@ -37,10 +38,53 @@ SampleAccessioningJob =
       'sample_accessioning'
     end
 
+    # Called before the job is run
+    def before(_job)
+      progress_accession_status
+    end
+
+    # Called after the job has completed successfully
+    def success(_job)
+      succeed_accession_status
+    end
+
+    # Called after the job has failed max_attempts times
+    def failure(_job)
+      abort_accession_status
+    end
+
     private
 
-    # Log and notify developers of the accessioning error
-    def handle_accession_error(error, submission)
+    # Update the accessionable status to be in progress for users to see in the UI
+    def progress_accession_status
+      # Finds the most recent accession status by sample id, and marks it as in progress
+      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
+      accession_status.mark_in_progress
+    end
+
+    # Finds the most recent accession status and removes it
+    def succeed_accession_status
+      # Finds the most recent accession status by sample id, removes it
+      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
+      accession_status.destroy
+    end
+
+    # Update the accessionable status to failed for users to see in the UI
+    def fail_accession_status(message)
+      # Finds the most recent accession status by sample id, and marks it as failed
+      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
+      accession_status.mark_failed(message)
+    end
+
+    # Update the accessionable status to aborted for users to see in the UI
+    def abort_accession_status
+      # Finds the most recent accession status by sample id, and marks it as aborted
+      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
+      accession_status.mark_aborted
+    end
+
+    # Log and email developers of the accessioning error
+    def notify_developers(error, submission)
       sample_name = submission.sample.sample.name
       service = submission.service
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
@@ -51,5 +95,10 @@ SampleAccessioningJob =
                                            sample_name: sample_name,
                                            service_provider: service&.provider.to_s
                                          })
+    end
+
+    def handle_job_error(error, submission)
+      fail_accession_status(error.message)
+      notify_developers(error, submission)
     end
   end

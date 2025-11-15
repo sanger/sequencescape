@@ -31,6 +31,18 @@ RSpec.describe Accession::Status, type: :model do
     end
   end
 
+  describe '#mark_in_progress' do
+    let(:status) { described_class.create_for_sample(sample, status_group) }
+
+    before do
+      status.mark_in_progress
+    end
+
+    it 'updates the status to processing' do
+      expect(status.status).to eq('processing')
+    end
+  end
+
   describe '#mark_failed' do
     let(:status) { described_class.create_for_sample(sample, status_group) }
 
@@ -44,6 +56,22 @@ RSpec.describe Accession::Status, type: :model do
 
     it 'sets the failure message' do
       expect(status.message).to eq('Something went wrong')
+    end
+  end
+
+  describe '#mark_aborted' do
+    let(:status) { described_class.create_for_sample(sample, status_group) }
+
+    before do
+      status.mark_aborted('Accessioning was aborted')
+    end
+
+    it 'updates the status to aborted' do
+      expect(status.status).to eq('aborted')
+    end
+
+    it 'sets the aborted message' do
+      expect(status.message).to eq('Accessioning was aborted')
     end
   end
 end
