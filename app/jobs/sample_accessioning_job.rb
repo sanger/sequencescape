@@ -28,16 +28,16 @@ SampleAccessioningJob =
 
     private
 
-    def handle_accession_error(error, submission, cause)
+    def handle_accession_error(error, submission)
       sample_name = submission.sample.sample.name
       service = submission.service
-      message = "SampleAccessioningJob failed for sample '#{sample_name}': #{cause}"
+      message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
 
-      Rails.logger.error(error.message)
+      Rails.logger.error(message)
       ExceptionNotifier.notify_exception(error, data: {
                                            message: message,
                                            sample_name: sample_name,
-                                           service_provider: service.provider.to_s
+                                           service_provider: service&.provider.to_s
                                          })
     end
   end
