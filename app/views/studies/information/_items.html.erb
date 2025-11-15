@@ -5,7 +5,7 @@
         <% selected = summary == key ? 'active' : '' %>
         <li>
           <%= link_to description,
-                      show_summary_study_information_path(@study, { summary: key }.merge(@extra_params.to_h)),
+                      show_summary_study_information_path(@study, { summary: key }.merge(@extra_params.to_h)) + "##{key}",
                       class: [selected, 'nav-link'],
                       remote: true,
                       data: {
@@ -13,7 +13,9 @@
                         failure: '#remote_error',
                         update: '#everything',
                         toggle: 'tab'
-                      } %>
+                      },
+                      id: "tab-link-#{key}"
+          %>
         </li>
       <% end %>
     </ul>
@@ -24,3 +26,5 @@
     <div id="everything"></div>
   </div>
 </div>
+
+<%= vite_javascript_tag 'tab_anchor' %>
