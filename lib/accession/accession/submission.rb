@@ -8,7 +8,7 @@ module Accession
 
     attr_reader :user, :sample, :service, :contact
 
-    delegate :ebi_alias, :ebi_alias_datestamped, to: :sample
+    delegate :accessioned?, :ebi_alias, :ebi_alias_datestamped, to: :sample
 
     validates_presence_of :user, :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
@@ -44,10 +44,9 @@ module Accession
     end
 
     def submit_and_update_accession_number
-      raise StandardError("Accessionable submission is invalid: #{errors.full_messages.join(', ')}") unless valid?
+      raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
-      client = HTTPClients::AccessioningV1Client.new
-      accession_number = client.submit_and_fetch_accession_number(submission)
+      accession_number = client.submit_and_fetch_accession_number(self)
       sample.update_accession_number(accession_number)
     end
 
@@ -87,6 +86,10 @@ module Accession
 
     def check_sample
       sample.errors.each { |error| errors.add error.attribute, error.message } unless sample.valid?
+    end
+
+    def client
+      HTTPClients::AccessioningV1Client.new
     end
   end
 end
