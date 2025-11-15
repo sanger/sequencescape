@@ -8,16 +8,30 @@ module AccessionV1ClientHelper
   # @param return_value [Object, nil] The value to return from the stubbed method (default: nil)
   # @param raise_error [Exception, nil] The error to raise from the stubbed method (default: nil)
   # @return [RSpec::Mocks::InstanceVerifyingDouble] The mocked client
-  def stub_accession_client(fn_name, fn_args, return_value: nil, raise_error: nil)
-    mock_client = instance_double(HTTPClients::AccessioningV1Client)
+  def stub_accession_client(fn_name, *fn_args, return_value: nil, raise_error: nil)
+    stimulus = stimulus(fn_name, *fn_args)
 
     if raise_error
-      allow(mock_client).to receive(fn_name).with(*fn_args).and_raise(raise_error)
+      stimulus.and_raise(raise_error)
     else
-      allow(mock_client).to receive(fn_name).with(*fn_args).and_return(return_value)
+      stimulus.and_return(return_value)
     end
 
-    mock_client
+    _mock_client
+  end
+
+  private
+
+  def _mock_client
+    @mock_client ||= instance_double(HTTPClients::AccessioningV1Client)
+  end
+
+  def stimulus(fn_name, *fn_args)
+    if fn_args.empty?
+      allow(_mock_client).to receive(fn_name)
+    else
+      allow(_mock_client).to receive(fn_name).with(*fn_args)
+    end
   end
 
   module_function :stub_accession_client
