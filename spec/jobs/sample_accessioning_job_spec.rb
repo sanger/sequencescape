@@ -25,7 +25,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
     context 'when the submission fails validation' do
       before do
         # Create a submission that is invalid by not setting the user
-        job.perform
+        expect { job.perform }.to raise_error(JobFailed)
       end
 
       it 'logs the error' do
@@ -58,7 +58,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'does not raise an error' do
-        expect { job.perform }.not_to raise_error
+        expect { job.perform }.not_to raise_error # specifically JobFailed
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Posting of accession submission failed'))
         )
-        job.perform
+        expect { job.perform }.to raise_error(JobFailed)
       end
 
       it 'logs the error' do

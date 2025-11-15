@@ -2,6 +2,9 @@
 
 require 'exception_notification'
 
+# Wrap standard error to explicitly indicate a job failure
+JobFailed = Class.new(StandardError) unless defined?(JobFailed)
+
 # Sends sample data to the ENA or EGA in order to generate an accession number
 # Records the generated accession number on the sample
 # @see Accession::Submission
@@ -18,6 +21,8 @@ SampleAccessioningJob =
       submission.submit_and_update_accession_number
     rescue StandardError => e
       handle_accession_error(e, submission)
+
+      raise(JobFailed) # Raising an error to Delayed::Job will signal that the job should be retried at a later time
     end
 
     def reschedule_at(current_time, _attempts)
@@ -34,6 +39,7 @@ SampleAccessioningJob =
 
     private
 
+    # Log and notify developers of the accessioning error
     def handle_accession_error(error, submission)
       sample_name = submission.sample.sample.name
       service = submission.service
