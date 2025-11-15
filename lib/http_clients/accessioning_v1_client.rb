@@ -24,7 +24,7 @@ module HTTPClients
     #
     # @param submission [Accession::Submission] The submission to be posted to the accessioning service.
     # @return [String] The allocated accession number if successful.
-    # @raise [Accession::Error] If the response is not successful or does not indicate success.
+    # @raise [Accession::ExternalValidationError] If the response is not successful or does not indicate success.
     # @raise [Faraday::Error] If the HTTP request fails.
     def submit_and_fetch_accession_number(submission)
       login = submission.service.login
@@ -72,7 +72,7 @@ module HTTPClients
       return unless receipt_failed?(response.body)
 
       message = extract_error_messages(response.body) || 'Posting of accession submission failed'
-      raise Accession::Error, message
+      raise Accession::ExternalValidationError, message
     end
   end
 end

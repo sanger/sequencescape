@@ -83,6 +83,16 @@ SampleAccessioningJob =
       accession_status.mark_aborted
     end
 
+    # Returns a user-friendly error message based on the error type
+    def user_error_message(error)
+      case error
+      when Accession::ExternalValidationError, ActiveModel::ValidationError
+        error.message
+      else
+        'An internal error occurred during accessioning and no response was received.'
+      end
+    end
+
     # Log and email developers of the accessioning error
     def notify_developers(error, submission)
       sample_name = submission.sample.sample.name
@@ -98,7 +108,8 @@ SampleAccessioningJob =
     end
 
     def handle_job_error(error, submission)
-      fail_accession_status(error.message)
+      message = user_error_message(error)
+      fail_accession_status(message)
       notify_developers(error, submission)
     end
   end

@@ -55,10 +55,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('/') { [200, {}, failure_response] }
       end
 
-      it 'raises Accession::Error with error messages' do
+      it 'raises Accession::ExternalValidationError with error messages' do
         expect do
           client.submit_and_fetch_accession_number(submission)
-        end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
+        end.to raise_error(Accession::ExternalValidationError, "#{error_message1}; #{error_message2}")
       end
     end
 
@@ -67,10 +67,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('/') { [400, {}, failure_response] }
       end
 
-      it 'raises Accession::Error with error messages' do
+      it 'raises Accession::ExternalValidationError with error messages' do
         expect do
           client.submit_and_fetch_accession_number(submission)
-        end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
+        end.to raise_error(Accession::ExternalValidationError, "#{error_message1}; #{error_message2}")
       end
     end
 
@@ -79,9 +79,9 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('/') { [400, {}, 'Bad Request'] }
       end
 
-      it 'raises a Accession::Error' do
+      it 'raises a Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(submission) }
-          .to raise_error(Accession::Error, 'Posting of accession submission failed')
+          .to raise_error(Accession::ExternalValidationError, 'Posting of accession submission failed')
       end
     end
 
@@ -90,9 +90,9 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('/') { [500, {}, 'Internal Server Error'] }
       end
 
-      it 'raises an Accession::Error' do
+      it 'raises an Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(submission) }
-          .to raise_error(Accession::Error, 'Posting of accession submission failed')
+          .to raise_error(Accession::ExternalValidationError, 'Posting of accession submission failed')
       end
     end
 
