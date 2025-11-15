@@ -13,7 +13,7 @@ class FakeAccessionService
   class EvesdropResource < RestClient::Resource
     def post(payload)
       FakeAccessionService.instance.add_payload(payload)
-      super(payload)
+      super
     end
   end
 

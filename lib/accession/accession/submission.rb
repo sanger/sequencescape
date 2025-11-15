@@ -6,24 +6,26 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    attr_reader :user, :sample, :service, :contact, :response
+    attr_reader :contact_user, :sample, :service, :contact
 
-    delegate :accessioned?, to: :response
+    delegate :accessioned?, :ebi_alias, :ebi_alias_datestamped, to: :sample
 
-    delegate :ebi_alias, :ebi_alias_datestamped, to: :sample
-
-    validates_presence_of :user, :sample
+    validates_presence_of :contact_user, :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
 
-    def initialize(user, sample)
-      @user = user
+    def initialize(contact_user, sample)
+      @contact_user = contact_user
       @sample = sample
-      @response = Accession::NullResponse.new
 
       if valid?
         @service = sample.service
-        @contact = Contact.new(user)
+        @contact = Contact.new(contact_user)
       end
+    end
+
+    # Define the client as a class method for easy test mocking
+    def self.client
+      HTTPClients::AccessioningV1Client.new
     end
 
     def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
@@ -46,18 +48,12 @@ module Accession
       xml.target!
     end
 
-    def post
-      unless valid?
-        error_message = "Accessionable submission is invalid: #{errors.full_messages.join(', ')}"
-        Rails.logger.error(error_message)
-        raise StandardError, error_message
-      end
+    def submit_and_update_accession_number
+      raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
-      @response = Accession::Request.post(self)
-    end
-
-    def update_accession_number
-      sample.update_accession_number(response.accession_number) if accessioned?
+      client = self.class.client
+      accession_number = client.submit_and_fetch_accession_number(self)
+      sample.update_accession_number(accession_number)
     end
 
     def payload
