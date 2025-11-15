@@ -19,19 +19,22 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
   let(:success_response) do
     <<-XML
-      <RECEIPT success="true">
-        <SAMPLE accession="EGA00001000240" />
-        <SUBMISSION accession="EGA00001000240" />
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="true">
+        <SAMPLE accession="EGA00001000240"/>
+        <SUBMISSION accession="ERA390457" alias="submission_1"/>
+        <ACTIONS>ADD</ACTIONS>
       </RECEIPT>
     XML
   end
-  let(:error_message1) { 'Houston, we\'ve had a problem.' }
-  let(:error_message2) { 'We\'ve had a Main B Bus Undervolt.' }
+  let(:error_message1) { "Houston, we've had a problem." }
+  let(:error_message2) { "We've had a Main B Bus Undervolt." }
   let(:failure_response) do
     <<-XML
-      <RECEIPT success="false">
-        <ERROR>#{error_message1}</ERROR>
-        <ERROR>#{error_message2}</ERROR>
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="false">
+        <MESSAGES>
+          <ERROR>#{error_message1}</ERROR>
+          <ERROR>#{error_message2}</ERROR>
+        </RECEIPT>
       </RECEIPT>
     XML
   end
