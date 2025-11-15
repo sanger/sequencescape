@@ -4,7 +4,6 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 RSpec.describe Sample, :accession, :cardinal do
-  include MockAccession
   include AccessionV1ClientHelper
 
   context 'accessioning disabled' do
@@ -15,7 +14,6 @@ RSpec.describe Sample, :accession, :cardinal do
 
     before do
       configatron.accession_samples = false
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
     end
 
     around do |example|
@@ -72,7 +70,6 @@ RSpec.describe Sample, :accession, :cardinal do
     end
 
     it 'will not proceed if accessioning for the study is disabled' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
       accessionable_sample.ena_study.enforce_accessioning = false
       accessionable_sample.accession
 
@@ -81,7 +78,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
     context 'when accessioning succeeds' do
       before do
-        allow_any_instance_of(Accession::Submission).to receive(:client).and_return(
+        allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
         )
         accessionable_sample.accession
@@ -94,7 +91,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
     context 'when accessioning fails' do
       before do
-        allow_any_instance_of(Accession::Submission).to receive(:client).and_return(
+        allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Posting of accession submission failed'))
         )

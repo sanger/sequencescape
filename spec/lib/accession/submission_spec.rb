@@ -62,7 +62,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
     before do
       # Inject the mocked client into the controller
-      allow(submission).to receive(:client).and_return(mock_client)
+      allow(described_class).to receive(:client).and_return(mock_client)
     end
 
     context 'when the submission is successful' do

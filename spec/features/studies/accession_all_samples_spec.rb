@@ -10,7 +10,7 @@ describe 'Accession all samples', :accessioning_enabled do
 
   before do
     Delayed::Worker.delay_jobs = false
-    allow_any_instance_of(Accession::Submission).to receive(:client).and_return(
+    allow(Accession::Submission).to receive(:client).and_return(
       stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
     )
   end

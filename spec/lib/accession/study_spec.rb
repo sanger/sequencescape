@@ -14,14 +14,13 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
   let(:accession_number) { 'SAMPLE123456' }
   let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
   let(:non_accessionable_samples) { create_list(:sample, 3) }
-  let(:mock_client) do
-    stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
-  end
 
   before do
     Delayed::Worker.delay_jobs = false
     create(:user, api_key: configatron.accession_local_key)
-    allow_any_instance_of(Accession::Submission).to receive(:client).and_return(mock_client) # rubocop:disable RSpec/AnyInstance
+    allow(Accession::Submission).to receive(:client).and_return(
+      stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+    )
   end
 
   after do

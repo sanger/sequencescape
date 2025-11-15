@@ -23,6 +23,11 @@ module Accession
       end
     end
 
+    # Define the client as a class method for easy test mocking
+    def self.client
+      HTTPClients::AccessioningV1Client.new
+    end
+
     def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
       xml = Builder::XmlMarkup.new
       xml.instruct!
@@ -46,6 +51,7 @@ module Accession
     def submit_and_update_accession_number
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
+      client = self.class.client
       accession_number = client.submit_and_fetch_accession_number(self)
       sample.update_accession_number(accession_number)
     end
@@ -86,10 +92,6 @@ module Accession
 
     def check_sample
       sample.errors.each { |error| errors.add error.attribute, error.message } unless sample.valid?
-    end
-
-    def client
-      HTTPClients::AccessioningV1Client.new
     end
   end
 end
