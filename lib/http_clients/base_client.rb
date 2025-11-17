@@ -7,11 +7,6 @@ module HTTPClients
   #
   # Subclass this class to create clients for specific services with custom behaviours.
   class BaseClient
-    # Make Faraday connection injectable for easier testing.
-    def initialize(conn = nil)
-      @conn = conn
-    end
-
     private
 
     def default_headers
