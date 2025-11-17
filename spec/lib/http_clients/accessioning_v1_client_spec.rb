@@ -77,7 +77,6 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
 
       it 'raises Accession::Error with error messages' do
-        # show list of stubs
         expect do
           client.submit_and_fetch_accession_number(submission)
         end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
