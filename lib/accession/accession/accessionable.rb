@@ -2,11 +2,6 @@
 module Accession
   # Standard methods used by things that can be accesioned e.g sample
   module Accessionable
-    # An accessionable file needs an original filename which relates to the remote filename.
-    class AccessionableFile < Tempfile
-      attr_accessor :original_filename
-    end
-
     attr_reader :ebi_alias
 
     def schema_type
@@ -17,12 +12,12 @@ module Accession
       @date ||= Time.now.utc.iso8601
     end
 
-    def filename
-      @filename ||= "#{ebi_alias_datestamped}.#{schema_type}.xml"
-    end
-
     def ebi_alias_datestamped
       "#{ebi_alias}-#{date}"
+    end
+
+    def filename
+      @filename ||= clean_path("#{ebi_alias_datestamped}.#{schema_type}.xml")
     end
 
     def to_xml
@@ -31,13 +26,22 @@ module Accession
       xml.target!
     end
 
+    # Creates a Tempfile containing the XML representation of the accessionable.
+    # Needs to be closed or unlinked after use.
+    #
+    # @return [Tempfile] A temporary file with the XML content.
     def to_file
-      AccessionableFile
-        .open("#{schema_type}_file")
-        .tap do |f|
-          f.write(to_xml << "\n")
-          f.original_filename = filename
-        end
+      file = Tempfile.new(['', "_#{filename}"]) # preserve original filename as the filename suffix
+      file.write("#{to_xml}\n")
+      file.rewind
+      file
+    end
+
+    private
+
+    # Remove characters that are not safe for file paths
+    def clean_path(str)
+      str.gsub(/[^A-Za-z0-9.\-_]/, '')
     end
   end
 end

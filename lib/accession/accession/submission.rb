@@ -6,21 +6,17 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    attr_reader :contact_user, :sample, :service, :contact
+    attr_reader :sample, :service, :contact
 
     delegate :accessioned?, :ebi_alias, :ebi_alias_datestamped, to: :sample
 
-    validates_presence_of :contact_user, :sample
+    validates_presence_of :contact, :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
 
     def initialize(contact_user, sample)
-      @contact_user = contact_user
       @sample = sample
-
-      if valid?
-        @service = sample.service
-        @contact = Contact.new(contact_user)
-      end
+      @service = sample&.service
+      @contact = contact_user ? Contact.new(contact_user) : nil # only create Contact if user is present
     end
 
     # Define the client as a class method for easy test mocking
@@ -52,46 +48,41 @@ module Accession
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
       client = self.class.client
-      accession_number = client.submit_and_fetch_accession_number(self)
+      login = service.login
+      files = compile_files
+      accession_number = client.submit_and_fetch_accession_number(login, files)
       sample.update_accession_number(accession_number)
+    ensure
+      # Ensure all opened files are closed
+      files&.each_value(&:close!)
     end
 
-    def payload
-      @payload ||= Payload.new([self, sample])
-    end
-
-    # Accessioning requires a submission and sample file
-    # Payload consists of a hash of relevant files
-    # These files can be opened when the request is sent
-    class Payload
-      include Enumerable
-
-      attr_reader :files
-
-      def initialize(accessionables)
-        @files =
-          {}.tap do |f|
-            accessionables.each { |accessionable| f[accessionable.schema_type.upcase] = accessionable.to_file }
-          end
-      end
-
-      def each(&)
-        files.each(&)
-      end
-
-      def open
-        files.transform_values(&:open)
-      end
-
-      def close!
-        files.values.each(&:close!) # rubocop:todo Style/HashEachMethods
+    # Returns a hash mapping file type names to File objects.
+    # Files should be closed or unlinked after use.
+    # {
+    #   'SUBMISSION' => open_temp_submission_file,
+    #   'SAMPLE' => open_temp_sample_file
+    # }
+    def compile_files
+      {}.tap do |f|
+        [self, sample].each do |accessionable|
+          f[accessionable.schema_type.upcase] = accessionable.to_file
+        end
       end
     end
 
     private
 
+    # Validates the associated sample object.
+    # If the sample is invalid, adds each of its validation errors to the Submission's errors.
+    #
+    # This ensures that any validation errors on the sample are also reported on the Submission,
+    # making them visible when validating a Submission instance.
     def check_sample
-      sample.errors.each { |error| errors.add error.attribute, error.message } unless sample.valid?
+      service_provider = sample.service.provider.to_sym
+      unless sample.valid?([:accession, service_provider]) # Check against accessioning contexts
+        sample.errors.each { |error| errors.add error.attribute, error.message }
+      end
     end
   end
 end

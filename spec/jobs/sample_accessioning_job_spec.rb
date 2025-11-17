@@ -7,9 +7,8 @@ RSpec.describe SampleAccessioningJob, type: :job do
   include AccessionV1ClientHelper
 
   let(:contact_user) { create(:user, api_key: configatron.accession_local_key) }
-  let(:sample) do
-    create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-  end
+  let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
+  let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
@@ -22,7 +21,13 @@ RSpec.describe SampleAccessioningJob, type: :job do
   end
 
   describe '#perform' do
+    before do
+      allow(described_class).to receive(:contact_user).and_return(contact_user)
+    end
+
     context 'when the submission fails validation' do
+      let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+
       before do
         # Create a submission that is invalid by not setting the user
         job.perform
@@ -31,7 +36,8 @@ RSpec.describe SampleAccessioningJob, type: :job do
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          "Accessionable submission is invalid: Contact user can't be blank"
+          'Accessionable submission is invalid: ' \
+          'Sample does not have the required metadata: sample-taxon-id.'
         )
       end
 
@@ -41,9 +47,10 @@ RSpec.describe SampleAccessioningJob, type: :job do
           instance_of(StandardError),
           data: {
             message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                     "Accessionable submission is invalid: Contact user can't be blank",
+                     'Accessionable submission is invalid: ' \
+                     'Sample does not have the required metadata: sample-taxon-id.',
             sample_name: sample_name,
-            service_provider: ''
+            service_provider: 'ENA'
           }
         )
       end
@@ -51,7 +58,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
     context 'when the submission is successful' do
       before do
-        allow(described_class).to receive(:contact_user).and_return(contact_user)
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
         )
@@ -64,7 +70,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
     context 'when an exception is raised during submission' do
       before do
-        allow(described_class).to receive(:contact_user).and_return(contact_user)
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Posting of accession submission failed'))

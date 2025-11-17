@@ -11,11 +11,16 @@ RSpec.describe HTTPClients::AccessioningV1Client do
   end
   let(:client) { described_class.new }
   let(:login) { { username: 'user', password: 'pass' } }
-  let(:payload_io) { StringIO.new('<SAMPLE_SET></SAMPLE_SET>') }
 
-  let(:service) { instance_double(Accession::Service, login:) }
-  let(:payload) { instance_double(Accession::Submission::Payload, open: payload_io, close!: true) }
-  let(:submission) { instance_double(Accession::Submission, service:, payload:) }
+  let(:sample_file_path) { '/path/to/123_sample_file.xml' }
+  let(:submission_file_path) { '/path/to/456_submission_file.xml' }
+  let(:sample_file) do
+    instance_double(File, path: sample_file_path, read: '<xml>sample</xml>', rewind: true, close: true)
+  end
+  let(:submission_file) do
+    instance_double(File, path: submission_file_path, read: '<xml>submission</xml>', rewind: true, close: true)
+  end
+  let(:files) { { 'SAMPLE' => sample_file, 'SUBMISSION' => submission_file } }
 
   let(:success_response) do
     <<-XML
@@ -43,8 +48,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     it 'sets the correct headers' do
       expect(client.conn.headers).to include(
-        'User-Agent' => 'Sequencescape Accessioning V1 Client',
-        'Content-Type' => 'application/xml'
+        'User-Agent' => 'Sequencescape Accessioning V1 Client'
       )
     end
 
@@ -67,7 +71,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
 
       it 'returns the accession number' do
-        expect(client.submit_and_fetch_accession_number(submission)).to eq('EGA00001000240')
+        expect(client.submit_and_fetch_accession_number(login, files)).to eq('EGA00001000240')
       end
     end
 
@@ -78,7 +82,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
       it 'raises Accession::Error with error messages' do
         expect do
-          client.submit_and_fetch_accession_number(submission)
+          client.submit_and_fetch_accession_number(login, files)
         end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
       end
     end
@@ -90,7 +94,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
       it 'raises Accession::Error with error messages' do
         expect do
-          client.submit_and_fetch_accession_number(submission)
+          client.submit_and_fetch_accession_number(login, files)
         end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
       end
     end
@@ -101,7 +105,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
 
       it 'raises a Accession::Error' do
-        expect { client.submit_and_fetch_accession_number(submission) }
+        expect { client.submit_and_fetch_accession_number(login, files) }
           .to raise_error(Accession::Error, 'Posting of accession submission failed')
       end
     end
@@ -112,7 +116,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
 
       it 'raises an Accession::Error' do
-        expect { client.submit_and_fetch_accession_number(submission) }
+        expect { client.submit_and_fetch_accession_number(login, files) }
           .to raise_error(Accession::Error, 'Posting of accession submission failed')
       end
     end
@@ -124,7 +128,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
       it 'raises a Faraday::Error error' do
         expect do
-          client.submit_and_fetch_accession_number(submission)
+          client.submit_and_fetch_accession_number(login, files)
         end.to raise_error(Faraday::Error, 'Connection failed')
       end
     end
