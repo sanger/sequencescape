@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe HTTPClients::ENATaxaClient do
   let(:client) { described_class.new }
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
-  let(:conn) do
+  let(:test_conn) do
     Faraday.new do |f|
       f.response :json
       f.adapter :test, stubs
@@ -32,7 +32,7 @@ RSpec.describe HTTPClients::ENATaxaClient do
   describe '#taxon_from_text' do
     before do
       stubs.get("suggest-for-submission/#{suggestion}") { [200, {}, response_body] }
-      allow(client).to receive(:conn).and_return(conn)
+      allow(client).to receive(:conn).and_return(test_conn)
     end
 
     context 'when results are found' do
@@ -82,7 +82,7 @@ RSpec.describe HTTPClients::ENATaxaClient do
 
     before do
       stubs.get("tax-id/#{taxon_id}") { [200, {}, response_body] }
-      allow(client).to receive(:conn).and_return(conn)
+      allow(client).to receive(:conn).and_return(test_conn)
     end
 
     context 'with a full response' do
