@@ -15,15 +15,14 @@ module HTTPClients
   # API usage guide: https://ena-docs.readthedocs.io/en/latest/retrieval/programmatic-access/taxon-based-search.html
   # Swagger docs: https://www.ebi.ac.uk/ena/taxonomy/rest/swagger-ui/index.html
   class ENATaxaClient < BaseClient
-    def initialize(conn = nil)
-      # Make Faraday connection injectable for easier testing.
-      super(conn || Faraday.new(
+    def conn
+      @conn ||= Faraday.new(
         url: configatron.ena_taxon_lookup_url,
         headers: default_headers,
         proxy: proxy
       ) do |f|
         f.response :json
-      end)
+      end
     end
 
     # Returns the ENA taxon information for a given organism suggestion string.
@@ -33,7 +32,7 @@ module HTTPClients
     # @return [Hash, nil] A hash with 'taxId', 'scientificName', and 'commonName' if found, or nil if not found.
     def taxon_from_text(suggestion)
       suggestion = ERB::Util.url_encode(suggestion)
-      response = @conn.get("suggest-for-submission/#{suggestion}")
+      response = conn.get("suggest-for-submission/#{suggestion}")
       first_taxon = response.body.first
       return unless first_taxon
 
@@ -50,7 +49,7 @@ module HTTPClients
     # @param id [Integer, String] The ENA taxon ID (eg: 9606)
     # @return [Hash] A hash with 'taxId', 'scientificName', and 'commonName'.
     def taxon_from_id(id)
-      response = @conn.get("tax-id/#{id}")
+      response = conn.get("tax-id/#{id}")
       results = response.body
 
       # extract taxId, scientificName, commonName from the results and return as a hash

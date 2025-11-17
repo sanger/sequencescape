@@ -13,18 +13,12 @@ RSpec.describe HTTPClients::BaseClient do
       public :default_headers, :proxy
     end
   end
-  let(:client) { client_class.new(conn) }
+  let(:client) { client_class.new }
 
   around do |example|
     configatron_dup = configatron.dup
     example.run
     configatron.reset_to(configatron_dup)
-  end
-
-  describe '#initialize' do
-    it 'sets the connection' do
-      expect(client.instance_variable_get(:@conn)).to eq(conn)
-    end
   end
 
   describe '#default_headers' do
