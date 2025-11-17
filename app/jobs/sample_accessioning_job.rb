@@ -24,7 +24,8 @@ SampleAccessioningJob =
       handle_job_error(e, submission)
 
       # Raising an error to Delayed::Job will signal that the job should be retried at a later time
-      raise JobFailed.new(e.message), e.backtrace
+      job_failed_message = "#{e.class}: #{e.message}"
+      raise JobFailed, job_failed_message
     end
 
     def reschedule_at(current_time, _attempts)
