@@ -4,12 +4,12 @@ require 'rails_helper'
 
 RSpec.describe HTTPClients::AccessioningV1Client do
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
-  let(:conn) do
+  let(:test_conn) do
     Faraday.new do |f|
       f.adapter :test, stubs
     end
   end
-  let(:client) { described_class.new(conn) }
+  let(:client) { described_class.new }
   let(:login) { { username: 'user', password: 'pass' } }
   let(:payload_io) { StringIO.new('<SAMPLE_SET></SAMPLE_SET>') }
 
@@ -36,7 +36,31 @@ RSpec.describe HTTPClients::AccessioningV1Client do
     XML
   end
 
+  describe '#conn' do
+    it 'returns a Faraday connection with the correct URL' do
+      expect(client.conn.url_prefix.to_s).to eq(configatron.accession.url)
+    end
+
+    it 'sets the correct headers' do
+      expect(client.conn.headers).to include(
+        'User-Agent' => 'Sequencescape Accessioning V1 Client',
+        'Content-Type' => 'application/xml'
+      )
+    end
+
+    it 'uses a proxy if configured' do
+      #  makes a call to BaseClient#proxy to check if a proxy is set
+      allow(client).to receive(:proxy).and_return('http://proxy.example.com')
+      client.conn # trigger the method
+      expect(client).to have_received(:proxy)
+    end
+  end
+
   describe '#submit_and_fetch_accession_number' do
+    before do
+      allow(client).to receive(:conn).and_return(test_conn)
+    end
+
     context 'when the response is successful' do
       before do
         stubs.post('/') { [200, {}, success_response] }
@@ -53,6 +77,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
 
       it 'raises Accession::Error with error messages' do
+        # show list of stubs
         expect do
           client.submit_and_fetch_accession_number(submission)
         end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")

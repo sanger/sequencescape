@@ -13,10 +13,9 @@ module HTTPClients
   #
   # API documentation: https://ena-docs.readthedocs.io/en/latest/submit/general-guide/webin-v1.html
   class AccessioningV1Client < BaseClient
-    def initialize(conn = nil)
+    def conn
       url = configatron.accession.url
-      # Make Faraday connection injectable for easier testing.
-      super(conn || Faraday.new(url:, headers:, proxy:))
+      @conn ||= Faraday.new(url:, headers:, proxy:)
     end
 
     # Post the submission to the appropriate accessioning service.
@@ -31,10 +30,10 @@ module HTTPClients
       payload = submission.payload.open
 
       # Clone the base connection and add basic auth for this request
-      conn = @conn.dup
-      conn.request :authorization, :basic, login[:username], login[:password]
+      conn_with_auth = conn.dup
+      conn_with_auth.request :authorization, :basic, login[:username], login[:password]
 
-      response = conn.post(nil, payload) # POST to the given API root with the payload as the body
+      response = conn_with_auth.post(nil, payload) # POST to the given API root with the payload as the body
       raise_if_failed(response)
       extract_accession_number(response.body)
     ensure
