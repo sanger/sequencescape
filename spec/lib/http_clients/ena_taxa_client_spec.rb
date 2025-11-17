@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe HTTPClients::ENATaxaClient do
+  let(:client) { described_class.new }
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:conn) do
     Faraday.new do |f|
@@ -10,11 +11,28 @@ RSpec.describe HTTPClients::ENATaxaClient do
       f.adapter :test, stubs
     end
   end
-  let(:client) { described_class.new(conn) }
+
+  describe '#conn' do
+    it 'returns a Faraday connection with the correct URL' do
+      expect(client.conn.url_prefix.to_s).to eq(configatron.ena_taxon_lookup_url)
+    end
+
+    it 'includes default headers' do
+      expect(client.conn.headers['User-Agent']).to eq('Sequencescape ENA Taxa Client')
+    end
+
+    it 'uses a proxy if configured' do
+      #  makes a call to BaseClient#proxy to check if a proxy is set
+      allow(client).to receive(:proxy).and_return('http://proxy.example.com')
+      client.conn # trigger the method
+      expect(client).to have_received(:proxy)
+    end
+  end
 
   describe '#taxon_from_text' do
     before do
       stubs.get("suggest-for-submission/#{suggestion}") { [200, {}, response_body] }
+      allow(client).to receive(:conn).and_return(conn)
     end
 
     context 'when results are found' do
@@ -64,6 +82,7 @@ RSpec.describe HTTPClients::ENATaxaClient do
 
     before do
       stubs.get("tax-id/#{taxon_id}") { [200, {}, response_body] }
+      allow(client).to receive(:conn).and_return(conn)
     end
 
     context 'with a full response' do
