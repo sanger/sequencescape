@@ -14,7 +14,7 @@
 
 class Accession::Status < ApplicationRecord
   belongs_to :sample, class_name: '::Sample'
-  belongs_to :status_group, class_name: 'Accession::StatusGroup'
+  belongs_to :status_group, class_name: 'Accession::StatusGroup', optional: true
 
   validates :status, presence: true, inclusion: { in: %w[queued processing failed aborted] }
 

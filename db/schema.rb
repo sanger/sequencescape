@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_30_152601) do
 
   create_table "accession_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
-    t.bigint "status_group_id", null: false
+    t.bigint "status_group_id"
     t.string "status", null: false
     t.text "message"
     t.datetime "created_at", null: false
