@@ -99,7 +99,9 @@ module HTTPClients
     def raise_if_failed(response)
       return unless receipt_failed?(response.body)
 
-      message = extract_error_messages(response.body) || 'Posting of accession submission failed'
+      status_message = response.reason_phrase || 'nil'
+      default_message = "Posting of accession submission failed, the response status was #{status_message.upcase}."
+      message = extract_error_messages(response.body) || default_message
       raise Accession::ExternalValidationError, message
     end
   end
