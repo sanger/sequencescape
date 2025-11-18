@@ -175,8 +175,8 @@ RSpec.describe StudiesController do
     before { post :accession_all_samples, params: { id: study.id } }
 
     context 'when the accessioning succeeds' do
-      it 'redirects to the study page' do
-        expect(subject).to redirect_to(study_path(study))
+      it 'redirects to the accession-statuses tab of the study page' do
+        expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
       end
 
       it 'does not set a flash error message' do
@@ -193,8 +193,8 @@ RSpec.describe StudiesController do
       # tags provided for managed study, when open study is expected
       let(:samples) { create_list(:sample_for_accessioning_with_managed_study, number_of_samples) }
 
-      it 'redirects to the study page' do
-        expect(subject).to redirect_to(study_path(study))
+      it 'redirects to the accession-statuses tab of the study page' do
+        expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
       end
 
       it 'does not set a flash notice message' do
