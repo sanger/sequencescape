@@ -44,6 +44,8 @@ class BioscanControlLocationsController < ApplicationController
     "for barcode '%<barcode>s'"
   MISSING_CONTROLS =
     "Missing positive or negative control for barcode '%<barcode>s'"
+  MISSING_PARAMS =
+    "POST request needs 'barcode', 'user' and 'robot' in body"
 
   # Expected plate purpose
   BIOSCAN_PLATE_PURPOSE = 'LBSN-96 Lysate'
@@ -52,10 +54,12 @@ class BioscanControlLocationsController < ApplicationController
   PCR_POSITIVE = 'pcr positive'
   PCR_NEGATIVE = 'pcr negative'
 
-  # Output JSON keys
-  JS_BARCODE = 'barcode' # => plate barcode
-  JS_POSITIVE_CONTROL = 'positive_control' # => well description
-  JS_NEGATIVE_CONTROL = 'negative_control' # => well description
+  # JSON keys
+  ROBOT = 'robot'
+  USER = 'user'
+  BARCODE = 'barcode' # => plate barcode
+  POSITIVE_CONTROL = 'positive_control' # => well description
+  NEGATIVE_CONTROL = 'negative_control' # => well description
 
   # Login is not required.
   before_action :login_required, except: %i[create]
@@ -73,6 +77,8 @@ class BioscanControlLocationsController < ApplicationController
   # or renders an error response if validation fails.
   # @return [void]
   def control_locations
+    return unless required_params?
+
     plate = find_plate(params[:barcode])
     return unless plate
 
@@ -95,9 +101,9 @@ class BioscanControlLocationsController < ApplicationController
     positive_location = control_info.key(PCR_POSITIVE)
     negative_location = control_info.key(PCR_NEGATIVE)
     locations = {
-      JS_BARCODE => barcode,
-      JS_POSITIVE_CONTROL => positive_location,
-      JS_NEGATIVE_CONTROL => negative_location
+      BARCODE => barcode,
+      POSITIVE_CONTROL => positive_location,
+      NEGATIVE_CONTROL => negative_location
     }
     render json: locations, status: :ok
   end
@@ -110,45 +116,51 @@ class BioscanControlLocationsController < ApplicationController
     render json: { errors: [message] }, status: status
   end
 
+  # Checks for required parameters and renders an error if any are missing.
+  # @return [Boolean] true if all required parameters are present, false if not
+  def required_params?
+    return true if [BARCODE, ROBOT, USER].all? { |key| params[key].present? }
+
+    render_error(MISSING_PARAMS, :bad_request)
+    false
+  end
+
   # Finds a plate by barcode and renders an error if not found.
   # @param barcode [String] the barcode of the plate to find
   # @return [Plate, nil] Plate if found, or nil if not (error rendered)
   def find_plate(barcode)
     plate = Plate.find_by_barcode(barcode)
-    if plate.blank?
-      message = format(NO_PLATE_DATA, barcode:)
-      render_error(message, :bad_request)
-      return nil
-    end
-    plate
+    return plate if plate.present?
+
+    message = format(NO_PLATE_DATA, barcode:)
+    render_error(message, :bad_request)
+    nil
   end
 
   # Checks plate purpose and renders error if invalid.
   # @param plate [Plate] the plate to check
   # @return [Boolean] true if valid, false if not (error rendered)
   def valid_plate_purpose?(plate)
-    if plate.purpose.name != BIOSCAN_PLATE_PURPOSE
-      message = format(
-        INCORRECT_PURPOSE,
-        purpose_name: plate.purpose.name,
-        barcode: plate.human_barcode
-      )
-      render_error(message, :bad_request)
-      return false
-    end
-    true
+    return true if plate.purpose.name == BIOSCAN_PLATE_PURPOSE
+
+    message = format(
+      INCORRECT_PURPOSE,
+      purpose_name: plate.purpose.name,
+      barcode: plate.human_barcode
+    )
+    render_error(message, :bad_request)
+    false
   end
 
   # Checks if plate has samples, renders error if not.
   # @param plate [Plate] the plate to check
   # @return [Boolean] true if has samples, false if not (error rendered)
   def plate_has_samples?(plate)
-    if plate.samples.empty?
-      message = format(NO_SAMPLES, barcode: plate.human_barcode)
-      render_error(message, :bad_request)
-      return false
-    end
-    true
+    return true if plate.samples.any?
+
+    message = format(NO_SAMPLES, barcode: plate.human_barcode)
+    render_error(message, :bad_request)
+    false
   end
 
   # Builds a hash of well descriptions to control types for the plate.
