@@ -1,0 +1,28 @@
+<%# See app/views/studies/information/_accession_statuses.html.erb %>
+
+<%= panel do %>
+  <h3>Accession Statuses <%= counter_badge @sample.accession_statuses.length %></h3>
+  <span>Accession number: <strong><%= @sample.ebi_accession_number || 'Not yet assigned' %></strong></span>
+  <% unless @sample.accession_statuses.empty? %>
+    <div style="max-height: 35vh; overflow-y: auto;">
+      <table class="table table-sm mt-2">
+        <thead>
+          <tr>
+            <th>Status</th>
+            <th>Result</th>
+            <th>Updated</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @sample.accession_statuses.order(updated_at: :desc).each do |accession_status| %>
+            <tr>
+              <td><%= accession_status&.status&.capitalize %></td>
+              <td><%= accession_status&.message %></td>
+              <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  <% end %>
+<% end %>
