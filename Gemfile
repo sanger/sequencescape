@@ -18,6 +18,7 @@ group :default do
   # Connections to external HTTP services
   # See lib/http_clients for examples of usage
   gem 'faraday'
+  gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)

@@ -9,12 +9,12 @@ RSpec.describe Accession::Submission, :accession, type: :model do
   let!(:sample) { build(:accession_sample) }
 
   context 'when validating' do
-    it 'is not valid without a user' do
-      expect(described_class.new(user, nil)).not_to be_valid
+    it 'is not valid without a contact user' do
+      expect(described_class.new(nil, sample)).not_to be_valid
     end
 
     it 'is not valid without an accession sample' do
-      expect(described_class.new(nil, sample)).not_to be_valid
+      expect(described_class.new(user, nil)).not_to be_valid
     end
 
     it 'is not valid unless sample is valid' do
@@ -48,15 +48,6 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     end
   end
 
-  describe '#payload' do
-    it 'creates a payload' do
-      payload = described_class.new(user, sample).payload
-      expect(payload.count).to eq(2)
-      expect(payload).to be_all { |_, file| File.file?(file) }
-      expect(payload).to be_all { |key, _| key.match(/\p{Lower}/).nil? }
-    end
-  end
-
   describe '#submit_and_update_accession_number' do
     let(:submission) { described_class.new(user, sample) }
 
@@ -68,7 +59,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     context 'when the submission is successful' do
       let(:accession_number) { 'EGA00001000240' }
       let(:mock_client) do
-        stub_accession_client(:submit_and_fetch_accession_number, submission, return_value: accession_number)
+        stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
       end
 
       before do
@@ -87,7 +78,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       let(:mock_client) { nil } # Client should not be called
 
       it 'raises an error with a message' do
-        error_message = "Accessionable submission is invalid: Contact user can't be blank, Sample can't be blank"
+        error_message = "Accessionable submission is invalid: Contact can't be blank, Sample can't be blank"
         expect { invalid_submission.submit_and_update_accession_number }.to raise_error(StandardError, error_message)
       end
 
@@ -103,7 +94,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
     context 'when the submission fails due to an accessioning error' do
       let(:mock_client) do
-        stub_accession_client(:submit_and_fetch_accession_number, submission,
+        stub_accession_client(:submit_and_fetch_accession_number,
                               raise_error: Accession::Error.new('Posting of accession submission failed'))
       end
 
@@ -116,6 +107,27 @@ RSpec.describe Accession::Submission, :accession, type: :model do
           submission.submit_and_update_accession_number
         end.to raise_error(Accession::Error, 'Posting of accession submission failed')
       end
+    end
+  end
+
+  describe '#compile_files' do
+    let(:submission) { described_class.new(user, sample) }
+    let(:files) { submission.compile_files }
+
+    it 'returns a hash of files' do
+      expect(files).to be_a(Hash)
+      expect(files.keys).to contain_exactly('SUBMISSION', 'SAMPLE')
+      expect(files.values).to all(be_a(Tempfile))
+    end
+
+    it 'has the submission file correctly reference the sample file' do
+      submission_file = files['SUBMISSION']
+      sample_file = files['SAMPLE']
+      # extract everything after the first underscore
+      remote_sample_filename = sample_file.path.split('_', 2).last
+
+      submission_content = File.read(submission_file.path)
+      expect(submission_content).to include("\"#{remote_sample_filename}\"") # quotes to avoid partial matches
     end
   end
 end
