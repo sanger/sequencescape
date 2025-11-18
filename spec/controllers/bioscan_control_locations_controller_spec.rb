@@ -65,6 +65,18 @@ RSpec.describe BioscanControlLocationsController, type: :controller do
       end
     end
 
+    context 'when required params are missing' do
+      let(:expected) do
+        { 'errors' => [described_class::MISSING_PARAMS] }
+      end
+
+      it 'returns error' do # rubocop:disable RSpec/MultipleExpectations
+        post :create, params: { barcode:, user: } # missing robot
+        expect(response).to have_http_status(:bad_request)
+        expect(response.parsed_body).to eq(expected)
+      end
+    end
+
     context 'when plate is missing' do
       let(:barcode) { 'NO_PLATE_DATA' }
       let(:expected) do
