@@ -63,15 +63,16 @@ RSpec.describe Accession::Status, type: :model do
     let(:status) { described_class.create_for_sample(sample, status_group) }
 
     before do
-      status.mark_aborted('Accessioning was aborted')
+      status.mark_failed('Previous error message')
+      status.mark_aborted()
     end
 
     it 'updates the status to aborted' do
       expect(status.status).to eq('aborted')
     end
 
-    it 'sets the aborted message' do
-      expect(status.message).to eq('Accessioning was aborted')
+    it 'leaves the previous message as it was' do
+      expect(status.message).to eq('Previous error message')
     end
   end
 end
