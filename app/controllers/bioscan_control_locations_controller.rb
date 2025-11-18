@@ -92,12 +92,12 @@ class BioscanControlLocationsController < ApplicationController
   # @param barcode [String] the plate barcode
   # @return [void]
   def render_locations(control_info, barcode)
-    positive_control = control_info.find { |_, v| v == PCR_POSITIVE }
-    negative_control = control_info.find { |_, v| v == PCR_NEGATIVE }
+    positive_location = control_info.key(PCR_POSITIVE)
+    negative_location = control_info.key(PCR_NEGATIVE)
     locations = {
-      JS_BARCODE: barcode,
-      JS_POSITIVE_CONTROL: positive_control.first,
-      JS_NEGATIVE_CONTROL: negative_control.first
+      JS_BARCODE => barcode,
+      JS_POSITIVE_CONTROL => positive_location,
+      JS_NEGATIVE_CONTROL => negative_location
     }
     render json: locations, status: :ok
   end
@@ -117,7 +117,8 @@ class BioscanControlLocationsController < ApplicationController
     plate = Plate.find_by_barcode(barcode)
     if plate.blank?
       message = format(NO_PLATE_DATA, barcode:)
-      return render_error(message, :bad_request)
+      render_error(message, :bad_request)
+      return nil
     end
     plate
   end
@@ -157,8 +158,8 @@ class BioscanControlLocationsController < ApplicationController
     plate.wells.each_with_object({}) do |well, hash|
       aliquot = well.aliquots.find { |a| a.sample.present? }
       if aliquot &&
-          [PCR_POSITIVE, PCR_NEGATIVE].include?(aliquot.sample.name.downcase)
-        hash[well.map_description] = aliquot.sample.name.downcase
+          [PCR_POSITIVE, PCR_NEGATIVE].include?(aliquot.sample.control_type)
+        hash[well.map_description] = aliquot.sample.control_type
       end
     end
   end
