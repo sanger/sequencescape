@@ -647,4 +647,8 @@ Rails.application.routes.draw do
   end
 
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
+
+  # Custom standalone route for bioscan control locations, allowing only
+  # the POST request, migrated from the Lighthouse pickings endpoint.
+  post 'bioscan_control_locations', to: 'bioscan_control_locations#create'
 end
