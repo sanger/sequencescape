@@ -32,11 +32,11 @@ module HTTPClients
       # Clone the base connection and add basic auth for this request
       conn_with_auth = conn.dup
       # TODO: confirm that the authorization is correct
-      conn_with_auth.request :authorization, :basic, login[:username], login[:password]
+      conn_with_auth.request :authorization, :basic, login[:user], login[:password]
 
       # TODO: confirm that this is the correct endpoint, it should hit accession_service/
       payload = build_payload(files)
-      response = conn_with_auth.post('/', payload) # POST to the given API root with the payload as the body
+      response = conn_with_auth.post('', payload) # POST to the given API root with the payload as the body
       raise_if_failed(response)
       extract_accession_number(response.body)
     end
