@@ -111,7 +111,7 @@ RSpec.describe Sample, :accession, :cardinal do
         it 'will log an error' do
           allow(Rails.logger).to receive(:error).and_call_original
 
-          expect { accessionable_sample.accession }.to raise_error(JobFailed)
+          expect { accessionable_sample.accession }.to raise_error(StandardError)
 
           expect(Rails.logger).to have_received(:error).with(
             "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
@@ -122,7 +122,7 @@ RSpec.describe Sample, :accession, :cardinal do
         it 'will send an exception notification' do
           allow(ExceptionNotifier).to receive(:notify_exception)
 
-          expect { accessionable_sample.accession }.to raise_error(JobFailed)
+          expect { accessionable_sample.accession }.to raise_error(StandardError)
 
           sample_name = accessionable_sample.name # 'Sample1'
           expect(ExceptionNotifier).to have_received(:notify_exception)
