@@ -32,15 +32,16 @@ module HTTPClients
     # @return [Hash, nil] A hash with 'taxId', 'scientificName', and 'commonName' if found, or nil if not found.
     def taxon_from_text(suggestion)
       suggestion = ERB::Util.url_encode(suggestion)
-      response = conn.get("suggest-for-submission/#{suggestion}")
+      response = conn.get("any-name/#{suggestion}")
       first_taxon = response.body.first
       return unless first_taxon
 
-      # extract taxId, scientificName, commonName from first_taxon and return as a hash
+      # extract relevant fields and return as a hash
       {
         'taxId' => first_taxon['taxId'],
         'scientificName' => first_taxon['scientificName'],
-        'commonName' => first_taxon['commonName']
+        'commonName' => first_taxon['commonName'],
+        'submittable' => first_taxon['submittable']
       }
     end
 

@@ -35,7 +35,8 @@ function fetchTaxonByName(name) {
   // {
   // "taxId": "9606",
   // "scientificName": "Homo sapiens",
-  // "commonName": "human"
+  // "commonName": "human",
+  // "submittable": "true"
   // }
   return fetch(`/taxa?term=${encodeURIComponent(name)}`, {
     headers: { Accept: "application/json" },
@@ -49,22 +50,31 @@ function validateOrganism(commonNameField, taxonIdField) {
   if (!inputName) return;
 
   fetchTaxonByName(inputName).then(function (taxon) {
-    // Check that response contains the expected fields
-    if (!taxon || !taxon.taxId || !taxon.scientificName) {
+    // Handle not found (404 or no result)
+    if (!taxon || !taxon.taxId || !taxon.scientificName || !taxon.submittable) {
       highlightField(commonNameField, "failure");
       highlightField(taxonIdField, "failure");
+      taxonIdField.value = "<not found>";
+      taxonIdField.setCustomValidity("This organism cannot be found.");
       return;
     }
-    // If the common name field is not equal to the found scientific name, set the value to the found scientific name
-    if (commonNameField.value !== taxon.scientificName) {
-      // Yes the field is called common name, yes this is confusing, no I have no idea why we do it this way...
-      commonNameField.value = taxon.scientificName;
-      highlightField(commonNameField, "success");
-    }
-    // If the given taxon id is not equal to the found taxon id, set the value to the found taxon id
-    if (taxonIdField.value !== taxon.taxId) {
-      taxonIdField.value = taxon.taxId;
-      highlightField(taxonIdField, "success");
+
+    // Set the name and taxon id fields to the returned values
+    commonNameField.value = taxon.scientificName; // yes the field is called common name, yes this is confusing, no I have no idea why we do it this way...
+    taxonIdField.value = taxon.taxId;
+
+    // Highlight the fields, indicating if they are submittable
+    const submittable = taxon.submittable == "true" ? "success" : "failure";
+    highlightField(commonNameField, submittable);
+    highlightField(taxonIdField, submittable);
+
+    // If the taxon is not submittable, prevent form submission by setting custom validity
+    if (taxon.submittable != "true") {
+      commonNameField.setCustomValidity("This organism is not submittable.");
+      taxonIdField.setCustomValidity("This organism is not submittable.");
+    } else {
+      commonNameField.setCustomValidity("");
+      taxonIdField.setCustomValidity("");
     }
   });
 }

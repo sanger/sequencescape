@@ -31,38 +31,70 @@ RSpec.describe HTTPClients::ENATaxaClient do
 
   describe '#taxon_from_text' do
     before do
-      stubs.get("suggest-for-submission/#{suggestion}") { [200, {}, response_body] }
+      stubs.get("any-name/#{suggestion}") { [200, {}, response_body] }
       allow(client).to receive(:conn).and_return(test_conn)
     end
 
-    context 'when results are found' do
+    context 'when species-level results are found' do
       let(:suggestion) { 'human' }
       let(:response_body) do
         [{
           'taxId' => '9606',
           'scientificName' => 'Homo sapiens',
           'commonName' => 'human',
+          'formalName' => 'true',
+          'rank' => 'species',
+          'division' => 'HUM',
+          'lineage' => 'Eukaryota; Metazoa; Chordata; ...; Catarrhini; Hominidae; Homo; ',
+          'geneticCode' => '1',
+          'mitochondrialGeneticCode' => '2',
+          'submittable' => 'true',
           'binomial' => 'true',
           'otherNames' => ['Homo sapiens Linnaeus, 1758:authority', 'human:genbank common name'],
-          'metagenome' => 'false'
-        }, {
-          'taxId' => '646099',
-          'scientificName' => 'human metagenome',
-          'binomial' => 'true',
-          'otherNames' => ['human microbiota:includes', 'human metabiome:synonym', 'human microbiome:synonym'],
-          'metagenome' => 'true'
-        }, {
-          'taxId' => '557562',
-          'scientificName' => 'Human bocavirus human/2/2008/HUN',
-          'binomial' => 'true',
-          'otherNames' => ['Human bocavirus HuBoV/human/2/2008/HUN:equivalent name'],
           'metagenome' => 'false'
         }]
       end
 
-      it 'returns the taxId, scientificName, and commonName of the first taxon' do
+      it 'returns the relevant details from the first taxon' do
         expect(client.taxon_from_text(suggestion)).to eq(
-          { 'commonName' => 'human', 'scientificName' => 'Homo sapiens', 'taxId' => '9606' }
+          {
+            'commonName' => 'human',
+            'scientificName' => 'Homo sapiens',
+            'taxId' => '9606',
+            'submittable' => 'true'
+          }
+        )
+      end
+    end
+
+    context 'when species-level results are not found' do
+      let(:suggestion) { 'hominidae' }
+      let(:response_body) do
+        [{
+          'taxId' => '9604',
+          'scientificName' => 'Hominidae',
+          'formalName' => 'false',
+          'rank' => 'family',
+          'division' => 'MAM',
+          'lineage' => 'Eukaryota; Metazoa; ...; Primates; Haplorrhini; Catarrhini; ',
+          'geneticCode' => '1',
+          'mitochondrialGeneticCode' => '2',
+          'submittable' => 'false',
+          'binomial' => 'false',
+          'authority' => 'Gray, 1825',
+          'otherNames' => ['Hominidae Gray, 1825:authority', 'Pongidae:synonym', 'great apes:genbank common name'],
+          'metagenome' => 'false'
+        }]
+      end
+
+      it 'returns the relevant details from the first taxon' do
+        expect(client.taxon_from_text(suggestion)).to eq(
+          {
+            'commonName' => nil,
+            'scientificName' => 'Hominidae',
+            'taxId' => '9604',
+            'submittable' => 'false'
+          }
         )
       end
     end
