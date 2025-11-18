@@ -620,9 +620,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def enqueue_accessioning_job!(accessionable, accession_status_group)
-    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
-
-    create_accession_status(accessionable.sample, accession_status_group)
+    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, accession_status_group), priority: 200)
     log_job_status(job)
   rescue StandardError => e
     ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
@@ -636,10 +634,5 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     else
       Rails.logger.warn('Accessioning job enqueue returned nil.')
     end
-  end
-
-  # Creates a new accession status for the sample
-  def create_accession_status(sample, accession_status_group)
-    Accession::Status.create_for_sample(sample, accession_status_group)
   end
 end

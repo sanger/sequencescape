@@ -22,6 +22,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
   describe '#perform' do
     before do
+      # An accession status is created when the job is queued
       allow(described_class).to receive(:contact_user).and_return(contact_user)
     end
 
@@ -29,7 +30,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
 
       before do
-        # Create a submission that is invalid by not setting the user
         expect { job.perform }.to raise_error(JobFailed)
       end
 

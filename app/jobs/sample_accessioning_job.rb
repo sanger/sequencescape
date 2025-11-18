@@ -10,7 +10,7 @@ JobFailed = Class.new(StandardError) unless defined?(JobFailed)
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable) do
+  Struct.new(:accessionable, :accession_status_group) do
     # Retrieve the contact user for accessioning submissions
     def self.contact_user
       User.find_by(api_key: configatron.accession_local_key)
@@ -40,6 +40,14 @@ SampleAccessioningJob =
       'sample_accessioning'
     end
 
+    # Delayed::Job lifecycle hooks
+    # See https://github.com/collectiveidea/delayed_job?tab=readme-ov-file#hooks
+
+    # Called when the job is initially enqueued
+    def enqueue(_job)
+      create_accession_status
+    end
+
     # Called before the job is run
     def before(_job)
       progress_accession_status
@@ -56,6 +64,11 @@ SampleAccessioningJob =
     end
 
     private
+
+    # Creates a new accession status for the sample for users to see in the UI
+    def create_accession_status
+      Accession::Status.create_for_sample(accessionable.sample, accession_status_group)
+    end
 
     # Update the accessionable status to be in progress for users to see in the UI
     def progress_accession_status
