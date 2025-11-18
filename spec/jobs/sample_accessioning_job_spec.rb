@@ -29,7 +29,6 @@ RSpec.describe SampleAccessioningJob, type: :job do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
 
       before do
-        # Create a submission that is invalid by not setting the user
         job.perform
       end
 
