@@ -64,7 +64,7 @@ RSpec.describe Accession::Status, type: :model do
 
     before do
       status.mark_failed('Previous error message')
-      status.mark_aborted()
+      status.mark_aborted
     end
 
     it 'updates the status to aborted' do
