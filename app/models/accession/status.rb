@@ -26,9 +26,14 @@ class Accession::Status < ApplicationRecord
     )
   end
 
-  def self.latest_for_sample!(sample)
-    # raises ActiveRecord::RecordNotFound if not found
-    where(sample:).order(created_at: :desc).first!
+  # Returns the most recent Accession::Status record for the given sample, or creates one if none exists.
+  #
+  # @param sample [Sample] The sample for which to find or create the latest status.
+  # @return [Accession::Status] The latest status record for the sample.
+  #
+  # If no status exists for the sample, a new one is created with default attributes.
+  def self.find_latest_or_create_for_sample(sample)
+    where(sample:).order(created_at: :desc).first_or_create
   end
 
   def mark_in_progress

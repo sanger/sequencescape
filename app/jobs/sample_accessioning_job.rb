@@ -73,29 +73,35 @@ SampleAccessioningJob =
     # Update the accessionable status to be in progress for users to see in the UI
     def progress_accession_status
       # Finds the most recent accession status by sample id, and marks it as in progress
-      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
+      accession_status = Accession::Status.find_latest_or_create_for_sample(accessionable.sample)
       accession_status.mark_in_progress
     end
 
     # Finds the most recent accession status and removes it
     def succeed_accession_status
-      # Finds the most recent accession status by sample id, removes it
-      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
-      accession_status.destroy
+      # Wrap in a transaction to prevent race conditions
+      Accession::Status.transaction do
+        accession_status = Accession::Status.find_latest_or_create_for_sample(accessionable.sample)
+        accession_status.destroy
+      end
     end
 
     # Update the accessionable status to failed for users to see in the UI
     def fail_accession_status(message)
-      # Finds the most recent accession status by sample id, and marks it as failed
-      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
-      accession_status.mark_failed(message)
+      # Wrap in a transaction to prevent race conditions
+      Accession::Status.transaction do
+        accession_status = Accession::Status.find_latest_or_create_for_sample(accessionable.sample)
+        accession_status.mark_failed(message)
+      end
     end
 
     # Update the accessionable status to aborted for users to see in the UI
     def abort_accession_status
-      # Finds the most recent accession status by sample id, and marks it as aborted
-      accession_status = Accession::Status.latest_for_sample!(accessionable.sample)
-      accession_status.mark_aborted
+      # Wrap in a transaction to prevent race conditions
+      Accession::Status.transaction do
+        accession_status = Accession::Status.find_latest_or_create_for_sample(accessionable.sample)
+        accession_status.mark_aborted
+      end
     end
 
     # Returns a user-friendly error message based on the error type
