@@ -102,7 +102,7 @@ module SampleManifestExcel
       end
 
       def trigger_accessioning
-        accession_status_group = Accession::StatusGroup.new(accession_group: self)
+        accession_status_group = Accession::StatusGroup.new(accession_group: nil)
         changed_samples.each { |sample| sample.accession(accession_status_group) }
       rescue AccessionService::AccessioningDisabledError, AccessionService::AccessionValidationFailed => e
         Rails.logger.warn "#{e.message} Skipping accessioning for changed samples."
