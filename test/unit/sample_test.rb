@@ -9,7 +9,7 @@ class SampleTest < ActiveSupport::TestCase
         ega: AccessionService::EGAService,
         ena: AccessionService::ENAService,
         none: AccessionService::NoService,
-        unsuitable: AccessionService::NoService
+        unsuitable: AccessionService::UnsuitableService
       }[
         type
       ]
