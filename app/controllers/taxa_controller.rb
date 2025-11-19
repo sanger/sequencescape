@@ -4,7 +4,7 @@ class TaxaController < ApplicationController
   skip_before_action :login_required # there's no sensitive information here
 
   def index
-    return render plain: 'Missing required parameter: term', status: :bad_request if params[:term].blank?
+    params.require(:term)
 
     # Lookup by term and render results
     term = params[:term].to_s.strip
@@ -13,7 +13,10 @@ class TaxaController < ApplicationController
     return head :not_found if taxon.nil?
 
     render json: taxon
-  rescue Faraday::Error
+  rescue ActionController::ParameterMissing
+    render plain: 'Missing required parameter: term', status: :bad_request
+  rescue Faraday::Error => e
+    Rails.logger.error("Client error in Taxa Controller: #{e.class} - #{e.message}")
     head :bad_gateway
   end
 
@@ -25,7 +28,8 @@ class TaxaController < ApplicationController
     return head :not_found if taxon['taxId'].nil?
 
     render json: taxon
-  rescue Faraday::Error
+  rescue Faraday::Error => e
+    Rails.logger.error("Client error in Taxa Controller: #{e.class} - #{e.message}")
     head :bad_gateway
   end
 
