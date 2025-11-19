@@ -26,7 +26,14 @@
         <% accession_status = sample.current_accession_status %>
         <tr>
           <td><%= link_to(sample.name, sample) %></td>
-          <td><%= sample.ebi_accession_number || accession_status&.message %></td>
+          <td>
+              <% if sample.accession_number? %>
+                <% catalogue_url = configatron.accession.view_url + sample.ebi_accession_number %>
+                <%= link_to sample.ebi_accession_number, url_for(catalogue_url), target: :blank %>
+              <% else %>
+                <%= accession_status&.message %>
+              <% end %>
+          </td>
           <td><%= accession_status&.status&.capitalize %></td>
           <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
           <td>
