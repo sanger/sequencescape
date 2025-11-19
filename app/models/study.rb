@@ -556,9 +556,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def accession_all_samples
-    accession_status_group = Accession::StatusGroup.new(accession_group: self)
     samples.find_each do |sample|
-      sample.accession(accession_status_group) if accession_number?
+      sample.accession if accession_number?
     rescue AccessionService::AccessionServiceError => e
       errors.add(:base, e.message)
     end

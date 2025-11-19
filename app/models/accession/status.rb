@@ -5,7 +5,6 @@
 #
 # Associations:
 #  belongs_to :sample - The sample being accessioned
-#  belongs_to :status_group - The group of accessioning requests this status belongs to
 #
 # Attributes:
 #  sample_id: integer - The ID of the sample being accessioned
@@ -14,16 +13,11 @@
 
 class Accession::Status < ApplicationRecord
   belongs_to :sample, class_name: '::Sample'
-  belongs_to :status_group, class_name: 'Accession::StatusGroup', optional: true
 
   validates :status, presence: true, inclusion: { in: %w[queued processing failed aborted] }
 
-  def self.create_for_sample(sample, status_group)
-    create!(
-      sample: sample,
-      status_group: status_group,
-      status: 'queued'
-    )
+  def self.create_for_sample(sample)
+    create!(sample: sample, status: 'queued')
   end
 
   # Returns the most recent Accession::Status record for the given sample, or creates one if none exists.

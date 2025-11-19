@@ -11,23 +11,13 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.1].define(version: 2025_10_30_152601) do
-  create_table "accession_status_groups", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
-    t.string "accession_group_type"
-    t.bigint "accession_group_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["accession_group_type", "accession_group_id"], name: "index_accession_status_groups_on_group_type_and_group_id"
-  end
-
   create_table "accession_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
-    t.bigint "status_group_id"
     t.string "status", null: false
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["sample_id"], name: "index_accession_statuses_on_sample_id"
-    t.index ["status_group_id"], name: "index_accession_statuses_on_status_group_id"
   end
 
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -1993,7 +1983,6 @@ ActiveRecord::Schema[7.1].define(version: 2025_10_30_152601) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
-  add_foreign_key "accession_statuses", "accession_status_groups", column: "status_group_id"
   add_foreign_key "accession_statuses", "samples"
   add_foreign_key "aliquot_indices", "aliquots", name: "fk_aliquot_indices_to_aliquots"
   add_foreign_key "aliquot_indices", "receptacles", column: "lane_id"

@@ -509,7 +509,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     UnsuitableAccessionService.new(services[highest_priority])
   end
 
-  def accession(accession_status_group = nil)
+  def accession
     # Check if study is present and allowed to be accessioned
     return unless ena_study&.accession_required?
 
@@ -520,7 +520,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     accessionable = build_accessionable
     validate_accessionable!(accessionable)
-    enqueue_accessioning_job!(accessionable, accession_status_group)
+    enqueue_accessioning_job!(accessionable)
   end
 
   def accession_and_handle_validation_errors
@@ -619,8 +619,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     raise AccessionService::AccessionValidationFailed, error_message
   end
 
-  def enqueue_accessioning_job!(accessionable, accession_status_group)
-    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, accession_status_group), priority: 200)
+  def enqueue_accessioning_job!(accessionable)
+    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
     log_job_status(job)
   rescue StandardError => e
     ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
