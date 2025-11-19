@@ -123,5 +123,31 @@ RSpec.describe SamplesController do
         expect(flash[:error]).to eq('Accessioning Service Failed: Accessioning is not enabled in this environment.')
       end
     end
+
+    context 'when accessioning is enabled', :accessioning_enabled do
+      let(:sample) { create(:sample, studies: [create(:open_study, accession_number: 'ENA123')]) }
+
+      context 'when the sample fails validation for accessioning' do
+        before do
+          allow(sample).to receive(:validate_ena_required_fields!).and_raise(
+            ActiveRecord::RecordInvalid, 'Sample is missing required metadata.'
+          )
+
+          get :accession,
+              params: { id: sample.id },
+              session: { user: current_user.id }
+        end
+
+        it 'redirects to the sample edit page' do
+          expect(response).to redirect_to(edit_sample_path(sample.id))
+        end
+
+        it 'displays an error message indicating the validation failure' do
+          expect(flash[:error]).to eq('Please fill in the required fields: ' \
+                                      'Sample metadata sample taxon is required, ' \
+                                      'Sample metadata sample common name is required')
+        end
+      end
+    end
   end
 end
