@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ENAAccessionService < AccessionService
+class AccessionService::ENAService < AccessionService::BaseService
   self.priority = 1
   self.operational = true
 
