@@ -205,11 +205,11 @@ RSpec.describe StudiesController do
         expect(flash[:error]).to eq(
           [
             'The samples in this study could not be accessioned, please check the following errors:',
-            "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
-            "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
-            "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
-            "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
-            "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies."
+            "Sample 'Sample1' cannot be accessioned: Sample has no appropriate studies.",
+            "Sample 'Sample2' cannot be accessioned: Sample has no appropriate studies.",
+            "Sample 'Sample3' cannot be accessioned: Sample has no appropriate studies.",
+            "Sample 'Sample4' cannot be accessioned: Sample has no appropriate studies.",
+            "Sample 'Sample5' cannot be accessioned: Sample has no appropriate studies."
           ]
         )
       end
@@ -225,12 +225,12 @@ RSpec.describe StudiesController do
           expect(flash[:error]).to eq(
             [
               'The samples in this study could not be accessioned, please check the following errors:',
-              "Accessionable is invalid for sample 'Sample1': Sample has no appropriate studies.",
-              "Accessionable is invalid for sample 'Sample2': Sample has no appropriate studies.",
-              "Accessionable is invalid for sample 'Sample3': Sample has no appropriate studies.",
-              "Accessionable is invalid for sample 'Sample4': Sample has no appropriate studies.",
-              "Accessionable is invalid for sample 'Sample5': Sample has no appropriate studies.",
-              "Accessionable is invalid for sample 'Sample6': Sample has no appropriate studies.",
+              "Sample 'Sample1' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample2' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample3' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample4' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample5' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample6' cannot be accessioned: Sample has no appropriate studies.",
               '...',
               'Only the first 6 of 10 errors are shown.'
             ]

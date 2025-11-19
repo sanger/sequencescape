@@ -62,7 +62,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
         expect { unaccessionable_sample.accession }.to raise_error(AccessionService::AccessionServiceError) do |error|
           expect(error.message).to eq(
-            "Accessionable is invalid for sample '#{sample_name}': " \
+            "Sample '#{sample_name}' cannot be accessioned: " \
             'Sample does not have the required metadata: sample-taxon-id.'
           )
         end
