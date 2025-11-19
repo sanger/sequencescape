@@ -189,6 +189,17 @@ RSpec.describe Sample, :accession, :cardinal do
     end
   end
 
+  describe '#current_accession_status' do
+    let(:sample) { create(:sample) }
+    let!(:older_status) { create(:accession_status, sample: sample, created_at: 2.days.ago) }
+    let!(:newer_status) { create(:accession_status, sample: sample, created_at: 1.day.ago) }
+    let!(:newest_status) { create(:accession_status, sample: sample, created_at: 1.minute.ago) }
+
+    it 'returns the most recent accession status for the sample' do
+      expect(sample.current_accession_status).to eq(newest_status)
+    end
+  end
+
   describe '#control_formatted' do
     it 'is nil when control is nil' do
       sample = create(:sample, control: nil)
