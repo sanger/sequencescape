@@ -16,7 +16,7 @@ class TaxaController < ApplicationController
   rescue ActionController::ParameterMissing
     render plain: 'Missing required parameter: term', status: :bad_request
   rescue Faraday::Error => e
-    Rails.logger.error("Client error in Taxa Controller: #{e.class} - #{e.message}")
+    log_faraday_error(e)
     head :bad_gateway
   end
 
@@ -29,7 +29,7 @@ class TaxaController < ApplicationController
 
     render json: taxon
   rescue Faraday::Error => e
-    Rails.logger.error("Client error in Taxa Controller: #{e.class} - #{e.message}")
+    log_faraday_error(e)
     head :bad_gateway
   end
 
@@ -37,5 +37,9 @@ class TaxaController < ApplicationController
 
   def client
     @client ||= HTTPClients::ENATaxaClient.new
+  end
+
+  def log_faraday_error(error)
+    Rails.logger.error("Client error in Taxa Controller: #{error.class} - #{error.message}")
   end
 end
