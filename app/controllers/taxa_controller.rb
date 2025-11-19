@@ -7,7 +7,7 @@ class TaxaController < ApplicationController
     return render plain: 'Missing required parameter: term', status: :bad_request if params[:term].blank?
 
     # Lookup by term and render results
-    term = params[:term]
+    term = params[:term].to_s.strip
     taxon = client.taxon_from_text(term)
 
     return head :not_found if taxon.nil?

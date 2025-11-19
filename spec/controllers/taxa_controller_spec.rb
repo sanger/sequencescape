@@ -44,6 +44,14 @@ RSpec.describe TaxaController, type: :controller do
       end
     end
 
+    context 'when there is whitespace around the search term' do
+      let(:term) { '    human    ' }
+
+      it 'removes the whitespace before querying the server' do
+        expect(taxa_client).to have_received(:taxon_from_text).with('human')
+      end
+    end
+
     context 'with a term that does not exist' do
       let(:taxon_from_text) { nil }
       let(:term) { 'nonexistent_organism' }
