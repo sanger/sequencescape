@@ -6,10 +6,6 @@ class AccessionService::BaseService
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
 
-  CENTER_NAME = 'SC' # TODO: [xxx] use confing file
-  PROTECT = 'protect'
-  HOLD = 'hold'
-
   def provider
   end
 

@@ -31,4 +31,8 @@ module AccessionService
   AccessionValidationFailed = Class.new(AccessionServiceError)
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)
+
+  CENTER_NAME = 'SC' # TODO: [xxx] use confing file
+  PROTECT = 'protect'
+  HOLD = 'hold'
 end
