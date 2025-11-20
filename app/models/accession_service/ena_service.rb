@@ -38,10 +38,10 @@ class AccessionService::ENAService < AccessionService::BaseService
   end
 
   def submit_policy_for_user(_user, _study)
-    raise NumberNotGenerated, 'no need to submit Policy to ERA'
+    raise AccessionService::NumberNotGenerated, 'no need to submit Policy to ERA'
   end
 
   def submit_dac_for_user(_user, _study)
-    raise NumberNotGenerated, 'no need to submit DAC  to ERA'
+    raise AccessionService::NumberNotGenerated, 'no need to submit DAC  to ERA'
   end
 end

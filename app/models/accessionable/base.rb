@@ -49,14 +49,14 @@ class Accessionable::Base
   end
 
   def update_accession_number!(_user, _accession_number)
-    raise NotImplementedError, 'abstract method'
+    raise AccessionService::NotImplementedError, 'abstract method'
   end
 
   def update_array_express_accession_number!(accession_number)
   end
 
   def accessionable_id
-    raise NotImplementError, 'abstract method'
+    raise AccessionService::NotImplementError, 'abstract method'
   end
 
   def released?
@@ -123,7 +123,7 @@ class Accessionable::Base
       end
 
       def incorrect_format_value
-        NOT_PROVIDED
+        AccessionService::NOT_PROVIDED
       end
     end
 

@@ -35,7 +35,7 @@ class AccessionService::BaseService
 
       errors = submission.all_accessionables.map(&:errors).flatten
 
-      raise AccessionServiceError, errors.join("\n") unless errors.empty?
+      raise AccessionService::AccessionServiceError, errors.join("\n") unless errors.empty?
 
       files = [] # maybe not necessary, but just to be sure that the tempfile still exists when they are sent
       begin
@@ -54,7 +54,8 @@ class AccessionService::BaseService
           )
         Rails.logger.debug { xml_result }
         if xml_result.match?(/(Server error|Auth required|Login failed)/)
-          raise AccessionServiceError, "EBI Server Error. Could not get accession number: #{xml_result}"
+          raise AccessionService::AccessionServiceError,
+                "EBI Server Error. Could not get accession number: #{xml_result}"
         end
 
         xmldoc = Document.new(xml_result)
@@ -82,17 +83,18 @@ class AccessionService::BaseService
               acc.update_array_express_accession_number!(ae_an) if ae_an
             end
 
-          raise AccessionServiceError::NumberNotGenerated, 'Service gave no numbers back' unless number_generated
+          raise AccessionService::NumberNotGenerated, 'Service gave no numbers back' unless number_generated
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
           current_error = errors.first
           message = "Current error is: '#{current_error}'"
           more_messages = "There are #{errors.length - 1} more errors." if errors.many?
-          raise AccessionServiceError,
+          raise AccessionService::AccessionServiceError,
                 ['Could not get accession number. Error in submitted data:', $!.to_s, message,
                  more_messages].compact.join(' ')
         else
-          raise AccessionServiceError, "Could not get accession number. Error in submitted data: #{$!}"
+          raise AccessionService::AccessionServiceError,
+                "Could not get accession number. Error in submitted data: #{$!}"
         end
       ensure
         files.each(&:close) # not really necessary but recommended
@@ -111,7 +113,7 @@ class AccessionService::BaseService
 
   def submit_study_for_user(study, user)
     unless study.accession_required?
-      raise AccessionServiceError::NumberNotRequired,
+      raise AccessionService::NumberNotRequired,
             'An accession number is not required for this study'
     end
 
@@ -132,7 +134,7 @@ class AccessionService::BaseService
   end
 
   def submit_dac_for_user(_study, _user)
-    raise AccessionServiceError::NumberNotRequired, 'No need to'
+    raise AccessionService::NumberNotRequired, 'No need to'
   end
 
   def accession_study_xml(study)
@@ -244,11 +246,12 @@ class AccessionService::BaseService
     when (400...600)
       Rails.logger.warn($!)
       $! = nil
-      raise AccessionServiceError
+      raise AccessionService::AccessionServiceError
     else
       ''
     end
   rescue StandardError => e
-    raise AccessionServiceError, "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
+    raise AccessionService::AccessionServiceError,
+          "Could not get accession number. EBI may be down or invalid data submitted: #{$!}"
   end
 end
