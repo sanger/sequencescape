@@ -3,17 +3,16 @@
 require 'test_helper'
 
 class SampleTest < ActiveSupport::TestCase
-  def assert_accession_service(type)
-    service =
-      {
-        ega: AccessionService::EGAService,
-        ena: AccessionService::ENAService,
-        none: AccessionService::NoService,
-        unsuitable: AccessionService::UnsuitableService
-      }[
-        type
-      ]
-    assert @sample.accession_service.is_a?(service), "Sent to #{@sample.accession_service.provider} not #{type}"
+  def assert_accession_service(expected_service_type)
+    service_class = {
+      ega: AccessionService::EGAService,
+      ena: AccessionService::ENAService,
+      none: AccessionService::NoService,
+      unsuitable: AccessionService::UnsuitableService
+    }[expected_service_type]
+
+    accession_service = AccessionService.select_for_sample(@sample)
+    assert accession_service.is_a?(service_class), "Sent to #{accession_service.provider} not #{expected_service_type}"
   end
 
   context 'A Sample' do

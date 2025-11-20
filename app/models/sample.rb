@@ -500,18 +500,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
-  # Return the highest priority accession service
-  def accession_service
-    services = studies.group_by { |s| s.accession_service.priority }
-    return AccessionService::UnsuitableService.new([]) if services.empty?
-
-    highest_priority = services.keys.max
-    suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
-    return suitable_study.accession_service if suitable_study
-
-    AccessionService::UnsuitableService.new(services[highest_priority])
-  end
-
   def accession
     # Check if study is present and allowed to be accessioned
     return unless ena_study&.accession_required?
@@ -543,6 +531,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_ena_required_fields!
+    accession_service = AccessionService.select_for_sample(self)
     (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?

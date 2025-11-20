@@ -53,6 +53,7 @@ module Metadata
       end
 
       def tags
+        accession_service = AccessionService.select_for_sample(self)
         self.class.tags.select{|tag| tag.for?(accession_service.provider)}
       end
 

@@ -45,7 +45,8 @@ module Accessionable
 
       # TODO: maybe unify this with the previous loop
       # Don't send managed AE data to SRA
-      unless sample.accession_service.private?
+      accession_service = AccessionService.select_for_sample(sample)
+      unless accession_service.private?
         ARRAY_EXPRESS_FIELDS.each do |datum|
           value = sample.sample_metadata.send(datum)
           next if value.blank?
