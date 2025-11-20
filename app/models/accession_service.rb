@@ -4,7 +4,7 @@ require 'rexml/document'
 
 # The EBI operates two key AccessionServices
 #
-# {EnaAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
+# {ENAAccessionService ENA}: Mostly non-human data, provides open access to uploaded data
 # {EgaAccessionService EGA}: Mostly for human data, provides managed access to uploaded data
 #
 # We also submit information to ArrayExpress, but this happens indirectly via the accession services above.

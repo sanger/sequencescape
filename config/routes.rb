@@ -149,6 +149,8 @@ Rails.application.routes.draw do
     collection { get :search }
   end
 
+  resources :taxa, only: %i[index show]
+
   resources :tube_rack_summaries, only: :show
   resources :tube_rack_statuses, only: :index
 
@@ -219,9 +221,6 @@ Rails.application.routes.draw do
 
   resources :events
   resources :sources
-
-  get '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
-  get '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
   post '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed'
 
