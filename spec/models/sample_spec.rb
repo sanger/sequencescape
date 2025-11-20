@@ -93,7 +93,7 @@ RSpec.describe Sample, :accession, :cardinal do
       before do
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error: Accession::Error.new('Posting of accession submission failed'))
+                                raise_error: Accession::Error.new('Failed to process accessioning response'))
         )
       end
 
@@ -109,7 +109,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
         expect(Rails.logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
-          'Posting of accession submission failed'
+          'Failed to process accessioning response'
         )
       end
 
@@ -121,7 +121,7 @@ RSpec.describe Sample, :accession, :cardinal do
         expect(ExceptionNotifier).to have_received(:notify_exception)
           .with(instance_of(Accession::Error),
                 data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                                 'Posting of accession submission failed',
+                                 'Failed to process accessioning response',
                         sample_name: sample_name,
                         service_provider: 'ENA' })
       end

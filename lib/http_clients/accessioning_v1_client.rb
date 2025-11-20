@@ -99,7 +99,7 @@ module HTTPClients
     def raise_if_failed(response)
       return unless receipt_failed?(response.body)
 
-      message = extract_error_messages(response.body) || 'Posting of accession submission failed'
+      message = extract_error_messages(response.body) || 'Failed to process accessioning response'
       raise Accession::Error, message
     end
   end
