@@ -9,6 +9,10 @@ RSpec.describe Accession::Accessionable, :accession, type: :model do
     def ebi_alias
       'ALIAS'
     end
+
+    def build_xml(xml)
+      xml.ACCESSIONOBUBBLE 'Pop!'
+    end
   end
 
   before { allow(Time).to receive(:now).and_return(Time.zone.parse('2016-12-08T13:29:59Z')) }

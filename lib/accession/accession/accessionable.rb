@@ -20,9 +20,21 @@ module Accession
       @filename ||= clean_path("#{ebi_alias_datestamped}.#{schema_type}.xml")
     end
 
+    # Including classes models must implement this method to define their XML content.
+    # Example:
+    #   def build_xml(xml)
+    #     xml.sample_tag 'Sample content'
+    #   end
+    def build_xml(xml)
+      raise NotImplementedError, "#{self.class} must implement the build_xml(xml) method"
+    end
+
+    # Template method for XML representation.
+    # Including classes should override `build_xml(xml)` to define their XML structure.
     def to_xml
       xml = Builder::XmlMarkup.new
       xml.instruct!
+      build_xml(xml)
       xml.target!
     end
 
