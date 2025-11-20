@@ -123,7 +123,7 @@ class Accessionable::Base
       end
 
       def incorrect_format_value
-        AccessionService::NOT_PROVIDED
+        NOT_PROVIDED
       end
     end
 
