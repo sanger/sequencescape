@@ -155,19 +155,19 @@ class AccessionService::BaseService
   end
 
   def sample_visibility(_sample)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def study_visibility(_study)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def policy_visibility(_study)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def dac_visibility(_study)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def private?
