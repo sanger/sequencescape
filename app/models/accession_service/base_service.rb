@@ -82,7 +82,7 @@ class AccessionService::BaseService
               acc.update_array_express_accession_number!(ae_an) if ae_an
             end
 
-          raise NumberNotGenerated, 'Service gave no numbers back' unless number_generated
+          raise AccessionServiceError::NumberNotGenerated, 'Service gave no numbers back' unless number_generated
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
           current_error = errors.first
@@ -110,7 +110,10 @@ class AccessionService::BaseService
   end
 
   def submit_study_for_user(study, user)
-    raise NumberNotRequired, 'An accession number is not required for this study' unless study.accession_required?
+    unless study.accession_required?
+      raise AccessionServiceError::NumberNotRequired,
+            'An accession number is not required for this study'
+    end
 
     # Flag set in the deployment project to allow per-environment enabling of accessioning
     unless configatron.accession_samples
@@ -129,7 +132,7 @@ class AccessionService::BaseService
   end
 
   def submit_dac_for_user(_study, _user)
-    raise NumberNotRequired, 'No need to'
+    raise AccessionServiceError::NumberNotRequired, 'No need to'
   end
 
   def accession_study_xml(study)

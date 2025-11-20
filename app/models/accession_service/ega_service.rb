@@ -12,11 +12,11 @@ class AccessionService::EGAService < AccessionService::BaseService
   end
 
   def sample_visibility(_sample)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def study_visibility(_study)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def broker

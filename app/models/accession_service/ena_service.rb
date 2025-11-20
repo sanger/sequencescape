@@ -18,19 +18,19 @@ class AccessionService::ENAService < AccessionService::BaseService
   # Most uses of this feature have been human error, so its better to hold off on releasing data than accidentally
   # releasing data
   def sample_visibility(_sample)
-    HOLD
+    AccessionService::HOLD
   end
 
   def study_visibility(_study)
-    HOLD
+    AccessionService::HOLD
   end
 
   def policy_visibility(_study)
-    HOLD
+    AccessionService::HOLD
   end
 
   def dac_visibility(_study)
-    HOLD
+    AccessionService::HOLD
   end
 
   def broker
