@@ -144,6 +144,14 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
   # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
   context 'when inspecting the outgoing request' do
+    # While not a perfect test, this checks that the client and resultant request are largely correct.
+    # This makes a good reference for what the version 1 ENA API expects. Should the implementation
+    # change (again), this would be a good place to start.
+    # See the links below for more information:
+    # API v1 Usage Guide: https://ena-docs.readthedocs.io/en/latest/submit/general-guide/webin-v1.html
+    # API v1 Documentation: https://wwwdev.ebi.ac.uk/ena/submit/drop-box/swagger-ui/index.html#/submit/submitXml
+    # Multipart Form Data: https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
+
     before do
       stub_request(:post, 'http://example.com/submit/').to_return(status: 200, body: success_response)
     end

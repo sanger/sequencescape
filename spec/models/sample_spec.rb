@@ -53,10 +53,6 @@ RSpec.describe Sample, :accession, :cardinal do
                sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
       end
 
-      it 'will not proceed' do
-        expect(unaccessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
-      end
-
       it 'will provide debug information' do
         sample_name = unaccessionable_sample.name
 

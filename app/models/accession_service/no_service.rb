@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class NoAccessionService < AccessionService
+class AccessionService::NoService < AccessionService::BaseService
   self.no_study_accession_needed = true
 
   def initialize(study)
