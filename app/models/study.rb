@@ -593,21 +593,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       study_metadata.commercially_available == Study::NO
   end
 
-  def accession_service
-    case data_release_strategy
-    when 'open'
-      AccessionService::ENAService.new
-    when 'managed'
-      AccessionService::EGAService.new
-    else
-      AccessionService::NoService.new(self)
-    end
-  end
-
-  def send_samples_to_service?
-    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
-  end
-
   def validate_ena_required_fields!
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end

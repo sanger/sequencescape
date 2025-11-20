@@ -144,7 +144,8 @@ class SamplesController < ApplicationController
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text = @sample.accession_service.accession_sample_xml(@sample)
+      accession_service = AccessionService.select_for_sample(@sample)
+      xml_text = accession_service.accession_sample_xml(@sample)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -159,7 +160,8 @@ class SamplesController < ApplicationController
     end
 
     @sample.validate_ena_required_fields!
-    @sample.accession_service.submit_sample_for_user(@sample, current_user)
+    accession_service = AccessionService.select_for_sample(@sample)
+    accession_service.submit_sample_for_user(@sample, current_user)
     # TODO: remove this line and replace with reference to @sample.accession
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
