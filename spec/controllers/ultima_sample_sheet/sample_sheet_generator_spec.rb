@@ -137,12 +137,12 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     # Expected Zip entry names
     let(:zip_entry1_name) do
       folder = "batch_#{batch.id}_sample_sheets"
-      csv = "batch_#{batch.id}_#{tube1.human_barcode}_sample_sheet.csv"
+      csv = "#{batch.id}_#{tube1.human_barcode}.csv"
       "#{folder}/#{csv}"
     end
     let(:zip_entry2_name) do
       folder = "batch_#{batch.id}_sample_sheets"
-      csv = "batch_#{batch.id}_#{tube2.human_barcode}_sample_sheet.csv"
+      csv = "#{batch.id}_#{tube2.human_barcode}.csv"
       "#{folder}/#{csv}"
     end
     # Expected CSV section headers from Zip; to peek at the content.
