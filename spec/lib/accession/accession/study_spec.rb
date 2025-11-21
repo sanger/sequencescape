@@ -75,11 +75,11 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         it 'adds errors to the sample model' do
           expect(study.errors.full_messages).to eq(
             [
-              "Accessionable is invalid for sample 'Sample6': " \
+              "Sample 'Sample6' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample7': " \
+              "Sample 'Sample7' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample8': " \
+              "Sample 'Sample8' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}."
             ]
           )
@@ -109,11 +109,11 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         it 'adds errors to the sample model' do
           expect(study.errors.full_messages).to eq(
             [
-              "Accessionable is invalid for sample 'Sample1': " \
+              "Sample 'Sample1' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample2': " \
+              "Sample 'Sample2' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}.",
-              "Accessionable is invalid for sample 'Sample3': " \
+              "Sample 'Sample3' cannot be accessioned: " \
               "Sample does not have the required metadata: #{missing_metadata_for_study}."
             ]
           )

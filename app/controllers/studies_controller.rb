@@ -254,7 +254,7 @@ class StudiesController < ApplicationController
     else
       flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
     end
-    redirect_to(study_path(@study))
+    redirect_to(study_path(@study, anchor: 'accession-statuses'))
   end
 
   def dac_accession

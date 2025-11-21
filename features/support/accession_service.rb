@@ -87,7 +87,7 @@ class FakeAccessionService
   end
 
   def failure(message)
-    bodies << "<RECEIPT success=\"false\"><ERROR>#{message}</ERROR></RECEIPT>"
+    bodies << "<RECEIPT success=\"false\"><MESSAGES><ERROR>#{message}</ERROR></MESSAGES></RECEIPT>"
   end
 
   def next!

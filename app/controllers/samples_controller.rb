@@ -158,10 +158,12 @@ class SamplesController < ApplicationController
 
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
+    # TODO: remove this line and replace with reference to @sample.accession
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
+    redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
   rescue AccessionService::NumberNotGenerated => e
@@ -169,10 +171,22 @@ class SamplesController < ApplicationController
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
   ensure
-    redirect_to(sample_path(@sample))
+    # Redirect back to where we came from if not already redirected
+    redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
   end
 
   private
+
+  # Redirect back to the referer with an anchor, or to a fallback location
+  # Based closely on redirect_back_or_to
+  def redirect_back_with_anchor_or_to(fallback_location, anchor: '')
+    referer = request.referer
+    if referer.present?
+      redirect_to "#{referer}##{anchor}"
+    else
+      redirect_to fallback_location.to_s
+    end
+  end
 
   def default_permitted_metadata_fields
     {

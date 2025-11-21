@@ -22,6 +22,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
   describe '#perform' do
     before do
+      # An accession status is created when the job is queued
       allow(described_class).to receive(:contact_user).and_return(contact_user)
     end
 
@@ -29,7 +30,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
 
       before do
-        job.perform
+        expect { job.perform }.to raise_error(JobFailed)
       end
 
       it 'logs the error' do
@@ -63,7 +64,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'does not raise an error' do
-        expect { job.perform }.not_to raise_error
+        expect { job.perform }.not_to raise_error # specifically JobFailed
       end
     end
 
@@ -73,7 +74,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Failed to process accessioning response'))
         )
-        job.perform
+        expect { job.perform }.to raise_error(JobFailed)
       end
 
       it 'logs the error' do

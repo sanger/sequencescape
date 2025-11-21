@@ -13,7 +13,14 @@ module MockAccession
   end
 
   def failed_accession_response
-    Response.new(200, '<RECEIPT success="false"><ERROR>Error 1</ERROR><ERROR>Error 2</ERROR></RECEIPT>')
+    Response.new(200, <<~XML)
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="false">
+        <MESSAGES>
+          <ERROR>Error 1</ERROR>
+          <ERROR>Error 2</ERROR>
+        </MESSAGES>
+      </RECEIPT>
+    XML
   end
 
   module_function :successful_sample_accession_response, :successful_study_accession_response,

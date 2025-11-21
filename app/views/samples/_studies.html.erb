@@ -1,3 +1,5 @@
+<%# See app/views/samples/_accession_statuses.html.erb %>
+
 <%= panel do %>
   <h3>Studies <%= counter_badge @sample.studies.length %></h3>
   <%= form_for :sample, url: url_for({controller: "samples", id: @sample.id, action: :add_to_study}), html: {method: :put} do |form| -%>
