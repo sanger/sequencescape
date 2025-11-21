@@ -96,6 +96,11 @@ module Api
       #   @return [PurposeResource] The associated purpose of this lot type.
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
 
+      # @!attribute [rw] lots
+      #  The {Lot} instances that are of this lot type.
+      #  @return [Array<LotResource>] The associated lots.
+      has_many :lots
+
       ###
       # Filters
       ###

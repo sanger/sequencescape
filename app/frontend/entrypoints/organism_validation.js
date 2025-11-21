@@ -1,120 +1,80 @@
-/*====================================================================
- *  Author: Tony Cox (avc@sanger.ac.uk)
- *  Copyright (c) 2009: Genome Research Ltd.
- * This is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * or see the on-line version at http://www.gnu.org/copyleft/gpl.txt
- *====================================================================
- * (c) Tony Cox (Sanger Institute, UK) avc@sanger.ac.uk
- *
- * Description: Provides interface for monitoring data in the Sanger
- * Illumina production pipeline
- *
- * Exported functions: None
- * HISTORY:
- *====================================================================
- */
-
-const $ = window.jQuery;
-
-$(function () {
-  // Any validate_organism control needs to be setup to update the 'common name' and the 'taxon ID' fields.
-  // It is assumed that the 'common name' and 'taxon ID' fields are paired in order: in other words, the
-  // first 'common name' field goes with the first 'taxon ID' field.  If this is not true then you should
-  // write your own method and call validateSingleOrganism yourself.
-  $(".validate_organism").each(function (pos, control) {
-    $(control).on("click", function (event) {
+document.addEventListener("DOMContentLoaded", function () {
+  // Attach validation to all .validate_organism controls
+  document.querySelectorAll(".validate_organism").forEach(function (button) {
+    button.addEventListener("click", function (event) {
       event.preventDefault();
-      var common_names = $('input[data-organism="common_name"]');
-      var taxon_ids = $('input[data-organism="taxon_id"]');
-
-      common_names.each(function (index, common_name) {
-        validateOrganism(common_name, taxon_ids[index]);
+      const commonNames = document.querySelectorAll('input[data-organism="common_name"]');
+      const taxonIds = document.querySelectorAll('input[data-organism="taxon_id"]');
+      commonNames.forEach(function (commonNameInput, idx) {
+        validateOrganism(commonNameInput, taxonIds[idx]);
       });
     });
   });
 });
 
-const highlight_field = function (state, field) {
-  if (state == "good") {
-    $(field).css("background-color", "#ffff99").animate({ backgroundColor: "#ffffff" }, 1500);
-    //Element.highlight(field, { startcolor: '#ffff99', endcolor: '#ffffff', restorecolor: '#ffffff'});
-  } else if (state == "bad") {
-    $(field).css("background-color", "#A80000").animate({ backgroundColor: "#ff6666" }, 1500);
-    //Element.highlight(field, { startcolor: '#A80000', endcolor: '#ffffff', restorecolor: '#ff6666'});
-  }
-};
+function highlightField(field, state) {
+  field.style.transition = "background-color 0.25s, color 0.25s";
+  // Remove any previous Bootstrap validation classes and inline styles
+  field.classList.remove("is-valid", "is-invalid", "bg-success", "bg-danger", "text-white");
 
-const ajaxXMLRequest = function (url, field, callbacks) {
-  var xmlSelect = function (element, name) {
-    let elements = $(name, element);
-    if (elements.length == 0) {
-      return undefined;
+  if (state === "success") {
+    field.classList.add("is-valid", "bg-success", "text-white");
+  } else if (state === "failure") {
+    field.classList.add("is-invalid", "bg-danger", "text-white");
+  }
+
+  // Remove highlights and text color after 1.5s
+  // Validity classes remain for user reference
+  setTimeout(() => {
+    field.classList.remove("bg-success", "bg-danger", "text-white");
+  }, 1500);
+}
+
+function fetchTaxonByName(name) {
+  // expected result:
+  // {
+  // "taxId": "9606",
+  // "scientificName": "Homo sapiens",
+  // "commonName": "human",
+  // "submittable": "true"
+  // }
+  return fetch(`/taxa?term=${encodeURIComponent(name)}`, {
+    headers: { Accept: "application/json" },
+  })
+    .then((response) => (response.ok ? response.json() : null))
+    .catch(() => null);
+}
+
+function validateOrganism(commonNameField, taxonIdField) {
+  const inputName = commonNameField.value;
+  if (!inputName) return;
+
+  fetchTaxonByName(inputName).then(function (taxon) {
+    // Handle not found (404 or no result)
+    if (!taxon || !taxon.taxId || !taxon.scientificName || !taxon.submittable) {
+      highlightField(commonNameField, "failure");
+      highlightField(taxonIdField, "failure");
+      taxonIdField.value = "<not found>";
+      taxonIdField.setCustomValidity("This organism cannot be found.");
+      return;
     }
-    return elements[0].text || elements[0].textContent || undefined;
-  };
 
-  $.ajax(url, {
-    headers: { Accept: "application/xml,text/xml" },
-    success: function (response) {
-      let value = xmlSelect(response.responseXML, field);
-      if (value == undefined) {
-        callbacks.unfound();
-      } else {
-        callbacks.found(value);
-      }
-    },
-    error: function () {
-      callbacks.unfound();
-    },
-    timeout: 5000,
+    // Set the name and taxon id fields to the returned values
+    commonNameField.value = taxon.scientificName; // yes the field is called common name, yes this is confusing, no I have no idea why we do it this way...
+    taxonIdField.value = taxon.taxId;
+
+    // Highlight the fields, indicating if they are submittable
+    const submittable = taxon.submittable == "true" ? "success" : "failure";
+    highlightField(commonNameField, submittable);
+    highlightField(taxonIdField, submittable);
+
+    // If the taxon is not submittable, prevent form submission by setting custom validity
+    if (taxon.submittable != "true") {
+      commonNameField.setCustomValidity("This organism is not submittable.");
+      taxonIdField.setCustomValidity("This organism is not submittable.");
+    } else {
+      commonNameField.setCustomValidity("");
+      taxonIdField.setCustomValidity("");
+    }
   });
-};
-
-const validateOrganism = function (common_name_field, taxon_id_field) {
-  // Empty fields can be ignored
-  if (common_name_field.value == "" || common_name_field.value == undefined) {
-    return;
-  }
-
-  // Lookup the real 'common name' and 'taxon ID' based on the common name entered.  This involves
-  // two Ajax calls: one for the original common name to 'taxon ID', the other from the 'taxon ID'
-  // to the real 'common name'.  Obviously these need to be performed sequentially.
-  ajaxXMLRequest("/taxon_lookup_by_term/" + common_name_field.value, "Id", {
-    found: function (taxon_id) {
-      ajaxXMLRequest("/taxon_lookup_by_id/" + taxon_id, "ScientificName", {
-        found: function (scientific_name) {
-          if (common_name_field.value != scientific_name) {
-            common_name_field.value = scientific_name;
-            highlight_field("good", common_name_field);
-          }
-          if (taxon_id_field.value != taxon_id) {
-            taxon_id_field.value = taxon_id;
-            highlight_field("good", taxon_id_field);
-          }
-        },
-
-        unfound: function () {
-          highlight_field("bad", common_name_field);
-          highlight_field("bad", taxon_id_field);
-        },
-      });
-    },
-
-    unfound: function () {
-      highlight_field("bad", common_name_field);
-      highlight_field("bad", taxon_id_field);
-    },
-  });
-};
+}

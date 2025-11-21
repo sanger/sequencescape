@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 RSpec.describe Sample, :accession, :cardinal do
-  include MockAccession
+  include AccessionV1ClientHelper
 
   context 'accessioning disabled' do
     let!(:user) { create(:user, api_key: configatron.accession_local_key) }
@@ -14,7 +14,6 @@ RSpec.describe Sample, :accession, :cardinal do
 
     before do
       configatron.accession_samples = false
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
     end
 
     around do |example|
@@ -71,23 +70,31 @@ RSpec.describe Sample, :accession, :cardinal do
     end
 
     it 'will not proceed if accessioning for the study is disabled' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
       accessionable_sample.ena_study.enforce_accessioning = false
       accessionable_sample.accession
 
       expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
     end
 
-    it 'will add an accession number if successful' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
-      accessionable_sample.accession
+    context 'when accessioning succeeds' do
+      before do
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+        )
+        accessionable_sample.accession
+      end
 
-      expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
+      it 'will add an accession number' do
+        expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
+      end
     end
 
     context 'when accessioning fails' do
       before do
-        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number,
+                                raise_error: Accession::Error.new('Failed to process accessioning response'))
+        )
       end
 
       it 'will not add an accession number' do
@@ -102,7 +109,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
         expect(Rails.logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
-          'EBI failed to update accession number, data may be invalid'
+          'Failed to process accessioning response'
         )
       end
 
@@ -110,12 +117,13 @@ RSpec.describe Sample, :accession, :cardinal do
         allow(ExceptionNotifier).to receive(:notify_exception)
         accessionable_sample.accession
 
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(AccessionService::AccessionServiceError),
-          data: { cause_message: 'EBI failed to update accession number, data may be invalid',
-                  sample_name: accessionable_sample.name, # 'Sample1'
-                  service_provider: 'ENA' }
-        )
+        sample_name = accessionable_sample.name # 'Sample1'
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(instance_of(Accession::Error),
+                data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                                 'Failed to process accessioning response',
+                        sample_name: sample_name,
+                        service_provider: 'ENA' })
       end
     end
   end

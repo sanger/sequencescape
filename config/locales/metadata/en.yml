@@ -217,8 +217,8 @@ en:
           edit_info: "ENA tag, Array Express"
 
         sample_taxon_id:
-          label: TAXON ID
-          help: NCBI Taxonomy Identifier. This is appropriate for individual organisms and some environmental samples.
+          label: Taxon ID
+          help: ENA Taxonomy Identifier. This is appropriate for individual organisms and some environmental samples.
           edit_info: "ENA requirement"
 
         sample_ebi_accession_number:

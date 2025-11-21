@@ -585,7 +585,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession_service
     case data_release_strategy
     when 'open'
-      EnaAccessionService.new
+      ENAAccessionService.new
     when 'managed'
       EgaAccessionService.new
     else

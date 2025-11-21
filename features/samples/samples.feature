@@ -25,7 +25,7 @@ Feature: Show/update samples
      And I should see "Country of origin"
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
-     And I should see "TAXON ID"
+     And I should see "Taxon ID"
      And I should see "Sample Collection Date"
 
   Scenario: All sample metadata should show in genotyping workflow
@@ -37,7 +37,7 @@ Feature: Show/update samples
      And I should see "Country of origin"
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
-     And I should see "TAXON ID"
+     And I should see "Taxon ID"
      And I should see "Sample Collection Date"
 
   Scenario: User is an administrator

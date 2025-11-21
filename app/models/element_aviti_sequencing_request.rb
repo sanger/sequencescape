@@ -42,9 +42,9 @@ class ElementAvitiSequencingRequest < SequencingRequest
     validate :validate_read_length_by_selected_flowcell_type
 
     def validate_read_length_by_selected_flowcell_type
-      return unless requested_flowcell_type == 'LO' && read_length.to_i != 150
+      return unless requested_flowcell_type == 'LO' && [75, 150].exclude?(read_length.to_i)
 
-      errors.add(:read_length, 'For the LO (Low Output) flowcell kit the user can select a Read Length of 150')
+      errors.add(:read_length, 'For the LO (Low Output) flowcell kit the user can select a Read Length of 75 or 150')
     end
   end
 

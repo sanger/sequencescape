@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class UltimaSequencingRequest < SequencingRequest
+  include Api::Messages::UseqWaferIo::LaneExtensions
+
   FREE = 'Free'
   FLEX = 'Flex'
   OT_RECIPE_OPTIONS = [FREE, FLEX].freeze
