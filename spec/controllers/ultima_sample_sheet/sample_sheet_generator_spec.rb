@@ -46,6 +46,9 @@ require 'rails_helper'
 #
 # rubocop:enable Layout/LineLength
 RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
+  # Eagerly create the global section record.
+  before { create(:ultima_global) }
+
   # Eagerly create tag groups and tags to get consistent IDs.
   let!(:tag_group1) { create(:tag_group_with_tags, tag_count: 96) }
   let!(:tag_group2) { create(:tag_group_with_tags, tag_count: 96) }
