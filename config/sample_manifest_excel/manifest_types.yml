@@ -359,6 +359,7 @@ tube_default:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :retention_instruction
     - :reference_genome
     - :cohort
     - :volume
@@ -723,6 +724,7 @@ long_read:
     - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
+    - :retention_instruction
     - :volume
     - :concentration
     - :sample_public_name
