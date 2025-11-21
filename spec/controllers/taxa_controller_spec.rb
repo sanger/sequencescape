@@ -8,12 +8,12 @@ RSpec.describe TaxaController, type: :controller do
   before do
     # Inject the mocked client into the controller
     allow(taxa_client).to receive(:taxon_from_text) do |*|
-      raise Faraday::ConnectionFailed unless defined?(taxon_from_text)
+      raise Faraday::ConnectionFailed, 'Connection dropped' unless defined?(taxon_from_text)
 
       taxon_from_text
     end
     allow(taxa_client).to receive(:taxon_from_id) do |*|
-      raise Faraday::ConnectionFailed unless defined?(taxon_from_id)
+      raise Faraday::ConnectionFailed, 'Connection dropped' unless defined?(taxon_from_id)
 
       taxon_from_id
     end
@@ -24,6 +24,8 @@ RSpec.describe TaxaController, type: :controller do
     let(:term) { 'human' }
 
     before do
+      allow(Rails.logger).to receive(:error)
+
       get :index, params: { term: }
     end
 
@@ -44,6 +46,14 @@ RSpec.describe TaxaController, type: :controller do
       end
     end
 
+    context 'when there is whitespace around the search term' do
+      let(:term) { '    human    ' }
+
+      it 'removes the whitespace before querying the server' do
+        expect(taxa_client).to have_received(:taxon_from_text).with('human')
+      end
+    end
+
     context 'with a term that does not exist' do
       let(:taxon_from_text) { nil }
       let(:term) { 'nonexistent_organism' }
@@ -54,6 +64,11 @@ RSpec.describe TaxaController, type: :controller do
     end
 
     context 'when Faraday raises a connection error' do
+      it 'logs an error' do
+        expect(Rails.logger).to have_received(:error)
+          .with('Client error in Taxa Controller: Faraday::ConnectionFailed - Connection dropped')
+      end
+
       it 'returns 502 Bad Gateway' do
         expect(response).to have_http_status(:bad_gateway)
       end
@@ -76,6 +91,8 @@ RSpec.describe TaxaController, type: :controller do
 
   describe 'GET #show' do
     before do
+      allow(Rails.logger).to receive(:error)
+
       get :show, params: { id: }
     end
 
@@ -103,6 +120,11 @@ RSpec.describe TaxaController, type: :controller do
 
     context 'when Faraday raises an error' do
       let(:id) { 'connection-dropped' }
+
+      it 'logs an error' do
+        expect(Rails.logger).to have_received(:error)
+          .with('Client error in Taxa Controller: Faraday::ConnectionFailed - Connection dropped')
+      end
 
       it 'returns 502 Bad Gateway' do
         expect(response).to have_http_status(:bad_gateway)

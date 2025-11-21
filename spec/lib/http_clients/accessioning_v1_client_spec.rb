@@ -109,7 +109,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
       it 'raises a Accession::Error' do
         expect { client.submit_and_fetch_accession_number(login, files) }
-          .to raise_error(Accession::Error, 'Posting of accession submission failed')
+          .to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end
 
@@ -120,7 +120,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
       it 'raises an Accession::Error' do
         expect { client.submit_and_fetch_accession_number(login, files) }
-          .to raise_error(Accession::Error, 'Posting of accession submission failed')
+          .to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end
 

@@ -18,9 +18,9 @@ module HTTPClients
     end
 
     def proxy
+      return ENV['http_proxy'] if ENV['http_proxy'].present?
       return nil if configatron.disable_web_proxy == true
       return configatron.proxy if configatron.fetch(:proxy).present?
-      return ENV['http_proxy'] if ENV['http_proxy'].present?
 
       nil
     end
