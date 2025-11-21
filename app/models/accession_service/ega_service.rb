@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class EgaAccessionService < AccessionService
+class AccessionService::EGAService < AccessionService::BaseService
   self.priority = 2
   self.operational = true
 
@@ -12,11 +12,11 @@ class EgaAccessionService < AccessionService
   end
 
   def sample_visibility(_sample)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def study_visibility(_study)
-    PROTECT
+    AccessionService::PROTECT
   end
 
   def broker

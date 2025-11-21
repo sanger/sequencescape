@@ -498,13 +498,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Return the highest priority accession service
   def accession_service
     services = studies.group_by { |s| s.accession_service.priority }
-    return UnsuitableAccessionService.new([]) if services.empty?
+    return AccessionService::UnsuitableService.new([]) if services.empty?
 
     highest_priority = services.keys.max
     suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
     return suitable_study.accession_service if suitable_study
 
-    UnsuitableAccessionService.new(services[highest_priority])
+    AccessionService::UnsuitableService.new(services[highest_priority])
   end
 
   def accession
