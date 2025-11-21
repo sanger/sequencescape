@@ -95,7 +95,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     context 'when the submission fails due to an accessioning error' do
       let(:mock_client) do
         stub_accession_client(:submit_and_fetch_accession_number,
-                              raise_error: Accession::Error.new('Posting of accession submission failed'))
+                              raise_error: Accession::Error.new('Failed to process accessioning response'))
       end
 
       it 'does not update the sample accession number' do
@@ -105,7 +105,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       it 'bubbles up the Accession::Error' do
         expect do
           submission.submit_and_update_accession_number
-        end.to raise_error(Accession::Error, 'Posting of accession submission failed')
+        end.to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end
   end

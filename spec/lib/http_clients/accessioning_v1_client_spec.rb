@@ -113,7 +113,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       it 'raises a Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(login, files) }
           .to raise_error(Accession::ExternalValidationError,
-                          'Posting of accession submission failed, the response status was NIL.')
+                          'Failed to process accessioning response, the response status was NIL.')
       end
     end
 
@@ -125,7 +125,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       it 'raises an Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(login, files) }
           .to raise_error(Accession::ExternalValidationError,
-                          'Posting of accession submission failed, the response status was NIL.')
+                          'Failed to process accessioning response, the response status was NIL.')
       end
     end
 

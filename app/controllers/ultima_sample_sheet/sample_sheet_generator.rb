@@ -76,7 +76,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [String] the ZIP entry name
     def entry_name(request)
       barcode = request.asset.human_barcode
-      "#{folder_name}/batch_#{@batch.id}_#{barcode}_sample_sheet.csv"
+      "#{folder_name}/#{@batch.id}_#{barcode}.csv"
     end
 
     # Returns the folder name for the batch sample sheets in the ZIP archive.

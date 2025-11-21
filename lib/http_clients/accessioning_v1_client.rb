@@ -31,10 +31,8 @@ module HTTPClients
     def submit_and_fetch_accession_number(login, files)
       # Clone the base connection and add basic auth for this request
       conn_with_auth = conn.dup
-      # TODO: confirm that the authorization is correct
       conn_with_auth.request :authorization, :basic, login[:user], login[:password]
 
-      # TODO: confirm that this is the correct endpoint, it should hit accession_service/
       payload = build_payload(files)
       response = conn_with_auth.post('', payload) # POST to the given API root with the payload as the body
       raise_if_failed(response)
@@ -100,7 +98,7 @@ module HTTPClients
       return unless receipt_failed?(response.body)
 
       status_message = response.reason_phrase || 'nil'
-      default_message = "Posting of accession submission failed, the response status was #{status_message.upcase}."
+      default_message = "Failed to process accessioning response, the response status was #{status_message.upcase}."
       message = extract_error_messages(response.body) || default_message
       raise Accession::ExternalValidationError, message
     end

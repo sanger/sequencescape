@@ -24,9 +24,7 @@ module Accession
       HTTPClients::AccessioningV1Client.new
     end
 
-    def to_xml # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-      xml = Builder::XmlMarkup.new
-      xml.instruct!
+    def build_xml(xml) # rubocop:disable Metrics/AbcSize
       xml.SUBMISSION(
         XML_NAMESPACE,
         center_name: CENTER_NAME,
@@ -41,7 +39,6 @@ module Accession
           xml.ACTION { xml.tag!(service.visibility) }
         end
       end
-      xml.target!
     end
 
     def submit_and_update_accession_number

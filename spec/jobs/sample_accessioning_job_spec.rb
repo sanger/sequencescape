@@ -72,7 +72,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       before do
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error: Accession::Error.new('Posting of accession submission failed'))
+                                raise_error: Accession::Error.new('Failed to process accessioning response'))
         )
         expect { job.perform }.to raise_error(JobFailed)
       end
@@ -80,7 +80,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'Posting of accession submission failed'
+          'Failed to process accessioning response'
         )
       end
 
@@ -89,7 +89,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
           instance_of(Accession::Error),
           data: {
             message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
-                     'Posting of accession submission failed',
+                     'Failed to process accessioning response',
             sample_name: sample.name, # 'Sample 1',
             service_provider: 'ENA'
           }
