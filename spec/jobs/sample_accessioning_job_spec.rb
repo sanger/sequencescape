@@ -33,6 +33,14 @@ RSpec.describe SampleAccessioningJob, type: :job do
         expect { job.perform }.to raise_error(JobFailed)
       end
 
+      it 'sets the accession sample status to failed' do
+        sample_status = Accession::SampleStatus.where(sample:).first
+        expect(sample_status).to have_attributes(
+          status: 'failed',
+          message: 'An internal error occurred during accessioning.'
+        )
+      end
+
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
@@ -65,6 +73,10 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
       it 'does not raise an error' do
         expect { job.perform }.not_to raise_error # specifically JobFailed
+      end
+
+      it 'removes the latest accession sample status' do
+        expect(Accession::SampleStatus.where(sample:)).not_to exist
       end
     end
 
@@ -114,6 +126,56 @@ RSpec.describe SampleAccessioningJob, type: :job do
   describe '#queue_name' do
     it 'returns the correct queue name' do
       expect(job.queue_name).to eq('sample_accessioning')
+    end
+  end
+
+  describe '#enqueue' do
+    before do
+      job.enqueue(nil)
+    end
+
+    it 'creates an accession status for the sample' do
+      expect(Accession::SampleStatus.where(sample:)).to exist
+    end
+
+    it 'sets the status to queued' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status.status).to eq('queued')
+    end
+  end
+
+  describe '#before' do
+    before do
+      job.before(nil)
+    end
+
+    it 'sets the status to in progress' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status.status).to eq('processing')
+    end
+  end
+
+  describe '#success' do
+    before do
+      job.success(nil)
+    end
+
+    it 'removes the latest accession sample status' do
+      expect(Accession::SampleStatus.where(sample:)).not_to exist
+    end
+  end
+
+  describe '#failure' do
+    before do
+      job.failure(nil)
+    end
+
+    it 'sets the status to aborted' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status).to have_attributes(
+        status: 'aborted',
+        message: nil
+      )
     end
   end
 end
