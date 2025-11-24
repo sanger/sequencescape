@@ -9,7 +9,7 @@
   Please scan the barcodes from the sample tubes into the table below.
 </div>
 
-<%= form_tag action: :verify_tube_layout, id: @batch.id  do %>
+<%= form_tag action: :verify_layout, id: @batch.id  do %>
 <%= hidden_field_tag :verification_flavour, @verification_flavour %>
 
 <table width="100%" cellspacing="0" cellpadding="0">

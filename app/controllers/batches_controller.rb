@@ -25,8 +25,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   print_plate_labels
                   print
                   verify
-                  verify_tube_layout
-                  verify_amp_plate_layout
+                  verify_layout
                   reset_batch
                   previous_qc_state
                   filtered
@@ -283,7 +282,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @verification_flavour = params[:verification_flavour]
   end
 
-  def verify_tube_layout # rubocop:todo Metrics/AbcSize
+  def verify_layout # rubocop:todo Metrics/AbcSize
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
     verification_flavour = params[:verification_flavour].to_sym
     model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
