@@ -105,11 +105,15 @@ module Presenters
       # Printing of labels is enabled for anybody
       add_submenu_option 'Print labels', :print_labels
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
-      add_submenu_option 'Verify tube layout', :verify_tube if tube_layout_not_verified? && can?(:verify)
-      add_submenu_option 'Verify AMP plate layout', :verify_amp_plate if ultima? && amp_plate_layout_not_verified? && can?(:verify)
+      if tube_layout_not_verified? && can?(:verify)
+        add_submenu_option 'Verify tube layout', { controller: :batches, action: :verify, verification_flavour: :tube, id: @batch.id, only_path: true }
+      end
+
+      if ultima? && amp_plate_layout_not_verified? && can?(:verify)
+        add_submenu_option 'Verify AMP plate layout', { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id, only_path: true }
+      end
     end
   end
 end

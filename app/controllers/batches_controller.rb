@@ -6,7 +6,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
-  VERIFICATION_FLAVOUR_TO_FORM_ACTION = {
+  VERIFICATION_FLAVOUR_TO_MODEL_ACTION = {
     tube: :verify_tube_layout,
     amp_plate: :verify_amp_plate_layout
   }
@@ -24,8 +24,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   print_labels
                   print_plate_labels
                   print
-                  verify_tube
-                  verify_amp_plate
+                  verify
                   verify_tube_layout
                   verify_amp_plate_layout
                   reset_batch
@@ -277,23 +276,19 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
-  def verify_tube
+  def verify
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
     @count = @requests.length
-    @form_action = VERIFICATION_FLAVOUR_TO_FORM_ACTION[@verification_flavour]
-  end
-
-  def verify_amp_plate
-    @requests = @batch.ordered_requests
-    @pipeline = @batch.pipeline
-    @count = @requests.length
+    @verification_flavour = params[:verification_flavour]
   end
 
   def verify_tube_layout # rubocop:todo Metrics/AbcSize
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+    verification_flavour = params[:verification_flavour].to_sym
+    model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
-    if @batch.verify_tube_layout(tube_barcodes, current_user)
+    if @batch.send(model_method, tube_barcodes, current_user)
       flash[:notice] = 'All of the tubes are in their correct positions.'
       redirect_to batch_path(@batch)
     else
