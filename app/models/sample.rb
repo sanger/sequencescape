@@ -321,7 +321,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
-  has_many :accession_statuses, class_name: 'Accession::Status'
+  has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus'
 
   belongs_to :sample_manifest, inverse_of: :samples
 
@@ -547,7 +547,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def current_accession_status
-    accession_statuses.last
+    accession_sample_statuses.last
   end
 
   def sample_reference_genome

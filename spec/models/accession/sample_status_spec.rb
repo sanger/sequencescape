@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Accession::Status, type: :model do
+RSpec.describe Accession::SampleStatus, type: :model do
   let(:sample) { create(:sample) }
 
   describe 'associations' do
@@ -14,59 +14,59 @@ RSpec.describe Accession::Status, type: :model do
   end
 
   describe '.create_for_sample' do
-    let(:status) { described_class.create_for_sample(sample) }
+    let(:sample_status) { described_class.create_for_sample(sample) }
 
     it 'creates a status with status queued' do
-      expect(status.status).to eq('queued')
+      expect(sample_status.status).to eq('queued')
     end
 
     it 'associates the status with the given sample' do
-      expect(status.sample).to eq(sample)
+      expect(sample_status.sample).to eq(sample)
     end
   end
 
   describe '#mark_in_progress' do
-    let(:status) { described_class.create_for_sample(sample) }
+    let(:sample_status) { described_class.create_for_sample(sample) }
 
     before do
-      status.mark_in_progress
+      sample_status.mark_in_progress
     end
 
     it 'updates the status to processing' do
-      expect(status.status).to eq('processing')
+      expect(sample_status.status).to eq('processing')
     end
   end
 
   describe '#mark_failed' do
-    let(:status) { described_class.create_for_sample(sample) }
+    let(:sample_status) { described_class.create_for_sample(sample) }
 
     before do
-      status.mark_failed('Something went wrong')
+      sample_status.mark_failed('Something went wrong')
     end
 
     it 'updates the status to failed' do
-      expect(status.status).to eq('failed')
+      expect(sample_status.status).to eq('failed')
     end
 
     it 'sets the failure message' do
-      expect(status.message).to eq('Something went wrong')
+      expect(sample_status.message).to eq('Something went wrong')
     end
   end
 
   describe '#mark_aborted' do
-    let(:status) { described_class.create_for_sample(sample) }
+    let(:sample_status) { described_class.create_for_sample(sample) }
 
     before do
-      status.mark_failed('Previous error message')
-      status.mark_aborted
+      sample_status.mark_failed('Previous error message')
+      sample_status.mark_aborted
     end
 
     it 'updates the status to aborted' do
-      expect(status.status).to eq('aborted')
+      expect(sample_status.status).to eq('aborted')
     end
 
     it 'leaves the previous message as it was' do
-      expect(status.message).to eq('Previous error message')
+      expect(sample_status.message).to eq('Previous error message')
     end
   end
 end

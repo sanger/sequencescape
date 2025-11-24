@@ -23,14 +23,14 @@ The delayed job queue allows many accessions to be submitted, but will also retr
 
 To address the lack of feedback outlined above, a new models and database table are to be created:
 
-- `Accession:Status` tracks the status and feedback from individual sample accessions
+- `Accession::SampleStatus` tracks the status and feedback from individual sample accessions
 
-While this is currently intended to be used only with sample accessions, there is no reason why it could not be used for other accession types in the future.
+While this is currently intended to be used only with sample accessions, there is no reason why the same pattern could not be used for other accession types in the future.
 
 This is intended to work as follows:
 
 1. A user would submit a sample manifest, accession all samples within a study, or accession individual samples.
-2. Each of these actions would create a individual Accession::Status record for each item to be accessioned.
+2. Each of these actions would create an individual Accession::SampleStatus record for each item to be accessioned.
 3. If the accessioning process succeeds, the accession number would be updated on the object itself.
 4. If the accessioning process fails, the status record would be updated to 'failed' with the given error message.
 5. All successful statuses would be removed after notification, while failed statuses would be retained for user reference.

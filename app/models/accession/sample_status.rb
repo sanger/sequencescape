@@ -11,7 +11,7 @@
 #  status: string - The current status of the accessioning request (eg: 'queued', 'failed')
 #  message: text - Any message associated with the status (eg: error messages)
 
-class Accession::Status < ApplicationRecord
+class Accession::SampleStatus < ApplicationRecord
   belongs_to :sample, class_name: '::Sample'
 
   validates :status, presence: true, inclusion: { in: %w[queued processing failed aborted] }
@@ -20,10 +20,10 @@ class Accession::Status < ApplicationRecord
     create!(sample: sample, status: 'queued')
   end
 
-  # Returns the most recent Accession::Status record for the given sample, or creates one if none exists.
+  # Returns the most recent Accession::SampleStatus record for the given sample, or creates one if none exists.
   #
   # @param sample [Sample] The sample for which to find or create the latest status.
-  # @return [Accession::Status] The latest status record for the sample.
+  # @return [Accession::SampleStatus] The latest status record for the sample.
   #
   # If no status exists for the sample, a new one is created with default attributes.
   def self.find_latest_or_create_for_sample(sample)

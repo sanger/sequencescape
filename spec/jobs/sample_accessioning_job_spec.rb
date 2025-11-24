@@ -22,7 +22,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
   describe '#perform' do
     before do
-      # An accession status is created when the job is queued
+      # An accession sample status is created when the job is queued
       allow(described_class).to receive(:contact_user).and_return(contact_user)
     end
 
