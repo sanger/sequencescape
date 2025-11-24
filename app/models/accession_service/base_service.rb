@@ -244,6 +244,7 @@ class AccessionService::BaseService
       # success
       response.body.to_s
     when (400...600)
+      # the $! notation is used to fetch the last exception in scope
       Rails.logger.warn($!)
       $! = nil
       raise AccessionService::AccessionServiceError
