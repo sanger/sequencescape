@@ -23,4 +23,5 @@ RSpec.describe Api::V2::TagLayoutTemplateResource, type: :resource do
 
   # Filters
   it { is_expected.to filter(:enabled) }
+  it { is_expected.to filter(:uuid) }
 end

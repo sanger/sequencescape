@@ -7,7 +7,7 @@ class SampleTest < ActiveSupport::TestCase
     service =
       {
         ega: EgaAccessionService,
-        ena: EnaAccessionService,
+        ena: ENAAccessionService,
         none: NoAccessionService,
         unsuitable: UnsuitableAccessionService
       }[

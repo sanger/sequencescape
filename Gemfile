@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 group :default do
   gem 'bootsnap'
   gem 'concurrent-ruby', '1.3.5'
+  gem 'configatron'
+  gem 'formtastic'
   gem 'rails', '~> 7.2.0'
 
   # Previously part of ruby or rails, now separate gems
@@ -13,18 +15,19 @@ group :default do
   gem 'mutex_m'
   gem 'syslog'
 
+  # Connections to external HTTP services
+  # See lib/http_clients for examples of usage
+  gem 'faraday'
+  gem 'faraday-multipart'
+  gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
+
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
   gem 'psych', '< 4'
 
   # State machine
   gem 'aasm'
-
-  # Required by AASM
-  gem 'after_commit_everywhere', '~> 1.0'
-  gem 'configatron'
-  gem 'formtastic'
-  gem 'rest-client'
+  gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'

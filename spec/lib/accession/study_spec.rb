@@ -9,21 +9,24 @@ MISSING_METADATA = {
 STUDY_TYPES = %i[open_study managed_study].freeze
 
 RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
-  include MockAccession
+  include AccessionV1ClientHelper
+
+  let(:accession_number) { 'SAMPLE123456' }
+  let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
+  let(:non_accessionable_samples) { create_list(:sample, 3) }
 
   before do
     Delayed::Worker.delay_jobs = false
-    allow(Accession::Request).to receive(:post).and_return(build(:successful_sample_accession_response))
+    create(:user, api_key: configatron.accession_local_key)
+    allow(Accession::Submission).to receive(:client).and_return(
+      stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+    )
   end
 
   after do
     Delayed::Worker.delay_jobs = true
     SampleManifestExcel.reset!
   end
-
-  let!(:user) { create(:user, api_key: configatron.accession_local_key) }
-  let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
-  let(:non_accessionable_samples) { create_list(:sample, 3) }
 
   STUDY_TYPES.each do |study_type|
     context "in a #{study_type}" do

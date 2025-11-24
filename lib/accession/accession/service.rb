@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 module Accession
   # Provide all of the configuration relating to the type of accessioning.
-  # Used by Accession::Request to send to the correct service.
+  # Used by Accession::Submission to send to the correct service.
   class Service
     include ActiveModel::Validations
 

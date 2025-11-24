@@ -148,6 +148,8 @@ Rails.application.routes.draw do
     collection { get :search }
   end
 
+  resources :taxa, only: %i[index show]
+
   resources :tube_rack_summaries, only: :show
   resources :tube_rack_statuses, only: :index
 
@@ -218,9 +220,6 @@ Rails.application.routes.draw do
 
   resources :events
   resources :sources
-
-  get '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
-  get '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
 
   post '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed'
 
@@ -646,4 +645,8 @@ Rails.application.routes.draw do
   end
 
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
+
+  # Custom standalone route for bioscan control locations, allowing only
+  # the POST request, migrated from the Lighthouse pickings endpoint.
+  post 'bioscan_control_locations', to: 'bioscan_control_locations#create'
 end
