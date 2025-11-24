@@ -97,8 +97,8 @@ module HTTPClients
     def raise_if_failed(response)
       return unless receipt_failed?(response.body)
 
-      status_message = response.reason_phrase || 'nil'
-      default_message = "Failed to process accessioning response, the response status was #{status_message.upcase}."
+      status_code = response.status || 'unknown'
+      default_message = "Failed to process accessioning response, the response status code was #{status_code}."
       message = extract_error_messages(response.body) || default_message
       raise Accession::ExternalValidationError, message
     end
