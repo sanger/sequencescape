@@ -13,7 +13,7 @@ module UltimaSampleSheet::SampleSheetGenerator
   # Ultima sample sheet generator class.
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
-  class Generator
+  class Generator # rubocop:disable Metrics/ClassLength
     PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
     HEADER_TITLE = ['[Header]'].freeze
     GLOBAL_TITLE = ['[Global]'].freeze
@@ -101,7 +101,11 @@ module UltimaSampleSheet::SampleSheetGenerator
     def add_global_section(csv, _request)
       csv << pad(GLOBAL_TITLE)
       csv << pad(GLOBAL_HEADERS)
-      data = ['WGS native gDNA', 'UG_116cycles_Baseline_1.8.5.2', 'wgs1']
+      # Currently there is only one UltimaGlobal record; get the last one.
+      # Future enhancements may allow selecting different records based on
+      # sequencing request or batch properties.
+      global = UltimaGlobal.last
+      data = [global.application, global.sequencing_recipe, global.analysis_recipe]
       csv << pad(data)
     end
 
