@@ -44,10 +44,23 @@ SampleAccessioningJob =
 
     # Delayed::Job lifecycle hooks
     # See https://github.com/collectiveidea/delayed_job?tab=readme-ov-file#hooks
+    #
+    # Desired status cycle is:
+    #
+    #   Enqueue -> Create 'queued' status
+    #   Before  -> Update latest 'queued' status to 'processing' status, or create new 'processing' status
+    #   Failure -> Update latest 'processing' status to 'failed' status
+    #   Abort   -> Update latest 'failed' status to 'aborted' status
+    #   Success -> Remove all statuses for the sample
+    #
+    # The overall result is that a status record exists for each accessioning attempt, ie:
+    # 3 attempts would result in 3 status records.
+    # Once successful, all status records are removed, however if the sample is not ultimately
+    # accessioned then the latest status records will remain in the database.
 
     # Called when the job is initially enqueued
     def enqueue(_job)
-      create_accession_status
+      create_queued_accession_status
     end
 
     # Called before the job is run
@@ -68,42 +81,48 @@ SampleAccessioningJob =
     private
 
     # Creates a new accession status for the sample for users to see in the UI
-    def create_accession_status
+    def create_queued_accession_status
       Accession::SampleStatus.create_for_sample(accessionable.sample)
     end
 
     # Update the accessionable status to be in progress for users to see in the UI
     def progress_accession_status
-      # Finds the most recent accession status by sample id, and marks it as in progress
-      accession_status = Accession::SampleStatus.find_latest_or_create_for_sample(accessionable.sample)
-      accession_status.mark_in_progress
+      Accession::SampleStatus.find_latest_and_update!(accessionable.sample,
+                                                      status: 'queued',
+                                                      attributes: { status: 'processing' })
+    rescue ActiveRecord::RecordNotFound
+      # This is not unexpected due to the retry mechanism: create a new status
+      Accession::SampleStatus.create_for_sample(accessionable.sample, 'processing')
     end
 
-    # Finds the most recent accession status and removes it
+    # Removes all accession statuses for the sample on successful accessioning
     def succeed_accession_status
-      # Wrap in a transaction to prevent race conditions
-      Accession::SampleStatus.transaction do
-        accession_status = Accession::SampleStatus.find_latest_or_create_for_sample(accessionable.sample)
-        accession_status.destroy
-      end
+      sample_id = accessionable.sample.id
+      Accession::SampleStatus.where(sample_id:).delete_all
     end
 
     # Update the accessionable status to failed for users to see in the UI
     def fail_accession_status(message)
-      # Wrap in a transaction to prevent race conditions
-      Accession::SampleStatus.transaction do
-        accession_status = Accession::SampleStatus.find_latest_or_create_for_sample(accessionable.sample)
-        accession_status.mark_failed(message)
-      end
+      Accession::SampleStatus.find_latest_and_update!(accessionable.sample,
+                                                      status: 'processing',
+                                                      attributes: { status: 'failed', message: message })
+    rescue ActiveRecord::RecordNotFound
+      # If no status exists, log a warning and create one
+      Rails.logger.warn('Potential data inconsistency. No existing accession processing status found for ' \
+                        "sample ID #{accessionable.sample.id} when trying to mark as failed.")
+      Accession::SampleStatus.create_for_sample(accessionable.sample, 'failed', message)
     end
 
     # Update the accessionable status to aborted for users to see in the UI
     def abort_accession_status
-      # Wrap in a transaction to prevent race conditions
-      Accession::SampleStatus.transaction do
-        accession_status = Accession::SampleStatus.find_latest_or_create_for_sample(accessionable.sample)
-        accession_status.mark_aborted
-      end
+      Accession::SampleStatus.find_latest_and_update!(accessionable.sample,
+                                                      status: 'failed',
+                                                      attributes: { status: 'aborted' })
+    rescue ActiveRecord::RecordNotFound
+      # If no status exists, log a warning and create one
+      Rails.logger.warn('Potential data inconsistency. No existing accession failed status found for ' \
+                        "sample ID #{accessionable.sample.id} when trying to mark as aborted.")
+      Accession::SampleStatus.create_for_sample(accessionable.sample, 'aborted')
     end
 
     # Returns a user-friendly error message based on the error type

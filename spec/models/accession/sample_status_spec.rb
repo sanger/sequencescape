@@ -25,48 +25,60 @@ RSpec.describe Accession::SampleStatus, type: :model do
     end
   end
 
-  describe '#mark_in_progress' do
-    let(:sample_status) { described_class.create_for_sample(sample) }
-
+  describe '.find_latest!' do
     before do
-      sample_status.mark_in_progress
+      create(:accession_sample_status, sample: sample, status: 'queued', created_at: 3.days.ago)
+      create(:accession_sample_status, sample: sample, status: 'failed', created_at: 2.days.ago)
+      create(:accession_sample_status, sample: sample, status: 'failed', created_at: 1.day.ago)
+      create(:accession_sample_status, sample: sample, status: 'processing', created_at: 0.days.ago)
     end
 
-    it 'updates the status to processing' do
-      expect(sample_status.status).to eq('processing')
+    it 'returns the most recent status for the sample' do
+      latest_status = described_class.find_latest!(sample)
+      expect(latest_status.status).to eq('processing')
+    end
+
+    it 'returns the most recent status for the sample filtered by status' do
+      latest_failed_status = described_class.find_latest!(sample, status: 'failed')
+      expect(latest_failed_status.created_at).to be_within(1.second).of(1.day.ago)
+    end
+
+    it 'raises an error if no status exists for the sample' do
+      another_sample = create(:sample)
+      expect do
+        described_class.find_latest!(another_sample)
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+
+    it 'raises an error if no status exists for the sample with the given status' do
+      expect do
+        described_class.find_latest!(sample, status: 'aborted')
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
-  describe '#mark_failed' do
-    let(:sample_status) { described_class.create_for_sample(sample) }
-
+  describe '.find_latest_and_update!' do
     before do
-      sample_status.mark_failed('Something went wrong')
+      create(:accession_sample_status, sample: sample, status: 'failed')
+      create(:accession_sample_status, sample: sample, status: 'queued')
     end
 
-    it 'updates the status to failed' do
-      expect(sample_status.status).to eq('failed')
+    it 'updates the most recent status for the sample' do
+      updated_status = described_class.find_latest_and_update!(sample, attributes: { status: 'processing' })
+      expect(updated_status.status).to eq('processing')
     end
 
-    it 'sets the failure message' do
-      expect(sample_status.message).to eq('Something went wrong')
-    end
-  end
-
-  describe '#mark_aborted' do
-    let(:sample_status) { described_class.create_for_sample(sample) }
-
-    before do
-      sample_status.mark_failed('Previous error message')
-      sample_status.mark_aborted
+    it 'updates the most recent status for the sample filtered by status' do
+      updated_status = described_class.find_latest_and_update!(sample, status: 'failed',
+                                                                       attributes: { status: 'aborted' })
+      expect(updated_status.status).to eq('aborted')
     end
 
-    it 'updates the status to aborted' do
-      expect(sample_status.status).to eq('aborted')
-    end
-
-    it 'leaves the previous message as it was' do
-      expect(sample_status.message).to eq('Previous error message')
+    it 'raises an error if no status exists for the sample' do
+      another_sample = create(:sample)
+      expect do
+        described_class.find_latest_and_update!(another_sample, attributes: { status: 'processing' })
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end

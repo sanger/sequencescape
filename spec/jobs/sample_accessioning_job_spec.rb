@@ -30,6 +30,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
 
       before do
+        create(:accession_sample_status, sample: sample, status: 'processing')
         expect { job.perform }.to raise_error(JobFailed)
       end
 
@@ -82,6 +83,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
     context 'when an exception is raised during submission' do
       before do
+        create(:accession_sample_status, sample: sample, status: 'processing')
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Failed to process accessioning response'))
@@ -157,16 +159,19 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
   describe '#success' do
     before do
+      create(:accession_sample_status, sample: sample, status: 'failed')
+      create(:accession_sample_status, sample: sample, status: 'failed')
       job.success(nil)
     end
 
-    it 'removes the latest accession sample status' do
+    it 'removes any existing accession sample statuses for the sample' do
       expect(Accession::SampleStatus.where(sample:)).not_to exist
     end
   end
 
   describe '#failure' do
     before do
+      create(:accession_sample_status, sample: sample, status: 'failed')
       job.failure(nil)
     end
 
