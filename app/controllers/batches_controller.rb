@@ -288,11 +288,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
     if @batch.send(model_method, tube_barcodes, current_user)
-      flash[:notice] = 'All of the tubes are in their correct positions.'
+      flash[:notice] = "All of the #{verification_flavour.to_s.humanize.downcase.pluralize} are in their correct positions."
       redirect_to batch_path(@batch)
     else
       flash[:error] = @batch.errors.full_messages.sort
-      redirect_to action: :verify, id: @batch.id
+      redirect_to action: :verify, id: @batch.id, verification_flavour: verification_flavour
     end
   end
 
