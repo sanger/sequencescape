@@ -223,6 +223,8 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
+    faraday-multipart (1.0.4)
+      multipart-post (~> 2)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
     ffi (1.17.2-arm64-darwin)
@@ -311,6 +313,7 @@ GEM
     msgpack (1.8.0)
     multi_json (1.17.0)
     multi_test (1.1.0)
+    multipart-post (2.4.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
@@ -664,6 +667,7 @@ DEPENDENCIES
   exception_notification
   factory_bot_rails
   faraday
+  faraday-multipart
   flipper (~> 1.0)
   flipper-active_record (~> 1.0)
   flipper-ui (~> 1.0)

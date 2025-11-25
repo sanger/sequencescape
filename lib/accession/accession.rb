@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 module Accession
-  # Handles assigning of accessioning number to a Sequenescape sample.
+  # Handles assigning of accessioning number to a Sequencescape sample.
   # Before accessioning:
   #  check configuration settings, in particular:
   #   configatron.proxy
   #   configatron.accession url, ega.user, ega.password, ena.user, ena.password
-  #   configarton.accession_local_key (authorised user uuid)
-  # check that Sequenescape sample sample_metadata meets accessioning requirements
+  #   configatron.accession_local_key (authorised user uuid)
+  # check that Sequencescape sample sample_metadata meets accessioning requirements
   # configatron.accession_samples flag should be set to true to automatically accession a sample after save
   # (app/models/sample.rb)
   #
@@ -15,11 +15,12 @@ module Accession
   #     arguments.
   #  2. Checks if a new accession sample is valid (it will check if Sequencescape sample can be accessioned).
   #  3. Create new Accession::Submission, with authorised user and a valid accession sample as arguments.
-  #  4. submission.post will send a post request (using Accession::Request) to an outside service (API).
-  #   If the request is successful, Accession::Response will be created, it should have an accession number
-  #  5. submission.update_accession_number updates Sequenescape sample accession number
+  #  4. If the submission is valid, submit it using AccessioningV1Client.submit_and_fetch_accession_number.
+  #  5. The client will submit the submission to the external accessioning service API and return an accession number.
+  #  6. The submission will update the Sequencescape sample with the new accession number.
+  #  7. If any step fails, an Accession::Error, Faraday::Error or StandardError will be raised and needs to be handled.
   #
-  # An example of usage is provided in Sequenescape app/jobs/sample_accessioning_job.rb
+  # An example of usage is provided in Sequencescape app/jobs/sample_accessioning_job.rb
   #
   # @see ftp://ftp.sra.ebi.ac.uk/meta/xsd/ Schema definitions
   module Helpers
@@ -53,12 +54,13 @@ module Accession
   require_relative 'accession/tag'
   require_relative 'accession/tag_list'
   require_relative 'accession/submission'
-  require_relative 'accession/request'
-  require_relative 'accession/response'
-  require_relative 'accession/null_response'
   require_relative 'accession/configuration'
 
   String.include CoreExtensions::String
+
+  # Generic high-level accessioning error
+  # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
+  class Error < StandardError; end
 
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze

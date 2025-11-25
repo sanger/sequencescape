@@ -21,6 +21,7 @@ describe 'Labwhere reception', :js do
     expect(page).to have_content 'Labwhere Reception'
     fill_in('User barcode or swipecard', with: 12_345)
     click_on 'Update locations'
+    fill_in('User barcode or swipecard', with: 12_345)
     expect(page).to have_content "Asset barcodes can't be blank"
     within('#new_labwhere_reception') do
       fill_in('asset_scan', with: plate.human_barcode).send_keys(:return)
