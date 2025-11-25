@@ -356,11 +356,12 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def verify_amp_plate_position(request, barcodes)
+    divider = '-'
     scanned_barcode = barcodes[request.position - 1]
-    scanned_batch_id, tube_barcode = scanned_barcode.split('_')
+    scanned_batch_id, tube_barcode = scanned_barcode.split(divider)
 
     unless batch_id_matches(scanned_batch_id) && tube_barcode_matches(request, tube_barcode)
-      expected_barcode = "#{id}_#{request.asset.human_barcode}"
+      expected_barcode = "#{id}#{divider}#{request.asset.human_barcode}"
       errors.add(:base, "The barcode at position #{request.position} is incorrect: expected #{expected_barcode}.")
     end
   end
