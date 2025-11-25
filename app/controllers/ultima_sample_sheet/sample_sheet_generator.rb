@@ -13,7 +13,7 @@ module UltimaSampleSheet::SampleSheetGenerator
   # Ultima sample sheet generator class.
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
-  class Generator # rubocop:disable Metrics/ClassLength
+  class Generator
     PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
     HEADER_TITLE = ['[Header]'].freeze
     GLOBAL_TITLE = ['[Global]'].freeze
