@@ -170,7 +170,7 @@ RSpec.describe SamplesController do
           expect(flash[:error]).to eq(<<~MSG.squish)
             Please fill in the required fields:
             Sample metadata gender is required, Sample metadata phenotype is required,
-            Sample metadata donor is required, Sample metadata is invalid
+            Sample metadata donor is required
           MSG
         end
       end
