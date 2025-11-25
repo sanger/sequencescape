@@ -75,8 +75,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param request [UltimaSequencingRequest] the request whose entry name is needed
     # @return [String] the ZIP entry name
     def entry_name(request)
-      barcode = request.asset.human_barcode
-      "#{folder_name}/#{@batch.id}_#{barcode}.csv"
+      "#{folder_name}/#{request.id_wafer_lims}.csv"
     end
 
     # Returns the folder name for the batch sample sheets in the ZIP archive.
