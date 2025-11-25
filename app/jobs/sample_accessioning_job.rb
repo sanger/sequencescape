@@ -29,10 +29,12 @@ SampleAccessioningJob =
     end
 
     def reschedule_at(current_time, _attempts)
+      # When changing, also update attempt description text in app/views/samples/_accession_statuses.html.erb
       current_time + 1.day
     end
 
     def max_attempts
+      # When changing, also update attempt description text in app/views/samples/_accession_statuses.html.erb
       3
     end
 

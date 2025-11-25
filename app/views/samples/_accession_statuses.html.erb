@@ -2,9 +2,8 @@
 
 <%= panel do %>
   <h3>Accession Attempts <%= counter_badge @sample.accession_sample_statuses.length %></h3>
-  <span>Accession number: <strong><%= @sample.ebi_accession_number || 'Not yet assigned' %></strong></span>
   <div style="max-height: 35vh; overflow-y: auto;">
-    <table class="table table-sm mt-2">
+    <table class="table table-sm border-bottom mt-2">
       <thead>
         <tr>
           <th>Status</th>
@@ -22,5 +21,6 @@
         <% end %>
       </tbody>
     </table>
+    <span>Failures are retried daily for 3 days until successful or aborted.</span>
   </div>
 <% end %>
