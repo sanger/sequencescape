@@ -9,7 +9,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   VERIFICATION_FLAVOUR_TO_MODEL_ACTION = {
     tube: :verify_tube_layout,
     amp_plate: :verify_amp_plate_layout
-  }
+  }.freeze
 
   before_action :evil_parameter_hack!
 
@@ -282,18 +282,27 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @verification_flavour = params[:verification_flavour]
   end
 
-  def verify_layout # rubocop:todo Metrics/AbcSize
-    tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+  def verify_layout
+    scanned_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
     verification_flavour = params[:verification_flavour].to_sym
     model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
-    if @batch.send(model_method, tube_barcodes, current_user)
-      flash[:notice] = "All of the #{verification_flavour.to_s.humanize.downcase.pluralize} are in their correct positions."
-      redirect_to batch_path(@batch)
+    if @batch.send(model_method, scanned_barcodes, current_user)
+      verify_layout_success(verification_flavour)
     else
-      flash[:error] = @batch.errors.full_messages.sort
-      redirect_to action: :verify, id: @batch.id, verification_flavour: verification_flavour
+      verify_layout_failure(verification_flavour)
     end
+  end
+
+  def verify_layout_success(verification_flavour)
+    flash[:notice] =
+      "All of the #{verification_flavour.to_s.humanize.downcase.pluralize} are in their correct positions."
+    redirect_to batch_path(@batch)
+  end
+
+  def verify_layout_failure(verification_flavour)
+    flash[:error] = @batch.errors.full_messages.sort
+    redirect_to action: :verify, id: @batch.id, verification_flavour: verification_flavour
   end
 
   def reset_batch

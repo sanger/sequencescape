@@ -108,12 +108,16 @@ module Presenters
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
 
       if tube_layout_not_verified? && can?(:verify)
-        add_submenu_option 'Verify tube layout', { controller: :batches, action: :verify, verification_flavour: :tube, id: @batch.id, only_path: true }
+        add_submenu_option 'Verify tube layout',
+                           { controller: :batches, action: :verify, verification_flavour: :tube, id: @batch.id,
+                             only_path: true }
       end
 
-      if ultima? && amp_plate_layout_not_verified? && can?(:verify)
-        add_submenu_option 'Verify AMP plate layout', { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id, only_path: true }
-      end
+      return unless ultima? && amp_plate_layout_not_verified? && can?(:verify)
+
+      add_submenu_option 'Verify AMP plate layout',
+                         { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id,
+                           only_path: true }
     end
   end
 end
