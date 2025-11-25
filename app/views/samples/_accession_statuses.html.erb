@@ -1,7 +1,7 @@
 <%# See app/views/studies/information/_accession_statuses.html.erb %>
 
 <%= panel do %>
-  <h3>Accession Statuses <%= counter_badge @sample.accession_sample_statuses.length %></h3>
+  <h3>Accession Attempts <%= counter_badge @sample.accession_sample_statuses.length %></h3>
   <span>Accession number: <strong><%= @sample.ebi_accession_number || 'Not yet assigned' %></strong></span>
   <div style="max-height: 35vh; overflow-y: auto;">
     <table class="table table-sm mt-2">
