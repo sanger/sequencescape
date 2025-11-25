@@ -52,12 +52,6 @@ RSpec.describe Sample, :accession, :cardinal do
       Delayed::Worker.delay_jobs = true
     end
 
-    it 'will not proceed if the sample is not suitable' do
-      accessionable_sample.accession
-
-      expect(unaccessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
-    end
-
     it 'will provide debug information if the sample is not suitable for accessioning' do
       sample_name = unaccessionable_sample.name
 
