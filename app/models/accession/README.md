@@ -27,11 +27,11 @@ To address the lack of feedback outlined above, a new models and database table 
 
 While this is currently intended to be used only with sample accessions, there is no reason why the same pattern could not be used for other accession types in the future.
 
-This is intended to work as follows:
+This is designed to work as follows:
 
 1. A user would submit a sample manifest, accession all samples within a study, or accession individual samples.
-2. Each of these actions would create an individual Accession::SampleStatus record for each item to be accessioned.
-3. If the accessioning process succeeds, the accession number would be updated on the object itself.
+2. Whenever a sample is accessioned, an individual Accession::SampleStatus record will be created. This includes multiple attempts within the same sample accessioning job.
+3. If the accessioning process succeeds, the accession number would be updated on the sample (metadata) itself.
 4. If the accessioning process fails, the status record would be updated to 'failed' with the given error message.
-5. All successful statuses would be removed after notification, while failed statuses would be retained for user reference.
-6. Statuses can be deleted after a rolling period of time, say 30 days.
+5. Failed statuses are retained for user reference, but could probably be deleted after a rolling period of time, say 30 days.
+6. When an accession attempt succeeds and an accession number is generated for a sample, all statuses for that sample are deleted.
