@@ -24,7 +24,7 @@ class Api::Messages::UseqWaferIo < Api::Base
   # useq wafer MLWH message.
   # Included in UltimaSequencingRequest model
   module LaneExtensions
-    def self.included(base) # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+    def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
         # Lot numbers for opentron and amp
         # Matching descriptors from config/default_records/descriptors/003_ultima_descriptors.yml
@@ -74,11 +74,6 @@ class Api::Messages::UseqWaferIo < Api::Base
 
         def amp_instrument_name
           detect_descriptor('UG AMP Inst. Name')
-        end
-
-        # TODO: Make this a shared method with the sample sheet generation
-        def id_wafer_lims
-          "#{batch.id}_#{source_labware.human_barcode}_#{position}"
         end
       end
     end
