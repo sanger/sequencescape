@@ -1,3 +1,4 @@
 # frozen_string_literal: true
 
-# See lib/accession/accession.rb
+# This file needs to be here for Rails autoloading to work correctly
+# See lib/accession.rb for the module definition
