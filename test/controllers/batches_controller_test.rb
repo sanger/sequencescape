@@ -169,7 +169,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
       end
 
-      context '#verify_tube_layout' do
+      context '#verify_layout' do
         setup do
           @pipeline = create(:pipeline)
           @asset1 = create(:sample_tube, barcode: '123456')
@@ -184,21 +184,23 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'accepts valid layouts' do
-          post :verify_tube_layout,
+          post :verify_layout,
                params: {
                  :id => @batch.id,
                  'barcode_0' => '3980654321768',
-                 'barcode_1' => '3980123456878'
+                 'barcode_1' => '3980123456878',
+                 :verification_flavour => 'tube'
                }
           assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
         end
 
         should 'rejects invalid layouts' do
-          post :verify_tube_layout,
+          post :verify_layout,
                params: {
                  :id => @batch.id,
                  'barcode_0' => '3980123456878',
-                 'barcode_1' => '3980654321768'
+                 'barcode_1' => '3980654321768',
+                 :verification_flavour => 'tube'
                }
           assert_equal [
             'The tube at position 1 is incorrect: expected NT654321L.',
@@ -208,7 +210,7 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'rejects missing tubes' do
-          post :verify_tube_layout, params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '' }
+          post :verify_layout, params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '', :verification_flavour => 'tube' }
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
       end
