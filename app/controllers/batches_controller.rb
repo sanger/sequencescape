@@ -19,6 +19,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   fail
                   print_labels
                   print_plate_labels
+                  print_amp_plate_labels
                   print
                   verify
                   verify_tube_layout
@@ -29,7 +30,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   download_spreadsheet
                   generate_sample_sheet
                 ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_amp_plate_barcodes print_barcodes]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?
@@ -218,6 +219,9 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def print_labels
   end
 
+  def print_amp_plate_labels
+  end
+
   def print_plate_labels # rubocop:todo Metrics/MethodLength
     @pipeline = @batch.pipeline
     @output_barcodes = []
@@ -251,6 +255,15 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  def print_amp_plate_barcodes
+    if @batch.requests.empty?
+      flash[:notice] = 'Your batch contains no requests.'
+      redirect_to controller: 'batches', action: 'show', id: @batch.id
+    else
+      print_handler(LabelPrinter::Label::BatchPlateAmp)
+    end
+  end
+
   # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @task = Task.find_by(id: params[:task_id])
@@ -278,6 +291,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   def verify_tube_layout # rubocop:todo Metrics/AbcSize
+    # scanned tube barcode params from page are called barcode_0, barcode_1, ... barcode_n
     tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
 
     if @batch.verify_tube_layout(tube_barcodes, current_user)
