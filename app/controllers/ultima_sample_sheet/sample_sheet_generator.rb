@@ -13,7 +13,7 @@ module UltimaSampleSheet::SampleSheetGenerator
   # Ultima sample sheet generator class.
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
-  class Generator # rubocop:disable Metrics/ClassLength
+  class Generator
     PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
     HEADER_TITLE = ['[Header]'].freeze
     GLOBAL_TITLE = ['[Global]'].freeze
@@ -75,8 +75,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param request [UltimaSequencingRequest] the request whose entry name is needed
     # @return [String] the ZIP entry name
     def entry_name(request)
-      barcode = request.asset.human_barcode
-      "#{folder_name}/#{@batch.id}_#{barcode}.csv"
+      "#{folder_name}/#{request.id_wafer_lims}.csv"
     end
 
     # Returns the folder name for the batch sample sheets in the ZIP archive.
