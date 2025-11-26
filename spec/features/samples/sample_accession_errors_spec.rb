@@ -15,7 +15,7 @@ RSpec.describe 'Sample accession errors', :js, type: :feature do
     let(:sample) { create(:sample, studies: [study]) }
 
     context 'when accessioning is enabled', :accessioning_enabled do
-      it 'shows informative errors when required fields are missing for accessioning' do
+      it 'shows generate link for accessioning' do
         expect(page).to have_content('Sample Specification')
         expect(page).to have_link('Generate Accession Number')
       end
@@ -34,7 +34,7 @@ RSpec.describe 'Sample accession errors', :js, type: :feature do
     let(:sample) { create(:accessioned_sample, studies: [study]) }
 
     context 'when accessioning is enabled', :accessioning_enabled do
-      it 'shows a link for accessioning' do
+      it 'shows update link for accessioning' do
         expect(page).to have_content('Sample Specification')
         expect(page).to have_link('Update Sample Data for Accessioning')
       end
