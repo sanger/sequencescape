@@ -67,8 +67,8 @@ module Presenters
       end
       if ultima? && amp_plate_layout_not_verified? && can?(:verify)
         add_submenu_option 'Verify AMP plate layout',
-                          { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id,
-                            only_path: true }
+                           { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id,
+                             only_path: true }
       end
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
       return unless aviti_run_manifest? || ultima_run_manifest?

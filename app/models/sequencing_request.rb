@@ -46,7 +46,7 @@ class SequencingRequest < CustomerRequest
   end
 
   # Returns true if a request is ready for batching
-  def ready? # rubocop:todo Metrics/CyclomaticComplexity
+  def ready?
     # Reject any requests with missing or empty assets.
     # We use most tagged aliquot here, as its already loaded.
     return false if asset.nil? || asset.most_tagged_aliquot.nil?

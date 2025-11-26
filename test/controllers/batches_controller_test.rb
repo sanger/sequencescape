@@ -210,7 +210,9 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'rejects missing tubes' do
-          post :verify_layout, params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '', :verification_flavour => 'tube' }
+          post :verify_layout,
+               params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '',
+                         :verification_flavour => 'tube' }
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
 

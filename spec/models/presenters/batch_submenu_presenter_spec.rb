@@ -18,7 +18,7 @@ RSpec.describe Presenters::BatchSubmenuPresenter, type: :model do
     end
 
     before do
-      allow_any_instance_of(described_class).to receive(:can?).and_return(true)
+      allow(batch_submenu_presenter.ability).to receive(:can?).and_return(true)
     end
 
     it 'includes a link to print AMP plate labels' do
@@ -35,7 +35,6 @@ RSpec.describe Presenters::BatchSubmenuPresenter, type: :model do
       found_amp_plate_verify_option = false
 
       batch_submenu_presenter.each_option do |option|
-        puts option
         found_amp_plate_verify_option = true if option == amp_plate_verify_option
       end
 
