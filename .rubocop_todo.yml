@@ -808,6 +808,11 @@ RSpec/LeakyConstantDeclaration:
     - 'spec/sample_manifest_excel/tags_spec.rb'
     - 'spec/sequencescape_excel/list_spec.rb'
 
+# Offense count: 20
+RSpec/LeakyLocalVariable:
+  Exclude:
+    - 'spec/models/well_spec.rb'
+
 # Offense count: 49
 RSpec/LetSetup:
   Exclude:

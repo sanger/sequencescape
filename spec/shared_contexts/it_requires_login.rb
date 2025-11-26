@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 shared_examples 'it requires login' do |*actions|
-  params = (actions.pop if actions.last.is_a?(Hash)) || {}
+  let(:params) do
+    extracted = actions.last.is_a?(Hash) ? actions.pop : {}
+    extracted
+  end
   actions << :index if actions.empty?
 
   actions.each do |action|
