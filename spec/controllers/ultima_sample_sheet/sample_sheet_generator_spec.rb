@@ -46,6 +46,9 @@ require 'rails_helper'
 #
 # rubocop:enable Layout/LineLength
 RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
+  # Eagerly create the global section record.
+  before { create(:ultima_global) }
+
   # Eagerly create tag groups and tags to get consistent IDs.
   let!(:tag_group1) { create(:tag_group_with_tags, tag_count: 96) }
   let!(:tag_group2) { create(:tag_group_with_tags, tag_count: 96) }
@@ -137,12 +140,12 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     # Expected Zip entry names
     let(:zip_entry1_name) do
       folder = "batch_#{batch.id}_sample_sheets"
-      csv = "batch_#{batch.id}_#{tube1.human_barcode}_sample_sheet.csv"
+      csv = "#{request1.id_wafer_lims}.csv"
       "#{folder}/#{csv}"
     end
     let(:zip_entry2_name) do
       folder = "batch_#{batch.id}_sample_sheets"
-      csv = "batch_#{batch.id}_#{tube2.human_barcode}_sample_sheet.csv"
+      csv = "#{request2.id_wafer_lims}.csv"
       "#{folder}/#{csv}"
     end
     # Expected CSV section headers from Zip; to peek at the content.

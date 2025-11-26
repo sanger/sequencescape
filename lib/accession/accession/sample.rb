@@ -39,14 +39,10 @@ module Accession
       @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
-    # rubocop:todo Metrics/MethodLength
-    def to_xml # rubocop:todo Metrics/AbcSize
+    def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       tag_groups = tags.by_group
-      xml = Builder::XmlMarkup.new
-      xml.instruct!
 
-      # rubocop:disable Metrics/BlockLength
-      xml.SAMPLE_SET(XML_NAMESPACE) do
+      xml.SAMPLE_SET(XML_NAMESPACE) do # rubocop:disable Metrics/BlockLength
         xml.SAMPLE(alias: ebi_alias) do
           xml.TITLE title if title.present?
           xml.SAMPLE_NAME do
@@ -74,11 +70,7 @@ module Accession
           end
         end
       end
-      # rubocop:enable Metrics/BlockLength
-      xml.target!
     end
-
-    # rubocop:enable Metrics/MethodLength
 
     def ebi_alias
       sample.uuid
