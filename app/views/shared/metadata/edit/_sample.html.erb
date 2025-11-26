@@ -42,7 +42,18 @@
     <% metadata_fields.with_options(grouping: 'ENA requirement') do |group| %>
       <%= group.select(:sample_sra_hold, Sample::SRA_HOLD_VALUES,include_blank: true) %>
       <%= group.text_field(:sample_common_name, 'data-organism' => 'common_name') %>
-      <input class='btn btn-default validate_organism' type='button' value='Lookup'/>
+
+      <%# Unfortunately there isn't a nice way to insert a non-form button using form-builder %>
+      <fieldset id="subject">
+        <div class="form-group row sqs-form">
+          <div class="offset-md-2 col-md-10">
+            <button type="button" class="btn btn-info validate_organism">
+              <i class="fa fa-search"></i> Lookup Taxon from Common Name
+            </button>
+          </div>
+        </div>
+      </fieldset>
+
       <%= group.text_field(:sample_taxon_id,    'data-organism' => 'taxon_id') %>
     <% end %>
 
@@ -84,4 +95,4 @@
   <% end %>
 <% end %>
 
-<%= organism_validation_javascript %>
+<%= vite_javascript_tag 'organism_validation' %>
