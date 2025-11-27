@@ -11,32 +11,30 @@
     </tr>
   </thead>
   <tbody>
-    <% @study.sample_progress(@page_elements) do |statistics| %>
-      <% @page_elements.each do |sample| %>
-        <% sample_statistics = statistics[sample.id] %>
-        <tr>
-          <td><%= link_to sample.name, sample_path(sample)    %></td>
-          <td><%= sample.updated_at.to_formatted_s(:sortable) %></td>
-          <% @request_types.each do |request_type| %>
-            <% request_type_statistics = sample_statistics[request_type.id] %>
-            <% if request_type_statistics.total > 1 and request_type_statistics.progress > 0 %>
-              <td><%= progress_bar(request_type_statistics.progress) %></td>
-            <% else %>
-              <td>
-                <% if request_type_statistics.passed > 0 %>
-                  <span style="display:none">passed</span><%= icon('far', 'check-circle', title: 'Passed') %>
-                <% elsif request_type_statistics.started > 0 %>
-                  <span style="display:none">started</span><%= icon('fas', 'cog', title: 'Started') %>
-                <% elsif request_type_statistics.pending > 0 %>
-                  <span style="display:none">pending</span><%= icon('fas', 'hourglass-start ', title: 'Pending') %>
-                <% elsif request_type_statistics.failed > 0 %>
-                  <span style="display:none">failed</span><%= icon('fas', 'times-circle', title: 'Failed') %>
-                <% end %>
-              </td>
-            <% end %>
+    <% @page_elements.each do |sample| %>
+      <% sample_statistics = statistics[sample.id] %>
+      <tr>
+        <td><%= link_to sample.name, sample_path(sample)    %></td>
+        <td><%= sample.updated_at.to_formatted_s(:sortable) %></td>
+        <% @request_types.each do |request_type| %>
+          <% request_type_statistics = sample_statistics[request_type.id] %>
+          <% if request_type_statistics.total > 1 and request_type_statistics.progress > 0 %>
+            <td><%= progress_bar(request_type_statistics.progress) %></td>
+          <% else %>
+            <td>
+              <% if request_type_statistics.passed > 0 %>
+                <span style="display:none">passed</span><%= icon('far', 'check-circle', title: 'Passed') %>
+              <% elsif request_type_statistics.started > 0 %>
+                <span style="display:none">started</span><%= icon('fas', 'cog', title: 'Started') %>
+              <% elsif request_type_statistics.pending > 0 %>
+                <span style="display:none">pending</span><%= icon('fas', 'hourglass-start ', title: 'Pending') %>
+              <% elsif request_type_statistics.failed > 0 %>
+                <span style="display:none">failed</span><%= icon('fas', 'times-circle', title: 'Failed') %>
+              <% end %>
+            </td>
           <% end %>
-        </tr>
-      <% end %>
+        <% end %>
+      </tr>
     <% end %>
   </tbody>
 </table>
