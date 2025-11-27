@@ -375,11 +375,14 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  # TODO: these validations are for accessioning and don't belong in this model - see `on: :accession`
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, allow_blank: true, on: :accession)
+  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record|
+    "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
+  }
 
   before_destroy :safe_to_destroy
 
