@@ -375,11 +375,14 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  # TODO: these validations are for accessioning and don't belong in this model - see `on: :accession`
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, allow_blank: true, on: :accession)
+  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record|
+    "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
+  }
 
   before_destroy :safe_to_destroy
 
@@ -498,13 +501,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Return the highest priority accession service
   def accession_service
     services = studies.group_by { |s| s.accession_service.priority }
-    return UnsuitableAccessionService.new([]) if services.empty?
+    return AccessionService::UnsuitableService.new([]) if services.empty?
 
     highest_priority = services.keys.max
     suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
     return suitable_study.accession_service if suitable_study
 
-    UnsuitableAccessionService.new(services[highest_priority])
+    AccessionService::UnsuitableService.new(services[highest_priority])
   end
 
   def accession

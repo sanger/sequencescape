@@ -60,7 +60,7 @@ class QcReportsController < ApplicationController
       # We failed to save
       error_messages = qc_report.errors.full_messages.join('; ')
       flash[:error] = "Failed to create report: #{error_messages}"
-      redirect_back fallback_location: root_path
+      redirect_back_or_to(root_path)
     end
   end
 
@@ -75,7 +75,7 @@ class QcReportsController < ApplicationController
       redirect_to file.qc_report
     else
       flash[:error] = "Failed to read report: #{file.errors.join('; ')}"
-      redirect_back fallback_location: root_path
+      redirect_back_or_to(root_path)
     end
   end
 
@@ -94,7 +94,7 @@ class QcReportsController < ApplicationController
   end
 
   def fail(message)
-    redirect_back fallback_location: root_path, alert: message
+    redirect_back_or_to(root_path, alert: message)
     false
   end
 

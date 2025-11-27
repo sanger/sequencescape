@@ -280,7 +280,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     if template
       render action: template, layout: false
     else
-      redirect_back fallback_location: batch_path(@batch), alert: "No worksheet for #{@pipeline.name}"
+      redirect_back_or_to(batch_path(@batch), alert: "No worksheet for #{@pipeline.name}")
     end
   end
 
