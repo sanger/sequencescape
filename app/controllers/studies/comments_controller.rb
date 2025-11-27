@@ -17,7 +17,7 @@ class Studies::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @study.comments
     render partial: 'list', locals: { commentable: @study, visible: true }
   end

@@ -39,7 +39,7 @@ module Batch::RequestBehaviour
   def recycle_from_batch!
     ActiveRecord::Base.transaction do
       return_for_inbox!
-      batch_request.destroy if batch_request.present?
+      batch_request.presence&.destroy
       save!
     end
   end

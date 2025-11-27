@@ -17,7 +17,7 @@ class Samples::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @sample.comments
     render partial: 'list', locals: { commentable: @sample, visible: true }
   end

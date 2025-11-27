@@ -20,7 +20,7 @@ class Requests::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @request.comments
     render partial: 'list', locals: { commentable: @request, visible: true }
   end

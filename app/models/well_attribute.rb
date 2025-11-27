@@ -79,6 +79,6 @@ class WellAttribute < ApplicationRecord
 
   def broadcast_warehouse_message
     message = Messenger.find_by(target_id: well_id)
-    message.resend if message.present?
+    message.presence&.resend
   end
 end

@@ -17,7 +17,7 @@ class Batches::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @batch.comments
     render partial: 'list', locals: { commentable: @batch, visible: true }
   end

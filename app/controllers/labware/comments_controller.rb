@@ -21,7 +21,7 @@ class Labware::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @labware.comments
     render partial: 'list', locals: { commentable: @labware, visible: true, labware: @labware }
   end

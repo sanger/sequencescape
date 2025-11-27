@@ -20,10 +20,9 @@ class PlateSummariesController < ApplicationController
     @plates = candidate_plate&.source_plates
 
     if @plates.blank?
-      redirect_back fallback_location: root_path,
-                    flash: {
-                      error: "No suitable plates found for barcode #{params[:plate_barcode]}"
-                    }
+      redirect_back_or_to root_path, flash: {
+        error: "No suitable plates found for barcode #{params[:plate_barcode]}"
+      }
     elsif @plates.one?
       redirect_to plate_summary_path(@plates.first.human_barcode)
     else

@@ -59,7 +59,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
   # Handle invalid input exceptions by redirecting back to the bulk submissions page
   def handle_invalid_input_exception(exception)
     flash[:error] = exception.message
-    redirect_back fallback_location: bulk_submissions_path
+    redirect_back_or_to bulk_submissions_path
   end
 
   # Extract the submission parameters from the request

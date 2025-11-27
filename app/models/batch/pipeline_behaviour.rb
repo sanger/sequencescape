@@ -11,7 +11,7 @@ module Batch::PipelineBehaviour
       validates :pipeline, presence: true
 
       # Validation of some of the batch information is left to the pipeline that it belongs to
-      validate { |record| record.pipeline.validation_of_batch(record) if record.pipeline.present? }
+      validate { |record| record.pipeline.presence&.validation_of_batch(record) }
 
       # The batch requires positions on it's requests if the pipeline does
       delegate :requires_position?, to: :pipeline

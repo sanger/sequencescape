@@ -25,11 +25,11 @@ module SequencescapeExcel
         if foreign_barcode.present?
           if foreign_barcode.barcode != value
             foreign_barcode.update(barcode: value)
-            sample_manifest.update_barcodes if sample_manifest.present?
+            sample_manifest.presence&.update_barcodes
           end
         else
           asset.plate.barcodes << Barcode.new(format: foreign_barcode_format, barcode: value)
-          sample_manifest.update_barcodes if sample_manifest.present?
+          sample_manifest.presence&.update_barcodes
         end
       end
 

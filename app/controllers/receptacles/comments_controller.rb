@@ -22,7 +22,7 @@ class Receptacles::CommentsController < ApplicationController
 
   def destroy
     comment = Comment.find(params[:id])
-    comment.destroy if comment.present?
+    comment.presence&.destroy
     @comments = @receptacle.comments
     render partial: 'list', locals: { commentable: @receptacle, visible: true, receptacle: @receptacle }
   end

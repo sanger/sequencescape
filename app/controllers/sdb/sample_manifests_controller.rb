@@ -69,7 +69,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     else
       flash[:error] = print_job.errors.full_messages.join('; ')
     end
-    redirect_back fallback_location: root_path
+    redirect_back_or_to root_path
   end
 
   private
@@ -107,7 +107,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
 
     flash[:error] = "'#{params[:asset_type]}' is not a supported manifest type."
     begin
-      redirect_back fallback_location: root_path
+      redirect_back_or_to root_path
     rescue ActionController::RedirectBackError
       redirect_to sample_manifests_path
     end
