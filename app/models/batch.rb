@@ -314,6 +314,10 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
     requests.each do |request|
+      # requests have a 'position' within the batch - a column on the join table 'batch_requests'
+      # this assumes that the barcodes array is ordered by position
+      # it compares the barcode with the request's source receptacle's labware barcode
+      # the labware in question is the final tube in the pipeline, before it's loaded onto the flowcell
       barcode = barcodes[request.position - 1]
       unless barcode == request.asset.machine_barcode || barcode == request.asset.human_barcode
         expected_barcode = request.asset.human_barcode

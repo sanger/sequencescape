@@ -13,7 +13,7 @@ class FakeAccessionService
   class EvesdropResource < RestClient::Resource
     def post(payload)
       FakeAccessionService.instance.add_payload(payload)
-      super(payload)
+      super
     end
   end
 
@@ -26,7 +26,7 @@ class FakeAccessionService
         configatron.accession_samples = true
 
         # Set up our evesdropper
-        AccessionService.rest_client_class = EvesdropResource
+        AccessionService::BaseService.rest_client_class = EvesdropResource
 
         # We actually know what the value of these will be
         # but we include the lookup here, as we're more keen
@@ -51,7 +51,7 @@ class FakeAccessionService
         FakeAccessionService.instance.clear
 
         # Remove the evesdropper
-        AccessionService.rest_client_class = RestClient::Resource
+        AccessionService::BaseService.rest_client_class = RestClient::Resource
 
         # Revert accessioning
         configatron.accession_samples = @accession_samples_initially

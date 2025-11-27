@@ -4,12 +4,12 @@ require 'rails_helper'
 # See additional related tests in spec/models/sample_spec.rb
 
 RSpec.describe SampleAccessioningJob, type: :job do
-  let(:user) { create(:user, api_key: configatron.accession_local_key) }
-  let(:sample) do
-    create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-  end
+  include AccessionV1ClientHelper
+
+  let(:contact_user) { create(:user, api_key: configatron.accession_local_key) }
+  let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
+  let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
   let(:accessionable) { create(:accession_sample, sample:) }
-  let(:submission) { build(:accession_submission, user:) }
   let(:job) { described_class.new(accessionable) }
 
   let(:logger) { instance_double(Logger, error: nil) }
@@ -21,9 +21,45 @@ RSpec.describe SampleAccessioningJob, type: :job do
   end
 
   describe '#perform' do
+    before do
+      allow(described_class).to receive(:contact_user).and_return(contact_user)
+    end
+
+    context 'when the submission fails validation' do
+      let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+
+      before do
+        job.perform
+      end
+
+      it 'logs the error' do
+        expect(logger).to have_received(:error).with(
+          "SampleAccessioningJob failed for sample '#{sample.name}': " \
+          'Accessionable submission is invalid: ' \
+          'Sample does not have the required metadata: sample-taxon-id.'
+        )
+      end
+
+      it 'notifies ExceptionNotifier' do
+        sample_name = sample.name # 'Sample 1'
+        expect(ExceptionNotifier).to have_received(:notify_exception).with(
+          instance_of(StandardError),
+          data: {
+            message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                     'Accessionable submission is invalid: ' \
+                     'Sample does not have the required metadata: sample-taxon-id.',
+            sample_name: sample_name,
+            service_provider: 'ENA'
+          }
+        )
+      end
+    end
+
     context 'when the submission is successful' do
       before do
-        allow(submission).to receive(:update_accession_number).and_return(true)
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+        )
       end
 
       it 'does not raise an error' do
@@ -31,46 +67,32 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
     end
 
-    context 'when the submission fails to update the accession number' do
+    context 'when an exception is raised during submission' do
       before do
-        allow(submission).to receive(:update_accession_number).and_return(false)
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number,
+                                raise_error: Accession::Error.new('Failed to process accessioning response'))
+        )
         job.perform
       end
 
       it 'logs the error' do
         expect(logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'EBI failed to update accession number, data may be invalid'
+          'Failed to process accessioning response'
         )
       end
 
       it 'notifies ExceptionNotifier' do
         expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(AccessionService::AccessionServiceError),
+          instance_of(Accession::Error),
           data: {
-            cause_message: 'EBI failed to update accession number, data may be invalid',
+            message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
+                     'Failed to process accessioning response',
             sample_name: sample.name, # 'Sample 1',
             service_provider: 'ENA'
           }
         )
-      end
-    end
-
-    context 'when an exception is raised during submission' do
-      let(:error) do
-        AccessionService::AccessionServiceError.new(
-          "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'EBI failed to update accession number, data may be invalid'
-        )
-      end
-
-      before do
-        allow(submission).to receive(:post).and_raise(error)
-        job.perform
-      end
-
-      it 'logs the error' do
-        expect(logger).to have_received(:error).with(error.message)
       end
     end
   end

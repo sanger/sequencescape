@@ -82,8 +82,7 @@ module Api
       # @return [String] The template type
       # e.g 'TagLayoutTemplate'
       def template_type
-        template_type = _model.template_class.underscore
-        self.class._model_hints[template_type] || template_type
+        _model.template_class.underscore
       end
 
       ###
@@ -95,6 +94,11 @@ module Api
       #   @todo This resource is immutable; Update relationship to be read-only.
       #   @return [PurposeResource] The associated purpose of this lot type.
       has_one :target_purpose, write_once: true, class_name: 'Purpose'
+
+      # @!attribute [rw] lots
+      #  The {Lot} instances that are of this lot type.
+      #  @return [Array<LotResource>] The associated lots.
+      has_many :lots
 
       ###
       # Filters
