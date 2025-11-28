@@ -36,7 +36,7 @@ Feature: The XML interface to the samples
           <property><name>Mother</name><value/></property>
           <property><name>Organism</name><value/></property>
           <property><name>Volume (&#181;l)</name><value/></property>
-          <property><name>TAXON ID</name><value/></property>
+          <property><name>Taxon ID</name><value/></property>
           <property><name>Public Name</name><value/></property>
           <property><name>Purification method</name><value/></property>
           <property><name>Reference Genome</name><value/></property>

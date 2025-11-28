@@ -37,4 +37,17 @@ RSpec.describe UltimaSequencingPipeline, type: :model do
       expect(pipeline.ot_recipe_consistent_for_batch?(batch)).to be false
     end
   end
+
+  describe '#post_release_batch' do
+    let(:batch) { create(:batch) }
+
+    it 'calls Messenger with UseqWaferIo template and useq_wafer root' do
+      allow(Messenger).to receive(:create!)
+      pipeline.post_release_batch(batch, create(:user))
+
+      expect(Messenger).to have_received(:create!).with(
+        hash_including(target: batch, template: 'UseqWaferIo', root: 'useq_wafer')
+      )
+    end
+  end
 end

@@ -61,6 +61,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
   end
 
   context 'when checking uploads' do
+    before do
+      create(:insdc_country, name: 'United Kingdom')
+    end
+
     after { Delayed::Worker.delay_jobs = true }
 
     it 'will upload a valid 1d tube sample manifest' do
@@ -205,7 +209,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
       # Check for warning being logged
       expect(Rails.logger).to have_received(:warn).with(
-        "Accessionable is invalid for sample 'sample_1': Sample has already been accessioned. " \
+        "Sample 'sample_1' cannot be accessioned: Sample has already been accessioned. " \
         'Skipping accessioning for changed samples.'
       )
     end
@@ -383,6 +387,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
   end
 
   context 'when checking sample manifest state' do
+    before do
+      create(:insdc_country, name: 'United Kingdom')
+    end
+
     after { Delayed::Worker.delay_jobs = true }
 
     it 'will not be valid if the sample_manifest is already being processed' do

@@ -1,0 +1,17 @@
+/* Styles for custom Bootstrap 4 dropdown submenu for robot driver file 
+ * generation behaviour selection.
+ */
+.dropdown-menu .btn-selected-robot {
+  @extend .bg-success;
+  @extend .text-white;
+}
+
+.robot-submenu-menu {
+  position: relative;
+  padding-top: 0;
+  padding-bottom: 0;
+  width: 100%;
+  border-left: 0;
+  border-right: 0;
+  border-radius: 0;
+}
