@@ -13,7 +13,7 @@ module Core::Endpoint::BasicHandler::Actions
       include Core::Endpoint::BasicHandler::Actions::Factory
       include Core::Endpoint::BasicHandler::Actions::Guards
       include Core::Endpoint::BasicHandler::EndpointLookup
-      include Core::Abilities::ActionBehaviour
+      # include Core::Abilities::ActionBehaviour
     end
   end
 

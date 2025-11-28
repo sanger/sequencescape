@@ -6,7 +6,6 @@
 # eg. A1, H12.
 class Well < Receptacle # rubocop:todo Metrics/ClassLength
   include Api::WellIo::Extensions
-  include ModelExtensions::Well
   include Cherrypick::VolumeByNanoGrams
   include Cherrypick::VolumeByNanoGramsPerMicroLitre
   include Cherrypick::VolumeByMicroLitre

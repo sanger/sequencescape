@@ -5,7 +5,6 @@
 
 class Stamp < ApplicationRecord
   include Uuid::Uuidable
-  include ModelExtensions::Stamp
 
   class StampQcable < ApplicationRecord
     self.table_name = ('stamp_qcables')
