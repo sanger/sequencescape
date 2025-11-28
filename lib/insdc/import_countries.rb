@@ -24,18 +24,37 @@ class Insdc::ImportCountries
   def import
     no_file_error if file_missing?
 
-    pending_countries = countries_to_import
+    existing_valid_countries = Insdc::Country.valid_state.pluck(:name)
+    existing_invalid_countries = Insdc::Country.invalid_state.pluck(:name)
+    existing_countries = Insdc::Country.pluck(:name)
 
-    # Mark countries as invalid if they aren't on the list
-    Insdc::Country.find_each { |country| country.invalid! unless pending_countries.delete(country.name) }
+    existing_countries_to_mark_valid = countries_to_import & existing_invalid_countries
+    existing_countries_to_mark_invalid = existing_valid_countries - countries_to_import
+    new_countries_to_add = countries_to_import - existing_countries
 
-    generate_countries(pending_countries)
+    mark_as_valid(existing_countries_to_mark_valid)
+    mark_as_invalid(existing_countries_to_mark_invalid)
+    add_countries(new_countries_to_add)
+
+    Rails.logger.info { "#{existing_countries_to_mark_valid.size} existing countries marked as valid" }
+    Rails.logger.info { "#{existing_countries_to_mark_invalid.size} existing countries marked as invalid" }
+    Rails.logger.info { "#{new_countries_to_add.size} new countries added" }
   end
 
   private
 
-  def generate_countries(pending_countries)
-    Insdc::Country.import(pending_countries.map { |name| { name: name, sort_priority: priority_for(name) } })
+  def mark_as_valid(countries_to_mark)
+    Insdc::Country.where(name: countries_to_mark).find_each(&:valid!)
+  end
+
+  def mark_as_invalid(countries_to_mark)
+    Insdc::Country.where(name: countries_to_mark).find_each(&:invalid!)
+  end
+
+  def add_countries(new_countries_to_add)
+    Insdc::Country.import(new_countries_to_add.map do |name|
+      { name: name, sort_priority: priority_for(name), validation_state: :valid }
+    end)
   end
 
   def priority_for(name)
@@ -47,7 +66,7 @@ class Insdc::ImportCountries
   end
 
   def countries_to_import
-    xml.root.get_elements(XPATH).map(&:text)
+    @countries_to_import ||= xml.root.get_elements(XPATH).map(&:text)
   end
 
   def url
