@@ -321,6 +321,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
+  has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus'
+
   belongs_to :sample_manifest, inverse_of: :samples
 
   # This is a natural join to sample_manifest_asset based on a shared sanger_sample_id.
@@ -547,6 +549,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     raise e
   end
 
+  def current_accession_status
+    accession_sample_statuses.last
+  end
+
   def sample_reference_genome
     return sample_metadata.reference_genome if sample_metadata.reference_genome.try(:name).present?
     return study_reference_genome if study_reference_genome.try(:name).present?
@@ -611,7 +617,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def validate_accessionable!(accessionable)
     return if accessionable.valid?
 
-    error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
+    error_message = "Sample '#{name}' cannot be accessioned: #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
     raise AccessionService::AccessionValidationFailed, error_message
   end
