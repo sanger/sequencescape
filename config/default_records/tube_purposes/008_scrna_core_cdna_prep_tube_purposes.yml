@@ -12,7 +12,12 @@ LRC Bank Spare:
   target_type: SampleTube
   stock_plate: false
 
-LRC Bank Input:
+LRC Bank Input 1ml:
+  type: Tube::Purpose
+  target_type: SampleTube
+  stock_plate: true
+
+LRC Bank Input 0.8ml:
   type: Tube::Purpose
   target_type: SampleTube
   stock_plate: true
