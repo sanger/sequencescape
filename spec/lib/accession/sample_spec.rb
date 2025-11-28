@@ -41,55 +41,51 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     expect(described_class.new(tag_list, sample)).not_to be_valid
   end
 
-  it "is not sent for accessioning if the sample doesn't have the required fields" do
-    sample =
-      create(
-        :sample_for_accessioning_with_open_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+  context 'when validating' do
+    let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
 
-    sample =
-      create(
-        :sample_for_accessioning_with_open_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+    context 'with an open study' do
+      let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
-    sample =
-      create(
-        :sample_for_accessioning_with_managed_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, gender: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+      it 'is required to define sample_taxon_id' do
+        sample.sample_metadata.sample_taxon_id = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
 
-    sample =
-      create(
-        :sample_for_accessioning_with_managed_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, phenotype: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+      it 'is required to define sample_common_name' do
+        sample.sample_metadata.sample_common_name = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
 
-    sample =
-      create(
-        :sample_for_accessioning_with_managed_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, donor_id: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+    context 'with a managed study' do
+      let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
 
-    sample =
-      create(
-        :sample_for_accessioning_with_managed_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+      it 'is required to define sample_taxon_id' do
+        sample.sample_metadata.sample_taxon_id = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
 
-    sample =
-      create(
-        :sample_for_accessioning_with_managed_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, sample_common_name: nil)
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+      it 'is required to define sample_common_name' do
+        sample.sample_metadata.sample_common_name = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'is required to define gender' do
+        sample.sample_metadata.gender = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'is required to define phenotype' do
+        sample.sample_metadata.phenotype = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'is required to define donor_id' do
+        sample.sample_metadata.donor_id = nil
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
   end
 
   it 'an appropriate service should be chosen based on the associated study' do
