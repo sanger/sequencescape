@@ -153,10 +153,19 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     expect(sample_attributes_tags).not_to include(*tags.array_express_labels.map { |label| "<TAG>#{label}</TAG>" })
   end
 
-  it 'can update accession number for sample' do
-    accession_sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
-    expect(accession_sample.update_accession_number('ENA1234')).to be_truthy
-    expect(accession_sample.ebi_accession_number).to eq('ENA1234')
+  describe '#update_accession_number' do
+    let(:sample) { create(:sample_for_accessioning_with_open_study) }
+    let(:accession_sample) { described_class.new(tag_list, sample) }
+    let(:test_accession_number) { 'ENA12345' }
+
+    before do
+      expect(accession_sample.ebi_accession_number).to be_nil
+      accession_sample.update_accession_number(test_accession_number)
+    end
+
+    it 'sets the ebi_accession_number to the provided value' do
+      expect(accession_sample.ebi_accession_number).to eq(test_accession_number)
+    end
   end
 
   describe '#to_xml' do
