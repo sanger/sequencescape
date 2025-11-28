@@ -6,7 +6,7 @@ require 'rexml/document'
 class Insdc::ImportCountries
   FILE_ROOT = Rails.root.join('data/ena_sample_checklists')
   FIELD_NAME = 'geographic location (country and/or sea)'
-  XPATH = "//FIELD//NAME[text() = '#{FIELD_NAME}']/following-sibling::FIELD_TYPE//TEXT_VALUE//VALUE".freeze
+  XPATH = "//FIELD//LABEL[text() = '#{FIELD_NAME}']/following-sibling::FIELD_TYPE//TEXT_VALUE//VALUE".freeze
 
   def initialize(ena_root:, sample_checklist:, priorities: {})
     @ena_root = ena_root

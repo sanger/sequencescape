@@ -46,8 +46,8 @@ RSpec.describe Insdc::ImportCountries do
                         </FIELD>
                         <FIELD>
                             <LABEL>geographic location (country and/or sea)</LABEL>
-                            <NAME>geographic location (country and/or sea)</NAME>
-                            <DESCRIPTION>The geographical origin of the sample as defined by the country or sea. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
+                            <NAME>geographic_location_country_andor_sea</NAME>
+                            <DESCRIPTION>The geographical origin of where the sample was collected from, with the intention of sequencing, as defined by the country or sea name. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
                             <FIELD_TYPE>
                                   <TEXT_CHOICE_FIELD>
                                       <TEXT_VALUE>
