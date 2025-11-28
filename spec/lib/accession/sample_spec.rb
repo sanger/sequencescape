@@ -171,30 +171,29 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     context 'with country of origin' do
       it 'includes country of origin' do
         expect(xml).to include(COUNTRY_TAG)
+      end
+
+      it 'displays the country when country is specified' do
         expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('Australia')
       end
 
       it 'displays not provided when country is empty' do
         sample.sample_metadata.update(country_of_origin: nil)
-        expect(xml).to include(COUNTRY_TAG)
         expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when country value is not provided' do
         sample.sample_metadata.update(country_of_origin: 'not provided')
-        expect(xml).to include(COUNTRY_TAG)
         expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when country value is wrong' do
         sample.sample_metadata.update(country_of_origin: 'Freedonia')
-        expect(xml).to include(COUNTRY_TAG)
         expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays missing when country of origin is specified as missing' do
         sample.sample_metadata.update(country_of_origin: 'missing: human-identifiable')
-        expect(xml).to include(COUNTRY_TAG)
         expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('missing: human-identifiable')
       end
     end
@@ -202,30 +201,29 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     context 'with collection date' do
       it 'includes collection date' do
         expect(xml).to include(COLLECTION_DATE_TAG)
+      end
+
+      it 'displays the collection date when correctly specified' do
         expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('2000-01-01T00:00')
       end
 
       it 'displays not provided when collection date is empty' do
         sample.sample_metadata.update(date_of_sample_collection: nil)
-        expect(xml).to include(COLLECTION_DATE_TAG)
         expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when collection date is not provided' do
         sample.sample_metadata.update(date_of_sample_collection: 'not provided')
-        expect(xml).to include(COLLECTION_DATE_TAG)
         expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when collection date is wrong' do
         sample.sample_metadata.update(date_of_sample_collection: '2000-99-01T00:00')
-        expect(xml).to include(COLLECTION_DATE_TAG)
         expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays missing when collection date is specified as missing' do
         sample.sample_metadata.update(date_of_sample_collection: 'missing: human-identifiable')
-        expect(xml).to include(COLLECTION_DATE_TAG)
         expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('missing: human-identifiable')
       end
     end
