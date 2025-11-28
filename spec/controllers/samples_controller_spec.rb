@@ -154,8 +154,8 @@ RSpec.describe SamplesController do
           expect(sample).not_to be_valid(:EGA)
         end
 
-        it 'redirects to the sample page' do
-          expect(response).to redirect_to(sample_path(sample.id))
+        it 'redirects to the sample edit page' do
+          expect(response).to redirect_to(edit_sample_path(sample.id))
         end
 
         it 'does not display a notice message' do
@@ -166,7 +166,7 @@ RSpec.describe SamplesController do
           expect(flash[:warning]).to be_nil
         end
 
-        it 'displays an error message with helpful errors' do
+        it 'displays an error message indicating the validation failure' do
           expect(flash[:error]).to eq(<<~MSG.squish)
             Please fill in the required fields:
             Sample metadata gender is required, Sample metadata phenotype is required,
