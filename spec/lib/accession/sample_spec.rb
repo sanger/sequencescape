@@ -164,83 +164,69 @@ RSpec.describe Accession::Sample, :accession, type: :model do
   end
 
   describe '#to_xml' do
+    let(:sample) { create(:sample_for_accessioning_with_open_study) }
+    let(:accession_sample) { described_class.new(tag_list, sample) }
+    let(:xml) { accession_sample.to_xml }
+
     context 'with country of origin' do
       it 'includes country of origin' do
-        accession_sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
-        expect(accession_sample.to_xml).to include(COUNTRY_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COUNTRY_TAG)).to eq('Australia')
+        expect(xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('Australia')
       end
 
       it 'displays not provided when country is empty' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(country_of_origin: nil)
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COUNTRY_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+        expect(xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when country value is not provided' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(country_of_origin: 'not provided')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COUNTRY_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+        expect(xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when country value is wrong' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(country_of_origin: 'Freedonia')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COUNTRY_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COUNTRY_TAG)).to eq('not provided')
+        expect(xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('not provided')
       end
 
       it 'displays missing when country of origin is specified as missing' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(country_of_origin: 'missing: human-identifiable')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COUNTRY_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COUNTRY_TAG)).to eq('missing: human-identifiable')
+        expect(xml).to include(COUNTRY_TAG)
+        expect(find_value_at_tag(xml, COUNTRY_TAG)).to eq('missing: human-identifiable')
       end
     end
 
     context 'with collection date' do
       it 'includes collection date' do
-        accession_sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
-        expect(accession_sample.to_xml).to include(COLLECTION_DATE_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COLLECTION_DATE_TAG)).to eq('2000-01-01T00:00')
+        expect(xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('2000-01-01T00:00')
       end
 
       it 'displays not provided when collection date is empty' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(date_of_sample_collection: nil)
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COLLECTION_DATE_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+        expect(xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when collection date is not provided' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(date_of_sample_collection: 'not provided')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COLLECTION_DATE_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+        expect(xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays not provided when collection date is wrong' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(date_of_sample_collection: '2000-99-01T00:00')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COLLECTION_DATE_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COLLECTION_DATE_TAG)).to eq('not provided')
+        expect(xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('not provided')
       end
 
       it 'displays missing when collection date is specified as missing' do
-        sample = create(:sample_for_accessioning_with_open_study)
         sample.sample_metadata.update(date_of_sample_collection: 'missing: human-identifiable')
-        accession_sample = described_class.new(tag_list, sample)
-        expect(accession_sample.to_xml).to include(COLLECTION_DATE_TAG)
-        expect(find_value_at_tag(accession_sample.to_xml, COLLECTION_DATE_TAG)).to eq('missing: human-identifiable')
+        expect(xml).to include(COLLECTION_DATE_TAG)
+        expect(find_value_at_tag(xml, COLLECTION_DATE_TAG)).to eq('missing: human-identifiable')
       end
     end
   end
