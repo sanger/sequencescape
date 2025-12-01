@@ -53,6 +53,13 @@ phenotype:
   groups:
     - :sample_attributes
     - :array_express
+sample_strain_att:
+  services:
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :strain
 strain_or_line:
   groups:
     - :array_express
