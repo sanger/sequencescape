@@ -22,6 +22,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
   describe '#perform' do
     before do
+      # An accession sample status is created when the job is queued
       allow(described_class).to receive(:contact_user).and_return(contact_user)
     end
 
@@ -29,7 +30,16 @@ RSpec.describe SampleAccessioningJob, type: :job do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
 
       before do
-        job.perform
+        create(:accession_sample_status, sample: sample, status: 'processing')
+        expect { job.perform }.to raise_error(JobFailed)
+      end
+
+      it 'sets the accession sample status to failed' do
+        sample_status = Accession::SampleStatus.where(sample:).first
+        expect(sample_status).to have_attributes(
+          status: 'failed',
+          message: 'An internal error occurred during accessioning.'
+        )
       end
 
       it 'logs the error' do
@@ -63,17 +73,22 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'does not raise an error' do
-        expect { job.perform }.not_to raise_error
+        expect { job.perform }.not_to raise_error # specifically JobFailed
+      end
+
+      it 'removes the latest accession sample status' do
+        expect(Accession::SampleStatus.where(sample:)).not_to exist
       end
     end
 
     context 'when an exception is raised during submission' do
       before do
+        create(:accession_sample_status, sample: sample, status: 'processing')
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
                                 raise_error: Accession::Error.new('Failed to process accessioning response'))
         )
-        job.perform
+        expect { job.perform }.to raise_error(JobFailed)
       end
 
       it 'logs the error' do
@@ -113,6 +128,59 @@ RSpec.describe SampleAccessioningJob, type: :job do
   describe '#queue_name' do
     it 'returns the correct queue name' do
       expect(job.queue_name).to eq('sample_accessioning')
+    end
+  end
+
+  describe '#enqueue' do
+    before do
+      job.enqueue(nil)
+    end
+
+    it 'creates an accession status for the sample' do
+      expect(Accession::SampleStatus.where(sample:)).to exist
+    end
+
+    it 'sets the status to queued' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status.status).to eq('queued')
+    end
+  end
+
+  describe '#before' do
+    before do
+      job.before(nil)
+    end
+
+    it 'sets the status to in progress' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status.status).to eq('processing')
+    end
+  end
+
+  describe '#success' do
+    before do
+      create(:accession_sample_status, sample: sample, status: 'failed')
+      create(:accession_sample_status, sample: sample, status: 'failed')
+      job.success(nil)
+    end
+
+    it 'removes any existing accession sample statuses for the sample' do
+      expect(Accession::SampleStatus.where(sample:)).not_to exist
+    end
+  end
+
+  describe '#failure' do
+    before do
+      create(:accession_sample_status, sample: sample, status: 'failed')
+      job.failure(nil)
+    end
+
+    it 'sets the status to aborted' do
+      sample_status = Accession::SampleStatus.where(sample:).first
+      expect(sample_status).to have_attributes(
+        status: 'aborted',
+        message: nil
+      )
     end
   end
 end

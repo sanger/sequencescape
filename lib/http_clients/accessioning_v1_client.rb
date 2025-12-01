@@ -26,7 +26,7 @@ module HTTPClients
     # @param files [Hash{String => File}] A hash mapping of file type names to open File objects.
     #   The filename in the multipart payload will be the part of the file object's name after the first underscore.
     # @return [String] The allocated accession number if successful.
-    # @raise [Accession::Error] If the response is not successful or does not indicate success.
+    # @raise [Accession::ExternalValidationError] If the response is not successful or does not indicate success.
     # @raise [Faraday::Error] If the HTTP request fails.
     def submit_and_fetch_accession_number(login, files)
       # Clone the base connection and add basic auth for this request
@@ -97,8 +97,10 @@ module HTTPClients
     def raise_if_failed(response)
       return unless receipt_failed?(response.body)
 
-      message = extract_error_messages(response.body) || 'Failed to process accessioning response'
-      raise Accession::Error, message
+      status_code = response.status || 'unknown'
+      default_message = "Failed to process accessioning response, the response status code was #{status_code}."
+      message = extract_error_messages(response.body) || default_message
+      raise Accession::ExternalValidationError, message
     end
   end
 end
