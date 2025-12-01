@@ -51,15 +51,23 @@ module Presenters
       ability.can? permission, object
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def build_submenu
       add_submenu_option 'View summary', controller: :pipelines, action: :summary
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
-      load_pipeline_options
+      add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
+      add_submenu_option 'Print labels', :print_labels
+      add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
+      add_submenu_option 'Print AMP plate batch ID', :print_amp_plate_labels if ultima?
+      add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
+      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
-      return unless aviti_run_manifest?
+      return unless aviti_run_manifest? || ultima_run_manifest?
 
-      add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches, action: :generate_sample_sheet
+      add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches,
+                                                  action: :generate_sample_sheet
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # This is used to determine if we need to display the Aviti run manifest option
     # in the batch submenu.
@@ -74,6 +82,14 @@ module Presenters
       @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
     end
     # rubocop: enable Performance/RedundantEqualityComparisonBlock
+
+    def ultima_run_manifest?
+      @batch.released? && ultima_requests?
+    end
+
+    def ultima_requests?
+      @batch.requests.any?(UltimaSequencingRequest)
+    end
 
     def cherrypicking?
       @pipeline.is_a?(CherrypickingPipeline)
@@ -91,16 +107,8 @@ module Presenters
       cherrypicking?
     end
 
-    def load_pipeline_options
-      add_submenu_option 'Edit batch', edit_batch_path(@batch) if can? :edit
-
-      # Printing of labels is enabled for anybody
-      add_submenu_option 'Print labels', :print_labels
-      add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
-
-      add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
-
-      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
+    def ultima?
+      @pipeline.is_a?(UltimaSequencingPipeline)
     end
   end
 end

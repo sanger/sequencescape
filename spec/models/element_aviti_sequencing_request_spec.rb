@@ -80,17 +80,26 @@ RSpec.describe ElementAvitiSequencingRequest, type: :model do
       end
     end
 
-    context 'when requested_flowcell_type is LO and read_length is not 150' do
+    context 'when requested_flowcell_type is LO and read_length is not 75 or 150' do
       # rubocop:disable RSpec/ExampleLength
       it 'is invalid and displays error message' do
         request.request_metadata.requested_flowcell_type = 'LO'
         request.request_metadata.read_length = 300
         validator.validate
         expect(validator.errors[:read_length]).to include(
-          'For the LO (Low Output) flowcell kit the user can select a Read Length of 150'
+          'For the LO (Low Output) flowcell kit the user can select a Read Length of 75 or 150'
         )
       end
       # rubocop:enable RSpec/ExampleLength
+    end
+
+    context 'when requested_flowcell_type is LO and read_length is 75' do
+      it 'is valid' do
+        request.request_metadata.requested_flowcell_type = 'LO'
+        request.request_metadata.read_length = 75
+        validator.validate
+        expect(validator.errors[:read_length]).to be_empty
+      end
     end
   end
 end
