@@ -241,6 +241,14 @@ RSpec.describe Accession::Sample, :accession, type: :model do
       # This is technically more of an integration test as it involves several classes, but I
       # needed a clear way to easily validate generated output.
 
+      # Uses the actual tag list loaded from config, not the factory
+      before do
+        Accession.configure do |config|
+          config.folder = File.join('config', 'accession')
+          config.load!
+        end
+      end
+
       let(:tag_list) { Accession.configuration.tags }
       let(:sample_metadata) do
         create(
@@ -348,7 +356,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         end
       end
 
-      context 'with an open study' do
+      context 'with an OPEN study' do # study emphasised for easy test failure identification
         let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
         let(:expected_tags_and_values) do
           {
@@ -358,19 +366,30 @@ RSpec.describe Accession::Sample, :accession, type: :model do
             'geographic location (country and/or sea)' => sample.sample_metadata.country_of_origin,
             'phenotype' => sample.sample_metadata.phenotype,
             'subject id' => sample.sample_metadata.donor_id,
+            'ArrayExpress-AGE' => sample.sample_metadata.age,
+            'ArrayExpress-CELL_TYPE' => sample.sample_metadata.cell_type,
+            'ArrayExpress-COMPOUND' => sample.sample_metadata.compound,
+            'ArrayExpress-DEVELOPMENTAL_STAGE' => sample.sample_metadata.developmental_stage,
             'ArrayExpress-DISEASE_STATE' => sample.sample_metadata.disease_state,
-            'ArrayExpress-GENDER' => sample.sample_metadata.gender,
+            'ArrayExpress-DOSE' => sample.sample_metadata.dose,
+            'ArrayExpress-GENOTYPE' => sample.sample_metadata.genotype,
+            'ArrayExpress-GROWTH_CONDITION' => sample.sample_metadata.growth_condition,
+            'ArrayExpress-IMMUNOPRECIPITATE' => sample.sample_metadata.immunoprecipitate,
+            'ArrayExpress-ORGANISM_PART' => sample.sample_metadata.organism_part,
             'ArrayExpress-PHENOTYPE' => sample.sample_metadata.phenotype,
             'ArrayExpress-RNAI' => sample.sample_metadata.rnai,
-            'ArrayExpress-SAMPLE_PUBLIC_NAME' => sample.sample_metadata.sample_public_name,
-            'ArrayExpress-SUBJECT_ID' => sample.sample_metadata.donor_id
+            'ArrayExpress-SEX' => sample.sample_metadata.gender,
+            'ArrayExpress-SPECIES' => sample.sample_metadata.organism,
+            'ArrayExpress-STRAIN_OR_LINE' => sample.sample_metadata.sample_strain_att,
+            'ArrayExpress-TIME_POINT' => sample.sample_metadata.time_point,
+            'ArrayExpress-TREATMENT' => sample.sample_metadata.treatment
           }
         end
 
         it_behaves_like 'the tags are correctly included in the generated XML'
       end
 
-      context 'with a managed study' do
+      context 'with a MANAGED study' do # study emphasised for easy test failure identification
         let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
 
         let(:expected_tags_and_values) do
