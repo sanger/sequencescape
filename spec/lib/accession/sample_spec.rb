@@ -317,20 +317,20 @@ RSpec.describe Accession::Sample, :accession, type: :model do
           end
         end
 
-        it 'expects all provided standard values to be non-nil' do
+        it 'expects all provided expected values to be non-nil' do
           # This is to make sure that values are sourced from the data locations above and are not defaulting to nil
           nil_tags = expected_tags_and_values.select { |_, value| value.nil? }.keys
           expect(nil_tags).to be_empty, "Expected non-nil values for tags: #{nil_tags.join(', ')}"
         end
 
-        it 'includes the EBI names of all standard tags' do
+        it 'includes the EBI names of all expected tags' do
           missing_tags = expected_tags_and_values.keys - xml_sample_attributes.keys
           expect(missing_tags).to be_empty,
                                   "Expected XML to include tags: '#{missing_tags.join("', '")}' " \
                                   "but only tags '#{xml_sample_attributes.keys.join("', '")}' were found"
         end
 
-        it 'includes the correct values for all standard tags' do
+        it 'includes the correct values for all expected tags' do
           tag_value_received = expected_tags_and_values.filter_map do |tag, value|
             [tag, value, xml_sample_attributes[tag]] if xml_sample_attributes[tag] != value
           end
