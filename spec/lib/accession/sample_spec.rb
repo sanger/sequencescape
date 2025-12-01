@@ -378,8 +378,8 @@ RSpec.describe Accession::Sample, :accession, type: :model do
             'ArrayExpress-ORGANISM_PART' => sample.sample_metadata.organism_part,
             'ArrayExpress-PHENOTYPE' => sample.sample_metadata.phenotype,
             'ArrayExpress-RNAI' => sample.sample_metadata.rnai,
-            'ArrayExpress-SEX' => sample.sample_metadata.gender,
-            'ArrayExpress-SPECIES' => sample.sample_metadata.organism,
+            'ArrayExpress-SEX' => sample.sample_metadata.gender.downcase,
+            'ArrayExpress-SPECIES' => sample.sample_metadata.sample_common_name,
             'ArrayExpress-STRAIN_OR_LINE' => sample.sample_metadata.sample_strain_att,
             'ArrayExpress-TIME_POINT' => sample.sample_metadata.time_point,
             'ArrayExpress-TREATMENT' => sample.sample_metadata.treatment
