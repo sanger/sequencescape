@@ -26,6 +26,13 @@ date_of_sample_collection:
   groups:
     - :sample_attributes
   ebi_name: :collection_date
+sample_description:
+  services:
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :sample description
 donor_id:
   services:
     - :EGA

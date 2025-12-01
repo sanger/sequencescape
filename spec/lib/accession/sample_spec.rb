@@ -365,6 +365,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
             'gender' => sample.sample_metadata.gender.downcase,
             'geographic location (country and/or sea)' => sample.sample_metadata.country_of_origin,
             'phenotype' => sample.sample_metadata.phenotype,
+            'sample description' => sample.sample_metadata.sample_description,
             'subject id' => sample.sample_metadata.donor_id,
             'ArrayExpress-AGE' => sample.sample_metadata.age,
             'ArrayExpress-CELL_TYPE' => sample.sample_metadata.cell_type,
@@ -399,6 +400,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
             'gender' => sample.sample_metadata.gender.downcase,
             'geographic location (country and/or sea)' => sample.sample_metadata.country_of_origin,
             'phenotype' => sample.sample_metadata.phenotype,
+            'sample description' => sample.sample_metadata.sample_description,
             'subject id' => sample.sample_metadata.donor_id
           }
         end
