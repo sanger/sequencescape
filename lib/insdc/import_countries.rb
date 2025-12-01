@@ -4,7 +4,7 @@ require 'rexml/document'
 
 # Handles the download and import of permitted country fields from the ENA
 class Insdc::ImportCountries
-  FILE_ROOT = Rails.root.join('data/ena_sample_checklists')
+  FILE_ROOT = Rails.root.join('data/sample_checklists')
   FIELD_NAME = 'geographic location (country and/or sea)'
   XPATH = "//FIELD//LABEL[text() = '#{FIELD_NAME}']/following-sibling::FIELD_TYPE//TEXT_VALUE//VALUE".freeze
 
