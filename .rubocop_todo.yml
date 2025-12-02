@@ -124,7 +124,7 @@ Lint/DuplicateMethods:
     - 'app/models/aliquot_indexer.rb'
     - 'app/models/lib_pool_norm_tube_generator.rb'
     - 'app/models/stock_stamper.rb'
-    - 'lib/accession/accession/tag.rb'
+    - 'lib/accession/tag.rb'
 
 # Offense count: 63
 # Configuration parameters: AllowComments, AllowEmptyLambdas.
@@ -199,14 +199,14 @@ Lint/IneffectiveAccessModifier:
 Lint/MissingSuper:
   Exclude:
     - 'app/api/core/endpoint/basic_handler/actions/guards.rb'
+    - 'app/models/accession_service/no_service.rb'
+    - 'app/models/accession_service/unsuitable_service.rb'
     - 'app/models/delegate_validation.rb'
-    - 'app/models/no_accession_service.rb'
     - 'app/models/request/change_decision.rb'
     - 'app/models/sample_manifest/library_tube_behaviour.rb'
     - 'app/models/sample_manifest/multiplexed_library_behaviour.rb'
     - 'app/models/sample_manifest/sample_tube_behaviour.rb'
     - 'app/models/sample_manifest/tube_rack_behaviour.rb'
-    - 'app/models/unsuitable_accession_service.rb'
     - 'app/uat_actions/uat_actions.rb'
     - 'lib/lab_where_client.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
@@ -257,7 +257,7 @@ Lint/UselessAssignment:
     - 'app/controllers/studies_controller.rb'
     - 'app/helpers/application_helper.rb'
     - 'app/middleware/api/endpoint_handler.rb'
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'app/models/accessionable/base.rb'
     - 'app/models/accessionable/study.rb'
     - 'app/models/asset_shape.rb'
@@ -305,7 +305,7 @@ Metrics/AbcSize:
   Exclude:
     - 'app/controllers/api/v2/transfers_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'app/sample_manifest_excel/sample_manifest_excel/manifest_type_list.rb'
 
 # Offense count: 1
@@ -313,20 +313,20 @@ Metrics/AbcSize:
 # AllowedMethods: refine
 Metrics/BlockLength:
   Exclude:
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
 
 # Offense count: 2
 # Configuration parameters: CountComments, Max, CountAsOne.
 Metrics/ClassLength:
   Exclude:
     - 'app/middleware/api/endpoint_handler.rb'
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
 
 # Offense count: 3
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/CyclomaticComplexity:
   Exclude:
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'lib/limber/helper.rb'
 
 # Offense count: 13
@@ -336,7 +336,7 @@ Metrics/MethodLength:
     - 'app/controllers/api/v2/bait_library_layouts_controller.rb'
     - 'app/controllers/tag_layout_templates_controller.rb'
     - 'app/jobs/export_pool_xp_to_traction_job.rb'
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'app/models/plate/quad_creator.rb'
     - 'app/uat_actions/uat_actions/tube_submission.rb'
     - 'app/validators/novaseqx_pe_validator.rb'
@@ -347,7 +347,7 @@ Metrics/MethodLength:
 # Configuration parameters: AllowedMethods, AllowedPatterns, Max.
 Metrics/PerceivedComplexity:
   Exclude:
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
 
 # Offense count: 13
 Naming/AccessorMethodName:
@@ -1244,6 +1244,13 @@ Rails/ApplicationMailer:
   Exclude:
     - 'lib/eventful_mailer.rb'
 
+# Offense count: 1
+# This cop supports unsafe autocorrection (--autocorrect-all).
+# Configuration parameters: NilOrEmpty, NotPresent, UnlessPresent.
+Rails/Blank:
+  Exclude:
+    - 'lib/accession/configuration.rb'
+
 # Offense count: 7
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Rails/CompactBlank:
@@ -1280,7 +1287,7 @@ Rails/DeprecatedActiveModelErrorsMethods:
   Exclude:
     - 'app/controllers/batches_controller.rb'
 
-# Offense count: 33
+# Offense count: 31
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: slashes, arguments
@@ -1616,7 +1623,7 @@ Style/GlobalStdStream:
   Exclude:
     - 'lib/tasks/limber_dev.rake'
 
-# Offense count: 38
+# Offense count: 37
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: MinBodyLength, AllowConsecutiveConditionals.
 Style/GuardClause:
@@ -1648,9 +1655,8 @@ Style/GuardClause:
     - 'app/models/study.rb'
     - 'app/models/transfer/between_plate_and_tubes.rb'
     - 'features/support/step_definitions/tag_layout_steps.rb'
-    - 'lib/accession/accession/configuration.rb'
-    - 'lib/accession/accession/sample.rb'
-    - 'lib/accession/accession/submission.rb'
+    - 'lib/accession/sample.rb'
+    - 'lib/accession/submission.rb'
     - 'lib/authenticated_system.rb'
     - 'lib/migration_extensions/db_table_archiver.rb'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
@@ -1674,8 +1680,8 @@ Style/HashEachMethods:
     - 'app/sequencescape_excel/sequencescape_excel/worksheet/ranges_worksheet.rb'
     - 'app/views/studies/index_deprecated_xml.xml.builder'
     - 'config/initializers/rails_rack_metal_fix.rb'
-    - 'lib/accession/accession/sample.rb'
-    - 'lib/accession/accession/tag_list.rb'
+    - 'lib/accession/sample.rb'
+    - 'lib/accession/tag_list.rb'
     - 'spec/lib/accession/sample_spec.rb'
     - 'spec/models/robot/verification/source_dest_beds_spec.rb'
     - 'spec/sample_manifest_excel/configuration_spec.rb'
@@ -1698,7 +1704,7 @@ Style/IdenticalConditionalBranches:
 Style/IfInsideElse:
   Exclude:
     - 'app/controllers/sessions_controller.rb'
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'app/models/bulk_submission.rb'
 
 # Offense count: 5
@@ -2076,7 +2082,7 @@ Style/SoleNestedConditional:
 # SupportedStyles: use_perl_names, use_english_names, use_builtin_english_names
 Style/SpecialGlobalVars:
   Exclude:
-    - 'app/models/accession_service.rb'
+    - 'app/models/accession_service/base_service.rb'
     - 'lib/informatics/lib/platform.rb'
 
 # Offense count: 7

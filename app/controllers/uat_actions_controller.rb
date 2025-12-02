@@ -44,9 +44,8 @@ class UatActionsController < ApplicationController
   def check_environment
     return unless Rails.env.production?
 
-    redirect_back fallback_location: root_path,
-                  flash: {
-                    error: 'UAT actions cannot be performed in the production version of Sequencescape.'
-                  }
+    redirect_back_or_to(root_path, flash: {
+                          error: 'UAT actions cannot be performed in the production version of Sequencescape.'
+                        })
   end
 end

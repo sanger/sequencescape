@@ -70,7 +70,7 @@ end
 
 When(/^I complete the cherrypicking batch with "([^"]*)" plate purpose but dont release it$/) do |plate_purpose_name|
   step('I follow "Select Plate Template"')
-  step('I select "testtemplate" from "Plate Template"')
+  step('I select "test_plate_template" from "Plate Template"')
   step("I select \"#{plate_purpose_name}\" from \"Output plate purpose\"")
   step('I press "Next step"')
   step('I press "Next step"')

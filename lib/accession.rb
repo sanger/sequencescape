@@ -61,9 +61,15 @@ module Accession
   # Generic high-level accessioning error
   # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
   class Error < StandardError; end
+  class ExternalValidationError < Error; end
 
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
+
+  # See app/models/accession.rb
+  def self.table_name_prefix
+    'accession_'
+  end
 
   class << self
     attr_writer :configuration
