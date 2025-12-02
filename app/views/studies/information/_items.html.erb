@@ -1,12 +1,22 @@
-
 <div class="card">
   <div class="card-header">
-  <ul class="nav nav-tabs card-header-tabs" role="tablist">
-    <% @summaries.each do |key, description| %>
-      <% selected = summary == key ? 'active' : '' %>
-      <%= content_tag(:li) do %>
-        <%= link_to description, show_summary_study_information_path(@study, {summary: key}.merge(@extra_params.to_h)), class: [selected, 'nav-link'], remote: true, data: { throbber: '.loading-bar-container', failure: '#remote_error', update: '#everything', toggle: 'tab'} %>
-        <% end %>
+    <ul class="nav nav-tabs card-header-tabs" role="tablist">
+      <% @summaries.each do |key, description| %>
+        <% selected = summary == key ? 'active' : '' %>
+        <li>
+          <%= link_to description,
+                      show_summary_study_information_path(@study, { summary: key }.merge(@extra_params.to_h)) + "##{key}",
+                      class: [selected, 'nav-link'],
+                      remote: true,
+                      data: {
+                        throbber: '.loading-bar-container',
+                        failure: '#remote_error',
+                        update: '#everything',
+                        toggle: 'tab'
+                      },
+                      id: "tab-link-#{key}"
+          %>
+        </li>
       <% end %>
     </ul>
   </div>
@@ -16,3 +26,5 @@
     <div id="everything"></div>
   </div>
 </div>
+
+<%= vite_javascript_tag 'tab_anchor' %>

@@ -23,19 +23,22 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
   let(:success_response) do
     <<-XML
-      <RECEIPT success="true">
-        <SAMPLE accession="EGA00001000240" />
-        <SUBMISSION accession="EGA00001000240" />
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="true">
+        <SAMPLE accession="EGA00001000240"/>
+        <SUBMISSION accession="ERA390457" alias="submission_1"/>
+        <ACTIONS>ADD</ACTIONS>
       </RECEIPT>
     XML
   end
-  let(:error_message1) { 'Houston, we\'ve had a problem.' }
-  let(:error_message2) { 'We\'ve had a Main B Bus Undervolt.' }
+  let(:error_message1) { "Houston, we've had a problem." }
+  let(:error_message2) { "We've had a Main B Bus Undervolt." }
   let(:failure_response) do
     <<-XML
-      <RECEIPT success="false">
-        <ERROR>#{error_message1}</ERROR>
-        <ERROR>#{error_message2}</ERROR>
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="false">
+        <MESSAGES>
+          <ERROR>#{error_message1}</ERROR>
+          <ERROR>#{error_message2}</ERROR>
+        </RECEIPT>
       </RECEIPT>
     XML
   end
@@ -83,10 +86,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('') { [200, {}, failure_response] }
       end
 
-      it 'raises Accession::Error with error messages' do
+      it 'raises Accession::ExternalValidationError with error messages' do
         expect do
           client.submit_and_fetch_accession_number(login, files)
-        end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
+        end.to raise_error(Accession::ExternalValidationError, "#{error_message1}; #{error_message2}")
       end
     end
 
@@ -95,10 +98,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('') { [400, {}, failure_response] }
       end
 
-      it 'raises Accession::Error with error messages' do
+      it 'raises Accession::ExternalValidationError with error messages' do
         expect do
           client.submit_and_fetch_accession_number(login, files)
-        end.to raise_error(Accession::Error, "#{error_message1}; #{error_message2}")
+        end.to raise_error(Accession::ExternalValidationError, "#{error_message1}; #{error_message2}")
       end
     end
 
@@ -107,9 +110,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('') { [400, {}, 'Bad Request'] }
       end
 
-      it 'raises a Accession::Error' do
+      it 'raises a Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(login, files) }
-          .to raise_error(Accession::Error, 'Failed to process accessioning response')
+          .to raise_error(Accession::ExternalValidationError,
+                          'Failed to process accessioning response, the response status code was 400.')
       end
     end
 
@@ -118,9 +122,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
         stubs.post('') { [500, {}, 'Internal Server Error'] }
       end
 
-      it 'raises an Accession::Error' do
+      it 'raises an Accession::ExternalValidationError' do
         expect { client.submit_and_fetch_accession_number(login, files) }
-          .to raise_error(Accession::Error, 'Failed to process accessioning response')
+          .to raise_error(Accession::ExternalValidationError,
+                          'Failed to process accessioning response, the response status code was 500.')
       end
     end
 
