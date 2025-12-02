@@ -6,6 +6,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
+  VERIFICATION_FLAVOUR_TO_MODEL_ACTION = {
+    tube: :verify_tube_layout,
+    amp_plate: :verify_amp_plate_layout
+  }.freeze
+
   before_action :evil_parameter_hack!
 
   # generate_sample_sheet checks if the download is allowed without login.
@@ -22,7 +27,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   print_amp_plate_labels
                   print
                   verify
-                  verify_tube_layout
+                  verify_layout
                   reset_batch
                   previous_qc_state
                   filtered
@@ -288,19 +293,31 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
     @count = @requests.length
+    @verification_flavour = params[:verification_flavour]
   end
 
-  def verify_tube_layout # rubocop:todo Metrics/AbcSize
+  def verify_layout
     # scanned tube barcode params from page are called barcode_0, barcode_1, ... barcode_n
-    tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+    scanned_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+    verification_flavour = params[:verification_flavour].to_sym
+    model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
-    if @batch.verify_tube_layout(tube_barcodes, current_user)
-      flash[:notice] = 'All of the tubes are in their correct positions.'
-      redirect_to batch_path(@batch)
+    if @batch.send(model_method, scanned_barcodes, current_user)
+      verify_layout_success(verification_flavour)
     else
-      flash[:error] = @batch.errors.full_messages.sort
-      redirect_to action: :verify, id: @batch.id
+      verify_layout_failure(verification_flavour)
     end
+  end
+
+  def verify_layout_success(verification_flavour)
+    flash[:notice] =
+      "All of the #{verification_flavour.to_s.humanize.downcase.pluralize} are in their correct positions."
+    redirect_to batch_path(@batch)
+  end
+
+  def verify_layout_failure(verification_flavour)
+    flash[:error] = @batch.errors.full_messages.sort
+    redirect_to action: :verify, id: @batch.id, verification_flavour: verification_flavour
   end
 
   def reset_batch
