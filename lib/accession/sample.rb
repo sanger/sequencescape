@@ -107,7 +107,7 @@ module Accession
       return if exactly_one_study?
 
       if studies.empty?
-        errors.add(:sample, 'must be linked to exactly one study for accessioning.')
+        errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
       else
         study_names = studies.values.flatten.map { |study| "'#{study.name}'" }.to_sentence
         errors.add(:sample, "must be linked to exactly one study but is linked to studies #{study_names}.")
