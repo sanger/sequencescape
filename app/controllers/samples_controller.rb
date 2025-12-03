@@ -62,6 +62,7 @@ class SamplesController < ApplicationController
     end
 
     respond_to do |format|
+      @sample.current_user = current_user
       if @sample.save
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
@@ -92,6 +93,7 @@ class SamplesController < ApplicationController
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
+    @sample.current_user = current_user
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
@@ -163,7 +165,7 @@ class SamplesController < ApplicationController
       accessionable = @sample.build_accessionable
       @sample.validate_accessionable!(accessionable)
       # Synchronously perform accessioning job
-      SampleAccessioningJob.new(accessionable).perform
+      SampleAccessioningJob.new(accessionable, current_user).perform
     else
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)

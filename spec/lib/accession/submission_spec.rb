@@ -5,8 +5,8 @@ require 'rails_helper'
 RSpec.describe Accession::Submission, :accession, type: :model do
   include AccessionV1ClientHelper
 
-  let!(:user) { create(:user) }
-  let!(:sample) { build(:accession_sample) }
+  let(:contact_user) { create(:user) }
+  let(:sample) { build(:accession_sample) }
 
   context 'when validating' do
     it 'is not valid without a contact user' do
@@ -14,17 +14,17 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     end
 
     it 'is not valid without an accession sample' do
-      expect(described_class.new(user, nil)).not_to be_valid
+      expect(described_class.new(contact_user, nil)).not_to be_valid
     end
 
     it 'is not valid unless sample is valid' do
-      expect(described_class.new(user, build(:invalid_accession_sample))).not_to be_valid
+      expect(described_class.new(contact_user, build(:invalid_accession_sample))).not_to be_valid
     end
   end
 
   describe '#to_xml' do
     it 'creates some xml with valid attributes' do
-      submission = described_class.new(user, sample)
+      submission = described_class.new(contact_user, sample)
       xml = Nokogiri::XML::Document.parse(submission.to_xml)
 
       submission_xml = xml.at('SUBMISSION')
@@ -49,7 +49,8 @@ RSpec.describe Accession::Submission, :accession, type: :model do
   end
 
   describe '#submit_and_update_accession_number' do
-    let(:submission) { described_class.new(user, sample) }
+    let(:event_user) { create(:user) }
+    let(:submission) { described_class.new(contact_user, sample) }
 
     before do
       # Inject the mocked client into the controller
@@ -65,7 +66,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       before do
         expect(submission.sample).not_to be_accessioned
 
-        submission.submit_and_update_accession_number
+        submission.submit_and_update_accession_number(event_user)
       end
 
       it 'updates the sample accession number' do
@@ -79,15 +80,19 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       it 'raises an error with a message' do
         error_message = "Accessionable submission is invalid: Contact can't be blank, Sample can't be blank"
-        expect { invalid_submission.submit_and_update_accession_number }.to raise_error(StandardError, error_message)
+        expect do
+          invalid_submission.submit_and_update_accession_number(event_user)
+        end.to raise_error(StandardError, error_message)
       end
 
       context 'when the sample is invalid due to already being accessioned' do
-        let(:invalid_submission) { described_class.new(user, build(:invalid_accession_sample)) }
+        let(:invalid_submission) { described_class.new(contact_user, build(:invalid_accession_sample)) }
 
         it 'raises an error with a message' do
           error_message = 'Accessionable submission is invalid: Sample has already been accessioned.'
-          expect { invalid_submission.submit_and_update_accession_number }.to raise_error(StandardError, error_message)
+          expect do
+            invalid_submission.submit_and_update_accession_number(event_user)
+          end.to raise_error(StandardError, error_message)
         end
       end
     end
@@ -104,14 +109,14 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       it 'bubbles up the Accession::Error' do
         expect do
-          submission.submit_and_update_accession_number
+          submission.submit_and_update_accession_number(event_user)
         end.to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end
   end
 
   describe '#compile_files' do
-    let(:submission) { described_class.new(user, sample) }
+    let(:submission) { described_class.new(contact_user, sample) }
     let(:files) { submission.compile_files }
 
     it 'returns a hash of files' do

@@ -563,11 +563,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # If an AccessionService::AccessionServiceError occurs for a sample, adds the error message to the study's errors.
   #
   # @return [void]
-  def accession_all_samples
+  def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
 
     samples.find_each do |sample|
-      sample.accession unless sample.accession_number?
+      sample.accession(event_user) unless sample.accession_number?
     rescue AccessionService::AccessionServiceError => e
       errors.add(:base, e.message)
     end

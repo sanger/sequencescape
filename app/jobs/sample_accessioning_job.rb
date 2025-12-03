@@ -10,7 +10,7 @@ JobFailed = Class.new(StandardError) unless defined?(JobFailed)
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable) do
+  Struct.new(:accessionable, :event_user) do
     # Retrieve the contact user for accessioning submissions
     def self.contact_user
       User.find_by(api_key: configatron.accession_local_key)
@@ -19,7 +19,7 @@ SampleAccessioningJob =
     def perform
       contact_user = self.class.contact_user
       submission = Accession::Submission.new(contact_user, accessionable)
-      submission.submit_and_update_accession_number
+      submission.submit_and_update_accession_number(event_user)
     rescue StandardError => e
       handle_job_error(e, submission)
 
