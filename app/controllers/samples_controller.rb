@@ -160,9 +160,16 @@ class SamplesController < ApplicationController
     end
 
     @sample.validate_ena_required_fields!
-    accession_service = AccessionService.select_for_sample(@sample)
-    accession_service.submit_sample_for_user(@sample, current_user)
-    # TODO: remove this line and replace with reference to @sample.accession
+
+    if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
+      accessionable = @sample.build_accessionable
+      @sample.validate_accessionable!(accessionable)
+      # Synchronously perform accessioning job
+      SampleAccessioningJob.new(accessionable).perform
+    else
+      accession_service = AccessionService.select_for_sample(@sample)
+      accession_service.submit_sample_for_user(@sample, current_user)
+    end
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
   rescue ActiveRecord::RecordInvalid => e
