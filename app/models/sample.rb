@@ -278,6 +278,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
+  # For attributing accessioning changes recorded in the event warehouse
+  attr_accessor :current_user # required to be set from the controller
+
   # Create relationships with samples that contain this Sample via SampleCompoundComponent.
   has_many(
     :joins_as_component_sample,
@@ -512,7 +515,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     AccessionService::UnsuitableService.new(services[highest_priority])
   end
 
-  def accession
+  def accession(event_user)
     # Check if study is present and allowed to be accessioned
     return unless ena_study&.accession_required?
 
@@ -523,11 +526,12 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     accessionable = build_accessionable
     validate_accessionable!(accessionable)
-    enqueue_accessioning_job!(accessionable)
+    enqueue_accessioning_job!(accessionable, event_user)
   end
 
   def accession_and_handle_validation_errors
-    accession
+    event_user = current_user # the event_user for this sample must be set from the calling controller
+    accession(event_user)
     Rails.logger.info("Accessioning passed for sample '#{name}'")
   rescue AccessionService::AccessionServiceError => e
     # Save error messages for later feedback to the user in a flash message
@@ -622,8 +626,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     raise AccessionService::AccessionValidationFailed, error_message
   end
 
-  def enqueue_accessioning_job!(accessionable)
-    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200)
+  def enqueue_accessioning_job!(accessionable, event_user)
+    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
     log_job_status(job)
   rescue StandardError => e
     ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })

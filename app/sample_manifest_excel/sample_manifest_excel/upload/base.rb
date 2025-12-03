@@ -101,8 +101,8 @@ module SampleManifestExcel
         changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
-      def trigger_accessioning
-        changed_samples.each(&:accession)
+      def trigger_accessioning(event_user)
+        changed_samples.each { |sample| sample.accession(event_user) }
       rescue AccessionService::AccessioningDisabledError, AccessionService::AccessionValidationFailed => e
         Rails.logger.warn "#{e.message} Skipping accessioning for changed samples."
       end

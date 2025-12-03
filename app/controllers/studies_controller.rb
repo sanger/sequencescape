@@ -246,7 +246,7 @@ class StudiesController < ApplicationController
 
   def accession_all_samples
     @study = Study.find(params[:id])
-    @study.accession_all_samples
+    @study.accession_all_samples(current_user)
 
     if @study.errors.any?
       error_messages = compile_accession_errors(@study.errors)
