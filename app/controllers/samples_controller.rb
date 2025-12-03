@@ -165,7 +165,7 @@ class SamplesController < ApplicationController
       accessionable = @sample.build_accessionable
       @sample.validate_accessionable!(accessionable)
       # Synchronously perform accessioning job
-      SampleAccessioningJob.new(accessionable).perform
+      SampleAccessioningJob.new(accessionable, current_user).perform
     else
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
