@@ -190,6 +190,8 @@ module Api
       #   @example Filtering lots by UUID
       #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
+
+      filter :lot_number
     end
   end
 end
