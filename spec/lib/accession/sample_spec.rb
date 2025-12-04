@@ -158,8 +158,9 @@ RSpec.describe Accession::Sample, :accession, type: :model do
   end
 
   it 'can update accession number for sample' do
+    event_user = create(:user)
     sample = described_class.new(tag_list, create(:sample_for_accessioning_with_open_study))
-    expect(sample.update_accession_number('ENA1234')).to be_truthy
+    expect(sample.update_accession_number('ENA1234', event_user)).to be_truthy
     expect(sample.ebi_accession_number).to eq('ENA1234')
   end
 
