@@ -41,14 +41,14 @@ module Accession
       end
     end
 
-    def submit_and_update_accession_number
+    def submit_and_update_accession_number(event_user)
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
       client = self.class.client
       login = service.login
       files = compile_files
       accession_number = client.submit_and_fetch_accession_number(login, files)
-      sample.update_accession_number(accession_number)
+      sample.update_accession_number(accession_number, event_user)
     ensure
       # Ensure all opened files are closed
       files&.each_value(&:close!)

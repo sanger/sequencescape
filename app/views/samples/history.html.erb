@@ -12,13 +12,17 @@
   <%- unless @sample.events.empty? %>
     <h3><%= pluralize @sample.events.size, "event" %></h3>
     <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
-      <tr>
-        <th>Message</th>
-        <th>Content</th>
-        <th>Created at</th>
-        <th>Created by</th>
-      </tr>
-      <%= render partial: "requests/event", collection: @sample.events.sort{ |a,b| a.id <=> b.id  } %>
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Content</th>
+          <th>Created at</th>
+          <th>Created by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: "requests/event", collection: @sample.events.sort{ |a,b| a.id <=> b.id  } %>
+      </tbody>
     </table>
   <%- else %>
     <%= display_user_guide("No events registered") %>

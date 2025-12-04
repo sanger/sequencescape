@@ -11,6 +11,7 @@ STUDY_TYPES = %i[open_study managed_study].freeze
 RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
   include AccessionV1ClientHelper
 
+  let(:current_user) { create(:user) }
   let(:accession_number) { 'SAMPLE123456' }
   let(:accessionable_samples) { create_list(:sample_for_accessioning, 5) }
   let(:non_accessionable_samples) { create_list(:sample, 3) }
@@ -36,7 +37,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: accessionable_samples) }
 
         before do
-          study.accession_all_samples
+          study.accession_all_samples(current_user)
           study.reload
         end
 
@@ -53,7 +54,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         before do
           # Verify expectation before running the method
           expect(study.samples.first).not_to receive(:accession)
-          study.accession_all_samples
+          study.accession_all_samples(current_user)
           study.reload
         end
 
@@ -68,7 +69,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         end
 
         before do
-          study.accession_all_samples
+          study.accession_all_samples(current_user)
           study.reload
         end
 
@@ -102,7 +103,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
         let(:study) { create(study_type, accession_number: 'ENA123', samples: non_accessionable_samples) }
 
         before do
-          study.accession_all_samples
+          study.accession_all_samples(current_user)
           study.reload
         end
 

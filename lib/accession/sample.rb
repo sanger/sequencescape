@@ -76,9 +76,10 @@ module Accession
       sample.uuid
     end
 
-    def update_accession_number(accession_number)
+    def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
       sample.save
+      sample.events.updated_accession_number!('sample', event_user)
     end
 
     def accessioned?
