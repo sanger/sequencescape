@@ -80,6 +80,121 @@ RSpec.describe Batch do
     end
   end
 
+  describe '::verify_amp_plate_layout' do
+    let(:user) { create(:user) }
+    let!(:tube) { create(:full_library_tube) }
+    let!(:target) { create(:full_library_tube) }
+    let!(:pipeline) { create(:sequencing_pipeline) }
+    let!(:request) do
+      create(
+        :request_with_sequencing_request_type,
+        asset: tube,
+        target_asset: target,
+        request_type: pipeline.request_types.last,
+        state: 'started'
+      )
+    end
+
+    let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request]) }
+
+    let(:expected_barcode) { "#{batch.id}-#{tube.human_barcode}" }
+    let(:error_message) { "The barcode at position 1 is incorrect: expected #{expected_barcode}." }
+
+    before do
+      expect(LabEvent.count).to eq(0)
+    end
+
+    context 'with one plate' do
+      let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}"] }
+
+      it 'returns true and makes an event' do
+        expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be true
+        expect(LabEvent.count).to eq(1)
+        expect(batch.lab_events.last.description).to eq('AMP plate layout verified')
+      end
+
+      context 'with wrong batch id' do
+        let(:scanned_barcodes) { ["wrongbatchid_#{tube.human_barcode}"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with wrong tube barcode' do
+        let(:scanned_barcodes) { ["#{batch.id}_wrongtubebarcode"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with wrong format barcode' do
+        let(:scanned_barcodes) { ['5487498572'] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+    end
+
+    context 'with two plates' do
+      let!(:tube2) { create(:full_library_tube) }
+      let!(:target2) { create(:full_library_tube) }
+      let!(:request2) do
+        create(
+          :request_with_sequencing_request_type,
+          asset: tube2,
+          target_asset: target2,
+          request_type: pipeline.request_types.last,
+          state: 'started'
+        )
+      end
+
+      let!(:batch) do
+        create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request, request2])
+      end
+
+      let(:expected_barcode2) { "#{batch.id}-#{tube2.human_barcode}" }
+      let(:error_message2) { "The barcode at position 2 is incorrect: expected #{expected_barcode2}." }
+
+      let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}", "#{batch.id}-#{tube2.human_barcode}"] }
+
+      it 'returns true and makes an event' do
+        expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be true
+        expect(LabEvent.count).to eq(1)
+        expect(batch.lab_events.last.description).to eq('AMP plate layout verified')
+      end
+
+      context 'with plates in wrong position' do
+        let(:scanned_barcodes) { ["#{batch.id}-#{tube2.human_barcode}", "#{batch.id}-#{tube.human_barcode}"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(batch.errors[:base]).to include(error_message2)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with one wrong barcode' do
+        let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}", "#{batch.id}-wrongtubebarcode"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message2)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '::for_user' do
     subject(:batch_for_user) { described_class.for_user(query) }
 

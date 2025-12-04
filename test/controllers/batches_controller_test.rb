@@ -169,14 +169,14 @@ class BatchesControllerTest < ActionController::TestCase
         end
       end
 
-      context '#verify_tube_layout' do
+      context '#verify_layout' do
         setup do
           @pipeline = create(:pipeline)
-          @asset1 = create(:sample_tube, barcode: '123456')
-          @asset2 = create(:sample_tube, barcode: '654321')
+          @labware1 = create(:sample_tube, barcode: '123456')
+          @labware2 = create(:sample_tube, barcode: '654321')
 
-          @request1 = @pipeline.request_types.last.create!(asset: @asset1)
-          @request2 = @pipeline.request_types.last.create!(asset: @asset2)
+          @request1 = @pipeline.request_types.last.create!(asset: @labware1)
+          @request2 = @pipeline.request_types.last.create!(asset: @labware2)
 
           @batch = @pipeline.batches.create!
           @batch.batch_requests.create!(request: @request1, position: 2)
@@ -184,21 +184,23 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'accepts valid layouts' do
-          post :verify_tube_layout,
+          post :verify_layout,
                params: {
                  :id => @batch.id,
                  'barcode_0' => '3980654321768',
-                 'barcode_1' => '3980123456878'
+                 'barcode_1' => '3980123456878',
+                 :verification_flavour => 'tube'
                }
           assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
         end
 
         should 'rejects invalid layouts' do
-          post :verify_tube_layout,
+          post :verify_layout,
                params: {
                  :id => @batch.id,
                  'barcode_0' => '3980123456878',
-                 'barcode_1' => '3980654321768'
+                 'barcode_1' => '3980654321768',
+                 :verification_flavour => 'tube'
                }
           assert_equal [
             'The tube at position 1 is incorrect: expected NT654321L.',
@@ -208,8 +210,23 @@ class BatchesControllerTest < ActionController::TestCase
         end
 
         should 'rejects missing tubes' do
-          post :verify_tube_layout, params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '' }
+          post :verify_layout,
+               params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '',
+                         :verification_flavour => 'tube' }
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
+        end
+
+        # the actual verification logic is tested in the batch model tests
+        should 'call correct batch method for amp plate verification' do
+          Batch.stubs(:find).with(@batch.id.to_s).returns(@batch)
+          @batch.expects(:verify_amp_plate_layout).returns(true)
+          post :verify_layout,
+               params: {
+                 :id => @batch.id,
+                 'barcode_0' => 'dummybarcode',
+                 'barcode_1' => 'dummybarcode2',
+                 :verification_flavour => 'amp_plate'
+               }
         end
       end
 
