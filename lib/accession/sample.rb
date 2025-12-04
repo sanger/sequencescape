@@ -79,7 +79,7 @@ module Accession
     def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
       sample.save
-      ::Accessionable::Base.add_updated_event(event_user, "Sample #{sample.id}", sample)
+      sample.events.updated_accession_number!('sample', event_user)
     end
 
     def accessioned?

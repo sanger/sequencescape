@@ -128,7 +128,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   attr_accessor :approval, :run_count, :total_price
 
   # Associations
-  has_many_events
+  has_many_events do
+    event_constructor(:created_accession_number!, Event::AccessioningEvent, :created_accession_number!)
+  end
   has_many_lab_events
 
   role_relation(:followed_by, 'follower')

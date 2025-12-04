@@ -5,8 +5,6 @@ class Accessionable::Base
   InvalidData = Class.new(AccessionService::AccessionServiceError)
   attr_reader :accession_number, :name, :date, :date_short
 
-  delegate :add_updated_event, to: :class # allow both instance and class calls
-
   def initialize(accession_number)
     @accession_number = accession_number
 
@@ -64,15 +62,6 @@ class Accessionable::Base
   def released?
     # Return false by default. Overidden by sample.
     false
-  end
-
-  def self.add_updated_event(user, classname, eventable)
-    eventable.events.create(
-      created_by: user.login,
-      message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-      content: 'accession number regenerated',
-      of_interest_to: 'administrators'
-    )
   end
 
   def label_scope
