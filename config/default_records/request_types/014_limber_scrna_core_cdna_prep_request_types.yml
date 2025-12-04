@@ -15,7 +15,8 @@ limber_scrna_core_cdna_prep_gem_x_5p:
   acceptable_purposes:
     - LRC Bank Seq
     - LRC Bank Spare
-    - LRC Bank Input
+    - LRC Bank Input 1ml
+    - LRC Bank Input 0.8ml
 limber_scrna_core_cdna_prep_gem_x_5p_gems_input:
   name: scRNA Core cDNA Prep GEM-X 5p GEMs Input
   asset_type: Well
