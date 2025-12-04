@@ -25,10 +25,13 @@ module SequencescapeExcel
       def update(_attributes = {})
         return unless valid?
 
-        raise StandardError, 'Tag aliquot mismatch' unless asset.aliquots.one?
+        stock_aliquot = fetch_single_aliquot(asset)
+        new_i7_tag = tag
+        new_i5_tag = tag2
+        return unless tags_need_update?(stock_aliquot, new_i7_tag, new_i5_tag)
 
-        # For dual index tags, tag is a i7 oligo and tag2 is a i5 oligo
-        asset.aliquots.first.update(tag:, tag2:)
+        matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
+        update_all_relevant_aliquots(matching_aliquots, new_i7_tag, new_i5_tag)
       end
 
       def link(other_fields)
@@ -70,6 +73,38 @@ module SequencescapeExcel
       # i5 tag
       def tag2
         Tag.find_by(tag_group_id: tag2_group_id, map_id: well_index)
+      end
+
+      def fetch_single_aliquot(asset)
+        raise StandardError, 'Expecting asset to have a single aliquot' unless asset.aliquots.one?
+
+        asset.aliquots.first
+      end
+
+      # Determine if the tags need to be updated
+      def tags_need_update?(stock_aliquot, new_i7_tag, new_i5_tag)
+        (stock_aliquot.tag != new_i7_tag) || (stock_aliquot.tag2 != new_i5_tag)
+      end
+
+      # Find all aliquots that need updating
+      # Aliquots must have a matching sample_id, library_id, tag_id and tag2_id to the given stock_aliquot
+      def identify_all_matching_aliquots(stock_aliquot)
+        attributes = {
+          sample_id: stock_aliquot.sample_id,
+          library_id: stock_aliquot.library_id,
+          tag_id: stock_aliquot.tag_id,
+          tag2_id: stock_aliquot.tag2_id
+        }
+
+        Aliquot.where(attributes).ids
+      end
+
+      # Update the tags in all the matching aliquots
+      def update_all_relevant_aliquots(matching_aliquots, new_i7_tag, new_i5_tag)
+        Aliquot.where(id: matching_aliquots).find_each do |aq|
+          aq.update(tag: new_i7_tag, tag2: new_i5_tag)
+          aq.save!
+        end
       end
     end
   end
