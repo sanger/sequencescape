@@ -1,3 +1,20 @@
+# Tags configuration for Accession::TagList
+#
+# Tag/field requirements, naming, and validation can be found in the checklists listed below:
+#
+# - ENA: https://www.ebi.ac.uk/ena/browser/view/ERC000011
+# - EGA: https://www.ebi.ac.uk/ena/browser/view/ERC000026
+# - ArrayExpress: From September 2022, the interface to ArrayExpress was retired:
+#                 https://www.ebi.ac.uk/about/news/updates-from-data-resources/arrayexpress-retired/
+#                 However, it appears that as of February 2017, ENA was submitting samples to ArrayExpress on our behalf.
+#                 See this sample for an example:
+#                 1. https://sequencescape.psd.sanger.ac.uk/samples/2934454
+#                 2. https://www.ebi.ac.uk/ena/browser/view/ERS1545406
+#                 3. https://www.ebi.ac.uk/biosamples/samples/SAMEA80468668
+#                 How samples are being submitted to ArrayExpress/BioSample now is currently unknown.
+#
+# Local copies are also stored in `data/sample_checklists/` for reference purposes as they do change occasionally.
+
 sample_taxon_id:
   services:
     - :ENA
@@ -26,6 +43,13 @@ date_of_sample_collection:
   groups:
     - :sample_attributes
   ebi_name: :collection_date
+sample_description:
+  services:
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :sample description
 donor_id:
   services:
     - :EGA
@@ -46,6 +70,13 @@ phenotype:
   groups:
     - :sample_attributes
     - :array_express
+sample_strain_att:
+  services:
+    - :ENA
+    - :EGA
+  groups:
+    - :sample_attributes
+  ebi_name: :strain
 strain_or_line:
   groups:
     - :array_express

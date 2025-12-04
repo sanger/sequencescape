@@ -48,6 +48,10 @@ module Insdc
       sorted_for_select.pluck(:name)
     end
 
+    def valid!
+      update!(validation_state: :valid)
+    end
+
     def invalid!
       update!(validation_state: :invalid)
     end

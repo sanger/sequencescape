@@ -1,3 +1,0 @@
-# We might be able to store these in the repo, but need to double check licenses
-*.xml
-!ERC000011.xml

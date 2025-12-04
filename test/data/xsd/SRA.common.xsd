@@ -1,8 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- INSDC Sequence Read Archive resource Common object XML specification -->
-<!-- $Id: SRA.common.xsd,v 1.4 2014/08/06 10:59:49 rajeshr Exp $ -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="SRA.common"
-    targetNamespace="SRA.common">
+<!--
+  ~ Copyright 2018 EMBL - European Bioinformatics Institute
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not use this
+  ~ file except in compliance with the License. You may obtain a copy of the License at
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~ Unless required by applicable law or agreed to in writing, software distributed under the
+  ~ License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+  ~ CONDITIONS OF ANY KIND, either express or implied. See the License for the
+  ~ specific language governing permissions and limitations under the License.
+  -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:com="SRA.common" targetNamespace="SRA.common">
+
+    <xs:complexType name="ObjectType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="IDENTIFIERS" type="com:IdentifierType"/>
+        </xs:sequence>
+        <xs:attribute name="alias" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Submitter designated name for the object. The name must be unique within the submission account.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="center_name" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The center name of the submitter.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="broker_name" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The center name of the broker.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="accession" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The object accession assigned by the archive.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="RefObjectType">
+        <xs:sequence>
+            <xs:element maxOccurs="1" minOccurs="0" name="IDENTIFIERS" type="com:IdentifierType"/>
+        </xs:sequence>
+        <xs:attribute name="refname" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Identifies an object by name within the namespace defined by attribute "refcenter".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="refcenter" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    The namespace of the attribute "refname".
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="accession" type="xs:string" use="optional">
+            <xs:annotation>
+                <xs:documentation>
+                    Identifies a record by its accession.  The scope of resolution is the entire Archive.
+                </xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
 
     <xs:attributeGroup name="NameGroup">
         <xs:attribute name="alias" type="xs:string" use="optional">
@@ -66,13 +134,13 @@
 
     <xs:complexType name="NameType">
         <xs:simpleContent>
-      <xs:extension base="xs:string">
-        <xs:attribute name="label" use="optional" type="xs:string">
-          <xs:annotation>
-            <xs:documentation>Alternative/explanatory description of the same object/identifier.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-      </xs:extension>
+            <xs:extension base="xs:string">
+                <xs:attribute name="label" use="optional" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Alternative/explanatory description of the same object/identifier.</xs:documentation>
+                    </xs:annotation>
+                </xs:attribute>
+            </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
@@ -104,8 +172,7 @@
                     <xs:documentation>A secondary identifier in the INSDC namespace.</xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="EXTERNAL_ID" type="com:QualifiedNameType" minOccurs="0"
-                maxOccurs="unbounded">
+            <xs:element name="EXTERNAL_ID" type="com:QualifiedNameType" minOccurs="0" maxOccurs="unbounded">
                 <xs:annotation>
                     <xs:documentation>An identifer rom a public non-INSDC resource.</xs:documentation>
                 </xs:annotation>
@@ -122,6 +189,7 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+
     <xs:complexType name="XRefType">
         <xs:all>
             <xs:element name="DB" type="xs:string" minOccurs="1" maxOccurs="1">
@@ -165,6 +233,7 @@
             </xs:element>
         </xs:all>
     </xs:complexType>
+
     <xs:complexType name="AttributeType">
         <xs:annotation>
             <xs:documentation>
@@ -203,24 +272,7 @@
             </xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="URL_LINK">
-                <xs:complexType>
-                    <xs:all>
-                        <xs:element name="LABEL" type="xs:string" minOccurs="1" maxOccurs="1">
-                            <xs:annotation>
-                                <xs:documentation>
-                                    Text label to display for the link.
-                                </xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                        <xs:element name="URL" minOccurs="1" maxOccurs="1" type="xs:anyURI">
-                            <xs:annotation>
-                              <xs:documentation> The internet service link (file:, http:, ftp: etc). </xs:documentation>
-                            </xs:annotation>
-                        </xs:element>
-                    </xs:all>
-                </xs:complexType>
-            </xs:element>
+            <xs:element name="URL_LINK" type="com:URLType"/>
             <xs:element name="XREF_LINK" type="com:XRefType"/>
 
             <xs:element name="ENTREZ_LINK">
@@ -234,8 +286,7 @@
                             </xs:annotation>
                         </xs:element>
                         <xs:choice>
-                            <xs:element name="ID" type="xs:nonNegativeInteger" minOccurs="1"
-                                maxOccurs="1">
+                            <xs:element name="ID" type="xs:nonNegativeInteger" minOccurs="1" maxOccurs="1">
                                 <xs:annotation>
                                     <xs:documentation>
                                         Numeric record id meaningful to the NCBI Entrez system.
@@ -264,7 +315,6 @@
         </xs:choice>
     </xs:complexType>
 
-
     <xs:complexType name="SpotDescriptorType">
         <xs:annotation>
             <xs:documentation>
@@ -278,8 +328,7 @@
             <xs:element name="SPOT_DECODE_SPEC">
                 <xs:complexType>
                     <xs:sequence>
-                        <xs:element name="SPOT_LENGTH" type="xs:nonNegativeInteger" minOccurs="0"
-                            maxOccurs="1">
+                        <xs:element name="SPOT_LENGTH" type="xs:nonNegativeInteger" minOccurs="0" maxOccurs="1">
                             <xs:annotation>
                                 <xs:documentation> Number of base/color calls, cycles, or flows per
                                     spot (raw sequence length or flow length including all
@@ -292,14 +341,12 @@
                         <xs:element name="READ_SPEC" minOccurs="1" maxOccurs="unbounded">
                             <xs:complexType>
                                 <xs:sequence>
-                                    <xs:element name="READ_INDEX" type="xs:nonNegativeInteger"
-                                        nillable="false">
+                                    <xs:element name="READ_INDEX" type="xs:nonNegativeInteger" nillable="false">
                                         <xs:annotation>
                                             <xs:documentation>READ_INDEX starts at 0 and is incrementally increased for each sequential READ_SPEC within a SPOT_DECODE_SPEC</xs:documentation>
                                         </xs:annotation>
                                     </xs:element>
-                                    <xs:element name="READ_LABEL" type="xs:string" minOccurs="0"
-                                        maxOccurs="1">
+                                    <xs:element name="READ_LABEL" type="xs:string" minOccurs="0" maxOccurs="1">
                                         <xs:annotation>
                                             <xs:documentation>READ_LABEL is a name for this tag, and can be used to on output to determine read name, for example F or R.</xs:documentation>
                                         </xs:annotation>
@@ -341,16 +388,14 @@
                                                     </xs:documentation>
                                             </xs:annotation>
                                             <xs:complexType>
-                                                <xs:attribute name="follows_read_index"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                <xs:attribute name="follows_read_index" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                                 Specify the read index that precedes this read.
                                                             </xs:documentation>
                                                   </xs:annotation>
                                                 </xs:attribute>
-                                                <xs:attribute name="precedes_read_index"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                <xs:attribute name="precedes_read_index" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                                 Specify the read index that follows this read.
@@ -383,24 +428,21 @@
                                                   <xs:complexType>
                                                   <xs:simpleContent>
                                                   <xs:extension base="xs:string">
-                                                  <xs:attribute name="read_group_tag"
-                                                  type="xs:string" use="optional">
+                                                  <xs:attribute name="read_group_tag" type="xs:string" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                        When match occurs, the read will be tagged with this group membership
                                                   </xs:documentation>
                                                   </xs:annotation>
                                                   </xs:attribute>
-                                                  <xs:attribute name="min_match"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:attribute name="min_match" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                        Minimum number of matches to trigger identification.
                                                   </xs:documentation>
                                                   </xs:annotation>
                                                   </xs:attribute>
-                                                  <xs:attribute name="max_mismatch"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                  <xs:attribute name="max_mismatch" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                        Maximum number of mismatches 
@@ -448,16 +490,14 @@
                                                   </xs:complexType>
                                                   </xs:element>
                                                 </xs:sequence>
-                                                <xs:attribute name="default_length"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                <xs:attribute name="default_length" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                       Specify whether the spot should have a default length for this tag if the expected base cannot be matched.
                                                   </xs:documentation>
                                                   </xs:annotation>
                                                 </xs:attribute>
-                                                <xs:attribute name="base_coord"
-                                                  type="xs:nonNegativeInteger" use="optional">
+                                                <xs:attribute name="base_coord" type="xs:nonNegativeInteger" use="optional">
                                                   <xs:annotation>
                                                   <xs:documentation>
                                                       Specify an optional starting point for tag (base offset from 1).  
@@ -479,103 +519,170 @@
 
     <xs:complexType name="PlatformType">
         <xs:annotation>
-      <xs:documentation> The PLATFORM record selects which sequencing platform and platform-specific runtime parameters. This will be
+            <xs:documentation> The PLATFORM record selects which sequencing platform and platform-specific runtime parameters. This will be
         determined by the Center. </xs:documentation>
         </xs:annotation>
         <xs:choice>
             <xs:element name="LS454">
-              <xs:annotation>
-                <xs:documentation> 454 technology use 1-color sequential flows </xs:documentation>
-              </xs:annotation>
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:type454Model"/>
-                </xs:sequence>
-              </xs:complexType>
+                <xs:annotation>
+                    <xs:documentation> 454 technology use 1-color sequential flows </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:type454Model"/>
+                    </xs:sequence>
+                </xs:complexType>
             </xs:element>
             <xs:element name="ILLUMINA">
-              <xs:annotation>
-                <xs:documentation> Illumina is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
-              </xs:annotation>
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIlluminaModel"/>
-                </xs:sequence>
-              </xs:complexType>
+                <xs:annotation>
+                    <xs:documentation> Illumina is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIlluminaModel"/>
+                    </xs:sequence>
+                </xs:complexType>
             </xs:element>
             <xs:element name="HELICOS">
-              <xs:annotation>
-                <xs:documentation> Helicos is similar to 454 technology - uses 1-color sequential flows </xs:documentation>
-              </xs:annotation>
-              <xs:complexType>
-                <xs:sequence>
-                  <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeHelicosModel"/>
-                </xs:sequence>
-              </xs:complexType>
-          </xs:element>
-          <xs:element name="ABI_SOLID">
-            <xs:annotation>
-              <xs:documentation> ABI is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeAbiSolidModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="COMPLETE_GENOMICS">
-            <xs:annotation>
-              <xs:documentation> CompleteGenomics platform type. At present there is no instrument model. </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCGModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="OXFORD_NANOPORE">
-            <xs:annotation>
-              <xs:documentation> Oxford Nanopore platform type. nanopore-based electronic single molecule analysis </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeOxfordNanoporeModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="PACBIO_SMRT">
-            <xs:annotation>
-              <xs:documentation> PacificBiosciences platform type for the single molecule real time (SMRT) technology. </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typePacBioModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="ION_TORRENT">
-            <xs:annotation>
-              <xs:documentation> Ion Torrent Personal Genome Machine (PGM) from Life Technologies. </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIontorrentModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
-          <xs:element name="CAPILLARY">
-            <xs:annotation>
-              <xs:documentation> Sequencers based on capillary electrophoresis technology manufactured by LifeTech (formerly Applied
+                <xs:annotation>
+                    <xs:documentation> Helicos is similar to 454 technology - uses 1-color sequential flows </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeHelicosModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ABI_SOLID">
+                <xs:annotation>
+                    <xs:documentation> ABI is 4-channel flowgram with 1-to-1 mapping between basecalls and flows </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeAbiSolidModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="COMPLETE_GENOMICS">
+                <xs:annotation>
+                    <xs:documentation> CompleteGenomics platform type. At present there is no instrument model. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCGModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="BGISEQ">
+                <xs:annotation>
+                    <xs:documentation/>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeBGISEQModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="OXFORD_NANOPORE">
+                <xs:annotation>
+                    <xs:documentation> Oxford Nanopore platform type. nanopore-based electronic single molecule analysis </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeOxfordNanoporeModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="PACBIO_SMRT">
+                <xs:annotation>
+                    <xs:documentation> PacificBiosciences platform type for the single molecule real time (SMRT) technology. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typePacBioModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ION_TORRENT">
+                <xs:annotation>
+                    <xs:documentation> Ion Torrent Personal Genome Machine (PGM) from Life Technologies. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeIontorrentModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="CAPILLARY">
+                <xs:annotation>
+                    <xs:documentation> Sequencers based on capillary electrophoresis technology manufactured by LifeTech (formerly Applied
                 BioSciences). </xs:documentation>
-            </xs:annotation>
-            <xs:complexType>
-              <xs:sequence>
-                <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCapillaryModel"/>
-              </xs:sequence>
-            </xs:complexType>
-          </xs:element>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeCapillaryModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="DNBSEQ">
+                <xs:annotation>
+                    <xs:documentation> Sequencers based on DNBSEQ by MGI Tech. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeDnbSeqModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ELEMENT">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeElementModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="ULTIMA">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeUltimaModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="VELA_DIAGNOSTICS">
+                <xs:annotation>
+                    <xs:documentation> semi-conductor based sequencing technology. </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeVelaDiagnosticsModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GENAPSYS">
+                <xs:annotation>
+                    <xs:documentation> Chip based electronic sensing of polymerase extension reaction </xs:documentation>
+                </xs:annotation>
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeGenapsysModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="GENEMIND">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeGeneMindModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="TAPESTRI">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="INSTRUMENT_MODEL" maxOccurs="1" minOccurs="1" type="com:typeTapestriModel"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
         </xs:choice>
-
     </xs:complexType>
 
     <xs:complexType name="SequencingDirectivesType">
@@ -610,7 +717,6 @@
         </xs:all>
     </xs:complexType>
 
-
     <xs:complexType name="PipelineType">
         <xs:annotation>
             <xs:documentation> The PipelineType identifies the sequence or tree of actions to
@@ -628,8 +734,7 @@
                                 </xs:documentation>
                             </xs:annotation>
                         </xs:element>
-                        <xs:element name="PREV_STEP_INDEX" type="xs:string" nillable="true"
-                            minOccurs="1" maxOccurs="unbounded">
+                        <xs:element name="PREV_STEP_INDEX" type="xs:string" nillable="true" minOccurs="1" maxOccurs="unbounded">
                             <xs:annotation>
                                 <xs:documentation>
                                     STEP_INDEX of the previous step in the workflow.  Set toNIL if the first pipe section.
@@ -670,6 +775,7 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+
     <xs:complexType name="ReferenceAssemblyType">
         <xs:annotation>
             <xs:documentation>Reference assembly details.</xs:documentation>
@@ -715,15 +821,13 @@
                             </xs:annotation>
                             <xs:complexType>
                                 <xs:all>
-                                    <xs:element maxOccurs="1" minOccurs="0" name="LABEL"
-                                        type="xs:string">
+                                    <xs:element maxOccurs="1" minOccurs="0" name="LABEL" type="xs:string">
                                         <xs:annotation>
                                             <xs:documentation> Text label to display for the
                                                  link. </xs:documentation>
                                         </xs:annotation>
                                     </xs:element>
-                                    <xs:element maxOccurs="1" minOccurs="1" name="URL"
-                                        type="xs:anyURI">
+                                    <xs:element maxOccurs="1" minOccurs="1" name="URL" type="xs:anyURI">
                                         <xs:annotation>
                                             <xs:documentation> The internet service link
                                                  (file:, http:, ftp:, etc). </xs:documentation>
@@ -737,6 +841,7 @@
             </xs:element>
         </xs:choice>
     </xs:complexType>
+
     <xs:complexType name="ReferenceSequenceType">
         <xs:annotation>
             <xs:documentation>Reference assembly and sequence details.                              </xs:documentation>
@@ -782,6 +887,7 @@
             </xs:element>
         </xs:sequence>
     </xs:complexType>
+
     <xs:complexType name="ProcessingType">
         <xs:sequence>
             <xs:element name="PIPELINE" type="com:PipelineType" minOccurs="0" maxOccurs="1">
@@ -789,7 +895,7 @@
                     <xs:documentation> Generic processing pipeline specification. </xs:documentation>
                 </xs:annotation>
             </xs:element>
-            <xs:element name="DIRECTIVES" type="com:SequencingDirectivesType" minOccurs="0"  maxOccurs="1">
+            <xs:element name="DIRECTIVES" type="com:SequencingDirectivesType" minOccurs="0" maxOccurs="1">
                 <xs:annotation>
                     <xs:documentation> Processing directives tell the Sequence Read Archive how to
                         treat the input data, if any treatment is requested. </xs:documentation>
@@ -798,111 +904,200 @@
         </xs:sequence>
     </xs:complexType>
 
-  <!-- STRING ENUMERATIONS BEGIN -->
-  <xs:simpleType name="type454Model">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="454 GS"/>
-      <xs:enumeration value="454 GS 20"/>
-      <xs:enumeration value="454 GS FLX"/>
-      <xs:enumeration value="454 GS FLX+"/>
-      <xs:enumeration value="454 GS FLX Titanium"/>
-      <xs:enumeration value="454 GS Junior"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <!-- STRING ENUMERATIONS BEGIN -->
 
-  <xs:simpleType name="typeIlluminaModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Illumina Genome Analyzer"/>
-      <xs:enumeration value="Illumina Genome Analyzer II"/>
-      <xs:enumeration value="Illumina Genome Analyzer IIx"/>
-      <xs:enumeration value="Illumina HiSeq 2500"/>
-      <xs:enumeration value="Illumina HiSeq 2000"/>
-      <xs:enumeration value="Illumina HiSeq 1500"/>
-      <xs:enumeration value="Illumina HiSeq 1000"/>
-      <xs:enumeration value="Illumina MiSeq"/>
-      <xs:enumeration value="Illumina HiScanSQ"/>
-      <xs:enumeration value="HiSeq X Ten"/>
-      <xs:enumeration value="NextSeq 500"/>
-      <xs:enumeration value="HiSeq X Five"/>
-      <xs:enumeration value="Illumina HiSeq 3000"/>
-      <xs:enumeration value="Illumina HiSeq 4000"/>
-      <xs:enumeration value="NextSeq 550"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <!-- Update InstrumentModelEnumFixer and PlatformEnumFixer classes whenever a model is added or removed. -->
 
-  <xs:simpleType name="typeHelicosModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Helicos HeliScope"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="type454Model">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="454 GS"/>
+            <xs:enumeration value="454 GS 20"/>
+            <xs:enumeration value="454 GS FLX"/>
+            <xs:enumeration value="454 GS FLX+"/>
+            <xs:enumeration value="454 GS FLX Titanium"/>
+            <xs:enumeration value="454 GS Junior"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typeAbiSolidModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="AB SOLiD System">
-        <xs:annotation>
-          <xs:documentation>Undifferentiated early AB SOLiD system</xs:documentation>
-        </xs:annotation>
-      </xs:enumeration>
-      <xs:enumeration value="AB SOLiD System 2.0"/>
-      <xs:enumeration value="AB SOLiD System 3.0"/>
-      <xs:enumeration value="AB SOLiD 3 Plus System"/>
-      <xs:enumeration value="AB SOLiD 4 System"/>
-      <xs:enumeration value="AB SOLiD 4hq System"/>
-      <xs:enumeration value="AB SOLiD PI System"/>
-      <xs:enumeration value="AB 5500 Genetic Analyzer"/>
-      <xs:enumeration value="AB 5500xl Genetic Analyzer"/>
-      <xs:enumeration value="AB 5500xl-W Genetic Analysis System"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typeIlluminaModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="HiSeq X Five"/>
+            <xs:enumeration value="HiSeq X Ten"/>
+            <xs:enumeration value="Illumina Genome Analyzer"/>
+            <xs:enumeration value="Illumina Genome Analyzer II"/>
+            <xs:enumeration value="Illumina Genome Analyzer IIx"/>  
+            <xs:enumeration value="Illumina HiScanSQ"/>
+            <xs:enumeration value="Illumina HiSeq 1000"/>
+            <xs:enumeration value="Illumina HiSeq 1500"/>
+            <xs:enumeration value="Illumina HiSeq 2000"/>
+            <xs:enumeration value="Illumina HiSeq 2500"/>
+            <xs:enumeration value="Illumina HiSeq 3000"/>
+            <xs:enumeration value="Illumina HiSeq 4000"/>
+            <xs:enumeration value="Illumina HiSeq X"/>
+            <xs:enumeration value="Illumina iSeq 100"/>
+            <xs:enumeration value="Illumina MiSeq"/>
+            <xs:enumeration value="Illumina MiniSeq"/>
+            <xs:enumeration value="Illumina NovaSeq X"/>
+            <xs:enumeration value="Illumina NovaSeq X Plus"/>
+            <xs:enumeration value="Illumina NovaSeq 6000"/>          
+            <xs:enumeration value="NextSeq 500"/>  
+            <xs:enumeration value="NextSeq 550"/>
+            <xs:enumeration value="NextSeq 1000"/>
+            <xs:enumeration value="NextSeq 2000"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typeCGModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Complete Genomics"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typeHelicosModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Helicos HeliScope"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typePacBioModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="PacBio RS"/>
-      <xs:enumeration value="PacBio RS II"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typeAbiSolidModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AB SOLiD System">
+                <xs:annotation>
+                    <xs:documentation>Undifferentiated early AB SOLiD system</xs:documentation>
+                </xs:annotation>
+            </xs:enumeration>
+            <xs:enumeration value="AB SOLiD System 2.0"/>
+            <xs:enumeration value="AB SOLiD System 3.0"/>
+            <xs:enumeration value="AB SOLiD 3 Plus System"/>
+            <xs:enumeration value="AB SOLiD 4 System"/>
+            <xs:enumeration value="AB SOLiD 4hq System"/>
+            <xs:enumeration value="AB SOLiD PI System"/>
+            <xs:enumeration value="AB 5500 Genetic Analyzer"/>
+            <xs:enumeration value="AB 5500xl Genetic Analyzer"/>
+            <xs:enumeration value="AB 5500xl-W Genetic Analysis System"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typeIontorrentModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="Ion Torrent PGM"/>
-      <xs:enumeration value="Ion Torrent Proton"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typeCGModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Complete Genomics"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typeCapillaryModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="AB 3730xL Genetic Analyzer"/>
-      <xs:enumeration value="AB 3730 Genetic Analyzer"/>
-      <xs:enumeration value="AB 3500xL Genetic Analyzer"/>
-      <xs:enumeration value="AB 3500 Genetic Analyzer"/>
-      <xs:enumeration value="AB 3130xL Genetic Analyzer"/>
-      <xs:enumeration value="AB 3130 Genetic Analyzer"/>
-      <xs:enumeration value="AB 310 Genetic Analyzer"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typeBGISEQModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="BGISEQ-50"/>
+            <xs:enumeration value="BGISEQ-500"/>
+            <xs:enumeration value="MGISEQ-2000RS"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <xs:simpleType name="typeOxfordNanoporeModel">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="MinION"/>
-      <xs:enumeration value="GridION"/>
-      <xs:enumeration value="unspecified"/>
-    </xs:restriction>
-  </xs:simpleType>
+    <xs:simpleType name="typePacBioModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Onso"/>
+            <xs:enumeration value="PacBio RS"/>
+            <xs:enumeration value="PacBio RS II"/>
+            <xs:enumeration value="Revio"/>
+            <xs:enumeration value="Sequel"/>
+            <xs:enumeration value="Sequel II"/>
+            <xs:enumeration value="Sequel IIe"/>
+            <xs:enumeration value="Vega"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
 
-  <!-- STRING ENUMERATIONS END -->
+    <xs:simpleType name="typeIontorrentModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Ion Torrent PGM"/>
+            <xs:enumeration value="Ion Torrent Proton"/>
+            <xs:enumeration value="Ion Torrent S5"/>
+            <xs:enumeration value="Ion Torrent S5 XL"/>
+            <xs:enumeration value="Ion Torrent Genexus"/>
+            <xs:enumeration value="Ion GeneStudio S5"/>
+            <xs:enumeration value="Ion GeneStudio S5 Prime"/>
+            <xs:enumeration value="Ion GeneStudio S5 Plus"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeCapillaryModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="AB 3730xL Genetic Analyzer"/>
+            <xs:enumeration value="AB 3730 Genetic Analyzer"/>
+            <xs:enumeration value="AB 3500xL Genetic Analyzer"/>
+            <xs:enumeration value="AB 3500 Genetic Analyzer"/>
+            <xs:enumeration value="AB 3130xL Genetic Analyzer"/>
+            <xs:enumeration value="AB 3130 Genetic Analyzer"/>
+            <xs:enumeration value="AB 310 Genetic Analyzer"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeDnbSeqModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DNBSEQ-T7"/>
+            <xs:enumeration value="DNBSEQ-G400"/>
+            <xs:enumeration value="DNBSEQ-G50"/>
+            <xs:enumeration value="DNBSEQ-G400 FAST"/>
+            <xs:enumeration value="DNBSEQ-T10x4RS"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeOxfordNanoporeModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="MinION"/>
+            <xs:enumeration value="GridION"/>
+            <xs:enumeration value="PromethION"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeElementModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Element AVITI"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeUltimaModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="UG 100"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeVelaDiagnosticsModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Sentosa SQ301"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeGenapsysModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GENIUS"/>
+            <xs:enumeration value="Genapsys Sequencer"/>
+            <xs:enumeration value="GS111"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeGeneMindModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GenoCare 1600"/>
+            <xs:enumeration value="GenoLab M"/>
+            <xs:enumeration value="FASTASeq 300"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="typeTapestriModel">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Tapestri"/>
+            <xs:enumeration value="unspecified"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <!-- STRING ENUMERATIONS END -->
 
 </xs:schema>
