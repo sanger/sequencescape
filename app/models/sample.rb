@@ -505,23 +505,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
-  def accession(event_user)
-    # Check if study is present and allowed to be accessioned
-    return unless ena_study&.accession_required?
-
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    unless configatron.accession_samples
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-    end
-
-    accessionable = build_accessionable
-    validate_accessionable!(accessionable)
-    enqueue_accessioning_job!(accessionable, event_user)
-  end
-
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
-    accession(event_user)
+    Accession.accession_sample(self, event_user)
     Rails.logger.info("Accessioning passed for sample '#{name}'")
   rescue AccessionService::AccessionServiceError => e
     # Save error messages for later feedback to the user in a flash message
@@ -603,34 +589,5 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
-  end
-
-  def build_accessionable
-    Accession::Sample.new(Accession.configuration.tags, self)
-  end
-
-  def validate_accessionable!(accessionable)
-    return if accessionable.valid?
-
-    error_message = "Sample '#{name}' cannot be accessioned: #{accessionable.errors.full_messages.join(', ')}"
-    Rails.logger.error(error_message)
-    raise AccessionService::AccessionValidationFailed, error_message
-  end
-
-  def enqueue_accessioning_job!(accessionable, event_user)
-    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
-    log_job_status(job)
-  rescue StandardError => e
-    ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
-    Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
-    raise
-  end
-
-  def log_job_status(job)
-    if job
-      Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
-    else
-      Rails.logger.warn('Accessioning job enqueue returned nil.')
-    end
   end
 end

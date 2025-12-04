@@ -162,10 +162,8 @@ class SamplesController < ApplicationController
     @sample.validate_ena_required_fields!
 
     if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
-      accessionable = @sample.build_accessionable
-      @sample.validate_accessionable!(accessionable)
       # Synchronously perform accessioning job
-      SampleAccessioningJob.new(accessionable, current_user).perform
+      Accession.accession_sample(@sample, current_user, perform_now: true)
     else
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
