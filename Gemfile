@@ -7,7 +7,7 @@ group :default do
   gem 'concurrent-ruby', '1.3.5'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rails', '~> 7.1.5.1'
+  gem 'rails', '~> 7.2.0'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
@@ -210,7 +210,7 @@ group :test, :cucumber do
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'rspec-rails', '~> 7.1.0', require: false # TODO: Update to '~> 8.0' when we move to Rails 8
+  gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda-context', '~> 3.0.0.rc1'
   gem 'shoulda-matchers', '~> 6.0'
