@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 # Used for samples/studies which are neither open or managed.
-class UnsuitableAccessionService < AccessionService
+class AccessionService::UnsuitableService < AccessionService::BaseService
   self.no_study_accession_needed = true
 
   def initialize(studies)

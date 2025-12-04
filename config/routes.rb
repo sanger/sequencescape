@@ -47,6 +47,7 @@ Rails.application.routes.draw do
       jsonapi_resources :plate_conversions, except: %i[update]
       jsonapi_resources :plate_creations, except: %i[update]
       jsonapi_resources :plate_purposes, except: %i[update]
+      jsonapi_resources :plate_templates
       jsonapi_resources :plates, except: %i[update]
       post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
 
@@ -190,6 +191,7 @@ Rails.application.routes.draw do
     member do
       get :print_labels
       get :print_plate_labels
+      get :print_amp_plate_labels
       get :filtered
       post :swap
       post :fail_items
@@ -198,7 +200,7 @@ Rails.application.routes.draw do
       get :fail
       get :print
       get :verify
-      post :verify_tube_layout
+      post :verify_layout
       get :previous_qc_state
       get :released
       get :sample_prep_worksheet
@@ -209,6 +211,7 @@ Rails.application.routes.draw do
     collection do
       post :print_barcodes
       post :print_plate_barcodes
+      post :print_amp_plate_barcodes
       post :sort
       get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end

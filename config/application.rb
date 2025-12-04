@@ -57,11 +57,9 @@ module Sequencescape
     # config.load_paths += %W( #{Rails.root}/extras )
     config.autoload_paths += %W[#{Rails.root}/app]
     config.autoload_paths += %W[#{Rails.root}/lib]
-    config.autoload_paths += %W[#{Rails.root}/lib/accession]
 
     config.eager_load_paths += %W[#{Rails.root}/app]
     config.eager_load_paths += %W[#{Rails.root}/lib]
-    config.eager_load_paths += %W[#{Rails.root}/lib/accession]
 
     # Some lib files we don't want to autoload as they are not required in the rails app
     %w[generators informatics].each { |file| Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}")) }

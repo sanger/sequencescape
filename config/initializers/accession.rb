@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-require Rails.root.join('lib', 'accession', 'accession')
+require Rails.root.join('lib', 'accession')
 
 unless Rails.env.test?
   Accession.configure do |config|

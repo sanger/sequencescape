@@ -321,6 +321,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
 
+  has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus'
+
   belongs_to :sample_manifest, inverse_of: :samples
 
   # This is a natural join to sample_manifest_asset based on a shared sanger_sample_id.
@@ -501,13 +503,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Return the highest priority accession service
   def accession_service
     services = studies.group_by { |s| s.accession_service.priority }
-    return UnsuitableAccessionService.new([]) if services.empty?
+    return AccessionService::UnsuitableService.new([]) if services.empty?
 
     highest_priority = services.keys.max
     suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
     return suitable_study.accession_service if suitable_study
 
-    UnsuitableAccessionService.new(services[highest_priority])
+    AccessionService::UnsuitableService.new(services[highest_priority])
   end
 
   def accession
@@ -545,6 +547,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e
+  end
+
+  def current_accession_status
+    accession_sample_statuses.last
   end
 
   def sample_reference_genome
@@ -611,7 +617,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def validate_accessionable!(accessionable)
     return if accessionable.valid?
 
-    error_message = "Accessionable is invalid for sample '#{name}': #{accessionable.errors.full_messages.join(', ')}"
+    error_message = "Sample '#{name}' cannot be accessioned: #{accessionable.errors.full_messages.join(', ')}"
     Rails.logger.error(error_message)
     raise AccessionService::AccessionValidationFailed, error_message
   end

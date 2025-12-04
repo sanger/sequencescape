@@ -8,9 +8,10 @@ class LabwhereReception
   include ActiveModel::Conversion
   include ActiveModel::Validations
 
-  attr_reader :asset_barcodes, :user_code, :location_barcode
+  attr_accessor :user_code
+  attr_reader :asset_barcodes, :location_barcode
 
-  validates :asset_barcodes, :user_code, presence: true
+  validates :asset_barcodes, presence: true
   validates :user,
             presence: {
               message:
@@ -44,6 +45,10 @@ class LabwhereReception
   # This maintains compatibility with rails
   # rubocop:todo Metrics/MethodLength
   def save # rubocop:todo Metrics/AbcSize
+    if user_code.blank?
+      errors.add(:base, 'Please provide a valid user code.')
+      return false
+    end
     return false unless valid?
 
     begin
@@ -72,7 +77,10 @@ class LabwhereReception
       BroadcastEvent::LabwareReceived.create!(seed: asset, user: user, properties: { location_barcode: })
     end
 
-    valid?
+    result = valid?
+    @user_code = ''
+
+    result
   end
 
   # rubocop:enable Metrics/MethodLength

@@ -84,5 +84,8 @@ class SequencingPipeline < Pipeline
     # deprecated we should leave it here.
     batch.assets.compact.uniq.each(&:index_aliquots)
     Messenger.create!(target: batch, template: 'FlowcellIo', root: 'flowcell')
+    # Sends a broadcast message using the 'CommentIo' template to notify the
+    # MLWH about under_represented wells associated with the released batch.
+    Messenger.create!(target: batch, template: 'CommentIo', root: 'comment')
   end
 end

@@ -10,7 +10,16 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_10_09_100729) do
+ActiveRecord::Schema[7.2].define(version: 2025_11_20_204342) do
+  create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.integer "sample_id", null: false
+    t.string "status", null: false
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sample_id"], name: "index_accession_sample_statuses_on_sample_id"
+  end
+
   create_table "aliquot_indices", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.integer "aliquot_id", null: false
     t.integer "lane_id", null: false
@@ -1847,6 +1856,15 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_09_100729) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "ultima_globals", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
+    t.string "name"
+    t.string "application"
+    t.string "sequencing_recipe"
+    t.string "analysis_recipe"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "login"
     t.string "email"
@@ -1974,6 +1992,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_10_09_100729) do
     t.index ["pipeline_id"], name: "index_workflows_on_pipeline_id"
   end
 
+  add_foreign_key "accession_sample_statuses", "samples"
   add_foreign_key "aliquot_indices", "aliquots", name: "fk_aliquot_indices_to_aliquots"
   add_foreign_key "aliquot_indices", "receptacles", column: "lane_id"
   add_foreign_key "aliquots", "primer_panels"
