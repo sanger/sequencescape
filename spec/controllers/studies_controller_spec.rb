@@ -202,16 +202,18 @@ RSpec.describe StudiesController do
       end
 
       it 'sets a flash error message' do
+        # rubocop:disable Layout/LineLength
         expect(flash[:error]).to eq(
           [
             'The samples in this study could not be accessioned, please check the following errors:',
-            "Sample 'Sample1' cannot be accessioned: Sample has no appropriate studies.",
-            "Sample 'Sample2' cannot be accessioned: Sample has no appropriate studies.",
-            "Sample 'Sample3' cannot be accessioned: Sample has no appropriate studies.",
-            "Sample 'Sample4' cannot be accessioned: Sample has no appropriate studies.",
-            "Sample 'Sample5' cannot be accessioned: Sample has no appropriate studies."
+            "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
+            "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
+            "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
+            "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
+            "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'."
           ]
         )
+        # rubocop:enable Layout/LineLength
       end
 
       context 'when the study has many samples' do
@@ -222,19 +224,21 @@ RSpec.describe StudiesController do
         end
 
         it 'sets a flash error message' do
+          # rubocop:disable Layout/LineLength
           expect(flash[:error]).to eq(
             [
               'The samples in this study could not be accessioned, please check the following errors:',
-              "Sample 'Sample1' cannot be accessioned: Sample has no appropriate studies.",
-              "Sample 'Sample2' cannot be accessioned: Sample has no appropriate studies.",
-              "Sample 'Sample3' cannot be accessioned: Sample has no appropriate studies.",
-              "Sample 'Sample4' cannot be accessioned: Sample has no appropriate studies.",
-              "Sample 'Sample5' cannot be accessioned: Sample has no appropriate studies.",
-              "Sample 'Sample6' cannot be accessioned: Sample has no appropriate studies.",
+              "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
+              "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
+              "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
+              "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
+              "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'.",
+              "Sample 'Sample6' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study6: Manages' and 'Study1: Open'.",
               '...',
               'Only the first 6 of 10 errors are shown.'
             ]
           )
+          # rubocop:enable Layout/LineLength
         end
       end
     end
