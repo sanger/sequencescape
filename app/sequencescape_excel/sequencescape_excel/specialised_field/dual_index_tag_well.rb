@@ -30,6 +30,7 @@ module SequencescapeExcel
         new_i5_tag = tag2
         return unless tags_need_update?(stock_aliquot, new_i7_tag, new_i5_tag)
 
+        # Update all downstream aliquots as well as current aliquot
         matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
         update_all_relevant_aliquots(matching_aliquots, new_i7_tag, new_i5_tag)
       end
@@ -87,7 +88,7 @@ module SequencescapeExcel
       end
 
       # Find all aliquots that need updating
-      # Aliquots must have a matching sample_id, library_id, tag_id and tag2_id to the given stock_aliquot
+      # Aliquots must have a matching sample_id, library_id, tag_id and tag2_id to the given stock_aliquot.
       def identify_all_matching_aliquots(stock_aliquot)
         attributes = {
           sample_id: stock_aliquot.sample_id,
