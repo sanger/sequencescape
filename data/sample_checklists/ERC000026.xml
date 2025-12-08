@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CHECKLIST_SET>
+<CHECKLIST accession="ERC000026" checklistType="Sample">
+        <IDENTIFIERS>
+            <PRIMARY_ID>ERC000026</PRIMARY_ID>
+        </IDENTIFIERS>
+        <DESCRIPTOR>
+            <LABEL>EGA default checklist</LABEL>
+            <NAME>EGA default checklist</NAME>
+            <DESCRIPTION>The minimum sample requirements for EGA</DESCRIPTION>
+            <AUTHORITY>ENA</AUTHORITY>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Organism characteristics</NAME>
+                <FIELD>
+                    <LABEL>sex</LABEL>
+                    <NAME>sex</NAME>
+                    <DESCRIPTION>sex of the organism from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>default</NAME>
+                <FIELD>
+                    <LABEL>subject_id</LABEL>
+                    <NAME>subject_id</NAME>
+                    <DESCRIPTION>Identifier for the subject where the sample has been derived from</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>recommended</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>gender</LABEL>
+                    <NAME>gender</NAME>
+                    <DESCRIPTION>Sex</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_CHOICE_FIELD>
+                            <TEXT_VALUE>
+                                <VALUE>female</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>male</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>unknown</VALUE>
+                            </TEXT_VALUE>
+                        </TEXT_CHOICE_FIELD>
+                    </FIELD_TYPE>
+                    <MANDATORY>recommended</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>phenotype</LABEL>
+                    <NAME>phenotype</NAME>
+                    <DESCRIPTION>Where possible, please use the Experimental Factor Ontology (EFO) to describe your phenotypes.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>mandatory</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>disease_site</LABEL>
+                    <NAME>disease_site</NAME>
+                    <DESCRIPTION>Affected organ</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>sample type</LABEL>
+                    <NAME>sample_type</NAME>
+                    <DESCRIPTION>Affected organ</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_CHOICE_FIELD>
+                            <TEXT_VALUE>
+                                <VALUE>blood</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>bone metastases</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>cell line</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>csf</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>diseased tissue</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>lymph node metastases</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>metastatic</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>normal adjacent from prostate</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>normal from other tissue</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>normal prostate from healthy individual</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>normal tissue</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>plasma</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>primary sample</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>serum</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>soft tissue metastases</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>urine</VALUE>
+                            </TEXT_VALUE>
+                        </TEXT_CHOICE_FIELD>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>donor_id</LABEL>
+                    <NAME>donor_id</NAME>
+                    <DESCRIPTION>Identifier of the donor where the sample has been derived from</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+        </DESCRIPTOR>
+    </CHECKLIST>
+</CHECKLIST_SET>

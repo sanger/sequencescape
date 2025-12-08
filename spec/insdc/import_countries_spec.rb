@@ -46,8 +46,8 @@ RSpec.describe Insdc::ImportCountries do
                         </FIELD>
                         <FIELD>
                             <LABEL>geographic location (country and/or sea)</LABEL>
-                            <NAME>geographic location (country and/or sea)</NAME>
-                            <DESCRIPTION>The geographical origin of the sample as defined by the country or sea. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
+                            <NAME>geographic_location_country_andor_sea</NAME>
+                            <DESCRIPTION>The geographical origin of where the sample was collected from, with the intention of sequencing, as defined by the country or sea name. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
                             <FIELD_TYPE>
                                   <TEXT_CHOICE_FIELD>
                                       <TEXT_VALUE>
@@ -131,8 +131,8 @@ RSpec.describe Insdc::ImportCountries do
 
     context 'when the file is present' do
       before do
-        create(:insdc_country, name: 'Historic Coldland')
-        create(:insdc_country, name: 'East Westland')
+        create(:insdc_country, :valid, name: 'Historic Coldland')
+        create(:insdc_country, :invalid, name: 'East Westland')
         allow(File).to receive(:exist?).with(cached_file_path).and_return(true)
         allow(File).to receive(:open).with(cached_file_path).and_yield(mock_response)
         importer.import
@@ -150,6 +150,11 @@ RSpec.describe Insdc::ImportCountries do
           sort_priority: 0,
           validation_state: 'invalid'
         )
+      end
+
+      it 're-validates existing entries' do
+        added_country = Insdc::Country.find_by!(name: 'East Westland')
+        expect(added_country).to have_attributes(name: 'East Westland', sort_priority: 0, validation_state: 'valid')
       end
 
       it 'can set priorities' do
