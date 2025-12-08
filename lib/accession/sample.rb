@@ -28,7 +28,7 @@ module Accession
       @sample = sample
       @studies = set_studies
       @tags = standard_tags.extract(sample.sample_metadata)
-      @service = Service.new(studies_valid? ? studies.keys.first : nil)
+      @service = Service.new(exactly_one_study? ? studies.keys.first : nil)
     end
 
     def name
@@ -105,10 +105,17 @@ module Accession
     end
 
     def check_studies
-      errors.add(:sample, 'has no appropriate studies.') unless studies_valid?
+      return if exactly_one_study?
+
+      if studies.empty?
+        errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
+      else
+        study_names = studies.values.flatten.map { |study| "'#{study.name}'" }.to_sentence
+        errors.add(:sample, "must be linked to exactly one study but is linked to studies #{study_names}.")
+      end
     end
 
-    def studies_valid?
+    def exactly_one_study?
       studies.length == 1
     end
   end

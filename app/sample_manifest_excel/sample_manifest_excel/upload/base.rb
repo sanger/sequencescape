@@ -101,10 +101,16 @@ module SampleManifestExcel
         changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
       end
 
+      # Accession each sample individually, logging and skipping any that fail validation
       def trigger_accessioning(event_user)
-        changed_samples.each { |sample| sample.accession(event_user) }
-      rescue AccessionService::AccessioningDisabledError, AccessionService::AccessionValidationFailed => e
-        Rails.logger.warn "#{e.message} Skipping accessioning for changed samples."
+        changed_samples.each do |sample|
+          sample.accession(event_user)
+        rescue AccessionService::AccessionValidationFailed => e
+          Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
+        end
+      rescue AccessionService::AccessioningDisabledError
+        Rails.logger.info 'Accessioning is disabled. ' \
+                          "Skipping accessioning of samples in manifest #{sample_manifest.id}."
       end
 
       # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
