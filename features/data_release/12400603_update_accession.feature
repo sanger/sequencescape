@@ -57,7 +57,7 @@ Feature: object with an accession should be modifiable
 
     When I am on the event history page for sample "sample"
     Then I should see "Created study accession number"
-    and I should see "me"
+      And I should see "me"
 
   Scenario: A sample with already an accession number should update itself using its accession number
     Given a sample named "sample" exists for accession
