@@ -170,6 +170,16 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     it 'sets the ebi_accession_number to the provided value' do
       expect(accession_sample.ebi_accession_number).to eq(test_accession_number)
     end
+
+    it 'creates an event indicating the accession number has been updated' do
+      event = sample.events.order(:created_at).last
+      expect(event).to have_attributes(
+        message: 'Updated sample accession data',
+        content: nil,
+        of_interest_to: 'administrators',
+        created_by: event_user.login
+      )
+    end
   end
 
   describe '#to_xml' do
