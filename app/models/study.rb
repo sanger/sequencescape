@@ -159,7 +159,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :items, -> { distinct }, through: :requests
   has_many :projects, -> { distinct }, through: :orders
   has_many :comments, as: :commentable
-  has_many :events, -> { order(:created_at, :id) }, as: :eventful
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
