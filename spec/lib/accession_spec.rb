@@ -50,7 +50,7 @@ RSpec.describe Accession do
         let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
         let(:invalid_sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
-        it 'raises an error with debug information' do
+        it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
           expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
           expect_accession.to raise_error(AccessionService::AccessionValidationFailed) do |error|
             expect(error.message).to eq(
@@ -106,10 +106,10 @@ RSpec.describe Accession do
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
 
-          it 'logs an error' do
+          it 'logs an error' do # rubocop:disable RSpec/MultipleExpectations
             allow(Rails.logger).to receive(:error).and_call_original
 
-            expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
+            expect { described_class.accession_sample(accessionable_sample, event_user) }.to raise_error(StandardError)
 
             expect(Rails.logger).to have_received(:error).with(
               "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
@@ -120,7 +120,7 @@ RSpec.describe Accession do
           it 'sends an exception notification' do # rubocop:disable RSpec/MultipleExpectations
             allow(ExceptionNotifier).to receive(:notify_exception)
 
-            expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
+            expect { described_class.accession_sample(accessionable_sample, event_user) }.to raise_error(StandardError)
 
             sample_name = accessionable_sample.name # 'Sample1'
             expect(ExceptionNotifier).to have_received(:notify_exception)

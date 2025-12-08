@@ -124,7 +124,7 @@ module Accession
     def validate_accessionable!(accessionable)
       return if accessionable.valid?
 
-      error_message = "Sample '#{accessionable.name}' cannot be accessioned: " \
+      error_message = "Sample '#{accessionable.sample.name}' cannot be accessioned: " \
                       "#{accessionable.errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
       raise AccessionService::AccessionValidationFailed, error_message
