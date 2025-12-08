@@ -278,7 +278,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # For attributing accessioning changes recorded in the event warehouse
+  # For attributing accessioning changes recorded in the SS events table
   attr_accessor :current_user # required to be set from the controller
 
   # Create relationships with samples that contain this Sample via SampleCompoundComponent.
