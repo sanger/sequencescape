@@ -2,7 +2,6 @@
 
 require 'rails_helper'
 
-# rubocop:disable RSpec/ExampleLength
 describe UatActions::GenerateTubes do
   context 'with valid options' do
     let(:study) { create(:study, name: 'Test Study') }
@@ -39,10 +38,12 @@ describe UatActions::GenerateTubes do
         uat_action.perform
         tube = Tube.find_by_barcode(report['tube_0'])
         sample_metadata = tube.aliquots.first.sample.sample_metadata
-        expect(sample_metadata.supplier_name).to eq 'sample_NT2P_0'
-        expect(sample_metadata.collected_by).to eq UatActions::StaticRecords.collection_site
-        expect(sample_metadata.donor_id).to eq 'sample_NT2P_0_donor'
-        expect(sample_metadata.sample_common_name).to eq 'human'
+        expect(sample_metadata).to have_attributes(
+          supplier_name: 'sample_NT2P_0',
+          collected_by: UatActions::StaticRecords.collection_site,
+          donor_id: 'sample_NT2P_0_donor',
+          sample_common_name: 'human'
+        )
       end
     end
 
@@ -73,10 +74,12 @@ describe UatActions::GenerateTubes do
         uat_action.perform
         uat_action.report.each_with_index do |(_key, barcode), i|
           sample_metadata = Tube.find_by_barcode(barcode).aliquots.first.sample.sample_metadata
-          expect(sample_metadata.supplier_name).to eq "sample_#{barcode}_#{i}"
-          expect(sample_metadata.collected_by).to eq UatActions::StaticRecords.collection_site
-          expect(sample_metadata.donor_id).to eq "sample_#{barcode}_#{i}_donor"
-          expect(sample_metadata.sample_common_name).to eq 'human'
+          expect(sample_metadata).to have_attributes(
+            supplier_name: "sample_#{barcode}_#{i}",
+            collected_by: UatActions::StaticRecords.collection_site,
+            donor_id: "sample_#{barcode}_#{i}_donor",
+            sample_common_name: 'human'
+          )
         end
       end
     end
@@ -116,10 +119,12 @@ describe UatActions::GenerateTubes do
         uat_action.perform
         tube = Tube.find_by_barcode(expected_report['tube_0'])
         sample_metadata = tube.aliquots.first.sample.sample_metadata
-        expect(sample_metadata.supplier_name).to eq 'sample_NT6T_0'
-        expect(sample_metadata.collected_by).to eq UatActions::StaticRecords.collection_site
-        expect(sample_metadata.donor_id).to eq 'sample_NT6T_0_donor'
-        expect(sample_metadata.sample_common_name).to eq 'human'
+        expect(sample_metadata).to have_attributes(
+          supplier_name: 'sample_NT6T_0',
+          collected_by: UatActions::StaticRecords.collection_site,
+          donor_id: 'sample_NT6T_0_donor',
+          sample_common_name: 'human'
+        )
       end
     end
   end
@@ -128,5 +133,3 @@ describe UatActions::GenerateTubes do
     expect(described_class.default).to be_a described_class
   end
 end
-
-# rubocop:enable RSpec/ExampleLength
