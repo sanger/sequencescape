@@ -145,6 +145,8 @@ RSpec.describe AccessionService do
       end
     end
 
+    # We prioritise the EGA, as its the more conservative of the two databases
+    # and it reduces the risk of accidentally making human data public
     context 'when sample has an open study and a managed study' do
       let(:open_study) { create(:open_study, accession_number: 'ENA123') }
       let(:managed_study) { create(:managed_study, accession_number: 'EGA123') }
@@ -165,6 +167,7 @@ RSpec.describe AccessionService do
       end
     end
 
+    # We err on the side of caution here - inadvertently sending data to the ENA could be an issue.
     context 'when sample has an accessioned open study but un-accessioned managed study' do
       let(:open_study) { create(:open_study, accession_number: 'ENA123') }
       let(:managed_study) { create(:managed_study) }
