@@ -44,7 +44,7 @@ class Accessionable::Policy < Accessionable::Base
     @accession_number = accession_number
     @study.study_metadata.ega_policy_accession_number = accession_number
     @study.save!
-    @study.events.created_accession_number!('policy', user)
+    @study.events.assigned_accession_number!('policy', accession_number, user)
   end
 
   def protect?(service)

@@ -20,8 +20,8 @@ RSpec.describe Accessionable::Study, type: :model do
     it 'creates an event' do
       event = study.events.order(:created_at).last
       expect(event).to have_attributes(
-        message: 'Created study accession number',
-        content: nil,
+        message: 'Assigned study accession number',
+        content: accession_number,
         of_interest_to: 'administrators',
         created_by: user.login
       )
