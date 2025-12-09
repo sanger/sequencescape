@@ -6,6 +6,10 @@ module Tasks::AddSpikedInControlHandler
   # helps add the scanned Spiked PhiX as a parent of each lane
   class Handler < Tasks::BaseHandler
     def perform
+      if params[:barcode].nil?
+        return false, 'No barcodes provided. Please scan or enter PhiX barcodes before proceeding.'
+      end
+
       if missing_barcodes.present?
         return false, "Can't find a spiked hybridization buffer with barcode #{missing_barcodes.to_sentence}"
       end
@@ -25,8 +29,6 @@ module Tasks::AddSpikedInControlHandler
     end
 
     def missing_barcodes
-      return ['No barcodes provided. Please scan or enter PhiX barcodes before proceeding.'] if params[:barcode].nil?
-
       @missing_barcodes ||=
         params[:barcode].values.reject do |barcode|
           barcode.empty? || phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) }
