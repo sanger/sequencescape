@@ -26,7 +26,7 @@ module Tasks::AddSpikedInControlHandler
 
     def missing_barcodes
       return ['No barcodes provided. Please scan or enter PhiX barcodes before proceeding.'] if params[:barcode].nil?
-      
+
       @missing_barcodes ||=
         params[:barcode].values.reject do |barcode|
           barcode.empty? || phi_x_buffers.detect { |tube| tube.any_barcode_matching?(barcode) }
