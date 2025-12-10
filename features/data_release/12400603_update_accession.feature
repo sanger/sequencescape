@@ -11,7 +11,7 @@ Feature: object with an accession should be modifiable
     When I update an accession number for study "study"
 
     When I am on the event history page for study "study"
-    Then I should see "Assigned sample accession number"
+    Then I should see "Assigned study accession number"
 
   Scenario: A sample XML should validate with the ENA schema
     Given a sample named "sample" exists for accession
