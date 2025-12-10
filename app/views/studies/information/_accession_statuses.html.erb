@@ -1,16 +1,20 @@
-<div class="float-right">
-  <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+<%= tag.div(class: 'd-flex justify-content-end px-3') do %>
   <% unless configatron.accession_samples %>
-    <span class="text-muted">Accessioning is currently disabled.</span>
+    <%= tag.span('Accessioning is currently disabled.', class: 'text-muted') %>
   <% else %>
     <%= link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
         accession_all_samples_study_path(@study),
         class: "btn btn-sm btn-outline-primary")
     %>
   <% end %>
-</div>
-
-<%= pagination @page_elements %>
+<% end %>
+<%= tag.div(class: 'row align-items-center px-3') do %>
+  <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
+  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center mb--3') %>
+  <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
+    <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+  <% end %>
+<% end %>
 <table id="summary" class="table sortable table-striped">
   <thead>
     <tr>
@@ -59,4 +63,7 @@
     <% end %>
   </tbody>
 </table>
-<%= pagination @page_elements %>
+<%= tag.div(class: 'row px-3') do %>
+  <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
+  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center') %>
+<% end %>
