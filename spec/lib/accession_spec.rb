@@ -9,18 +9,15 @@ RSpec.describe Accession do
       create(:user, api_key: configatron.accession_local_key) # create contact user
     end
 
-    context 'when accessioning is disabled' do
+    context 'when accessioning is disabled', :accessioning_disabled do
       let(:event_user) { create(:user) }
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
       let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
       around do |example|
-        configatron_dup = configatron.dup
-        configatron.accession_samples = false
         Delayed::Worker.delay_jobs = false
         example.run
         Delayed::Worker.delay_jobs = true
-        configatron.replace(configatron_dup)
       end
 
       it 'raises an exception if the sample cannot be accessioned' do

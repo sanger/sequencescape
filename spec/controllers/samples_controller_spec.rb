@@ -132,7 +132,7 @@ RSpec.describe SamplesController do
           session: { user: current_user.id }
     end
 
-    context 'when accessioning is disabled' do
+    context 'when accessioning is disabled', :accessioning_disabled do
       it 'redirects to the sample page' do
         expect(response).to redirect_to(sample_path(sample.id))
       end
