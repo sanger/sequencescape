@@ -56,7 +56,7 @@ Feature: object with an accession should be modifiable
     When I update an accession number for sample "sample"
 
     When I am on the event history page for sample "sample"
-    Then I should see "Created sample accession number"
+    Then I should see "Assigned sample accession number"
       And I should see "me"
 
   Scenario: A sample with already an accession number should update itself using its accession number
