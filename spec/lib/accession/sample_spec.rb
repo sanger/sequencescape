@@ -157,17 +157,28 @@ RSpec.describe Accession::Sample, :accession, type: :model do
   end
 
   describe '#update_accession_number' do
+    let(:event_user) { create(:user) }
     let(:sample) { create(:sample_for_accessioning_with_open_study) }
     let(:accession_sample) { described_class.new(tag_list, sample) }
     let(:test_accession_number) { 'ENA12345' }
 
     before do
       expect(accession_sample.ebi_accession_number).to be_nil
-      accession_sample.update_accession_number(test_accession_number)
+      accession_sample.update_accession_number(test_accession_number, event_user)
     end
 
     it 'sets the ebi_accession_number to the provided value' do
       expect(accession_sample.ebi_accession_number).to eq(test_accession_number)
+    end
+
+    it 'creates an event indicating the accession data has been updated' do
+      event = sample.events.order(:created_at).last
+      expect(event).to have_attributes(
+        message: 'Assigned sample accession number',
+        content: test_accession_number,
+        of_interest_to: 'administrators',
+        created_by: event_user.login
+      )
     end
   end
 
