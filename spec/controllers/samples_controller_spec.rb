@@ -3,6 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe SamplesController do
+  include AccessionV1ClientHelper
+  include MockAccession
+
   let(:sample) { create(:sample) }
   let(:current_user) { create(:user) }
 
@@ -108,7 +111,22 @@ RSpec.describe SamplesController do
   end
 
   describe '#accession' do
+    let(:accession_individual_samples_with_sample_accessioning_job) { false }
+
     before do
+      if accession_individual_samples_with_sample_accessioning_job
+        Flipper.enable :y25_286_accession_individual_samples_with_sample_accessioning_job
+
+        create(:user, api_key: configatron.accession_local_key) # create contact user
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+        )
+      else
+        Flipper.disable :y25_286_accession_individual_samples_with_sample_accessioning_job
+
+        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
+      end
+
       get :accession,
           params: { id: sample.id },
           session: { user: current_user.id }
@@ -172,6 +190,46 @@ RSpec.describe SamplesController do
             Sample metadata gender is required, Sample metadata phenotype is required,
             Sample metadata donor is required
           MSG
+        end
+      end
+
+      context 'when accessioning is successful' do
+        let(:studies) { [create(:managed_study, accession_number: 'ENA123')] }
+        let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
+        let(:sample) { create(:sample, sample_metadata:, studies:) }
+
+        before { sample.reload } # Reload to get updated accession number
+
+        context 'when the accession_individual_samples_with_sample_accessioning_job feature flag is disabled' do
+          let(:accession_individual_samples_with_sample_accessioning_job) { false }
+
+          it 'assigns an accession number to the sample' do
+            expect(sample.ebi_accession_number).to eq('EGA00001000240')
+          end
+
+          it 'redirects to the sample page' do
+            expect(response).to redirect_to(sample_path(sample.id))
+          end
+
+          it 'displays a notice message with the generated accession number' do
+            expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
+          end
+        end
+
+        context 'when the accession_individual_samples_with_sample_accessioning_job feature flag is enabled' do
+          let(:accession_individual_samples_with_sample_accessioning_job) { true }
+
+          it 'assigns an accession number to the sample' do
+            expect(sample.ebi_accession_number).to eq('EGA00001000240')
+          end
+
+          it 'redirects to the sample page' do
+            expect(response).to redirect_to(sample_path(sample.id))
+          end
+
+          it 'displays a notice message with the generated accession number' do
+            expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
+          end
         end
       end
     end
