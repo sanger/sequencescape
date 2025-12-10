@@ -60,7 +60,16 @@ module Presenters
       add_submenu_option 'Print plate labels', :print_plate_labels if plate_labels?
       add_submenu_option 'Print AMP plate batch ID', :print_amp_plate_labels if ultima?
       add_submenu_option 'Print worksheet', :print if worksheet? && can?(:print)
-      add_submenu_option 'Verify tube layout', :verify if tube_layout_not_verified? && can?(:verify)
+      if tube_layout_not_verified? && can?(:verify)
+        add_submenu_option 'Verify tube layout',
+                           { controller: :batches, action: :verify, verification_flavour: :tube, id: @batch.id,
+                             only_path: true }
+      end
+      if ultima? && amp_plate_layout_not_verified? && can?(:verify)
+        add_submenu_option 'Verify AMP plate layout',
+                           { controller: :batches, action: :verify, verification_flavour: :amp_plate, id: @batch.id,
+                             only_path: true }
+      end
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
       return unless aviti_run_manifest? || ultima_run_manifest?
 
@@ -101,6 +110,10 @@ module Presenters
 
     def tube_layout_not_verified?
       @batch.has_limit? and !@batch.has_event('Tube layout verified')
+    end
+
+    def amp_plate_layout_not_verified?
+      @batch.has_limit? and !@batch.has_event('AMP plate layout verified')
     end
 
     def plate_labels?

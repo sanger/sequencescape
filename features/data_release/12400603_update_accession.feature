@@ -11,7 +11,7 @@ Feature: object with an accession should be modifiable
     When I update an accession number for study "study"
 
     When I am on the event history page for study "study"
-    Then I should see "accession data has been updated by user me"
+    Then I should see "Assigned study accession number"
 
   Scenario: A sample XML should validate with the ENA schema
     Given a sample named "sample" exists for accession
@@ -56,7 +56,8 @@ Feature: object with an accession should be modifiable
     When I update an accession number for sample "sample"
 
     When I am on the event history page for sample "sample"
-    Then I should see "accession data has been updated by user me"
+    Then I should see "Assigned sample accession number"
+      And I should see "me"
 
   Scenario: A sample with already an accession number should update itself using its accession number
     Given a sample named "sample" exists for accession
@@ -73,4 +74,3 @@ Feature: object with an accession should be modifiable
     When I create an accession number for sample "sample"
 
     Then I should have sent the attribute "alias" for the sample element to the accessioning service
-

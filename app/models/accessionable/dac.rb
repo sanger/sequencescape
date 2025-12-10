@@ -37,9 +37,9 @@ class Accessionable::Dac < Accessionable::Base
 
   def update_accession_number!(user, accession_number)
     @accession_number = accession_number
-    add_updated_event(user, "DAC for Study #{@study.id}", @study) if @accession_number
     @study.study_metadata.ega_dac_accession_number = accession_number
     @study.save!
+    @study.events.assigned_accession_number!('DAC', accession_number, user)
   end
 
   def protect?(service)
