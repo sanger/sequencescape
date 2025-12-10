@@ -103,7 +103,7 @@ module Accessionable
       @accession_number = accession_number
       @sample.sample_metadata.sample_ebi_accession_number = accession_number
       @sample.save!
-      @sample.events.created_accession_number!('sample', user)
+      @sample.events.assigned_accession_number!('sample', accession_number, user)
     end
 
     def protect?(service)

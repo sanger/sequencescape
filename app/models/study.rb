@@ -129,7 +129,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Associations
   has_many_events do
-    event_constructor(:created_accession_number!, Event::AccessioningEvent, :created_accession_number!)
+    event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
   end
   has_many_lab_events
 

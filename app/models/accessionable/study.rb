@@ -84,7 +84,7 @@ module Accessionable
       @accession_number = accession_number
       @study.study_metadata.study_ebi_accession_number = accession_number
       @study.save!
-      @study.events.created_accession_number!('study', user)
+      @study.events.assigned_accession_number!('study', accession_number, user)
     end
 
     def update_array_express_accession_number!(number)
