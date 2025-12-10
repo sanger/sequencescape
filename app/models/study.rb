@@ -109,9 +109,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
-  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
-  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
-  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
+  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_selection']
 
   REMAPPED_ATTRIBUTES =
     {
@@ -555,9 +555,19 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ebi_accession_number.present?
   end
 
+  # Accession all samples in the study.
+  #
+  # If the study does not have an accession number, adds an error to the study and returns.
+  # Otherwise, iterates through each sample in the study and attempts to accession it,
+  # unless the sample already has an accession number.
+  # If an AccessionService::AccessionServiceError occurs for a sample, adds the error message to the study's errors.
+  #
+  # @return [void]
   def accession_all_samples
+    return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
+
     samples.find_each do |sample|
-      sample.accession if accession_number?
+      sample.accession unless sample.accession_number?
     rescue AccessionService::AccessionServiceError => e
       errors.add(:base, e.message)
     end
@@ -585,11 +595,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession_service
     case data_release_strategy
     when 'open'
-      ENAAccessionService.new
+      AccessionService::ENAService.new
     when 'managed'
-      EgaAccessionService.new
+      AccessionService::EGAService.new
     else
-      NoAccessionService.new(self)
+      AccessionService::NoService.new(self)
     end
   end
 

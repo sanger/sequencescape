@@ -58,7 +58,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
       .new
   end
 
-  allowance_bands = Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS
+  let(:allowance_bands) { Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS }
 
   before { allow(calculator).to receive(:scrna_config).and_return(Rails.application.config.scrna_config) }
 

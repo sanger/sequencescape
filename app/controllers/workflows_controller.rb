@@ -50,7 +50,7 @@ class WorkflowsController < ApplicationController
       editable, message = @task.can_process?(@batch)
 
       unless editable
-        redirect_back fallback_location: batch_path(@batch), alert: message
+        redirect_back_or_to(batch_path(@batch), alert: message)
         return false
       end
 
