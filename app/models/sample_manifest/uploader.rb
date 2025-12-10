@@ -60,7 +60,7 @@ class SampleManifest::Uploader
     upload.sample_manifest.finished!
     upload.broadcast_sample_manifest_updated_event(user)
     upload.register_stock_resources
-    upload.trigger_accessioning
+    upload.trigger_accessioning(user)
     true
   end
 

@@ -102,9 +102,9 @@ module SampleManifestExcel
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
-      def trigger_accessioning
+      def trigger_accessioning(event_user)
         changed_samples.each do |sample|
-          sample.accession
+          sample.accession(event_user)
         rescue AccessionService::AccessionValidationFailed => e
           Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
         end
