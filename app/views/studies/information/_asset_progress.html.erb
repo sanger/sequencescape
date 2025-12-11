@@ -40,7 +40,7 @@
           <td><%= asset.label %></td>
           <td><% if asset.is_a?(Receptacle) %>
             <% asset.aliquots.each do |a| %>
-              <%= link_to(a.sample.name, a.sample) %>;
+              <%= link_to(a.sample.name, a.sample) %>
             <% end %>
           <% end %>
           <td><%= asset.closed? ? 'Yes' : 'No' %></td>
