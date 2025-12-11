@@ -95,7 +95,9 @@ module BootstrapHelper
   # Note: this is similar to the default datatables info string, but
   # for when when we are using server-side pagination
   def page_summary(collection, **attributes)
-    start_entry = collection.offset_value + 1
+    return '' if collection.nil?
+
+    start_entry = [collection.offset_value + 1, collection.total_entries].min
     end_entry = [collection.offset_value + collection.limit_value, collection.total_entries].min
     total_entries = collection.total_entries
 
