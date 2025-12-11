@@ -25,14 +25,12 @@ module SequencescapeExcel
       def update(_attributes = {})
         return unless valid?
 
+        # NB. asset here is a well
         stock_aliquot = fetch_single_aliquot(asset)
-        new_i7_tag = tag
-        new_i5_tag = tag2
-        return unless tags_need_update?(stock_aliquot, new_i7_tag, new_i5_tag)
 
         # Update all downstream aliquots as well as current aliquot
         matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
-        update_all_relevant_aliquots(matching_aliquots, new_i7_tag, new_i5_tag)
+        update_all_relevant_aliquots(matching_aliquots, tag, tag2)
       end
 
       def link(other_fields)
@@ -76,15 +74,11 @@ module SequencescapeExcel
         Tag.find_by(tag_group_id: tag2_group_id, map_id: well_index)
       end
 
+      # NB. asset here is a well
       def fetch_single_aliquot(asset)
-        raise StandardError, 'Expecting asset to have a single aliquot' unless asset.aliquots.one?
+        raise StandardError, 'Expecting well to have a single aliquot' unless asset.aliquots.one?
 
         asset.aliquots.first
-      end
-
-      # Determine if the tags need to be updated
-      def tags_need_update?(stock_aliquot, new_i7_tag, new_i5_tag)
-        (stock_aliquot.tag != new_i7_tag) || (stock_aliquot.tag2 != new_i5_tag)
       end
 
       # Find all aliquots that need updating
@@ -101,9 +95,10 @@ module SequencescapeExcel
       end
 
       # Update the tags in all the matching aliquots
-      def update_all_relevant_aliquots(matching_aliquots, new_i7_tag, new_i5_tag)
+      # NB. if active record sees that nothing has changed it will update the record
+      def update_all_relevant_aliquots(matching_aliquots, i7_tag, i5_tag)
         Aliquot.where(id: matching_aliquots).find_each do |aq|
-          aq.update(tag: new_i7_tag, tag2: new_i5_tag)
+          aq.update(tag: i7_tag, tag2: i5_tag)
           aq.save!
         end
       end
