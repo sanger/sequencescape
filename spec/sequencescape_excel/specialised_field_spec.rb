@@ -849,7 +849,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
             it 'will have the appropriate error message' do
               expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
-                "Expecting well #{asset.map.description} to have a single aliquot"
+                "Expecting well #{asset.map.description} to have a single aliquot, but it has 2"
               )
             end
           end

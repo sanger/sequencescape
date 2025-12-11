@@ -79,8 +79,8 @@ module SequencescapeExcel
       def well_has_single_aliquot?
         return true if asset.aliquots.one?
 
-        msg = "Expecting well #{asset.map.description} to have a single aliquot"
-        errors.add(:asset, msg)
+        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{asset.aliquots.count}"
+        errors.add(:base, msg)
       end
 
       # Find all aliquots that need updating
