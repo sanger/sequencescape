@@ -19,14 +19,15 @@ module SequencescapeExcel
       validates :well_index, presence: { message: 'is not valid' }
       validates :tag, presence: { message: 'does not have associated i7 tag' }, if: :well_index
       validates :tag2, presence: { message: 'does not have associated i5 tag' }, if: :well_index
+      validate :well_has_single_aliquot?, if: :well_index
 
       PLATE_SIZE = 96
 
       def update(_attributes = {})
         return unless valid?
 
-        # NB. asset here is a well
-        stock_aliquot = fetch_single_aliquot(asset)
+        # NB. asset here is a well, and a the well_has_single_aliquot? validation ensures there is only one aliquot
+        stock_aliquot = asset.aliquots.first
 
         # Update all downstream aliquots as well as current aliquot
         matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
@@ -74,11 +75,12 @@ module SequencescapeExcel
         Tag.find_by(tag_group_id: tag2_group_id, map_id: well_index)
       end
 
-      # NB. asset here is a well
-      def fetch_single_aliquot(asset)
-        raise StandardError, 'Expecting well to have a single aliquot' unless asset.aliquots.one?
+      # Validation to ensure that the well has a single aliquot
+      def well_has_single_aliquot?
+        return true if asset.aliquots.one?
 
-        asset.aliquots.first
+        msg = "Expecting well #{asset.map.description} to have a single aliquot"
+        errors.add(:asset, msg)
       end
 
       # Find all aliquots that need updating

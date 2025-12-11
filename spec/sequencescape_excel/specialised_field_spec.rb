@@ -839,10 +839,17 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
           context 'when the well contains more than one aliquot' do
             let(:asset) { create(:tagged_well, map: map, aliquot_count: 2) }
 
-            it 'will raise a StandardError' do
-              expect { sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil) }.to raise_error(
-                StandardError,
-                'Expecting well to have a single aliquot'
+            before do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+            end
+
+            it 'will not be valid' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+            end
+
+            it 'will have the appropriate error message' do
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
+                "Expecting well #{asset.map.description} to have a single aliquot"
               )
             end
           end
