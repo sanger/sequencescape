@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-# This test verifies moving samples from plates to tubes via /plates/to_sample_tubes .
-
 require 'rails_helper'
+
+# This test verifies moving samples from plates to tubes via /plates/to_sample_tubes .
 
 RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print barcodes', type: :feature do
   let(:user) { create(:user, login: 'user') }

@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# This test verifies pre-capture pooling submissions and creation of pools.
+
 RSpec.feature 'Pre-capture pools should be defined at submission',
               :api, :barcode_service, :json, :mutiple_orders, :new_api,
               :single_sign_on, :submission do
