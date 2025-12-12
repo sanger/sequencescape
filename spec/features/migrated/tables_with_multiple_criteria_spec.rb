@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# This test verifies ordering a table using the tablesorter plugin on a pipeline page.
+
 RSpec.feature 'Order a table with tablesorter plugin', :js, :pipeline do
   let(:user) { create(:admin) }
 
