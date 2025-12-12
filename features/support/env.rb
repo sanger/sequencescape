@@ -41,7 +41,7 @@ begin
   Rails.application.load_tasks
   begin
     Rails.application.load_seed
-  rescue StandardError => e
+  rescue StandardError
     puts "Seed data already loaded"
   end
 rescue NameError
