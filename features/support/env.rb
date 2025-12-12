@@ -15,6 +15,7 @@ require_relative 'simplecov' # loading order is important
 require 'cucumber/rails'
 require_relative 'parameter_types' # does not seem to be automatically loaded correctly...
 require_relative 'seeded_deletion'
+require 'database_cleaner-active_record'
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
@@ -33,9 +34,20 @@ require_relative 'seeded_deletion'
 #
 ActionController::Base.allow_rescue = false
 
-# Remove/comment out the lines below if your app doesn't have a database.
-# For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.
+
+# Our features/api/* feature tests do some horrible things with UUIDs that override seed data.
+# This is an issue because we set the seed data at the start of the test suite and assume it is not manipulated
+# as our database cleaner strategy is to delete everything except seed data.
+# 
+# To fix this we cache the UUIDs at the start of the test suite, and then restore them after each scenario.
+UUID_CACHE = {}
 begin
+  # Ensure we start from a clean database
+  DatabaseCleaner[:active_record].strategy = :truncation
+  # Clean the database
+  DatabaseCleaner.clean
+  
+  # This strategy will delete all records except those that existed before cleaning was started (seed data)
   DatabaseCleaner[:active_record].strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
 
   Rails.application.load_tasks
@@ -44,18 +56,23 @@ begin
   rescue StandardError
     puts "Seed data already loaded"
   end
+
+  UUID_CACHE.merge!(Uuid.all.index_by(&:external_id))
 rescue NameError
   raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
 end
 
-# You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
-# See the DatabaseCleaner documentation for details. Example:
-Before() do
-  DatabaseCleaner[:active_record].strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
-
+Before do
   DatabaseCleaner.start
 end
 
 After() do
   DatabaseCleaner.clean
+
+  # Restore the UUID seed data that may have been deleted or modified during the scenario (mainly features/api tests)
+  # TODO: This caching should be safe to remove once we get rid of V1 API
+  Uuid.delete_all
+  UUID_CACHE.values.each do |uuid|
+    Uuid.insert(uuid.attributes)
+  end
 end
