@@ -2,9 +2,14 @@
 
 require 'rails_helper'
 
+# This test verifies that given the correct request information types
+# configured, such as read length, library type, and concentration, the
+# squencing pipeline batch page dispays these fields.
+
 RSpec.feature 'Cluster formation pipeline batch displays read length and library type', :batch, :pipeline do
   let(:user) { create(:admin) }
   let(:request_information_types_data) do
+    # [name, key, label, hide_in_inbox]
     [
       ['Read length', 'read_length', 'Read length', 0],
       ['Library type', 'library_type', 'Library type', 0],
