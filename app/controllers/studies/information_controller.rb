@@ -122,7 +122,7 @@ class Studies::InformationController < ApplicationController
     #  .where(id:@page_elements.map(&:id)).group('assets.id','requests.state').count
 
     if @page_elements.empty?
-      render plain: 'No requests of this type can be found'
+      render partial: 'no_requests_found'
     else
       render partial: 'summary_for_request_type', layout: PAGED_TABLE_LAYOUT
     end
