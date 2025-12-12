@@ -4,7 +4,7 @@ Feature: Managing a study or project should not attach nil documents
     Given I am an "administrator" user logged in as "John Smith"
 
     Given I have an active study called "Study testing nil documents"
-    Given I am on the show page for study "Study testing nil documents"
+    Given I am on the information page for study "Study testing nil documents"
     And I follow "Manage"
 
   Scenario: Managing a study without attaching a file

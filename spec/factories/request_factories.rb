@@ -87,6 +87,29 @@ FactoryBot.define do
     end
   end
 
+  factory :ultima_sequencing_request, class: 'UltimaSequencingRequest' do
+    request_type factory: %i[ultima_sequencing]
+    request_purpose { :standard }
+    sti_type { 'UltimaSequencingRequest' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        ot_recipe: 'Free'
+      }
+    end
+
+    factory(:complete_ultima_sequencing_request) do
+      transient { event_descriptors { { 'Chip Barcode' => 'wb' } } }
+      asset factory: %i[library_tube]
+      target_asset factory: %i[lane]
+
+      after(:build) do |request, evaluator|
+        request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
+      end
+    end
+  end
+
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
     asset factory: %i[sample_tube]
     request_type factory: %i[library_creation_request_type]

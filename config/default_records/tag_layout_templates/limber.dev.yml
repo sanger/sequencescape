@@ -166,3 +166,8 @@ TSsc384-PCR2-nCoV-2019/V5/B:
   :tag2_group_name: sc384tempi5
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
+PN-1000242/PN-3000483-Dual-Index-Kit-NT:
+  :tag_group_name: PN-1000242/PN-3000483 Dual Index Kit NT, Set A (i7)
+  :tag2_group_name: PN-1000242/PN-3000483 Dual Index Kit NT, Set A (i5)
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate

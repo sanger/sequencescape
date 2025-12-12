@@ -1,32 +1,15 @@
-default: &DEFAULT
-  tag_group_name: Control Tag Group 888
-  tag_map_id: 888
-  tag_options:
-    Single:
-      i7_oligo: ACAACGCAAT
-      i5_oligo: null
-    Dual:
-      i7_oligo: TGTGCAGC
-      i5_oligo: ACTGATGT
-  default_tag_option: Dual
-  studies:
-    - Illumina Controls
-    - Heron PhiX
-  default_study_option: Illumina Controls
-
-development:
-  <<: *DEFAULT
-next_release:
-  <<: *DEFAULT
-test:
-  <<: *DEFAULT
-cucumber:
-  <<: *DEFAULT
-production:
-  <<: *DEFAULT
-staging:
-  <<: *DEFAULT
-staging_2:
-  <<: *DEFAULT
-training:
-  <<: *DEFAULT
+tag_group_name: Control Tag Group 888
+tag_map_id: 888
+tag_options:
+  Single:
+    i7_oligo: ACAACGCAAT
+    i5_oligo: null
+  Dual:
+    i7_oligo: TGTGCAGC
+    i5_oligo: ACTGATGT
+default_tag_option: Dual
+studies:
+  - Illumina Controls
+  - Heron PhiX
+  - Comp PhiX
+default_study_option: Illumina Controls

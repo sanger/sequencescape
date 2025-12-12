@@ -163,6 +163,30 @@ FactoryBot.define do
     after(:build) { |pipeline| pipeline.request_types << create(:pac_bio_sequencing_request_type) }
   end
 
+  factory :element_aviti_sequencing_pipeline do
+    name { generate(:pipeline_name) }
+    active { true }
+
+    workflow { build(:lab_workflow_for_pipeline) }
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:sequencing_request_type)
+      pipeline.add_control_request_type
+    end
+  end
+
+  factory :ultima_sequencing_pipeline do
+    name { generate(:pipeline_name) }
+    active { true }
+
+    workflow { build(:lab_workflow_for_pipeline) }
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:ultima_sequencing)
+      pipeline.add_control_request_type
+    end
+  end
+
   factory :library_completion, class: 'IlluminaHtp::Requests::LibraryCompletion' do
     request_type do
       create(
@@ -266,11 +290,6 @@ FactoryBot.define do
     row_order { 1 }
     column_order { 8 }
     asset_shape { AssetShape.default }
-  end
-
-  factory :plate_template do
-    name { 'testtemplate' }
-    size { 96 }
   end
 
   factory :asset_link do

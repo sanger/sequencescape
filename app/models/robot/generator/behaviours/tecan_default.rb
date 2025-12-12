@@ -10,7 +10,7 @@ module Robot::Generator::Behaviours::TecanDefault
     buffer_data = buffers(data_object)
     if buffer_data.present?
       output_file_contents << buffer_data
-      output_file_contents << buffer_seperator
+      output_file_contents << buffer_separator
     end
 
     output_file_contents << dyn_mappings(data_object)
@@ -63,7 +63,10 @@ module Robot::Generator::Behaviours::TecanDefault
     dyn_mappings
   end
 
-  def buffer_seperator
+  # Adds a Comment command between the buffer and sample addition steps.
+  #
+  # @return [String] the buffer separator string
+  def buffer_separator
     'C;'
   end
 

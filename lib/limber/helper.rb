@@ -3,7 +3,7 @@
 # Helper templates and methods used in limber.rake
 module Limber::Helper
   PIPELINE = 'Limber-Htp'
-  PIPELINE_REGEX = /Illumina-[A-z]+ /
+  PIPELINE_REGEX = /Illumina-[A-Za-z]+ /
   PRODUCTLINE = 'Illumina-Htp'
 
   # Construct submission templates for the Limber pipeline
@@ -112,7 +112,7 @@ module Limber::Helper
     #
     # @return [String] A name for the request type
     def name_for(cherrypick, sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - #{
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name} - #{
         sequencing_request_type.name.gsub(PIPELINE_REGEX, '')
       }"
     end
@@ -199,7 +199,7 @@ module Limber::Helper
   #
   class LibraryOnlyTemplateConstructor < TemplateConstructor
     def name_for(cherrypick, _sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name}"
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name}"
     end
 
     def sequencing_request_types
@@ -220,7 +220,7 @@ module Limber::Helper
   #
   class LibraryAndMultiplexingTemplateConstructor < TemplateConstructor
     def name_for(cherrypick, _sequencing_request_type)
-      "#{pipeline} - #{cherrypick ? 'Cherrypicked - ' : ''}#{name} - Pool"
+      "#{pipeline} - #{'Cherrypicked - ' if cherrypick}#{name} - Pool"
     end
 
     def sequencing_request_types

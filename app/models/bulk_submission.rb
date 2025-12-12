@@ -94,7 +94,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   private :headers
 
   def csv_data_rows
-    @csv_rows.slice(header_index + 1...@csv_rows.length)
+    @csv_rows.slice((header_index + 1)...@csv_rows.length)
   end
   private :csv_data_rows
 
@@ -165,10 +165,11 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       # If the submission template name matches `SCRNA_CORE_CDNA_PREP_GEM_X_5P` and all required headers are present,
       # the allowance band is calculated for each study and project combination.
       # Otherwise, an empty hash is assigned.
-      @allowance_bands = calculate_allowance_bands
-
-      raise ActiveRecord::RecordInvalid, self if errors.count > 0
-
+      if errors.count == 0
+        @allowance_bands = calculate_allowance_bands
+      else
+        raise ActiveRecord::RecordInvalid, self
+      end
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
       # rubocop:todo Metrics/BlockLength
@@ -251,7 +252,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     'scrna core number of pools',
     'scrna core cells per chip well',
     '% phix requested',
-    'low diversity'
+    'low diversity',
+    'ot recipe'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -275,7 +277,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def submission_structure # rubocop:todo Metrics/CyclomaticComplexity
     Hash
-      .new { |h, i| h[i] = Array.new }
+      .new { |h, i| h[i] = [] }
       .tap do |submission|
         csv_data_rows.each_with_index do |row, index|
           next if row.all?(&:nil?)
@@ -357,7 +359,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['scrna core number of pools', 'number_of_pools'],
         ['scrna core cells per chip well', 'cells_per_chip_well'],
         ['% phix requested', 'percent_phix_requested'],
-        ['low diversity', 'low_diversity']
+        ['low diversity', 'low_diversity'],
+        ['ot recipe', 'ot_recipe']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end

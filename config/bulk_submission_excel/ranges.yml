@@ -23,3 +23,7 @@ low_diversity:
   options:
     - "No"
     - "Yes"
+ot_recipe:
+  options:
+    - "Free"
+    - "Flex"

@@ -57,6 +57,21 @@ module Api
       # Attributes
       ###
 
+      # @!attribute [rw] template_type
+      #   @note This field is required when creating a lot. It enables setting the polymorphic template relationship.
+      #   @return [String] The template_type.
+      attribute :template_type
+
+      # @!attribute [rw] template_id
+      #   @note This field is required when creating a lot. It enables setting the polymorphic template relationship.
+      #   @return [String] The template_id.
+      attribute :template_id
+
+      # @!attribute [rw] received_at
+      #  @note This field is required when creating a lot.
+      #  @return [DateTime] The date and time when the lot was received.
+      attribute :received_at, write_once: true
+
       # @!attribute [r] uuid
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The universally unique identifier (UUID) of the lot.
@@ -66,6 +81,69 @@ module Api
       #   @note This field is required when creating a lot.
       #   @return [String] The lot number.
       attribute :lot_number, write_once: true
+
+      # @!attribute [r] lot_type_name
+      #   @return [String] The name of the lot type associated with this lot.
+      attribute :lot_type_name, readonly: true
+
+      # @!attribute [r] template_name
+      #   @return [String] The name of the template associated with this lot.
+      attribute :template_name, readonly: true
+
+      # @!attribute [w] user_uuid
+      #   This is declared for convenience where the {User} is not available to set as a relationship.
+      #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
+      #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @param value [String] The UUID of the {User} who initiated this work completion.
+      #   @return [Void]
+      #   @see #user
+      attribute :user_uuid, writeonly: true
+
+      def user_uuid=(value)
+        @model.user = User.with_uuid(value).first
+      end
+
+      # @!attribute [w] lot_type_uuid
+      #  This is declared for convenience where the {LotType} is not available to set as a relationship.
+      #  @param value [String] The UUID of the {LotType} related to this lot.
+      attribute :lot_type_uuid, writeonly: true
+
+      def lot_type_uuid=(value)
+        @model.lot_type = LotType.with_uuid(value).first
+      end
+
+      ###
+      # Getters and Setters
+      ###
+
+      # Retrieves the name of the lot type associated with this lot.
+      #
+      # @return [String, nil] The name of the lot type, or `nil` if no lot type is set.
+      # e.g. 'Pre Stamped Tags'
+      def lot_type_name
+        lot_type&.name
+      end
+
+      # Retrieves the name of the template associated with this lot.
+      # See template association below for more details.
+      #
+      # @return [String, nil] The name of the template, or `nil` if no template is set.
+      # e.g. 'TSsc384-PCR2-nCoV-2019/V3/B'
+      def template_name
+        template&.name
+      end
+
+      ###
+      # Custom Methods
+      ###
+
+      # Retrieves the template ID for the associated tag layout template.
+      #
+      # @return [String, nil] The template ID, or `nil` if no template is set.
+      def tag_layout_template_id
+        template_id
+      end
 
       ###
       # Relationships
@@ -85,27 +163,33 @@ module Api
 
       # @!attribute [rw] template
       #   The template associated with this lot, which may vary depending on the lot type.
-      #   This is a polymorphic relationship, meaning it can be linked to different types of templates.
+      #   This is a polymorphic relationship, meaning it can be linked to different entity types
+      #   (TagLayoutTemplate, Tag2LayoutTemplate and Labware/PlateTemplate at time of writing).
       #   @return [TemplateResource] The associated template.
       #   @note This relationship is required when creating a lot.
       has_one :template, polymorphic: true
 
       # @!attribute [r] tag_layout_template
       #   A tag layout template associated with this lot, used for specific processing workflows.
+      #   This represents the same entity as `template` above,
+      #   but is only relevant when template_type is `TagLayoutTemplate`.
       #   @return [TagLayoutTemplateResource] The associated tag layout template.
       #   @note This relationship is loaded only when explicitly included.
       has_one :tag_layout_template, eager_load_on_include: false
 
+      # @!attribute [rw] qcables
+      #   @return [Array<QcableResource>] the {Qcable} resources related to this lot.
+      has_many :qcables
+
       ###
-      # Custom Methods
+      # Filters
       ###
 
-      # Retrieves the template ID for the associated tag layout template.
-      #
-      # @return [String, nil] The template ID, or `nil` if no template is set.
-      def tag_layout_template_id
-        template_id
-      end
+      # @!method uuid
+      #   A filter to return only lots with the given UUID.
+      #   @example Filtering lots by UUID
+      #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
+      filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
     end
   end
 end

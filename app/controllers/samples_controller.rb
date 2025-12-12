@@ -1,4 +1,7 @@
 # frozen_string_literal: true
+
+require 'exception_notification'
+
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -14,9 +17,11 @@ class SamplesController < ApplicationController
     end
   end
 
-  def show
+  def show # rubocop:disable Metrics/AbcSize
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
+    @page_name = @sample.name
+    @component_samples = @sample.component_samples.paginate({ page: params[:page], per_page: 25 })
 
     respond_to do |format|
       format.html
@@ -57,6 +62,7 @@ class SamplesController < ApplicationController
     end
 
     respond_to do |format|
+      @sample.current_user = current_user
       if @sample.save
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
@@ -87,6 +93,7 @@ class SamplesController < ApplicationController
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
+    @sample.current_user = current_user
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
@@ -96,6 +103,9 @@ class SamplesController < ApplicationController
       cleaned_params[:date_of_consent_withdrawn] = DateTime.now
       cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
     end
+
+    # Show warnings from accessioning
+    flash.now[:warning] = @sample.errors if @sample.errors.present?
 
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
@@ -139,63 +149,46 @@ class SamplesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def accession # rubocop:todo Metrics/AbcSize
+  def accession # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
+
+    # Flag set in the deployment project to allow per-environment enabling of accessioning
+    unless configatron.accession_samples
+      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    end
+
     @sample.validate_ena_required_fields!
     @sample.accession_service.submit_sample_for_user(@sample, current_user)
+    # TODO: remove this line and replace with reference to @sample.accession
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-    redirect_to(sample_path(@sample))
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
-    redirect_to(edit_sample_path(@sample))
+    redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-    redirect_to(sample_path(@sample))
   rescue AccessionService::NumberNotGenerated => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-    redirect_to(sample_path(@sample))
   rescue AccessionService::AccessionServiceError => e
-    flash[:error] = e.message
-    redirect_to(sample_path(@sample))
+    flash[:error] = "Accessioning Service Failed: #{e.message}"
+  ensure
+    # Redirect back to where we came from if not already redirected
+    redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
   end
-
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def taxon_lookup # rubocop:todo Metrics/AbcSize
-    if params[:term]
-      url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
-    elsif params[:id]
-      url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
-    else
-      return
-    end
-
-    rc = RestClient::Resource.new(URI.parse(url).to_s)
-    if configatron.disable_web_proxy == true
-      RestClient.proxy = nil
-    elsif configatron.fetch(:proxy).present?
-      RestClient.proxy = configatron.proxy
-      rc.headers['User-Agent'] = 'Internet Explorer 5.0'
-    elsif ENV['http_proxy'].present?
-      RestClient.proxy = ENV['http_proxy']
-    end
-
-    # rc.verbose = true
-    body = rc.get.body
-
-    respond_to do |format|
-      format.js { render plain: body }
-      format.xml { render plain: body }
-      #      format.html {render :nothing}
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
+
+  # Redirect back to the referer with an anchor, or to a fallback location
+  # Based closely on redirect_back_or_to
+  def redirect_back_with_anchor_or_to(fallback_location, anchor: '')
+    referer = request.referer
+    if referer.present?
+      redirect_to "#{referer}##{anchor}"
+    else
+      redirect_to fallback_location.to_s
+    end
+  end
 
   def default_permitted_metadata_fields
     {

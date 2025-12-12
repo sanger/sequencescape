@@ -7,6 +7,7 @@ class UsersController < ApplicationController
   authorize_resource
 
   def show
+    @page_name = @user.name
     @printer_list = BarcodePrinter.alphabetical.where(barcode_printer_type: BarcodePrinterType96Plate.all).pluck(:name)
   end
 
@@ -73,7 +74,7 @@ class UsersController < ApplicationController
           redirect_to profile_path(current_user),
                       alert: "You don't have permission to view or edit that profile: here is yours instead."
         else
-          redirect_back fallback_location: main_app.root_url, alert: exception.message
+          redirect_back_or_to(main_app.root_url, alert: exception.message)
         end
       end
     end

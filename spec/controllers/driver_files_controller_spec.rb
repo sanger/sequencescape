@@ -27,9 +27,11 @@ RSpec.describe DriverFilesController do
     end
 
     let(:batch) { create(:batch, requests: requests, pipeline: pipeline, user: current_user) }
+    let(:generator_id) { robot.generation_behaviour_properties.first.id }
 
     before do
-      get :show, params: { batch_id: batch.id, robot_id: robot.id, pick_number: 1 }, session: { user: current_user.id }
+      get :show, params: { batch_id: batch.id, robot_id: robot.id, pick_number: 1, generator_id: generator_id },
+                 session: { user: current_user.id }
     end
 
     it 'returns an appropriate file' do

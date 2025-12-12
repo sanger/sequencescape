@@ -8,22 +8,16 @@
  */
 
 import $ from "jquery";
-import { defaults, cssSelectors } from "./config";
+import { cssSelectors, defaults } from "./config";
+import DataTable from "datatables.net-bs4";
 
 $(function () {
-  // Looping through and applying DataTable separately to each.
-  // The alternative, $( "table.sortable,table#batch-show" ).DataTable, caused issue
-  // on pages that had multiple .sortable tables:
-  // the search box was duplicated and pagination settings ignored,
-  // and tables with no rows had the following error in the js console:
-  // "Uncaught TypeError: Cannot set properties of undefined (setting '_DT_CellIndex')""
-  // Looping through like this seems to solve these issues.
-  $(cssSelectors.DefaultConfig).each(function (_index) {
-    $(this).DataTable(defaults);
+  document.querySelectorAll(cssSelectors.DefaultConfig).forEach((table) => {
+    new DataTable(table, { ...defaults, order: [] });
   });
 
   // If we update the DOM via ajax we want to mount the included components
   $(document.body).on("ajaxDomUpdate", function (_event, target) {
-    $(target).find(cssSelectors.AjaxConfig).DataTable(defaults);
+    new DataTable($(target).find(cssSelectors.AjaxConfig), { ...defaults, order: [] });
   });
 });

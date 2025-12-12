@@ -11,6 +11,7 @@ class User < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Swipecardable
   include Role::UserRoleHelper
+
   has_many_events
 
   has_many :lab_events

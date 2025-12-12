@@ -224,7 +224,7 @@ class StudiesController < ApplicationController
     flash[:warning] = e.message || 'An accession number is not required for this study'
     redirect_to(study_path(@study))
   rescue AccessionService::NumberNotGenerated => e
-    flash[:warning] = 'No accession number was generated'
+    flash[:warning] = "No accession number was generated: #{e.message}"
     redirect_to(study_path(@study))
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
@@ -246,9 +246,15 @@ class StudiesController < ApplicationController
 
   def accession_all_samples
     @study = Study.find(params[:id])
-    @study.accession_all_samples
-    flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
-    redirect_to(study_path(@study))
+    @study.accession_all_samples(current_user)
+
+    if @study.errors.any?
+      error_messages = compile_accession_errors(@study.errors)
+      flash[:error] = error_messages
+    else
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+    end
+    redirect_to(study_path(@study, anchor: 'accession-statuses'))
   end
 
   def dac_accession
@@ -368,6 +374,16 @@ class StudiesController < ApplicationController
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
+  end
+
+  def compile_accession_errors(errors, max_messages = 6)
+    error_messages = ['The samples in this study could not be accessioned, please check the following errors:']
+    error_messages.concat(errors.full_messages.first(max_messages))
+
+    return error_messages unless errors.size > max_messages
+
+    error_messages << '...'
+    error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown."
   end
 end
 # rubocop:enable Metrics/ClassLength

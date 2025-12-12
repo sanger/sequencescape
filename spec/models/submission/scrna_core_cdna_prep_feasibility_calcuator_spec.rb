@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# NB. Search for 'scRNA Core Pooling Developer Documentation' page in Confluence (public)
+# for a more verbose explanation of the calculations tested here.
 RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
   let(:calculator) do
     Class
@@ -55,20 +57,10 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
       end
       .new
   end
-  let(:scrna_config) do
-    {
-      desired_chip_loading_concentration: 2400,
-      desired_number_of_runs: 2,
-      volume_taken_for_cell_counting: 10,
-      wastage_volume: 5,
-      required_number_of_cells_per_sample_in_pool: 30_000,
-      wastage_factor: 0.95
-    }
-  end
 
-  allowance_bands = Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS
+  let(:allowance_bands) { Submission::ScrnaCoreCdnaPrepFeasibilityCalculator::ALLOWANCE_BANDS }
 
-  before { allow(calculator).to receive(:scrna_config).and_return(scrna_config) }
+  before { allow(calculator).to receive(:scrna_config).and_return(Rails.application.config.scrna_config) }
 
   describe '#calculate_allowance_band' do
     context 'when validation to run calculate_allowance_band fails' do
@@ -86,7 +78,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
     context 'when validation to run calculate_allowance_band passes' do
       before { allow(calculator).to receive(:validate_required_headers).and_return(true) }
 
-      it 'returns `2 pool attempts, 2 counts` when the finale volume is bigger than `2 pool attempts, 2 counts` band' do
+      it 'returns `2 pool attempts, 2 counts` when the final volume is greater than the minimum
+          threshold for the `2 pool attempts, 2 counts` band' do
         rows = [
           [
             'user',
@@ -112,7 +105,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '13000'
+            # Max number of cells per chip well before going to the next allowance band based on allowance_table
+            '37_500'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -125,8 +119,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
         expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
-      it 'returns `2 pool attempts, 1 count` when the finale volume is bigger or eq to `2 pool attempts, 1 count`
- allowance and less than `2 pool attempts, 2 counts` allowance' do
+      it 'returns `2 pool attempts, 1 count` when the final volume is greater or eq to the `2 pool attempts, 1 count`
+          band allowance and less than `2 pool attempts, 2 counts` band allowance' do
         rows = [
           [
             'user',
@@ -152,7 +146,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '53428'
+            # Min number of cells per chip well before going to full allowance band based on allowance_table
+            '35_626'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -165,8 +160,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
         expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
-      it 'returns `1 pool attempt, 1 count` when the finale volume is bigger or eq to `1 pool attempt, 1 count`
-          allowance and less than `1 pool attempt, 2 counts` allowance' do
+      it 'returns `1 pool attempt, 1 count` when the final volume is greater or eq to the `1 pool attempt, 1 count`
+          band allowance and less than the `1 pool attempt, 2 counts` band allowance' do
         rows = [
           [
             'user',
@@ -192,7 +187,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '19400'
+            # Number of cells per chip well
+            '8500'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -205,8 +201,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
         expect(calculator.calculate_allowance_bands).to eq(expected_result)
       end
 
-      it 'returns `1 pool attempt, 2 counts` when the final_volume is bigger or eq to `1 pool attempt, 2 counts`
-          band allowance and less than `1 pool attempt, 1 count ` band' do
+      it 'returns `1 pool attempt, 2 counts` when the final_volume is greater or eq to the `1 pool attempt, 2 counts`
+          band allowance and less than the `1 pool attempt, 1 count ` band allowance' do
         rows = [
           [
             'user',
@@ -232,7 +228,8 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
-            '82857'
+            # Number of cells per chip well
+            '49000'
           ]
         ]
         allow(calculator).to receive_messages(
@@ -271,6 +268,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepFeasibilityCalculator do
             '1.35',
             nil,
             '1',
+            # Number of cells per chip well
             '3000'
           ]
         ]

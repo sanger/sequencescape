@@ -98,7 +98,7 @@ module NavigationHelpers
     when /the Submissions Inbox page/
       submissions_path
     when /the create bulk submissions page/
-      '/bulk_submissions'
+      new_bulk_submission_path
     when /the show page for the last submission/
       submission = Submission.last!
       submission_path(submission)
@@ -115,7 +115,7 @@ module NavigationHelpers
     when /the sample logistics homepage/
       sample_logistics_path
     when /the delayed jobs admin page/
-      url_for(controller: 'admin/delayed_jobs', action: :index)
+      admin_delayed_jobs_path
     when /the details page for (study) "([^"]+)"/
       page, name = $1, $2
       page_for_model(Study, 'properties', name)

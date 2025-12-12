@@ -6,10 +6,10 @@ class SampleTest < ActiveSupport::TestCase
   def assert_accession_service(type)
     service =
       {
-        ega: EgaAccessionService,
-        ena: EnaAccessionService,
-        none: NoAccessionService,
-        unsuitable: UnsuitableAccessionService
+        ega: AccessionService::EGAService,
+        ena: AccessionService::ENAService,
+        none: AccessionService::NoService,
+        unsuitable: AccessionService::UnsuitableService
       }[
         type
       ]

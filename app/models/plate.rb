@@ -130,7 +130,7 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   #
   # @return [String] Name of the state the plate is in
   def state
-    plate_purpose.state_of(self)
+    plate_purpose&.state_of(self)
   end
 
   # Modifies the recorded volume information of all wells on a plate by volume_change
@@ -252,33 +252,6 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
           )
         end
 
-  def self.search_for_plates(params)
-    with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
-      .with_study_id(params[:study_id] || nil)
-      .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
-      .created_between(params[:start_date], params[:end_date])
-      .filter_by_barcode(params[:barcodes] || nil)
-      .distinct
-  end
-
-  scope :with_faculty_sponsor_ids,
-        ->(faculty_sponsor_ids) do
-          if faculty_sponsor_ids.present?
-            joins(studies: { study_metadata: :faculty_sponsor }).where(faculty_sponsors: { id: faculty_sponsor_ids })
-          end
-        end
-
-  scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
-
-  scope :with_plate_purpose_ids,
-        ->(plate_purpose_ids) { where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present? }
-
-  # TODO: When on Ruby 2.6 try using endless ranges
-  scope :created_between,
-        ->(start_date, end_date) do
-          where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
-        end
-
   def maps
     Map.where_plate_size(size).where_plate_shape(asset_shape)
   end
@@ -378,14 +351,15 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
   end
 
   extend Metadata
+
   has_metadata {}
 
   def height
-    asset_shape.plate_height(size)
+    asset_shape&.plate_height(size)
   end
 
   def width
-    asset_shape.plate_width(size)
+    asset_shape&.plate_width(size)
   end
 
   # This method returns a map from the wells on the plate to their stock well.

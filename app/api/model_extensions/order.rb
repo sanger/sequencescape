@@ -10,6 +10,7 @@ module ModelExtensions::Order
     def self.included(base)
       base.class_eval do
         extend DelegateValidation
+
         delegate_validation :request_options_for_validation,
                             as: 'request_options',
                             to: :request_types,
@@ -120,7 +121,7 @@ module ModelExtensions::Order
     end
 
     def to_hash
-      Hash.new.deep_merge(@store)
+      {}.deep_merge(@store)
     end
 
     def node_and_leaf(*keys)

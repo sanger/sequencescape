@@ -5,7 +5,8 @@ class Studies::InformationController < ApplicationController
   BASIC_TABS = [
     %w[summary Summary],
     ['sample-progress', 'Sample progress'],
-    ['assets-progress', 'Assets progress']
+    ['assets-progress', 'Assets progress'],
+    ['accession-statuses', 'Accession statuses']
   ].freeze
 
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -14,6 +15,8 @@ class Studies::InformationController < ApplicationController
   before_action :discover_study
 
   def show # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    @page_name = @study.name
+
     @summary = params[:summary] || 'sample-progress'
     @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
     @summaries = BASIC_TABS + @request_types.pluck(:key, :name)
@@ -39,6 +42,9 @@ class Studies::InformationController < ApplicationController
       @summary = params[:summary] || 'assets-progress'
 
       case @summary
+      when 'summary'
+        @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
+        render partial: 'summary'
       when 'sample-progress'
         @page_elements = @study.samples.paginate(page_params)
         @request_types =
@@ -51,9 +57,9 @@ class Studies::InformationController < ApplicationController
         @labware_type_name = params.fetch(:labware_type, 'All Assets').underscore.humanize
         @page_elements = @study.assets_through_aliquots.on_a(@labware_type).paginate(page_params)
         render partial: 'asset_progress'
-      when 'summary'
-        @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
-        render partial: 'summary'
+      when 'accession-statuses'
+        @page_elements = @study.samples.paginate(page_params)
+        render partial: 'accession_statuses'
       else
         # A request_type key
         @request_type = RequestType.find_by!(key: params[:summary])

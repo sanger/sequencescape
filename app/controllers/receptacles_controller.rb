@@ -28,6 +28,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
   end
 
   def show # rubocop:todo Metrics/MethodLength
+    @page_name = @asset.display_name
     @source_plates = @asset.source_plates
     respond_to do |format|
       format.html do
@@ -117,6 +118,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
 
   def show_plate
     @asset = Plate.find(params[:id])
+    @page_name = @asset.display_name
   end
 
   def new_request

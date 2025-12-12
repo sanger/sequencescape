@@ -22,6 +22,7 @@ class ApplicationController < ActionController::Base
 
   # Provide authentication, and "remember me"
   include AuthenticatedSystem
+
   before_action :login_required
   before_action :extract_header_info
 
@@ -53,7 +54,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json { head :forbidden, content_type: 'text/html' }
-      format.html { redirect_back fallback_location: main_app.root_url, alert: exception.message }
+      format.html { redirect_back_or_to(main_app.root_url, alert: exception.message) }
     end
   end
 end

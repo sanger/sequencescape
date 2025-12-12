@@ -4,47 +4,137 @@ require 'rails_helper'
 require 'support/barcode_helper'
 
 RSpec.describe Sample, :accession, :cardinal do
-  include MockAccession
+  include AccessionV1ClientHelper
 
-  context 'accessioning' do
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+  # TODO: remove accessioning out of samples specs
+  context 'accessioning disabled' do
+    let(:event_user) { create(:user) }
+    let(:sample) do
+      create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+    end
 
     before do
-      configatron.accession_samples = true
-      Delayed::Worker.delay_jobs = false
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
-    end
-
-    after do
-      Delayed::Worker.delay_jobs = true
       configatron.accession_samples = false
+      create(:user, api_key: configatron.accession_local_key) # create contact user
     end
 
-    it 'will not proceed if the sample is not suitable' do
-      sample =
-        create(
-          :sample_for_accessioning_with_open_study,
-          sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
-        )
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+    around do |example|
+      Delayed::Worker.delay_jobs = false
+      example.run
+      Delayed::Worker.delay_jobs = true
     end
 
-    it 'will add an accession number if successful' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
-      sample =
-        create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
+    it 'will raise an exception if the sample cannot be accessioned' do
+      expect { sample.accession(event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
     end
 
     it 'will not add an accession number if it fails' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      sample =
-        build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect { sample.save! }.to raise_error(StandardError)
+      begin
+        sample.accession(event_user)
+      rescue AccessionService::AccessioningDisabledError
+        # Ignore the error and continue execution
+      end
       expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
+    end
+  end
+
+  # TODO: remove accessioning out of samples specs
+  context 'accessioning enabled', :accessioning_enabled do
+    let(:event_user) { create(:user) }
+
+    before do
+      create(:user, api_key: configatron.accession_local_key) # create contact user
+    end
+
+    around do |example|
+      Delayed::Worker.delay_jobs = false
+      example.run
+      Delayed::Worker.delay_jobs = true
+    end
+
+    context 'sample fails internal validations and is not suitable for accessioning' do
+      let(:unaccessionable_sample) do
+        create(:sample_for_accessioning_with_open_study,
+               sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
+      end
+
+      it 'will provide debug information' do
+        sample_name = unaccessionable_sample.name
+
+        expect_accession = expect { unaccessionable_sample.accession(event_user) }
+        expect_accession.to raise_error(AccessionService::AccessionValidationFailed) do |error|
+          expect(error.message).to eq(
+            "Sample '#{sample_name}' cannot be accessioned: " \
+            'Sample does not have the required metadata: sample-taxon-id.'
+          )
+        end
+      end
+    end
+
+    context 'the sample has passed internal validations' do
+      let(:accessionable_sample) do
+        create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
+      end
+
+      it 'will not proceed if accessioning for the study is disabled' do
+        accessionable_sample.ena_study.enforce_accessioning = false
+        accessionable_sample.accession(event_user)
+
+        expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+      end
+
+      context 'when accessioning succeeds' do
+        before do
+          allow(Accession::Submission).to receive(:client).and_return(
+            stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+          )
+          accessionable_sample.accession(event_user)
+        end
+
+        it 'will add an accession number' do
+          expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_present
+        end
+      end
+
+      context 'when accessioning fails' do
+        before do
+          allow(Accession::Submission).to receive(:client).and_return(
+            stub_accession_client(:submit_and_fetch_accession_number,
+                                  raise_error: Accession::Error.new('Failed to process accessioning response'))
+          )
+        end
+
+        it 'will not add an accession number' do
+          accessionable_sample.save!
+
+          expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+        end
+
+        it 'will log an error' do
+          allow(Rails.logger).to receive(:error).and_call_original
+
+          expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
+
+          expect(Rails.logger).to have_received(:error).with(
+            "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
+            'Failed to process accessioning response'
+          )
+        end
+
+        it 'will send an exception notification' do
+          allow(ExceptionNotifier).to receive(:notify_exception)
+
+          expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
+
+          sample_name = accessionable_sample.name # 'Sample1'
+          expect(ExceptionNotifier).to have_received(:notify_exception)
+            .with(instance_of(Accession::Error),
+                  data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                                   'Failed to process accessioning response',
+                          sample_name: sample_name,
+                          service_provider: 'ENA' })
+        end
+      end
     end
   end
 
@@ -98,6 +188,17 @@ RSpec.describe Sample, :accession, :cardinal do
     it 'can be added to a sample' do
       sample = create(:sample, sample_metadata_attributes: { genome_size: 1000 })
       expect(sample.sample_metadata.genome_size).to eq(1000)
+    end
+  end
+
+  describe '#current_accession_status' do
+    let(:sample) { create(:sample) }
+    let!(:older_status) { create(:accession_sample_status, sample: sample, created_at: 2.days.ago) }
+    let!(:newer_status) { create(:accession_sample_status, sample: sample, created_at: 1.day.ago) }
+    let!(:newest_status) { create(:accession_sample_status, sample: sample, created_at: 1.minute.ago) }
+
+    it 'returns the most recent accession status for the sample' do
+      expect(sample.current_accession_status).to eq(newest_status)
     end
   end
 

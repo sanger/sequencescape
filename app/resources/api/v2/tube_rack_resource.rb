@@ -46,11 +46,7 @@ module Api
     # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class TubeRackResource < BaseResource
-      # TODO: Here be dragons! This resource is mutable and can be created via
-      #       the JSON API. However the asset_creation record is not generated
-      #       as we would be relying on the request to tell us who requested it.
-      #       Instead this should be done as part of adding authentication to
-      #       the API in the security OKR.
+      # NB. This resource is mutable and can be created via the JSON API.
 
       default_includes :uuid_object, :barcodes
 
@@ -68,7 +64,7 @@ module Api
       # @!attribute [rw] name
       #   @return [String] The name of the tube rack.
       #   @note This is a write-once attribute, meaning it cannot be modified once it has been set.
-      attribute :name, write_once: true
+      attribute :name, delegate: :display_name, write_once: true
 
       # @!attribute [rw] number_of_columns
       #   @note A POST request errors when this attribute is provided. I believe these are automatically
@@ -87,7 +83,7 @@ module Api
       # @!attribute [rw] size
       #   @note This attribute is required.
       #   @return [String] The size of the tube rack (e.g., 48, 96).
-      attribute :size
+      attribute :size, write_once: true
 
       # @!attribute [rw] tube_locations
       #   @note This is a write-only attribute used to map tubes to specific coordinates in the rack.
@@ -104,6 +100,10 @@ module Api
       #   @return [String] The unique identifier (UUID) of the tube rack.
       attribute :uuid, readonly: true
 
+      # @!attribute [r] uuid
+      #   @return [String] The state of the tube rack, derived from the transfer requests in the tubes.
+      attribute :state, readonly: true
+
       ###
       # Relationships
       ###
@@ -113,14 +113,18 @@ module Api
       #   @note Comments are readonly and provide additional context or notes regarding the tube rack.
       has_many :comments, readonly: true
 
-      # @!attribute [rw] purpose
-      #   @return [PurposeResource] The purpose associated with the tube rack.
-      has_one :purpose, foreign_key: :plate_purpose_id
-
       # @!attribute [rw] racked_tubes
       #   @return [RackedTubeResource] The tubes that have been placed in the tube rack.
       #   @note This relationship represents the tubes placed in the rack at specified coordinates.
       has_many :racked_tubes
+      # TODO: refactor plate_purpose_id to purpose_id throughout repo
+      has_one :purpose, foreign_key: :plate_purpose_id, class_name: 'TubeRackPurpose'
+      has_many :parents, readonly: true, polymorphic: true
+      has_many :state_changes, readonly: true
+      has_one :custom_metadatum_collection, foreign_key_on: :related
+      has_many :ancestors, readonly: true, polymorphic: true
+      has_many :tube_receptacles, through: :tubes, source: :receptacle
+      # TODO: do we need descendants? might have to delegate to racked tubes
 
       ###
       # Filters
@@ -143,7 +147,7 @@ module Api
              apply:
                (
                  lambda do |records, value, _options|
-                   purpose = Purpose.find_by(name: value)
+                   purpose = TubeRack::Purpose.find_by(name: value)
                    records.where(plate_purpose_id: purpose)
                  end
                )
@@ -152,6 +156,11 @@ module Api
       #   @example GET /api/v2/tube_racks?filter[purpose_id]=12345
       #   @return [ActiveRecord::Relation] Filtered tube racks that have the specified purpose ID.
       filter :purpose_id, apply: ->(records, value, _options) { records.where(plate_purpose_id: value) }
+      filter :created_at_gt,
+             apply: ->(records, value, _options) { records.where('labware.created_at > ?', value[0].to_date) }
+      filter :updated_at_gt,
+             apply: ->(records, value, _options) { records.where('labware.updated_at > ?', value[0].to_date) }
+      # TODO: do we need scope for include_used? would have to delegate to racked tubes
 
       ###
       #  Field Methods

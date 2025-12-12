@@ -5,6 +5,9 @@ module StateChanger
   class StandardPlate < StateChanger::Base
     # Target_state of failed will fail associated requests only.
     # All other transitions will be ignored.
+
+    # NB. Adding states other than 'failed' here will require thinking about the implications of
+    # updating the associated_requests.
     self.map_target_state_to_associated_request_state = { 'failed' => 'failed' }
 
     # Updates the state of the labware to the target state.  The basic implementation does this by updating
@@ -66,22 +69,38 @@ module StateChanger
     # Check the request is not in other wells (excluding any in contents or that already have the target state)
     def request_in_other_wells(request)
       _receptacles.any? do |well|
-        well.aliquot_requests.try(:map, &:id).to_a.any?(request.id) &&
-          (contents.present? && contents.exclude?(well.absolute_position_name)) && # rubocop:disable Style/RedundantParentheses
-          well.state != associated_request_target_state
+        request_in_well?(well, request) && well_not_in_contents?(well) && well_not_in_target_state?(well)
       end
+    end
+
+    def request_in_well?(well, request)
+      well.aliquot_requests.try(:map, &:id).to_a.any?(request.id)
+    end
+
+    def well_not_in_contents?(well)
+      contents.present? && contents.exclude?(well.absolute_position_name)
+    end
+
+    def well_not_in_target_state?(well)
+      well.state != associated_request_target_state
     end
 
     def transfer_requests
       receptacles.flat_map(&:transfer_requests_as_target)
     end
 
-    # Pulls out the customer requests associated with the wells.
+    # Pulls out the requests associated with the wells.
     # Note: Do *NOT* go through labware here, as you'll pull out all requests
     # not just those associated with the wells in the 'contents' array
+    # e.g. contents might be just the wells you are failing.
+    # NB. see map_target_state_to_associated_request_state at the top of this file,
+    # if anything other than 'failed' is added to that hash then this method should
+    # be considered carefully, as you will affect both current and downstream requests
+    # which may not be desirable.
     def associated_requests
       # uniq is present here in case more than one well shares the same request
       # e.g. a parent well was split into multiple child wells
+      # aliquot.request holds the request that created this well
       receptacles.flat_map(&:aliquot_requests).uniq
     end
 

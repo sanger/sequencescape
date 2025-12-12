@@ -250,7 +250,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Upon upload, sample manifests might generate qc_results for certain
   # specialised fields. We want to keep one qc_assay per sample manifest.
   def qc_assay
-    @qc_assay ||= QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
+    return @qc_assay if defined?(@qc_assay)
+
+    @qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
   end
 
   # rubocop:disable Naming/MemoizedInstanceVariableName

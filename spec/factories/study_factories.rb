@@ -32,11 +32,16 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Study#{n}: Manages" }
     state { 'active' }
+    enforce_accessioning { true }
+    enforce_data_release { true }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update!(
         data_release_strategy: 'managed',
-        study_ebi_accession_number: evaluator.accession_number
+        study_ebi_accession_number: evaluator.accession_number,
+        study_abstract: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        study_study_title: 'A managed study for testing purposes',
+        study_type: create(:study_type)
       )
     end
   end
@@ -46,6 +51,8 @@ FactoryBot.define do
 
     sequence(:name) { |n| "Study#{n}: Open" }
     state { 'active' }
+    enforce_accessioning { true }
+    enforce_data_release { true }
 
     after(:create) do |study, evaluator|
       study.study_metadata.update!(

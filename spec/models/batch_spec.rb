@@ -80,6 +80,121 @@ RSpec.describe Batch do
     end
   end
 
+  describe '::verify_amp_plate_layout' do
+    let(:user) { create(:user) }
+    let!(:tube) { create(:full_library_tube) }
+    let!(:target) { create(:full_library_tube) }
+    let!(:pipeline) { create(:sequencing_pipeline) }
+    let!(:request) do
+      create(
+        :request_with_sequencing_request_type,
+        asset: tube,
+        target_asset: target,
+        request_type: pipeline.request_types.last,
+        state: 'started'
+      )
+    end
+
+    let!(:batch) { create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request]) }
+
+    let(:expected_barcode) { "#{batch.id}-#{tube.human_barcode}" }
+    let(:error_message) { "The barcode at position 1 is incorrect: expected #{expected_barcode}." }
+
+    before do
+      expect(LabEvent.count).to eq(0)
+    end
+
+    context 'with one plate' do
+      let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}"] }
+
+      it 'returns true and makes an event' do
+        expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be true
+        expect(LabEvent.count).to eq(1)
+        expect(batch.lab_events.last.description).to eq('AMP plate layout verified')
+      end
+
+      context 'with wrong batch id' do
+        let(:scanned_barcodes) { ["wrongbatchid_#{tube.human_barcode}"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with wrong tube barcode' do
+        let(:scanned_barcodes) { ["#{batch.id}_wrongtubebarcode"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with wrong format barcode' do
+        let(:scanned_barcodes) { ['5487498572'] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+    end
+
+    context 'with two plates' do
+      let!(:tube2) { create(:full_library_tube) }
+      let!(:target2) { create(:full_library_tube) }
+      let!(:request2) do
+        create(
+          :request_with_sequencing_request_type,
+          asset: tube2,
+          target_asset: target2,
+          request_type: pipeline.request_types.last,
+          state: 'started'
+        )
+      end
+
+      let!(:batch) do
+        create(:batch, state: 'started', qc_state: 'qc_manual', pipeline: pipeline, requests: [request, request2])
+      end
+
+      let(:expected_barcode2) { "#{batch.id}-#{tube2.human_barcode}" }
+      let(:error_message2) { "The barcode at position 2 is incorrect: expected #{expected_barcode2}." }
+
+      let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}", "#{batch.id}-#{tube2.human_barcode}"] }
+
+      it 'returns true and makes an event' do
+        expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be true
+        expect(LabEvent.count).to eq(1)
+        expect(batch.lab_events.last.description).to eq('AMP plate layout verified')
+      end
+
+      context 'with plates in wrong position' do
+        let(:scanned_barcodes) { ["#{batch.id}-#{tube2.human_barcode}", "#{batch.id}-#{tube.human_barcode}"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message)
+          expect(batch.errors[:base]).to include(error_message2)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+
+      context 'with one wrong barcode' do
+        let(:scanned_barcodes) { ["#{batch.id}-#{tube.human_barcode}", "#{batch.id}-wrongtubebarcode"] }
+
+        it 'returns false and reports errors' do
+          expect(batch.verify_amp_plate_layout(scanned_barcodes)).to be false
+          expect(batch.errors[:base]).to include(error_message2)
+          expect(LabEvent.count).to eq(0)
+        end
+      end
+    end
+  end
+
   describe '::for_user' do
     subject(:batch_for_user) { described_class.for_user(query) }
 
@@ -140,6 +255,104 @@ RSpec.describe Batch do
 
       expect(batch.valid?).to be true
       expect(batch.errors[:base]).to be_empty
+    end
+  end
+
+  describe '#set_position_based_on_asset_barcode' do
+    let(:pipeline) { create(:pipeline) }
+    let(:batch) { create(:batch, pipeline:) }
+
+    it 'sorts requests by asset human barcode' do
+      # Create assets with specific barcodes to ensure consistent ordering
+      asset1 = create(:sample_tube, barcode: '111')
+      asset2 = create(:sample_tube, barcode: '222')
+      asset3 = create(:sample_tube, barcode: '333')
+
+      # Create requests with assets deliberately out of barcode order
+      request3 = create(:request, asset: asset3)
+      request1 = create(:request, asset: asset1)
+      request2 = create(:request, asset: asset2)
+
+      # Add requests to batch (order doesn't matter here)
+      batch.requests << [request3, request1, request2]
+
+      # Set up batch_requests with positions
+      batch.batch_requests.each_with_index { |br, i| br.update!(position: i + 1) }
+
+      # Set up spy for assign_positions_to_requests!
+      allow(batch).to receive(:assign_positions_to_requests!)
+
+      # Call the method under test
+      batch.set_position_based_on_asset_barcode
+
+      # Verify the method was called with correctly ordered request IDs
+      expect(batch).to have_received(:assign_positions_to_requests!).with([request1.id, request2.id, request3.id])
+    end
+  end
+
+  describe '#assign_positions_to_requests!' do
+    let(:pipeline) { create(:pipeline) }
+    let(:batch) { create(:batch, pipeline:) }
+
+    context 'when all requests in the batch are included in the requested order' do
+      it 'updates the positions of batch requests' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+        request3 = create(:request)
+
+        # Add requests to batch with initial positions
+        batch.batch_requests.create!(request: request1, position: 3)
+        batch.batch_requests.create!(request: request2, position: 1)
+        batch.batch_requests.create!(request: request3, position: 2)
+
+        # Re-order the requests
+        batch.assign_positions_to_requests!([request1.id, request2.id, request3.id])
+
+        # Reload batch and verify new positions
+        batch.reload
+        expect(batch.batch_requests.find_by(request_id: request1.id).position).to eq 1
+        expect(batch.batch_requests.find_by(request_id: request2.id).position).to eq 2
+        expect(batch.batch_requests.find_by(request_id: request3.id).position).to eq 3
+      end
+    end
+
+    context 'when some requests from the batch are missing in the requested order' do
+      it 'raises an error' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+        request3 = create(:request)
+
+        # Add all requests to batch
+        batch.requests << [request1, request2, request3]
+
+        # Try to re-order with one request missing
+        expect { batch.assign_positions_to_requests!([request1.id, request3.id]) }.to raise_error(
+          StandardError,
+          'Can only sort all the requests in the batch at once'
+        )
+      end
+    end
+
+    context 'when the requested order includes IDs not in the batch' do
+      it 'raises an error' do
+        # Create requests
+        request1 = create(:request)
+        request2 = create(:request)
+
+        # Add only two requests to batch
+        batch.requests << [request1, request2]
+
+        # Create another request but don't add to batch
+        request3 = create(:request)
+
+        # Try to re-order including the third request
+        expect { batch.assign_positions_to_requests!([request1.id, request2.id, request3.id]) }.to raise_error(
+          StandardError,
+          'Can only sort all the requests in the batch at once'
+        )
+      end
     end
   end
 end

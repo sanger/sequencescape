@@ -21,6 +21,7 @@ module Pulldown::Requests
       def self.included(base)
         base.class_eval do
           include BaitLibrary::Associations
+
           association(:bait_library, :name, scope: :visible)
           validates :bait_library, presence: true
           validate :bait_library_valid

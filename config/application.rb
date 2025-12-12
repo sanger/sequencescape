@@ -36,6 +36,9 @@ module Sequencescape
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
+    # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
+    config.exceptions_app = routes
+
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = 'utf-8'
 
@@ -55,11 +58,9 @@ module Sequencescape
     # config.load_paths += %W( #{Rails.root}/extras )
     config.autoload_paths += %W[#{Rails.root}/app]
     config.autoload_paths += %W[#{Rails.root}/lib]
-    config.autoload_paths += %W[#{Rails.root}/lib/accession]
 
     config.eager_load_paths += %W[#{Rails.root}/app]
     config.eager_load_paths += %W[#{Rails.root}/lib]
-    config.eager_load_paths += %W[#{Rails.root}/lib/accession]
 
     # Some lib files we don't want to autoload as they are not required in the rails app
     %w[generators informatics].each { |file| Rails.autoloaders.main.ignore(Rails.root.join("lib/#{file}")) }
@@ -82,18 +83,6 @@ module Sequencescape
     config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])] # rubocop:disable Rails/RootPathnameMethods
     I18n.enforce_available_locales = false
 
-    config.cherrypickable_default_type = 'ABgene_0800'
-    config.plate_default_type = 'ABgene_0800'
-    config.plate_default_max_volume = 180
-
-    # See issue #3134 Leave wells D3/H10 free
-    config.plate_default_control_wells_to_leave_free = [19, 79].freeze
-
-    config.phi_x = config_for(:phi_x).with_indifferent_access
-
-    # add ena requirement fields here
-    config.ena_requirement_fields = config_for(:ena_requirement_fields)
-
     config.generators do |g|
       g.test_framework :rspec,
                        fixtures: true,
@@ -105,8 +94,6 @@ module Sequencescape
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
 
-    config.disable_animations = ENV.fetch('DISABLE_ANIMATIONS', false).present?
-
     # Rails 5
 
     config.middleware.insert_before 0, Rack::Cors do
@@ -117,24 +104,5 @@ module Sequencescape
     end
 
     # end Rails 5 #
-
-    # Fix for Psych::DisallowedClass: Tried to load unspecified class
-    config.active_record.yaml_column_permitted_classes =
-      Array(config.active_record.yaml_column_permitted_classes) +
-      %w[
-        Symbol
-        ActiveSupport::HashWithIndifferentAccess
-        ActiveSupport::TimeWithZone
-        ActiveSupport::TimeZone
-        HashWithIndifferentAccess
-        RequestType::Validator::ArrayWithDefault
-        RequestType::Validator::LibraryTypeValidator
-        RequestType::Validator::FlowcellTypeValidator
-        ActionController::Parameters
-        Set
-        Range
-        FieldInfo
-        Time
-      ]
   end
 end

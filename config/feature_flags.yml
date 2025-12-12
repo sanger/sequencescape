@@ -4,5 +4,5 @@
 dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation bar
 # Below is flagged off until some existing data that would violate the rule is fixed. Should be re-enabled in Y24-058.
 y24_052_enable_data_release_timing_validation: Enables server-side validation that enforces a relationship between the values of two study metadata fields
-# Below is disabled until the new API is ready for production. This is dependent on Y24-185, which involves creating tag sets for all tag groups used for CustomTaggedPlates.
-y24_220_enable_tag_set_api: Enables the Tag Set API
+
+y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
