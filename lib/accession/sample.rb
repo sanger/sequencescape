@@ -76,9 +76,12 @@ module Accession
       sample.uuid
     end
 
-    def update_accession_number(accession_number)
+    # Updates the accession number, saving the sample and adding an event to the events table
+    # for viewing under sample history.
+    def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
       sample.save
+      sample.events.assigned_accession_number!('sample', accession_number, event_user)
     end
 
     def accessioned?
