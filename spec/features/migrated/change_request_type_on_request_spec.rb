@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# This test verifies the conditions when request type can be changed on a request.
+
 RSpec.feature 'if request is pending then the admin could change of request type.', :js, :request do
   let(:user) { create(:admin) }
   let(:project) { create(:project, name: 'Test project 10071597', enforce_quotas: true) }
