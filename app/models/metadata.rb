@@ -52,40 +52,12 @@ module Metadata
         build_#{association_name}
       end
 
-      def tags
-        accession_service = AccessionService.select_for_sample(self)
-        self.class.tags.select{|tag| tag.for?(accession_service.provider)}
-      end
-
-      def self.tags
-        @tags ||= []
-      end
-
       before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
 
     ",
       __FILE__,
       line
     )
-  end
-
-  def include_tag(tag, options = {})
-    tags << AccessionedTag.new(tag, options[:as], options[:services], options[:downcase])
-  end
-
-  class AccessionedTag
-    attr_reader :tag, :name, :downcase
-
-    def initialize(tag, as = nil, services = [], downcase = false)
-      @tag = tag
-      @name = as || tag
-      @services = [services].flatten.compact
-      @downcase = downcase
-    end
-
-    def for?(service)
-      @services.empty? || @services.include?(service)
-    end
   end
 
   def construct_metadata_class(table_name, as_class, &)
