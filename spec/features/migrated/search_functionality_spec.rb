@@ -2,6 +2,8 @@
 
 require 'rails_helper'
 
+# This test verifies searching functionality across various search options.
+
 RSpec.feature 'Searching sequencescape', :search do
   let(:user) { create(:user, login: 'user') }
 
