@@ -2,7 +2,8 @@
 
 require 'rails_helper'
 
-# This test verifies that NPG lane's qc_state can be changed via the XML API.
+# This test verifies that NPG lane's qc_state can be changed and batch can be
+# released via the XML API.
 
 RSpec.feature 'NPG batch state released via XML API', :allow_rescue, :api, :xml do
   let(:user) { create(:admin) }
