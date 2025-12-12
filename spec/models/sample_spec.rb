@@ -8,13 +8,14 @@ RSpec.describe Sample, :accession, :cardinal do
 
   # TODO: remove accessioning out of samples specs
   context 'accessioning disabled' do
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+    let(:event_user) { create(:user) }
     let(:sample) do
       create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
     end
 
     before do
       configatron.accession_samples = false
+      create(:user, api_key: configatron.accession_local_key) # create contact user
     end
 
     around do |example|
@@ -23,13 +24,13 @@ RSpec.describe Sample, :accession, :cardinal do
       Delayed::Worker.delay_jobs = true
     end
 
-    it 'will raise an exception if the sample can be accessioned' do
-      expect { sample.accession }.to raise_error(AccessionService::AccessioningDisabledError)
+    it 'will raise an exception if the sample cannot be accessioned' do
+      expect { sample.accession(event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
     end
 
     it 'will not add an accession number if it fails' do
       begin
-        sample.accession
+        sample.accession(event_user)
       rescue AccessionService::AccessioningDisabledError
         # Ignore the error and continue execution
       end
@@ -39,7 +40,11 @@ RSpec.describe Sample, :accession, :cardinal do
 
   # TODO: remove accessioning out of samples specs
   context 'accessioning enabled', :accessioning_enabled do
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
+    let(:event_user) { create(:user) }
+
+    before do
+      create(:user, api_key: configatron.accession_local_key) # create contact user
+    end
 
     around do |example|
       Delayed::Worker.delay_jobs = false
@@ -56,7 +61,8 @@ RSpec.describe Sample, :accession, :cardinal do
       it 'will provide debug information' do
         sample_name = unaccessionable_sample.name
 
-        expect { unaccessionable_sample.accession }.to raise_error(AccessionService::AccessionServiceError) do |error|
+        expect_accession = expect { unaccessionable_sample.accession(event_user) }
+        expect_accession.to raise_error(AccessionService::AccessionValidationFailed) do |error|
           expect(error.message).to eq(
             "Sample '#{sample_name}' cannot be accessioned: " \
             'Sample does not have the required metadata: sample-taxon-id.'
@@ -72,7 +78,7 @@ RSpec.describe Sample, :accession, :cardinal do
 
       it 'will not proceed if accessioning for the study is disabled' do
         accessionable_sample.ena_study.enforce_accessioning = false
-        accessionable_sample.accession
+        accessionable_sample.accession(event_user)
 
         expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
       end
@@ -82,7 +88,7 @@ RSpec.describe Sample, :accession, :cardinal do
           allow(Accession::Submission).to receive(:client).and_return(
             stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
           )
-          accessionable_sample.accession
+          accessionable_sample.accession(event_user)
         end
 
         it 'will add an accession number' do
@@ -107,7 +113,7 @@ RSpec.describe Sample, :accession, :cardinal do
         it 'will log an error' do
           allow(Rails.logger).to receive(:error).and_call_original
 
-          expect { accessionable_sample.accession }.to raise_error(StandardError)
+          expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
 
           expect(Rails.logger).to have_received(:error).with(
             "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
@@ -118,7 +124,7 @@ RSpec.describe Sample, :accession, :cardinal do
         it 'will send an exception notification' do
           allow(ExceptionNotifier).to receive(:notify_exception)
 
-          expect { accessionable_sample.accession }.to raise_error(StandardError)
+          expect { accessionable_sample.accession(event_user) }.to raise_error(StandardError)
 
           sample_name = accessionable_sample.name # 'Sample1'
           expect(ExceptionNotifier).to have_received(:notify_exception)

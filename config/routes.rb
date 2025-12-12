@@ -198,7 +198,7 @@ Rails.application.routes.draw do
       get :fail
       get :print
       get :verify
-      post :verify_tube_layout
+      post :verify_layout
       get :previous_qc_state
       get :released
       get :sample_prep_worksheet
