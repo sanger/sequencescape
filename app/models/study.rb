@@ -662,7 +662,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
-  # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
 
@@ -786,5 +785,4 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end
