@@ -2,7 +2,5 @@
 # dpl202_enable_angry_cat_feature: When enabled this will add an angry cat to all pages that will try to catch the mouse pointer
 # The key should be lower case and snake case, and prefixed with the issue number to allow easy identification
 dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation bar
-# Below is flagged off until some existing data that would violate the rule is fixed. Should be re-enabled in Y24-058.
-y24_052_enable_data_release_timing_validation: Enables server-side validation that enforces a relationship between the values of two study metadata fields
 
 y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests

@@ -720,37 +720,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_strategy_must_be_managed?
-    validates :data_release_timing,
-              inclusion: {
-                in: [DATA_RELEASE_TIMING_NEVER]
-              },
-              if: :data_release_timing_must_be_never?
-
-    validates :data_release_timing,
-              inclusion: {
-                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
-              },
-              if: :data_release_timing_must_be_open?
-
-    def data_release_timing_must_be_never?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
-        strategy_not_applicable?
-    end
-
-    def data_release_timing_must_not_be_never?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
-        !strategy_not_applicable?
-    end
-
-    def data_release_timing_must_be_open?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? && open?
-    end
-
-    def data_release_strategy_must_be_managed?
-      Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? && managed?
-    end
-
     def sanity_check_y_separation
       if remove_x_and_autosomes?
         errors.add(:separate_y_chromosome_data, 'cannot be selected with remove x and autosomes.')

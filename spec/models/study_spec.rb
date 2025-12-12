@@ -697,32 +697,6 @@ RSpec.describe Study do
       it 'will have a dac_policy_title' do
         expect(study.study_metadata.dac_policy_title).to eq(metadata[:dac_policy_title])
       end
-
-      context 'when the data_release_timing validation is switched on' do
-        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
-
-        it 'errors if the data_release_timing is invalid' do
-          study.study_metadata.data_release_timing = 'never'
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).to include(
-            /Study metadata data release timing is not included in the list/
-          )
-        end
-      end
-
-      context 'when the data_release_timing validation is switched off' do
-        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
-
-        it 'does not error if the data_release_timing is invalid' do
-          study.study_metadata.data_release_timing = 'never'
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
-      end
     end
 
     context 'open study' do
@@ -732,32 +706,6 @@ RSpec.describe Study do
           study_metadata:
             create(:study_metadata, metadata.merge(data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN))
         )
-      end
-
-      context 'when the data_release_timing validation is switched on' do
-        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
-
-        it 'errors if the data_release_timing is invalid' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).to include(
-            /Study metadata data release timing is not included in the list/
-          )
-        end
-      end
-
-      context 'when the data_release_timing validation is switched off' do
-        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
-
-        it 'does not error if the data_release_timing is invalid' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
       end
 
       context 'when delay until publication is selected' do
@@ -854,90 +802,6 @@ RSpec.describe Study do
         expect(study.study_metadata.data_release_prevention_other_comment).to eq(
           metadata[:data_release_prevention_other_comment]
         )
-      end
-
-      context 'when the data_release_timing validation is switched on' do
-        before { Flipper.enable :y24_052_enable_data_release_timing_validation }
-
-        it 'errors if the data_release_timing is standard' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).to include(
-            /Study metadata data release timing is not included in the list/
-          )
-        end
-
-        it 'errors if the data_release_timing is immediate' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).to include(
-            /Study metadata data release timing is not included in the list/
-          )
-        end
-
-        it 'errors if the data_release_timing is delayed' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
-          study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
-          study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
-          study.study_metadata.data_release_delay_approval = Study::YES
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).to include(
-            /Study metadata data release timing is not included in the list/
-          )
-        end
-
-        it 'is valid if the data_release_timing is never' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
-      end
-
-      context 'when the data_release_timing validation is switched off' do
-        before { Flipper.disable :y24_052_enable_data_release_timing_validation }
-
-        it 'does not error if the data_release_timing is standard' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_STANDARD
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
-
-        it 'does not error if the data_release_timing is immediate' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_IMMEDIATE
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
-
-        it 'does not error if the data_release_timing is delayed' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_DELAYED
-          study.study_metadata.data_release_delay_reason = Study::DATA_RELEASE_DELAY_REASONS_STANDARD[0]
-          study.study_metadata.data_release_delay_period = Study::DATA_RELEASE_DELAY_PERIODS[0]
-          study.study_metadata.data_release_delay_approval = Study::YES
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
-
-        it 'is still valid if the data_release_timing is never' do
-          study.study_metadata.data_release_timing = Study::DATA_RELEASE_TIMING_NEVER
-
-          study.save # Don't raise exceptions, we only want to check for validation error messages.
-
-          expect(study.errors.full_messages).not_to include(/data release timing/)
-        end
       end
     end
   end
