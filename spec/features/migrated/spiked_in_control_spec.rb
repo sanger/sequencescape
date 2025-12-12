@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
+# This test verifies added (spiked in) PhiX as a control to a sequencing batch.
+
 RSpec.feature 'Spiked in Control', :npg, :xml do
   let(:user) { create(:admin) }
 
