@@ -88,7 +88,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
-              'lane' => 1,
+              'request_order' => 1,
+              'id_wafer_lims' => "#{sequencing_batch.id}_#{mx_tube1.human_barcode}_1",
               'id_pool_lims' => mx_tube1.human_barcode,
               'entity_id_lims' => lane1.id,
               'otr_carrier_lot_number' => 'OTR2',
@@ -151,7 +152,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
-              'lane' => 1,
+              'request_order' => 1,
+              'id_wafer_lims' => "#{sequencing_batch.id}_#{mx_tube1.human_barcode}_1",
               'id_pool_lims' => mx_tube1.human_barcode,
               'entity_id_lims' => lane1.id,
               'otr_carrier_lot_number' => 'OTR1',
@@ -204,7 +206,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
           'wafer_id' => sequencing_batch.id,
           'lanes' => [
             {
-              'lane' => 1,
+              'request_order' => 1,
+              'id_wafer_lims' => "#{sequencing_batch.id}_#{mx_tube1.human_barcode}_1",
               'id_pool_lims' => mx_tube1.human_barcode,
               'entity_id_lims' => lane1.id,
               'otr_carrier_lot_number' => nil,

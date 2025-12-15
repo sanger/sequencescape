@@ -30,4 +30,11 @@ class UltimaSequencingRequest < SequencingRequest
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
   delegate :ot_recipe, to: :request_metadata
+
+  # Generates unique wafer ID, concatenation of batch_for_opentrons,
+  # id_pool_lims, and request_order.
+  # @return [String] unique wafer ID for LIMS
+  def id_wafer_lims
+    "#{batch.id}_#{source_labware.human_barcode}_#{position}"
+  end
 end

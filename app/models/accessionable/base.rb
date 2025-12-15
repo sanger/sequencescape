@@ -49,28 +49,19 @@ class Accessionable::Base
   end
 
   def update_accession_number!(_user, _accession_number)
-    raise NotImplementedError, 'abstract method'
+    raise AccessionService::NotImplementedError, 'abstract method'
   end
 
   def update_array_express_accession_number!(accession_number)
   end
 
   def accessionable_id
-    raise NotImplementError, 'abstract method'
+    raise AccessionService::NotImplementError, 'abstract method'
   end
 
   def released?
     # Return false by default. Overidden by sample.
     false
-  end
-
-  def add_updated_event(user, classname, eventable)
-    eventable.events.create(
-      created_by: user.login,
-      message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-      content: 'accession number regenerated',
-      of_interest_to: 'administrators'
-    )
   end
 
   def label_scope
