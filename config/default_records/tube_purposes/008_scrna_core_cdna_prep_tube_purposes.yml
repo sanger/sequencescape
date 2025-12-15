@@ -17,7 +17,7 @@ LRC Bank Input 1ml:
   target_type: SampleTube
   stock_plate: true
 
-LRC Bank Input 0.8ml:
+LRC Bank Input 08ml:
   type: Tube::Purpose
   target_type: SampleTube
   stock_plate: true
