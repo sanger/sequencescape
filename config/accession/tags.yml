@@ -50,6 +50,7 @@ sample_description:
   groups:
     - :sample_attributes
   ebi_name: :sample description
+  optional: true
 donor_id:
   services:
     - :EGA
@@ -77,6 +78,7 @@ sample_strain_att:
   groups:
     - :sample_attributes
   ebi_name: :strain
+  optional: true
 strain_or_line:
   groups:
     - :array_express

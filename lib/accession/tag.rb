@@ -8,7 +8,7 @@ module Accession
     include ActiveModel::Model
     include Accession::Equality
 
-    attr_accessor :services, :value, :name, :groups, :ebi_name, :class_name
+    attr_accessor :services, :value, :name, :groups, :ebi_name, :class_name, :optional
 
     validates_presence_of :name, :groups
 

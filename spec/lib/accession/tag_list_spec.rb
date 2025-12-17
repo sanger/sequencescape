@@ -42,7 +42,6 @@ RSpec.describe Accession::TagList, :accession, type: :model do
   end
 
   it '#extract should create a new tag list with tags that have values' do
-    metadata = create(:sample_metadata_for_accessioning)
     extract = tag_list.extract(create(:sample_metadata_for_accessioning))
     expect(extract.count).to eq(attributes_for(:sample_metadata_for_accessioning).count)
     expect(extract.find(:sample_common_name).value).to eq('A common name')
@@ -68,5 +67,43 @@ RSpec.describe Accession::TagList, :accession, type: :model do
     tags = build_list(:accession_tag, 5).index_by(&:name)
     tag_list = described_class.new(tags)
     expect(tag_list.count).to eq(tags.count)
+  end
+
+  describe 'checking tag lists' do
+    let(:sample_metadata) do
+      Sample::Metadata.new(
+        sample_taxon_id: 1, # mandatory
+        sample_common_name: 'A common name', # mandatory
+        country_of_origin: 'Australia', # mandatory
+        date_of_sample_collection: '2000-01-01T00:00', # mandatory
+        sample_description: 'A description' # optional
+      )
+    end
+    let(:standard_tag_list) { described_class.new(yaml) }
+    let(:sample_tag_list) { standard_tag_list.extract(sample_metadata) }
+
+    context 'when all mandatory tags are present' do
+      it 'returns true' do
+        result = sample_tag_list.meets_service_requirements?(build(:ena_service), standard_tag_list)
+        expect(result).to be true
+      end
+    end
+
+    context 'when a mandatory tag is missing' do
+      let(:sample_metadata) do
+        Sample::Metadata.new(
+          sample_taxon_id: 1, # mandatory
+          # sample_common_name: 'A common name', # mandatory - missing and has no default value
+          country_of_origin: 'Australia', # mandatory
+          date_of_sample_collection: '2000-01-01T00:00', # mandatory
+          sample_description: 'A description' # optional
+        )
+      end
+
+      it 'returns false' do
+        result = sample_tag_list.meets_service_requirements?(build(:ena_service), standard_tag_list)
+        expect(result).to be false
+      end
+    end
   end
 end

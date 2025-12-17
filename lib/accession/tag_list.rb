@@ -77,7 +77,8 @@ module Accession
     # Check that the tag list meets the requirements for accessioning for a particular service
     # i.e. check that it has the required tags.
     def meets_service_requirements?(service, standard_tags)
-      @missing = standard_tags.required_for(service).keys - required_for(service).keys
+      # Compare the mandatory list of tags against what we have in our sample metadata
+      @missing = expected_mandatory_tag_keys(service, standard_tags) - required_for(service).keys
       missing.empty?
     end
 
@@ -88,6 +89,11 @@ module Accession
     end
 
     private
+
+    # Filter out tags that are set as optional (see config/accession/tags.yml for details)
+    def expected_mandatory_tag_keys(service, standard_tags)
+      standard_tags.required_for(service).reject { |_k, tag| tag.optional }.keys
+    end
 
     def add_tags(tags)
       tags.each { |k, tag| add(tag.is_a?(Accession::Tag) ? add(tag) : build_tag(tag, k)) }
