@@ -356,9 +356,22 @@ RSpec.describe Study do
       let!(:study_6) { create(:managed_study, name: 'Study 5', accession_number: 'ENA777') }
       let!(:study_7) { create(:managed_study, name: 'Study 6', accession_number: 'ENA888') }
       let!(:study_8) { create(:not_app_study) }
+      let!(:study_9) do
+        metadata_options = {
+          data_release_timing: Study::DATA_RELEASE_TIMING_PUBLICATION,
+          data_release_timing_publication_comment: 'Testing data release timing publication',
+          data_share_in_preprint: Study::YES
+        }
+        create(:open_study, name: 'Study 9', accession_number: 'ENA999', metadata_options: metadata_options)
+      end
 
       it 'include studies that adhere to accessioning guidelines' do
-        expect(described_class.for_sample_accessioning.count).to eq(5)
+        expect(described_class.for_sample_accessioning.count).to eq(6)
+      end
+
+      it 'include open studies with data release timing publication' do
+        studies = described_class.for_sample_accessioning
+        expect(studies).to include(study_9)
       end
 
       it 'not include studies that do not have accession numbers' do
