@@ -24,16 +24,19 @@ RSpec.describe Accession::TagList, :accession, type: :model do
   end
 
   it 'picks out tags which are required for each service' do
-    expect(tag_list.required_for(build(:ena_service)).count).to eq(4)
+    # Includes two optional tags sample_description and sample_strain_att
+    expect(tag_list.required_for(build(:ena_service)).count).to eq(6)
     expect(tag_list.required_for(build(:ega_service)).count).to eq(7)
   end
 
   it 'groups the tags' do
-    tags = tag_list.by_group
+    tags = tag_list.by_group # {name: TagList}
     expect(tags.count).to eq(3)
     expect(tags[:sample_name].count).to eq(2)
-    expect(tags[:sample_attributes].count).to eq(5)
-    expect(tags[:array_express].count).to eq(6)
+    # sample_attributes group includes two optional tags as well.
+    expect(tags[:sample_attributes].count).to eq(7)
+    # array_express group includes 17 tags
+    expect(tags[:array_express].count).to eq(17)
   end
 
   it 'after grouping standard tag groups should not be nil' do
