@@ -6,3 +6,5 @@ dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation
 y24_052_enable_data_release_timing_validation: Enables server-side validation that enforces a relationship between the values of two study metadata fields
 
 y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
+
+y25_714_skip_accessioning_tag_validation: Skips validation of accessioning tags during sample manifest upload
