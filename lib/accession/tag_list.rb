@@ -67,6 +67,7 @@ module Accession
     def extract(record)
       TagList.new do |tag_list|
         tags.keys.each do |key|
+          # NB. some tags have their own value_for method to extract the value from the record
           value = tags[key].value_for(record, key)
           tag_list.add(tags[key].dup.add_value(value)) if value.present?
         end

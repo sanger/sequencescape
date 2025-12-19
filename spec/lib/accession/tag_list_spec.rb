@@ -9,6 +9,10 @@ RSpec.describe Accession::TagList, :accession, type: :model do
   let(:yaml) { load_file(folder, 'tags') }
   let(:tag_list) { described_class.new(yaml) }
 
+  before do
+    create(:insdc_country, :valid, name: 'Australia')
+  end
+
   it 'has the correct number of tags' do
     expect(tag_list.count).to eq(yaml.count)
   end
@@ -43,8 +47,14 @@ RSpec.describe Accession::TagList, :accession, type: :model do
 
   it '#extract should create a new tag list with tags that have values' do
     extract = tag_list.extract(create(:sample_metadata_for_accessioning))
-    expect(extract.count).to eq(attributes_for(:sample_metadata_for_accessioning).count)
+    # minus 2 as have derived metadata sex and species
+    # plus 1 as sample metadata includes sample_public_name which is not in standard tags
+    expect(extract.count - 1).to eq(attributes_for(:sample_metadata_for_accessioning).count)
     expect(extract.find(:sample_common_name).value).to eq('A common name')
+    expect(extract.find(:species).value).to eq('A common name')
+    expect(extract.find(:gender).value).to eq('Unknown')
+    expect(extract.find(:sex).value).to eq('unknown') # derived to lowercase
+    expect(extract.find(:country_of_origin).value).to eq('Australia') # has to match with Insdc Country list
   end
 
   it '#extract should create a taglist that has groups' do

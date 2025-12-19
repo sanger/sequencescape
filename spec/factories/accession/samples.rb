@@ -3,9 +3,9 @@
 FactoryBot.define do
   factory :sample_metadata_for_accessioning, class: 'Sample::Metadata' do
     sample_taxon_id { 1 }
-    sample_common_name { 'A common name' }
+    sample_common_name { 'A common name' } # species is derived from this
     donor_id { '1' }
-    gender { 'Unknown' }
+    gender { 'Unknown' } # sex is derived from this
     phenotype { 'Indescribable' }
     growth_condition { 'No' }
     sample_public_name { 'Sample 666' }
