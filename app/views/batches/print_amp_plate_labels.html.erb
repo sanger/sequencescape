@@ -1,0 +1,35 @@
+
+<% add :about, "Print AMP plate batch ID" -%>
+<% add :back_menu, "Back to batch" => batch_path(@batch) -%>
+
+<%= page_title 'Print AMP plate batch ID', "Batch #{@batch.id}" %>
+
+<div class="content">
+  <div class="info">
+    <!-- TODO: replace form tag with Railsy version, so that it sends the CSRF token -->
+    <form action='/batches/print_amp_plate_barcodes' method='POST'>
+      <%= render partial: "shared/print" %>
+      <table width="100%" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="35%" class="item">Number of copies:</td>
+          <td width="65%"><input name="count" size="10" value="1" /></td>
+        </tr>
+        <% @batch.requests.index_by(&:target_asset).each do |target_asset, request| -%>
+          <!-- Use the parent tube receptacle if target_asset is a lane. -->
+          <% target_asset = target_asset.labware.parent.receptacle if target_asset.is_a? Lane %>
+          <% next unless target_asset.respond_to?(:human_barcode) %>
+          <tr>
+            <td width="35%" class="item"><label for="printable[<%= target_asset.human_barcode %>]">Plate from tube <%= target_asset.human_barcode %></label></td>
+            <td width="65%"><input type='checkbox' checked='on' value='on' name='printable[<%= target_asset.human_barcode %>]' id='printable[<%= target_asset.human_barcode %>]' ></td>
+          </tr>
+        <% end %>
+        <tr>
+          <td width="35%" class="item">&nbsp;</td>
+          <td width="65%"><input type='submit' value='Print labels' class="print-button"> or <%= link_to 'cancel', controller: 'batches', action: 'show', id: @batch.id %></td>
+          <td><input type="button" name="select_printables" class="select-all-behaviour" value="Select all" /></td>
+          <td><input type="button" name="unselect_printables" class="deselect-all-behaviour" value="Deselect all" /></td>
+        </tr>
+      </table>
+    <input type='hidden' name='batch_id' value='<%= @batch.id %>' />
+  </div>
+</div>

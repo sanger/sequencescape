@@ -6,6 +6,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behaviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
 
+  VERIFICATION_FLAVOUR_TO_MODEL_ACTION = {
+    tube: :verify_tube_layout,
+    amp_plate: :verify_amp_plate_layout
+  }.freeze
+
   before_action :evil_parameter_hack!
 
   # generate_sample_sheet checks if the download is allowed without login.
@@ -19,9 +24,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   fail
                   print_labels
                   print_plate_labels
+                  print_amp_plate_labels
                   print
                   verify
-                  verify_tube_layout
+                  verify_layout
                   reset_batch
                   previous_qc_state
                   filtered
@@ -29,7 +35,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
                   download_spreadsheet
                   generate_sample_sheet
                 ]
-  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_barcodes]
+  before_action :find_batch_by_batch_id, only: %i[sort print_plate_barcodes print_amp_plate_barcodes print_barcodes]
 
   def index # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     if logged_in?
@@ -218,6 +224,9 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def print_labels
   end
 
+  def print_amp_plate_labels
+  end
+
   def print_plate_labels # rubocop:todo Metrics/MethodLength
     @pipeline = @batch.pipeline
     @output_barcodes = []
@@ -251,6 +260,15 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     end
   end
 
+  def print_amp_plate_barcodes
+    if @batch.requests.empty?
+      flash[:notice] = 'Your batch contains no requests.'
+      redirect_to controller: 'batches', action: 'show', id: @batch.id
+    else
+      print_handler(LabelPrinter::Label::BatchPlateAmp)
+    end
+  end
+
   # Handles printing of the worksheet
   def print # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @task = Task.find_by(id: params[:task_id])
@@ -267,7 +285,7 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     if template
       render action: template, layout: false
     else
-      redirect_back fallback_location: batch_path(@batch), alert: "No worksheet for #{@pipeline.name}"
+      redirect_back_or_to(batch_path(@batch), alert: "No worksheet for #{@pipeline.name}")
     end
   end
 
@@ -275,18 +293,31 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
     @requests = @batch.ordered_requests
     @pipeline = @batch.pipeline
     @count = @requests.length
+    @verification_flavour = params[:verification_flavour]
   end
 
-  def verify_tube_layout # rubocop:todo Metrics/AbcSize
-    tube_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+  def verify_layout
+    # scanned tube barcode params from page are called barcode_0, barcode_1, ... barcode_n
+    scanned_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
+    verification_flavour = params[:verification_flavour].to_sym
+    model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
-    if @batch.verify_tube_layout(tube_barcodes, current_user)
-      flash[:notice] = 'All of the tubes are in their correct positions.'
-      redirect_to batch_path(@batch)
+    if @batch.send(model_method, scanned_barcodes, current_user)
+      verify_layout_success(verification_flavour)
     else
-      flash[:error] = @batch.errors.full_messages.sort
-      redirect_to action: :verify, id: @batch.id
+      verify_layout_failure(verification_flavour)
     end
+  end
+
+  def verify_layout_success(verification_flavour)
+    flash[:notice] =
+      "All of the #{verification_flavour.to_s.humanize.downcase.pluralize} are in their correct positions."
+    redirect_to batch_path(@batch)
+  end
+
+  def verify_layout_failure(verification_flavour)
+    flash[:error] = @batch.errors.full_messages.sort
+    redirect_to action: :verify, id: @batch.id, verification_flavour: verification_flavour
   end
 
   def reset_batch

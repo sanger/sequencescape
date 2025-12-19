@@ -207,10 +207,22 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader).to be_processed
       expect(uploader.upload.sample_manifest).to be_completed
 
-      # Check for warning being logged
+      # Check for multiple warnings being logged
       expect(Rails.logger).to have_received(:warn).with(
-        "Accessionable is invalid for sample 'sample_1': Sample has already been accessioned. " \
-        'Skipping accessioning for changed samples.'
+        "Sample 'sample_1' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_2' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_3' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_4' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
       )
     end
 

@@ -17,10 +17,6 @@ class Accessionable::Submission < Accessionable::Base
     @accessionables.map(&:alias).join(' - ') << DateTime.now.strftime('%Y%m%dT%H%M')
   end
 
-  def <<(_accessionable)
-    @accessionables << accesionable
-  end
-
   # rubocop:todo Metrics/MethodLength
   def xml # rubocop:todo Metrics/AbcSize
     xml = Builder::XmlMarkup.new

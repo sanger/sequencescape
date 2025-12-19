@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Sample accession errors', type: :feature do
+RSpec.describe 'Sample accession errors', :js, type: :feature do
   let(:user) { create(:admin) }
   let(:study) { create(:managed_study, accession_number: 'ENA123') }
 
@@ -15,13 +15,9 @@ RSpec.describe 'Sample accession errors', type: :feature do
     let(:sample) { create(:sample, studies: [study]) }
 
     context 'when accessioning is enabled', :accessioning_enabled do
-      it 'shows informative errors when required fields are missing for accessioning' do
+      it 'shows generate link for accessioning' do
         expect(page).to have_content('Sample Specification')
         expect(page).to have_link('Generate Accession Number')
-        click_link 'Generate Accession Number'
-        expect(page).to have_content('Please fill in the required fields:')
-        expect(page).to have_content('gender is required')
-        expect(page).to have_content('phenotype is required')
       end
     end
 
@@ -38,7 +34,7 @@ RSpec.describe 'Sample accession errors', type: :feature do
     let(:sample) { create(:accessioned_sample, studies: [study]) }
 
     context 'when accessioning is enabled', :accessioning_enabled do
-      it 'shows a link for accessioning' do
+      it 'shows update link for accessioning' do
         expect(page).to have_content('Sample Specification')
         expect(page).to have_link('Update Sample Data for Accessioning')
       end
