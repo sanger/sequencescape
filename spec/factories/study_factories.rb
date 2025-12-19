@@ -58,6 +58,7 @@ FactoryBot.define do
 
   factory(:open_study, parent: :study) do
     transient { accession_number { nil } }
+    transient { data_release_timing { 'standard' } }
 
     sequence(:name) { |n| "Study#{n}: Open" }
     state { 'active' }
@@ -67,6 +68,7 @@ FactoryBot.define do
     after(:create) do |study, evaluator|
       study.study_metadata.update!(
         data_release_strategy: 'open',
+        data_release_timing: evaluator.data_release_timing,
         study_ebi_accession_number: evaluator.accession_number
       )
     end
