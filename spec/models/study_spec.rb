@@ -369,7 +369,7 @@ RSpec.describe Study do
         expect(described_class.for_sample_accessioning.count).to eq(6)
       end
 
-      it 'include open studies with data release timing publication' do
+      it 'includes open studies with data release timing publication' do
         studies = described_class.for_sample_accessioning
         expect(studies).to include(study_9)
       end
