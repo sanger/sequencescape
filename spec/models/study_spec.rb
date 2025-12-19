@@ -356,9 +356,12 @@ RSpec.describe Study do
       let!(:study_6) { create(:managed_study, name: 'Study 5', accession_number: 'ENA777') }
       let!(:study_7) { create(:managed_study, name: 'Study 6', accession_number: 'ENA888') }
       let!(:study_8) { create(:not_app_study) }
+      let!(:study_9) do
+        create(:open_study, name: 'Study 7', accession_number: 'ENA999', data_release_timing: Study::DATA_RELEASE_TIMING_PUBLICATION)
+      end
 
       it 'include studies that adhere to accessioning guidelines' do
-        expect(described_class.for_sample_accessioning.count).to eq(5)
+        expect(described_class.for_sample_accessioning.count).to eq(6)
       end
 
       it 'not include studies that do not have accession numbers' do
