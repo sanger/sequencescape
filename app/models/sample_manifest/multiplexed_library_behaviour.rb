@@ -76,5 +76,9 @@ module SampleManifest::MultiplexedLibraryBehaviour
     def included_resources
       [{ sample: :sample_metadata, asset: [:barcodes, :aliquots, { requests: :target_asset }] }]
     end
+
+    def stocks?
+      true
+    end
   end
 end
