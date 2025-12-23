@@ -76,6 +76,10 @@ module SampleManifest::CoreBehaviour
     def stocks?
       true
     end
+
+    def labware_type
+      asset_type == 'well' ? 'library_plate_well' : 'library_tube'
+    end
   end
 
   def self.included(base)
