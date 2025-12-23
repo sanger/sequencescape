@@ -18,8 +18,12 @@ RSpec.describe LocationReport do
     allow(Labware).to receive(:search_for_count_of_labware).and_return(25_001)
   end
 
-  it 'is invalid when too many labwares are found' do
+  it 'is invalid' do
     expect(location_report).not_to be_valid
+  end
+
+  it 'has errors' do
+    location_report.valid?
     expect(location_report.errors[:base]).to include(I18n.t('location_reports.errors.too_many_labwares_found',
                                                             count: 25_001))
   end
