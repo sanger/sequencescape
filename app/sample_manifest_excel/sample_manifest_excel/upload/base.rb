@@ -190,10 +190,20 @@ module SampleManifestExcel
         @changed_labware ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
       end
 
+      def update_subject_type_for_library_receptacles!(asset)
+        return unless sample_manifest.core_behaviour.to_s.include?('LibraryPlateBehaviour')
+
+        asset.subject_type = 'library_plate_well'
+      end
+
       def stock_receptacles_to_be_registered
         return [] unless sample_manifest.core_behaviour.stocks?
 
-        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
+        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?)
+          .map(&:asset)
+          .each do |asset|
+          update_subject_type_for_library_receptacles!(asset)
+        end
       end
     end
   end
