@@ -44,13 +44,9 @@ date_of_sample_collection:
     - :sample_attributes
   ebi_name: :collection_date
 sample_description:
-  mandatory_services:
-    - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :sample description
-  optional: true
 donor_id:
   mandatory_services:
     - :EGA
@@ -72,13 +68,9 @@ phenotype:
     - :sample_attributes
     - :array_express
 sample_strain_att:
-  mandatory_services:
-    - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :strain
-  optional: true
 strain_or_line:
   groups:
     - :array_express
