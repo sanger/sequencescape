@@ -24,12 +24,33 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # Handles message processing. Messages are acknowledged automatically
   # on return from the method assuming they haven't been handled already.
   # In the event of an uncaught exception, the message will be dead-lettered.
+  #
+  # For example, if the message is `["Well", 1]`, this method will find the Well
+  # with ID 1 and call `broadcast` on it.
   def process
     klass = json.first.constantize
-    klass.find(json.last).broadcast
+    item = process_item(klass, json)
+    item.broadcast
   rescue ActiveRecord::RecordNotFound
     # This may indicate that the record has been deleted
     debug "#{payload} not found."
+  end
+
+  # Finds the record for the given class and JSON payload, checks if its asset type is 'library_plate',
+  # and if the class is Well, sets the subject_type to 'library_plate_well'.
+  #
+  # @param klass [Class] The ActiveRecord class to query (e.g., Well, Plate)
+  # @param json [Array, nil] The parsed JSON payload, expected to contain the class name and record ID
+  # @return [ActiveRecord::Base] The found record, possibly modified
+  def process_item(klass, json = nil)
+    item = klass.find(json&.last)
+    asset_type = SampleManifestAsset.find_by(asset_id: item.id)&.sample_manifest&.asset_type
+
+    if asset_type.present? && asset_type == 'library_plate' && klass == Well
+      item.subject_type = 'library_plate_well'
+    end
+
+    item
   end
 
   def json
