@@ -29,7 +29,7 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # with ID 1 and call `broadcast` on it.
   def process
     klass = json.first.constantize
-    item = process_item(klass, json)
+    item = process_item(klass)
     item.broadcast
   rescue ActiveRecord::RecordNotFound
     # This may indicate that the record has been deleted
@@ -42,8 +42,8 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # @param klass [Class] The ActiveRecord class to query (e.g., Well, Plate)
   # @param json [Array, nil] The parsed JSON payload, expected to contain the class name and record ID
   # @return [ActiveRecord::Base] The found record, possibly modified
-  def process_item(klass, json = nil)
-    item = klass.find(json&.last)
+  def process_item(klass)
+    item = klass.find(json.last)
     asset_type = SampleManifestAsset.find_by(asset_id: item.id)&.sample_manifest&.asset_type
 
     if asset_type.present? && asset_type == 'library_plate' && klass == Well
