@@ -1,12 +1,12 @@
 sample_taxon_id:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
     - :sample_name
   ebi_name: :taxon_id
 sample_common_name:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
@@ -14,20 +14,20 @@ sample_common_name:
   ebi_name: :common_name
 country_of_origin:
   class_name: "::Accession::TagCountryOfOrigin"
-  services:
+  mandatory_services:
     - :ENA
   groups:
     - :sample_attributes
   ebi_name: :geographic_location_(country_and/or_sea)
 date_of_sample_collection:
   class_name: "::Accession::TagCollectionDate"
-  services:
+  mandatory_services:
     - :ENA
   groups:
     - :sample_attributes
   ebi_name: :collection_date
 sample_description:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
@@ -35,13 +35,13 @@ sample_description:
   ebi_name: :sample description
   optional: true
 donor_id:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
   ebi_name: :subject_id
 gender:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
@@ -49,13 +49,13 @@ genotype:
   groups:
     - :array_express
 phenotype:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
     - :array_express
 sample_strain_att:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:

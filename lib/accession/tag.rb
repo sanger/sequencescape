@@ -8,18 +8,18 @@ module Accession
     include ActiveModel::Model
     include Accession::Equality
 
-    attr_accessor :services, :value, :name, :groups, :ebi_name, :class_name, :optional
+    attr_accessor :mandatory_services, :value, :name, :groups, :ebi_name, :class_name, :optional
 
     validates_presence_of :name, :groups
 
-    DEFAULT_ATTRIBUTES = { services: [] }.freeze
+    DEFAULT_ATTRIBUTES = { mandatory_services: [] }.freeze
 
     def initialize(attributes = {})
       super(DEFAULT_ATTRIBUTES.merge(attributes))
     end
 
-    def services=(services)
-      @services = Array(services)
+    def mandatory_services=(mandatory_services)
+      @mandatory_services = Array(mandatory_services)
     end
 
     def value=(value)
@@ -27,7 +27,7 @@ module Accession
     end
 
     def required_for?(service)
-      services.include? service.provider
+      mandatory_services.include? service.provider
     end
 
     def array_express?
@@ -63,7 +63,7 @@ module Accession
     end
 
     def attributes
-      %i[services value name groups ebi_name]
+      %i[mandatory_services value name groups ebi_name]
     end
 
     # Some helper methods for displaying information from tags
