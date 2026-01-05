@@ -40,7 +40,6 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # and if the class is Well, sets the subject_type to 'library_plate_well'.
   #
   # @param klass [Class] The ActiveRecord class to query (e.g., Well, Plate)
-  # @param json [Array, nil] The parsed JSON payload, expected to contain the class name and record ID
   # @return [ActiveRecord::Base] The found record, possibly modified
   def process_item(klass)
     item = klass.find(json.last)
