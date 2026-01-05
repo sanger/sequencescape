@@ -60,7 +60,7 @@ class SampleManifest::Uploader
     upload.sample_manifest.finished!
     upload.broadcast_sample_manifest_updated_event(user)
     upload.register_stock_resources
-    upload.trigger_accessioning(user)
+    upload.trigger_accessioning(user) if Flipper.enabled?(:y25_714_accession_on_manifest_upload)
     true
   end
 
