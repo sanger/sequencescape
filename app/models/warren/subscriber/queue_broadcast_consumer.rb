@@ -43,9 +43,12 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # @return [ActiveRecord::Base] The found record, possibly modified
   def process_item(klass)
     item = klass.find(json.last)
-    asset_type = SampleManifestAsset.find_by(asset_id: item.id)&.sample_manifest&.asset_type
 
-    item.subject_type = 'library_plate_well' if asset_type.present? && asset_type == 'library_plate' && klass == Well
+    if item.target_type == 'Receptacle'
+      asset_type = SampleManifestAsset.find_by(asset_id: item.target_id)&.sample_manifest&.asset_type
+
+      item.subject_type = 'library_plate_well' if asset_type.present? && asset_type == 'library_plate' && klass == Well
+    end
 
     item
   end
