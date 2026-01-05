@@ -46,9 +46,7 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
     item = klass.find(json.last)
     asset_type = SampleManifestAsset.find_by(asset_id: item.id)&.sample_manifest&.asset_type
 
-    if asset_type.present? && asset_type == 'library_plate' && klass == Well
-      item.subject_type = 'library_plate_well'
-    end
+    item.subject_type = 'library_plate_well' if asset_type.present? && asset_type == 'library_plate' && klass == Well
 
     item
   end
