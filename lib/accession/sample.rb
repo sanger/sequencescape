@@ -16,7 +16,7 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    validate :check_sample, :check_studies
+    validate :check_studies
     validate :check_required_fields, if: proc { |s| s.service.valid? }
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
@@ -92,12 +92,6 @@ module Accession
 
     def set_studies
       sample.studies.for_sample_accessioning.group_by { |study| study.study_metadata.data_release_strategy }
-    end
-
-    def check_sample
-      if sample.sample_metadata.sample_ebi_accession_number.present?
-        errors.add(:sample, 'has already been accessioned.')
-      end
     end
 
     def check_required_fields
