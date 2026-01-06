@@ -167,92 +167,63 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    context 'when accession on manifest upload is enabled' do
-      before do
-        Flipper.enable(:y25_714_accession_on_manifest_upload)
-      end
-
-      it 'will generate sample accessions', :accessioning_enabled do
-        number_of_plates = 2
-        samples_per_plate = 2
-        download =
-          build(
-            :test_download_plates,
-            num_plates: number_of_plates,
-            num_filled_wells_per_plate: samples_per_plate,
-            manifest_type: 'plate_full',
-            columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-            study: create(:open_study, accession_number: 'acc')
-          )
-        download.save(test_file_name)
-        uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-        expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
-      end
-
-      it 'will gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
-        download =
-          build(
-            :test_download_plates,
-            manifest_type: 'plate_full',
-            columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-            study: create(:open_study, accession_number: 'acc')
-          )
-        download.save(test_file_name)
-        Delayed::Worker.delay_jobs = false
-        uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-
-        # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
-        allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
-          .to receive(:sample_ebi_accession_number)
-          .and_return('existing_accession_number')
-        allow(Rails.logger).to receive(:warn)
-
-        # When uploading the same manifest again, it should raise an error
-        uploader.run!
-        expect(uploader).to be_processed
-        expect(uploader.upload.sample_manifest).to be_completed
-
-        # Check for multiple warnings being logged
-        expect(Rails.logger).to have_received(:warn).with(
-          "Sample 'sample_1' cannot be accessioned: Sample has already been accessioned. " \
-          'Skipping accessioning for this sample.'
+    it 'will generate sample accessions', :accessioning_enabled do
+      number_of_plates = 2
+      samples_per_plate = 2
+      download =
+        build(
+          :test_download_plates,
+          num_plates: number_of_plates,
+          num_filled_wells_per_plate: samples_per_plate,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+          study: create(:open_study, accession_number: 'acc')
         )
-        expect(Rails.logger).to have_received(:warn).with(
-          "Sample 'sample_2' cannot be accessioned: Sample has already been accessioned. " \
-          'Skipping accessioning for this sample.'
-        )
-        expect(Rails.logger).to have_received(:warn).with(
-          "Sample 'sample_3' cannot be accessioned: Sample has already been accessioned. " \
-          'Skipping accessioning for this sample.'
-        )
-        expect(Rails.logger).to have_received(:warn).with(
-          "Sample 'sample_4' cannot be accessioned: Sample has already been accessioned. " \
-          'Skipping accessioning for this sample.'
-        )
-      end
+      download.save(test_file_name)
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+      expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
     end
 
-    context 'when accession on manifest upload is disabled' do
-      before do
-        Flipper.disable(:y25_714_accession_on_manifest_upload)
-      end
+    it 'will gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
+      download =
+        build(
+          :test_download_plates,
+          manifest_type: 'plate_full',
+          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+          study: create(:open_study, accession_number: 'acc')
+        )
+      download.save(test_file_name)
+      Delayed::Worker.delay_jobs = false
+      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
 
-      it 'will not generate sample accessions', :accessioning_enabled do
-        number_of_plates = 2
-        samples_per_plate = 2
-        download =
-          build(
-            :test_download_plates,
-            num_plates: number_of_plates,
-            num_filled_wells_per_plate: samples_per_plate,
-            manifest_type: 'plate_full',
-            columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-            study: create(:open_study, accession_number: 'acc')
-          )
-        download.save(test_file_name)
-        uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-        expect { uploader.run! }.not_to change(Delayed::Job, :count)
-      end
+      # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
+      allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
+        .to receive(:sample_ebi_accession_number)
+        .and_return('existing_accession_number')
+      allow(Rails.logger).to receive(:warn)
+
+      # When uploading the same manifest again, it should raise an error
+      uploader.run!
+      expect(uploader).to be_processed
+      expect(uploader.upload.sample_manifest).to be_completed
+
+      # Check for multiple warnings being logged
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_1' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_2' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_3' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
+      expect(Rails.logger).to have_received(:warn).with(
+        "Sample 'sample_4' cannot be accessioned: Sample has already been accessioned. " \
+        'Skipping accessioning for this sample.'
+      )
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do
