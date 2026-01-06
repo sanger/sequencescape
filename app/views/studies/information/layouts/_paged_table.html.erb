@@ -1,0 +1,26 @@
+<%# insert top content as a block %>
+<%= tag.div(class: 'px-3') do %>
+  <%= content_for :top_content %>
+<% end %>
+
+<%# Top Pagination %>
+<%= tag.div(class: 'row align-items-center px-3 pt-3') do %>
+  <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
+  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center mb--3') %>
+  <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
+    <%# insert aggregation summary as a block %>
+    <%= content_for :aggregation %>
+  <% end %>
+<% end %>
+
+<%# Table %>
+<table id="summary" class="table sortable table-striped">
+  <%# insert table contents as a block %>
+  <%= yield %>
+</table>
+
+<%# Bottom Pagination %>
+<%= tag.div(class: 'row px-3') do %>
+  <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
+  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center') %>
+<% end %>
