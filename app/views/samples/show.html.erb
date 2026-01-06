@@ -43,7 +43,7 @@
   <%= render partial: 'receptacles', locals: { sample: @sample } %>
   <%= render partial: 'asset_groups', locals: { sample: @sample } %>
   <%= render partial: 'submissions', locals: { sample: @sample } %>
-  <% unless @sample.accession_number? || @sample.accession_sample_statuses.empty? %>
+  <% unless @sample.accession_sample_statuses.empty? %>
     <%# Some samples already have a number or some won't be accessioned %>
     <%= render partial: 'accession_statuses', locals: { sample: @sample } %>
   <% end %>
