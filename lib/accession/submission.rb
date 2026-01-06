@@ -24,7 +24,7 @@ module Accession
       HTTPClients::AccessioningV1Client.new
     end
 
-    def build_xml(xml) # rubocop:disable Metrics/AbcSize
+    def build_xml(xml)
       xml.SUBMISSION(
         XML_NAMESPACE,
         center_name: CENTER_NAME,
@@ -33,11 +33,7 @@ module Accession
         submission_date: date
       ) do
         xml.CONTACTS { xml.CONTACT(contact.to_h) }
-
-        xml.ACTIONS do
-          xml.ACTION { xml.ADD(source: sample.filename, schema: sample.schema_type) }
-          xml.ACTION { xml.tag!(service.visibility) }
-        end
+        actions(xml)
       end
     end
 
@@ -79,6 +75,25 @@ module Accession
       service_provider = sample.service.provider.to_sym
       unless sample.valid?([:accession, service_provider]) # Check against accessioning contexts
         sample.errors.each { |error| errors.add error.attribute, error.message }
+      end
+    end
+
+    # Returns true if the provided sample has an accession number, false otherwise.
+    def accession_number?
+      # The first sample is an Accession::Sample, the second is the standard model Sample.
+      sample.sample.accession_number?
+    end
+
+    def actions(xml)
+      xml.ACTIONS do
+        xml.ACTION do
+          if accession_number?
+            xml.MODIFY(source: sample.filename)
+          else
+            xml.ADD(source: sample.filename, schema: sample.schema_type)
+          end
+        end
+        xml.ACTION { xml.tag!(service.visibility) }
       end
     end
   end

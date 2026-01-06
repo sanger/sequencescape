@@ -23,10 +23,10 @@ RSpec.describe Accession::Submission, :accession, type: :model do
   end
 
   describe '#to_xml' do
-    it 'creates some xml with valid attributes' do
-      submission = described_class.new(contact_user, sample)
-      xml = Nokogiri::XML::Document.parse(submission.to_xml)
+    let(:submission) { described_class.new(contact_user, sample) }
+    let(:xml) { Nokogiri::XML::Document.parse(submission.to_xml) }
 
+    it 'creates some xml with valid attributes' do
       submission_xml = xml.at('SUBMISSION')
       expect(submission_xml.attribute('center_name').value).to eq(Accession::CENTER_NAME)
       expect(submission_xml.attribute('broker_name').value).to eq(submission.service.broker)
@@ -45,6 +45,17 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       action_xml = xml.at('ADD')
       expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
       expect(action_xml.attribute('schema').value).to eq(submission.sample.schema_type)
+    end
+
+    context 'when the sample is already accessioned' do
+      let(:sample) { build(:invalid_accession_sample) }
+
+      it 'creates MODIFY action instead of ADD' do
+        actions_xml = xml.at('ACTIONS')
+        expect(actions_xml.at('ADD')).to be_nil
+        action_xml = actions_xml.at('MODIFY')
+        expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
+      end
     end
   end
 
