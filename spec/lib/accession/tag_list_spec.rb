@@ -24,9 +24,8 @@ RSpec.describe Accession::TagList, :accession, type: :model do
   end
 
   it 'picks out tags which are required for each service' do
-    # Includes two optional tags sample_description and sample_strain_att
-    expect(tag_list.required_for(build(:ena_service)).count).to eq(6)
-    expect(tag_list.required_for(build(:ega_service)).count).to eq(7)
+    expect(tag_list.required_for(build(:ena_service)).count).to eq(4)
+    expect(tag_list.required_for(build(:ega_service)).count).to eq(5)
   end
 
   it 'groups the tags' do
