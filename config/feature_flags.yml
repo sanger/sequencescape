@@ -7,4 +7,4 @@ y24_052_enable_data_release_timing_validation: Enables server-side validation th
 
 y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
 
-y25_714_skip_accessioning_tag_validation: Skips validation of accessioning tags during sample manifest upload
+y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning
