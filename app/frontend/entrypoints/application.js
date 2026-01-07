@@ -46,6 +46,7 @@ import "../legacy";
 // Export jquery for some legacy scripts
 import jQuery from "jquery";
 window.jQuery = jQuery;
+window.$ = jQuery;
 
 jQuery.ajaxSetup({
   headers: {

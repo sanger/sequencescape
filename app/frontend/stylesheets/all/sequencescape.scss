@@ -9,6 +9,11 @@ li a:visited {
   color: #444488;
 }
 
+// Utility class for negative margin-bottom
+.mb--3 {
+  margin-bottom: -1rem !important;
+}
+
 #main-content {
   @extend .container-fluid;
 }
