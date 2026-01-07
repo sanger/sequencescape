@@ -386,7 +386,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
             study_metadata: {
               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS
+              data_release_timing: Study::DATA_RELEASE_TIMINGS + [Study::DATA_RELEASE_TIMING_PUBLICATION]
             }
           )
         end

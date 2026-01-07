@@ -3,8 +3,8 @@
 require 'rails_helper'
 
 MISSING_METADATA = {
-  managed_study: 'sample-taxon-id, sample-common-name, gender, phenotype, and donor-id',
-  open_study: 'sample-taxon-id and sample-common-name'
+  managed_study: %w[sample-taxon-id sample-common-name gender phenotype donor-id].sort.to_sentence,
+  open_study: %w[sample-taxon-id sample-common-name].sort.to_sentence
 }.freeze
 STUDY_TYPES = %i[open_study managed_study].freeze
 

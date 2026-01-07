@@ -16,7 +16,11 @@ def find_value_at_tag(xml_received, tag_name)
 end
 
 RSpec.describe Accession::Sample, :accession, type: :model do
-  let(:tag_list) { build(:standard_accession_tag_list) }
+  include Accession::Helpers
+
+  let(:folder) { File.join('spec', 'data', 'accession') }
+  let(:yaml) { load_file(folder, 'tags') }
+  let(:tag_list) { Accession::TagList.new(yaml) }
 
   before do
     create(:insdc_country, name: 'Australia')
@@ -142,9 +146,19 @@ RSpec.describe Accession::Sample, :accession, type: :model do
 
     sample_attributes_tags = xml
 
-    tags = accession_sample.tags.by_group[:sample_attributes]
-    expect(sample_attributes_tags).to include(*tags.labels.map { |label| "<TAG>#{label}</TAG>" })
-    expect(sample_attributes_tags).to include(*tags.values.map { |value| "<VALUE>#{value}</VALUE>" })
+    tags_array = accession_sample.tags.by_group[:sample_attributes]
+
+    tags_array.each do |_key, tag|
+      label = tag.label
+      value = tag.value
+
+      expect(sample_attributes_tags).to include("<TAG>#{label}</TAG>")
+
+      # gender is downcased specifically in the XML
+      value = value.downcase if label == 'gender'
+
+      expect(sample_attributes_tags).to include("<VALUE>#{value}</VALUE>")
+    end
 
     tags = accession_sample.tags.by_group[:array_express]
     expect(sample_attributes_tags).to include(*tags.array_express_labels.map { |label| "<TAG>#{label}</TAG>" })
