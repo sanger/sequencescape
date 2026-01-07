@@ -400,7 +400,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record|
+  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record, _attr|
     "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
   }
 
