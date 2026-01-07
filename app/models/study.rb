@@ -568,7 +568,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
 
     samples.find_each do |sample|
-      sample.accession(event_user) unless sample.accession_number?
+      Accession.accession_sample(sample, event_user) unless sample.accession_number?
     rescue AccessionService::AccessionServiceError => e
       errors.add(:base, e.message)
     end
@@ -591,21 +591,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def ethical_approval_required?
     study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
       study_metadata.commercially_available == Study::NO
-  end
-
-  def accession_service
-    case data_release_strategy
-    when 'open'
-      AccessionService::ENAService.new
-    when 'managed'
-      AccessionService::EGAService.new
-    else
-      AccessionService::NoService.new(self)
-    end
-  end
-
-  def send_samples_to_service?
-    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
   end
 
   def validate_ena_required_fields!
