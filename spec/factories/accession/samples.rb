@@ -8,7 +8,7 @@ FactoryBot.define do
     gender { 'Unknown' } # sex is derived from this
     phenotype { 'Indescribable' }
     growth_condition { 'No' }
-    sample_public_name { 'Sample 666' }
+    sample_public_name { 'Sample Public Name' }
     disease_state { 'Awful' }
     country_of_origin { 'Australia' }
     date_of_sample_collection { '2000-01-01T00:00' }

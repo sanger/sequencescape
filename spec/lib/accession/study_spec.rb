@@ -53,7 +53,7 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
 
         before do
           # Verify expectation before running the method
-          expect(study.samples.first).not_to receive(:accession)
+          expect(Accession).not_to receive(:accession_sample).with(study.samples.first, anything)
           study.accession_all_samples(current_user)
           study.reload
         end
