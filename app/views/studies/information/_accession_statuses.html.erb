@@ -1,17 +1,23 @@
-<div class="float-right">
-  <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
-  <% unless configatron.accession_samples %>
-    <span class="text-muted">Accessioning is currently disabled.</span>
-  <% else %>
-    <%= link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
-        accession_all_samples_study_path(@study),
-        class: "btn btn-sm btn-outline-primary")
-    %>
+<%# Top content %>
+<% content_for :top_content do %>
+  <%= tag.div(class: 'd-flex justify-content-end') do %>
+    <% unless configatron.accession_samples %>
+      <%= tag.span('Accessioning is currently disabled.', class: 'text-muted') %>
+    <% else %>
+      <%= link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
+          accession_all_samples_study_path(@study),
+          class: "btn btn-sm btn-outline-primary")
+      %>
+    <% end %>
   <% end %>
-</div>
+<% end %>
 
-<%= pagination @page_elements %>
-<table id="summary" class="table sortable table-striped">
+<%# Aggregation summary for the top right %>
+<% content_for :aggregation do %>
+  <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+<% end %>
+
+<%# Table contents %>
   <thead>
     <tr>
       <th>Sample</th>
@@ -56,7 +62,7 @@
             <% end %>
           <% end %>
         </td>
+      </tr>
     <% end %>
   </tbody>
-</table>
-<%= pagination @page_elements %>
+<%# End table contents %>
