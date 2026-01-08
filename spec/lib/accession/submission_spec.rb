@@ -55,7 +55,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     end
   end
 
-  describe '#submit_and_update_accession_number' do
+  describe '#submit_accession' do
     let(:event_user) { create(:user) }
     let(:submission) { described_class.new(contact_user, sample) }
 
@@ -73,7 +73,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       before do
         expect(submission.sample).not_to be_accessioned
 
-        submission.submit_and_update_accession_number(event_user)
+        submission.submit_accession(event_user)
       end
 
       it 'updates the sample accession number' do
@@ -88,7 +88,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       it 'raises an error with a message' do
         error_message = "Accessionable submission is invalid: Contact can't be blank, Sample can't be blank"
         expect do
-          invalid_submission.submit_and_update_accession_number(event_user)
+          invalid_submission.submit_accession(event_user)
         end.to raise_error(StandardError, error_message)
       end
     end
@@ -105,7 +105,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       it 'bubbles up the Accession::Error' do
         expect do
-          submission.submit_and_update_accession_number(event_user)
+          submission.submit_accession(event_user)
         end.to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end

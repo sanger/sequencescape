@@ -37,7 +37,7 @@ module Accession
       end
     end
 
-    def submit_and_update_accession_number(event_user)
+    def submit_accession(event_user)
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
       client = self.class.client
