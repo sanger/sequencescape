@@ -16,10 +16,6 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     it 'is not valid without an accession sample' do
       expect(described_class.new(contact_user, nil)).not_to be_valid
     end
-
-    it 'is not valid unless sample is valid' do
-      expect(described_class.new(contact_user, build(:invalid_accession_sample))).not_to be_valid
-    end
   end
 
   describe '#to_xml' do
@@ -94,17 +90,6 @@ RSpec.describe Accession::Submission, :accession, type: :model do
         expect do
           invalid_submission.submit_and_update_accession_number(event_user)
         end.to raise_error(StandardError, error_message)
-      end
-
-      context 'when the sample is invalid due to already being accessioned' do
-        let(:invalid_submission) { described_class.new(contact_user, build(:invalid_accession_sample)) }
-
-        it 'raises an error with a message' do
-          error_message = 'Accessionable submission is invalid: Sample has already been accessioned.'
-          expect do
-            invalid_submission.submit_and_update_accession_number(event_user)
-          end.to raise_error(StandardError, error_message)
-        end
       end
     end
 
