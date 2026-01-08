@@ -144,6 +144,8 @@ SampleAccessioningJob =
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
 
       Rails.logger.error(message)
+      # Log backtrace for debugging purposes
+      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace
       ExceptionNotifier.notify_exception(error, data: {
                                            message: message,
                                            sample_name: sample_name,
