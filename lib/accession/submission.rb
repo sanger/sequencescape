@@ -37,14 +37,21 @@ module Accession
       end
     end
 
-    def submit_accession(event_user)
+    def submit_accession(event_user) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+      # Rubocop metrics disabled as refactoring this method would reduce clarity
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
       client = self.class.client
       login = service.login
       files = compile_files
-      accession_number = client.submit_and_fetch_accession_number(login, files)
-      sample.update_accession_number(accession_number, event_user)
+
+      if accessioned?
+        client.submit_and_fetch_accession_number(login, files)
+        sample.sample.events.updated_accessioned_metadata!('sample', event_user)
+      else
+        accession_number = client.submit_and_fetch_accession_number(login, files)
+        sample.update_accession_number(accession_number, event_user)
+      end
     ensure
       # Ensure all opened files are closed
       files&.each_value(&:close!)
