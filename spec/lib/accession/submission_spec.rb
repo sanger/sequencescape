@@ -48,7 +48,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     end
 
     context 'when the sample is already accessioned' do
-      let(:sample) { build(:invalid_accession_sample) }
+      let(:sample) { build(:accession_sample_with_accession_number) }
 
       it 'creates MODIFY action instead of ADD' do
         actions_xml = xml.at('ACTIONS')
