@@ -12,7 +12,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
-  let(:logger) { instance_double(Logger, error: nil) }
+  let(:logger) { instance_double(Logger, error: nil, debug: nil) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
