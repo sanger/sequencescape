@@ -80,7 +80,7 @@ module Accession
     # for viewing under sample history.
     def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
-      sample.save
+      sample.sample_metadata.save # prevent an infinite loop due to after_save callbacks on sample.save
       sample.events.assigned_accession_number!('sample', accession_number, event_user)
     end
 
