@@ -105,7 +105,13 @@ module Accession
     end
 
     def check_studies
-      return if exactly_one_study?
+      exactly_one_study?
+      study_requires_accessioning?
+    end
+
+    def exactly_one_study?
+      # Check that sample is linked to exactly one study
+      return true if studies.length == 1
 
       if studies.empty?
         errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
@@ -115,8 +121,11 @@ module Accession
       end
     end
 
-    def exactly_one_study?
-      studies.length == 1
+    def study_requires_accessioning?
+      # Check if study is present and allowed to be accessioned
+      if sample.ena_study&.accession_required? != true # if true, accession; if false, don't
+        errors.add(:sample, 'is linked to a study that does not require accessioning.')
+      end
     end
   end
 end

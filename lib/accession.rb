@@ -95,10 +95,6 @@ module Accession
   # and supports private helper methods for internal workflow.
   class SampleAccessioning
     def perform(sample, event_user, perform_now)
-      # TODO: move this validation logic to a validation method somewhere else
-      # Check if study is present and allowed to be accessioned
-      return unless sample.ena_study&.accession_required?
-
       # Flag set in the deployment project to allow per-environment enabling of accessioning
       unless configatron.accession_samples
         raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
