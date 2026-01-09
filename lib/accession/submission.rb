@@ -48,6 +48,10 @@ module Accession
       if accessioned?
         client.submit_and_fetch_accession_number(login, files)
         sample.sample.events.updated_accessioned_metadata!('sample', event_user)
+        Rails.logger.info("Sample '#{sample.sample.name}' " \
+                          "with alias '#{sample.ebi_alias}' " \
+                          "and accession number '#{sample.ebi_accession_number}' " \
+                          "has had it's accession metadata successfully updated.")
       else
         accession_number = client.submit_and_fetch_accession_number(login, files)
         sample.update_accession_number(accession_number, event_user)
