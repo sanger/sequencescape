@@ -65,20 +65,46 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       allow(described_class).to receive(:client).and_return(mock_client)
     end
 
-    context 'when the submission is successful' do
-      let(:accession_number) { 'EGA00001000240' }
-      let(:mock_client) do
-        stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+    context 'when th sample has not yet been accessioned' do
+      context 'when the submission is successful' do
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
+
+        before do
+          expect(submission.sample).not_to be_accessioned
+
+          submission.submit_accession(event_user)
+        end
+
+        it 'updates the sample accession number' do
+          expect(submission).to be_accessioned
+        end
       end
 
-      before do
-        expect(submission.sample).not_to be_accessioned
+      context 'when updating an already accessioned sample' do
+        let(:sample) { build(:accession_sample_with_accession_number) }
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
 
-        submission.submit_accession(event_user)
-      end
+        before do
+          expect(submission.sample).to be_accessioned
 
-      it 'updates the sample accession number' do
-        expect(submission).to be_accessioned
+          submission.submit_accession(event_user)
+        end
+
+        it 'records an updated accessioned metadata event on the sample after submission' do
+          expect(sample.sample.events.first).to have_attributes(
+            message: 'Updated accessioned sample metadata',
+            content: nil,
+            family: 'accessioning',
+            of_interest_to: 'administrators',
+            created_by: event_user.login
+          )
+        end
       end
     end
 
