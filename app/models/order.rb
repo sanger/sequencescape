@@ -107,7 +107,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def assets=(assets_to_add)
-    super(assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle })
+    assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle }
   end
 
   # We can't destroy orders once the submission has been finalized for building
