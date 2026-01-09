@@ -214,15 +214,29 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
+  # TODO: should be removed along with the removal of the accessioning feature flag
+  # y25_286_accession_individual_samples_with_sample_accessioning_job
+  def tags
+    accession_service = AccessionService.select_for_sample(self)
+    self.class.tags.select { |tag| tag.for?(accession_service.provider) }
+  end
+
+  def self.tags
+    @tags ||= []
+  end
+
+  extend IncludeTag
+
   include_tag(:sample_strain_att)
   include_tag(:sample_description)
 
-  include_tag(:gender, services: :EGA, downcase: true)
-  include_tag(:phenotype, services: :EGA)
-  include_tag(:donor_id, services: :EGA, as: 'subject_id')
+  include_tag(:gender, mandatory_services: :EGA, downcase: true)
+  include_tag(:phenotype, mandatory_services: :EGA)
+  include_tag(:donor_id, mandatory_services: :EGA, as: 'subject_id')
 
   include_tag(:country_of_origin)
   include_tag(:date_of_sample_collection)
+  # End removal TODO
 
   # Reopens the Sample::Metadata class which was defined by has_metadata above
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
@@ -386,7 +400,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record|
+  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record, _attr|
     "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
   }
 
@@ -504,35 +518,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
-  # Return the highest priority accession service
-  def accession_service
-    services = studies.group_by { |s| s.accession_service.priority }
-    return AccessionService::UnsuitableService.new([]) if services.empty?
-
-    highest_priority = services.keys.max
-    suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
-    return suitable_study.accession_service if suitable_study
-
-    AccessionService::UnsuitableService.new(services[highest_priority])
-  end
-
-  def accession(event_user)
-    # Check if study is present and allowed to be accessioned
-    return unless ena_study&.accession_required?
-
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    unless configatron.accession_samples
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-    end
-
-    accessionable = build_accessionable
-    validate_accessionable!(accessionable)
-    enqueue_accessioning_job!(accessionable, event_user)
-  end
-
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
-    accession(event_user)
+    Accession.accession_sample(self, event_user)
     Rails.logger.info("Accessioning passed for sample '#{name}'")
   rescue AccessionService::AccessionServiceError => e
     # Save error messages for later feedback to the user in a flash message
@@ -548,6 +536,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_ena_required_fields!
+    accession_service = AccessionService.select_for_sample(self)
     (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
@@ -613,34 +602,5 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
-  end
-
-  def build_accessionable
-    Accession::Sample.new(Accession.configuration.tags, self)
-  end
-
-  def validate_accessionable!(accessionable)
-    return if accessionable.valid?
-
-    error_message = "Sample '#{name}' cannot be accessioned: #{accessionable.errors.full_messages.join(', ')}"
-    Rails.logger.error(error_message)
-    raise AccessionService::AccessionValidationFailed, error_message
-  end
-
-  def enqueue_accessioning_job!(accessionable, event_user)
-    job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
-    log_job_status(job)
-  rescue StandardError => e
-    ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
-    Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
-    raise
-  end
-
-  def log_job_status(job)
-    if job
-      Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
-    else
-      Rails.logger.warn('Accessioning job enqueue returned nil.')
-    end
   end
 end

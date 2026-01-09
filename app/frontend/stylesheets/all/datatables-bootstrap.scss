@@ -3,7 +3,7 @@
 // tweaks
 
 .card {
-  .dataTables_filter {
+  .dt-search {
     // Bootstrap lets tables be embedded straight in a card, pushing the table
     // right up to the edges. This looks fine for the table itself, which already
     // has its own padding, but the dataTables_filter buts right up against the
@@ -11,7 +11,6 @@
     // similar effect, but also adds unnecessary bottom padding which looks a
     // little clunky
     @extend .mr-3;
-    @extend .mt-3;
   }
 
   .dataTables_info {
