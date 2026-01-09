@@ -1,17 +1,22 @@
+<%# Top content %>
+<% content_for :top_content do %>
+  <%= form_tag show_summary_study_information_path(@study),
+              method: :get,
+              class: 'remote-form observed',
+              data: { update: "#everything", throbber: '#loading', remote: true } do %>
+    <%= label_tag(:labware_type, 'Filter by') %>
+    <%= select_tag(:labware_type, options_for_select(labware_types_for_select, @labware_type), class: 'form-control observed') %>
+  <% end %>
 
-<%= form_tag show_summary_study_information_path(@study),
-             method: :get,
-             class: 'remote-form observed',
-             data: { update: "#everything", throbber: '#loading', remote: true } do %>
-  <%= label_tag(:labware_type, 'Filter by') %>
-  <%= select_tag(:labware_type, options_for_select(labware_types_for_select, @labware_type), class: 'form-control observed') %>
+  <% submissions = @submissions %>
 <% end %>
 
-<span class="filter_options">Currently showing <strong><%= @labware_type_name %></strong></span>
+<%# Aggregation summary for the top right %>
+<% content_for :aggregation do %>
+  <span class="filter_options">Currently showing <strong><%= @labware_type_name %></strong></span>
+<% end %>
 
-<%= pagination @page_elements %>
-<% submissions = @submissions %>
-<table id="summary" class="sortable table table-striped">
+<%# Table contents %>
   <thead>
     <tr>
       <th>Name</th>
@@ -35,7 +40,7 @@
           <td><%= asset.label %></td>
           <td><% if asset.is_a?(Receptacle) %>
             <% asset.aliquots.each do |a| %>
-              <%= link_to(a.sample.name, a.sample) %>;
+              <%= link_to(a.sample.name, a.sample) %>
             <% end %>
           <% end %>
           <td><%= asset.closed? ? 'Yes' : 'No' %></td>
@@ -73,5 +78,4 @@
       <% end %>
     <% end %>
   </tbody>
-</table>
-<%= pagination @page_elements %>
+<%# End table contents %>
