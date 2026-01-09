@@ -44,13 +44,6 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-
-    # Sets up the matrix for knapsack builds
-    strategy:
-      matrix:
-        ci_node_total: [2]
-        ci_node_index: [0, 1]
-
     steps:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@master
@@ -81,7 +74,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bin/knapsack_pro_cucumber
+        run: bundle exec cucumber
 
       - name: Upload capybara artifacts
         uses: sanger/.github/.github/actions/tests/upload-artifact@master
