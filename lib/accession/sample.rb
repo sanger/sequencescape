@@ -101,8 +101,12 @@ module Accession
     end
 
     def check_required_fields
+      # Skip validation if the feature flag to skip accessioning tag validation is enabled.
+      # EBI will still perform its own validation on submission.
+      return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
+
       unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing.to_sentence.dasherize}.")
+        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
       end
     end
 

@@ -86,4 +86,69 @@ module Accession
   def self.reset!
     @configuration = Configuration.new
   end
+
+  # --- Methods called by external controllers ---
+
+  # Wrapper for sample accessioning with error handling and job management.
+  # Allows accessioning to be triggered from anywhere in the application.
+  # Encapsulates logic for validation, synchronous or asynchronous job execution,
+  # and supports private helper methods for internal workflow.
+  class SampleAccessioning
+    def perform(sample, event_user, perform_now)
+      # TODO: move this validation logic to a validation method somewhere else
+      # Check if study is present and allowed to be accessioned
+      return unless sample.ena_study&.accession_required?
+
+      # Flag set in the deployment project to allow per-environment enabling of accessioning
+      unless configatron.accession_samples
+        raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+      end
+
+      accessionable = build_accessionable(sample)
+      validate_accessionable!(accessionable)
+
+      if perform_now
+        # Perform accessioning job synchronously
+        SampleAccessioningJob.new(accessionable, event_user).perform
+      else
+        enqueue_accessioning_job!(accessionable, event_user)
+      end
+    end
+
+    private
+
+    def build_accessionable(sample)
+      Accession::Sample.new(Accession.configuration.tags, sample)
+    end
+
+    def validate_accessionable!(accessionable)
+      return if accessionable.valid?
+
+      error_message = "Sample '#{accessionable.sample.name}' cannot be accessioned: " \
+                      "#{accessionable.errors.full_messages.join(', ')}"
+      Rails.logger.error(error_message)
+      raise AccessionService::AccessionValidationFailed, error_message
+    end
+
+    def enqueue_accessioning_job!(accessionable, event_user)
+      job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
+      log_job_status(job)
+    rescue StandardError => e
+      ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
+      Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
+      raise
+    end
+
+    def log_job_status(job)
+      if job
+        Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
+      else
+        Rails.logger.warn('Accessioning job enqueue returned nil.')
+      end
+    end
+  end
+
+  def self.accession_sample(sample, event_user, perform_now: false)
+    SampleAccessioning.new.perform(sample, event_user, perform_now)
+  end
 end
