@@ -36,11 +36,12 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       expect(xml.at(submission.service.visibility)).to be_present
 
-      expect(xml.at('ACTIONS').children.length).to eq(2)
+      actions_xml = xml.at('ACTIONS')
+      expect(actions_xml.children.length).to eq(2)
 
-      action_xml = xml.at('ADD')
-      expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
-      expect(action_xml.attribute('schema').value).to eq(submission.sample.schema_type)
+      add_xml = actions_xml.at('ADD')
+      expect(add_xml.attribute('source').value).to eq(submission.sample.filename)
+      expect(add_xml.attribute('schema').value).to eq(submission.sample.schema_type)
     end
 
     context 'when the sample is already accessioned' do
