@@ -1,12 +1,29 @@
+# Tags configuration for Accession::TagList
+#
+# Tag/field requirements, naming, and validation can be found in the checklists listed below:
+#
+# - ENA: https://www.ebi.ac.uk/ena/browser/view/ERC000011
+# - EGA: https://www.ebi.ac.uk/ena/browser/view/ERC000026
+# - ArrayExpress: From September 2022, the interface to ArrayExpress was retired:
+#                 https://www.ebi.ac.uk/about/news/updates-from-data-resources/arrayexpress-retired/
+#                 However, it appears that as of February 2017, ENA was submitting samples to ArrayExpress on our behalf.
+#                 See this sample for an example:
+#                 1. https://sequencescape.psd.sanger.ac.uk/samples/2934454
+#                 2. https://www.ebi.ac.uk/ena/browser/view/ERS1545406
+#                 3. https://www.ebi.ac.uk/biosamples/samples/SAMEA80468668
+#                 How samples are being submitted to ArrayExpress/BioSample now is currently unknown.
+#
+# Local copies are also stored in `data/sample_checklists/` for reference purposes as they do change occasionally.
+
 sample_taxon_id:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
     - :sample_name
   ebi_name: :taxon_id
 sample_common_name:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
@@ -14,26 +31,30 @@ sample_common_name:
   ebi_name: :common_name
 country_of_origin:
   class_name: "::Accession::TagCountryOfOrigin"
-  services:
+  mandatory_services:
     - :ENA
   groups:
     - :sample_attributes
   ebi_name: :geographic_location_(country_and/or_sea)
 date_of_sample_collection:
   class_name: "::Accession::TagCollectionDate"
-  services:
+  mandatory_services:
     - :ENA
   groups:
     - :sample_attributes
   ebi_name: :collection_date
+sample_description:
+  groups:
+    - :sample_attributes
+  ebi_name: :sample description
 donor_id:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
   ebi_name: :subject_id
 gender:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
@@ -41,11 +62,15 @@ genotype:
   groups:
     - :array_express
 phenotype:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
     - :array_express
+sample_strain_att:
+  groups:
+    - :sample_attributes
+  ebi_name: :strain
 strain_or_line:
   groups:
     - :array_express

@@ -19,16 +19,19 @@ module SequencescapeExcel
       validates :well_index, presence: { message: 'is not valid' }
       validates :tag, presence: { message: 'does not have associated i7 tag' }, if: :well_index
       validates :tag2, presence: { message: 'does not have associated i5 tag' }, if: :well_index
+      validate :well_has_single_aliquot?, if: :well_index
 
       PLATE_SIZE = 96
 
       def update(_attributes = {})
         return unless valid?
 
-        raise StandardError, 'Tag aliquot mismatch' unless asset.aliquots.one?
+        # NB. asset here is a well, and a the well_has_single_aliquot? validation ensures there is only one aliquot
+        stock_aliquot = asset.aliquots.first
 
-        # For dual index tags, tag is a i7 oligo and tag2 is a i5 oligo
-        asset.aliquots.first.update(tag:, tag2:)
+        # Update all downstream aliquots as well as current aliquot
+        matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
+        update_all_relevant_aliquots(matching_aliquots, tag, tag2)
       end
 
       def link(other_fields)
@@ -70,6 +73,36 @@ module SequencescapeExcel
       # i5 tag
       def tag2
         Tag.find_by(tag_group_id: tag2_group_id, map_id: well_index)
+      end
+
+      # Validation to ensure that the well has a single aliquot
+      def well_has_single_aliquot?
+        return true if asset.aliquots.one?
+
+        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{asset.aliquots.count}"
+        errors.add(:base, msg)
+      end
+
+      # Find all aliquots that need updating
+      # Aliquots must have a matching sample_id, library_id, tag_id and tag2_id to the given stock_aliquot.
+      def identify_all_matching_aliquots(stock_aliquot)
+        attributes = {
+          sample_id: stock_aliquot.sample_id,
+          library_id: stock_aliquot.library_id,
+          tag_id: stock_aliquot.tag_id,
+          tag2_id: stock_aliquot.tag2_id
+        }
+
+        Aliquot.where(attributes).ids
+      end
+
+      # Update the tags in all the matching aliquots
+      # NB. if active record sees that nothing has changed it will update the record
+      def update_all_relevant_aliquots(matching_aliquots, i7_tag, i5_tag)
+        Aliquot.where(id: matching_aliquots).find_each do |aq|
+          aq.update(tag: i7_tag, tag2: i5_tag)
+          aq.save!
+        end
       end
     end
   end

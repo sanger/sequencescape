@@ -8,18 +8,18 @@ module Accession
     include ActiveModel::Model
     include Accession::Equality
 
-    attr_accessor :services, :value, :name, :groups, :ebi_name, :class_name
+    attr_accessor :mandatory_services, :value, :name, :groups, :ebi_name, :class_name
 
     validates_presence_of :name, :groups
 
-    DEFAULT_ATTRIBUTES = { services: [] }.freeze
+    DEFAULT_ATTRIBUTES = { mandatory_services: [] }.freeze
 
     def initialize(attributes = {})
       super(DEFAULT_ATTRIBUTES.merge(attributes))
     end
 
-    def services=(services)
-      @services = Array(services)
+    def mandatory_services=(mandatory_services)
+      @mandatory_services = Array(mandatory_services)
     end
 
     def value=(value)
@@ -27,7 +27,7 @@ module Accession
     end
 
     def required_for?(service)
-      services.include? service.provider
+      mandatory_services.include? service.provider
     end
 
     def array_express?
@@ -63,7 +63,7 @@ module Accession
     end
 
     def attributes
-      %i[services value name groups ebi_name]
+      %i[mandatory_services value name groups ebi_name]
     end
 
     # Some helper methods for displaying information from tags
@@ -129,8 +129,7 @@ module Accession
   class TagCollectionDate < Tag
     # rubocop:disable Layout/LineLength
     REGEXP =
-      %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)}
-
+      %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)}
     # rubocop:enable Layout/LineLength
 
     def value_for(record, key)

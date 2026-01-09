@@ -28,7 +28,7 @@ module Accession
       @sample = sample
       @studies = set_studies
       @tags = standard_tags.extract(sample.sample_metadata)
-      @service = Service.new(studies_valid? ? studies.keys.first : nil)
+      @service = Service.new(exactly_one_study? ? studies.keys.first : nil)
     end
 
     def name
@@ -76,9 +76,12 @@ module Accession
       sample.uuid
     end
 
-    def update_accession_number(accession_number)
+    # Updates the accession number, saving the sample and adding an event to the events table
+    # for viewing under sample history.
+    def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
       sample.save
+      sample.events.assigned_accession_number!('sample', accession_number, event_user)
     end
 
     def accessioned?
@@ -98,16 +101,27 @@ module Accession
     end
 
     def check_required_fields
+      # Skip validation if the feature flag to skip accessioning tag validation is enabled.
+      # EBI will still perform its own validation on submission.
+      return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
+
       unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing.to_sentence.dasherize}.")
+        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
       end
     end
 
     def check_studies
-      errors.add(:sample, 'has no appropriate studies.') unless studies_valid?
+      return if exactly_one_study?
+
+      if studies.empty?
+        errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
+      else
+        study_names = studies.values.flatten.map { |study| "'#{study.name}'" }.to_sentence
+        errors.add(:sample, "must be linked to exactly one study but is linked to studies #{study_names}.")
+      end
     end
 
-    def studies_valid?
+    def exactly_one_study?
       studies.length == 1
     end
   end

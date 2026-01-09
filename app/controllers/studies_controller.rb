@@ -193,7 +193,8 @@ class StudiesController < ApplicationController
   def show_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_study_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_study_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -201,7 +202,8 @@ class StudiesController < ApplicationController
   def show_policy_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_policy_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_policy_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -209,7 +211,8 @@ class StudiesController < ApplicationController
   def show_dac_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_dac_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_dac_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -237,7 +240,8 @@ class StudiesController < ApplicationController
     rescue_accession_errors do
       @study = Study.find(params[:id])
       @study.validate_ena_required_fields!
-      @study.accession_service.submit_study_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_study_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
       redirect_to(study_path(@study))
@@ -246,7 +250,7 @@ class StudiesController < ApplicationController
 
   def accession_all_samples
     @study = Study.find(params[:id])
-    @study.accession_all_samples
+    @study.accession_all_samples(current_user)
 
     if @study.errors.any?
       error_messages = compile_accession_errors(@study.errors)
@@ -260,7 +264,8 @@ class StudiesController < ApplicationController
   def dac_accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.accession_service.submit_dac_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_dac_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
       redirect_to(study_path(@study))
@@ -270,7 +275,8 @@ class StudiesController < ApplicationController
   def policy_accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.accession_service.submit_policy_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_policy_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
       redirect_to(study_path(@study))
