@@ -13,7 +13,7 @@ module UltimaSampleSheet::SampleSheetGenerator
   # Ultima sample sheet generator class.
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
-  class Generator
+  class Generator # rubocop:disable Metrics/ClassLength
     PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
     HEADER_TITLE = ['[Header]'].freeze
     GLOBAL_TITLE = ['[Global]'].freeze
@@ -129,11 +129,15 @@ module UltimaSampleSheet::SampleSheetGenerator
       end
     end
 
-    # Returns a unique sample_ID for the given aliquot.
+    # Returns a unique sample_ID for the given aliquot. This prefixes numbers
+    # with 's' (lowercase s character) for Sample_ID column, as in s1 … sN,
+    # where N is num of samples on wafer. It starts them with s1 for each wafer,
+    # e.g. for first wafer s1 … sF and for second wafer s1 … sS, where F and S
+    # are num of samples on first and seconds wafers respectively.
     # @param aliquot [Aliquot] the aliquot whose sample ID is needed
     # @return [String] the sample ID
     def sample_id_for(aliquot)
-      sample_id_index_map[aliquot].to_s
+      format('s%d', sample_id_index_map[aliquot])
     end
 
     # Returns the library name for the given aliquot's sample.
@@ -215,12 +219,19 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns a mapping of aliquots to 1-based index numbers.
-    # This sorts aliquots by their ID to ensure consistent ordering.
+    # This sorts aliquots by their ID to ensure consistent ordering. The index
+    # numbers are restarted with 1 for each request in the batch.
     # @return [Hash{Aliquot => Integer}] mapping of aliquots to index numbers
     def sample_id_index_map
       @sample_id_index_map ||= begin
-        aliquots = batch_requests.flat_map { |request| request.asset.aliquots.sort_by(&:id) }
-        aliquots.each_with_index.to_h { |aliquot, i| [aliquot, i + 1] }
+        map = {}
+        batch_requests.each do |request|
+          aliquots = request.asset.aliquots.sort_by(&:id)
+          aliquots.each_with_index do |aliquot, i|
+            map[aliquot] = i + 1
+          end
+        end
+        map
       end
     end
 
