@@ -11,6 +11,9 @@ limber_bge_pcr_free:
     - BGE Cherrypick
   library_types:
     - BGE
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 # For moving PCR Free plates to ISC plates
 # e.g., BGE Lib XP2 -> BGE LIB PCR
 limber_bge_transition:
@@ -24,6 +27,9 @@ limber_bge_transition:
     - BGE Lib XP2
   library_types:
     - BGE
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_bge_isc:
   asset_type: Well
   order: 1
@@ -35,6 +41,9 @@ limber_bge_isc:
     - BGE Lib PCR XP
   library_types:
     - BGE
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_multiplexing_bge_pcr_free:
   name: Limber Multiplexing BGE PCR Free
   asset_type: Well

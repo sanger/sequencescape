@@ -18,3 +18,6 @@ limber_scrna_core_library_prep:
     - Chromium single cell GEM-X 5p v3 BCR
     - Chromium single cell GEM-X 5p v3 TCR
     - Chromium single cell GEM-X 5p v3 cell surface protein
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA

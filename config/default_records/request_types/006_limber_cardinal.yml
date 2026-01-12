@@ -12,6 +12,9 @@ limber_cardinal:
   product_line_name: Cardinal
   library_types:
     - Chromium single cell 3 prime v3
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
   acceptable_purposes:
     - LCA Blood Vac
 limber_cardinal_banking:
