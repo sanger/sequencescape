@@ -101,13 +101,15 @@ module Accession
       end
 
       accessionable = build_accessionable(sample)
-      validate_accessionable!(accessionable)
 
       if perform_now
         # Perform accessioning job synchronously
-        SampleAccessioningJob.new(accessionable, event_user).perform
+        synchronous = true
+        new_synchronous_accession_status(accessionable)
+        SampleAccessioningJob.new(accessionable, event_user, synchronous).perform
       else
-        enqueue_accessioning_job!(accessionable, event_user)
+        synchronous = false
+        enqueue_accessioning_job!(accessionable, event_user, synchronous)
       end
     end
 
@@ -117,18 +119,14 @@ module Accession
       Accession::Sample.new(Accession.configuration.tags, sample)
     end
 
-    def validate_accessionable!(accessionable)
-      accessionable.sample.validate_ena_required_fields!
-      return if accessionable.valid?
-
-      error_message = "Sample '#{accessionable.sample.name}' cannot be accessioned: " \
-                      "#{accessionable.errors.full_messages.join(', ')}"
-      Rails.logger.error(error_message)
-      raise AccessionService::AccessionValidationFailed, error_message
+    def new_synchronous_accession_status(accessionable)
+      Accession::SampleStatus.create_for_sample(accessionable.sample, 'processing')
     end
 
     def enqueue_accessioning_job!(accessionable, event_user)
-      job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
+      synchronous = false
+      sample_accessioning = SampleAccessioningJob.new(accessionable, event_user, synchronous)
+      job = Delayed::Job.enqueue(sample_accessioning, priority: 200)
       log_job_status(job)
     rescue StandardError => e
       ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })

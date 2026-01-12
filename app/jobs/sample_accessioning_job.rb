@@ -10,7 +10,7 @@ JobFailed = Class.new(StandardError) unless defined?(JobFailed)
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do
+  Struct.new(:accessionable, :event_user, :synchronous?) do
     # Retrieve the contact user for accessioning submissions
     def self.contact_user
       User.find_by(api_key: configatron.accession_local_key)
@@ -19,9 +19,13 @@ SampleAccessioningJob =
     def perform
       contact_user = self.class.contact_user
       submission = Accession::Submission.new(contact_user, accessionable)
+      accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
     rescue StandardError => e
       handle_job_error(e, submission)
+
+      # if performing job synchronously, re-raise the error to the caller rather than wrapping it in JobFailed
+      raise e if synchronous?
 
       # Raising an error to Delayed::Job will signal that the job should be retried at a later time
       job_failed_message = "#{e.class}: #{e.message}"
@@ -30,7 +34,7 @@ SampleAccessioningJob =
 
     def reschedule_at(current_time, _attempts)
       # When changing, also update attempt description text in app/views/samples/_accession_statuses.html.erb
-      current_time + 1.day
+      current_time + 1.minute
     end
 
     def max_attempts
@@ -128,7 +132,7 @@ SampleAccessioningJob =
     # Returns a user-friendly error message based on the error type
     def user_error_message(error)
       case error
-      when Accession::ExternalValidationError, ActiveModel::ValidationError
+      when Accession::ExternalValidationError, ActiveModel::ValidationError, ActiveRecord::RecordInvalid
         error.message
       when Faraday::Error
         'A network error occurred during accessioning and no response was received.'

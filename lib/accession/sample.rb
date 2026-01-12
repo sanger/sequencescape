@@ -39,6 +39,15 @@ module Accession
       @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
+    def validate!
+      sample.validate_ena_required_fields!
+      return if valid?
+
+      error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
+      Rails.logger.error(error_message)
+      raise AccessionService::AccessionValidationFailed, error_message
+    end
+
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       tag_groups = tags.by_group
 
