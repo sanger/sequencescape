@@ -159,12 +159,11 @@ class SamplesController < ApplicationController
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
 
-    @sample.validate_ena_required_fields!
-
     if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
       # Synchronously perform accessioning job
       Accession.accession_sample(@sample, current_user, perform_now: true)
     else
+      @sample.validate_ena_required_fields!
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
     end

@@ -118,6 +118,7 @@ module Accession
     end
 
     def validate_accessionable!(accessionable)
+      accessionable.sample.validate_ena_required_fields!
       return if accessionable.valid?
 
       error_message = "Sample '#{accessionable.sample.name}' cannot be accessioned: " \
