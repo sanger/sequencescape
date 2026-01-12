@@ -11,5 +11,8 @@ clcm_dna_rna_seq:
   library_types:
     - Combined LCM DNA
     - Combined LCM RNA
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
   acceptable_purposes:
     - CLCM Stock

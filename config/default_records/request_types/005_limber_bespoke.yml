@@ -45,6 +45,9 @@ limber_pcr_bespoke:
     - TraDIS
     - TruSeq mRNA (RNA Seq)
     - SGE Library v0.2
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_chromium_bespoke:
   <<: *limber_bespoke_library
   name: Limber Chromium Bespoke
@@ -66,6 +69,9 @@ limber_chromium_bespoke:
     - Chromium single cell 5 prime HT v2
     - Chromium single cell BCR HT
     - Chromium single cell TCR HT
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_pcr_free_bespoke:
   <<: *limber_bespoke_library
   name: Limber PCR Free Bespoke
@@ -76,6 +82,9 @@ limber_pcr_free_bespoke:
     - HiSeqX PCR free
     - No PCR (Plate)
     - TruSeq Custom Amplicon
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_bespoke_aggregation:
   <<: *limber_bespoke_library
   name: Limber Bespoke Aggregation

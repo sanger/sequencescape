@@ -51,3 +51,6 @@ limber_scrna_core_cdna_pcr_cite:
     - LRC GEM-X 5p cDNA PCR CITE
   library_types:
     - Chromium single cell GEM-X 5p v3 cell surface protein
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA

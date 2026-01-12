@@ -12,6 +12,9 @@ limber_lcm_triomics_emseq:
     - LCMT Lysate
   library_types:
     - emSEQ
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_lcm_triomics_wgs:
   name: LCM Triomics WGS
   asset_type: Well
@@ -24,3 +27,6 @@ limber_lcm_triomics_wgs:
     - LCMT DNA Adp Lig
   library_types:
     - LCMB
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA

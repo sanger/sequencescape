@@ -11,6 +11,9 @@ limber_ultima_htp_pcr_free:
     - UPF Cherrypicked
   library_types:
     - Ultima High Throughput PCR Free 96
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
 limber_multiplexing_ultima:
   name: Limber Multiplexing Ultima
   asset_type: Well

@@ -10,5 +10,8 @@ limber_bait_capture_library_prep:
   product_line_name: Bait Capture Library
   library_types:
     - RVI-BCL
+    - 10x RNA Flex
+    - Parse Evercode
+    - 16S rRNA
   acceptable_purposes:
     - RVI Cherrypick
