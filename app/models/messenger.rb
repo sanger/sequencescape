@@ -26,7 +26,7 @@ class Messenger < ApplicationRecord
     return message unless receptacle_target?
 
     asset_type = fetch_asset_type
-    set_labware_type(message, asset_type) if library_plate?(asset_type)
+    message['labware_type'] = 'library_plate_well' if library_plate?(asset_type)
     message
   end
 
@@ -60,13 +60,5 @@ class Messenger < ApplicationRecord
   # @return [Boolean] True if asset type is 'library_plate', false otherwise.
   def library_plate?(asset_type)
     asset_type.present? && asset_type == 'library_plate'
-  end
-
-  # Sets the labware type in the message if the asset is a library plate.
-  # @param message [Hash] The message to update.
-  # @param asset_type [String, nil] The asset type (unused).
-  # @return [void]
-  def set_labware_type(message, _asset_type)
-    message['labware_type'] = 'library_plate_well'
   end
 end
