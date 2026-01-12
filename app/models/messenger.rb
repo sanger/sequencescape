@@ -30,6 +30,17 @@ class Messenger < ApplicationRecord
     message
   end
 
+  def template
+    # Replace IO with Io to match the class name
+    # This is a consequence of the zeitwerk renaming for the message modules from IO to Io
+    # This ensures that the correct class is loaded for historical messages
+    read_attribute(:template).gsub(/IO$/, 'Io')
+  end
+
+  def resend
+    Warren.handler << Warren::Message::Short.new(self)
+  end
+
   private
 
   # Checks if the target type is 'Receptacle'.
@@ -55,18 +66,7 @@ class Messenger < ApplicationRecord
   # @param message [Hash] The message to update.
   # @param asset_type [String, nil] The asset type (unused).
   # @return [void]
-  def set_labware_type(message, asset_type)
+  def set_labware_type(message, _asset_type)
     message['labware_type'] = 'library_plate_well'
-  end
-
-  def template
-    # Replace IO with Io to match the class name
-    # This is a consequence of the zeitwerk renaming for the message modules from IO to Io
-    # This ensures that the correct class is loaded for historical messages
-    read_attribute(:template).gsub(/IO$/, 'Io')
-  end
-
-  def resend
-    Warren.handler << Warren::Message::Short.new(self)
   end
 end
