@@ -56,6 +56,7 @@ module SampleManifest::MultiplexedLibraryBehaviour
     end
 
     def pending_external_library_creation_requests
+      Rails.logger.info("app/models/sample_manifest/multiplexed_library_behaviour.rb: method - calling requests_as_target")
       multiplexed_library_tube.requests_as_target.for_state('pending')
     end
 

@@ -22,6 +22,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
   has_subjects(:sample) do |work_completion, e|
     work_completion
       .target
+      Rails.logger.info("app/models/broadcast_event/library_complete.rb: method - calling requests_as_target")
       .requests_as_target
       .for_event_notification_by_order(e.order)
       .including_samples_from_source

@@ -23,6 +23,7 @@ class BroadcastEvent::PoolReleased < BroadcastEvent
 
   # finds relevant requests into this tube, and grabs the samples from their source aliquots
   has_subjects(:sample) do |tube, e|
+    Rails.logger.info("app/models/broadcast_event/pool_released.rb: has_subjects(:sample) - calling requests_as_target")
     tube
       .requests_as_target
       .for_event_notification_by_order(e.order)

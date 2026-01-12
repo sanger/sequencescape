@@ -41,6 +41,7 @@ class IlluminaHtp::StockTubePurpose < Tube::Purpose
             deprecator: Rails.application.deprecators[:sequencescape]
 
   def stock_wells(tube)
+    Rails.logger.info("app/models/illumina_htp/stock_tube_purpose.rb: method - calling requests_as_target")
     tube.requests_as_target.map { |request| request.asset.stock_wells }.flatten
   end
 end

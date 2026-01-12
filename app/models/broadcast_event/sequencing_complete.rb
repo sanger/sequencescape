@@ -27,6 +27,7 @@ class BroadcastEvent::SequencingComplete < BroadcastEvent
   has_metadata(:result) { |_, e| e.properties[:result] }
 
   def lane_first_request
+    Rails.logger.info("app/models/broadcast_event/sequencing_complete.rb: method - calling requests_as_target")
     seed.requests_as_target.first
   end
 end
