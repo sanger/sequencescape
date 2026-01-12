@@ -17,6 +17,11 @@ require_relative 'parameter_types' # does not seem to be automatically loaded co
 require_relative 'seeded_deletion'
 require 'database_cleaner-active_record'
 
+# Possible values are :truncation and :transaction
+# The :transaction strategy is faster, but might give you threading problems.
+# See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
+Cucumber::Rails::Database.javascript_strategy = :transaction
+
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
 # your application behaves in the production environment, where an error page will
@@ -43,12 +48,12 @@ ActionController::Base.allow_rescue = false
 UUID_CACHE = {}
 begin
   # Ensure we start from a clean database
-  DatabaseCleaner[:active_record].strategy = :truncation
+  DatabaseCleaner.strategy = :truncation
   # Clean the database
   DatabaseCleaner.clean
   
   # This strategy will delete all records except those that existed before cleaning was started (seed data)
-  DatabaseCleaner[:active_record].strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
+  DatabaseCleaner.strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
 
   Rails.application.load_tasks
   begin
