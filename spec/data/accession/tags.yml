@@ -1,60 +1,101 @@
 sample_taxon_id:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
     - :sample_name
   ebi_name: :taxon_id
 sample_common_name:
-  services:
+  mandatory_services:
     - :ENA
     - :EGA
   groups:
     - :sample_name
   ebi_name: :common_name
-gender:
-  services:
-    - :EGA
-  groups:
-    - :sample_attributes
-    - :array_express
-phenotype:
-  services:
-    - :EGA
-  groups:
-    - :sample_attributes
-    - :array_express
 country_of_origin:
   class_name: "::Accession::TagCountryOfOrigin"
-  services:
+  mandatory_services:
     - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :geographic_location_(country_and/or_sea)
 date_of_sample_collection:
   class_name: "::Accession::TagCollectionDate"
-  services:
+  mandatory_services:
     - :ENA
-    - :EGA
   groups:
     - :sample_attributes
   ebi_name: :collection_date
+sample_description:
+  groups:
+    - :sample_attributes
+  ebi_name: :sample description
 donor_id:
-  services:
+  mandatory_services:
     - :EGA
   groups:
     - :sample_attributes
   ebi_name: :subject_id
-sample_public_name:
+gender:
+  mandatory_services:
+    - :EGA
+  groups:
+    - :sample_attributes
+genotype:
+  groups:
+    - :array_express
+phenotype:
+  mandatory_services:
+    - :EGA
+  groups:
+    - :sample_attributes
+    - :array_express
+sample_strain_att:
+  groups:
+    - :sample_attributes
+  ebi_name: :strain
+strain_or_line:
+  groups:
+    - :array_express
+developmental_stage:
+  groups:
+    - :array_express
+sex:
+  groups:
+    - :array_express
+cell_type:
   groups:
     - :array_express
 disease_state:
   groups:
     - :array_express
+compound:
+  groups:
+    - :array_express
+dose:
+  groups:
+    - :array_express
+immunoprecipitate:
+  groups:
+    - :array_express
+growth_condition:
+  groups:
+    - :array_express
 rnai:
   groups:
     - :array_express
+organism_part:
+  groups:
+    - :array_express
 species:
+  groups:
+    - :array_express
+time_point:
+  groups:
+    - :array_express
+age:
+  groups:
+    - :array_express
+treatment:
   groups:
     - :array_express

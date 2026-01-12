@@ -34,34 +34,57 @@ RSpec.describe SampleAccessioningJob, type: :job do
         expect { job.perform }.to raise_error(JobFailed)
       end
 
-      it 'sets the accession sample status to failed' do
-        sample_status = Accession::SampleStatus.where(sample:).first
-        expect(sample_status).to have_attributes(
-          status: 'failed',
-          message: 'An internal error occurred during accessioning.'
+      context 'when accessioning tag validation is enabled' do
+        before do
+          Flipper.disable(:y25_714_skip_accessioning_tag_validation)
+        end
+
+        it 'sets the accession sample status to failed' do
+          sample_status = Accession::SampleStatus.where(sample:).first
+          expect(sample_status).to have_attributes(
+            status: 'failed',
+            message: 'An internal error occurred during accessioning.'
+          )
+        end
+
+        it 'logs the error' do
+          expect(logger).to have_received(:error).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'Accessionable submission is invalid: ' \
+            'Sample does not have the required metadata: sample-taxon-id.'
+          )
+        end
+
+        it 'notifies ExceptionNotifier' do
+          sample_name = sample.name # 'Sample 1'
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            instance_of(StandardError),
+            data: {
+              message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                       'Accessionable submission is invalid: ' \
+                       'Sample does not have the required metadata: sample-taxon-id.',
+              sample_name: sample_name,
+              service_provider: 'ENA'
+            }
+          )
+        end
+      end
+    end
+
+    context 'when accessioning tag validation is skipped' do
+      before do
+        Flipper.enable(:y25_714_skip_accessioning_tag_validation)
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
         )
       end
 
-      it 'logs the error' do
-        expect(logger).to have_received(:error).with(
-          "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'Accessionable submission is invalid: ' \
-          'Sample does not have the required metadata: sample-taxon-id.'
-        )
+      it 'allows the accessioning to proceed, not raising an error' do
+        expect { job.perform }.not_to raise_error # specifically JobFailed
       end
 
-      it 'notifies ExceptionNotifier' do
-        sample_name = sample.name # 'Sample 1'
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(StandardError),
-          data: {
-            message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                     'Accessionable submission is invalid: ' \
-                     'Sample does not have the required metadata: sample-taxon-id.',
-            sample_name: sample_name,
-            service_provider: 'ENA'
-          }
-        )
+      it 'removes the latest accession sample status' do
+        expect(Accession::SampleStatus.where(sample:)).not_to exist
       end
     end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module Accession
-  # Standard methods used by things that can be accesioned e.g sample
+  # Standard methods used by things that can be accessioned e.g sample
   module Accessionable
     attr_reader :ebi_alias
 

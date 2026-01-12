@@ -64,15 +64,6 @@ class Accessionable::Base
     false
   end
 
-  def add_updated_event(user, classname, eventable)
-    eventable.events.create(
-      created_by: user.login,
-      message: "#{classname} #{eventable.id} accession data has been updated by user #{user.login}",
-      content: 'accession number regenerated',
-      of_interest_to: 'administrators'
-    )
-  end
-
   def label_scope
     @label_scope ||= "metadata.#{self.class.name.split('::').last.downcase}.metadata"
   end

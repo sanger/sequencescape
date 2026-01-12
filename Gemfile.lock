@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/ManageIQ/database_cleaner-activerecord-seeded_deletion.git
+  revision: c89c0d52118322d719921cce1cd3695b37d206ee
+  branch: master
+  specs:
+    database_cleaner-activerecord-seeded_deletion (0.1.0)
+      database_cleaner-active_record (~> 2.0)
+
+GIT
   remote: https://github.com/payrollhero/acts-as-dag.git
   revision: 0a0a824013013d5b54d5b62716c3e29f0fe8a536
   specs:
@@ -664,6 +672,7 @@ DEPENDENCIES
   cucumber_github_formatter
   daemons
   database_cleaner-active_record
+  database_cleaner-activerecord-seeded_deletion!
   delayed_job_active_record
   drb
   exception_notification

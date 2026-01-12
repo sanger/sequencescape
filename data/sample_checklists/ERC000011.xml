@@ -1,0 +1,1227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CHECKLIST_SET>
+<CHECKLIST accession="ERC000011" checklistType="Sample">
+        <IDENTIFIERS>
+            <PRIMARY_ID>ERC000011</PRIMARY_ID>
+        </IDENTIFIERS>
+        <DESCRIPTOR>
+            <LABEL>ENA default sample checklist</LABEL>
+            <NAME>ENA default sample checklist</NAME>
+            <DESCRIPTION>Minimum information required for the sample</DESCRIPTION>
+            <AUTHORITY>ENA</AUTHORITY>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Part and developmental stage of organism</NAME>
+                <FIELD>
+                    <LABEL>cell_type</LABEL>
+                    <NAME>cell_type</NAME>
+                    <DESCRIPTION>cell type from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>dev_stage</LABEL>
+                    <NAME>dev_stage</NAME>
+                    <DESCRIPTION>if the sample was obtained from an organism in a specific developmental stage, it is specified with this qualifier</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>germline</LABEL>
+                    <NAME>germline</NAME>
+                    <DESCRIPTION>the sample described presented in the entry has not undergone somatic genomic rearrangement as part of an adaptive immune response; it is the unrearranged molecule that was inherited from the parental germline</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>tissue_lib</LABEL>
+                    <NAME>tissue_lib</NAME>
+                    <DESCRIPTION>tissue library from which sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>tissue_type</LABEL>
+                    <NAME>tissue_type</NAME>
+                    <DESCRIPTION>tissue type from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Collection event information</NAME>
+                <FIELD>
+                    <LABEL>isolation_source</LABEL>
+                    <NAME>isolation_source</NAME>
+                    <DESCRIPTION>describes the physical, environmental and/or local geographical source of the biological sample from which the sample was derived</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>lat_lon</LABEL>
+                    <NAME>lat_lon</NAME>
+                    <DESCRIPTION>geographical coordinates of the location where the specimen was collected</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>collected_by</LABEL>
+                    <NAME>collected_by</NAME>
+                    <DESCRIPTION>name of persons or institute who collected the specimen</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>collection date</LABEL>
+                    <NAME>collection_date</NAME>
+                    <DESCRIPTION>The date the sample was collected with the intention of sequencing, either as an instance (single point in time) or interval. In case no exact time is available, the date/time can be right truncated i.e. all of these are valid ISO8601 compliant times: 2008-01-23T19:23:10+00:00; 2008-01-23T19:23:10; 2008-01-23; 2008-01; 2008.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD>
+                            <REGEX_VALUE>(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)</REGEX_VALUE>
+                        </TEXT_FIELD>
+                    </FIELD_TYPE>
+                    <MANDATORY>mandatory</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>geographic location (region and locality)</LABEL>
+                    <NAME>geographic_location_region_and_locality</NAME>
+                    <DESCRIPTION>The geographical origin of the sample as defined by the specific region name followed by the locality name.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>identified_by</LABEL>
+                    <NAME>identified_by</NAME>
+                    <DESCRIPTION>name of the expert who identified the specimen taxonomically</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>sample collection</NAME>
+                <FIELD>
+                    <LABEL>environmental_sample</LABEL>
+                    <NAME>environmental_sample</NAME>
+                    <DESCRIPTION>identifies sequences derived by direct molecular isolation from a bulk environmental DNA sample (by PCR with or without subsequent cloning of the product, DGGE, or other anonymous methods) with no reliable identification of the source organism</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_CHOICE_FIELD>
+                            <TEXT_VALUE>
+                                <VALUE>No</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Yes</VALUE>
+                            </TEXT_VALUE>
+                        </TEXT_CHOICE_FIELD>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Organism characteristics</NAME>
+                <FIELD>
+                    <LABEL>mating_type</LABEL>
+                    <NAME>mating_type</NAME>
+                    <DESCRIPTION>mating type of the organism from which the sequence was obtained; mating type is used for prokaryotes, and for eukaryotes that undergo meiosis without sexually dimorphic gametes</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>sex</LABEL>
+                    <NAME>sex</NAME>
+                    <DESCRIPTION>sex of the organism from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>geographic location (country and/or sea)</LABEL>
+                    <NAME>geographic_location_country_andor_sea</NAME>
+                    <DESCRIPTION>The geographical origin of where the sample was collected from, with the intention of sequencing, as defined by the country or sea name. Country or sea names should be chosen from the INSDC country list (http://insdc.org/country.html).</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_CHOICE_FIELD>
+                            <TEXT_VALUE>
+                                <VALUE>Afghanistan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Albania</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Algeria</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>American Samoa</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Andorra</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Angola</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Anguilla</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Antarctica</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Antigua and Barbuda</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Arctic Ocean</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Argentina</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Armenia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Aruba</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ashmore and Cartier Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Atlantic Ocean</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Australia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Austria</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Azerbaijan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bahamas</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bahrain</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Baker Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Baltic Sea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bangladesh</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Barbados</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bassas da India</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Belarus</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Belgium</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Belize</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Benin</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bermuda</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bhutan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bolivia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Borneo</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bosnia and Herzegovina</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Botswana</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bouvet Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Brazil</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>British Virgin Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Brunei</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Bulgaria</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Burkina Faso</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Burundi</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cambodia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cameroon</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Canada</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cape Verde</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cayman Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Central African Republic</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Chad</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Chile</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>China</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Christmas Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Clipperton Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cocos Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Colombia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Comoros</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cook Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Coral Sea Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Costa Rica</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cote d'Ivoire</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Croatia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cuba</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Curacao</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Cyprus</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Czechia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Czech Republic</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Democratic Republic of the Congo</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Denmark</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Djibouti</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Dominica</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Dominican Republic</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ecuador</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Egypt</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>El Salvador</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Equatorial Guinea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Eritrea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Estonia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Eswatini</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ethiopia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Europa Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Falkland Islands (Islas Malvinas)</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Faroe Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Fiji</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Finland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>France</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>French Guiana</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>French Polynesia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>French Southern and Antarctic Lands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Gabon</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Gambia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Gaza Strip</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Georgia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Germany</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ghana</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Gibraltar</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Glorioso Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Greece</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Greenland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Grenada</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guadeloupe</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guam</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guatemala</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guernsey</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guinea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guinea-Bissau</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Guyana</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Haiti</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Heard Island and McDonald Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Honduras</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Hong Kong</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Howland Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Hungary</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Iceland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>India</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Indian Ocean</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Indonesia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Iran</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Iraq</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ireland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Isle of Man</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Israel</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Italy</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Jamaica</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Jan Mayen</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Japan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Jarvis Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Jersey</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Johnston Atoll</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Jordan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Juan de Nova Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kazakhstan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kenya</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kerguelen Archipelago</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kingman Reef</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kiribati</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kosovo</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kuwait</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Kyrgyzstan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Laos</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Latvia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Lebanon</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Lesotho</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Liberia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Libya</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Liechtenstein</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Line Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Lithuania</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Luxembourg</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Macau</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Madagascar</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Malawi</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Malaysia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Maldives</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mali</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Malta</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Marshall Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Martinique</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mauritania</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mauritius</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mayotte</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mediterranean Sea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mexico</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Micronesia, Federated States of</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Midway Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Moldova</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Monaco</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mongolia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Montenegro</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Montserrat</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Morocco</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Mozambique</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Myanmar</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Namibia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Nauru</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Navassa Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Nepal</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Netherlands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>New Caledonia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>New Zealand</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Nicaragua</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Niger</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Nigeria</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Niue</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Norfolk Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>North Korea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>North Macedonia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>North Sea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Northern Mariana Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Norway</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Oman</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Pacific Ocean</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Pakistan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Palau</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Palmyra Atoll</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Panama</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Papua New Guinea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Paracel Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Paraguay</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Peru</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Philippines</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Pitcairn Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Poland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Portugal</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Puerto Rico</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Qatar</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Republic of the Congo</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Reunion</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Romania</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ross Sea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Russia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Rwanda</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Barthelemy</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Helena</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Kitts and Nevis</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Lucia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Pierre and Miquelon</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Vincent and the Grenadines</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Samoa</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>San Marino</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saint Martin</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sao Tome and Principe</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Saudi Arabia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Senegal</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Serbia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Seychelles</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sierra Leone</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Singapore</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sint Maarten</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Slovakia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Slovenia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Solomon Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Somalia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>South Africa</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>South Georgia and the South Sandwich Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>South Korea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>South Sudan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Southern Ocean</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Spain</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Spratly Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sri Lanka</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>State of Palestine</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sudan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Suriname</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Svalbard</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Sweden</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Switzerland</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Syria</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Taiwan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tajikistan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tanzania</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tasman Sea</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Thailand</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Timor-Leste</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Togo</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tokelau</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tonga</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Trinidad and Tobago</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tromelin Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tunisia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Turkey</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Turkmenistan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Turks and Caicos Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Tuvalu</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>USA</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Uganda</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Ukraine</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>United Arab Emirates</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>United Kingdom</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Uruguay</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Uzbekistan</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Vanuatu</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Venezuela</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Viet Nam</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Wake Island</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Virgin Islands</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Wallis and Futuna</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>West Bank</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Western Sahara</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Yemen</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Zambia</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>Zimbabwe</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: control sample</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: data agreement established pre-2023</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: endangered species</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: human-identifiable</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: lab stock</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: sample group</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: synthetic construct</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>missing: third party data</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>not applicable</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>not collected</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>not provided</VALUE>
+                            </TEXT_VALUE>
+                            <TEXT_VALUE>
+                                <VALUE>restricted access</VALUE>
+                            </TEXT_VALUE>
+                        </TEXT_CHOICE_FIELD>
+                    </FIELD_TYPE>
+                    <MANDATORY>mandatory</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>host description</NAME>
+                <FIELD>
+                    <LABEL>lab_host</LABEL>
+                    <NAME>lab_host</NAME>
+                    <DESCRIPTION>scientific name of the laboratory host used to propagate the source organism from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>host scientific name</LABEL>
+                    <NAME>host_scientific_name</NAME>
+                    <DESCRIPTION>Scientific name of the natural (as opposed to laboratory) host to the organism from which sample was obtained.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Pointer to physical material</NAME>
+                <FIELD>
+                    <LABEL>bio_material</LABEL>
+                    <NAME>bio_material</NAME>
+                    <DESCRIPTION>Unique identifier that references the biological material from which the sample was obtained and that ideally exists in a curated collection (e.g. stock centres, seed banks, DNA banks). The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>culture_collection</LABEL>
+                    <NAME>culture_collection</NAME>
+                    <DESCRIPTION>Unique identifier that references the culture (e.g. live microbial and viral cultures and cell lines) from which the sample has been obtained and that have been deposited in curated culture collections. The ID needs to provide an institution code and the culture id, with optional collection code, in the following structure: (-institution_code:(collection_code):voucher_id. Please note institution codes (and optional collection codes) are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>specimen_voucher</LABEL>
+                    <NAME>specimen_voucher</NAME>
+                    <DESCRIPTION>Unique identifier that references the physical specimen that remains after the sequence has been obtained and that ideally exists in a curated collection. The ID should have the following structure: name of the institution (institution code) followed by the collection code (if available) and the voucher id (institution_code:collection_code:voucher_id). Please note institution codes and collection codes are taken from a controlled vocabulary maintained by the INSDC: https://ftp.ncbi.nih.gov/pub/taxonomy/biocollections/</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+            <FIELD_GROUP restrictionType="Any number or none of the fields">
+                <NAME>Infraspecies information</NAME>
+                <FIELD>
+                    <LABEL>cultivar</LABEL>
+                    <NAME>cultivar</NAME>
+                    <DESCRIPTION>cultivar (cultivated variety) of plant from which sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>ecotype</LABEL>
+                    <NAME>ecotype</NAME>
+                    <DESCRIPTION>a population within a given species displaying genetically based, phenotypic traits that reflect adaptation to a local habitat.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>isolate</LABEL>
+                    <NAME>isolate</NAME>
+                    <DESCRIPTION>individual isolate from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>sub_species</LABEL>
+                    <NAME>sub_species</NAME>
+                    <DESCRIPTION>name of sub-species of organism from which sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>variety</LABEL>
+                    <NAME>variety</NAME>
+                    <DESCRIPTION>variety (= varietas, a formal Linnaean rank) of organism from which sample was derived.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>sub_strain</LABEL>
+                    <NAME>sub_strain</NAME>
+                    <DESCRIPTION>name or identifier of a genetically or otherwise modified strain from which sample was obtained, derived from a parental strain (which should be annotated in the strain field; sub_strain from which sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>cell_line</LABEL>
+                    <NAME>cell_line</NAME>
+                    <DESCRIPTION>cell line from which the sample was obtained</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>serotype</LABEL>
+                    <NAME>serotype</NAME>
+                    <DESCRIPTION>serological variety of a species characterized by its antigenic properties</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>serovar</LABEL>
+                    <NAME>serovar</NAME>
+                    <DESCRIPTION>serological variety of a species (usually a prokaryote) characterized by its antigenic properties</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+                <FIELD>
+                    <LABEL>strain</LABEL>
+                    <NAME>strain</NAME>
+                    <DESCRIPTION>Name of the strain from which the sample was obtained.</DESCRIPTION>
+                    <FIELD_TYPE>
+                        <TEXT_FIELD/>
+                    </FIELD_TYPE>
+                    <MANDATORY>optional</MANDATORY>
+                    <MULTIPLICITY>single</MULTIPLICITY>
+                </FIELD>
+            </FIELD_GROUP>
+        </DESCRIPTOR>
+    </CHECKLIST>
+</CHECKLIST_SET>
