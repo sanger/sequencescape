@@ -29,28 +29,10 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # with ID 1 and call `broadcast` on it.
   def process
     klass = json.first.constantize
-    item = process_item(klass)
-    item.broadcast
+    klass.find(json.last).broadcast
   rescue ActiveRecord::RecordNotFound
     # This may indicate that the record has been deleted
     debug "#{payload} not found."
-  end
-
-  # Finds the record for the given class and JSON payload, checks if its asset type is 'library_plate',
-  # and if the class is Well, sets the subject_type to 'library_plate_well'.
-  #
-  # @param klass [Class] The ActiveRecord class to query (e.g., Well, Plate)
-  # @return [ActiveRecord::Base] The found record, possibly modified
-  def process_item(klass)
-    item = klass.find(json.last)
-
-    if item.target_type == 'Receptacle'
-      asset_type = SampleManifestAsset.find_by(asset_id: item.target_id)&.sample_manifest&.asset_type
-
-      item.subject_type = 'library_plate_well' if asset_type.present? && asset_type == 'library_plate' && klass == Well
-    end
-
-    item
   end
 
   def json
