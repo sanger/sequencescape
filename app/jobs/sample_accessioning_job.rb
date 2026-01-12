@@ -160,6 +160,15 @@ SampleAccessioningJob =
     def handle_job_error(error, submission)
       message = user_error_message(error)
       fail_accession_status(message)
-      notify_developers(error, submission)
+
+      notify_on_internal_failures = Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
+      notify_on_external_failures = Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
+
+      case error
+      when Accession::ExternalValidationError
+        notify_developers(error, submission) if notify_on_internal_failures
+      when ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+        notify_developers(error, submission) if notify_on_external_failures
+      end
     end
   end
