@@ -32,8 +32,8 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   # asset to the destination one.
   # before_create :create_transfer_requests
   def create_transfer_requests
+    Rails.logger.info("app/models/transfer/from_plate_to_tube_by_multiplex.rb: create_transfer_requests - calling requests_as_target")
     each_transfer do |source, destination|
-      Rails.logger.info("app/models/transfer/from_plate_to_tube_by_multiplex.rb: create_transfer_requests - calling requests_as_target")
       TransferRequest.create!(
         asset: source,
         target_asset: destination,
