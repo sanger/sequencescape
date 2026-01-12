@@ -128,7 +128,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   attr_accessor :approval, :run_count, :total_price
 
   # Associations
-  has_many_events
+  has_many_events do
+    event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
+  end
   has_many_lab_events
 
   role_relation(:followed_by, 'follower')
@@ -157,7 +159,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :items, -> { distinct }, through: :requests
   has_many :projects, -> { distinct }, through: :orders
   has_many :comments, as: :commentable
-  has_many :events, -> { order(:created_at, :id) }, as: :eventful
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
@@ -385,7 +386,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
             study_metadata: {
               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS
+              data_release_timing: Study::DATA_RELEASE_TIMINGS + [Study::DATA_RELEASE_TIMING_PUBLICATION]
             }
           )
         end
@@ -563,11 +564,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # If an AccessionService::AccessionServiceError occurs for a sample, adds the error message to the study's errors.
   #
   # @return [void]
-  def accession_all_samples
+  def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
 
     samples.find_each do |sample|
-      sample.accession unless sample.accession_number?
+      Accession.accession_sample(sample, event_user) unless sample.accession_number?
     rescue AccessionService::AccessionServiceError => e
       errors.add(:base, e.message)
     end
@@ -590,21 +591,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def ethical_approval_required?
     study_metadata.contains_human_dna == Study::YES && study_metadata.contaminated_human_dna == Study::NO &&
       study_metadata.commercially_available == Study::NO
-  end
-
-  def accession_service
-    case data_release_strategy
-    when 'open'
-      AccessionService::ENAService.new
-    when 'managed'
-      AccessionService::EGAService.new
-    else
-      AccessionService::NoService.new(self)
-    end
-  end
-
-  def send_samples_to_service?
-    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
   end
 
   def validate_ena_required_fields!

@@ -62,6 +62,7 @@ class SamplesController < ApplicationController
     end
 
     respond_to do |format|
+      @sample.current_user = current_user
       if @sample.save
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
@@ -92,6 +93,7 @@ class SamplesController < ApplicationController
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
+    @sample.current_user = current_user
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
@@ -142,8 +144,9 @@ class SamplesController < ApplicationController
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text = @sample.accession_service.accession_sample_xml(@sample)
-      format.xml { render(text: xml_text) }
+      accession_service = AccessionService.select_for_sample(@sample)
+      xml_text = accession_service.accession_sample_xml(@sample)
+      format.xml { render(xml: xml_text) }
     end
   end
 
@@ -157,8 +160,14 @@ class SamplesController < ApplicationController
     end
 
     @sample.validate_ena_required_fields!
-    @sample.accession_service.submit_sample_for_user(@sample, current_user)
-    # TODO: remove this line and replace with reference to @sample.accession
+
+    if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
+      # Synchronously perform accessioning job
+      Accession.accession_sample(@sample, current_user, perform_now: true)
+    else
+      accession_service = AccessionService.select_for_sample(@sample)
+      accession_service.submit_sample_for_user(@sample, current_user)
+    end
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
   rescue ActiveRecord::RecordInvalid => e

@@ -12,13 +12,17 @@
   <%- unless @asset.events.empty? %>
     <h3><%= pluralize @asset.events.size, "event" %></h3>
     <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="events">
-      <tr>
-        <th>Message</th>
-        <th>Content</th>
-        <th>Created at</th>
-        <th>Created by</th>
-      </tr>
-      <%= render partial: "requests/event", collection: @asset.events.sort{ |a,b| a.id <=> b.id  } %>
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Content</th>
+          <th>Created at</th>
+          <th>Created by</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%= render partial: "requests/event", collection: @asset.events.sort{ |a,b| a.id <=> b.id  } %>
+      </tbody>
     </table>
   <%- else %>
     <%= display_user_guide("No events registered") %>
@@ -29,12 +33,15 @@
   <%- if @asset.try(:asset_audits).present? %>
     <h3>Activity Logging</h3>
     <table width="100%" cellspacing="0" cellpadding="4" class="sortable" id="asset_audits">
-      <tr>
-        <th>Message</th>
-        <th>Key</th>
-        <th>Created at</th>
-        <th>Created by</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>Message</th>
+          <th>Key</th>
+          <th>Created at</th>
+          <th>Created by</th>
+        </tr>
+      </thead>
+      <tbody>
       <% @asset.asset_audits.each do |asset_audit| %>
         <tr>
           <td><%= asset_audit.message %></td>
@@ -43,9 +50,10 @@
           <td><%= asset_audit.created_by %></td>
         </tr>
       <% end %>
+      </tbody>
 
     </table>
   <%- else %>
-    <%= display_user_guide("No events registered") %>
+    <%= display_user_guide("No Asset Audits events registered") %>
   <%- end %>
 </div>

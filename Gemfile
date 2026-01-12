@@ -205,6 +205,8 @@ end
 group :test, :cucumber do
   gem 'capybara'
   gem 'database_cleaner-active_record'
+  gem 'database_cleaner-activerecord-seeded_deletion',
+      github: 'ManageIQ/database_cleaner-activerecord-seeded_deletion', branch: 'master'
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
