@@ -37,7 +37,12 @@ require 'database_cleaner-activerecord-seeded_deletion'
 # Configure DatabaseCleaner to use the SeededDeletion strategy
 DatabaseCleaner[:active_record].strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
 
-# Possible values are :truncation and :transaction
-# The :transaction strategy is faster, but might give you threading problems.
-# See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-Cucumber::Rails::Database.javascript_strategy = :transaction # :transaction is currently required for sequencescape tests to pass
+Before do
+  # Do something before each scenario
+  DatabaseCleaner.start  # This captures the current state of the database
+end
+
+After do |scenario|
+  # Do something after each scenario
+  DatabaseCleaner.clean  # This deletes only the records created after DatabaseCleaner.start was called
+end
