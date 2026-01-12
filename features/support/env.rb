@@ -14,13 +14,7 @@ end
 require_relative 'simplecov' # loading order is important
 require 'cucumber/rails'
 require_relative 'parameter_types' # does not seem to be automatically loaded correctly...
-require_relative 'seeded_deletion'
 require 'database_cleaner-active_record'
-
-# Possible values are :truncation and :transaction
-# The :transaction strategy is faster, but might give you threading problems.
-# See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-Cucumber::Rails::Database.javascript_strategy = :transaction
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
@@ -56,28 +50,28 @@ begin
   DatabaseCleaner.strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
 
   Rails.application.load_tasks
-  begin
-    Rails.application.load_seed
-  rescue StandardError
-    puts "Seed data already loaded"
-  end
+  Rails.application.load_seed
 
   UUID_CACHE.merge!(Uuid.all.index_by(&:external_id))
-rescue NameError
-  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
 end
 
-Before do
+
+Around do |scenario, block|
   DatabaseCleaner.start
-end
 
-After() do
-  DatabaseCleaner.clean
-
-  # Restore the UUID seed data that may have been deleted or modified during the scenario (mainly features/api tests)
-  # TODO: This caching should be safe to remove once we get rid of V1 API
-  Uuid.delete_all
-  UUID_CACHE.values.each do |uuid|
-    Uuid.insert(uuid.attributes)
+  begin
+    block.call
+  ensure
+    DatabaseCleaner.clean
+    # Restore cached UUIDs
+    Uuid.delete_all
+    UUID_CACHE.values.each do |uuid|
+      Uuid.insert(uuid.attributes)
+    end
   end
 end
+
+# Possible values are :truncation and :transaction
+# The :transaction strategy is faster, but might give you threading problems.
+# See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
+Cucumber::Rails::Database.javascript_strategy = :transaction

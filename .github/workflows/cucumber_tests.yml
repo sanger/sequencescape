@@ -74,7 +74,7 @@ jobs:
           KNAPSACK_PRO_CI_NODE_TOTAL: ${{ matrix.ci_node_total }}
           KNAPSACK_PRO_CI_NODE_INDEX: ${{ matrix.ci_node_index }}
           DBPORT: ${{ job.services.mysql.ports[3306] }}
-        run: bundle exec cucumber
+        run: bundle exec cucumber --format CucumberGithubFormatter --out /dev/null --format progress
 
       - name: Upload capybara artifacts
         uses: sanger/.github/.github/actions/tests/upload-artifact@master
