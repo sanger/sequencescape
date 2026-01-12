@@ -19,7 +19,7 @@
         <small><%= link_to 'Details', properties_study_path(study) %></small>
       </td>
       <td><span style="display:none"><%= study.created_at %></span><%= study.created_at.to_formatted_s(:sortable) %></td>
-      <td><%= study.samples.size %></td>
+      <td><%= study.study_samples.size %></td>
       <td><%= display_owners(study) %></td>
     </tr>
   <% end -%>
