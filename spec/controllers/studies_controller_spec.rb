@@ -262,8 +262,6 @@ RSpec.describe StudiesController do
             sample_status = Accession::SampleStatus.where(sample:).first
             expect(sample_status).to have_attributes(
               status: 'failed',
-              #  -:message => "Sample must be linked to exactly one study but is linked to studies 'Sample1: Manages' and 'Study1: Open'.",
-              #  +:message => "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.
               message: "Sample '#{sample.name}' cannot be accessioned: " \
                        'Sample must be linked to exactly one study but is linked to studies ' \
                        "'Study#{sample.name.remove('Sample')}: Manages' and 'Study1: Open'."
