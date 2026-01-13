@@ -164,7 +164,7 @@ class SamplesController < ApplicationController
       Accession.accession_sample(@sample, current_user, perform_now: true)
     else
       # TODO: remove the AccessionService and ActiveRecord errors below when this accessioning path is removed
-      @sample.validate_ena_required_fields!
+      @sample.validate_sample_for_accessioning!
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
     end
