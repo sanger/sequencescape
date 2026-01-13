@@ -537,7 +537,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # Validates that the sample and it's study are valid for ALL accessioning services accessioning
-  def validate_ena_required_fields!
+  def validate_sample_for_accessioning!
     accession_service = AccessionService.select_for_sample(self)
     (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e

@@ -593,7 +593,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       study_metadata.commercially_available == Study::NO
   end
 
-  def validate_ena_required_fields!
+  def validate_study_for_accessioning!
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
