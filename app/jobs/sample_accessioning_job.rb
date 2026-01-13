@@ -2,15 +2,12 @@
 
 require 'exception_notification'
 
-# Wrap standard error to explicitly indicate a job failure
-JobFailed = Class.new(StandardError) unless defined?(JobFailed)
-
 # Sends sample data to the ENA or EGA in order to generate an accession number
 # Records the generated accession number on the sample
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user, :synchronous?) do
+  Struct.new(:accessionable, :event_user) do
     # Retrieve the contact user for accessioning submissions
     def self.contact_user
       User.find_by(api_key: configatron.accession_local_key)
@@ -24,12 +21,7 @@ SampleAccessioningJob =
     rescue StandardError => e
       handle_job_error(e, submission)
 
-      # if performing job synchronously, re-raise the error to the caller rather than wrapping it in JobFailed
-      raise e if synchronous?
-
-      # Raising an error to Delayed::Job will signal that the job should be retried at a later time
-      job_failed_message = "#{e.class}: #{e.message}"
-      raise JobFailed, job_failed_message
+      raise e # Raising an error signals that the job should be retried at a later time
     end
 
     def reschedule_at(current_time, _attempts)

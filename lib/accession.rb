@@ -104,9 +104,8 @@ module Accession
 
       if perform_now
         # Perform accessioning job synchronously
-        synchronous = true
         new_synchronous_accession_status(accessionable)
-        SampleAccessioningJob.new(accessionable, event_user, synchronous).perform
+        SampleAccessioningJob.new(accessionable, event_user).perform
       else
         create_and_enqueue_accessioning_job!(accessionable, event_user)
       end
@@ -123,8 +122,7 @@ module Accession
     end
 
     def create_and_enqueue_accessioning_job!(accessionable, event_user)
-      synchronous = false
-      sample_accessioning = SampleAccessioningJob.new(accessionable, event_user, synchronous)
+      sample_accessioning = SampleAccessioningJob.new(accessionable, event_user)
       job = Delayed::Job.enqueue(sample_accessioning, priority: 200)
       log_job_status(job)
     rescue StandardError => e
