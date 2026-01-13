@@ -182,6 +182,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           )
         download.save(test_file_name)
         uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+        Delayed::Worker.delay_jobs = true # Delay the jobs to prevent inline running - and increase the count
         expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
       end
 
