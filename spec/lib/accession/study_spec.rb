@@ -8,7 +8,7 @@ MISSING_METADATA = {
 }.freeze
 STUDY_TYPES = %i[open_study managed_study].freeze
 
-RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
+RSpec.describe Study, :accession, :accessioning_enabled, :un_delay_jobs, type: :model do
   include AccessionV1ClientHelper
 
   let(:current_user) { create(:user) }
@@ -17,7 +17,6 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
   let(:non_accessionable_samples) { create_list(:sample, 3) }
 
   before do
-    Delayed::Worker.delay_jobs = false
     create(:user, api_key: configatron.accession_local_key)
     allow(Accession::Submission).to receive(:client).and_return(
       stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
@@ -25,7 +24,6 @@ RSpec.describe Study, :accession, :accessioning_enabled, type: :model do
   end
 
   after do
-    Delayed::Worker.delay_jobs = true
     SampleManifestExcel.reset!
   end
 

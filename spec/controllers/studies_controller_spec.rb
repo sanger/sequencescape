@@ -102,17 +102,11 @@ RSpec.describe StudiesController do
     let(:study_metadata) { create(:study_metadata) }
     let(:study) { create(:open_study, study_metadata: create(:study_metadata_for_accessioning)) }
 
-    context 'when accessioning is enabled', :accessioning_enabled do
+    context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       before do
         allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
 
         get :accession, params: { id: study.id }
-      end
-
-      around do |example|
-        Delayed::Worker.delay_jobs = false
-        example.run
-        Delayed::Worker.delay_jobs = true
       end
 
       it 'does not raise an error' do
@@ -175,7 +169,7 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#accession_all_samples', :accessioning_enabled do
+  describe '#accession_all_samples', :accessioning_enabled, :un_delay_jobs do
     let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
     let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
 
@@ -186,12 +180,6 @@ RSpec.describe StudiesController do
       )
 
       post :accession_all_samples, params: { id: study.id }
-    end
-
-    around do |example|
-      Delayed::Worker.delay_jobs = false
-      example.run
-      Delayed::Worker.delay_jobs = true
     end
 
     context 'when the accessioning succeeds' do

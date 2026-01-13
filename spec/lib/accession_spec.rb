@@ -9,16 +9,10 @@ RSpec.describe Accession do
       create(:user, api_key: configatron.accession_local_key) # create contact user
     end
 
-    context 'when accessioning is disabled', :accessioning_disabled do
+    context 'when accessioning is disabled', :accessioning_disabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
       let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
-
-      around do |example|
-        Delayed::Worker.delay_jobs = false
-        example.run
-        Delayed::Worker.delay_jobs = true
-      end
 
       it 'raises an exception if the sample cannot be accessioned' do
         expect { described_class.accession_sample(sample, event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
@@ -34,14 +28,8 @@ RSpec.describe Accession do
       end
     end
 
-    context 'when accessioning is enabled', :accessioning_enabled do
+    context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
-
-      around do |example|
-        Delayed::Worker.delay_jobs = false
-        example.run
-        Delayed::Worker.delay_jobs = true
-      end
 
       context 'when sample fails internal validation' do
         let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
