@@ -569,8 +569,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     samples.find_each do |sample|
       Accession.accession_sample(sample, event_user) unless sample.accession_number?
-    rescue AccessionService::AccessionServiceError => e
-      errors.add(:base, e.message)
+      # Add any sample errors to the study errors
+      errors.add(:base, sample.errors.full_messages.join(', ').to_s) if sample.errors.any?
     end
   end
 

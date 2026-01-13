@@ -163,20 +163,24 @@ class SamplesController < ApplicationController
       # Synchronously perform accessioning job
       Accession.accession_sample(@sample, current_user, perform_now: true)
     else
+      # TODO: remove the AccessionService and ActiveRecord errors below when this accessioning path is removed
       @sample.validate_ena_required_fields!
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
     end
 
     flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-  rescue ActiveRecord::RecordInvalid => e
+
+    # Handle errors for both synchronous and asynchronous accessioning
+    # When the feature flag above is removed, the AccessionService and ActiveRecord errors can be removed
+  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-  rescue AccessionService::NumberNotGenerated => e
+  rescue AccessionService::NumberNotGenerated, Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-  rescue AccessionService::AccessionServiceError => e
+  rescue AccessionService::AccessionServiceError, Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
   ensure
     # Redirect back to where we came from if not already redirected

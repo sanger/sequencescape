@@ -62,6 +62,7 @@ module Accession
   # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
   class Error < StandardError; end
   class ExternalValidationError < Error; end
+  class InternalValidationError < Error; end
 
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
@@ -142,5 +143,7 @@ module Accession
 
   def self.accession_sample(sample, event_user, perform_now: false)
     SampleAccessioning.new.perform(sample, event_user, perform_now)
+  rescue Accession::Error => e
+    sample.errors.add(:base, e.message)
   end
 end

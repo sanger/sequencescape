@@ -124,7 +124,7 @@ SampleAccessioningJob =
     # Returns a user-friendly error message based on the error type
     def user_error_message(error)
       case error
-      when Accession::ExternalValidationError, ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+      when Accession::ExternalValidationError, Accession::InternalValidationError
         error.message
       when Faraday::Error
         'A network error occurred during accessioning and no response was received.'
@@ -159,7 +159,7 @@ SampleAccessioningJob =
       case error
       when Accession::ExternalValidationError
         notify_developers(error, submission) if notify_on_internal_failures
-      when ActiveModel::ValidationError, ActiveRecord::RecordInvalid
+      when Accession::InternalValidationError
         notify_developers(error, submission) if notify_on_external_failures
       end
     end

@@ -39,13 +39,19 @@ module Accession
       @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
+    # Validates the sample for accessioning.
+    #
+    # If the sample is valid, the method returns silently.
+    # If the sample is invalid, logs an error message and raisesAccession::InternalValidationError with
+    # details of the validation errors.
+    #
+    # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
     def validate!
-      sample.validate_ena_required_fields!
       return if valid?
 
       error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
-      raise AccessionService::AccessionValidationFailed, error_message
+      raise Accession::InternalValidationError, error_message
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
