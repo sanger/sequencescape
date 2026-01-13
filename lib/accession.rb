@@ -123,13 +123,10 @@ module Accession
     end
 
     def create_and_enqueue_accessioning_job!(accessionable, event_user)
+      # Accessioning jobs are lower priority (higher number) than submissions and reports
       sample_accessioning = SampleAccessioningJob.new(accessionable, event_user)
       job = Delayed::Job.enqueue(sample_accessioning, priority: 200)
       log_job_status(job)
-    rescue StandardError => e
-      ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
-      Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
-      raise
     end
 
     def log_job_status(job)
@@ -143,7 +140,5 @@ module Accession
 
   def self.accession_sample(sample, event_user, perform_now: false)
     SampleAccessioning.new.perform(sample, event_user, perform_now)
-  rescue Accession::Error => e
-    sample.errors.add(:base, e.message)
   end
 end

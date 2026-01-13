@@ -21,7 +21,7 @@ SampleAccessioningJob =
     rescue StandardError => e
       handle_job_error(e, submission)
 
-      raise e # Raising an error signals that the job should be retried at a later time
+      raise # Raising an error signals that the job should be retried at a later time
     end
 
     def reschedule_at(current_time, _attempts)
@@ -136,31 +136,27 @@ SampleAccessioningJob =
     # Log and email developers of the accessioning error
     def notify_developers(error, submission)
       sample_name = submission.sample.sample.name
-      service = submission.service
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
+      data = { message: message, sample_name: sample_name, service_provider: submission.service&.provider.to_s }
 
       Rails.logger.error(message)
-      # Log backtrace for debugging purposes
-      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace
-      ExceptionNotifier.notify_exception(error, data: {
-                                           message: message,
-                                           sample_name: sample_name,
-                                           service_provider: service&.provider.to_s
-                                         })
+      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
+
+      case error
+      when Accession::ExternalValidationError
+        if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
+          ExceptionNotifier.notify_exception(error, data:)
+        end
+      when Accession::InternalValidationError
+        if Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
+          ExceptionNotifier.notify_exception(error, data:)
+        end
+      end
     end
 
     def handle_job_error(error, submission)
       message = user_error_message(error)
       fail_accession_status(message)
-
-      notify_on_internal_failures = Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
-      notify_on_external_failures = Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
-
-      case error
-      when Accession::ExternalValidationError
-        notify_developers(error, submission) if notify_on_internal_failures
-      when Accession::InternalValidationError
-        notify_developers(error, submission) if notify_on_external_failures
-      end
+      notify_developers(error, submission)
     end
   end

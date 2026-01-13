@@ -561,7 +561,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # If the study does not have an accession number, adds an error to the study and returns.
   # Otherwise, iterates through each sample in the study and attempts to accession it,
   # unless the sample already has an accession number.
-  # If an AccessionService::AccessionServiceError occurs for a sample, adds the error message to the study's errors.
+  # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
   #
   # @return [void]
   def accession_all_samples(event_user)
@@ -569,8 +569,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     samples.find_each do |sample|
       Accession.accession_sample(sample, event_user) unless sample.accession_number?
-      # Add any sample errors to the study errors
-      errors.add(:base, sample.errors.full_messages.join(', ').to_s) if sample.errors.any?
+    rescue Accession::Error => e
+      errors.add(:base, e.message)
     end
   end
 

@@ -138,7 +138,7 @@ module Accession
 
     def study_requires_accessioning?
       # Check if study is present and allowed to be accessioned
-      if sample.ena_study&.accession_required? != true # if true, accession; if false, don't
+      if sample.ena_study&.accession_required? != true # if true, accession; if false or nil, don't
         errors.add(:sample, 'is linked to a study that does not require accessioning.')
       end
     end
