@@ -521,11 +521,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
-    Accession.accession_sample(self, event_user)
-    Rails.logger.info("Accessioning passed for sample '#{name}'")
-  rescue AccessionService::AccessionServiceError => e
+    Accession.accession_sample(self, event_user, perform_now: true)
+    Rails.logger.info("Accessioning succeeded for sample '#{name}'")
+
     # Save error messages for later feedback to the user in a flash message
-    errors.add(:base, e.message)
+  rescue Accession::Error => e
+    message = "Accessioning failure: #{e.message}"
+    errors.add(:base, message)
+  rescue Faraday::Error => e
+    message = "Accessioning failed with a network error: #{e.message}"
+    errors.add(:base, message)
   end
 
   def handle_update_event(user)

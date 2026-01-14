@@ -104,15 +104,13 @@ class SamplesController < ApplicationController
       cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
     end
 
-    # Show warnings from accessioning
-    flash.now[:warning] = @sample.errors if @sample.errors.present?
-
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # show warnings from accessioning
       redirect_to sample_path(@sample)
     else
       flash[:error] = 'Failed to update attributes for sample'
-      render action: 'edit', id: @sample.id
+      redirect_to edit_sample_path(@sample)
     end
   end
 

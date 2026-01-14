@@ -123,6 +123,11 @@ h3.card-header-custom {
   }
 }
 
+// Remove margins between stacked alerts, but keep bottom margin on the last one
+.alert:not(:last-child) {
+  @extend .mb-0;
+}
+
 .alert-error,
 .alert-alert {
   @extend .row;
