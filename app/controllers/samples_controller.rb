@@ -171,7 +171,7 @@ class SamplesController < ApplicationController
 
     # Handle errors for both synchronous and asynchronous accessioning
     # When the feature flag above is removed, the AccessionService and ActiveRecord errors can be removed
-  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError => e
+  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e

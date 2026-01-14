@@ -121,18 +121,6 @@ SampleAccessioningJob =
       Accession::SampleStatus.create_for_sample(accessionable.sample, 'aborted')
     end
 
-    # Returns a user-friendly error message based on the error type
-    def user_error_message(error)
-      case error
-      when Accession::ExternalValidationError, Accession::InternalValidationError
-        error.message
-      when Faraday::Error
-        'A network error occurred during accessioning and no response was received.'
-      else
-        'An internal error occurred during accessioning.'
-      end
-    end
-
     # Log and email developers of the accessioning error
     def notify_developers(error, submission)
       sample_name = submission.sample.sample.name
@@ -155,7 +143,7 @@ SampleAccessioningJob =
     end
 
     def handle_job_error(error, submission)
-      message = user_error_message(error)
+      message = Accession.user_error_message(error)
       fail_accession_status(message)
       notify_developers(error, submission)
     end

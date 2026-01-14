@@ -525,11 +525,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     Rails.logger.info("Accessioning succeeded for sample '#{name}'")
 
     # Save error messages for later feedback to the user in a flash message
-  rescue Accession::Error => e
-    message = "Accessioning failure: #{e.message}"
-    errors.add(:base, message)
-  rescue Faraday::Error => e
-    message = "Accessioning failed with a network error: #{e.message}"
+  rescue Accession::InternalValidationError
+    # Validation errors have already been added to the sample in Accession::Sample.validate!
+  rescue Accession::Error, Faraday::Error => e
+    message = Accession.user_error_message(e)
     errors.add(:base, message)
   end
 

@@ -88,6 +88,18 @@ module Accession
     @configuration = Configuration.new
   end
 
+  # Returns a user-friendly error message based on the error type
+  def self.user_error_message(error)
+    case error
+    when Accession::ExternalValidationError, Accession::InternalValidationError
+      error.message
+    when Faraday::Error
+      'A network error occurred during accessioning and no response was received.'
+    else
+      'An internal error occurred during accessioning.'
+    end
+  end
+
   # --- Methods called by external controllers ---
 
   # Wrapper for sample accessioning with error handling and job management.
