@@ -182,6 +182,8 @@ class SamplesController < ApplicationController
     flash[:warning] = "No accession number was generated: #{e.message}"
   rescue AccessionService::AccessionServiceError, Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
+  rescue Faraday::Error => e
+    flash[:error] = "Accessioning failed with a network error: #{e.message}"
   ensure
     # Redirect back to where we came from if not already redirected
     redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
