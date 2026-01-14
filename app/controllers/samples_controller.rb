@@ -148,7 +148,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  def accession # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
@@ -156,6 +156,8 @@ class SamplesController < ApplicationController
     unless configatron.accession_samples
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
+
+    accession_action = @sample.accession_number? ? :update : :create
 
     if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
       # Synchronously perform accessioning job
@@ -167,7 +169,11 @@ class SamplesController < ApplicationController
       accession_service.submit_sample_for_user(@sample, current_user)
     end
 
-    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
+    if accession_action == :create
+      flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
+    elsif accession_action == :update
+      flash[:notice] = 'Accessioned metadata updated'
+    end
 
     # Handle errors for both synchronous and asynchronous accessioning
     # When the feature flag above is removed, the AccessionService and ActiveRecord errors can be removed
