@@ -129,10 +129,6 @@ module Accession
       Accession::Sample.new(Accession.configuration.tags, sample)
     end
 
-    def new_synchronous_accession_status(accessionable)
-      Accession::SampleStatus.create_for_sample(accessionable.sample, 'processing')
-    end
-
     # Perform accessioning job synchronously
     def inline_accession_job!(job)
       job.enqueue(nil) # create status
