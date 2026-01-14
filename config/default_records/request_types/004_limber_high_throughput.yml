@@ -20,9 +20,6 @@ limber_wgs:
   library_types:
     - Standard
     - Chromium single cell CNV
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_isc:
   <<: *limber_htp_library
   name: Limber ISC
@@ -33,9 +30,6 @@ limber_isc:
     - Agilent Pulldown
     - Twist Pulldown
     - BGE
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_reisc:
   <<: *limber_htp_library
   name: Limber ReISC
@@ -54,9 +48,6 @@ limber_reisc:
     - BGE
     - RVI-BCL
     - RVIG-BCL
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_pcr_free:
   <<: *limber_htp_library
   name: Limber PCR Free
@@ -68,9 +59,6 @@ limber_pcr_free:
     - DAFT-seq
     - PCR Free 384
     - BGE
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_lcmb:
   <<: *limber_htp_library
   name: Limber LCMB
@@ -78,9 +66,6 @@ limber_lcmb:
     - LCMB Cherrypick
   library_types:
     - LCMB
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_rnaa:
   <<: *limber_htp_library
   name: Limber RNAA
@@ -88,9 +73,6 @@ limber_rnaa:
     - LBR Cherrypick
   library_types:
     - RNA PolyA
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_scrna:
   <<: *limber_htp_library
   name: Limber scRNA
@@ -100,9 +82,6 @@ limber_scrna:
   library_types:
     - scRNA
     - GnT scRNA
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_gbs:
   <<: *limber_htp_library
   name: Limber GBS
@@ -115,9 +94,6 @@ limber_gbs:
   library_types:
     - GBS
     - GnT MDA
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_rnaag:
   <<: *limber_htp_library
   name: Limber RNAAG
@@ -125,9 +101,6 @@ limber_rnaag:
     - LBR Cherrypick
   library_types:
     - RNA Poly A Globin
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_scrna-384:
   <<: *limber_htp_library
   name: Limber scRNA-384
@@ -136,9 +109,6 @@ limber_scrna-384:
   library_types:
     - scRNA 384
     - GnT scRNA
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_rnar:
   <<: *limber_htp_library
   name: Limber RNAR
@@ -146,9 +116,6 @@ limber_rnar:
     - LBR Cherrypick
   library_types:
     - RNA Ribo
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_rnarg:
   <<: *limber_htp_library
   name: Limber RNARG
@@ -156,9 +123,6 @@ limber_rnarg:
     - LBR Cherrypick
   library_types:
     - RNA Ribo Globin
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_gnt_picoplex:
   <<: *limber_htp_library
   name: Limber GnT Picoplex
@@ -166,9 +130,6 @@ limber_gnt_picoplex:
     - GnT Stock
   library_types:
     - GnT Picoplex
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_gnt_mda:
   <<: *limber_htp_library
   name: Limber GnT MDA
@@ -176,9 +137,6 @@ limber_gnt_mda:
     - GnT Stock
   library_types:
     - GnT MDA
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_heron:
   <<: *limber_htp_library
   name: Limber Heron
@@ -193,9 +151,6 @@ limber_heron:
     - PCR with TruSeq tails amplicon 384
     - Sanger_artic_v3_96
     - Sanger_artic_v4_96
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_heron_lthr:
   <<: *limber_htp_library
   name: Limber Heron LTHR
@@ -209,9 +164,6 @@ limber_heron_lthr:
     - Sanger_tailed_artic_v1_384
     - PCR amplicon tailed adapters 96
     - PCR amplicon tailed adapters 384
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_heron_lthr_v2:
   <<: *limber_htp_library
   name: Limber Heron LTHR V2
@@ -227,9 +179,6 @@ limber_heron_lthr_v2:
     - Sanger_tailed_artic_v1_384
     - PCR amplicon tailed adapters 96
     - PCR amplicon tailed adapters 384
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_pwgs-384:
   <<: *limber_htp_library
   name: Limber pWGS-384
@@ -237,9 +186,6 @@ limber_pwgs-384:
     - LB Cherrypick
   library_types:
     - pWGS-384
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_duplex-seq:
   <<: *limber_htp_library
   name: Limber Duplex-Seq
@@ -249,9 +195,6 @@ limber_duplex-seq:
   library_types:
     - Duplex-Seq
     - Targeted Nanoseq
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_targeted_nanoseq:
   <<: *limber_htp_library
   name: Limber Targeted NanoSeq
@@ -260,9 +203,6 @@ limber_targeted_nanoseq:
     - LTN Cherrypick
   library_types:
     - Targeted Nanoseq
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_rnaf:
   <<: *limber_htp_library
   name: Limber RNAF
@@ -270,6 +210,3 @@ limber_rnaf:
     - LBR Cherrypick
   library_types:
     - RNA FFPE
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
