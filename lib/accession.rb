@@ -102,13 +102,12 @@ module Accession
       end
 
       accessionable = build_accessionable(sample)
+      job = SampleAccessioningJob.new(accessionable, event_user)
 
       if perform_now
-        # Perform accessioning job synchronously
-        new_synchronous_accession_status(accessionable)
-        SampleAccessioningJob.new(accessionable, event_user).perform
+        inline_accession_job!(job)
       else
-        create_and_enqueue_accessioning_job!(accessionable, event_user)
+        enqueue_accessioning_job!(job)
       end
     end
 
@@ -122,10 +121,22 @@ module Accession
       Accession::SampleStatus.create_for_sample(accessionable.sample, 'processing')
     end
 
-    def create_and_enqueue_accessioning_job!(accessionable, event_user)
+    # Perform accessioning job synchronously
+    def inline_accession_job!(job)
+      job.enqueue(nil) # create status
+      job.before(nil) # set status to processing
+      begin
+        job.perform # this runs the job immediately
+        job.success(nil) # remove statuses
+      rescue StandardError
+        job.failure(nil) # set last status to aborted
+        raise
+      end
+    end
+
+    def enqueue_accessioning_job!(sample_accessioning_job)
       # Accessioning jobs are lower priority (higher number) than submissions and reports
-      sample_accessioning = SampleAccessioningJob.new(accessionable, event_user)
-      job = Delayed::Job.enqueue(sample_accessioning, priority: 200)
+      job = Delayed::Job.enqueue(sample_accessioning_job, priority: 200)
       log_job_status(job)
     end
 
