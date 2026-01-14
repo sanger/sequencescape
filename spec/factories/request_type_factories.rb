@@ -169,6 +169,26 @@ FactoryBot.define do
       end
     end
 
+    factory :nova_seq_6000_p_e_sequencing_request_type do
+      request_class { NovaSeq6000PESequencingRequest }
+      transient do
+        read_lengths { [50, 75, 100, 150, 250] }
+        default { 50 }
+      end
+      asset_type { 'LibraryTube' }
+
+      after(:build) do |request_type, ev|
+        srv =
+          create(
+            :nova_seq_6000_p_e_sequencing_request_type_validator,
+            request_type: request_type,
+            options: ev.read_lengths,
+            default: ev.default
+          )
+        request_type.request_type_validators << srv
+      end
+    end
+
     factory :multiplexed_library_creation_request_type do
       request_class { MultiplexedLibraryCreationRequest }
       asset_type { 'SampleTube' }
@@ -220,6 +240,11 @@ FactoryBot.define do
     factory :sequencing_request_type_validator do
       default { 54 }
       request_type factory: %i[sequencing_request_type]
+    end
+
+    factory :nova_seq_6000_p_e_sequencing_request_type_validator do
+      default { 50 }
+      request_type factory: %i[nova_seq_6000_p_e_sequencing_request_type]
     end
 
     factory :library_request_type_validator, class: 'RequestType::Validator' do
