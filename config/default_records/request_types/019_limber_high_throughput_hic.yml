@@ -17,9 +17,6 @@ limber_hic:
     - Hi-C - Dovetail
     - Hi-C - OmniC
     - Hi-C - Qiagen
-    - 10x RNA Flex
-    - Parse Evercode
-    - 16S rRNA
 limber_multiplexing_hic:
   name: Limber Multiplexing
   asset_type: Well
