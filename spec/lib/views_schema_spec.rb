@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'ViewsSchema' do
+RSpec.describe ViewsSchema do
   # Contracted views are those we've agreed to maintain
   # We'll track all views in these tests, but this'll
   # pick up any that get 'dropped' by accident
@@ -22,7 +22,32 @@ RSpec.describe 'ViewsSchema' do
     view_wells
   ]
 
-  (ViewsSchema.all_views + contracted_views).uniq.each do |view|
+  describe 'Views' do
+    it 'lists views in the database' do
+      views = ActiveRecord::Base.connection.views
+      puts '================='
+      puts 'Database views:'
+      puts '-----------------'
+      puts views
+      puts '================='
+    end
+
+    it 'lists tables in the database' do
+      tables = ActiveRecord::Base.connection.tables
+      puts '================='
+      puts 'Database tables:'
+      puts '-----------------'
+      puts tables
+      puts '================='
+    end
+
+    it 'all views exist in the database' do
+      views = ActiveRecord::Base.connection.views
+      expect(views).to include(*described_class.all_views)
+    end
+  end
+
+  (described_class.all_views + contracted_views).uniq.each do |view|
     describe "View #{view}" do
       it 'exists in the database' do
         expect { ActiveRecord::Base.connection.execute("SELECT * FROM #{view};") }.not_to raise_error
