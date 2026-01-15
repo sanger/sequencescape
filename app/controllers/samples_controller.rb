@@ -106,10 +106,11 @@ class SamplesController < ApplicationController
 
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
-      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # show warnings from accessioning
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # also shows warnings from accessioning
       redirect_to sample_path(@sample)
     else
       flash[:error] = 'Failed to update attributes for sample'
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present?
       redirect_to edit_sample_path(@sample)
     end
   end
