@@ -10,6 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+puts '================='
+puts 'Creating tables...'
+puts '================='
+
 ActiveRecord::Schema[7.2].define(version: 2025_11_20_204342) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false

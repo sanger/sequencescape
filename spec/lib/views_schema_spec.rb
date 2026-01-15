@@ -43,7 +43,7 @@ RSpec.describe ViewsSchema do
 
     it 'all views exist in the database' do
       views = ActiveRecord::Base.connection.views
-      expect(views).to include(*described_class.all_views)
+      expect(views).to include(*described_class.all_views + contracted_views)
     end
   end
 
