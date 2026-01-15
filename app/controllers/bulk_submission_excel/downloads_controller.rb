@@ -64,7 +64,7 @@ class BulkSubmissionExcel::DownloadsController < ApplicationController
 
   # Extract the submission parameters from the request
   def submission_parameters
-    params.require(:bulk_submission_excel_download).permit(:asset_barcodes)
+    params.require(:bulk_submission_excel_download).permit(:asset_barcodes, :submission_template_id)
     params[:bulk_submission_excel_download]
   end
 
