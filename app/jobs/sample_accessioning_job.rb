@@ -19,7 +19,7 @@ SampleAccessioningJob =
     def perform
       contact_user = self.class.contact_user
       submission = Accession::Submission.new(contact_user, accessionable)
-      submission.submit_and_update_accession_number(event_user)
+      submission.submit_accession(event_user)
     rescue StandardError => e
       handle_job_error(e, submission)
 
@@ -144,6 +144,8 @@ SampleAccessioningJob =
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
 
       Rails.logger.error(message)
+      # Log backtrace for debugging purposes
+      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace
       ExceptionNotifier.notify_exception(error, data: {
                                            message: message,
                                            sample_name: sample_name,

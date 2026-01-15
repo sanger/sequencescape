@@ -150,7 +150,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  def accession # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
@@ -161,6 +161,8 @@ class SamplesController < ApplicationController
 
     @sample.validate_ena_required_fields!
 
+    accession_action = @sample.accession_number? ? :update : :create
+
     if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
       # Synchronously perform accessioning job
       Accession.accession_sample(@sample, current_user, perform_now: true)
@@ -169,7 +171,11 @@ class SamplesController < ApplicationController
       accession_service.submit_sample_for_user(@sample, current_user)
     end
 
-    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
+    if accession_action == :create
+      flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
+    elsif accession_action == :update
+      flash[:notice] = 'Accessioned metadata updated'
+    end
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample

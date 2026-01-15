@@ -24,7 +24,7 @@ module Accession
       HTTPClients::AccessioningV1Client.new
     end
 
-    def build_xml(xml) # rubocop:disable Metrics/AbcSize
+    def build_xml(xml)
       xml.SUBMISSION(
         XML_NAMESPACE,
         center_name: CENTER_NAME,
@@ -33,22 +33,29 @@ module Accession
         submission_date: date
       ) do
         xml.CONTACTS { xml.CONTACT(contact.to_h) }
-
-        xml.ACTIONS do
-          xml.ACTION { xml.ADD(source: sample.filename, schema: sample.schema_type) }
-          xml.ACTION { xml.tag!(service.visibility) }
-        end
+        actions(xml)
       end
     end
 
-    def submit_and_update_accession_number(event_user)
+    def submit_accession(event_user) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
+      # Rubocop metrics disabled as refactoring this method would reduce clarity
       raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
 
       client = self.class.client
       login = service.login
       files = compile_files
-      accession_number = client.submit_and_fetch_accession_number(login, files)
-      sample.update_accession_number(accession_number, event_user)
+
+      if accessioned?
+        client.submit_and_fetch_accession_number(login, files)
+        sample.sample.events.updated_accessioned_metadata!('sample', event_user)
+        Rails.logger.info("Sample '#{sample.sample.name}' " \
+                          "with alias '#{sample.ebi_alias}' " \
+                          "and accession number '#{sample.ebi_accession_number}' " \
+                          "has had it's accession metadata successfully updated.")
+      else
+        accession_number = client.submit_and_fetch_accession_number(login, files)
+        sample.update_accession_number(accession_number, event_user)
+      end
     ensure
       # Ensure all opened files are closed
       files&.each_value(&:close!)
@@ -79,6 +86,25 @@ module Accession
       service_provider = sample.service.provider.to_sym
       unless sample.valid?([:accession, service_provider]) # Check against accessioning contexts
         sample.errors.each { |error| errors.add error.attribute, error.message }
+      end
+    end
+
+    # Returns true if the provided sample has an accession number, false otherwise.
+    def accession_number?
+      # The first sample is an Accession::Sample, the second is the standard model Sample.
+      sample.sample.accession_number?
+    end
+
+    def actions(xml)
+      xml.ACTIONS do
+        xml.ACTION do
+          if accession_number?
+            xml.MODIFY(source: sample.filename)
+          else
+            xml.ADD(source: sample.filename, schema: sample.schema_type)
+          end
+        end
+        xml.ACTION { xml.tag!(service.visibility) }
       end
     end
   end

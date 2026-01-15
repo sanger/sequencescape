@@ -326,6 +326,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
     event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
+    event_constructor(:updated_accessioned_metadata!, Event::AccessioningEvent, :updated_accessioned_metadata!)
   end
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
