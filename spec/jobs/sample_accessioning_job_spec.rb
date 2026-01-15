@@ -6,7 +6,6 @@ require 'rails_helper'
 RSpec.describe SampleAccessioningJob, type: :job do
   include AccessionV1ClientHelper
 
-  let(:contact_user) { create(:user, api_key: configatron.accession_local_key) }
   let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
   let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
   let(:accessionable) { create(:accession_sample, sample:) }
@@ -21,10 +20,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
   end
 
   describe '#perform' do
-    before do
-      # An accession sample status is created when the job is queued
-      allow(described_class).to receive(:contact_user).and_return(contact_user)
-    end
+    # An accession sample status is created when the job is queued
 
     context 'when the submission fails validation' do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }

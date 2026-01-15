@@ -112,7 +112,6 @@ RSpec.describe SamplesController do
 
   describe '#accession' do
     before do
-      create(:user, api_key: configatron.accession_local_key) # create contact user
       allow(Accession::Submission).to receive(:client).and_return(
         stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
       )
