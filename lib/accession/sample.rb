@@ -39,6 +39,25 @@ module Accession
       @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
     end
 
+    # Validates the sample for accessioning.
+    #
+    # If the sample is valid, the method returns silently.
+    # If the sample is invalid, logs an error message and raisesAccession::InternalValidationError with
+    # details of the validation errors.
+    #
+    # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
+    def validate!
+      return if valid?
+
+      # Add errors from the accession sample to the underlying sample for user feedback
+      @sample.errors.add(:base, errors.full_messages.join(', '))
+
+      # Add sample context to the error message for logging
+      error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
+      Rails.logger.error(error_message)
+      raise Accession::InternalValidationError, error_message
+    end
+
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       tag_groups = tags.by_group
 
@@ -105,7 +124,13 @@ module Accession
     end
 
     def check_studies
-      return if exactly_one_study?
+      exactly_one_study?
+      study_requires_accessioning?
+    end
+
+    def exactly_one_study?
+      # Check that sample is linked to exactly one study
+      return true if studies.length == 1
 
       if studies.empty?
         errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
@@ -115,8 +140,11 @@ module Accession
       end
     end
 
-    def exactly_one_study?
-      studies.length == 1
+    def study_requires_accessioning?
+      # Check if study is present and allowed to be accessioned
+      if sample.ena_study&.accession_required? != true # if true, accession; if false or nil, don't
+        errors.add(:sample, 'is linked to a study that does not require accessioning.')
+      end
     end
   end
 end

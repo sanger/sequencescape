@@ -104,15 +104,14 @@ class SamplesController < ApplicationController
       cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
     end
 
-    # Show warnings from accessioning
-    flash.now[:warning] = @sample.errors if @sample.errors.present?
-
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # also shows warnings from accessioning
       redirect_to sample_path(@sample)
     else
       flash[:error] = 'Failed to update attributes for sample'
-      render action: 'edit', id: @sample.id
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present?
+      redirect_to edit_sample_path(@sample)
     end
   end
 
@@ -159,14 +158,15 @@ class SamplesController < ApplicationController
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
 
-    @sample.validate_ena_required_fields!
-
     accession_action = @sample.accession_number? ? :update : :create
 
     if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
       # Synchronously perform accessioning job
       Accession.accession_sample(@sample, current_user, perform_now: true)
     else
+      # TODO: when removing the y25_286_accession_individual_samples_with_sample_accessioning_job feature flag
+      #       and this accessioning path also remove the AccessionService and ActiveRecord errors below
+      @sample.validate_sample_for_accessioning!
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
     end
@@ -176,15 +176,22 @@ class SamplesController < ApplicationController
     elsif accession_action == :update
       flash[:notice] = 'Accessioned metadata updated'
     end
-  rescue ActiveRecord::RecordInvalid => e
+
+    # Handle errors for both synchronous and asynchronous accessioning
+    # When the feature flag above (y25_286_accession_individual_samples_with_sample_accessioning_job) is removed,
+    # the AccessionService and ActiveRecord errors should also be removed. These errors are only raised in the old
+    # synchronous accessioning code path and are not required for the updated SampleAccessioningJob path.
+  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-  rescue AccessionService::NumberNotGenerated => e
+  rescue AccessionService::NumberNotGenerated, Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-  rescue AccessionService::AccessionServiceError => e
+  rescue AccessionService::AccessionServiceError, Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
+  rescue Faraday::Error => e
+    flash[:error] = "Accessioning failed with a network error: #{e.message}"
   ensure
     # Redirect back to where we came from if not already redirected
     redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?

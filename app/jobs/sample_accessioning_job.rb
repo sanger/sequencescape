@@ -2,9 +2,6 @@
 
 require 'exception_notification'
 
-# Wrap standard error to explicitly indicate a job failure
-JobFailed = Class.new(StandardError) unless defined?(JobFailed)
-
 # Sends sample data to the ENA or EGA in order to generate an accession number
 # Records the generated accession number on the sample
 # Records the statuses and response from the failed attempts in the accession statuses
@@ -19,13 +16,12 @@ SampleAccessioningJob =
     def perform
       contact_user = self.class.contact_user
       submission = Accession::Submission.new(contact_user, accessionable)
+      accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
     rescue StandardError => e
       handle_job_error(e, submission)
 
-      # Raising an error to Delayed::Job will signal that the job should be retried at a later time
-      job_failed_message = "#{e.class}: #{e.message}"
-      raise JobFailed, job_failed_message
+      raise # Raising an error signals that the job should be retried at a later time
     end
 
     def reschedule_at(current_time, _attempts)
@@ -125,36 +121,29 @@ SampleAccessioningJob =
       Accession::SampleStatus.create_for_sample(accessionable.sample, 'aborted')
     end
 
-    # Returns a user-friendly error message based on the error type
-    def user_error_message(error)
-      case error
-      when Accession::ExternalValidationError, ActiveModel::ValidationError
-        error.message
-      when Faraday::Error
-        'A network error occurred during accessioning and no response was received.'
-      else
-        'An internal error occurred during accessioning.'
-      end
-    end
-
     # Log and email developers of the accessioning error
     def notify_developers(error, submission)
       sample_name = submission.sample.sample.name
-      service = submission.service
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
+      data = { message: message, sample_name: sample_name, service_provider: submission.service&.provider.to_s }
 
       Rails.logger.error(message)
-      # Log backtrace for debugging purposes
-      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace
-      ExceptionNotifier.notify_exception(error, data: {
-                                           message: message,
-                                           sample_name: sample_name,
-                                           service_provider: service&.provider.to_s
-                                         })
+      Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
+
+      case error
+      when Accession::ExternalValidationError
+        if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
+          ExceptionNotifier.notify_exception(error, data:)
+        end
+      when Accession::InternalValidationError
+        if Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
+          ExceptionNotifier.notify_exception(error, data:)
+        end
+      end
     end
 
     def handle_job_error(error, submission)
-      message = user_error_message(error)
+      message = Accession.user_error_message(error)
       fail_accession_status(message)
       notify_developers(error, submission)
     end

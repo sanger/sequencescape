@@ -521,11 +521,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
-    Accession.accession_sample(self, event_user)
-    Rails.logger.info("Accessioning passed for sample '#{name}'")
-  rescue AccessionService::AccessionServiceError => e
+    Accession.accession_sample(self, event_user, perform_now: true)
+    Rails.logger.info("Accessioning succeeded for sample '#{name}'")
+
     # Save error messages for later feedback to the user in a flash message
-    errors.add(:base, e.message)
+  rescue Accession::InternalValidationError
+    # validation errors have already been added to the sample in Accession::Sample.validate!
+  rescue AccessionService::AccessioningDisabledError, Accession::Error, Faraday::Error => e
+    message = Accession.user_error_message(e)
+    errors.add(:base, message)
   end
 
   def handle_update_event(user)
@@ -536,7 +540,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     studies.first
   end
 
-  def validate_ena_required_fields!
+  # Validates that the sample and it's study are valid for ALL accessioning services accessioning
+  def validate_sample_for_accessioning!
     accession_service = AccessionService.select_for_sample(self)
     (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e

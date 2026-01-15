@@ -39,7 +39,10 @@ module Accession
 
     def submit_accession(event_user) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
       # Rubocop metrics disabled as refactoring this method would reduce clarity
-      raise StandardError, "Accessionable submission is invalid: #{errors.full_messages.join(', ')}" unless valid?
+      unless valid?
+        raise Accession::InternalValidationError,
+              "Accessionable submission is invalid: #{errors.full_messages.join(', ')}"
+      end
 
       client = self.class.client
       login = service.login
