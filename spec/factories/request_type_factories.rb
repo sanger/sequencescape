@@ -243,7 +243,7 @@ FactoryBot.define do
     end
 
     factory :nova_seq_6000_p_e_sequencing_request_type_validator do
-      default { 50 }
+      options { [50, 75, 100, 150, 250] }
       request_type factory: %i[nova_seq_6000_p_e_sequencing_request_type]
     end
 
