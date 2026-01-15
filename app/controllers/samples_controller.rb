@@ -164,7 +164,8 @@ class SamplesController < ApplicationController
       # Synchronously perform accessioning job
       Accession.accession_sample(@sample, current_user, perform_now: true)
     else
-      # TODO: remove the AccessionService and ActiveRecord errors below when this accessioning path is removed
+      # TODO: when removing the y25_286_accession_individual_samples_with_sample_accessioning_job feature flag
+      #       and this accessioning path also remove the AccessionService and ActiveRecord errors below
       @sample.validate_sample_for_accessioning!
       accession_service = AccessionService.select_for_sample(@sample)
       accession_service.submit_sample_for_user(@sample, current_user)
@@ -177,7 +178,9 @@ class SamplesController < ApplicationController
     end
 
     # Handle errors for both synchronous and asynchronous accessioning
-    # When the feature flag above is removed, the AccessionService and ActiveRecord errors can be removed
+    # When the feature flag above (y25_286_accession_individual_samples_with_sample_accessioning_job) is removed,
+    # the AccessionService and ActiveRecord errors should also be removed. These errors are only raised in the old
+    # synchronous accessioning code path and are not required for the updated SampleAccessioningJob path.
   rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
