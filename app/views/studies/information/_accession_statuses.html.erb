@@ -1,0 +1,68 @@
+<%# Top content %>
+<% content_for :top_content do %>
+  <%= tag.div(class: 'd-flex justify-content-end') do %>
+    <% unless configatron.accession_samples %>
+      <%= tag.span('Accessioning is currently disabled.', class: 'text-muted') %>
+    <% else %>
+      <%= link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
+          accession_all_samples_study_path(@study),
+          class: "btn btn-sm btn-outline-primary")
+      %>
+    <% end %>
+  <% end %>
+<% end %>
+
+<%# Aggregation summary for the top right %>
+<% content_for :aggregation do %>
+  <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+<% end %>
+
+<%# Table contents %>
+  <thead>
+    <tr>
+      <th>Sample</th>
+      <th>Result</th>
+      <th>Status</th>
+      <th>Updated</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @page_elements.each do |sample| %>
+      <% accession_status = sample.current_accession_status %>
+      <tr>
+        <td><%= link_to(sample.name, sample) %></td>
+        <td>
+            <% if sample.accession_number? %>
+              <% catalogue_url = configatron.accession.view_url + sample.ebi_accession_number %>
+              <%= link_to sample.ebi_accession_number, url_for(catalogue_url), target: :blank %>
+            <% else %>
+              <%= accession_status&.message %>
+            <% end %>
+        </td>
+        <td><%= accession_status&.status&.capitalize %></td>
+        <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
+        <td>
+          <% if can?(:accession, sample) && configatron.accession_samples %>
+            <%# Add link to perform sample accessioning %>
+            <% if sample.current_accession_status %>
+              <%# If status exists, offer retry %>
+              <%= link_to(
+                '<i class="fa fa-rotate-right"></i> Retry'.html_safe,
+                url_for(controller: '/samples', action: 'accession', id: sample.id),
+                class: "btn btn-sm btn-primary"
+              ) %>
+            <% elsif !sample.accession_number? %>
+              <%# If it has not been accessioned before, offer submit %>
+              <%= link_to(
+                '<i class="fa fa-upload"></i> Submit'.html_safe,
+                url_for(controller: '/samples', action: 'accession', id: sample.id),
+                class: "btn btn-sm btn-outline-primary"
+              ) %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+<%# End table contents %>

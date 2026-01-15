@@ -14,11 +14,15 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
     expect(resource).to have_attribute :uuid
     expect(resource).to have_attribute :name
     expect(resource).to have_attribute :template_type
+    expect(resource).to have_readonly_attribute(:template_class)
+    expect(resource).to have_readonly_attribute(:qcable_name)
+    expect(resource).to have_readonly_attribute(:printer_type)
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:uuid)
     expect(resource).not_to have_updatable_field(:name)
     expect(resource).not_to have_updatable_field(:template_type)
     expect(resource).to have_a_write_once_has_one(:target_purpose).with_class_name('Purpose')
+    expect(resource).to have_a_writable_has_many(:lots)
   end
 
   # Custom method tests
@@ -32,16 +36,19 @@ RSpec.describe Api::V2::LotTypeResource, type: :resource do
       it { is_expected.to eq 'tag_layout_template' }
     end
 
-    context 'with a TagLayoutTemplate' do
+    context 'with a PlateTemplate' do
       let(:template_class) { 'PlateTemplate' }
 
       it { is_expected.to eq 'plate_template' }
     end
 
-    context 'with a TagLayoutTemplate' do
+    context 'with a Tag2LayoutTemplate' do
       let(:template_class) { 'Tag2LayoutTemplate' }
 
       it { is_expected.to eq 'tag2_layout_template' }
     end
   end
+
+  # Filters
+  it { is_expected.to filter(:active) }
 end

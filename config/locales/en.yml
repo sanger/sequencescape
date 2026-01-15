@@ -227,6 +227,13 @@ en:
           The number of samples with the same donor ID must be less than or equal to the requested number of pools.
           However, %{count} samples with the same donor ID were found, while the number of pools requested was %{number_of_pools}.
           The samples with the same donor ID follow: %{barcodes_or_well_locations}.
+        # Validation: Ensures that all values in a specific column are unique and non-zero,
+        # grouped by study and project.
+        # `study_name` and `project_name` refer to the respective fields from the spreadsheet.
+        # `column_header` is the name of the column as it appears in the spreadsheet.
+        unique_and_non_zero_values: >
+          Invalid values for column %{column_header} for the study %{study_name} and the project %{project_name}.
+          All rows for a specific study and project must have the same non-zero value.
       warnings:
         # Validation: There is not enough material for two repeat pooling attempts
         # study_name and project_name are the values of respective fields from the spreadsheet.
@@ -290,9 +297,9 @@ en:
       no_report_name_found: "Please give the report a name (no symbols except underscores)."
       labwhere_location_not_found: "LabWhere location not found, please scan or enter a valid location barcode."
       no_valid_barcodes_found: "No correctly formatted barcodes were found, please enter human-readable or scannable barcodes separated with spaces or commas."
-      no_rows_found: "That selection returns no plates, no report generated."
+      no_rows_found: "That selection returns no labware, no report generated."
       invalid_barcodes_found: "Invalid barcodes found, no report generated: "
-      plate_list_empty: "No plates found when attempting to generate the report."
+      labware_list_empty: "No labware found when attempting to generate the report."
       no_selection_fields_filled: "Please use at least one of the selection criteria."
       end_date_after_start_date: "The end date must be the same as or after the start date."
       both_dates_required: "Both start and end date are required if either one is used."

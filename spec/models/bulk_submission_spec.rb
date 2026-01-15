@@ -277,6 +277,7 @@ describe BulkSubmission, with: :uploader do
   context 'with accessioning enabled' do
     around do |example|
       # Ensure accessioning check is enabled
+      # Note: this is different from `configatron.accession_samples` which disables accessioning itself
       configatron.disable_accession_check = false
       example.run
       # Reset the configuration after the test
@@ -316,7 +317,7 @@ describe BulkSubmission, with: :uploader do
       it 'sets an error message' do
         subject.process
         expect(subject.errors.messages[:base][0]).to eq(
-          'Validation failed: Orders study abc123_study and all samples must have accession numbers'
+          "Validation failed: Orders study 'abc123_study' and all samples must have accession numbers"
         )
       end
     end
@@ -424,8 +425,8 @@ describe BulkSubmission, with: :uploader do
       it 'raises an error and sets an error message' do
         expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(subject.errors.messages[:spreadsheet][0]).to eq(
-          "Inconsistent values for column 'scrna core cells per chip well' for Study name 'abc123_study' " \
-          "and Project name 'Test project', all rows for a specific study and project must have the same value"
+          'Invalid values for column scrna core number of pools for the study  ' \
+          "and the project . All rows for a specific study and project must have the same non-zero value.\n"
         )
       end
     end

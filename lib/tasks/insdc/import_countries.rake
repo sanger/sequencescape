@@ -14,6 +14,7 @@ unless defined?(INSDC_COUNTRIES_PRIORITIES)
   INSDC_COUNTRIES_PRIORITIES = {
     'not provided' => 2,
     'United Kingdom' => 1,
+    'missing' => -1,
     'not applicable' => -1,
     'not collected' => -1,
     'restricted access' => -1

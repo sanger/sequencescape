@@ -153,6 +153,33 @@ class Labware < Asset
           end
         }
 
+  # Used for location report
+  def self.search_for_labware(params)
+    with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
+      .with_study_id(params[:study_id] || nil)
+      .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
+      .created_between(params[:start_date], params[:end_date])
+      .filter_by_barcode(params[:barcodes] || nil)
+      .distinct
+  end
+
+  scope :with_faculty_sponsor_ids,
+        ->(faculty_sponsor_ids) do
+          if faculty_sponsor_ids.present?
+            joins(studies: { study_metadata: :faculty_sponsor }).where(faculty_sponsors: { id: faculty_sponsor_ids })
+          end
+        end
+
+  scope :with_study_id, ->(study_id) { joins(:studies).where(studies: { id: study_id }) if study_id.present? }
+
+  scope :with_plate_purpose_ids,
+        ->(plate_purpose_ids) { where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present? }
+
+  scope :created_between,
+        ->(start_date, end_date) do
+          where(created_at: (start_date.midnight..(end_date || Time.current).end_of_day)) if start_date.present?
+        end
+
   # The use of a sub-query here is a performance optimization. If we join onto the asset_links
   # table instead, rails is unable to paginate the results efficiently, as it needs to use DISTINCT
   # when working out offsets. This is substantially slower.

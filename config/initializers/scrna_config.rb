@@ -5,7 +5,7 @@
 # Stores constants used in pooling and chip loading calculations for samples in the scRNA Core pipeline.
 Rails.application.config.scrna_config = {
   # Maximum volume to take into the pools plate for each sample (in microlitres)
-  maximum_sample_volume: 60.0,
+  maximum_sample_volume: 70.0,
   # Minimum volume to take into the pools plate for each sample (in microlitres)
   minimum_sample_volume: 5.0,
   # Minimum volume required for resuspension in microlitres
@@ -13,9 +13,13 @@ Rails.application.config.scrna_config = {
   # Conversion factor from millilitres to microlitres
   millilitres_to_microlitres: 1_000.0,
   # Number of cells required for each sample going into the pool
-  required_number_of_cells_per_sample_in_pool: 30_000,
+  required_number_of_cells_per_sample_in_pool: 35_000,
   # Factor accounting for wastage of material when transferring between labware
-  wastage_factor: 0.95,
+  wastage_factor: lambda { |number_of_samples_in_pool|
+    return 0.75 if number_of_samples_in_pool <= 13
+
+    0.6
+  },
   # Fixed wastage volume in microlitres
   wastage_volume: 5.0,
   # Desired concentration of cells per microlitre for chip loading
@@ -26,13 +30,6 @@ Rails.application.config.scrna_config = {
   desired_number_of_runs: 2,
   # Volume taken for cell counting in microlitres
   volume_taken_for_cell_counting: 10.0,
-  # Full allowance table, keyed on numbers of samples with values for number of cells per chip well
-  full_allowance_table: {
-    5 => 41_428,
-    6 => 55_714,
-    7 => 70_000,
-    8 => 84_285
-  },
   # Key for the required number of cells metadata stored on Study (in poly_metadata)
   study_required_number_of_cells_per_sample_in_pool_key: 'scrna_core_pbmc_donor_pooling_required_number_of_cells',
   # Default viability threshold when passing/failing samples (in percent)

@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sequencescape | 503 Service Unavailable</title>
+    <link rel="shortcut icon" href="/<%= favicon %>" type="image/x-icon" />
+    <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
+    <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
+    <link rel="stylesheet" href="/error-pages.css" />
+    <style>
+      .sessions {
+        background-image:
+          url('<%= vite_asset_url "images/sanger-pattern-corner.svg" %>'),
+          linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+      }
+    </style>
+  </head>
+
+  <body class="sessions">
+    <header></header>
+    <main id="main-panel">
+      <%= vite_image_tag sequencescape_logo, class: "error-logo", alt: "Sequencescape Logo" %>
+      <h1>Service Unavailable</h1>
+      <div class="status-code">Error code: 503</div>
+      <div class="error-message">Sorry, the service is temporarily unavailable.</div>
+      <div class="suggestion">
+        Please try again later.<br />
+        If the problem persists, you can let us know using the link below.
+      </div>
+      <a
+        class="freshservice-link"
+        href="https://sanger.freshservice.com/support/catalog/items?category_id=53000051282"
+        target="_blank"
+        rel="noopener"
+        >Open a support ticket</a
+      >
+    </main>
+  </body>
+</html>

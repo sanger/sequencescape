@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 group :default do
   gem 'bootsnap'
   gem 'concurrent-ruby', '1.3.5'
+  gem 'configatron'
+  gem 'formtastic'
   gem 'rails', '~> 7.1.5.1'
 
   # Previously part of ruby or rails, now separate gems
@@ -13,18 +15,19 @@ group :default do
   gem 'mutex_m'
   gem 'syslog'
 
+  # Connections to external HTTP services
+  # See lib/http_clients for examples of usage
+  gem 'faraday'
+  gem 'faraday-multipart'
+  gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
+
   # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
   # see https://stackoverflow.com/a/71192990
   gem 'psych', '< 4'
 
   # State machine
   gem 'aasm'
-
-  # Required by AASM
-  gem 'after_commit_everywhere', '~> 1.0'
-  gem 'configatron'
-  gem 'formtastic'
-  gem 'rest-client'
+  gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
 
   # Legacy support for parsing XML into params
   gem 'actionpack-xml_parser'
@@ -72,7 +75,7 @@ group :default do
   # Version 0.1.1 was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
   # This version is tested and compatible with Rails 7.1/7.2 and Ruby 3.2/3.3.
-  gem 'sanger-jsonapi-resources', '~> 0.1.1'
+  gem 'sanger-jsonapi-resources', '~> 0.1.2'
 
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
@@ -97,8 +100,9 @@ group :default do
   # Excel file reading
   gem 'roo'
 
-  # Used in XML generation.
+  # Used in XML generation and parsing
   gem 'builder'
+  gem 'rexml' # NOTE: Would be good to remove this due to frequent security issues
 
   gem 'sanger_barcode_format', github: 'sanger/sanger_barcode_format', branch: 'development'
 
@@ -115,6 +119,9 @@ group :default do
 
   # Authorization
   gem 'cancancan'
+
+  # Send exception notifications via email and other channels
+  gem 'exception_notification'
 
   # Feature flags
   gem 'flipper', '~> 1.0'
@@ -197,15 +204,16 @@ end
 
 group :test, :cucumber do
   gem 'capybara'
-  gem 'database_cleaner'
+  gem 'database_cleaner-active_record'
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
-  gem 'rspec-rails', require: false
+  gem 'rspec-rails', '~> 7.1.0', require: false # TODO: Update to '~> 8.0' when we move to Rails 8
   gem 'selenium-webdriver', '~> 4.1', require: false
-  gem 'shoulda'
+  gem 'shoulda-context', '~> 3.0.0.rc1'
+  gem 'shoulda-matchers', '~> 6.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
@@ -215,7 +223,6 @@ group :test, :cucumber do
 end
 
 group :deployment do
-  gem 'exception_notification'
   gem 'slack-notifier'
   gem 'whenever', require: false
 end

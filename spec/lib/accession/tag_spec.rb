@@ -10,11 +10,11 @@ RSpec.describe Accession::Tag, :accession, type: :model do
   end
 
   it 'indicates which services it is required for' do
-    tag = described_class.new(services: :ENA)
+    tag = described_class.new(mandatory_services: :ENA)
     expect(tag).to be_required_for(build(:ena_service))
     expect(tag).not_to be_required_for(build(:ega_service))
 
-    tag = described_class.new(services: %i[ENA EGA])
+    tag = described_class.new(mandatory_services: %i[ENA EGA])
     expect(tag).to be_required_for(build(:ena_service))
     expect(tag).to be_required_for(build(:ega_service))
 

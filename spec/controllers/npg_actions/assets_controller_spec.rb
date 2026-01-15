@@ -272,7 +272,7 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders the exception page' do
         regexp =
           Regexp.new(
-            ['<error><message>', "Couldn't find Lane with 'id'=#{invalid_lane_id}", '.*</message></error>'].join,
+            ['<error><message>', "Couldn't find Lane with 'id'=\"#{invalid_lane_id}\"", '.*</message></error>'].join,
             Regexp::MULTILINE
           )
         expect(response).to have_http_status(:not_found)

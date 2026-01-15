@@ -9,10 +9,12 @@
   <% add :menu, "Edit" => edit_sample_path(@sample) -%>
 <% end %>
 <% if can? :release, @sample %>
-  <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) }, { confirm: "Do you want to flag this sample for public release?" }   -%>
+  <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) } -%>
 <% end %>
 <% if can? :accession, @sample %>
-  <% add :menu, { @sample.accession_number? ? "Update Sample Data for Accessioning" : "Generate Accession Number" => url_for({controller: 'samples', action: 'accession', id: @sample.id}) }, { confirm: "Do you want to request an accession for this sample?" }  -%>
+  <% add :menu,
+    @sample.accession_number? ? "Update Sample Data for Accessioning" : "Generate Accession Number" =>
+     (configatron.accession_samples ? url_for({controller: 'samples', action: 'accession', id: @sample.id}) : 'disabled' ) -%>
 <% end %>
 
 <% if @sample.accession_number? %>
@@ -34,8 +36,15 @@
 
 <div class="columnize">
   <%= render partial: 'summary', locals: { sample: @sample } %>
+  <% if @sample.component_samples.any? %>
+    <%= render partial: 'component_samples', locals: { sample: @sample } %>
+  <% end %>
   <%= render partial: 'studies', locals: { sample: @sample, studies: @studies } %>
   <%= render partial: 'receptacles', locals: { sample: @sample } %>
   <%= render partial: 'asset_groups', locals: { sample: @sample } %>
   <%= render partial: 'submissions', locals: { sample: @sample } %>
+  <% unless @sample.accession_sample_statuses.empty? %>
+    <%# Some samples already have a number or some won't be accessioned %>
+    <%= render partial: 'accession_statuses', locals: { sample: @sample } %>
+  <% end %>
 </div>

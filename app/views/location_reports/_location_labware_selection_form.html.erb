@@ -1,0 +1,49 @@
+
+<%= form_for(location_report_form, html: {id: 'new_report_from_selection'}) do |f| %>
+  <div class='form-group'>
+    <%= f.label 'name', 'Report name' %><br>
+    <%= f.text_field :name, class: 'form-control' %>
+  </div>
+
+  <div class='form-group'>
+    <%= f.label 'faculty_sponsor_ids', 'Faculty Sponsors (can select multiple)' %>
+    <%= f.select :faculty_sponsor_ids, options_for_select(FacultySponsor.alphabetical.pluck(:name, :id), location_report_form.faculty_sponsor_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+  </div>
+
+  <div class='form-group'>
+    <%= f.label 'study_id', 'Study' %>
+    <%= f.select :study_id, Study.alphabetical.pluck(:name, :id), { prompt: 'Select a study...', include_blank: true }, { class: 'form-control select2' } %>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class='form-group'>
+        <%= f.label 'start_date', 'Start date' %><br>
+        <%= f.date_field :start_date, value: f.object.start_date %>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class='form-group'>
+        <%= f.label 'end_date', 'End date' %><br>
+        <%= f.date_field :end_date, value: f.object.end_date %>
+      </div>
+    </div>
+  </div>
+
+  <div class='form-group'>
+    <%= f.label 'plate_purpose_ids', 'Labware purposes (can select multiple)' %>
+    <%= f.select :plate_purpose_ids, options_for_select(Purpose.alphabetical.pluck(:name, :id), location_report_form.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label "barcodes_text", 'List of Barcodes (separated by new lines, spaces or commas)' %><br/>
+    <%= f.text_area :barcodes_text, {prompt: 'Enter barcodes...', size: '50x6', maxlength: 60000, class: 'form-control'} %>
+  </div>
+
+  <%= f.hidden_field :report_type, value: 'type_selection' %>
+
+  <div class='form-group actions-group'>
+    <%= f.submit('Create report from selection', autocomplete: 'off',class: 'btn btn-success') %>
+  </div>
+<% end %>

@@ -171,7 +171,7 @@ RSpec.configure do |config|
   #       expect { upload.process(nil) }.not_to change(Delayed::Job, :count)
   #     end
   #   end
-  config.around(:each, :accessioning_enabled) do |ex|
+  config.around(:each, :accessioning_enabled) do |example|
     original_value = configatron.accession_samples
     original_config = Accession.configuration
     Accession.configure do |accession|
@@ -179,8 +179,26 @@ RSpec.configure do |config|
       accession.load!
     end
     configatron.accession_samples = true
-    ex.run
+    example.run
     configatron.accession_samples = original_value
+    Accession.configuration = original_config
+  end
+
+  # Add accessioning_disabled to a spec to automatically:
+  # - Set accession_samples to false before the test, and roll it back afterward
+  # - Ensure accession service configuration is rolled back afterward
+  #
+  # @example
+  #   context 'when accessioning is disabled', accessioning_disabled: true do
+  #     it 'raises an exception if accessioning is attempted' do
+  #       expect { Accession.accession_sample(sample, user) }
+  #         .to raise_error(AccessionService::AccessioningDisabledError)
+  #     end
+  #   end
+  config.around(:each, :accessioning_disabled) do |example|
+    original_config = Accession.configuration.dup
+    configatron.accession_samples = false
+    example.run
     Accession.configuration = original_config
   end
 

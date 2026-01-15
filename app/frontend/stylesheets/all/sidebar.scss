@@ -22,8 +22,12 @@
 
   li {
     @extend .nav-item;
-    a {
+    a,
+    .disabled {
       @extend .nav-link;
+    }
+    .disabled {
+      @extend .text-muted;
     }
   }
 }

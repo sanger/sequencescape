@@ -22,6 +22,7 @@ RSpec.describe Api::V2::AliquotResource, type: :resource do
     expect(resource).to have_attribute :suboptimal
     expect(resource).to have_attribute :library_type
     expect(resource).to have_attribute :insert_size_to
+    expect(resource).to have_many(:poly_metadata).with_class_name('PolyMetadatum')
     expect(resource).not_to have_updatable_field(:id)
     expect(resource).not_to have_updatable_field(:tag_oligo)
     expect(resource).not_to have_updatable_field(:tag2_oligo)

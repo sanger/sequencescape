@@ -14,6 +14,11 @@ Rails.application.routes.draw do
     end
   end
 
+  # Error handling endpoints
+  get '/404', to: 'errors#not_found'
+  get '/500', to: 'errors#internal_server_error'
+  get '/503', to: 'errors#service_unavailable'
+
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
@@ -31,9 +36,9 @@ Rails.application.routes.draw do
 
       jsonapi_resources :barcode_printers
       jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments
+      jsonapi_resources :comments, defaults: { permissive: %i[get post] }
       jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware
+      jsonapi_resources :labware, defaults: { permissive: %i[get] }
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
@@ -47,15 +52,17 @@ Rails.application.routes.draw do
       post 'plates/:id/register_stock_for_plate', to: 'plates#register_stock_for_plate'
 
       jsonapi_resources :poly_metadata
+      post 'poly_metadata/bulk_create', to: 'poly_metadata#bulk_create'
       jsonapi_resources :pooled_plate_creations, except: %i[update]
       jsonapi_resources :pre_capture_pools
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
       jsonapi_resources :purposes
-      jsonapi_resources :qc_assays
+      jsonapi_resources :qc_assays, defaults: { permissive: %i[get post] }
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
+      jsonapi_resources :qcable_creators, except: %i[update]
       jsonapi_resources :racked_tubes
       jsonapi_resources :receptacles
       jsonapi_resources :request_metadata
@@ -72,7 +79,7 @@ Rails.application.routes.draw do
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
-      jsonapi_resources :tag_groups
+      jsonapi_resources :tag_groups, defaults: { permissive: %i[get] }
       jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
       jsonapi_resources :tag_layouts, except: %i[update]
@@ -142,6 +149,8 @@ Rails.application.routes.draw do
     collection { get :search }
   end
 
+  resources :taxa, only: %i[index show]
+
   resources :tube_rack_summaries, only: :show
   resources :tube_rack_statuses, only: :index
 
@@ -182,6 +191,7 @@ Rails.application.routes.draw do
     member do
       get :print_labels
       get :print_plate_labels
+      get :print_amp_plate_labels
       get :filtered
       post :swap
       post :fail_items
@@ -190,7 +200,7 @@ Rails.application.routes.draw do
       get :fail
       get :print
       get :verify
-      post :verify_tube_layout
+      post :verify_layout
       get :previous_qc_state
       get :released
       get :sample_prep_worksheet
@@ -201,6 +211,7 @@ Rails.application.routes.draw do
     collection do
       post :print_barcodes
       post :print_plate_barcodes
+      post :print_amp_plate_barcodes
       post :sort
       get 'find_batch_by_barcode/:id', action: 'find_batch_by_barcode'
     end
@@ -213,9 +224,6 @@ Rails.application.routes.draw do
   resources :events
   resources :sources
 
-  get '/taxon_lookup_by_term/:term' => 'samples#taxon_lookup'
-  get '/taxon_lookup_by_id/:id' => 'samples#taxon_lookup'
-
   post '/studies/:study_id/information/summary_detailed/:id' => 'studies/information#summary_detailed'
 
   get 'studies/accession/:id' => 'studies#accession'
@@ -227,7 +235,6 @@ Rails.application.routes.draw do
   get 'studies/accession/policy/show/:id' => 'studies#show_policy_accession', :as => :study_show_policy_accession
 
   get 'samples/accession/:id' => 'samples#accession'
-  get 'samples/accession/show/:id' => 'samples#show_accession'
   get 'samples/accession/show/:id' => 'samples#show_accession', :as => :sample_show_accession
 
   resources :studies do
@@ -641,4 +648,8 @@ Rails.application.routes.draw do
   end
 
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
+
+  # Custom standalone route for bioscan control locations, allowing only
+  # the POST request, migrated from the Lighthouse pickings endpoint.
+  post 'bioscan_control_locations', to: 'bioscan_control_locations#create'
 end

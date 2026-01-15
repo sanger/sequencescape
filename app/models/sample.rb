@@ -86,8 +86,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # it tells our own
 
   extend Metadata
+
   has_metadata do
     include ReferenceGenome::Associations
+
     association(:reference_genome, :name, required: true)
 
     custom_attribute(:organism)
@@ -212,15 +214,29 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
+  # TODO: should be removed along with the removal of the accessioning feature flag
+  # y25_286_accession_individual_samples_with_sample_accessioning_job
+  def tags
+    accession_service = AccessionService.select_for_sample(self)
+    self.class.tags.select { |tag| tag.for?(accession_service.provider) }
+  end
+
+  def self.tags
+    @tags ||= []
+  end
+
+  extend IncludeTag
+
   include_tag(:sample_strain_att)
   include_tag(:sample_description)
 
-  include_tag(:gender, services: :EGA, downcase: true)
-  include_tag(:phenotype, services: :EGA)
-  include_tag(:donor_id, services: :EGA, as: 'subject_id')
+  include_tag(:gender, mandatory_services: :EGA, downcase: true)
+  include_tag(:phenotype, mandatory_services: :EGA)
+  include_tag(:donor_id, mandatory_services: :EGA, as: 'subject_id')
 
   include_tag(:country_of_origin)
   include_tag(:date_of_sample_collection)
+  # End removal TODO
 
   # Reopens the Sample::Metadata class which was defined by has_metadata above
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
@@ -276,6 +292,9 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
+  # For attributing accessioning changes recorded in the SS events table
+  attr_accessor :current_user # required to be set from the controller
+
   # Create relationships with samples that contain this Sample via SampleCompoundComponent.
   has_many(
     :joins_as_component_sample,
@@ -306,6 +325,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
   end
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
@@ -318,6 +338,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
+
+  has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus'
 
   belongs_to :sample_manifest, inverse_of: :samples
 
@@ -373,18 +395,21 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  # TODO: these validations are for accessioning and don't belong in this model - see `on: :accession`
   # Together these two validations ensure that the first study exists and is valid for the ENA submission.
   validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
     record.errors.add(:base, 'Sample has no study') if value.blank?
   end
-  validates_associated(:ena_study, allow_blank: true, on: :accession)
+  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record, _attr|
+    "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
+  }
 
   before_destroy :safe_to_destroy
 
-  # processing_manifest is true if we're currently processing a manifest. We
+  # Processing_manifest is true if we're currently processing a manifest. We
   # disable accessioning, as we'll perform it explicitly later. This avoids
-  # accidental calls to save triggering duplicate accessions
-  after_save :accession, unless: -> { Sample::Current.processing_manifest }
+  # accidental calls to save triggering duplicate accessions.
+  after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
@@ -455,7 +480,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @note This appears to be set up to handle legacy data. All currently generated
   #       Sanger sample ids will be meet criteria 1 or 2.
   # Earlier implementations were supposed to fall back to the name in the absence
-  # of a sanger_smaple_id, but the feature was incorrectly implemented, and would
+  # of a sanger_sample_id, but the feature was incorrectly implemented, and would
   # have thrown an exception.
   def shorten_sanger_sample_id
     case sanger_sample_id
@@ -493,26 +518,13 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
-  # Return the highest priority accession service
-  def accession_service
-    services = studies.group_by { |s| s.accession_service.priority }
-    return UnsuitableAccessionService.new([]) if services.empty?
-
-    highest_priority = services.keys.max
-    suitable_study = services[highest_priority].detect(&:send_samples_to_service?)
-    return suitable_study.accession_service if suitable_study
-
-    UnsuitableAccessionService.new(services[highest_priority])
-  end
-
-  def accession
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    return unless configatron.accession_samples
-
-    accessionable = Accession::Sample.new(Accession.configuration.tags, self)
-
-    # Accessioning jobs are lower priority (higher number) than submissions and reports
-    Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable), priority: 200) if accessionable.valid?
+  def accession_and_handle_validation_errors
+    event_user = current_user # the event_user for this sample must be set from the calling controller
+    Accession.accession_sample(self, event_user)
+    Rails.logger.info("Accessioning passed for sample '#{name}'")
+  rescue AccessionService::AccessionServiceError => e
+    # Save error messages for later feedback to the user in a flash message
+    errors.add(:base, e.message)
   end
 
   def handle_update_event(user)
@@ -524,10 +536,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_ena_required_fields!
+    accession_service = AccessionService.select_for_sample(self)
     (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
   rescue ActiveRecord::RecordInvalid => e
     ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
     raise e
+  end
+
+  def current_accession_status
+    accession_sample_statuses.last
   end
 
   def sample_reference_genome
@@ -545,6 +562,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   delegate :consent_withdrawn, :consent_withdrawn?, :consent_withdrawn=, to: :sample_metadata
   delegate :date_of_consent_withdrawn, :date_of_consent_withdrawn=, to: :sample_metadata
   delegate :user_id_of_consent_withdrawn, :user_id_of_consent_withdrawn=, to: :sample_metadata
+  delegate :supplier_name, :supplier_name=, to: :sample_metadata
 
   def friendly_name
     sanger_sample_id || name

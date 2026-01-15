@@ -8,6 +8,7 @@ configatron.team_url = 'http://www.sanger.ac.uk/science/groups/production-softwa
 
 # This is set in the deployment project to allow per-environment enabling of accessioning
 # This flag currently only affects the manifest upload code path and not sample updates - to be addressed in Y25-286.
+# Also search for `configatron.disable_accession_check`, as this is used to disable post-accessioning checks.
 configatron.accession_samples = false
 
 configatron.accession do |accession|
@@ -37,7 +38,7 @@ configatron.phix_tag.tag_map_id = 888
 configatron.r_and_d_division = 'RandD'
 configatron.site_url = 'localhost:3000'
 configatron.sta_plate_purpose_name = 'STA'
-configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
 configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
@@ -75,9 +76,10 @@ if Rails.env.development? || Rails.env.profile?
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"
 
+  configatron.disable_web_proxy = true
   configatron.proxy = 'http://example.com'
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+  configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
   configatron.amqp.broker.tls = false
@@ -135,7 +137,7 @@ if Rails.env.test? || Rails.env.cucumber?
 
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+  configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
   configatron.amqp.broker.tls = true

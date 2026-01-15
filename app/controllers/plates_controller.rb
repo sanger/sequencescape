@@ -10,6 +10,7 @@ class PlatesController < ApplicationController
 
   def show
     @plate = Plate.find(params[:id])
+    @page_name = @plate.name
   end
 
   def new
@@ -62,7 +63,7 @@ class PlatesController < ApplicationController
 
   def set_barcode_printers
     @barcode_printers = BarcodePrinterType96Plate.first.barcode_printers
-    @barcode_printers = BarcodePrinter.order('name asc') if @barcode_printers.blank?
+    @barcode_printers = BarcodePrinter.order(:name) if @barcode_printers.blank?
   end
 
   def tube_rack_barcodes

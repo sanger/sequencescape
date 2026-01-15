@@ -743,15 +743,15 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
             it 'will apply the two tags associated with the map_id' do
               sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
               # well location 'A1' => map_id '1'
-              expect(asset.aliquots.first.tag.map_id).to eq 1
-              expect(asset.aliquots.first.tag.tag_group).to eq tag_group1
-              expect(asset.aliquots.first.tag2.map_id).to eq 1
-              expect(asset.aliquots.first.tag2.tag_group).to eq tag_group2
+              expect(asset.reload.aliquots.first.tag.map_id).to eq 1
+              expect(asset.reload.aliquots.first.tag.tag_group).to eq tag_group1
+              expect(asset.reload.aliquots.first.tag2.map_id).to eq 1
+              expect(asset.reload.aliquots.first.tag2.tag_group).to eq tag_group2
 
               tag_set =
                 TagSet.find_by(
-                  tag_group_id: asset.aliquots.first.tag.tag_group.id,
-                  tag2_group_id: asset.aliquots.first.tag2.tag_group.id
+                  tag_group_id: asset.reload.aliquots.first.tag.tag_group.id,
+                  tag2_group_id: asset.reload.aliquots.first.tag2.tag_group.id
                 )
               expect(tag_set).to eq dual_index_tag_set
             end
@@ -766,6 +766,52 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
               # well location 'D1' => map_id '4'
               expect(asset.reload.aliquots.first.tag.map_id).to eq 4
               expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
+            end
+          end
+
+          context 'when a tag change is applied in a re-upload that already has downstream labware' do
+            let(:asset) { create(:tagged_well, map: map, aliquot_count: 1) }
+            let(:dual_index_tag_well) { 'd1' }
+
+            let(:downstream_aliquot1) do
+              create(
+                :aliquot,
+                sample: asset.aliquots.first.sample,
+                tag: asset.aliquots.first.tag,
+                tag2: asset.aliquots.first.tag2,
+                library_id: asset.aliquots.first.library_id
+              )
+            end
+            let(:downstream_aliquot2) do
+              create(
+                :aliquot,
+                sample: asset.aliquots.first.sample,
+                tag: asset.aliquots.first.tag,
+                tag2: asset.aliquots.first.tag2,
+                library_id: asset.aliquots.first.library_id
+              )
+            end
+
+            before do
+              asset.aliquots.first.library_id = 1
+              asset.aliquots.first.save!
+              downstream_aliquot1
+              downstream_aliquot2
+            end
+
+            it 'will apply the 2 tags associated with the updated map_id' do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+
+              # well location 'D1' => map_id '4'
+              expect(asset.reload.aliquots.first.tag.map_id).to eq 4
+              expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
+
+              # check downstream aliquots updated too
+              expect(downstream_aliquot1.reload.tag.map_id).to eq 4
+              expect(downstream_aliquot1.reload.tag2.map_id).to eq 4
+
+              expect(downstream_aliquot2.reload.tag.map_id).to eq 4
+              expect(downstream_aliquot2.reload.tag2.map_id).to eq 4
             end
           end
 
@@ -786,6 +832,24 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
               expect(sf_dual_index_tag_well.errors.full_messages.join).to include('Tag does not have associated i7 tag')
               expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
                 'Tag2 does not have associated i5 tag'
+              )
+            end
+          end
+
+          context 'when the well contains more than one aliquot' do
+            let(:asset) { create(:tagged_well, map: map, aliquot_count: 2) }
+
+            before do
+              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+            end
+
+            it 'will not be valid' do
+              expect(sf_dual_index_tag_well).not_to be_valid
+            end
+
+            it 'will have the appropriate error message' do
+              expect(sf_dual_index_tag_well.errors.full_messages.join).to include(
+                "Expecting well #{asset.map.description} to have a single aliquot, but it has 2"
               )
             end
           end

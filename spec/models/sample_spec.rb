@@ -3,51 +3,7 @@
 require 'rails_helper'
 require 'support/barcode_helper'
 
-RSpec.describe Sample, :accession, :cardinal do
-  include MockAccession
-
-  context 'accessioning' do
-    let!(:user) { create(:user, api_key: configatron.accession_local_key) }
-
-    before do
-      configatron.accession_samples = true
-      Delayed::Worker.delay_jobs = false
-      Accession.configure do |config|
-        config.folder = File.join('spec', 'data', 'accession')
-        config.load!
-      end
-    end
-
-    after do
-      Delayed::Worker.delay_jobs = true
-      configatron.accession_samples = false
-    end
-
-    it 'will not proceed if the sample is not suitable' do
-      sample =
-        create(
-          :sample_for_accessioning_with_open_study,
-          sample_metadata: create(:sample_metadata_for_accessioning, sample_taxon_id: nil)
-        )
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
-    end
-
-    it 'will add an accession number if successful' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_accession_response)
-      sample =
-        create(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_present
-    end
-
-    it 'will not add an accession number if it fails' do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
-      sample =
-        build(:sample_for_accessioning_with_open_study, sample_metadata: create(:sample_metadata_for_accessioning))
-      expect { sample.save! }.to raise_error(StandardError)
-      expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
-    end
-  end
-
+RSpec.describe Sample, :cardinal do
   context 'can be included in submission' do
     it 'knows if it was registered through manifest' do
       stand_alone_sample = create(:sample)
@@ -98,6 +54,17 @@ RSpec.describe Sample, :accession, :cardinal do
     it 'can be added to a sample' do
       sample = create(:sample, sample_metadata_attributes: { genome_size: 1000 })
       expect(sample.sample_metadata.genome_size).to eq(1000)
+    end
+  end
+
+  describe '#current_accession_status' do
+    let(:sample) { create(:sample) }
+    let!(:older_status) { create(:accession_sample_status, sample: sample, created_at: 2.days.ago) }
+    let!(:newer_status) { create(:accession_sample_status, sample: sample, created_at: 1.day.ago) }
+    let!(:newest_status) { create(:accession_sample_status, sample: sample, created_at: 1.minute.ago) }
+
+    it 'returns the most recent accession status for the sample' do
+      expect(sample.current_accession_status).to eq(newest_status)
     end
   end
 

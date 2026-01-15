@@ -193,7 +193,8 @@ class StudiesController < ApplicationController
   def show_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_study_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_study_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -201,7 +202,8 @@ class StudiesController < ApplicationController
   def show_policy_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_policy_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_policy_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -209,7 +211,8 @@ class StudiesController < ApplicationController
   def show_dac_accession
     @study = Study.find(params[:id])
     respond_to do |format|
-      xml_text = @study.accession_service.accession_dac_xml(@study)
+      accession_service = AccessionService.select_for_study(@study)
+      xml_text = accession_service.accession_dac_xml(@study)
       format.xml { render(xml: xml_text) }
     end
   end
@@ -224,7 +227,7 @@ class StudiesController < ApplicationController
     flash[:warning] = e.message || 'An accession number is not required for this study'
     redirect_to(study_path(@study))
   rescue AccessionService::NumberNotGenerated => e
-    flash[:warning] = 'No accession number was generated'
+    flash[:warning] = "No accession number was generated: #{e.message}"
     redirect_to(study_path(@study))
   rescue AccessionService::AccessionServiceError => e
     flash[:error] = e.message
@@ -237,7 +240,8 @@ class StudiesController < ApplicationController
     rescue_accession_errors do
       @study = Study.find(params[:id])
       @study.validate_ena_required_fields!
-      @study.accession_service.submit_study_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_study_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
       redirect_to(study_path(@study))
@@ -246,15 +250,22 @@ class StudiesController < ApplicationController
 
   def accession_all_samples
     @study = Study.find(params[:id])
-    @study.accession_all_samples
-    flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
-    redirect_to(study_path(@study))
+    @study.accession_all_samples(current_user)
+
+    if @study.errors.any?
+      error_messages = compile_accession_errors(@study.errors)
+      flash[:error] = error_messages
+    else
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+    end
+    redirect_to(study_path(@study, anchor: 'accession-statuses'))
   end
 
   def dac_accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.accession_service.submit_dac_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_dac_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
       redirect_to(study_path(@study))
@@ -264,7 +275,8 @@ class StudiesController < ApplicationController
   def policy_accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.accession_service.submit_policy_for_user(@study, current_user)
+      accession_service = AccessionService.select_for_study(@study)
+      accession_service.submit_policy_for_user(@study, current_user)
 
       flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
       redirect_to(study_path(@study))
@@ -368,6 +380,16 @@ class StudiesController < ApplicationController
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
+  end
+
+  def compile_accession_errors(errors, max_messages = 6)
+    error_messages = ['The samples in this study could not be accessioned, please check the following errors:']
+    error_messages.concat(errors.full_messages.first(max_messages))
+
+    return error_messages unless errors.size > max_messages
+
+    error_messages << '...'
+    error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown."
   end
 end
 # rubocop:enable Metrics/ClassLength

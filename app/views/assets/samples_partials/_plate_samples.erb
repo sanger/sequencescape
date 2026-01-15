@@ -17,6 +17,9 @@
           <th class="well_location">Well</th>
           <th>Sample Name</th>
           <th>Sanger Sample Id</th>
+          <% if @asset.plate_purpose.cherrypickable_target %>
+              <th>Sample Supplier Name</th>
+          <% end %>
           <th>Tag</th>
           <th>Tag2</th>
           <th>Control?</th>
@@ -29,6 +32,9 @@
               <td><%= link_to well.map.description, receptacle_path(well) %></td>
               <td><strong><%= link_to aliquot.sample.name, aliquot.sample -%></strong></td>
               <td><%= aliquot.sample.sanger_sample_id %></td>
+              <% if @asset.plate_purpose.cherrypickable_target %>
+                <td><%= aliquot.sample.sample_metadata&.supplier_name %></td>
+              <% end %>
               <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag } if aliquot.tag.present? %></td>
               <td><%= render partial: 'shared/tag_info', locals: {tag: aliquot.tag2 } if aliquot.tag2.present? %></td>
               <td><%= aliquot.sample.control_formatted %></td>
@@ -39,6 +45,9 @@
               <td><%= link_to well.map.description, receptacle_path(well) %></td>
               <td>[Empty]</td>
               <td></td>
+              <% if @asset.plate_purpose.cherrypickable_target %>
+                <td></td>
+              <% end %>
               <td></td>
               <td></td>
               <td></td>

@@ -25,7 +25,7 @@ Feature: Show/update samples
      And I should see "Country of origin"
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
-     And I should see "TAXON ID"
+     And I should see "Taxon ID"
      And I should see "Sample Collection Date"
 
   Scenario: All sample metadata should show in genotyping workflow
@@ -37,7 +37,7 @@ Feature: Show/update samples
      And I should see "Country of origin"
     Then I should see "Sequencescape Sample ID"
      And I should see "Public Name"
-     And I should see "TAXON ID"
+     And I should see "Taxon ID"
      And I should see "Sample Collection Date"
 
   Scenario: User is an administrator
@@ -51,6 +51,6 @@ Feature: Show/update samples
   Scenario: User is not the owner nor an administrator
 
      And the sample named "sample_3958121" exists
-     And I am on the edit page for sample "sample_3958121"
+     And I allow redirects and am on the edit page for sample "sample_3958121"
     Then I should be on the homepage
     And I should see "Sorry, you are not authorized to update this Sample"

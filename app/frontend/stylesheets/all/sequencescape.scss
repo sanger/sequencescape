@@ -1,10 +1,26 @@
 /* This is the canonical CSS file for Sequencescape. */
+body {
+  @extend .min-vh-100;
+  @extend .d-flex;
+  @extend .flex-column;
+}
+
 li a:visited {
   color: #444488;
 }
 
+// Utility class for negative margin-bottom
+.mb--3 {
+  margin-bottom: -1rem !important;
+}
+
 #main-content {
   @extend .container-fluid;
+}
+
+#main-footer {
+  @extend .container-fluid;
+  @extend .mt-auto;
 }
 
 #page-content {
@@ -1382,4 +1398,17 @@ section {
 .no-choices-group .choices-group {
   padding: 0 !important;
   width: auto !important;
+}
+
+.unspecified {
+  @extend .text-muted;
+  @extend .text-lowercase;
+
+  // Add [ ] before and after the text
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
 }

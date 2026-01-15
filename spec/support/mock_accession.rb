@@ -3,13 +3,26 @@
 module MockAccession
   Response = Struct.new(:code, :body)
 
-  def successful_accession_response
+  # for samples
+  def successful_sample_accession_response
     Response.new(200, '<RECEIPT success="true"><SAMPLE accession="EGA00001000240" /></RECEIPT>')
   end
 
-  def failed_accession_response
-    Response.new(200, '<RECEIPT success="false"><ERROR>Error 1</ERROR><ERROR>Error 2</ERROR></RECEIPT>')
+  def successful_study_accession_response
+    Response.new(200, '<RECEIPT success="true"><STUDY accession="EGA00002000345" /></RECEIPT>')
   end
 
-  module_function :successful_accession_response, :failed_accession_response
+  def failed_accession_response
+    Response.new(200, <<~XML)
+      <RECEIPT receiptDate="2014-12-02T16:06:20.871Z" success="false">
+        <MESSAGES>
+          <ERROR>Error 1</ERROR>
+          <ERROR>Error 2</ERROR>
+        </MESSAGES>
+      </RECEIPT>
+    XML
+  end
+
+  module_function :successful_sample_accession_response, :successful_study_accession_response,
+                  :failed_accession_response
 end

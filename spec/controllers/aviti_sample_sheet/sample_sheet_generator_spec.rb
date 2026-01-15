@@ -37,8 +37,8 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
   describe '.generate' do
     subject(:output) { described_class.generate(batch) }
 
-    expected_settings_lines = 7 # [SETTINGS], header, comment, 4 adapter rows
-    expected_phix_lines = 6 # [SAMPLES], header, 4 phiX samples
+    let(:expected_settings_lines) { 7 } # [SETTINGS], header, comment, 4 adapter rows
+    let(:expected_phix_lines) { 6 }     # [SAMPLES], header, 4 phiX samples
 
     context 'with two requests containing different samples' do
       # rubocop:disable RSpec/MultipleExpectations
@@ -128,7 +128,7 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
     context 'when sample indexes are 8 bp long' do
       it 'truncates PhiX control indexes to match the sample index length (8 bp)' do
         phix1_row = output.split("\r\n")[expected_settings_lines + 2]
-        expect(phix1_row).to eq('PhiX_Third,ATGTCGCT,CTAGCTCG')
+        expect(phix1_row).to eq('PhiX_Third,ATGTCGCT,CTAGCTCG,1+2,')
         index1, index2 = phix1_row.split(',')[1..2]
         expect(index1.length).to eq(8)
         expect(index2.length).to eq(8)
@@ -179,7 +179,7 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
 
       it 'matches the PhiX control tag with the longest sample tag' do
         phix1_row = output.split("\r\n")[expected_settings_lines + 2]
-        expect(phix1_row).to eq('PhiX_Third,ATGTCGCTAG,CTAGCTCGTA') # 10 bp tags
+        expect(phix1_row).to eq('PhiX_Third,ATGTCGCTAG,CTAGCTCGTA,1+2,') # 10 bp tags
       end
     end
     # rubocop:enable RSpec/MultipleExpectations

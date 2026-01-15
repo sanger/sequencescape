@@ -72,6 +72,9 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   has_one :aliquot_index, dependent: :destroy
 
+  # Can have many key value pairs of metadata
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
+
   convert_labware_to_receptacle_for :library, :receptacle
 
   before_validation { |aliquot| aliquot.tag_id ||= UNASSIGNED_TAG unless aliquot.tag_id? || tag }
@@ -218,6 +221,11 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def equivalent?(other, list_of_aliquot_attributes_to_consider_a_duplicate = nil)
     attributes_to_check = list_of_aliquot_attributes_to_consider_a_duplicate || Aliquot.equivalent_attributes
     attributes_to_check.all? { |attrib| send(attrib) == other.send(attrib) }
+  end
+
+  # @return [ActiveRecord::Relation] a collection of PolyMetadatum records
+  def poly_metadata
+    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.name)
   end
 
   private

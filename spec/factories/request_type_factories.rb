@@ -134,6 +134,11 @@ FactoryBot.define do
       request_class { ElementAvitiSequencingRequest }
     end
 
+    factory :ultima_sequencing do
+      asset_type { 'LibraryTube' }
+      request_class { UltimaSequencingRequest }
+    end
+
     factory :miseq_sequencing_request_type do
       request_class { MiSeqSequencingRequest }
       asset_type { 'LibraryTube' }

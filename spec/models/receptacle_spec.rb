@@ -146,4 +146,23 @@ RSpec.describe Receptacle do
       end
     end
   end
+
+  describe '#public_name' do
+    let(:receptacle) { create(:receptacle, labware:) }
+
+    context 'when a receptacle has a labware' do
+      let(:labware) { create(:labware, public_name: 'Labware Name') }
+
+      it { expect(receptacle.public_name).to eq 'Labware Name' }
+    end
+  end
+
+  context 'when a receptacle does not have a labware' do
+    # This happens with old receptacles that are missing a plate and are requested on deprecated endpoints
+    let(:labware) { nil }
+
+    it 'returns nil' do
+      expect(receptacle.public_name).to be_nil
+    end
+  end
 end
