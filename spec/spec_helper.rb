@@ -202,6 +202,16 @@ RSpec.configure do |config|
     Accession.configuration = original_config
   end
 
+  # Temporarily disables Delayed::Job backgrounding for the duration of the example.
+  # When :un_delay_jobs is set, jobs will be executed immediately instead of being enqueued.
+  # This is useful for specs that need to test job side effects synchronously
+  # and is often used in conjunction with :accessioning_enabled.
+  config.around(:each, :un_delay_jobs) do |example|
+    Delayed::Worker.delay_jobs = false
+    example.run
+    Delayed::Worker.delay_jobs = true
+  end
+
   config.before do
     # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution

@@ -26,12 +26,8 @@ RSpec.describe SampleManifest, :sample_manifest do
 
     before { allow(PlateBarcode).to receive(:create_barcode).and_return(first_plate_barcode, second_plate_barcode) }
 
-    context 'when asset_type: plate' do
+    context 'when asset_type: plate', :un_delay_jobs do
       let(:asset_type) { 'plate' }
-
-      before { Delayed::Worker.delay_jobs = false }
-
-      teardown { Delayed::Worker.delay_jobs = true }
 
       [1, 2].each do |count|
         context "count: #{count}" do
@@ -92,13 +88,9 @@ RSpec.describe SampleManifest, :sample_manifest do
       end
     end
 
-    context 'when asset_type: library_plate' do
+    context 'when asset_type: library_plate', :un_delay_jobs do
       let(:asset_type) { 'library_plate' }
       let(:count) { 1 }
-
-      before { Delayed::Worker.delay_jobs = false }
-
-      teardown { Delayed::Worker.delay_jobs = true }
 
       it 'creates 1 plate(s), 96 wells' do
         expect { manifest.generate }.to change(Plate, :count).by(count).and change(Well, :count).by(count * 96)
