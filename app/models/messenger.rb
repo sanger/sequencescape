@@ -16,6 +16,7 @@ class Messenger < ApplicationRecord
 
   def as_json(_options = {})
     message = render_class.to_hash(target)
+    Rails.logger.info("Publishing message: #{message}")
     { root => process_receptacles(message), 'lims' => configatron.amqp.lims_id! }
   end
 
