@@ -51,7 +51,7 @@ configatron.external_applications = [
   %w[Gatekeeper http://www.example.com]
 ]
 
-configatron.location_reports_fetch_count_max = 500
+configatron.location_reports_fetch_count_max = 25000
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
