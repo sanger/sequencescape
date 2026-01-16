@@ -7,6 +7,8 @@
       <thead>
         <tr>
           <th>Study name</th>
+          <th>Release</th>
+          <th>Timing</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -14,6 +16,8 @@
         <% @sample.studies.each do |study| %>
           <tr>
             <td><%= link_to study.name, study_path(study) %></td>
+            <td><%= strategy_badge(study.data_release_strategy) %></td>
+            <td><%= timing_badge(study.data_release_timing) %></td>
             <% if can? :unlink_sample, study %>
               <td><%= link_to("Unlink", url_for({controller: "samples", id: @sample.id, action: :remove_from_study, study_id: study.id}), confirm: "Are you sure you want to unlink this sample from the '#{study.name}' study?\n\nThere is no undo.") -%></td>
             <% end %>

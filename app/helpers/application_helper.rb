@@ -126,12 +126,13 @@ module ApplicationHelper
   #                        specified
   # @param type [String] Optional: Additional css-class applied to the badge (generic-badge by default)
   # @param style [String] Optional: Override the badge-* class otherwise set directly from the status.
+  # @param css_style [String] Optional: Additional css styles to apply to the badge
   #
   # @return [type] HTML to render a badge
-  def badge(status, type: 'generic-badge', style: status)
+  def badge(status, type: 'generic-badge', style: status, css_style: '')
     return if status.blank?
 
-    tag.span(status, class: "#{type} badge badge-#{style}")
+    tag.span(status, class: "#{type} badge badge-#{style}", style: css_style)
   end
 
   #

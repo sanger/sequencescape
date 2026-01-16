@@ -1,7 +1,7 @@
 <% commentable ||= comment.commentable.becomes(comment.commentable.class.base_class) %>
 <div class="comment-box">
   <div class="comment">
-    <h5 class="comment-title"><%= comment.title %> <%= badge(commentable.class.name, style: 'info') %></h5>
+    <h5 class="comment-title"><%= comment.title %> <%= badge(commentable.class.name, modifier: 'info') %></h5>
     <div class="comment-description"><%= comment.description %></div>
   </div>
   <div  class="comment-metadata">

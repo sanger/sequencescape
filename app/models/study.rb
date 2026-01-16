@@ -422,6 +422,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   alias_attribute :friendly_name, :name
 
   delegate :data_release_strategy, to: :study_metadata
+  delegate :data_release_timing, to: :study_metadata
 
   # Class Methods
 
