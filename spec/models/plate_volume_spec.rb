@@ -13,6 +13,7 @@ describe PlateVolume do
   end
 
   describe '::process_all_volume_check_files' do
+    let(:volume_check_directory) { Rails.root.join('test/data/plate_volume') }
     let(:plate_a_expected_volumes) do
       {
         'A1' => 55.3281,
@@ -80,9 +81,11 @@ describe PlateVolume do
     end
 
     before do
+      allow(Rails.logger).to receive(:info).and_call_original
+
       plate_with_barcodes_in_csv
       plate_without_barcodes_in_csv
-      described_class.process_all_volume_check_files(Rails.root.join('test/data/plate_volume'))
+      described_class.process_all_volume_check_files(volume_check_directory)
     end
 
     # We don't use two separate contexts as we want to make sure we handle all plates
@@ -119,6 +122,20 @@ describe PlateVolume do
     it 'creates a record in the database with the right value in uploaded_file_name' do
       expect(described_class.count).to be_positive
       described_class.find_each { |volume| expect(volume.uploaded_file_name).to eq("#{volume.barcode}.csv") }
+    end
+
+    it 'logs processing start and end messages' do
+      expected_logs = [
+        [:info, "Starting processing of volume check files in folder: #{volume_check_directory}"],
+        [:info, "Processing volume file 'SQPD-222.csv' with size 324 Bytes"],
+        [:info, "Processing volume file 'SQPD-111.csv' with size 309 Bytes"],
+        [:info, "Processing volume file 'SQPD-1234567.csv' with size 598 Bytes"],
+        [:info, 'Completed processing of volume check files']
+      ]
+
+      expected_logs.each do |level, message|
+        expect(Rails.logger).to have_received(level).with(message)
+      end
     end
   end
 end

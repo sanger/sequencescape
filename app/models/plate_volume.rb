@@ -73,9 +73,13 @@ class PlateVolume < ApplicationRecord
 
   class << self
     def process_all_volume_check_files(folder = configatron.plate_volume_files)
+      Rails.logger.info("Starting processing of volume check files in folder: #{folder}")
+
       all_plate_volume_file_names(folder).each do |filename|
         File.open(File.join(folder, filename), 'r') { |file| catch(:no_source_plate) { handle_volume(filename, file) } }
       end
+
+      Rails.logger.info('Completed processing of volume check files')
     end
 
     def all_plate_volume_file_names(folder)
@@ -84,6 +88,9 @@ class PlateVolume < ApplicationRecord
     private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
+      Rails.logger.info(
+        "Processing volume file '#{filename}' with size #{ActiveSupport::NumberHelper.number_to_human_size(file.size)}"
+      )
       ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
     rescue => e
       Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
