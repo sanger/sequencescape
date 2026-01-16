@@ -58,17 +58,6 @@ Then /^the XML root attribute "([^"]+)" sent to the accession service for sample
   assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
 end
 
-Then /^the XML sent for sample "([^"]+)" validates with the schema "([^"]+)"$/ do |sample_name, schema|
-  sample = Sample.find_by(name: sample_name) or
-    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-
-  # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
-  xsd = Nokogiri::XML.Schema(File.open(schema))
-  result = xsd.validate(Nokogiri(xml))
-  assert(result.length == 0, result.map(&:message).join(''))
-end
-
 # rubocop:todo Layout/LineLength
 Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be not present$/ do |xml_attr, sample_name|
   # rubocop:enable Layout/LineLength

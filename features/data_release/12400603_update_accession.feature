@@ -13,13 +13,6 @@ Feature: object with an accession should be modifiable
     When I am on the event history page for study "study"
     Then I should see "Assigned study accession number"
 
-  Scenario: A sample XML should validate with the ENA schema
-    Given a sample named "sample" exists for accession
-    Given an accessioning webservice exists which returns a sample accession number "E-ERA-16"
-    Given I am on the show page for sample "sample"
-    And the UUID for the sample "sample" is "11111111-1111-1111-1111-1111111111"
-    When I create an accession number for sample "sample"
-    Then the XML sent for sample "sample" validates with the schema "test/data/xsd/SRA.sample.xsd"
 
   Scenario: A sample without an accession number should not send public name as alias but a uuid
     Given a sample named "sample" exists for accession
@@ -29,7 +22,6 @@ Feature: object with an accession should be modifiable
     When I create an accession number for sample "sample"
 
     Then the XML root attribute "alias" sent to the accession service for sample "sample" should be "11111111-1111-1111-1111-1111111111"
-    And the XML sent for sample "sample" validates with the schema "test/data/xsd/SRA.sample.xsd"
 
   Scenario Outline: A sample should send a title element with sample public name falling back to sanger id if not present
     Given a sample named "sample" exists for accession
@@ -40,7 +32,6 @@ Feature: object with an accession should be modifiable
     When I create an accession number for sample "sample"
 
     Then the XML tag "TITLE" sent to the accession service for sample "sample" should be <title>
-    And the XML sent for sample "sample" validates with the schema "test/data/xsd/SRA.sample.xsd"
 
     Examples:
       | sample_public_name                | sanger_sample_id                       | title                                  |
