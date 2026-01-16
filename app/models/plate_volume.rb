@@ -97,12 +97,9 @@ class PlateVolume < ApplicationRecord
     end
 
     def handle_volume(filename, file)
-      Rails.logger.info(
-        "Processing volume file '#{filename}' with size #{ActiveSupport::NumberHelper.number_to_human_size(file.size)}"
-      )
       ActiveRecord::Base.transaction { find_for_filename(sanitized_filename(file)).call(filename, file) }
     rescue => e
-      Rails.logger.warn("Error processing volume file #{filename}: #{e.message}")
+      Rails.logger.warn("Error processing volume check file #{filename}: #{e.message}")
     end
 
     private :handle_volume
@@ -119,6 +116,7 @@ class PlateVolume < ApplicationRecord
         lambda do |filename, file|
           # TODO: After saving, the uploaded_file_name is renamed internally by CarrierWave to (2).CSV
           # This should be amended in future.
+          Rails.logger.info("Creating new PlateVolume record for volume check file '#{filename}'")
 
           instance = PlateVolume.new(uploaded_file_name: filename, updated_at: file.stat.mtime, uploaded: file)
           instance.save
