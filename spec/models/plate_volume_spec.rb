@@ -127,9 +127,9 @@ describe PlateVolume do
     it 'logs processing start and end messages' do
       expected_logs = [
         [:info, "Starting processing of volume check files in folder: #{volume_check_directory}"],
-        [:info, "Processing volume file 'SQPD-222.csv' with size 324 Bytes"],
-        [:info, "Processing volume file 'SQPD-111.csv' with size 309 Bytes"],
-        [:info, "Processing volume file 'SQPD-1234567.csv' with size 598 Bytes"],
+        [:info, "Creating new PlateVolume record for volume check file 'SQPD-222.csv'"],
+        [:info, "Creating new PlateVolume record for volume check file 'SQPD-111.csv'"],
+        [:info, "Creating new PlateVolume record for volume check file 'SQPD-1234567.csv'"],
         [:info, 'Completed processing of volume check files']
       ]
 
