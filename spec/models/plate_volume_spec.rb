@@ -149,6 +149,9 @@ describe PlateVolume do
       File.write(File.join(test_dir, 'large.csv'), 'a' * (501 * 1024))
       File.write(File.join(test_dir, 'not_csv.txt'), 'data')
       FileUtils.mkdir_p(File.join(test_dir, 'subdir'))
+      # And some actual valid files from the production directory
+      File.write(File.join(test_dir, 'Standard cal plate Lobind test 2.CSV'), 'data') # has spaces an no barcode
+      File.write(File.join(test_dir, 'SQPP-91253-W.CSV'), 'data') # has dashes and uppercase extension name
     end
 
     after do
@@ -157,7 +160,7 @@ describe PlateVolume do
 
     it 'returns only CSV files <= 500 KB and not directories' do
       result = described_class.all_plate_volume_file_names(test_dir)
-      expect(result).to contain_exactly('valid.csv')
+      expect(result).to contain_exactly('SQPP-91253-W.CSV', 'Standard cal plate Lobind test 2.CSV', 'valid.csv')
     end
   end
 end
