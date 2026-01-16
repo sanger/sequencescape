@@ -4,6 +4,8 @@ require 'rails_helper'
 require 'pry'
 
 RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_excel do
+  include AccessionV1ClientHelper
+
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -60,12 +62,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
     end
   end
 
-  context 'when checking uploads' do
+  context 'when checking uploads', :un_delay_jobs do
     before do
       create(:insdc_country, name: 'United Kingdom')
     end
-
-    after { Delayed::Worker.delay_jobs = true }
 
     it 'will upload a valid 1d tube sample manifest' do
       broadcast_events_count = BroadcastEvent.count
@@ -76,7 +76,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_full.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -93,7 +92,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -110,7 +108,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -127,7 +124,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -144,7 +140,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -160,70 +155,82 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.plate_full.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       expect { uploader.run! }.to change(BroadcastEvent, :count).by(1)
       expect(uploader).to be_processed
       expect(uploader.upload.sample_manifest).to be_completed
     end
 
-    it 'will generate sample accessions', :accessioning_enabled do
-      number_of_plates = 2
-      samples_per_plate = 2
-      download =
-        build(
-          :test_download_plates,
-          num_plates: number_of_plates,
-          num_filled_wells_per_plate: samples_per_plate,
-          manifest_type: 'plate_full',
-          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-          study: create(:open_study, accession_number: 'acc')
+    context 'with accessioning enabled', :accessioning_enabled, :un_delay_jobs do
+      before do
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
         )
-      download.save(test_file_name)
-      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-      expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
-    end
+      end
 
-    it 'will gracefully handle errors raised if the samples are already accessioned', :accessioning_enabled do
-      download =
-        build(
-          :test_download_plates,
-          manifest_type: 'plate_full',
-          columns: SampleManifestExcel.configuration.columns.plate_full.dup,
-          study: create(:open_study, accession_number: 'acc')
+      it 'will generate sample accessions' do
+        number_of_plates = 2
+        samples_per_plate = 2
+        download =
+          build(
+            :test_download_plates,
+            num_plates: number_of_plates,
+            num_filled_wells_per_plate: samples_per_plate,
+            manifest_type: 'plate_full',
+            columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+            study: create(:open_study, accession_number: 'acc')
+          )
+        download.save(test_file_name)
+        uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+        Delayed::Worker.delay_jobs = true # Delay the jobs to prevent inline running - and increase the count
+        expect { uploader.run! }.to change(Delayed::Job, :count).by(number_of_plates * samples_per_plate)
+      end
+
+      it 'will update accessioned data if the samples are already accessioned' do
+        download =
+          build(
+            :test_download_plates,
+            manifest_type: 'plate_full',
+            columns: SampleManifestExcel.configuration.columns.plate_full.dup,
+            study: create(:open_study, accession_number: 'acc')
+          )
+        download.save(test_file_name)
+        uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
+
+        # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
+        allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
+          .to receive(:sample_ebi_accession_number)
+          .and_return('existing_accession_number')
+        allow(Rails.logger).to receive(:info)
+
+        # When uploading the same manifest again, re-accession using modify.
+        # See spec/lib/accession/submission_spec.rb for tests with the MODIFY action.
+        uploader.run!
+        expect(uploader).to be_processed
+        expect(uploader.upload.sample_manifest).to be_completed
+
+        # Check for updates being logged
+        expect(Rails.logger).to have_received(:info).with(
+          a_string_matching(
+            /^Sample 'sample_1' with .* has had it's accession metadata successfully updated\.$/
+          )
         )
-      download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
-      uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-
-      # Mock sample.sample_metadata.sample_ebi_accession_number.present? to return true
-      allow_any_instance_of(Sample::Metadata) # rubocop:disable RSpec/AnyInstance
-        .to receive(:sample_ebi_accession_number)
-        .and_return('existing_accession_number')
-      allow(Rails.logger).to receive(:warn)
-
-      # When uploading the same manifest again, it should raise an error
-      uploader.run!
-      expect(uploader).to be_processed
-      expect(uploader.upload.sample_manifest).to be_completed
-
-      # Check for multiple warnings being logged
-      expect(Rails.logger).to have_received(:warn).with(
-        "Sample 'sample_1' cannot be accessioned: Sample has already been accessioned. " \
-        'Skipping accessioning for this sample.'
-      )
-      expect(Rails.logger).to have_received(:warn).with(
-        "Sample 'sample_2' cannot be accessioned: Sample has already been accessioned. " \
-        'Skipping accessioning for this sample.'
-      )
-      expect(Rails.logger).to have_received(:warn).with(
-        "Sample 'sample_3' cannot be accessioned: Sample has already been accessioned. " \
-        'Skipping accessioning for this sample.'
-      )
-      expect(Rails.logger).to have_received(:warn).with(
-        "Sample 'sample_4' cannot be accessioned: Sample has already been accessioned. " \
-        'Skipping accessioning for this sample.'
-      )
+        expect(Rails.logger).to have_received(:info).with(
+          a_string_matching(
+            /^Sample 'sample_2' with .* has had it's accession metadata successfully updated\.$/
+          )
+        )
+        expect(Rails.logger).to have_received(:info).with(
+          a_string_matching(
+            /^Sample 'sample_3' with .* has had it's accession metadata successfully updated\.$/
+          )
+        )
+        expect(Rails.logger).to have_received(:info).with(
+          a_string_matching(
+            /^Sample 'sample_4' with .* has had it's accession metadata successfully updated\.$/
+          )
+        )
+      end
     end
 
     it 'will not upload an invalid 1d tube sample manifest' do
@@ -294,7 +301,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_full.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -308,7 +314,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -322,7 +327,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -336,7 +340,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -348,7 +351,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
     it 'will upload a valid partial plate sample manifest' do
       download = build(:test_download_plates_partial, columns: SampleManifestExcel.configuration.columns.plate_full.dup)
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       uploader.run!
       expect(uploader).to be_processed
@@ -366,7 +368,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             columns: SampleManifestExcel.configuration.columns.pools_plate.dup
           )
         download.save(test_file_name)
-        Delayed::Worker.delay_jobs = false
         uploader.run!
       end
 
@@ -398,12 +399,10 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
     end
   end
 
-  context 'when checking sample manifest state' do
+  context 'when checking sample manifest state', :un_delay_jobs do
     before do
       create(:insdc_country, name: 'United Kingdom')
     end
-
-    after { Delayed::Worker.delay_jobs = true }
 
     it 'will not be valid if the sample_manifest is already being processed' do
       download =
@@ -429,7 +428,6 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           columns: SampleManifestExcel.configuration.columns.plate_full.dup
         )
       download.save(test_file_name)
-      Delayed::Worker.delay_jobs = false
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
       # Set it to its initial state
       uploader.upload.sample_manifest.state = 'pending'

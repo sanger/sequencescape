@@ -16,17 +16,13 @@ RSpec.describe Accession::Submission, :accession, type: :model do
     it 'is not valid without an accession sample' do
       expect(described_class.new(contact_user, nil)).not_to be_valid
     end
-
-    it 'is not valid unless sample is valid' do
-      expect(described_class.new(contact_user, build(:invalid_accession_sample))).not_to be_valid
-    end
   end
 
   describe '#to_xml' do
-    it 'creates some xml with valid attributes' do
-      submission = described_class.new(contact_user, sample)
-      xml = Nokogiri::XML::Document.parse(submission.to_xml)
+    let(:submission) { described_class.new(contact_user, sample) }
+    let(:xml) { Nokogiri::XML::Document.parse(submission.to_xml) }
 
+    it 'creates some xml with valid attributes' do
       submission_xml = xml.at('SUBMISSION')
       expect(submission_xml.attribute('center_name').value).to eq(Accession::CENTER_NAME)
       expect(submission_xml.attribute('broker_name').value).to eq(submission.service.broker)
@@ -40,15 +36,27 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       expect(xml.at(submission.service.visibility)).to be_present
 
-      expect(xml.at('ACTIONS').children.length).to eq(2)
+      actions_xml = xml.at('ACTIONS')
+      expect(actions_xml.children.length).to eq(2)
 
-      action_xml = xml.at('ADD')
-      expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
-      expect(action_xml.attribute('schema').value).to eq(submission.sample.schema_type)
+      add_xml = actions_xml.at('ADD')
+      expect(add_xml.attribute('source').value).to eq(submission.sample.filename)
+      expect(add_xml.attribute('schema').value).to eq(submission.sample.schema_type)
+    end
+
+    context 'when the sample is already accessioned' do
+      let(:sample) { build(:accession_sample_with_accession_number) }
+
+      it 'creates MODIFY action instead of ADD' do
+        actions_xml = xml.at('ACTIONS')
+        expect(actions_xml.at('ADD')).to be_nil
+        action_xml = actions_xml.at('MODIFY')
+        expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
+      end
     end
   end
 
-  describe '#submit_and_update_accession_number' do
+  describe '#submit_accession' do
     let(:event_user) { create(:user) }
     let(:submission) { described_class.new(contact_user, sample) }
 
@@ -57,20 +65,46 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       allow(described_class).to receive(:client).and_return(mock_client)
     end
 
-    context 'when the submission is successful' do
-      let(:accession_number) { 'EGA00001000240' }
-      let(:mock_client) do
-        stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+    context 'when th sample has not yet been accessioned' do
+      context 'when the submission is successful' do
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
+
+        before do
+          expect(submission.sample).not_to be_accessioned
+
+          submission.submit_accession(event_user)
+        end
+
+        it 'updates the sample accession number' do
+          expect(submission).to be_accessioned
+        end
       end
 
-      before do
-        expect(submission.sample).not_to be_accessioned
+      context 'when updating an already accessioned sample' do
+        let(:sample) { build(:accession_sample_with_accession_number) }
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
 
-        submission.submit_and_update_accession_number(event_user)
-      end
+        before do
+          expect(submission.sample).to be_accessioned
 
-      it 'updates the sample accession number' do
-        expect(submission).to be_accessioned
+          submission.submit_accession(event_user)
+        end
+
+        it 'records an updated accessioned metadata event on the sample after submission' do
+          expect(sample.sample.events.first).to have_attributes(
+            message: 'Updated accessioned sample metadata',
+            content: nil,
+            family: 'accessioning',
+            of_interest_to: 'administrators',
+            created_by: event_user.login
+          )
+        end
       end
     end
 
@@ -81,19 +115,8 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       it 'raises an error with a message' do
         error_message = "Accessionable submission is invalid: Contact can't be blank, Sample can't be blank"
         expect do
-          invalid_submission.submit_and_update_accession_number(event_user)
+          invalid_submission.submit_accession(event_user)
         end.to raise_error(StandardError, error_message)
-      end
-
-      context 'when the sample is invalid due to already being accessioned' do
-        let(:invalid_submission) { described_class.new(contact_user, build(:invalid_accession_sample)) }
-
-        it 'raises an error with a message' do
-          error_message = 'Accessionable submission is invalid: Sample has already been accessioned.'
-          expect do
-            invalid_submission.submit_and_update_accession_number(event_user)
-          end.to raise_error(StandardError, error_message)
-        end
       end
     end
 
@@ -109,7 +132,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
 
       it 'bubbles up the Accession::Error' do
         expect do
-          submission.submit_and_update_accession_number(event_user)
+          submission.submit_accession(event_user)
         end.to raise_error(Accession::Error, 'Failed to process accessioning response')
       end
     end
