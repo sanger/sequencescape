@@ -53,5 +53,9 @@ module SampleManifest::LibraryTubeBehaviour
     def included_resources
       [{ sample: :sample_metadata, asset: %i[barcodes aliquots] }]
     end
+
+    def stocks?
+      true
+    end
   end
 end
