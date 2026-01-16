@@ -230,6 +230,48 @@ RSpec.describe SamplesController do
           it 'displays a notice message with the generated accession number' do
             expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
           end
+
+          context 'when a network error occurs during accessioning' do
+            before do
+              allow(Accession::Submission).to receive(:client).and_return(
+                stub_accession_client(:submit_and_fetch_accession_number,
+                                      raise_error: Faraday::ConnectionFailed.new('Network connection failed'))
+              )
+
+              get :accession,
+                  params: { id: sample.id },
+                  session: { user: current_user.id }
+            end
+
+            it 'redirects to the sample page' do
+              expect(response).to redirect_to(sample_path(sample.id))
+            end
+
+            it 'displays an error message indicating a network error occurred' do
+              expect(flash[:error]).to eq('Accessioning failed with a network error: Network connection failed')
+            end
+          end
+        end
+
+        context 'when updating an existing accessioned sample' do
+          before do
+            #  re-accession the sample to update the accessioned metadata
+            get :accession,
+                params: { id: sample.id },
+                session: { user: current_user.id }
+          end
+
+          it 'does not change the accession number' do
+            expect(sample.ebi_accession_number).to eq('EGA00001000240')
+          end
+
+          it 'redirects to the sample page' do
+            expect(response).to redirect_to(sample_path(sample.id))
+          end
+
+          it 'displays a notice message indicating the metadata was updated' do
+            expect(flash[:notice]).to eq('Accessioned metadata updated')
+          end
         end
       end
     end
