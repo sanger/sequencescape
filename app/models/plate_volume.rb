@@ -72,6 +72,9 @@ class PlateVolume < ApplicationRecord
   end
 
   class << self
+    # Processes all plate volume check CSV files in the specified folder.
+    # For each valid file, it uploads a copy and updates the plate volumes as a QcResult,
+    # skipping files that are directories, not CSV, or larger than 500 KB.
     def process_all_volume_check_files(folder = configatron.plate_volume_files)
       Rails.logger.info("Starting processing of volume check files in folder: #{folder}")
 
@@ -82,10 +85,16 @@ class PlateVolume < ApplicationRecord
       Rails.logger.info('Completed processing of volume check files')
     end
 
+    # Returns an array of plate volume file names in the provided folder.
+    # Filters out directories, non-CSV files, and files larger than 500 KB.
     def all_plate_volume_file_names(folder)
-      Dir.entries(folder).reject { |f| File.directory?(File.join(folder, f)) }
+      Dir.entries(folder).reject do |f|
+        path = File.join(folder, f)
+        File.directory?(path) || # is a directory
+          File.extname(f).downcase != '.csv' || # not a .csv file
+          File.size(path) > 500 * 1024 # > 500 KB
+      end
     end
-    private :all_plate_volume_file_names
 
     def handle_volume(filename, file)
       Rails.logger.info(

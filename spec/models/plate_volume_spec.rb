@@ -138,4 +138,26 @@ describe PlateVolume do
       end
     end
   end
+
+  describe '.all_plate_volume_file_names' do
+    let(:test_dir) { Rails.root.join('tmp/test_plate_volume_files') }
+
+    before do
+      FileUtils.mkdir_p(test_dir)
+      # Create test files and directories
+      File.write(File.join(test_dir, 'valid.csv'), 'data')
+      File.write(File.join(test_dir, 'large.csv'), 'a' * (501 * 1024))
+      File.write(File.join(test_dir, 'not_csv.txt'), 'data')
+      FileUtils.mkdir_p(File.join(test_dir, 'subdir'))
+    end
+
+    after do
+      FileUtils.rm_rf(test_dir)
+    end
+
+    it 'returns only CSV files <= 500 KB and not directories' do
+      result = described_class.all_plate_volume_file_names(test_dir)
+      expect(result).to contain_exactly('valid.csv')
+    end
+  end
 end
