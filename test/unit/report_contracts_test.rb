@@ -29,7 +29,7 @@ class ReportContractTest < ActiveSupport::TestCase
     .each do |view|
       context "View #{view}" do
         should 'exist in the database' do
-          assert(ActiveRecord::Base.with_connection { |connection| connection.views.include?(view) })
+          assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
         end
       end
     end

@@ -38,11 +38,9 @@ module ViewsSchema
 
   def self.each_view
     all_views.each do |name|
-      query = ActiveRecord::Base.with_connection do |connection|
-        connection.exec_query("SHOW CREATE TABLE #{name}").first
-        matched = REGEXP.match(query['Create View'])
-        yield(name, matched[:statement], matched[:algorithm], matched[:security])
-      end
+      query = ActiveRecord::Base.connection.exec_query("SHOW CREATE TABLE #{name}").first
+      matched = REGEXP.match(query['Create View'])
+      yield(name, matched[:statement], matched[:algorithm], matched[:security])
     end
   rescue ActiveRecord::StatementInvalid => e
     puts Rainbow(WARNING).red.inverse
@@ -94,9 +92,7 @@ module ViewsSchema
   def self.drop_view(name)
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
-    ActiveRecord::Base.with_connection do |connection|
-      connection.execute("DROP VIEW IF EXISTS `#{name}`;")
-    end
+    ActiveRecord::Base.connection.execute("DROP VIEW IF EXISTS `#{name}`;")
   end
 
   # Generates the SQL for view creation/updating
@@ -112,8 +108,6 @@ module ViewsSchema
     raise "Invalid name: `#{args[:name]}`" unless /^[a-z0-9_]*$/.match?(args[:name])
 
     args[:statement] = args[:statement].to_sql if args[:statement].respond_to?(:to_sql)
-    ActiveRecord::Base.with_connection do |connection|
-      connection.execute(VIEW_STATEMENT % args)
-    end
+    ActiveRecord::Base.connection.execute(VIEW_STATEMENT % args)
   end
 end
