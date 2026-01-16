@@ -239,7 +239,7 @@ class StudiesController < ApplicationController
   def accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
-      @study.validate_ena_required_fields!
+      @study.validate_study_for_accessioning!
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_study_for_user(@study, current_user)
 

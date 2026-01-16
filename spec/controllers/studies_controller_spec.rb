@@ -4,6 +4,7 @@ require 'rails_helper'
 
 RSpec.describe StudiesController do
   include MockAccession
+  include AccessionV1ClientHelper
 
   let(:data_release_study_type) { create(:data_release_study_type, name: 'genomic sequencing') }
   let(:reference_genome) { create(:reference_genome) }
@@ -101,7 +102,7 @@ RSpec.describe StudiesController do
     let(:study_metadata) { create(:study_metadata) }
     let(:study) { create(:open_study, study_metadata: create(:study_metadata_for_accessioning)) }
 
-    context 'when accessioning is enabled', :accessioning_enabled do
+    context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       before do
         allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
 
@@ -168,11 +169,18 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#accession_all_samples', :accessioning_enabled do
+  describe '#accession_all_samples', :accessioning_enabled, :un_delay_jobs do
     let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
     let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
 
-    before { post :accession_all_samples, params: { id: study.id } }
+    before do
+      create(:user, api_key: configatron.accession_local_key) # create contact user
+      allow(Accession::Submission).to receive(:client).and_return(
+        stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+      )
+
+      post :accession_all_samples, params: { id: study.id }
+    end
 
     context 'when the accessioning succeeds' do
       it 'redirects to the accession-statuses tab of the study page' do
@@ -183,8 +191,16 @@ RSpec.describe StudiesController do
         expect(flash[:error]).to be_nil
       end
 
+      it 'does not set a flash warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
       it 'sets a flash notice message' do
         expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+      end
+
+      it 'does not set a flash info message' do
+        expect(flash[:info]).to be_nil
       end
     end
 
@@ -239,6 +255,18 @@ RSpec.describe StudiesController do
             ]
           )
           # rubocop:enable Layout/LineLength
+        end
+
+        it 'shows the error messages in the accession statuses of the samples' do
+          study.samples.each do |sample|
+            sample_status = Accession::SampleStatus.where(sample:).first
+            expect(sample_status).to have_attributes(
+              status: 'failed',
+              message: "Sample '#{sample.name}' cannot be accessioned: " \
+                       'Sample must be linked to exactly one study but is linked to studies ' \
+                       "'Study#{sample.name.remove('Sample')}: Manages' and 'Study1: Open'."
+            )
+          end
         end
       end
     end

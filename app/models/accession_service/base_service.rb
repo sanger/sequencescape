@@ -111,9 +111,6 @@ class AccessionService::BaseService
   end
 
   def submit_sample_for_user(sample, user)
-    # TODO: commented out line as not used without error handling
-    # ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
-
     submit(user, Accessionable::Sample.new(sample))
   end
 

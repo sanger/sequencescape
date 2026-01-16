@@ -18,7 +18,7 @@
     <td width="100%" colspan=2>
       <div class="row">
         <div class="col-md-2">
-          <%= form.submit %>
+          <%= form.submit save_text(@sample) %>
         </div>
         <div class="col-md-10">
           <%= link_to "Cancel", (@sample.new_record? ? samples_path : sample_path(@sample)), class: "btn btn-secondary" %>

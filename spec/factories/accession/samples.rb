@@ -41,7 +41,7 @@ FactoryBot.define do
 
     initialize_with { new(standard_tags, sample) }
 
-    factory :invalid_accession_sample do
+    factory :accession_sample_with_accession_number do
       sample do
         create(
           :sample_for_accessioning_with_open_study,
