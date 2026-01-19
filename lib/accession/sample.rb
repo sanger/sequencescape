@@ -16,7 +16,7 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    validate :check_sample, :check_studies
+    validate :check_studies
     validate :check_required_fields, if: proc { |s| s.service.valid? }
 
     attr_reader :standard_tags, :sample, :studies, :service, :tags
@@ -37,6 +37,25 @@ module Accession
 
     def title
       @title ||= sample.sample_metadata.sample_public_name || sample.sanger_sample_id
+    end
+
+    # Validates the sample for accessioning.
+    #
+    # If the sample is valid, the method returns silently.
+    # If the sample is invalid, logs an error message and raisesAccession::InternalValidationError with
+    # details of the validation errors.
+    #
+    # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
+    def validate!
+      return if valid?
+
+      # Add errors from the accession sample to the underlying sample for user feedback
+      @sample.errors.add(:base, errors.full_messages.join(', '))
+
+      # Add sample context to the error message for logging
+      error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
+      Rails.logger.error(error_message)
+      raise Accession::InternalValidationError, error_message
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -80,7 +99,7 @@ module Accession
     # for viewing under sample history.
     def update_accession_number(accession_number, event_user)
       sample.sample_metadata.sample_ebi_accession_number = accession_number
-      sample.save
+      sample.sample_metadata.save # prevent an infinite loop due to after_save callbacks on sample.save
       sample.events.assigned_accession_number!('sample', accession_number, event_user)
     end
 
@@ -94,12 +113,6 @@ module Accession
       sample.studies.for_sample_accessioning.group_by { |study| study.study_metadata.data_release_strategy }
     end
 
-    def check_sample
-      if sample.sample_metadata.sample_ebi_accession_number.present?
-        errors.add(:sample, 'has already been accessioned.')
-      end
-    end
-
     def check_required_fields
       # Skip validation if the feature flag to skip accessioning tag validation is enabled.
       # EBI will still perform its own validation on submission.
@@ -111,7 +124,13 @@ module Accession
     end
 
     def check_studies
-      return if exactly_one_study?
+      exactly_one_study?
+      study_requires_accessioning?
+    end
+
+    def exactly_one_study?
+      # Check that sample is linked to exactly one study
+      return true if studies.length == 1
 
       if studies.empty?
         errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
@@ -121,8 +140,11 @@ module Accession
       end
     end
 
-    def exactly_one_study?
-      studies.length == 1
+    def study_requires_accessioning?
+      # Check if study is present and allowed to be accessioned
+      if sample.ena_study&.accession_required? != true # if true, accession; if false or nil, don't
+        errors.add(:sample, 'is linked to a study that does not require accessioning.')
+      end
     end
   end
 end

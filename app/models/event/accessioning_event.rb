@@ -15,6 +15,18 @@ class Event::AccessioningEvent < Event
     )
   end
 
-  # TODO: Create an updated_accessioned_data! event that indicates that the data associated with
-  # an accessioned entity has been updated.
+  # Indicates that the metadata associated with an accessioned entity has been updated.
+  #
+  # Usage example:
+  #   sample.events.updated_accessioned_metadata!('sample', user)
+  def self.updated_accessioned_metadata!(eventable, accession_type, user)
+    create!(
+      eventful: eventable,
+      message: "Updated accessioned #{accession_type} metadata",
+      content: nil,
+      family: 'accessioning',
+      of_interest_to: 'administrators',
+      created_by: user&.login
+    )
+  end
 end
