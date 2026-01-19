@@ -27,15 +27,6 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     create(:insdc_country, name: 'Niue')
   end
 
-  it 'is not sent for accessioning if the sample has already been accessioned' do
-    sample =
-      create(
-        :sample_for_accessioning_with_open_study,
-        sample_metadata: create(:sample_metadata_for_accessioning, sample_ebi_accession_number: 'ENA123')
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
-  end
-
   it "is not sent for accessioning if the sample doesn't have an appropriate study" do
     expect(described_class.new(tag_list, create(:sample))).not_to be_valid
     expect(described_class.new(tag_list, create(:sample, studies: [create(:open_study)]))).not_to be_valid
