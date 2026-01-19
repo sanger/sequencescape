@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exception_notification'
-
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
