@@ -623,7 +623,7 @@ GEM
       will_paginate (>= 3.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.37)
+    yard (0.9.38)
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)
