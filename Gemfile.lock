@@ -146,7 +146,7 @@ GEM
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
       ssrf_filter (~> 1.0)
-    caxlsx (4.4.0)
+    caxlsx (4.4.1)
       htmlentities (~> 4.3, >= 4.3.4)
       marcel (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.4)
@@ -251,7 +251,7 @@ GEM
       thor
       tilt
     hashdiff (1.2.1)
-    htmlentities (4.3.4)
+    htmlentities (4.4.2)
     http-accept (1.7.0)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
@@ -524,7 +524,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.2.1)
+    rubyzip (3.2.2)
     sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
