@@ -311,7 +311,7 @@ GEM
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
-    multi_json (1.17.0)
+    multi_json (1.19.1)
     multi_test (1.1.0)
     multipart-post (2.4.1)
     mustermann (3.0.0)
