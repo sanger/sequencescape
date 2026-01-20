@@ -15,7 +15,7 @@
     "datatables.net-rowgroup-bs4": "^1.6.0",
     "datatables.net-rowreorder-bs4": "^1.5.0",
     "jquery": "^3.7.1",
-    "jsbarcode": "^3.11.6",
+    "jsbarcode": "^3.12.3",
     "jszip": "^3.10.1",
     "popper.js": "^1.16.1",
     "postcss": "^8.5.6",
