@@ -304,7 +304,8 @@ GEM
       benchmark
       logger
     mini_mime (1.1.5)
-    minitest (5.26.2)
+    minitest (6.0.1)
+      prism (~> 1.5)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
