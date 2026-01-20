@@ -9,16 +9,10 @@ RSpec.describe Accession do
       create(:user, api_key: configatron.accession_local_key) # create contact user
     end
 
-    context 'when accessioning is disabled', :accessioning_disabled do
+    context 'when accessioning is disabled', :accessioning_disabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
       let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
-
-      around do |example|
-        Delayed::Worker.delay_jobs = false
-        example.run
-        Delayed::Worker.delay_jobs = true
-      end
 
       it 'raises an exception if the sample cannot be accessioned' do
         expect { described_class.accession_sample(sample, event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
@@ -34,14 +28,8 @@ RSpec.describe Accession do
       end
     end
 
-    context 'when accessioning is enabled', :accessioning_enabled do
+    context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
-
-      around do |example|
-        Delayed::Worker.delay_jobs = false
-        example.run
-        Delayed::Worker.delay_jobs = true
-      end
 
       context 'when sample fails internal validation' do
         let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
@@ -49,7 +37,7 @@ RSpec.describe Accession do
 
         it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
           expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
-          expect_accession.to raise_error(AccessionService::AccessionValidationFailed) do |error|
+          expect_accession.to raise_error(Accession::InternalValidationError) do |error|
             expect(error.message).to eq(
               "Sample '#{invalid_sample.name}' cannot be accessioned: " \
               'Sample does not have the required metadata: sample-taxon-id.'
@@ -65,11 +53,21 @@ RSpec.describe Accession do
         context 'when the sample is linked to a study with accessioning disabled' do
           before do
             accessionable_sample.ena_study.enforce_accessioning = false
+          end
 
-            described_class.accession_sample(accessionable_sample, event_user)
+          it 'raises an internal validation error' do
+            expect { described_class.accession_sample(accessionable_sample, event_user) }
+              .to raise_error(Accession::InternalValidationError,
+                              "Sample '#{accessionable_sample.name}' cannot be accessioned: " \
+                              'Sample is linked to a study that does not require accessioning.')
           end
 
           it 'does not receive an accession number' do
+            begin
+              described_class.accession_sample(accessionable_sample, event_user)
+            rescue Accession::InternalValidationError
+              # Ignore the error and continue execution
+            end
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
         end
@@ -93,7 +91,8 @@ RSpec.describe Accession do
           before do
             allow(Accession::Submission).to receive(:client).and_return(
               stub_accession_client(:submit_and_fetch_accession_number,
-                                    raise_error: Accession::Error.new('Failed to process accessioning response'))
+                                    raise_error: Accession::ExternalValidationError
+                                      .new('Failed to process accessioning response'))
             )
           end
 
@@ -103,10 +102,14 @@ RSpec.describe Accession do
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
 
-          it 'logs an error' do # rubocop:disable RSpec/MultipleExpectations
+          it 'logs an error' do
             allow(Rails.logger).to receive(:error).and_call_original
 
-            expect { described_class.accession_sample(accessionable_sample, event_user) }.to raise_error(StandardError)
+            begin
+              described_class.accession_sample(accessionable_sample, event_user)
+            rescue Accession::Error
+              # Ignore the error and continue execution
+            end
 
             expect(Rails.logger).to have_received(:error).with(
               "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
@@ -114,18 +117,47 @@ RSpec.describe Accession do
             )
           end
 
-          it 'sends an exception notification' do # rubocop:disable RSpec/MultipleExpectations
-            allow(ExceptionNotifier).to receive(:notify_exception)
+          context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+            before do
+              Flipper.disable(:y25_705_notify_on_external_accessioning_validation_failures)
+            end
 
-            expect { described_class.accession_sample(accessionable_sample, event_user) }.to raise_error(StandardError)
+            it 'does not send an exception notification' do
+              allow(ExceptionNotifier).to receive(:notify_exception)
 
-            sample_name = accessionable_sample.name # 'Sample1'
-            expect(ExceptionNotifier).to have_received(:notify_exception)
-              .with(instance_of(Accession::Error),
-                    data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                                     'Failed to process accessioning response',
-                            sample_name: sample_name,
-                            service_provider: 'ENA' })
+              begin
+                described_class.accession_sample(accessionable_sample, event_user)
+              rescue Accession::Error
+                # Ignore the error and continue execution
+              end
+
+              expect(ExceptionNotifier).not_to have_received(:notify_exception)
+            end
+          end
+
+          context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+            before do
+              Flipper.enable(:y25_705_notify_on_external_accessioning_validation_failures)
+            end
+
+            it 'sends an exception notification' do
+              allow(ExceptionNotifier).to receive(:notify_exception)
+
+              begin
+                described_class.accession_sample(accessionable_sample, event_user)
+              rescue Accession::Error
+                # Ignore the error and continue execution
+              end
+
+              sample_name = accessionable_sample.name # 'Sample1'
+              expect(ExceptionNotifier).to have_received(:notify_exception)
+                .with(instance_of(Accession::ExternalValidationError),
+                      data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                                       'Failed to process accessioning response',
+                              sample_name: sample_name,
+                              service_provider: 'ENA',
+                              user: event_user.login })
+            end
           end
         end
       end

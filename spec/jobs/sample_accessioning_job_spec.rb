@@ -12,7 +12,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
-  let(:logger) { instance_double(Logger, error: nil) }
+  let(:logger) { instance_double(Logger, error: nil, debug: nil) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
@@ -28,10 +28,18 @@ RSpec.describe SampleAccessioningJob, type: :job do
 
     context 'when the submission fails validation' do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+      let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
 
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
-        expect { job.perform }.to raise_error(JobFailed)
+
+        if enable_y25_705_notify_on_internal_accessioning_validation_failures
+          Flipper.enable(:y25_705_notify_on_internal_accessioning_validation_failures)
+        else
+          Flipper.disable(:y25_705_notify_on_internal_accessioning_validation_failures)
+        end
+
+        expect { job.perform }.to raise_error(Accession::InternalValidationError)
       end
 
       context 'when accessioning tag validation is enabled' do
@@ -43,30 +51,43 @@ RSpec.describe SampleAccessioningJob, type: :job do
           sample_status = Accession::SampleStatus.where(sample:).first
           expect(sample_status).to have_attributes(
             status: 'failed',
-            message: 'An internal error occurred during accessioning.'
+            message: "Sample '#{sample.name}' cannot be accessioned: " \
+                     'Sample does not have the required metadata: sample-taxon-id.'
           )
         end
 
         it 'logs the error' do
           expect(logger).to have_received(:error).with(
-            "SampleAccessioningJob failed for sample '#{sample.name}': " \
-            'Accessionable submission is invalid: ' \
+            "Sample '#{sample.name}' cannot be accessioned: " \
             'Sample does not have the required metadata: sample-taxon-id.'
           )
         end
 
-        it 'notifies ExceptionNotifier' do
-          sample_name = sample.name # 'Sample 1'
-          expect(ExceptionNotifier).to have_received(:notify_exception).with(
-            instance_of(StandardError),
-            data: {
-              message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                       'Accessionable submission is invalid: ' \
-                       'Sample does not have the required metadata: sample-taxon-id.',
-              sample_name: sample_name,
-              service_provider: 'ENA'
-            }
-          )
+        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is disabled' do
+          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+
+          it 'does not send an exception notification' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
+
+        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { true }
+
+          it 'notifies ExceptionNotifier' do
+            sample_name = sample.name # 'Sample 1'
+            expect(ExceptionNotifier).to have_received(:notify_exception).with(
+              instance_of(Accession::InternalValidationError),
+              data: {
+                message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                         "Sample '#{sample_name}' cannot be accessioned: " \
+                         'Sample does not have the required metadata: sample-taxon-id.',
+                sample_name: sample_name,
+                service_provider: 'ENA',
+                user: nil
+              }
+            )
+          end
         end
       end
     end
@@ -80,7 +101,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'allows the accessioning to proceed, not raising an error' do
-        expect { job.perform }.not_to raise_error # specifically JobFailed
+        expect { job.perform }.not_to raise_error
       end
 
       it 'removes the latest accession sample status' do
@@ -96,7 +117,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'does not raise an error' do
-        expect { job.perform }.not_to raise_error # specifically JobFailed
+        expect { job.perform }.not_to raise_error
       end
 
       it 'removes the latest accession sample status' do
@@ -105,13 +126,23 @@ RSpec.describe SampleAccessioningJob, type: :job do
     end
 
     context 'when an exception is raised during submission' do
+      let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error: Accession::Error.new('Failed to process accessioning response'))
+                                raise_error:
+                                Accession::ExternalValidationError.new('Failed to process accessioning response'))
         )
-        expect { job.perform }.to raise_error(JobFailed)
+
+        if enable_y25_705_notify_on_external_accessioning_validation_failures
+          Flipper.enable(:y25_705_notify_on_external_accessioning_validation_failures)
+        else
+          Flipper.disable(:y25_705_notify_on_external_accessioning_validation_failures)
+        end
+
+        expect { job.perform }.to raise_error(Accession::ExternalValidationError)
       end
 
       it 'logs the error' do
@@ -121,16 +152,29 @@ RSpec.describe SampleAccessioningJob, type: :job do
         )
       end
 
-      it 'notifies ExceptionNotifier' do
-        expect(ExceptionNotifier).to have_received(:notify_exception).with(
-          instance_of(Accession::Error),
-          data: {
-            message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
-                     'Failed to process accessioning response',
-            sample_name: sample.name, # 'Sample 1',
-            service_provider: 'ENA'
-          }
-        )
+      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
+        it 'does not send an exception notification' do
+          expect(ExceptionNotifier).not_to have_received(:notify_exception)
+        end
+      end
+
+      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+
+        it 'notifies ExceptionNotifier' do
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            instance_of(Accession::ExternalValidationError),
+            data: {
+              message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
+                       'Failed to process accessioning response',
+              sample_name: sample.name, # 'Sample 1',
+              service_provider: 'ENA',
+              user: nil
+            }
+          )
+        end
       end
     end
   end

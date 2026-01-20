@@ -62,6 +62,7 @@ module Accession
   # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
   class Error < StandardError; end
   class ExternalValidationError < Error; end
+  class InternalValidationError < Error; end
 
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
@@ -87,6 +88,18 @@ module Accession
     @configuration = Configuration.new
   end
 
+  # Returns a user-friendly error message based on the error type
+  def self.user_error_message(error)
+    case error
+    when Accession::ExternalValidationError, Accession::InternalValidationError
+      error.message
+    when Faraday::Error
+      'A network error occurred during accessioning and no response was received.'
+    else
+      'An internal error occurred during accessioning.'
+    end
+  end
+
   # --- Methods called by external controllers ---
 
   # Wrapper for sample accessioning with error handling and job management.
@@ -95,23 +108,18 @@ module Accession
   # and supports private helper methods for internal workflow.
   class SampleAccessioning
     def perform(sample, event_user, perform_now)
-      # TODO: move this validation logic to a validation method somewhere else
-      # Check if study is present and allowed to be accessioned
-      return unless sample.ena_study&.accession_required?
-
       # Flag set in the deployment project to allow per-environment enabling of accessioning
       unless configatron.accession_samples
         raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
       end
 
       accessionable = build_accessionable(sample)
-      validate_accessionable!(accessionable)
+      job = SampleAccessioningJob.new(accessionable, event_user)
 
       if perform_now
-        # Perform accessioning job synchronously
-        SampleAccessioningJob.new(accessionable, event_user).perform
+        inline_accession_job!(job)
       else
-        enqueue_accessioning_job!(accessionable, event_user)
+        enqueue_accessioning_job!(job)
       end
     end
 
@@ -121,22 +129,23 @@ module Accession
       Accession::Sample.new(Accession.configuration.tags, sample)
     end
 
-    def validate_accessionable!(accessionable)
-      return if accessionable.valid?
-
-      error_message = "Sample '#{accessionable.sample.name}' cannot be accessioned: " \
-                      "#{accessionable.errors.full_messages.join(', ')}"
-      Rails.logger.error(error_message)
-      raise AccessionService::AccessionValidationFailed, error_message
+    # Perform accessioning job synchronously
+    def inline_accession_job!(job)
+      job.enqueue(nil) # create status
+      job.before(nil) # set status to processing
+      begin
+        job.perform # this runs the job immediately
+        job.success(nil) # remove statuses
+      rescue StandardError
+        job.failure(nil) # set last status to aborted
+        raise
+      end
     end
 
-    def enqueue_accessioning_job!(accessionable, event_user)
-      job = Delayed::Job.enqueue(SampleAccessioningJob.new(accessionable, event_user), priority: 200)
+    def enqueue_accessioning_job!(sample_accessioning_job)
+      # Accessioning jobs are lower priority (higher number) than submissions and reports
+      job = Delayed::Job.enqueue(sample_accessioning_job, priority: 200)
       log_job_status(job)
-    rescue StandardError => e
-      ExceptionNotifier.notify_exception(e, data: { message: 'Failed to enqueue accessioning job' })
-      Rails.logger.error("Failed to enqueue accessioning job: #{e.message}")
-      raise
     end
 
     def log_job_status(job)

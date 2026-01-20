@@ -146,7 +146,7 @@ GEM
       image_processing (~> 1.1)
       marcel (~> 1.0.0)
       ssrf_filter (~> 1.0)
-    caxlsx (4.4.0)
+    caxlsx (4.4.1)
       htmlentities (~> 4.3, >= 4.3.4)
       marcel (~> 1.0)
       nokogiri (~> 1.10, >= 1.10.4)
@@ -223,7 +223,7 @@ GEM
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
-    faraday-multipart (1.1.1)
+    faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
     faraday-net_http (3.4.2)
       net-http (~> 0.5)
@@ -251,7 +251,7 @@ GEM
       thor
       tilt
     hashdiff (1.2.1)
-    htmlentities (4.3.4)
+    htmlentities (4.4.2)
     http-accept (1.7.0)
     http-cookie (1.1.0)
       domain_name (~> 0.5)
@@ -265,7 +265,7 @@ GEM
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.16.0)
+    json (2.18.0)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -311,7 +311,7 @@ GEM
     mocha (2.8.2)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
-    multi_json (1.17.0)
+    multi_json (1.19.1)
     multi_test (1.1.0)
     multipart-post (2.4.1)
     mustermann (3.0.0)
@@ -524,7 +524,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.2.1)
+    rubyzip (3.2.2)
     sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -582,7 +582,7 @@ GEM
     syslog (0.3.0)
       logger
     temple (0.10.4)
-    test-prof (1.4.4)
+    test-prof (1.5.0)
     thor (1.4.0)
     tilt (2.6.1)
     timecop (0.9.10)
@@ -616,14 +616,14 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.1.0)
+    whenever (1.1.1)
       chronic (>= 0.6.3)
     will_paginate (4.0.1)
     will_paginate-bootstrap (1.0.2)
       will_paginate (>= 3.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.37)
+    yard (0.9.38)
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)

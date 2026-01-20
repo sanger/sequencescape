@@ -7,6 +7,7 @@ class AccessionService::BaseService
   self.rest_client_class = RestClient::Resource
 
   def provider
+    'Base'
   end
 
   class AccessionedFile < File
@@ -86,12 +87,17 @@ class AccessionService::BaseService
           raise AccessionService::NumberNotGenerated, 'Service gave no numbers back' unless number_generated
         when 'false'
           errors = xmldoc.root.elements.to_a('//ERROR').map(&:text)
-          current_error = errors.first
-          message = "Current error is: '#{current_error}'"
-          more_messages = "There are #{errors.length - 1} more errors." if errors.many?
+          show_errors = 3
+
+          current_errors = errors.first(show_errors)
+
+          message = "#{provider} service returned #{errors.length} errors: #{current_errors.join('; ')}"
+
+          errors_remaining = errors.length - show_errors
+          more_messages = "- and #{errors_remaining} more errors" if errors_remaining.positive?
+
           raise AccessionService::AccessionServiceError,
-                ['Could not get accession number. Error in submitted data:', $!.to_s, message,
-                 more_messages].compact.join(' ')
+                ['Could not get accession number.', $!.to_s, message, more_messages].compact.join(' ')
         else
           raise AccessionService::AccessionServiceError,
                 "Could not get accession number. Error in submitted data: #{$!}"
@@ -105,9 +111,6 @@ class AccessionService::BaseService
   end
 
   def submit_sample_for_user(sample, user)
-    # TODO: commented out line as not used without error handling
-    # ebi_accession_number = sample.sample_metadata.sample_ebi_accession_number
-
     submit(user, Accessionable::Sample.new(sample))
   end
 

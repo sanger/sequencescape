@@ -88,8 +88,14 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
 
   # Expected mapping of aliquots to their respective 1-based sample IDs.
   let(:sample_id_index_map) do
-    aliquots = requests.flat_map { |request| request.asset.aliquots.sort_by(&:id) }
-    aliquots.each_with_index.to_h { |aliquot, i| [aliquot, i + 1] }
+    map = {}
+    requests.each do |request|
+      aliquots = request.asset.aliquots.sort_by(&:id)
+      aliquots.each_with_index do |aliquot, i|
+        map[aliquot] = i + 1
+      end
+    end
+    map
   end
 
   # Helper to read zip entries into a hash of entry => content
@@ -111,7 +117,7 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   def csv_samples_for(request) # rubocop:disable Metrics/AbcSize
     request.asset.aliquots.map do |aliquot|
       [
-        sample_id_index_map[aliquot].to_s,
+        format('s%d', sample_id_index_map[aliquot]),
         aliquot.sample.name,
         format('Z%04d', tag_index_map[aliquot.tag]),
         aliquot.tag.oligo,
