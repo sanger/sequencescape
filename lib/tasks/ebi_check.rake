@@ -111,20 +111,19 @@ def local_sample_fields(xml)
   doc.xpath('//SAMPLE/SAMPLE_ATTRIBUTES/SAMPLE_ATTRIBUTE').each do |attr|
     tag = attr.at_xpath('TAG')&.text
     value = attr.at_xpath('VALUE')&.text
-    value = '' if value == 'not provided'
     result[tag.to_sym] = value
   end
   result
 end
 
-def process_sample(sample) # rubocop:disable Metrics/MethodLength
+def process_sample(sample) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
   puts "sample_id=#{sample.id}, ebi_accession_number=#{sample.ebi_accession_number}"
   xml = fetch_sc_sample_xml(sample)
   local = local_sample_fields(xml)
-  # puts xml
-  # puts
-  # puts local
-  # puts
+  puts xml
+  puts
+  puts local
+  puts
 
   remote = if sample.ebi_accession_number.start_with?('EGA')
     xml = fetch_drop_box_sample_xml(sample.ebi_accession_number)
@@ -133,10 +132,10 @@ def process_sample(sample) # rubocop:disable Metrics/MethodLength
     xml = fetch_browser_xml(sample.ebi_accession_number)
     remote_browser_sample_fields(xml)
   end
-  # puts xml
-  # puts
-  # puts remote
-  # puts
+  puts xml
+  puts
+  puts remote
+  puts
   print_differences(local, remote)
 end
 
