@@ -301,6 +301,7 @@ en:
       invalid_barcodes_found: "Invalid barcodes found, no report generated: "
       labware_list_empty: "No labware found when attempting to generate the report."
       no_selection_fields_filled: "Please use at least one of the selection criteria."
+      too_many_labwares_found: "Too many labwares found. Please narrow your selection criteria or raise a FreshService ticket if you need a larger report."
       end_date_after_start_date: "The end date must be the same as or after the start date."
       both_dates_required: "Both start and end date are required if either one is used."
       barcodes_maxlength_exceeded: "The length of the text in the barcodes field is too long, please reduce."
