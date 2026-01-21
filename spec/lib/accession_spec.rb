@@ -151,7 +151,8 @@ RSpec.describe Accession do
                       data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
                                        'Failed to process accessioning response',
                               sample_name: sample_name,
-                              service_provider: 'ENA' })
+                              service_provider: 'ENA',
+                              user: event_user.login })
             end
           end
         end

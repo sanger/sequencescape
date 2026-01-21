@@ -79,7 +79,8 @@ RSpec.describe SampleAccessioningJob, type: :job do
                          "Sample '#{sample_name}' cannot be accessioned: " \
                          'Sample does not have the required metadata: sample-taxon-id.',
                 sample_name: sample_name,
-                service_provider: 'ENA'
+                service_provider: 'ENA',
+                user: nil
               }
             )
           end
@@ -165,7 +166,8 @@ RSpec.describe SampleAccessioningJob, type: :job do
               message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
                        'Failed to process accessioning response',
               sample_name: sample.name, # 'Sample 1',
-              service_provider: 'ENA'
+              service_provider: 'ENA',
+              user: nil
             }
           )
         end

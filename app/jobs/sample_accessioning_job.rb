@@ -116,10 +116,15 @@ SampleAccessioningJob =
     end
 
     # Log and email developers of the accessioning error
-    def notify_developers(error, submission)
+    def notify_developers(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
       sample_name = submission.sample.sample.name
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
-      data = { message: message, sample_name: sample_name, service_provider: submission.service&.provider.to_s }
+      data = {
+        message: message,
+        sample_name: sample_name,
+        service_provider: submission.service&.provider.to_s,
+        user: event_user&.login
+      }
 
       Rails.logger.error(message)
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
