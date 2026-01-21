@@ -538,6 +538,7 @@ RSpec/AnyInstance:
   Exclude:
     - 'spec/controllers/samples_controller_spec.rb'
     - 'spec/controllers/studies_controller_spec.rb'
+    - 'spec/features/studies/accession_study_dac_policy_spec.rb'
     - 'spec/features/studies/accession_study_spec.rb'
     - 'spec/models/lane_spec.rb'
 
