@@ -68,8 +68,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .expects(:get)
       .with(
         'http://localhost:9292/v2/label_templates?filter[name]=test_template',
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns(
         {
