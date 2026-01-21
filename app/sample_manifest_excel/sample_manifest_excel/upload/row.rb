@@ -25,7 +25,7 @@ module SampleManifestExcel
       validate :i7_present
       # Ensure i7 column is not blank if it exists in the manifest
       def i7_present
-        return unless columns.names.include?('i7') && value('i7').blank?
+        return unless columns.present? && data.present? && columns.names.include?('i7') && value('i7').blank?
 
         errors.add(:base, "#{row_title} i7 can't be blank")
       end
@@ -33,7 +33,7 @@ module SampleManifestExcel
       validate :i5_present
       # Ensure i5 column is not blank if it exists in the manifest
       def i5_present
-        return unless columns.names.include?('i5') && value('i5').blank?
+        return unless columns.present? && data.present? && columns.names.include?('i5') && value('i5').blank?
 
         errors.add(:base, "#{row_title} i5 can't be blank, putting “n/a” in i5 if only needs one set of tags")
       end

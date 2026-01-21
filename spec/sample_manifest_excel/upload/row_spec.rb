@@ -24,7 +24,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       tube.human_barcode,
       sample_manifest.sample_manifest_assets.first.sanger_sample_id,
       'AA',
-      '',
+      'CC',
       'My reference genome',
       'My New Library Type',
       200,
@@ -101,6 +101,47 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       'Unknown'
     ]
   end
+  let(:data_without_i7_i5) do
+    [
+      tube.human_barcode,
+      sample_manifest.sample_manifest_assets.first.sanger_sample_id,
+      '',
+      '',
+      'My reference genome',
+      'My New Library Type',
+      200,
+      1500,
+      'SCG--1222_A01',
+      '',
+      1,
+      1,
+      'Unknown',
+      '',
+      '',
+      '',
+      'Cell Line',
+      'Nov-16',
+      'Nov-16',
+      '',
+      'No',
+      '',
+      'OTHER',
+      '',
+      '',
+      '',
+      '',
+      '',
+      'SCG--1222_A01',
+      9606,
+      'Homo sapiens',
+      '',
+      '',
+      '',
+      '',
+      11,
+      'Unknown'
+    ]
+  end
 
   it 'is not valid without row number' do
     expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
@@ -113,6 +154,10 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
   it 'is not valid without some columns' do
     expect(described_class.new(number: 1, data: data)).not_to be_valid
+  end
+
+  it 'is not valid without i7/i5 if i7/i5 column exists' do
+    expect(described_class.new(number: 1, data: data_without_i7_i5, columns: columns)).not_to be_valid
   end
 
   it '#value returns value for specified key' do
@@ -184,7 +229,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     aliquot = row.aliquots.first
     expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')
-    expect(aliquot.tag2).to be_nil
+    expect(aliquot.tag2.oligo).to eq('CC')
     expect(aliquot.insert_size_from).to eq(200)
     expect(aliquot.insert_size_to).to eq(1500)
   end
