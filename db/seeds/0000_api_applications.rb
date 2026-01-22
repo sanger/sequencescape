@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-abort 'Your database is already seeded.' if ApiApplication.find_by(name: 'Default Application')
+throw StandardError('Your database is already seeded.') if ApiApplication.find_by(name: 'Default Application')
 
 ApiApplication.new(
   name: 'Default Application',

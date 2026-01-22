@@ -28,7 +28,7 @@ class ReportContractTest < ActiveSupport::TestCase
     .uniq
     .each do |view|
       context "View #{view}" do
-        should 'respond to Select * from' do
+        should 'exist in the database' do
           assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
         end
       end
