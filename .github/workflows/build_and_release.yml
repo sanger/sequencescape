@@ -7,6 +7,18 @@ on:
 jobs:
   build_and_release:
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        # Use the Mysql docker image https://hub.docker.com/_/mysql
+        image: mysql:8.0
+        ports:
+          - 3306 # Default port mappings
+          # Monitor the health of the container to mesaure when it is ready
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: "" # Set root PW to nothing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+
     steps:
       - name: Checkout Repository
         uses: sanger/.github/.github/actions/setup/checkout@master
@@ -16,6 +28,11 @@ jobs:
 
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
+
+      - name: Setup Environment
+        uses: sanger/.github/.github/actions/setup/env@master
+        with:
+          dbport: ${{ job.services.mysql.ports[3306] }}
 
       - name: Compile Build
         run: ./compile-build
