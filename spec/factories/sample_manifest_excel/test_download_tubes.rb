@@ -31,8 +31,6 @@ FactoryBot.define do
         sample_taxon_id: 9606,
         sample_common_name: 'Homo sapiens',
         donor_id: 'id',
-        'i7' => 'ATTACTCG',
-        'i5' => 'CC',
         phenotype: 'Unknown'
       }.with_indifferent_access
     end
