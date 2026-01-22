@@ -109,10 +109,6 @@ module Accession
 
     private
 
-    def set_studies
-      sample.studies.for_sample_accessioning.group_by { |study| study.study_metadata.data_release_strategy }
-    end
-
     def check_required_fields
       # Skip validation if the feature flag to skip accessioning tag validation is enabled.
       # EBI will still perform its own validation on submission.
@@ -137,13 +133,6 @@ module Accession
       else
         study_names = studies.values.flatten.map { |study| "'#{study.name}'" }.to_sentence
         errors.add(:sample, "must be linked to exactly one study but is linked to studies #{study_names}.")
-      end
-    end
-
-    def study_requires_accessioning?
-      # Check if study is present and allowed to be accessioned
-      if sample.ena_study&.accession_required? != true # if true, accession; if false or nil, don't
-        errors.add(:sample, 'is linked to a study that does not require accessioning.')
       end
     end
   end

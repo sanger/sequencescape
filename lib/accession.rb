@@ -106,8 +106,16 @@ module Accession
   # Allows accessioning to be triggered from anywhere in the application.
   # Encapsulates logic for validation, synchronous or asynchronous job execution,
   # and supports private helper methods for internal workflow.
+  # @param sample [Sample] The sample to be accessioned.
+  # @param event_user [User] The user triggering the accessioning event.
+  # @param perform_now [Boolean] Whether to perform accessioning synchronously.
+  # @return [void]
+  # @raise [AccessionService::AccessioningDisabledError] if accessioning is disabled in the environment.
+  # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
-    def perform(sample, event_user, perform_now)
+    def perform(sample, event_user, perform_now) # rubocop:disable Metrics/MethodLength
+      return unless sample.should_be_accessioned?
+
       # Flag set in the deployment project to allow per-environment enabling of accessioning
       unless configatron.accession_samples
         raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'

@@ -488,6 +488,7 @@ Naming/VariableNumber:
     - 'spec/models/robot/pick_data_spec.rb'
     - 'spec/models/robot/verification/source_dest_beds_spec.rb'
     - 'spec/models/robot/verification/source_dest_control_beds_spec.rb'
+    - 'spec/models/sample_spec.rb'
     - 'spec/models/study_spec.rb'
     - 'spec/models/submission_spec.rb'
     - 'spec/models/tag_group_spec.rb'
