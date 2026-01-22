@@ -526,10 +526,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # - it requires accessioning
   # @return [Array<Study>] the studies linked to this sample that are eligible for accessioning
   def studies_for_accessioning
-    # TODO: move this logic to Study model as Study#samples_accessionable?
-    studies_for_release = studies.reject { |study| study.study_metadata.never_release? }
-    accessioned_studies = studies_for_release.select(&:accession_number?)
-    accessioned_studies.select(&:accession_required?)
+    studies.select(&:samples_accessionable?)
   end
 
   # Criteria for whether a sample should be accessioned.
