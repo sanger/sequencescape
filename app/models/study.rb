@@ -79,7 +79,23 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
   DATA_RELEASE_TIMING_PUBLICATION = 'delay until publication'
 
-  DATA_RELEASE_TIMINGS = [
+  # The list of all possible data release timings
+  ALL_DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_NEVER,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for open studies
+  DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for managed studies
+  DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE = [
     DATA_RELEASE_TIMING_STANDARD,
     DATA_RELEASE_TIMING_IMMEDIATE,
     DATA_RELEASE_TIMING_DELAYED
@@ -249,7 +265,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :data_release_timing,
       required: true,
       default: DATA_RELEASE_TIMING_STANDARD,
-      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER] + [DATA_RELEASE_TIMING_PUBLICATION]
+      in: ALL_DATA_RELEASE_TIMINGS
     )
     custom_attribute(
       :data_release_delay_reason,
@@ -386,7 +402,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
             study_metadata: {
               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS + [Study::DATA_RELEASE_TIMING_PUBLICATION]
+              data_release_timing: Study::DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE + Study::DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE
             }
           )
         end
@@ -705,18 +721,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_strategy_must_be_managed?
-    validates :data_release_timing,
-              inclusion: {
-                in: [DATA_RELEASE_TIMING_NEVER]
-              },
-              if: :data_release_timing_must_be_never?
-
-    validates :data_release_timing,
-              inclusion: {
-                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
-              },
-              if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE },
+                                    if: :data_release_strategy_must_be_managed?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE },
+                                    if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: [DATA_RELEASE_TIMING_NEVER] },
+                                    if: :data_release_timing_must_be_never?
 
     def data_release_timing_must_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&
