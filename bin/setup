@@ -2,7 +2,7 @@
 require "fileutils"
 
 APP_ROOT = File.expand_path("..", __dir__)
-APP_NAME = "sequencescape"
+# APP_NAME set in lib/deployed.rb
 
 def system!(*args)
   system(*args, exception: true)
@@ -22,8 +22,6 @@ FileUtils.chdir APP_ROOT do
   end
 
   puts "== Installing dependencies =="
-  system! "gem install bundler --conservative"
-  system("bundle check") || system!("bundle install")
 
   # Set SKIP_AUTOMATIC_GEM_INSTALLATION to disable bundle install here on the CI
   # suite as we've already done it, and this section gets a little clever.
