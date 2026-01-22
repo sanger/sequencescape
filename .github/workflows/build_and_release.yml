@@ -17,11 +17,6 @@ jobs:
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
 
-      - name: Setup Environment
-        uses: sanger/.github/.github/actions/setup/env@master
-        with:
-          dbport: ${{ job.services.mysql.ports[3306] }}
-
       - name: Compile Build
         run: ./compile-build
 
