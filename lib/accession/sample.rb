@@ -19,16 +19,15 @@ module Accession
     validate :check_studies
     validate :check_required_fields, if: proc { |s| s.service.valid? }
 
-    attr_reader :standard_tags, :sample, :studies, :service, :tags
+    attr_reader :standard_tags, :sample, :service, :tags
 
     delegate :ebi_accession_number, to: :sample
 
     def initialize(standard_tags, sample)
       @standard_tags = standard_tags
       @sample = sample
-      @studies = set_studies
       @tags = standard_tags.extract(sample.sample_metadata)
-      @service = Service.new(exactly_one_study? ? studies.keys.first : nil)
+      @service = Service.new(sample.study_for_accessioning&.data_release_strategy)
     end
 
     def name
@@ -120,19 +119,10 @@ module Accession
     end
 
     def check_studies
-      exactly_one_study?
-      study_requires_accessioning?
-    end
+      accessionable_study = sample.study_for_accessioning
 
-    def exactly_one_study?
-      # Check that sample is linked to exactly one study
-      return true if studies.length == 1
-
-      if studies.empty?
-        errors.add(:sample, 'is not linked to any studies but must be linked to exactly one study.')
-      else
-        study_names = studies.values.flatten.map { |study| "'#{study.name}'" }.to_sentence
-        errors.add(:sample, "must be linked to exactly one study but is linked to studies #{study_names}.")
+      if accessionable_study.nil?
+        errors.add(:sample, 'can only be accessioned if linked to a releasable, accessioned study.')
       end
     end
   end
