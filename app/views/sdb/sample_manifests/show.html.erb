@@ -50,18 +50,16 @@
         </div>
 
         <div class="form-group">
-          <%= f.submit "Reprint all labels", class: 'btn btn-success' %>
+          <%= f.submit "Reprint all #{@sample_manifest.barcodes.size} labels", class: 'btn btn-success' %>
         </div>
 
       <% end %>
     <% end %>
-    <%= tag.div(class: "col-md-3") do %>
-      <% if @sample_manifest.barcodes %>
-        <ul>
+    <% if @sample_manifest.barcodes %>
+      <%= tag.div(class: "col-md-9", style: "column-count: 4;") do %>
         <% @sample_manifest.barcodes.each do |barcode| %>
-          <li><%= barcode %></li>
+          <div><%= barcode %></div>
         <% end %>
-        </ul>
       <% end %>
     <% end %>
   <% end %>
