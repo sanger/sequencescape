@@ -107,15 +107,15 @@ Feature: Access pipelines through the API
 
   @create @batch @authorised @error
   Scenario Outline: Attempting to create a batch with invalid request details
-    Given the maximum batch size for the pipeline "Cluster formation PE" is 2
+    Given the UUID for the pipeline "HiSeq 2500 PE (spiked in controls)" is "00000000-1111-2222-3333-444444444445"
 
-    Given there are 4 "Paired end sequencing" requests with IDs starting at 1
+    Given there are 4 "Illumina-A HiSeq 2500 Paired end sequencing" requests with IDs starting at 1
     And all requests have sequential UUIDs based on "11111111-2222-3333-4444"
 
     Given a "Library creation" request with ID 10
     And the UUID for the request with ID 10 is "99999999-1111-2222-3333-444444444444"
 
-    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444444/batches":
+    When I make an authorised POST with the following JSON to the API path "/00000000-1111-2222-3333-444444444445/batches":
       """
       {
         "batch": {

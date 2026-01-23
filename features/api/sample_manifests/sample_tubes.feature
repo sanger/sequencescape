@@ -31,7 +31,6 @@ And I have a "full" authorised user with the key "cucumber"
     Given the "1D Tube" barcode printer "d999bc" exists
     Given the sample manifest with ID 1 has been processed
     And the barcode of the last sample tube is "9999"
-    And the Sanger sample ID of the last sample is "WTCCC99"
 
     When I GET the API path "/00000000-1111-2222-3333-444444444444"
     Then the HTTP response should be "200 OK"

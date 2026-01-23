@@ -26,8 +26,9 @@ Feature: Manage a list of bait libraries
 
   Scenario: Administrators should be able to edit bait libraries
     Given I am a "administrator" user logged in as "admin"
+      And I have a bait library called "BaitToEdit"
       And I go to the bait library management page
-      And I follow "Edit Human all exon 50MB"
+      And I follow "Edit BaitToEdit"
     Then I should see "Bait Library Edit"
     When I fill in "Name" with "Dragon all exon"
       And I select "Agilent" from "Supplier"
@@ -41,7 +42,7 @@ Feature: Manage a list of bait libraries
       And I should see "Dracos"
       And the supplier_identifier for "Dragon all exon" should be nil
       And I should see "Custom - Pipeline"
-      And I should not see "Human all exon 50MB"
+      And I should not see "BaitToEdit"
 
   Scenario: Administrators should be able to add and remove bait libraries
     Given I am a "administrator" user logged in as "admin"
@@ -100,14 +101,15 @@ Feature: Manage a list of bait libraries
 
   Scenario: Administrators should be able to edit and create suppliers
     Given I am an "administrator" user logged in as "admin"
+      And I have a supplier called "SupplierToEdit"
       And I am on the bait library management page
-      And I follow "Edit Agilent"
+      And I follow "Edit SupplierToEdit"
     Then I should see "Bait Library Supplier Edit"
     When I fill in "Name" with "Other Supplier"
       And I press "Update"
     Then I should see "Supplier was successfully updated."
       And I should see "Other Supplier"
-      And I should not see "Agilent"
+      And I should not see "SupplierToEdit"
     When I follow "New Bait Library Supplier"
     Then I should see "Bait Library Supplier New"
     When I fill in "Name" with "New Supplier"
@@ -120,14 +122,15 @@ Feature: Manage a list of bait libraries
 
   Scenario: Administrators should be able to edit and create types
     Given I am an "administrator" user logged in as "admin"
+      And I have a bait library type called "BLTToEdit"
       And I am on the bait library management page
-      And I follow "Edit Standard"
+      And I follow "Edit BLTToEdit"
     Then I should see "Bait Library Type Edit"
     When I fill in "Name" with "Normal"
       And I press "Update"
     Then I should see "Bait Library Type was successfully updated."
       And I should see "Normal"
-      And I should not see "Standard"
+      And I should not see "BLTToEdit"
     When I follow "New Bait Library Type"
     Then I should see "Bait Library Type New"
     When I fill in "Name" with "Rare"
