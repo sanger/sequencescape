@@ -39,4 +39,12 @@ module StudiesHelper
     link_text = tag.strong(study.name) << ' ' << badge(study.state, type: 'study-state')
     link_to(link_text, study_path(study), options)
   end
+
+  def good_icon
+    icon('fas', 'check', class: 'text-success')
+  end
+
+  def bad_icon
+    icon('fas', 'xmark', class: 'text-danger')
+  end
 end
