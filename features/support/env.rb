@@ -14,6 +14,7 @@ end
 require_relative 'simplecov' # loading order is important
 require 'cucumber/rails'
 require_relative 'parameter_types' # does not seem to be automatically loaded correctly...
+require 'database_cleaner-active_record'
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how
@@ -32,28 +33,45 @@ require_relative 'parameter_types' # does not seem to be automatically loaded co
 #
 ActionController::Base.allow_rescue = false
 
-# Remove/comment out the lines below if your app doesn't have a database.
-# For some databases (like MongoDB and CouchDB) you may need to use :truncation instead.
+
+# Our features/api/* feature tests do some horrible things with UUIDs that override seed data.
+# This is an issue because we set the seed data at the start of the test suite and assume it is not manipulated
+# as our database cleaner strategy is to delete everything except seed data.
+# 
+# To fix this we cache the UUIDs at the start of the test suite, and then restore them after each scenario.
+UUID_CACHE = {}
 begin
-  DatabaseCleaner.strategy = :transaction
-rescue NameError
-  raise "You need to add database_cleaner to your Gemfile (in the :test group) if you wish to use it."
-end
-
-# You may also want to configure DatabaseCleaner to use different strategies for certain features and scenarios.
-# See the DatabaseCleaner documentation for details. Example:
-Before('@no-txn,@selenium,@culerity,@celerity,@javascript') do
-  # { except: [:widgets] } may not do what you expect here
-  # as Cucumber::Rails::Database.javascript_strategy overrides
-  # this setting.
+  # Ensure we start from a clean database
   DatabaseCleaner.strategy = :truncation
+  # Clean the database
+  DatabaseCleaner.clean
+  
+  # This strategy will delete all records except those that existed before cleaning was started (seed data)
+  DatabaseCleaner.strategy = DatabaseCleaner::ActiveRecord::SeededDeletion.new
+
+  Rails.application.load_tasks
+  Rails.application.load_seed
+
+  UUID_CACHE.merge!(Uuid.all.index_by(&:external_id))
 end
 
-Before('not @no-txn', 'not @selenium', 'not @culerity', 'not @celerity', 'not @javascript') do
-  DatabaseCleaner.strategy = :transaction
+
+Around do |scenario, block|
+  DatabaseCleaner.start
+
+  begin
+    block.call
+  ensure
+    DatabaseCleaner.clean
+    # Restore cached UUIDs
+    Uuid.delete_all
+    UUID_CACHE.values.each do |uuid|
+      Uuid.insert(uuid.attributes)
+    end
+  end
 end
 
 # Possible values are :truncation and :transaction
 # The :transaction strategy is faster, but might give you threading problems.
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
-Cucumber::Rails::Database.javascript_strategy = :transaction # :transaction is currently required for sequencescape tests to pass
+Cucumber::Rails::Database.javascript_strategy = :transaction
