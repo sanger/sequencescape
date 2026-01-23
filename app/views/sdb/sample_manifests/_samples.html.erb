@@ -1,15 +1,68 @@
-<%= bs_column do %>
-  <h2>Samples</h2>
-  <%= pagination samples %>
+<%# See app/views/studies/information/_accession_statuses.html.erb %>
 
-  <% samples.each do |sample| %>
-    <%= link_to "#{sample.sanger_sample_id} (#{sample.name})", sample_path(sample) %><br />
+<%# Top Pagination %>
+<%= tag.div(class: 'row align-items-center px-3 pt-3') do %>
+  <%= tag.div(page_summary(samples), class:'col-md-4') %>
+  <%= tag.div(class: 'col-md-4 d-flex justify-content-center mb--3') %>
+  <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
+    <%= samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
   <% end %>
-  <%= pagination samples %>
+<% end %>
 
-  <% if samples.size == 0 %>
-    <div class="help">
-      Samples will be generated on upload.
-    </div>
-  <% end %>
+<%# Table %>
+<table class="table sortable table-striped">
+  <thead>
+    <tr>
+      <th>Sample ID</th>
+      <th>Sample Name</th>
+      <th>Accession Number</th>
+      <th>Status</th>
+      <th>Updated</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% samples.each do |sample| %>
+      <% accession_status = sample.current_accession_status %>
+      <tr>
+        <td><%= link_to(sample.sanger_sample_id, sample) %></td>
+        <td><%= sample.name %></td>
+        <td>
+            <% if sample.accession_number? %>
+              <% catalogue_url = configatron.accession.view_url + sample.ebi_accession_number %>
+              <%= link_to sample.ebi_accession_number, url_for(catalogue_url), target: :blank %>
+            <% else %>
+              <%= accession_status&.message %>
+            <% end %>
+        </td>
+        <td><%= accession_status&.status&.capitalize %></td>
+        <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
+        <td>
+          <% if can?(:accession, sample) && configatron.accession_samples %>
+            <%# Add link to perform sample accessioning %>
+            <% if sample.current_accession_status %>
+              <%# If status exists, offer retry %>
+              <%= link_to(
+                '<i class="fa fa-rotate-right"></i> Retry'.html_safe,
+                url_for(controller: '/samples', action: 'accession', id: sample.id),
+                class: "btn btn-sm btn-primary"
+              ) %>
+            <% elsif !sample.accession_number? %>
+              <%# If it has not been accessioned before, offer submit %>
+              <%= link_to(
+                '<i class="fa fa-upload"></i> Submit'.html_safe,
+                url_for(controller: '/samples', action: 'accession', id: sample.id),
+                class: "btn btn-sm btn-outline-primary"
+              ) %>
+            <% end %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%# Bottom Pagination %>
+<%= tag.div(class: 'row px-3 pb-3') do %>
+  <%= tag.div(page_summary(samples), class:'col-md-4') %>
 <% end %>

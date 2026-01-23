@@ -7,7 +7,7 @@
   <p class="lead">Created by <%= link_to @sample_manifest.user.login, profile_path(@sample_manifest.user) %></p>
 <% end %>
 
-<%= panel do %>
+<%= panel :info, title:'Actions' do %>
   <% if @sample_manifest.generated_document %>
     <%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-primary' %>
   <% else %>
@@ -21,7 +21,7 @@
   <% end %>
 <% end %>
 
-<%= panel do %>
+<%= panel :info, title:'Upload a Sample Manifest'  do %>
   <%= render partial: "upload" %>
 <% end %>
 
@@ -40,30 +40,38 @@
 
 <%= render partial: "pool", locals: { sample_manifest: @sample_manifest} %>
 
-<%= panel do %>
-  <%= form_for(@sample_manifest, url: {action: "print_labels"}, method: :post) do |f| %>
+<%= panel :info, title:'Barcodes' do %>
+  <%= tag.div(class: "row") do %>
+    <%= tag.div(class: "col-md-3") do %>
+      <%= form_for(@sample_manifest, url: {action: "print_labels"}, method: :post) do |f| %>
 
-    <div class="form-group">
-      <%= label_tag :barcode_printer, 'Barcode printer' %>
-      <%= render partial: "shared/printer_list" %>
-    </div>
+        <div class="form-group">
+          <%= label_tag :barcode_printer, 'Barcode printer' %>
+          <%= render partial: "shared/printer_list" %>
+        </div>
 
-    <div class="form-group">
-      <%= f.submit "Reprint all labels", class: 'btn btn-success' %>
-    </div>
+        <div class="form-group">
+          <%= f.submit "Reprint all labels", class: 'btn btn-success' %>
+        </div>
 
-  <% end %>
-  <% if @sample_manifest.barcodes %>
-    <%= bs_column do %>
-      <h2>Barcodes</h2>
-      <ul>
-      <% @sample_manifest.barcodes.each do |barcode| %>
-        <li><%= barcode %></li>
       <% end %>
-      </ul>
+    <% end %>
+    <%= tag.div(class: "col-md-3") do %>
+      <% if @sample_manifest.barcodes %>
+        <ul>
+        <% @sample_manifest.barcodes.each do |barcode| %>
+          <li><%= barcode %></li>
+        <% end %>
+        </ul>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
 
-<%= render partial: "samples", locals: { samples: @samples} %>
-
+<%= panel_no_body :info, title:'Samples' do %>
+  <% if @samples.empty? %>
+    <%= tag.div(class: 'p-3') { "Samples will be generated on upload" } %>
+  <% else %>
+    <%= render partial: "samples", locals: { samples: @samples} %>
+  <% end %>
+<% end %>
