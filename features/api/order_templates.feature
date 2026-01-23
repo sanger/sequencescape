@@ -12,9 +12,7 @@ Feature: Access order templates through the API
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
-
-    Given no order templates exist
+    And I have a "full" authorised user with the key "cucumber"
 
   @read
   Scenario: Reading all of the order templates that the system has
