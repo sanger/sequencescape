@@ -523,8 +523,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # A study is eligible for accessioning if:
   # - it is active
   # - it is not set to never release
-  # - it has an accession number
   # - it requires accessioning
+  # - it has an accession number
   # @return [Array<Study>] the studies linked to this sample that are eligible for accessioning
   def studies_for_accessioning
     studies.select(&:samples_accessionable?)
@@ -535,6 +535,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # - it is part of a single accessionable study
   # - that study is active
   # - that study is set to be released
+  # - that study requires accessioning
   # - that study has an accession number
   # @return [Boolean] true if the sample should be accessioned, false otherwise
   def should_be_accessioned?

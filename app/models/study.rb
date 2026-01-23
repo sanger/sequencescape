@@ -567,13 +567,18 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # A study's samples are eligible for accessioning if:
   # - the study is active
   # - the study is not set to never release
-  # - the study has an accession number
   # - the study requires accessioning
+  # - the study has an accession number
   #
   # @return [Boolean] true if the samples in this study are eligible for accessioning, false otherwise
   def samples_accessionable?
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
-    active? & !study_metadata.never_release? & accession_number? & accession_required?
+    [
+      active?,
+      !study_metadata.never_release?,
+      accession_required?,
+      accession_number?
+    ].all?
   end
 
   # Accession all samples in the study.
