@@ -7,7 +7,7 @@ group :default do
   gem 'concurrent-ruby', '1.3.5'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rails', '~> 7.2.0'
+  gem 'rails', '~> 8.0.0'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
