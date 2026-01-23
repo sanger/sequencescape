@@ -26,7 +26,6 @@ Feature: Printing new plate barcodes
     And I press "Submit"
     Then I should see "Barcode labels failed to print"
 
-  @javascript
   Scenario: Creating plates where the scanner appends a carriage return
     Given I am on the new plate page
     When I fill in "User barcode" with multiline text

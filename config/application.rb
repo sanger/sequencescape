@@ -1,21 +1,8 @@
 # frozen_string_literal: true
+
 require_relative 'boot'
-# We don't use:
-# require 'rails/all'
-# Instead we only load the components we need. When updating rails versions you can
-# checkout the contents of https://github.com/rails/rails/blob/main/railties/lib/rails/all.rb
-# to find out what's included by default.
-require 'active_record/railtie'
-require 'active_storage/engine'
-require 'action_controller/railtie'
-require 'action_view/railtie'
-require 'action_mailer/railtie'
-require 'active_job/railtie'
-require 'action_cable/engine'
-require 'action_mailbox/engine'
-require 'action_text/engine'
-require 'rails/test_unit/railtie'
-# require 'sprockets/railtie'
+
+require 'rails/all'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -24,23 +11,31 @@ Bundler.require(*Rails.groups)
 module Sequencescape
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.1
-
-    # Default options which predate the Rails 5 switch
-    config.active_record.belongs_to_required_by_default = false
-    config.action_controller.forgery_protection_origin_check = false
-    config.action_controller.per_form_csrf_tokens = false
+    config.load_defaults 7.2
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
     # the framework and any gems in your application.
 
-    # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
-    config.exceptions_app = routes
-
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = 'utf-8'
+
+    # Default options which predate the Rails 5 switch
+    # Due to loading order, set these here and not in an initializer, see https://github.com/rails/rails/issues/23589
+    config.active_record.belongs_to_required_by_default = false
+    config.action_controller.forgery_protection_origin_check = false
+    config.action_controller.per_form_csrf_tokens = false
+
+    # Enable YJIT by default if running Ruby 3.3+
+    # YJIT is Ruby's JIT compiler that is available in CRuby since Ruby 3.1.
+    # It can provide significant performance improvements for Rails applications, offering 15-25% latency improvements.
+    # In Rails 7.2, YJIT is enabled by default if running Ruby 3.3 or newer.
+    # You can disable YJIT by setting:
+    # Rails.application.config.yjit = false
+
+    # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
+    config.exceptions_app = routes
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password]
@@ -52,7 +47,11 @@ module Sequencescape
 
     config.filter_parameters += %i[password credential_1 uploaded_data]
 
-    # Settings in config/environments/* take precedence over those specified here.
+    # Configuration for the application, engines, and railties goes here.
+    #
+    # These settings can be overridden in specific environments using the files
+    # in config/environments, which are processed later.
+    #
 
     # Add additional load paths for your own custom dirs
     # config.load_paths += %W( #{Rails.root}/extras )
@@ -72,8 +71,6 @@ module Sequencescape
     # Load the custom inflections to help with the AASM module
     Rails.autoloaders.main.inflector.inflect('aasm' => 'AASM')
 
-    config.encoding = 'utf-8'
-
     # Make Time.zone default to the specified zone, and make Active Record store time values
     # in the database in UTC, and return them converted to the specified local zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Uncomment to use default local time.
@@ -82,6 +79,16 @@ module Sequencescape
     # Enable localisations to be split over multiple paths.
     config.i18n.load_path = Dir[File.join(Rails.root, %w[config locales metadata *.{rb,yml}])] # rubocop:disable Rails/RootPathnameMethods
     I18n.enforce_available_locales = false
+
+    ###
+    # Adds image/webp to the list of content types Active Storage considers as an image
+    # Prevents automatic conversion to a fallback PNG, and assumes clients support WebP,
+    # as they support gif, jpeg, and png.
+    # This is possible due to broad browser support for WebP, but older browsers and
+    # email clients may still not support WebP.
+    # Requires imagemagick/libvips built with WebP support.
+    #++
+    Rails.application.config.active_storage.web_image_content_types = %w[image/png image/jpeg image/gif]
 
     config.generators do |g|
       g.test_framework :rspec,
@@ -93,16 +100,5 @@ module Sequencescape
                        request_specs: true
       g.fixture_replacement :factory_bot, dir: 'spec/factories'
     end
-
-    # Rails 5
-
-    config.middleware.insert_before 0, Rack::Cors do
-      allow do
-        origins '*'
-        resource '*', headers: :any, methods: %i[get post options patch], credentials: false
-      end
-    end
-
-    # end Rails 5 #
   end
 end
