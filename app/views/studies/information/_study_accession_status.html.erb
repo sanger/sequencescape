@@ -1,0 +1,67 @@
+<%# Show the user if the study can be accessioned %>
+<%# if not, what criteria needs to be met to allow accessioning %>
+<% if @study.samples_accessionable? %>
+  <%= alert(:success) { "This study is able to accession samples" } %>
+<% else %>
+  <%= alert(:warning) { "This study is not able to accession samples" } %>
+<% end %>
+
+<%= tag.div(class: 'checks p-2') do %>
+
+  <%= tag.div do %>
+    <% if configatron.accession_samples %>
+      ✅ Accessioning is <strong>Enabled</strong>
+    <% else %>
+      ❌ Accessioning is <strong>Disabled</strong> - Please raise a <%= fresh_sevice_link %> ticket for more details
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.active? %>
+      ✅ Study is <strong><%= @study.state.capitalize %></strong>
+    <% else %>
+      ❌ Study is <strong><%= @study.state.capitalize %></strong> - <%= link_to('Activate study', state_study_path(@study)) if can?(:activate, @study) %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.study_metadata.strategy_not_applicable? %>
+      ❌ Study release strategy is set to <strong><%= Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize %></strong> - <%= link_to('Change release strategy', edit_study_path(@study)) if can?(:edit, @study) %>
+    <% else %>
+      ✅ Study release strategy is not set to <%= Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_strategy.humanize})" } %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.accession_required? %>
+      ✅ Study accession numbers are <strong>Enforced</strong> for data release
+    <% else %>
+      ❌ Study accession numbers are <strong>Not Enforced</strong> for data release - <%= link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)) if can?(:administer, @study) %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.study_metadata.never_release? %>
+      ❌ Study release timing is set to <strong><%= Study::DATA_RELEASE_TIMING_NEVER.humanize %></strong> - <%= link_to('Change release settings', edit_study_path(@study)) if can?(:edit, @study) %>
+    <% else %>
+      ✅ Study release timing is not set to <%= Study::DATA_RELEASE_TIMING_NEVER.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_timing.humanize})" } %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.accession_number? %>
+      ✅ Study has an accession number <%= tag.strong { "(#{@study.ebi_accession_number})" } %>
+    <% else %>
+      ❌ Study is <strong>missing an accession number</strong> - <%= link_to('Generate accession number', url_for(controller: '/studies', action: 'accession', id: @study.id)) if can?(:accession, @study) %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if can?(:accession, @study) %>
+      ✅ You <strong>have permission</strong> to accession samples in this study
+    <% else %>
+      ❌ You <strong>do not have permission</strong> to accession samples in this study - Please contact your system administrator
+    <% end %>
+  <% end %>
+
+<% end %>

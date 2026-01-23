@@ -3,6 +3,7 @@
     <ul class="nav nav-tabs card-header-tabs" role="tablist">
       <%= tab 'Overview', active: true %>
       <%= tab 'Details' %>
+      <%= tab 'Study Accessioning' %>
     </ul>
   </header>
   <div class="tab-content" id="myTabContent">
@@ -40,6 +41,11 @@
           <% end %>
         <% end %>
       </table>
+    <% end %>
+    <%= tab_pane('Study Accessioning') do %>
+      <div class="card-body">
+        <%= render partial: 'study_accession_status' %>
+      </div>
     <% end %>
   </div>
 </div>
