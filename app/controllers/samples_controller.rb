@@ -151,8 +151,7 @@ class SamplesController < ApplicationController
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    unless configatron.accession_samples
+    unless accessioning_enabled?
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
 

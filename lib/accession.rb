@@ -114,10 +114,10 @@ module Accession
   # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
     def perform(sample, event_user, perform_now) # rubocop:disable Metrics/MethodLength
+      return unless permitted_to_accession(sample)
       return unless sample.should_be_accessioned?
 
-      # Flag set in the deployment project to allow per-environment enabling of accessioning
-      unless configatron.accession_samples
+      unless accessioning_enabled?
         raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
       end
 

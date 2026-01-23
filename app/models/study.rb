@@ -592,6 +592,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
 
+    unless samples_accessionable?
+      return errors.add(:base,
+                        'Study cannot accession samples, see Study Accessioning tab for details')
+    end
+
     samples.find_each do |sample|
       Accession.accession_sample(sample, event_user) unless sample.accession_number?
     rescue Accession::Error => e

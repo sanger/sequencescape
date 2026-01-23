@@ -9,7 +9,7 @@
 <%= tag.div(class: 'checks p-2') do %>
 
   <%= tag.div do %>
-    <% if configatron.accession_samples %>
+    <% if accessioning_enabled? %>
       <%= good_icon %> Accessioning is <strong>Enabled</strong>
     <% else %>
       <%= bad_icon %> Accessioning is <strong>Disabled</strong> - Please raise a <%= fresh_sevice_link %> ticket for more details
@@ -57,7 +57,7 @@
   <% end %>
 
   <%= tag.div do %>
-    <% if can?(:accession, @study) %>
+    <% if permitted_to_accession?(@study) %>
       <%= good_icon %> You <strong>have permission</strong> to accession samples in this study
     <% else %>
       <%= bad_icon %> You <strong>do not have permission</strong> to accession samples in this study - Please contact your system administrator
