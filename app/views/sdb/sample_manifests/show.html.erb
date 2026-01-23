@@ -11,8 +11,8 @@
   <% if @sample_manifest.generated_document %>
     <%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-primary' %>
   <% else %>
+    <div>Spreadsheets may be missing for manifests created via the API</div>
     <span class="btn btn-lg btn-secondary disabled">No Spreadsheet available</span>
-    <small>Spreadsheets may be missing for manifests created via the API</small>
   <% end %>
   <% if @sample_manifest.uploaded_document %>
     <%= link_to 'Download Completed Manifest', uploaded_spreadsheet_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-secondary' %>
