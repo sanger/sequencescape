@@ -50,7 +50,7 @@
             <% elsif !sample.accession_number? %>
               <%# If it has not been accessioned before, offer submit %>
               <%= link_to(
-                '<i class="fa fa-upload"></i> Submit'.html_safe,
+                '<i class="fa fa-upload"></i> Accession'.html_safe,
                 url_for(controller: '/samples', action: 'accession', id: sample.id),
                 class: "btn btn-sm btn-outline-primary"
               ) %>
