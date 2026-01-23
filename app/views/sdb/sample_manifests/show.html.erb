@@ -26,16 +26,15 @@
 <% end %>
 
 <% if @sample_manifest.last_errors %>
-  <h2>Errors</h2>
-  <div class="help">
-  Since there are errors no samples have been updated. Please fix them and upload again.
-  </div>
-  <ul>
-
+  <%= alert(:warning) do %>
+    <h2>Errors</h2>
+    Since there are errors no samples have been updated. Please fix them and upload again.
+    <ul>
     <% @sample_manifest.last_errors.each do |error| %>
       <li><%= error %></li>
     <% end %>
-  </ul>
+    </ul>
+  <% end %>
 <% end %>
 
 <%= render partial: "pool", locals: { sample_manifest: @sample_manifest} %>
