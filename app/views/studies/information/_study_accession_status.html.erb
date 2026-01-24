@@ -33,18 +33,18 @@
   <% end %>
 
   <%= tag.div do %>
-    <% if @study.accession_required? %>
-      <%= good_icon %> Study accession numbers are <strong>Enforced</strong> for data release
-    <% else %>
-      <%= bad_icon %> Study accession numbers are <strong>Not Enforced</strong> for data release - <%= link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)) if can?(:administer, @study) %>
-    <% end %>
-  <% end %>
-
-  <%= tag.div do %>
     <% if @study.study_metadata.never_release? %>
       <%= bad_icon %> Study release timing is <strong><%= Study::DATA_RELEASE_TIMING_NEVER.humanize %></strong> - <%= link_to('Change release settings', edit_study_path(@study)) if can?(:edit, @study) %>
     <% else %>
       <%= good_icon %> Study release timing is not <%= Study::DATA_RELEASE_TIMING_NEVER.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_timing.humanize})" } %>
+    <% end %>
+  <% end %>
+
+  <%= tag.div do %>
+    <% if @study.accession_required? %>
+      <%= good_icon %> Study accession numbers are <strong>Enforced</strong> for data release
+    <% else %>
+      <%= bad_icon %> Study accession numbers are <strong>Not Enforced</strong> for data release - <%= link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)) if can?(:administer, @study) %>
     <% end %>
   <% end %>
 
