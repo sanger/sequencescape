@@ -626,7 +626,7 @@ GEM
       base64
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.5)
-    whenever (1.1.1)
+    whenever (1.1.2)
       chronic (>= 0.6.3)
     will_paginate (4.0.1)
     will_paginate-bootstrap (1.0.2)
