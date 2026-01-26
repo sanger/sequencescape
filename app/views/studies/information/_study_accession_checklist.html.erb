@@ -12,7 +12,7 @@
     <% if accessioning_enabled? %>
       <%= good_icon %> Accessioning is <strong>Enabled</strong>
     <% else %>
-      <%= bad_icon %> Accessioning is <strong>Disabled</strong> - Please raise a <%= fresh_sevice_link %> ticket for more details
+      <%= bad_icon %> Accessioning is <strong>Disabled</strong> - Please raise a <%= fresh_service_link %> ticket for more details
     <% end %>
   <% end %>
 
@@ -60,7 +60,7 @@
     <% if permitted_to_accession?(@study) %>
       <%= good_icon %> You <strong>have permission</strong> to accession samples in this study
     <% else %>
-      <%= bad_icon %> You <strong>do not have permission</strong> to accession samples in this study - Please contact your team lead or raise a <%= fresh_sevice_link %> ticket
+      <%= bad_icon %> You <strong>do not have permission</strong> to accession samples in this study - Please contact your team lead or raise a <%= fresh_service_link %> ticket
     <% end %>
   <% end %>
 
