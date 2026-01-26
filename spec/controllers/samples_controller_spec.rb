@@ -111,6 +111,7 @@ RSpec.describe SamplesController do
   end
 
   describe '#accession' do
+    let(:current_user) { create(:admin) }
     let(:accession_individual_samples_with_sample_accessioning_job) { false }
 
     before do
@@ -138,7 +139,7 @@ RSpec.describe SamplesController do
       end
 
       it 'displays an error message indicating accessioning is not enabled' do
-        expect(flash[:error]).to eq('Accessioning Service Failed: Accessioning is not enabled in this environment.')
+        expect(flash[:error]).to eq('Accessioning is not enabled in this environment')
       end
     end
 

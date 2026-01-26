@@ -153,8 +153,16 @@ class SamplesController < ApplicationController
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
-    return unless permitted_to_accession?(@sample)
-    return unless accessioning_enabled?
+    unless accessioning_enabled?
+      flash[:error] = 'Accessioning is not enabled in this environment'
+      redirect_to sample_path(@sample)
+      return
+    end
+    unless permitted_to_accession?(@sample)
+      flash[:error] = 'Permission required to accession this sample'
+      redirect_to sample_path(@sample)
+      return
+    end
 
     accession_action = @sample.accession_number? ? :update : :create
 

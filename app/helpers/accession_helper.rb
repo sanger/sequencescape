@@ -13,8 +13,6 @@ module AccessionHelper
   end
 
   def permitted_to_accession?(object)
-    return false unless respond_to?(:current_user) && current_user
-
     can?(:accession, object)
   end
 end
