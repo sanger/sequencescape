@@ -12,6 +12,9 @@ module AccessionHelper
     configatron.accession_samples
   end
 
+  # Checks if the current user is permitted to accession the given object.
+  # @param object [Sample, Study] the object to check permissions for
+  # @return [Boolean] true if the user has permission, false otherwise
   def permitted_to_accession?(object)
     can?(:accession, object) || false
   end
