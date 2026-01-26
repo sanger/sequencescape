@@ -255,7 +255,7 @@ class StudiesController < ApplicationController
   def accession_all_samples # rubocop:disable Metrics/AbcSize
     @study = Study.find(params[:id])
 
-    return errors.add(:base, 'Permission denied to accession this study') unless permitted_to_accession?(@study)
+    return @study.errors.add(:base, 'Permission denied to accession this study') unless permitted_to_accession?(@study)
 
     @study.accession_all_samples(current_user)
 
