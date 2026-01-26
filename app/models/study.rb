@@ -566,6 +566,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   #
   # A study's samples are eligible for accessioning if:
   # - the study is active
+  # - the study's data release strategy open or managed
   # - the study is not set to never release
   # - the study requires accessioning
   # - the study has an accession number
@@ -575,6 +576,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
     [
       active?,
+      !study_metadata.strategy_not_applicable?,
       !study_metadata.never_release?,
       accession_required?,
       accession_number?
