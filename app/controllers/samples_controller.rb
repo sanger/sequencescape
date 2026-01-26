@@ -158,11 +158,12 @@ class SamplesController < ApplicationController
       redirect_to sample_path(@sample)
       return
     end
-    unless permitted_to_accession?(@sample)
-      flash[:error] = 'Permission required to accession this sample'
-      redirect_to sample_path(@sample)
-      return
-    end
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # unless permitted_to_accession?(@sample)
+    #   flash[:error] = 'Permission required to accession this sample'
+    #   redirect_to sample_path(@sample)
+    #   return
+    # end
 
     accession_action = @sample.accession_number? ? :update : :create
 

@@ -100,7 +100,9 @@ RSpec.describe StudiesController do
   end
 
   describe '#accession' do
-    let(:current_user) { create(:admin) } # required for accession permissions
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # let(:current_user) { create(:admin) } # required for accession permissions
+    let(:current_user) { create(:user) }
     let(:study_metadata) { create(:study_metadata) }
     let(:study) { create(:open_study, study_metadata: create(:study_metadata_for_accessioning)) }
 
@@ -172,7 +174,9 @@ RSpec.describe StudiesController do
   end
 
   describe '#accession_all_samples', :accessioning_enabled, :un_delay_jobs do
-    let(:current_user) { create(:admin) } # required for accession permissions
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # let(:current_user) { create(:admin) } # required for accession permissions
+    let(:current_user) { create(:user) }
     let(:number_of_samples) { 5 }
     let(:samples) { create_list(:sample_for_accessioning_with_open_study, number_of_samples) }
     let(:study) { samples.first.studies.first }

@@ -49,7 +49,9 @@
 <% add :menu, "QC Reports" => qc_reports_path -%>
 <% add :menu, "Study QC Reports" => study_reports_study_path(@study) -%>
 
-<% if permitted_to_accession?(@study) & @study.samples_accessionable? %>
+<%# TODO: Y26-xxx - Enforce accessioning permissions %>
+<%# if permitted_to_accession?(@study) & @study.samples_accessionable? %>
+<% if @study.samples_accessionable? %>
   <% add :menu, "Accession all Samples" => accessioning_enabled? ? accession_all_samples_study_path(@study) : 'disabled' -%>
 <% end %>
 

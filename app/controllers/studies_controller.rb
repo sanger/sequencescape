@@ -242,10 +242,11 @@ class StudiesController < ApplicationController
       flash[:warning] = 'Accessioning is not enabled in this environment.'
       return redirect_to(study_path(@study))
     end
-    unless permitted_to_accession?(@study)
-      flash[:error] = 'Permission required to accession this study'
-      return redirect_to(study_path(@study))
-    end
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
 
     rescue_accession_errors do
       @study.validate_study_for_accessioning!
@@ -264,10 +265,11 @@ class StudiesController < ApplicationController
       flash[:warning] = 'Accessioning is not enabled in this environment.'
       return redirect_to(study_path(@study))
     end
-    unless permitted_to_accession?(@study)
-      flash[:error] = 'Permission required to accession this study'
-      return redirect_to(study_path(@study))
-    end
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
 
     @study.accession_all_samples(current_user)
 
@@ -283,10 +285,11 @@ class StudiesController < ApplicationController
   def dac_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
 
-    unless permitted_to_accession?(@study)
-      flash[:error] = 'Permission required to accession this study'
-      return redirect_to(study_path(@study))
-    end
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
 
     rescue_accession_errors do
       accession_service = AccessionService.select_for_study(@study)
@@ -300,10 +303,11 @@ class StudiesController < ApplicationController
   def policy_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
 
-    unless permitted_to_accession?(@study)
-      flash[:error] = 'Permission required to accession this study'
-      return redirect_to(study_path(@study))
-    end
+    # TODO: Y26-xxx - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
 
     rescue_accession_errors do
       accession_service = AccessionService.select_for_study(@study)
