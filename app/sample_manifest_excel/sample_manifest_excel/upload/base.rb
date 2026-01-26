@@ -16,6 +16,7 @@ module SampleManifestExcel
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
       include ActiveModel::Model
+      include AccessionHelper
 
       attr_accessor :file, :column_list, :start_row, :override
 
