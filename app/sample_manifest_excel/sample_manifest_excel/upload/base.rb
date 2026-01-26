@@ -15,8 +15,9 @@ module SampleManifestExcel
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
-      include ActiveModel::Model
+      require_relative '../../../helpers/accession_helper'
       include AccessionHelper
+      include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
 
@@ -103,15 +104,15 @@ module SampleManifestExcel
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
+      # NOTE: this does not check if the current user has permission to accession samples in this manifest
       def trigger_accessioning(event_user)
-        return unless accessioning_enabled?
+        unless accessioning_enabled?
+          Rails.logger.info 'Accessioning is not enabled in this environment. Skipping accessioning.'
+          return
+        end
 
         changed_samples.each do |sample|
-          if permitted_to_accession?(sample)
-            Accession.accession_sample(sample, event_user)
-          else
-            Rails.logger.warn "User #{event_user.login} does not have permission to accession sample #{sample.id}."
-          end
+          Accession.accession_sample(sample, event_user)
         rescue AccessionService::AccessionValidationFailed => e
           Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
         end
