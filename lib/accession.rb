@@ -56,6 +56,8 @@ module Accession
   require_relative 'accession/submission'
   require_relative 'accession/configuration'
 
+  require_relative '../app/helpers/accession_helper'
+
   String.include CoreExtensions::String
 
   # Generic high-level accessioning error
@@ -115,6 +117,8 @@ module Accession
   # @return [void]
   # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
+    include ::AccessionHelper
+
     def perform(sample, event_user, perform_now)
       return unless accessioning_enabled?
       return unless sample.should_be_accessioned?
