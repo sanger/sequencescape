@@ -113,15 +113,11 @@ module Accession
   # @param event_user [User] The user triggering the accessioning event.
   # @param perform_now [Boolean] Whether to perform accessioning synchronously.
   # @return [void]
-  # @raise [AccessionService::AccessioningDisabledError] if accessioning is disabled in the environment.
   # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
-    def perform(sample, event_user, perform_now) # rubocop:disable Metrics/MethodLength
+    def perform(sample, event_user, perform_now)
+      return unless accessioning_enabled?
       return unless sample.should_be_accessioned?
-
-      unless accessioning_enabled?
-        raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-      end
 
       accessionable = build_accessionable(sample)
       job = SampleAccessioningJob.new(accessionable, event_user)

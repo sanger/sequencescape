@@ -559,7 +559,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Save error messages for later feedback to the user in a flash message
   rescue Accession::InternalValidationError
     # validation errors have already been added to the sample in Accession::Sample.validate!
-  rescue AccessionService::AccessioningDisabledError, Accession::Error, Faraday::Error => e
+  rescue Accession::Error, Faraday::Error => e
     message = Accession.user_error_message(e)
     errors.add(:base, message)
   end

@@ -102,7 +102,9 @@ module SampleManifestExcel
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
-      def trigger_accessioning(event_user) # rubocop:disable Metrics/MethodLength
+      def trigger_accessioning(event_user)
+        return unless accessioning_enabled?
+
         changed_samples.each do |sample|
           if permitted_to_accession?(sample)
             Accession.accession_sample(sample, event_user)
@@ -112,9 +114,6 @@ module SampleManifestExcel
         rescue AccessionService::AccessionValidationFailed => e
           Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
         end
-      rescue AccessionService::AccessioningDisabledError
-        Rails.logger.info 'Accessioning is disabled. ' \
-                          "Skipping accessioning of samples in manifest #{sample_manifest.id}."
       end
 
       # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH

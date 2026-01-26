@@ -152,10 +152,7 @@ class SamplesController < ApplicationController
     @sample = Sample.find(params[:id])
 
     return unless permitted_to_accession?(@sample)
-
-    unless accessioning_enabled?
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-    end
+    return unless accessioning_enabled?
 
     accession_action = @sample.accession_number? ? :update : :create
 

@@ -217,8 +217,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def rescue_accession_errors # rubocop:todo Metrics/AbcSize
+  def rescue_accession_errors # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     yield
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Please fill in the required fields'
@@ -234,9 +233,12 @@ class StudiesController < ApplicationController
     redirect_to(edit_study_path(@study))
   end
 
-  # rubocop:enable Metrics/MethodLength
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    unless accessioning_enabled?
+      flash[:warning] = 'Accessioning is not enabled in this environment.'
+      return redirect_to(study_path(@study))
+    end
 
-  def accession
     rescue_accession_errors do
       @study = Study.find(params[:id])
       @study.validate_study_for_accessioning!
