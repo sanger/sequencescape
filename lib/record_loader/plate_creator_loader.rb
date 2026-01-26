@@ -80,12 +80,12 @@ module RecordLoader
     def purposes(options, plate_creator)
       options.fetch('purposes', [])
         .each_with_object([]) do |purpose_name, purpose_relationships|
-        PlatePurpose.find_by!(name: purpose_name).tap do |plate_purpose|
-          purpose_relationships << Plate::Creator::PurposeRelationship.create!(
-            plate_creator_id: plate_creator.id,
-            plate_purpose_id: plate_purpose.id
-          )
-        end
+          PlatePurpose.find_by!(name: purpose_name).tap do |plate_purpose|
+            purpose_relationships << Plate::Creator::PurposeRelationship.create!(
+              plate_creator_id: plate_creator.id,
+              plate_purpose_id: plate_purpose.id
+            )
+          end
       end
     end
 
@@ -97,12 +97,12 @@ module RecordLoader
     def parent_purposes(options, plate_creator)
       options.fetch('parent_purposes', [])
         .each_with_object([]) do |purpose_name, parent_purpose_relationships|
-        PlatePurpose.find_by!(name: purpose_name).tap do |plate_purpose|
-          parent_purpose_relationships << Plate::Creator::ParentPurposeRelationship.create!(
-            plate_creator_id: plate_creator.id,
-            plate_purpose_id: plate_purpose.id
-          )
-        end
+          PlatePurpose.find_by!(name: purpose_name).tap do |plate_purpose|
+            parent_purpose_relationships << Plate::Creator::ParentPurposeRelationship.create!(
+              plate_creator_id: plate_creator.id,
+              plate_purpose_id: plate_purpose.id
+            )
+          end
       end
     end
 

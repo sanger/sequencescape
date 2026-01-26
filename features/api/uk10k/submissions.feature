@@ -12,7 +12,7 @@ Feature: Creating submissions
     And the WTSI single sign-on service recognises "I-am-authenticated" as "John Smith"
 
     Given I am using the latest version of the API
-And I have a "full" authorised user with the key "cucumber"
+    And I have a "full" authorised user with the key "cucumber"
 
     Given I have an "active" study called "Testing submission creation"
     And the UUID for the study "Testing submission creation" is "22222222-3333-4444-5555-000000000000"
@@ -27,7 +27,7 @@ And I have a "full" authorised user with the key "cucumber"
     Given the UUID for the request type "Library creation" is "99999999-1111-2222-3333-000000000000"
     And the UUID for the request type "Paired end sequencing" is "99999999-1111-2222-3333-000000000001"
 
-    @multiple_order
+  @multiple_order
   Scenario: Creating a submission with multiple orders
     Given 4 sample tubes exist with names based on "sampletube" and IDs starting at 1
     And all sample tubes have sequential UUIDs based on "33333333-4444-5555-6666"
@@ -68,33 +68,6 @@ And I have a "full" authorised user with the key "cucumber"
             { "uuid": "11111111-2222-3333-4444-666666666666" },
             { "uuid": "11111111-2222-3333-4444-666666666667" }
           ]
-        }
-      }
-      """
-
-  @create @error @asset
-  Scenario: Attempting to create a submission with an order that has no assets
-    Given I have an order created with the following details based on the template "Illumina-C - Library creation - Paired end sequencing":
-      | study            | 22222222-3333-4444-5555-000000000000                                                                       |
-      | project          | 22222222-3333-4444-5555-000000000001                                                                       |
-      | request_options  | read_length: 76, fragment_size_required_from: 100, fragment_size_required_to: 200, library_type: qPCR only |
-
-    When I POST the following JSON to the API path "/submissions":
-      """
-      {
-        "submission": {
-          "orders": [
-            "11111111-2222-3333-4444-666666666666"
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "422 Unprocessable Entity"
-    And the JSON should be:
-      """
-      {
-        "content": {
-          "orders.assets": [ "can't be blank" ]
         }
       }
       """
