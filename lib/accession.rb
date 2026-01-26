@@ -114,7 +114,7 @@ module Accession
   # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
     def perform(sample, event_user, perform_now) # rubocop:disable Metrics/MethodLength
-      return unless permitted_to_accession(sample)
+      return unless permitted_to_accession?(sample)
       return unless sample.should_be_accessioned?
 
       unless accessioning_enabled?
