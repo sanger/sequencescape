@@ -102,9 +102,13 @@ module SampleManifestExcel
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
-      def trigger_accessioning(event_user)
+      def trigger_accessioning(event_user) # rubocop:disable Metrics/MethodLength
         changed_samples.each do |sample|
-          Accession.accession_sample(sample, event_user)
+          if permitted_to_accession?(sample)
+            Accession.accession_sample(sample, event_user)
+          else
+            Rails.logger.warn "User #{event_user.login} does not have permission to accession sample #{sample.id}."
+          end
         rescue AccessionService::AccessionValidationFailed => e
           Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
         end

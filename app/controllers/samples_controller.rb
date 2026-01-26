@@ -151,6 +151,8 @@ class SamplesController < ApplicationController
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
+    return unless permitted_to_accession?(@sample)
+
     unless accessioning_enabled?
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end

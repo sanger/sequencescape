@@ -106,6 +106,9 @@ module Accession
   # Allows accessioning to be triggered from anywhere in the application.
   # Encapsulates logic for validation, synchronous or asynchronous job execution,
   # and supports private helper methods for internal workflow.
+  #
+  # Note: does not include permission checks - these are Rails based and should be in the appropriate controller.
+  #
   # @param sample [Sample] The sample to be accessioned.
   # @param event_user [User] The user triggering the accessioning event.
   # @param perform_now [Boolean] Whether to perform accessioning synchronously.
@@ -114,7 +117,6 @@ module Accession
   # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
     def perform(sample, event_user, perform_now) # rubocop:disable Metrics/MethodLength
-      return unless permitted_to_accession?(sample)
       return unless sample.should_be_accessioned?
 
       unless accessioning_enabled?
