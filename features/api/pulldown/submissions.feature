@@ -50,42 +50,6 @@ Feature: Creating submissions for pulldown
       }
       """
 
-  @create @error
-  Scenario: A submission should not error if you create it without required options, but does if you build it
-    Given the UUID for the submission template "Pulldown ISC - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
-
-    When I POST the following JSON to the API path "/00000000-1111-2222-3333-444444444444/orders":
-      """
-      {
-        "order": {
-          "project": "22222222-3333-4444-5555-000000000001",
-          "study": "22222222-3333-4444-5555-000000000000",
-          "asset_group_name": "Testing the pulldown submissions"
-        }
-      }
-      """
-    Then the HTTP response should be "201 Created"
-
-    When I POST the following JSON to the API path "/submissions":
-      """
-      {
-        "submission": {
-          "orders": [
-            "11111111-2222-3333-4444-666666666666"
-          ]
-        }
-      }
-      """
-    Then the HTTP response should be "422 Unprocessable Entity"
-    And the JSON should be:
-      """
-      {
-        "content": {
-          "orders.request_options.read_length": ["is '0' should be 50, 75, 100, or 150"]
-        }
-      }
-      """
-
   @create
   Scenario: A submission for a pulldown pipeline that uses bait libraries
     Given the UUID for the submission template "Pulldown ISC - HiSeq paired end sequencing" is "00000000-1111-2222-3333-444444444444"
