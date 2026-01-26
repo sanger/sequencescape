@@ -26,6 +26,7 @@ class IlluminaHtp::MxTubePurpose < Tube::Purpose
   # @return [Plate, nil] The stock plate if found
   #
   def stock_plate(tube)
+    Rails.logger.info("app/models/illumina_htp/mx_tube_purpose.rb: method - calling requests_as_target")
     tube.requests_as_target.where.not(requests: { asset_id: nil }).first&.asset&.plate
   end
   deprecate stock_plate: 'Stock plate is nebulous and can easily lead to unexpected behaviour',

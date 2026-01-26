@@ -23,6 +23,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
         tube = locate_mx_library_tube_for(well)
         next if tube.nil? || should_well_not_be_transferred?(well)
 
+        Rails.logger.info("app/models/transfer/from_plate_to_tube_by_multiplex.rb: well_to_destination - calling requests_as_target")
         store[well] = [tube, tube.requests_as_target.map(&:asset)]
       end
   end
@@ -31,6 +32,7 @@ class Transfer::FromPlateToTubeByMultiplex < Transfer::BetweenPlateAndTubes
   # asset to the destination one.
   # before_create :create_transfer_requests
   def create_transfer_requests
+    Rails.logger.info("app/models/transfer/from_plate_to_tube_by_multiplex.rb: create_transfer_requests - calling requests_as_target")
     each_transfer do |source, destination|
       TransferRequest.create!(
         asset: source,

@@ -9,6 +9,7 @@ module StateChanger
     private
 
     def associated_requests
+      Rails.logger.info("app/models/state_changer/mx_tube.rb: associated_requests - calling requests_as_target")
       labware.requests_as_target.opened
     end
 

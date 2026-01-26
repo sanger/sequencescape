@@ -74,6 +74,7 @@ class NpgActions::AssetsController < ApplicationController
 
   def find_request
     # select any non-cancelled requests
+    Rails.logger.info("app/controllers/npg_actions/assets_controller.rb: index - calling requests_as_target")
     requests = @asset.requests_as_target.not_cancelled
 
     # throw exception if no valid requests found

@@ -20,6 +20,7 @@ class BroadcastEvent::LibraryComplete < BroadcastEvent
 
   has_subjects(:stock_plate) { |work_completion, _e| work_completion.target.original_stock_plates }
   has_subjects(:sample) do |work_completion, e|
+    Rails.logger.info("app/models/broadcast_event/library_complete.rb: method - calling requests_as_target")
     work_completion
       .target
       .requests_as_target
