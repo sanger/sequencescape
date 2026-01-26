@@ -34,8 +34,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .with(
         'http://localhost:9292/v2/print_jobs',
         { 'print_job' => attributes }.to_json,
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns(201)
 
@@ -68,8 +70,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .expects(:get)
       .with(
         'http://localhost:9292/v2/label_templates?filter[name]=test_template',
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns(
         {
@@ -105,8 +109,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .expects(:get)
       .with(
         'http://localhost:9292/v2/printers?filter[name]=test_printer',
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns('{"data":[]}')
     RestClient
@@ -114,8 +120,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .with(
         'http://localhost:9292/v2/printers',
         { 'data' => { 'attributes' => { 'name' => 'test_printer', 'printer_type' => 'squix' } } }.to_json,
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns(201)
     assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
@@ -124,8 +132,10 @@ class PmbClientTest < ActiveSupport::TestCase
       .expects(:get)
       .with(
         'http://localhost:9292/v2/printers?filter[name]=test_printer',
-        content_type: 'application/vnd.api+json',
-        accept: 'application/vnd.api+json'
+        {
+          content_type: 'application/vnd.api+json',
+          accept: 'application/vnd.api+json'
+        }
       )
       .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
     assert_not LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
