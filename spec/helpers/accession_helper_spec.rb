@@ -22,7 +22,7 @@ RSpec.describe AccessionHelper, type: :helper do
   end
 
   describe '#permitted_to_accession?' do
-    let(:object) { double(:object) }
+    let(:object) { double(:object) } # Could be a Study or a Sample # rubocop:disable RSpec/VerifiedDoubles
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
