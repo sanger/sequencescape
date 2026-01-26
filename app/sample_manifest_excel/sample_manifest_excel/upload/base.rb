@@ -202,7 +202,7 @@ module SampleManifestExcel
         @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?)
           .map(&:asset)
           .each do |asset|
-          update_subject_type_for_library_receptacles!(asset)
+            update_subject_type_for_library_receptacles!(asset)
         end
       end
     end
