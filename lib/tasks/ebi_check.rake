@@ -22,7 +22,7 @@ def fetch_sc_study_xml(study)
 end
 
 def fetch_drop_box_study_xml(accession_number)
-  fetch_drop_box_xml('projects', accession_number)
+  fetch_drop_box_xml('studies', accession_number)
 end
 
 def fetch_drop_box_sample_xml(accession_number)
