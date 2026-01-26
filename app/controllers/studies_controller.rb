@@ -6,8 +6,10 @@ class StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
+
   include REXML
   include Informatics::Globals
+  include ::AccessionHelper
 
   before_action :login_required
   authorize_resource only: %i[grant_role remove_role update edit]
@@ -250,8 +252,11 @@ class StudiesController < ApplicationController
     end
   end
 
-  def accession_all_samples
+  def accession_all_samples # rubocop:disable Metrics/AbcSize
     @study = Study.find(params[:id])
+
+    return errors.add(:base, 'Permission denied to accession this study') unless permitted_to_accession?(@study)
+
     @study.accession_all_samples(current_user)
 
     if @study.errors.any?

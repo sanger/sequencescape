@@ -590,9 +590,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # unless the sample already has an accession number.
   # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
   #
+  # NOTE: this does not check if the current user has permission to accession samples in this study
+  #
   # @return [void]
-  def accession_all_samples(event_user) # rubocop:disable Metrics/MethodLength
-    return errors.add(:base, 'Permission denied to accession this study') unless permitted_to_accession?(self)
+  def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
 
     unless samples_accessionable?

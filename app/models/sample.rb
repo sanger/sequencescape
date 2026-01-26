@@ -552,7 +552,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     false
   end
 
-  # NOTE: there is not check here for whether the current user is permitted to accession the sample.
+  # NOTE: this does not check whether the current user is permitted to accession the sample
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
     Accession.accession_sample(self, event_user, perform_now: true)
