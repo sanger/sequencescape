@@ -277,7 +277,8 @@ class StudiesController < ApplicationController
       error_messages = compile_accession_errors(@study.errors)
       flash[:error] = error_messages
     else
-      flash[:notice] = 'All of the samples in this study have been sent for accessioning.'
+      flash[:notice] = 'All of the samples in this study have been sent for accessioning. ' \
+                       'Please check back in 5 minutes to confirm that accessioning was successful.'
     end
     redirect_to(study_path(@study, anchor: 'accession-statuses'))
   end
