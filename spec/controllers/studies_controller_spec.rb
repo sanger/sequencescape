@@ -280,11 +280,11 @@ RSpec.describe StudiesController do
           expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
         end
 
-        it 'does not set a flash notice message' do
+        it 'sets a flash notice message' do
           expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
         end
 
-        it 'sets a flash error message' do
+        it 'does not set a flash error message' do
           expect(flash[:error]).to be_nil
         end
 
