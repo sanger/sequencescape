@@ -10,40 +10,32 @@ module SampleManifestExcel
 
         # rubocop:disable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
         def check_for_retention_instruction
-          upload
-            .rows
-            .each_with_object({}) do |row, tube_retentions|
-              # ignore empty rows and skip if the retention column is not present
-              if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
-                next
-              end
+          upload.rows.each do |row|
+            # ignore empty rows and skip if the retention column is not present
+            next if row.columns.blank? || row.data.blank? || row.columns.extract(['retention_instruction']).count.zero?
 
-              tube_barcode = row.value('sanger_tube_id')
-              sample_id = row.value('sanger_sample_id')
+            tube_barcode = row.value('sanger_tube_id')
+            sample_id = row.value('sanger_sample_id')
 
-              # ignore rows where primary sample fields have not been filled in
-              next unless tube_barcode.present? && sample_id.present?
+            # ignore rows where primary sample fields have not been filled in
+            next unless tube_barcode.present? && sample_id.present?
 
-              # check the row retention instruction is valid
-              err_msg = check_row_retention_value(row, tube_barcode, tube_retentions)
+            # check the row retention instruction is valid
+            err_msg = check_row_retention_value(row)
+            next unless err_msg
 
-              next unless err_msg
-
-              errors.add(
-                :base,
-                "Retention instruction checks failed at row: #{row.number}. #{err_msg}"
-              )
-              break
+            errors.add(
+              :base,
+              "Retention instruction checks failed at row: #{row.number}. #{err_msg}"
+            )
+            break
           end
         end
 
         # rubocop:enable Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
-        def check_row_retention_value(row, _tube_barcode, _tube_retentions)
+        def check_row_retention_value(row)
           # if present the column is mandatory
-          row_retention_value = row.value('retention_instruction')
-          return 'Value cannot be blank.' if row_retention_value.nil?
-
-          nil
+          'Value cannot be blank.' if row.value('retention_instruction').nil?
         end
       end
     end
