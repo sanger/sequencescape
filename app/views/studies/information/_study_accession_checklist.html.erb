@@ -41,7 +41,7 @@
   <% end %>
 
   <%= tag.div do %>
-    <% if @study.accession_required? %>
+    <% if @study.enforce_accessioning? %>
       <%= good_icon %> Study accession numbers are <strong>Enforced</strong> for data release
     <% else %>
       <%= bad_icon %> Study accession numbers are <strong>Not Enforced</strong> for data release - <%= link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)) if can?(:administer, @study) %>
