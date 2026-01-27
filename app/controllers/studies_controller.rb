@@ -282,7 +282,7 @@ class StudiesController < ApplicationController
     redirect_to(study_path(@study, anchor: 'accession-statuses'))
   end
 
-  def dac_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def dac_accession
     @study = Study.find(params[:id])
 
     # TODO: Y26-026 - Enforce accessioning permissions
@@ -300,7 +300,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  def policy_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def policy_accession
     @study = Study.find(params[:id])
 
     # TODO: Y26-026 - Enforce accessioning permissions
