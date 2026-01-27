@@ -541,6 +541,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # - that study has an accession number
   # @return [Boolean] true if the sample should be accessioned, false otherwise
   def should_be_accessioned?
+    # If updating this method, please also update app/views/samples/_studies.html.erb
     accessioning_criteria = [
       studies_for_accessioning.size == 1
     ]
