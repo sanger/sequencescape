@@ -198,7 +198,10 @@ RSpec.describe StudiesController do
       end
 
       it 'sets a flash notice message' do
-        expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+        expect(flash[:notice]).to eq(
+          'All of the samples in this study have been sent for accessioning. ' \
+          'Please check back in 5 minutes to confirm that accessioning was successful.'
+        )
       end
 
       it 'does not set a flash info message' do
@@ -281,7 +284,10 @@ RSpec.describe StudiesController do
         end
 
         it 'sets a flash notice message' do
-          expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'Please check back in 5 minutes to confirm that accessioning was successful.'
+          )
         end
 
         it 'does not set a flash error message' do
