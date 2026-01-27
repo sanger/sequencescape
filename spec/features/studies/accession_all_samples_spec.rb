@@ -5,7 +5,7 @@ require 'rails_helper'
 describe 'Accession all samples', :accessioning_enabled, :un_delay_jobs do
   include AccessionV1ClientHelper
 
-  # TODO: Y26-xxx - Enforce accessioning permissions
+  # TODO: Y26-026 - Enforce accessioning permissions
   # let(:user) { create(:admin, api_key: configatron.accession_local_key) } # admin required for accession permissions
   let(:user) { create(:user, api_key: configatron.accession_local_key) }
   let(:study) { create(:open_study, accession_number: 'ENA123', samples: create_list(:sample_for_accessioning, 5)) }

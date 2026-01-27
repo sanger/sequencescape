@@ -242,7 +242,7 @@ class StudiesController < ApplicationController
       flash[:warning] = 'Accessioning is not enabled in this environment.'
       return redirect_to(study_path(@study))
     end
-    # TODO: Y26-xxx - Enforce accessioning permissions
+    # TODO: Y26-026 - Enforce accessioning permissions
     # unless permitted_to_accession?(@study)
     #   flash[:error] = 'Permission required to accession this study'
     #   return redirect_to(study_path(@study))
@@ -265,7 +265,7 @@ class StudiesController < ApplicationController
       flash[:warning] = 'Accessioning is not enabled in this environment.'
       return redirect_to(study_path(@study))
     end
-    # TODO: Y26-xxx - Enforce accessioning permissions
+    # TODO: Y26-026 - Enforce accessioning permissions
     # unless permitted_to_accession?(@study)
     #   flash[:error] = 'Permission required to accession this study'
     #   return redirect_to(study_path(@study))
@@ -285,7 +285,7 @@ class StudiesController < ApplicationController
   def dac_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
 
-    # TODO: Y26-xxx - Enforce accessioning permissions
+    # TODO: Y26-026 - Enforce accessioning permissions
     # unless permitted_to_accession?(@study)
     #   flash[:error] = 'Permission required to accession this study'
     #   return redirect_to(study_path(@study))
@@ -303,7 +303,7 @@ class StudiesController < ApplicationController
   def policy_accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
 
-    # TODO: Y26-xxx - Enforce accessioning permissions
+    # TODO: Y26-026 - Enforce accessioning permissions
     # unless permitted_to_accession?(@study)
     #   flash[:error] = 'Permission required to accession this study'
     #   return redirect_to(study_path(@study))
