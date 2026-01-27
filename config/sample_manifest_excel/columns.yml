@@ -39,7 +39,7 @@ i7:
       promptTitle: "i7"
       prompt: "Input i7."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
 i5:
   heading: i5 TAG SEQUENCE
   unlocked: true
@@ -50,10 +50,11 @@ i5:
       formula1: "255"
       allowBlank: false
       showInputMessage: true
+      errorStyle: :warning
       promptTitle: "i5"
       prompt: "Input i5."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
 tag_group:
   heading: TAG GROUP
   unlocked: true

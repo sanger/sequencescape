@@ -26,6 +26,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
     let!(:user) { create(:admin) }
     let(:columns) { SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup }
     let(:test_file) { 'test_file.xlsx' }
+    let(:manifest_type) { 'tube_library_with_tag_sequences' }
 
     before do
       download.save(test_file)
@@ -33,7 +34,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
 
     context 'valid' do
       context 'standard' do
-        let(:download) { build(:test_download_tubes, columns:) }
+        let(:download) { build(:test_download_tubes, columns:, manifest_type:) }
 
         it 'upload' do
           login_user(user)
@@ -81,7 +82,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
       end
 
       context 'cgap foreign barcodes' do
-        let(:download) { build(:test_download_tubes_cgap, columns:) }
+        let(:download) { build(:test_download_tubes_cgap, columns:, manifest_type:) }
 
         it 'upload' do
           login_user(user)
