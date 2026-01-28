@@ -3,9 +3,9 @@
 <%# Top Pagination %>
 <%= tag.div(class: 'row align-items-center px-3 pt-3') do %>
   <%= tag.div(page_summary(samples), class:'col-md-4') %>
-  <%= tag.div(class: 'col-md-4 d-flex justify-content-center mb--3') %>
+  <%= tag.div(pagination(samples), class: 'col-md-4 d-flex justify-content-center mb--3') %>
   <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
-    <%= samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+    <%= @sample_manifest.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
   <% end %>
 <% end %>
 
@@ -65,4 +65,5 @@
 <%# Bottom Pagination %>
 <%= tag.div(class: 'row px-3 pb-3') do %>
   <%= tag.div(page_summary(samples), class:'col-md-4') %>
+  <%= tag.div(pagination(samples), class: 'col-md-4 d-flex justify-content-center') %>
 <% end %>
