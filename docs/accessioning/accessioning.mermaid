@@ -16,6 +16,7 @@ flowchart LR
         L_Interface(fa:fa-computer-mouse User Interface)
         L_Model(fa:fa-square-caret-down Model)
         L_Controller(fa:fa-arrows-spin Controller)
+        L_View(fa:fa-eye View)
         L_Function(fa:fa-caret-right Function)
         L_Config(fa:fa-screwdriver-wrench Configuration)
         L_Resource(fa:fa-file Resource)
@@ -23,7 +24,7 @@ flowchart LR
         L_Async(fa:fa-clock Asynchronous Process)
     
         L_User ~~~ L_External ~~~ L_API ~~~ L_Interface ~~~ L_Resource ~~~ L_Async 
-        L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_Function ~~~ L_Library
+        L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_View ~~~ L_Function ~~~ L_Library
     
         InvisibleNodeA[ ] -..-> | Data flow | InvisibleNodeB[ ] -- Function calls --> InvisibleNodeC[ ] == Accessioning function calls ==> InvisibleNodeD[ ]
     end
@@ -34,6 +35,7 @@ flowchart LR
     %% Nodes
     %% Users
     User_SeqOps(fa:fa-user SeqOps)
+    User_Study_Owners(fa:fa-user Study Owners)
     User_Neil(fa:fa-user Neil)
     User_SSR(fa:fa-user SSRs)
     User_LB_Users(fa:fa-user LB Users)
@@ -55,10 +57,14 @@ flowchart LR
     %% MD_SS_Sample(fa:fa-square-caret-down Sample)
     %% MD_SS_Study(fa:fa-square-caret-down Study)
     MD_SS_SampleManifest_Uploader(fa:fa-square-caret-down SampleManifest::Uploader)
+    MD_SS_AccessionStatuses(fa:fa-square-caret-down AccessionStatuses)
 
     %% Controllers
     %% CT_SS_Samples(fa:fa-arrows-spin Samples Controller)
     %% CT_SS_Studies(fa:fa-arrows-spin Studies Controller)
+
+    %% Views
+    VW_SS_Sample(fa:fa-eye Sample View)
 
     %% Functions
     FN_SS_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
@@ -72,13 +78,17 @@ flowchart LR
     FN_SS_Studies_accession(fa:fa-caret-right accession)
     FN_SS_Studies_validate_ena_required_fields(fa:fa-caret-right validate_ena_required_fields!)
     FN_SS_Studies_rescue_accession_errors(fa:fa-caret-right rescue_accession_errors)
+    FN_SS_Accession_accession_sample(fa:fa-caret-right accession_sample)
+    FN_SS_Accession_Sample_validate(fa:fa-caret-right Accession::Sample#validate)
+
+    %% Libraries
+    LB_SS_AccessioningV1Client(fa:fa-book AccessioningV1Client)
 
     %% Other Components
     API_SS_OrderResource(fa:fa-arrow-right-to-bracket Order Resource)
-    CP_SS_Delayed_Job_Accessioning(fa:fa-clock DelayedJob::SampleAccessioningJob)
     CP_SS_AccessionSubmission(fa:fa-book Accession::Submission)
-    CP_SS_AccessionRequest(fa:fa-book Accession::Request)
     CP_SS_SampleManifestExcel_Upload(SampleManifestExcel::Upload)
+    DJ_SS_SampleAccessioningJob(fa:fa-clock SampleAccessioningJob)
 
     %% Config
     CF_SS_accession_samples(fa:fa-screwdriver-wrench accession_samples)
@@ -90,6 +100,7 @@ flowchart LR
     %% Groupings of nodes
     subgraph Providers
         User_SeqOps
+        User_Study_Owners
         User_Neil
         User_SSR
     end
@@ -104,7 +115,12 @@ flowchart LR
         MD_SS_Submission_AccessionBehaviour
         CF_SS_accession_samples
         CF_SS_disable_accession_check
-        CP_SS_Delayed_Job_Accessioning
+
+        DJ_SS_SampleAccessioningJob
+        LB_SS_AccessioningV1Client
+        MD_SS_AccessionStatuses
+
+        VW_SS_Sample
 
         subgraph Samples
             UI_SS_Sample_GAN
@@ -128,11 +144,12 @@ flowchart LR
         subgraph CT_SS_Samples[fa:fa-arrows-spin Samples Controller]
             FN_SS_Samples_accession
         end
-        subgraph LB_SS_Accession[fa:fa-book Accession - newer]
+        subgraph LB_SS_Accession[fa:fa-book Accession - samples only]
+            FN_SS_Accession_accession_sample
             CP_SS_AccessionSubmission
-            CP_SS_AccessionRequest
+            FN_SS_Accession_Sample_validate
         end
-        subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - older]
+        subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - studies only]
             FN_SS_AccessionService_submit_study_for_user
             FN_SS_AccessionService_submit
         end
@@ -168,18 +185,26 @@ flowchart LR
     MD_SS_SampleManifest_Uploader --> CP_SS_SampleManifestExcel_Upload ---> FN_SS_Sample_accession
     
     %% Sample generate accession number
-    User_SSR --> UI_SS_Sample_GAN
     User_Neil --> UI_SS_Sample_GAN
+    User_SSR --> UI_SS_Sample_GAN
     %% FN_SS_Samples_accession --> | 1. |CF_SS_accession_samples
     UI_SS_Sample_GAN --> FN_SS_Samples_accession
-    FN_SS_Samples_accession --> | 2. | FN_SS_Sample_validate_ena_required_fields 
+    FN_SS_Samples_accession --> | 2. | FN_SS_Sample_validate_ena_required_fields
+    FN_SS_Sample_accession ==> FN_SS_Accession_accession_sample
+    FN_SS_Accession_accession_sample ==> DJ_SS_SampleAccessioningJob
+    DJ_SS_SampleAccessioningJob --> | 1. | FN_SS_Accession_Sample_validate
+    DJ_SS_SampleAccessioningJob ==> | 2. | CP_SS_AccessionSubmission
+    CP_SS_AccessionSubmission ==> LB_SS_AccessioningV1Client
+    LB_SS_AccessioningV1Client ==> External_EBI
     FN_SS_AccessionService_submit ==> External_EBI
+    External_EBI ==> MD_SS_AccessionStatuses
+    MD_SS_AccessionStatuses ==> VW_SS_Sample ==> User_SS_Users
     FN_SS_Sample_validate_ena_required_fields -..-> | Validation Failed | FN_SS_Samples_accession
     External_EBI -..-> | FROM AccessionService.submit | FN_SS_AccessionService_submit
     FN_SS_Samples_accession -..-> | flash message | User_SS_Users
 
     %% Study accession all samples
-    User_SSR  --> UI_SS_Study_AAS
+    User_Study_Owners --> UI_SS_Study_AAS
     User_Neil --> UI_SS_Study_AAS
     UI_SS_Study_AAS --> FN_SS_Studies_accession_all_samples 
     FN_SS_Studies_accession_all_samples -->  FN_SS_Study_accession_all_samples
@@ -189,14 +214,9 @@ flowchart LR
     FN_SS_Sample_accession -..-> | FROM accession_all_samples, error messages | FN_SS_Study_accession_all_samples
     %% FN_SS_Sample_accession --> | 1. | CF_SS_accession_samples
     FN_SS_Sample_accession --> | 2. | FN_SS_Sample_validate_accessionable
-    FN_SS_Sample_accession ==> | 3. > NO FEEDBACK > | CP_SS_Delayed_Job_Accessioning
-    CP_SS_Delayed_Job_Accessioning -..-> | exception email | User_Developers
-    CP_SS_Delayed_Job_Accessioning ==> CP_SS_AccessionSubmission ==> CP_SS_AccessionRequest ==> External_EBI
-    %% External_EBI .-> | FROM Accession::Request | CP_SS_Delayed_Job_Accessioning  ...struggling to reverse the arrow here...
-    CP_SS_Delayed_Job_Accessioning -.- | <-- FROM Accession::Request | External_EBI
 
     %% Study generate accession number
-    User_Neil --> UI_SS_Study_GAN
+    User_Study_Owners --> UI_SS_Study_GAN
     UI_SS_Study_GAN --> FN_SS_Studies_accession
     FN_SS_Studies_accession --> | 1. | FN_SS_Studies_validate_ena_required_fields
     FN_SS_Studies_accession --> | 2. | FN_SS_AccessionService_submit_study_for_user
@@ -240,5 +260,5 @@ flowchart LR
     class SS_API,DelayedJob,Samples,Studies,Submissions SequencescapeSection;
     class L_Model,MD_SS_Study,MD_SS_AccessionService,MD_SS_Sample,MD_SS_SampleManifest_Uploader,MD_SS_Order,MD_SS_Submission_AccessionBehaviour railsModel;
     class L_Controller,CT_SS_Samples,CT_SS_Studies railsController;
-    class L_User,User_SeqOps,User_Neil,User_SSR,User_LB_Users,User_SS_Users,User_Developers users;
+    class L_User,User_SeqOps,User_Study_Owners,User_Neil,User_SSR,User_LB_Users,User_SS_Users,User_Developers users;
     class L_Interface,UI_LB_Charge_and_Pass,UI_SS_Sample_GAN,UI_SS_Study_GAN,UI_SS_Study_AAS,UI_SS_Manifest_Upload userInterface;
