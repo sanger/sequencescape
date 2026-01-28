@@ -15,6 +15,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include StandardNamedScopes
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
+  include UnderRepWellCommentsToBroadcast
   extend EventfulRecord
 
   # The three states of {Batch} Also @see {SequencingQcBatch}
@@ -301,24 +302,20 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   #
-  # Verifies that provided barcodes are in the correct locations according to the
-  # request organization within the batch.
-  # Either returns true, and logs the event or returns false.
+  # Used in Sequencing pipelines to check tubes are in the correct position on the flowcell.
   #
-  # @param [Array<Integer>] barcodes An array of 1-7 digit long barcodes
+  # Verifies that provided barcodes are in the correct locations according to the
+  # request 'position' within the batch.
+  # Logs an event if the layout is correct.
+  #
+  # @param [Array<Integer>] barcodes An array of 1-7 digit long barcodes, assumed ordered by position
   # @param [User] user The user validating the barcode layout
   #
   # @return [Bool] true if the layout is correct, false otherwise
   #
-  # rubocop:todo Metrics/MethodLength
-  def verify_tube_layout(barcodes, user = nil) # rubocop:todo Metrics/AbcSize
-    requests.each do |request|
-      barcode = barcodes[request.position - 1]
-      unless barcode == request.asset.machine_barcode || barcode == request.asset.human_barcode
-        expected_barcode = request.asset.human_barcode
-        errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
-      end
-    end
+  def verify_tube_layout(barcodes, user = nil)
+    requests.each { |request| verify_tube_position(request, barcodes) }
+
     if errors.empty?
       lab_events.create(description: 'Tube layout verified', user: user)
       true
@@ -327,7 +324,56 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # rubocop:enable Metrics/MethodLength
+  def verify_tube_position(request, barcodes)
+    scanned_barcode = barcodes[request.position - 1]
+
+    unless tube_barcode_matches(request, scanned_barcode)
+      expected_barcode = request.asset.human_barcode
+      errors.add(:base, "The tube at position #{request.position} is incorrect: expected #{expected_barcode}.")
+    end
+  end
+
+  #
+  # Used in the Ultima sequencing pipelines to check AMP plates are in the correct position.
+  #
+  # Verifies that provided barcodes are in the correct locations according to the
+  # request 'position' within the batch.
+  # Logs an event if the layout is correct.
+  #
+  # @param [Array<Integer>] barcodes An array of AMP plate barcodes, assumed ordered by position
+  # @param [User] user The user validating the barcode layout
+  #
+  # @return [Bool] true if the layout is correct, false otherwise
+  #
+  def verify_amp_plate_layout(barcodes, user = nil)
+    requests.each { |request| verify_amp_plate_position(request, barcodes) }
+
+    if errors.empty?
+      lab_events.create(description: 'AMP plate layout verified', user: user)
+      true
+    else
+      false
+    end
+  end
+
+  def verify_amp_plate_position(request, barcodes)
+    divider = '-'
+    scanned_barcode = barcodes[request.position - 1]
+    scanned_batch_id, tube_barcode = scanned_barcode.split(divider)
+
+    unless batch_id_matches(scanned_batch_id) && tube_barcode_matches(request, tube_barcode)
+      expected_barcode = "#{id}#{divider}#{request.asset.human_barcode}"
+      errors.add(:base, "The barcode at position #{request.position} is incorrect: expected #{expected_barcode}.")
+    end
+  end
+
+  def tube_barcode_matches(request, scanned_barcode)
+    scanned_barcode == request.asset.machine_barcode || scanned_barcode == request.asset.human_barcode
+  end
+
+  def batch_id_matches(scanned_batch_id)
+    scanned_batch_id == id.to_s
+  end
 
   def release_pending_requests
     # We set the unused requests to pending.

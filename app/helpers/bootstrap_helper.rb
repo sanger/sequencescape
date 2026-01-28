@@ -91,6 +91,19 @@ module BootstrapHelper
     will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
   end
 
+  # Return a page summary component like 'Showing 1 to 10 of 100 entries'
+  # Note: this is similar to the default datatables info string, but
+  # for when when we are using server-side pagination
+  def page_summary(collection, **attributes)
+    return '' if collection.nil?
+
+    start_entry = [collection.offset_value + 1, collection.total_entries].min
+    end_entry = [collection.offset_value + collection.limit_value, collection.total_entries].min
+    total_entries = collection.total_entries
+
+    tag.div("Showing #{start_entry} to #{end_entry} of #{total_entries} entries", **attributes)
+  end
+
   # <div class="col-md-size form-group sqs-form"></div>
   def form_group(classes = '', &)
     tag.div(class: "form-group row sqs-form #{classes}".strip, &)
@@ -126,8 +139,8 @@ module BootstrapHelper
   #   </div>
   # </div>
   # rubocop:enable Layout/LineLength
-  def loading_bar(id = 'update_loader', show: false, text: 'Loading')
-    tag.div(class: 'loading-bar-placeholder') do
+  def loading_bar(id = 'update_loader', show: false, text: 'Loading', classes: '')
+    tag.div(class: "loading-bar-placeholder #{classes}".strip) do
       tag.div(id: id, class: 'loading-bar-container', style: show ? '' : 'display: none;') do
         tag.div(text, class: 'loading-bar', role: 'progressbar')
       end

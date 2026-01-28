@@ -35,7 +35,7 @@ module Core::Endpoint::BasicHandler::Actions::Guards
     end
   end
 
-  class GuardProxy < ActiveSupport::ProxyObject
+  class GuardProxy < BasicObject
     def initialize(request, object)
       @request, @object = request, object
     end

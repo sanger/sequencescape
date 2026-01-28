@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+
 module SamplesHelper
-  # Use this wherever you are editing a sample so that you get the sample 'common name' lookup
-  # behaviour.  Attach 'data-organism' attribute to the 'common name' and 'taxon ID' fields
-  # to get them updated.
-  def organism_validation_javascript
-    vite_javascript_tag('organism_validation')
+  # Indicate to the user that saving the sample will also accession it
+  # This will not happen if the study has not been accessioned
+  def save_text(sample)
+    return 'Save and Accession' if sample.ena_study&.accession_number?
+
+    'Save Sample'
   end
 end

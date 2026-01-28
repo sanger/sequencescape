@@ -1,0 +1,14 @@
+---
+UPF EqVol Norm:
+  # Even though this is Ultima, not Illumina, the MX tube has the same behaviour
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false
+UPF Balanced Pool:
+  type: IlluminaHtp::InitialStockTubePurpose
+  target_type: LibraryTube
+  stock_plate: false
+UPF Balanced Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+  stock_plate: false

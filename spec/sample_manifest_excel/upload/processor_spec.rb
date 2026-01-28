@@ -14,6 +14,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
   let(:fake_upload) { Struct.new(:name, :id) }
 
+  before do
+    create(:insdc_country, name: 'United Kingdom')
+  end
+
   it 'is not valid without an upload' do
     expect(SampleManifestExcel::Upload::Processor::Base.new(fake_upload)).not_to be_valid
     expect(SampleManifestExcel::Upload::Processor::Base.new(nil)).not_to be_valid

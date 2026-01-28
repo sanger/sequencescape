@@ -38,7 +38,7 @@ configatron.phix_tag.tag_map_id = 888
 configatron.r_and_d_division = 'RandD'
 configatron.site_url = 'localhost:3000'
 configatron.sta_plate_purpose_name = 'STA'
-configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 configatron.swipecard_pmb_template = 'swipecard_barcode_template'
 
 configatron.help_link_base_url = 'https://ssg-confluence.internal.sanger.ac.uk/display/PSDPUB'
@@ -50,6 +50,8 @@ configatron.external_applications = [
   ['Generic Lims', 'http://www.example.com'],
   %w[Gatekeeper http://www.example.com]
 ]
+
+configatron.location_reports_fetch_count_max = 25000
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
@@ -76,9 +78,10 @@ if Rails.env.development? || Rails.env.profile?
   configatron.plate_barcode_service = 'http://localhost:3011'
   configatron.plate_volume_files = "#{Rails.root}/data/plate_volume/"
 
+  configatron.disable_web_proxy = true
   configatron.proxy = 'http://example.com'
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+  configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
   configatron.amqp.broker.tls = false
@@ -136,7 +139,7 @@ if Rails.env.test? || Rails.env.cucumber?
 
   configatron.plate_volume_files = "#{Rails.root}/test/data/plate_volume/"
 
-  configatron.taxon_lookup_url = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/'
+  configatron.ena_taxon_lookup_url = 'https://www.ebi.ac.uk/ena/taxonomy/rest/'
 
   configatron.amqp.broker.host = 'localhost'
   configatron.amqp.broker.tls = true

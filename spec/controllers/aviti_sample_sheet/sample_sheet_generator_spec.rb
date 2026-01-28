@@ -37,8 +37,8 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
   describe '.generate' do
     subject(:output) { described_class.generate(batch) }
 
-    expected_settings_lines = 7 # [SETTINGS], header, comment, 4 adapter rows
-    expected_phix_lines = 6 # [SAMPLES], header, 4 phiX samples
+    let(:expected_settings_lines) { 7 } # [SETTINGS], header, comment, 4 adapter rows
+    let(:expected_phix_lines) { 6 }     # [SAMPLES], header, 4 phiX samples
 
     context 'with two requests containing different samples' do
       # rubocop:disable RSpec/MultipleExpectations

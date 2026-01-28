@@ -79,7 +79,23 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
   DATA_RELEASE_TIMING_PUBLICATION = 'delay until publication'
 
-  DATA_RELEASE_TIMINGS = [
+  # The list of all possible data release timings
+  ALL_DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_NEVER,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for open studies
+  DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for managed studies
+  DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE = [
     DATA_RELEASE_TIMING_STANDARD,
     DATA_RELEASE_TIMING_IMMEDIATE,
     DATA_RELEASE_TIMING_DELAYED
@@ -109,9 +125,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DATA_RELEASE_DELAY_PERIODS = ['3 months', '6 months', '9 months', '12 months', '18 months'].freeze
 
-  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_strategy']
-  EBI_LIBRARY_SOURCE_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_source']
-  EBI_LIBRARY_SELECTION_OPTIONS = Rails.configuration.ena_requirement_fields['EBI_Library_selection']
+  EBI_LIBRARY_STRATEGY_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_strategy']
+  EBI_LIBRARY_SOURCE_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_source']
+  EBI_LIBRARY_SELECTION_OPTIONS = Rails.application.config.ena_requirement_fields['EBI_Library_selection']
 
   REMAPPED_ATTRIBUTES =
     {
@@ -128,7 +144,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   attr_accessor :approval, :run_count, :total_price
 
   # Associations
-  has_many_events
+  has_many_events do
+    event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
+  end
   has_many_lab_events
 
   role_relation(:followed_by, 'follower')
@@ -157,7 +175,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :items, -> { distinct }, through: :requests
   has_many :projects, -> { distinct }, through: :orders
   has_many :comments, as: :commentable
-  has_many :events, -> { order(:created_at, :id) }, as: :eventful
   has_many :documents, as: :documentable
   has_many :sample_manifests
   has_many :suppliers, -> { distinct }, through: :sample_manifests
@@ -248,7 +265,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :data_release_timing,
       required: true,
       default: DATA_RELEASE_TIMING_STANDARD,
-      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER] + [DATA_RELEASE_TIMING_PUBLICATION]
+      in: ALL_DATA_RELEASE_TIMINGS
     )
     custom_attribute(
       :data_release_delay_reason,
@@ -385,7 +402,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
             study_metadata: {
               data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS
+              data_release_timing: Study::DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE + Study::DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE
             }
           )
         end
@@ -555,10 +572,20 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ebi_accession_number.present?
   end
 
-  def accession_all_samples
+  # Accession all samples in the study.
+  #
+  # If the study does not have an accession number, adds an error to the study and returns.
+  # Otherwise, iterates through each sample in the study and attempts to accession it,
+  # unless the sample already has an accession number.
+  # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
+  #
+  # @return [void]
+  def accession_all_samples(event_user)
+    return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
+
     samples.find_each do |sample|
-      sample.accession if accession_number?
-    rescue AccessionService::AccessionServiceError => e
+      Accession.accession_sample(sample, event_user) unless sample.accession_number?
+    rescue Accession::Error => e
       errors.add(:base, e.message)
     end
   end
@@ -582,22 +609,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       study_metadata.commercially_available == Study::NO
   end
 
-  def accession_service
-    case data_release_strategy
-    when 'open'
-      EnaAccessionService.new
-    when 'managed'
-      EgaAccessionService.new
-    else
-      NoAccessionService.new(self)
-    end
-  end
-
-  def send_samples_to_service?
-    accession_service.no_study_accession_needed || (!study_metadata.never_release? && accession_number?)
-  end
-
-  def validate_ena_required_fields!
+  def validate_study_for_accessioning!
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
@@ -709,18 +721,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_strategy_must_be_managed?
-    validates :data_release_timing,
-              inclusion: {
-                in: [DATA_RELEASE_TIMING_NEVER]
-              },
-              if: :data_release_timing_must_be_never?
-
-    validates :data_release_timing,
-              inclusion: {
-                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
-              },
-              if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE },
+                                    if: :data_release_strategy_must_be_managed?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE },
+                                    if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: [DATA_RELEASE_TIMING_NEVER] },
+                                    if: :data_release_timing_must_be_never?
 
     def data_release_timing_must_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&

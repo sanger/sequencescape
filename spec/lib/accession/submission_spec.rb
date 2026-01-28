@@ -3,86 +3,159 @@
 require 'rails_helper'
 
 RSpec.describe Accession::Submission, :accession, type: :model do
-  let!(:user) { create(:user) }
-  let!(:sample) { build(:accession_sample) }
+  include AccessionV1ClientHelper
 
-  it 'is not valid without a user' do
-    expect(described_class.new(user, nil)).not_to be_valid
+  let(:contact_user) { create(:user) }
+  let(:sample) { build(:accession_sample) }
+
+  context 'when validating' do
+    it 'is not valid without a contact user' do
+      expect(described_class.new(nil, sample)).not_to be_valid
+    end
+
+    it 'is not valid without an accession sample' do
+      expect(described_class.new(contact_user, nil)).not_to be_valid
+    end
   end
 
-  it 'is not valid without an accession sample' do
-    expect(described_class.new(nil, sample)).not_to be_valid
+  describe '#to_xml' do
+    let(:submission) { described_class.new(contact_user, sample) }
+    let(:xml) { Nokogiri::XML::Document.parse(submission.to_xml) }
+
+    it 'creates some xml with valid attributes' do
+      submission_xml = xml.at('SUBMISSION')
+      expect(submission_xml.attribute('center_name').value).to eq(Accession::CENTER_NAME)
+      expect(submission_xml.attribute('broker_name').value).to eq(submission.service.broker)
+      expect(submission_xml.attribute('alias').value).to eq(submission.sample.ebi_alias_datestamped)
+      expect(submission_xml.attribute('submission_date').value).to eq(submission.date)
+
+      contact_xml = xml.at('CONTACT')
+      submission.contact.to_h.each do |attribute, value|
+        expect(contact_xml.attribute(attribute.to_s).value).to eq(value)
+      end
+
+      expect(xml.at(submission.service.visibility)).to be_present
+
+      actions_xml = xml.at('ACTIONS')
+      expect(actions_xml.children.length).to eq(2)
+
+      add_xml = actions_xml.at('ADD')
+      expect(add_xml.attribute('source').value).to eq(submission.sample.filename)
+      expect(add_xml.attribute('schema').value).to eq(submission.sample.schema_type)
+    end
+
+    context 'when the sample is already accessioned' do
+      let(:sample) { build(:accession_sample_with_accession_number) }
+
+      it 'creates MODIFY action instead of ADD' do
+        actions_xml = xml.at('ACTIONS')
+        expect(actions_xml.at('ADD')).to be_nil
+        action_xml = actions_xml.at('MODIFY')
+        expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
+      end
+    end
   end
 
-  it 'is not valid unless sample is valid' do
-    expect(described_class.new(user, build(:invalid_accession_sample))).not_to be_valid
+  describe '#submit_accession' do
+    let(:event_user) { create(:user) }
+    let(:submission) { described_class.new(contact_user, sample) }
+
+    before do
+      # Inject the mocked client into the controller
+      allow(described_class).to receive(:client).and_return(mock_client)
+    end
+
+    context 'when th sample has not yet been accessioned' do
+      context 'when the submission is successful' do
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
+
+        before do
+          expect(submission.sample).not_to be_accessioned
+
+          submission.submit_accession(event_user)
+        end
+
+        it 'updates the sample accession number' do
+          expect(submission).to be_accessioned
+        end
+      end
+
+      context 'when updating an already accessioned sample' do
+        let(:sample) { build(:accession_sample_with_accession_number) }
+        let(:accession_number) { 'EGA00001000240' }
+        let(:mock_client) do
+          stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
+        end
+
+        before do
+          expect(submission.sample).to be_accessioned
+
+          submission.submit_accession(event_user)
+        end
+
+        it 'records an updated accessioned metadata event on the sample after submission' do
+          expect(sample.sample.events.first).to have_attributes(
+            message: 'Updated accessioned sample metadata',
+            content: nil,
+            family: 'accessioning',
+            of_interest_to: 'administrators',
+            created_by: event_user.login
+          )
+        end
+      end
+    end
+
+    context 'when the submission fails validation' do
+      let(:invalid_submission) { described_class.new(nil, nil) }
+      let(:mock_client) { nil } # Client should not be called
+
+      it 'raises an error with a message' do
+        error_message = "Accessionable submission is invalid: Contact can't be blank, Sample can't be blank"
+        expect do
+          invalid_submission.submit_accession(event_user)
+        end.to raise_error(StandardError, error_message)
+      end
+    end
+
+    context 'when the submission fails due to an accessioning error' do
+      let(:mock_client) do
+        stub_accession_client(:submit_and_fetch_accession_number,
+                              raise_error: Accession::Error.new('Failed to process accessioning response'))
+      end
+
+      it 'does not update the sample accession number' do
+        expect(submission).not_to be_accessioned
+      end
+
+      it 'bubbles up the Accession::Error' do
+        expect do
+          submission.submit_accession(event_user)
+        end.to raise_error(Accession::Error, 'Failed to process accessioning response')
+      end
+    end
   end
 
-  it 'creates some xml with valid attributes' do
-    submission = described_class.new(user, sample)
-    xml = Nokogiri::XML::Document.parse(submission.to_xml)
+  describe '#compile_files' do
+    let(:submission) { described_class.new(contact_user, sample) }
+    let(:files) { submission.compile_files }
 
-    submission_xml = xml.at('SUBMISSION')
-    expect(submission_xml.attribute('center_name').value).to eq(Accession::CENTER_NAME)
-    expect(submission_xml.attribute('broker_name').value).to eq(submission.service.broker)
-    expect(submission_xml.attribute('alias').value).to eq(submission.sample.ebi_alias_datestamped)
-    expect(submission_xml.attribute('submission_date').value).to eq(submission.date)
+    it 'returns a hash of files' do
+      expect(files).to be_a(Hash)
+      expect(files.keys).to contain_exactly('SUBMISSION', 'SAMPLE')
+      expect(files.values).to all(be_a(Tempfile))
+    end
 
-    contact_xml = xml.at('CONTACT')
-    submission.contact.to_h.each { |attribute, value| expect(contact_xml.attribute(attribute.to_s).value).to eq(value) }
+    it 'has the submission file correctly reference the sample file' do
+      submission_file = files['SUBMISSION']
+      sample_file = files['SAMPLE']
+      # extract everything after the first underscore
+      remote_sample_filename = sample_file.path.split('_', 2).last
 
-    expect(xml.at(submission.service.visibility)).to be_present
-
-    expect(xml.at('ACTIONS').children.length).to eq(2)
-
-    action_xml = xml.at('ADD')
-    expect(action_xml.attribute('source').value).to eq(submission.sample.filename)
-    expect(action_xml.attribute('schema').value).to eq(submission.sample.schema_type)
-  end
-
-  it 'creates a payload' do
-    payload = described_class.new(user, sample).payload
-    expect(payload.count).to eq(2)
-    expect(payload).to be_all { |_, file| File.file?(file) }
-    expect(payload).to be_all { |key, _| key.match(/\p{Lower}/).nil? }
-  end
-
-  it 'posts the submission and return an appropriate response' do
-    submission = described_class.new(user, sample)
-
-    allow(Accession::Request).to receive(:post).with(submission)
-      .and_return(build(:successful_sample_accession_response))
-    submission.post
-    expect(submission).to be_accessioned
-
-    allow(Accession::Request).to receive(:post).with(submission).and_return(build(:failed_accession_response))
-    submission.post
-    expect(submission).not_to be_accessioned
-  end
-
-  it 'updates the accession number if the submission is successfully posted' do
-    submission = described_class.new(user, sample)
-    submission.update_accession_number
-    expect(submission.sample).not_to be_accessioned
-
-    allow(Accession::Request).to receive(:post).with(submission)
-      .and_return(build(:successful_sample_accession_response))
-    submission.post
-    submission.update_accession_number
-    expect(submission.sample).to be_accessioned
-  end
-
-  it 'raise error message if the submission is invalid' do
-    submission = described_class.new(nil, nil)
-    error_message = "Accessionable submission is invalid: User can't be blank, Sample can't be blank"
-    expect(submission).not_to be_valid
-    expect(submission.errors.full_messages).to include("User can't be blank", "Sample can't be blank")
-    expect { submission.post }.to raise_error(StandardError, error_message)
-
-    submission = described_class.new(user, build(:invalid_accession_sample))
-    error_message = 'Accessionable submission is invalid: Sample has already been accessioned.'
-    expect(submission).not_to be_valid
-    expect(submission.errors.full_messages).to include('Sample has already been accessioned.')
-    expect { submission.post }.to raise_error(StandardError, error_message)
+      submission_content = File.read(submission_file.path)
+      expect(submission_content).to include("\"#{remote_sample_filename}\"") # quotes to avoid partial matches
+    end
   end
 end

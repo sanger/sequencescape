@@ -9,9 +9,20 @@
 class DriverFilesController < ApplicationController
   before_action :find_resources
 
+  # Generates and sends the robot driver file.
+  #
+  # @note Following parameters are required:
+  #   - batch_id: the id of the {Batch} (path parameter)
+  #   - robot_id: the id of the {Robot} (path parameter)
+  #   - barcode: the barcode of the target plate (query parameter)
+  #   - pick_number: the pick number when multiple source plates are used (query parameter)
+  #   - generator_id: the id of the {RobotProperty} to use (query parameter)
+  #
+  # @return [void]
   def show
     @plate_barcode = @batch.plate_barcode(params[:barcode])
-    generator = @robot.generator(batch: @batch, plate_barcode: @plate_barcode, pick_number: pick_number)
+    generator = @robot.generator(batch: @batch, plate_barcode: @plate_barcode, pick_number: pick_number,
+                                 generator_id: generator_id)
     base_filename = "#{@batch.id}_batch_#{@plate_barcode}_#{pick_number}"
     send_data generator.as_text,
               type: generator.type,
@@ -20,6 +31,15 @@ class DriverFilesController < ApplicationController
   end
 
   private
+
+  # Retrieves the required generator_id parameter from query parameters.
+  #
+  # generator_id is the id of the requested robot generation behaviour {RobotProperty}
+  # @raise [ActionController::ParameterMissing] if the parameter is missing
+  # @return [Integer] the generator id
+  def generator_id
+    params.require(:generator_id).to_i
+  end
 
   def pick_number
     params.require(:pick_number).to_i

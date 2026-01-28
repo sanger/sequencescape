@@ -1,8 +1,9 @@
+<% content_for :top_content do %>
+  <% submissions = @submissions %>
+  <% request_type = @request_type %>
+<% end %>
 
-<% submissions = @submissions %>
-<% request_type = @request_type %>
-<%= pagination @page_elements %>
-<table id="summary" width="100%" class="sortable">
+<%# Table contents %>
   <thead>
     <tr>
       <th>Name</th>
@@ -29,5 +30,4 @@
       </tr>
     <% end %>
   <% end %>
-</table>
-<%= pagination @page_elements %>
+<%# End table contents %>

@@ -4,12 +4,13 @@
 <% add :menu, "Back to batch" => batch_path(@batch) %>
 <% add :back_menu, "Back to pipeline" => pipeline_path(@batch.pipeline) %>
 
-<%= page_title 'Verify Tube Layout', "Batch #{@batch.id}" %>
+<%= page_title "Verify #{@verification_flavour.to_s.humanize} Layout", "Batch #{@batch.id}" %>
 <div class="info">
-  Please scan the barcodes from the sample tubes into the table below.
+  <%= "Please scan the barcodes from the #{@verification_flavour.to_s.humanize.downcase.pluralize} into the table below." %>
 </div>
 
-<%= form_tag action: :verify_tube_layout, id: @batch.id  do %>
+<%= form_tag action: :verify_layout, id: @batch.id  do %>
+<%= hidden_field_tag :verification_flavour, @verification_flavour %>
 
 <table width="100%" cellspacing="0" cellpadding="0">
   <tr>

@@ -15,12 +15,22 @@ FactoryBot.define do
     enforce_accessioning { false }
     study_metadata
 
+    transient do
+      # Options to set in the study metadata
+      metadata_options { {} }
+    end
+
     after(:build) do |study|
       study.study_metadata.update!(
         ebi_library_strategy: 'WGS',
         ebi_library_source: 'GENOMIC',
         ebi_library_selection: 'PCR'
       )
+    end
+
+    after(:create) do |study, evaluator|
+      # Set any metadata options passed in
+      study.study_metadata.update!(evaluator.metadata_options)
     end
 
     # These have to build a user list
@@ -38,7 +48,10 @@ FactoryBot.define do
     after(:create) do |study, evaluator|
       study.study_metadata.update!(
         data_release_strategy: 'managed',
-        study_ebi_accession_number: evaluator.accession_number
+        study_ebi_accession_number: evaluator.accession_number,
+        study_abstract: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        study_study_title: 'A managed study for testing purposes',
+        study_type: create(:study_type)
       )
     end
   end

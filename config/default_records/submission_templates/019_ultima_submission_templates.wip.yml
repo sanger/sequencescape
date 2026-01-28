@@ -1,9 +1,0 @@
-# This submission template is associated with the Ultima PCR Free Library preparation pipeline.
----
-Limber-Htp - Ultima PCR Free - Ultima sequencing:
-  submission_class_name: "LinearSubmission"
-  related_records:
-    request_type_keys: ["limber_ultima_htp_pcr_free", "limber_multiplexing_ultima", "ultima_sequencing"]
-    order_role: PCR Free
-    product_line_name: Ultima
-    product_catalogue_name: GenericNoPCR

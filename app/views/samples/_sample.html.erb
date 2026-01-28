@@ -15,9 +15,15 @@
   </td>
   </tr>
   <tr>
-    <td>&nbsp;</td>
-    <td>
-      <%= form.submit %> or <%= link_to "cancel", (@sample.new_record? ? samples_path : sample_path(@sample)) %>
+    <td width="100%" colspan=2>
+      <div class="row">
+        <div class="col-md-2">
+          <%= form.submit save_text(@sample) %>
+        </div>
+        <div class="col-md-10">
+          <%= link_to "Cancel", (@sample.new_record? ? samples_path : sample_path(@sample)), class: "btn btn-secondary" %>
+        </div>
+      </div>
     </td>
   </tr>
 </table>

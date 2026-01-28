@@ -57,6 +57,21 @@ module Api
       # Attributes
       ###
 
+      # @!attribute [rw] template_type
+      #   @note This field is required when creating a lot. It enables setting the polymorphic template relationship.
+      #   @return [String] The template_type.
+      attribute :template_type
+
+      # @!attribute [rw] template_id
+      #   @note This field is required when creating a lot. It enables setting the polymorphic template relationship.
+      #   @return [String] The template_id.
+      attribute :template_id
+
+      # @!attribute [rw] received_at
+      #  @note This field is required when creating a lot.
+      #  @return [DateTime] The date and time when the lot was received.
+      attribute :received_at, write_once: true
+
       # @!attribute [r] uuid
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The universally unique identifier (UUID) of the lot.
@@ -74,6 +89,29 @@ module Api
       # @!attribute [r] template_name
       #   @return [String] The name of the template associated with this lot.
       attribute :template_name, readonly: true
+
+      # @!attribute [w] user_uuid
+      #   This is declared for convenience where the {User} is not available to set as a relationship.
+      #   Setting this attribute alongside the `user` relationship will prefer the relationship value.
+      #   @deprecated Use the `user` relationship instead.
+      #     See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).
+      #   @param value [String] The UUID of the {User} who initiated this work completion.
+      #   @return [Void]
+      #   @see #user
+      attribute :user_uuid, writeonly: true
+
+      def user_uuid=(value)
+        @model.user = User.with_uuid(value).first
+      end
+
+      # @!attribute [w] lot_type_uuid
+      #  This is declared for convenience where the {LotType} is not available to set as a relationship.
+      #  @param value [String] The UUID of the {LotType} related to this lot.
+      attribute :lot_type_uuid, writeonly: true
+
+      def lot_type_uuid=(value)
+        @model.lot_type = LotType.with_uuid(value).first
+      end
 
       ###
       # Getters and Setters
@@ -139,6 +177,10 @@ module Api
       #   @note This relationship is loaded only when explicitly included.
       has_one :tag_layout_template, eager_load_on_include: false
 
+      # @!attribute [rw] qcables
+      #   @return [Array<QcableResource>] the {Qcable} resources related to this lot.
+      has_many :qcables
+
       ###
       # Filters
       ###
@@ -148,6 +190,8 @@ module Api
       #   @example Filtering lots by UUID
       #     GET /api/v2/lots?filter[uuid]=11111111-2222-3333-4444-555555666666
       filter :uuid, apply: ->(records, value, _options) { records.with_uuid(*value) }
+
+      filter :lot_number
     end
   end
 end

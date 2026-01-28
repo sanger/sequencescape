@@ -38,4 +38,3 @@ Feature: Studies have a release agreement
     When I press "Create"
     Then I should be on the study information page for "Testing release agreements"
     And I should see "Your study has been created"
-

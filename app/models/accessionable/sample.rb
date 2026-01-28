@@ -45,7 +45,8 @@ module Accessionable
 
       # TODO: maybe unify this with the previous loop
       # Don't send managed AE data to SRA
-      unless sample.accession_service.private?
+      accession_service = AccessionService.select_for_sample(sample)
+      unless accession_service.private?
         ARRAY_EXPRESS_FIELDS.each do |datum|
           value = sample.sample_metadata.send(datum)
           next if value.blank?
@@ -100,9 +101,9 @@ module Accessionable
 
     def update_accession_number!(user, accession_number)
       @accession_number = accession_number
-      add_updated_event(user, "Sample #{@sample.id}", @sample) if @accession_number
       @sample.sample_metadata.sample_ebi_accession_number = accession_number
-      @sample.save!
+      @sample.sample_metadata.save! # prevent an infinite loop due to after_save callbacks on sample.save
+      @sample.events.assigned_accession_number!('sample', accession_number, user)
     end
 
     def protect?(service)

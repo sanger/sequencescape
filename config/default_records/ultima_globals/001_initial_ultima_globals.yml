@@ -1,0 +1,6 @@
+# The initial input values for the Global section of Ultima sample sheets.
+---
+v1:
+  application: WGS native gDNA
+  sequencing_recipe: UG_116cycles_Baseline_1.8.5.2
+  analysis_recipe: wgs1

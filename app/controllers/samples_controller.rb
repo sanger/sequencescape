@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'exception_notification'
-
 # rubocop:todo Metrics/ClassLength
 class SamplesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
@@ -62,6 +60,7 @@ class SamplesController < ApplicationController
     end
 
     respond_to do |format|
+      @sample.current_user = current_user
       if @sample.save
         flash[:notice] = 'Sample successfully created'
         format.html { redirect_to sample_path(@sample) }
@@ -92,6 +91,7 @@ class SamplesController < ApplicationController
   # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @sample = Sample.find(params[:id])
+    @sample.current_user = current_user
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
@@ -102,15 +102,14 @@ class SamplesController < ApplicationController
       cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
     end
 
-    # Show warnings from accessioning
-    flash.now[:warning] = @sample.errors if @sample.errors.present?
-
     if @sample.update(cleaned_params)
       flash[:notice] = 'Sample details have been updated'
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # also shows warnings from accessioning
       redirect_to sample_path(@sample)
     else
       flash[:error] = 'Failed to update attributes for sample'
-      render action: 'edit', id: @sample.id
+      flash[:warning] = @sample.errors.full_messages if @sample.errors.present?
+      redirect_to edit_sample_path(@sample)
     end
   end
 
@@ -142,13 +141,13 @@ class SamplesController < ApplicationController
   def show_accession
     @sample = Sample.find(params[:id])
     respond_to do |format|
-      xml_text = @sample.accession_service.accession_sample_xml(@sample)
-      format.xml { render(text: xml_text) }
+      accession_service = AccessionService.select_for_sample(@sample)
+      xml_text = accession_service.accession_sample_xml(@sample)
+      format.xml { render(xml: xml_text) }
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def accession # rubocop:todo Metrics/AbcSize
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
@@ -157,57 +156,57 @@ class SamplesController < ApplicationController
       raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
     end
 
-    @sample.validate_ena_required_fields!
-    @sample.accession_service.submit_sample_for_user(@sample, current_user)
+    accession_action = @sample.accession_number? ? :update : :create
 
-    flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-  rescue ActiveRecord::RecordInvalid => e
+    if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
+      # Synchronously perform accessioning job
+      Accession.accession_sample(@sample, current_user, perform_now: true)
+    else
+      # TODO: when removing the y25_286_accession_individual_samples_with_sample_accessioning_job feature flag
+      #       and this accessioning path also remove the AccessionService and ActiveRecord errors below
+      @sample.validate_sample_for_accessioning!
+      accession_service = AccessionService.select_for_sample(@sample)
+      accession_service.submit_sample_for_user(@sample, current_user)
+    end
+
+    if accession_action == :create
+      flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
+    elsif accession_action == :update
+      flash[:notice] = 'Accessioned metadata updated'
+    end
+
+    # Handle errors for both synchronous and asynchronous accessioning
+    # When the feature flag above (y25_286_accession_individual_samples_with_sample_accessioning_job) is removed,
+    # the AccessionService and ActiveRecord errors should also be removed. These errors are only raised in the old
+    # synchronous accessioning code path and are not required for the updated SampleAccessioningJob path.
+  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
+    redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue AccessionService::NumberNotRequired => e
     flash[:warning] = e.message || 'An accession number is not required for this study'
-  rescue AccessionService::NumberNotGenerated => e
+  rescue AccessionService::NumberNotGenerated, Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-  rescue AccessionService::AccessionServiceError => e
+  rescue AccessionService::AccessionServiceError, Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
+  rescue Faraday::Error => e
+    flash[:error] = "Accessioning failed with a network error: #{e.message}"
   ensure
-    redirect_to(sample_path(@sample))
+    # Redirect back to where we came from if not already redirected
+    redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
   end
-
-  # rubocop:enable Metrics/MethodLength
-
-  # rubocop:todo Metrics/MethodLength
-  def taxon_lookup # rubocop:todo Metrics/AbcSize
-    if params[:term]
-      url = configatron.taxon_lookup_url + "/esearch.fcgi?db=taxonomy&term=#{params[:term].gsub(/\s/, '_')}"
-    elsif params[:id]
-      url = configatron.taxon_lookup_url + "/efetch.fcgi?db=taxonomy&mode=xml&id=#{params[:id]}"
-    else
-      return
-    end
-
-    rc = RestClient::Resource.new(URI.parse(url).to_s)
-    if configatron.disable_web_proxy == true
-      RestClient.proxy = nil
-    elsif configatron.fetch(:proxy).present?
-      RestClient.proxy = configatron.proxy
-      rc.headers['User-Agent'] = 'Internet Explorer 5.0'
-    elsif ENV['http_proxy'].present?
-      RestClient.proxy = ENV['http_proxy']
-    end
-
-    # rc.verbose = true
-    body = rc.get.body
-
-    respond_to do |format|
-      format.js { render plain: body }
-      format.xml { render plain: body }
-      #      format.html {render :nothing}
-    end
-  end
-
-  # rubocop:enable Metrics/MethodLength
 
   private
+
+  # Redirect back to the referer with an anchor, or to a fallback location
+  # Based closely on redirect_back_or_to
+  def redirect_back_with_anchor_or_to(fallback_location, anchor: '')
+    referer = request.referer
+    if referer.present?
+      redirect_to "#{referer}##{anchor}"
+    else
+      redirect_to fallback_location.to_s
+    end
+  end
 
   def default_permitted_metadata_fields
     {

@@ -163,6 +163,16 @@ class Labware < Asset
       .distinct
   end
 
+  def self.search_for_count_of_labware(params)
+    with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
+      .with_study_id(params[:study_id] || nil)
+      .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
+      .created_between(params[:start_date], params[:end_date])
+      .filter_by_barcode(params[:barcodes] || nil)
+      .distinct
+      .count
+  end
+
   scope :with_faculty_sponsor_ids,
         ->(faculty_sponsor_ids) do
           if faculty_sponsor_ids.present?

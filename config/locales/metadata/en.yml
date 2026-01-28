@@ -174,12 +174,14 @@ en:
 
         gender:
           label: Gender
-          edit_info: "Array Express"
+          help: "EGA is limited to Male, Female, or Unknown."
+          edit_info: "EGA, Array Express"
 
         country_of_origin:
           label: Country of origin
           help: The geographic origin of the sample, as defined by the <a href="http://insdc.org/country.html">INSDC list of countries and seas</a>. May also be 'not provided', 'not applicable', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
           accessioning_tag: geographic location (country and/or sea)
+          edit_info: "ENA requirement"
 
         geographical_region:
           label: Geographical region
@@ -217,8 +219,8 @@ en:
           edit_info: "ENA tag, Array Express"
 
         sample_taxon_id:
-          label: TAXON ID
-          help: NCBI Taxonomy Identifier. This is appropriate for individual organisms and some environmental samples.
+          label: Taxon ID
+          help: ENA Taxonomy Identifier. This is appropriate for individual organisms and some environmental samples.
           edit_info: "ENA requirement"
 
         sample_ebi_accession_number:
@@ -252,6 +254,7 @@ en:
           label: Date of sample collection
           help: Dates should be in the format YYYY-MM-DDTHH:MM:SS (eg. '2020-01-25T12:59:59') with each additional level of precision being optional. May also be 'not provided', 'not collected' or 'restricted access'. Please see <a href="https://ena-docs.readthedocs.io/en/latest/submit/samples/missing-values.html">the missing value documentation</a> before providing one of these values.
           accessioning_tag: collection_date
+          edit_info: "ENA requirement"
 
         date_of_sample_extraction:
           label: Date of sample extraction
@@ -280,7 +283,7 @@ en:
         donor_id:
           label: Donor Id
           ena_label: subject_id
-          edit_info: "EGA (As subject id)"
+          edit_info: "EGA recommended (As subject id)"
 
         subject_id:
           label: subject_id
@@ -291,7 +294,7 @@ en:
           edit_info: "Array Express"
         phenotype:
           label: Phenotype
-          edit_info: "Array Express"
+          edit_info: "EGA requirement, Array Express"
         strain_or_line:
           label: Strain or Line
           edit_info: "Array Express"
