@@ -17,7 +17,6 @@ RSpec.describe Study, :accession, :accessioning_enabled, :un_delay_jobs, type: :
   let(:non_accessionable_samples) { create_list(:sample, 3) }
 
   before do
-    create(:user, api_key: configatron.accession_local_key)
     allow(Accession::Submission).to receive(:client).and_return(
       stub_accession_client(:submit_and_fetch_accession_number, return_value: accession_number)
     )

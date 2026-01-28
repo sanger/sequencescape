@@ -6,17 +6,16 @@ module Accession
     include ActiveModel::Model
     include Accession::Accessionable
 
-    attr_reader :sample, :service, :contact
+    attr_reader :sample, :service
 
     delegate :accessioned?, :ebi_alias, :ebi_alias_datestamped, to: :sample
 
-    validates_presence_of :contact, :sample
+    validates_presence_of :sample
     validate :check_sample, if: proc { |s| s.sample.present? }
 
-    def initialize(contact_user, sample)
+    def initialize(sample)
       @sample = sample
       @service = sample&.service
-      @contact = contact_user ? Contact.new(contact_user) : nil # only create Contact if user is present
     end
 
     # Define the client as a class method for easy test mocking
@@ -32,7 +31,6 @@ module Accession
         alias: sample.ebi_alias_datestamped,
         submission_date: date
       ) do
-        xml.CONTACTS { xml.CONTACT(contact.to_h) }
         actions(xml)
       end
     end
