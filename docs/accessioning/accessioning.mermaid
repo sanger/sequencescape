@@ -61,7 +61,6 @@ flowchart LR
     %% CT_SS_Studies(fa:fa-arrows-spin Studies Controller)
 
     %% Functions
-    FN_SS_AccessionService_submit_sample_for_user(fa:fa-caret-right submit_sample_for_user)
     FN_SS_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
     FN_SS_AccessionService_submit(fa:fa-caret-right submit)
     FN_SS_Sample_accession(fa:fa-caret-right accession)
@@ -134,7 +133,6 @@ flowchart LR
             CP_SS_AccessionRequest
         end
         subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - older]
-            FN_SS_AccessionService_submit_sample_for_user
             FN_SS_AccessionService_submit_study_for_user
             FN_SS_AccessionService_submit
         end
@@ -172,15 +170,12 @@ flowchart LR
     %% Sample generate accession number
     User_SSR --> UI_SS_Sample_GAN
     User_Neil --> UI_SS_Sample_GAN
-    FN_SS_Samples_accession --> | 1. |CF_SS_accession_samples
+    %% FN_SS_Samples_accession --> | 1. |CF_SS_accession_samples
     UI_SS_Sample_GAN --> FN_SS_Samples_accession
     FN_SS_Samples_accession --> | 2. | FN_SS_Sample_validate_ena_required_fields 
-    FN_SS_Samples_accession ==> | 3. Validation Passed | FN_SS_AccessionService_submit_sample_for_user
-    FN_SS_AccessionService_submit_sample_for_user ==> FN_SS_AccessionService_submit
     FN_SS_AccessionService_submit ==> External_EBI
     FN_SS_Sample_validate_ena_required_fields -..-> | Validation Failed | FN_SS_Samples_accession
     External_EBI -..-> | FROM AccessionService.submit | FN_SS_AccessionService_submit
-    FN_SS_AccessionService_submit -..-> | FROM submit_sample_for_user | FN_SS_Samples_accession
     FN_SS_Samples_accession -..-> | flash message | User_SS_Users
 
     %% Study accession all samples
@@ -192,7 +187,7 @@ flowchart LR
     FN_SS_Studies_accession_all_samples -..-> | flash message | User_SS_Users
     FN_SS_Study_accession_all_samples --> FN_SS_Sample_accession
     FN_SS_Sample_accession -..-> | FROM accession_all_samples, error messages | FN_SS_Study_accession_all_samples
-    FN_SS_Sample_accession --> | 1. | CF_SS_accession_samples
+    %% FN_SS_Sample_accession --> | 1. | CF_SS_accession_samples
     FN_SS_Sample_accession --> | 2. | FN_SS_Sample_validate_accessionable
     FN_SS_Sample_accession ==> | 3. > NO FEEDBACK > | CP_SS_Delayed_Job_Accessioning
     CP_SS_Delayed_Job_Accessioning -..-> | exception email | User_Developers
@@ -207,7 +202,7 @@ flowchart LR
     FN_SS_Studies_accession --> | 2. | FN_SS_AccessionService_submit_study_for_user
     FN_SS_Studies_accession -..-> | 3. IF success -- flash message | User_SS_Users
     FN_SS_Studies_accession --> | IF error | FN_SS_Studies_rescue_accession_errors
-    FN_SS_AccessionService_submit_study_for_user --> CF_SS_accession_samples
+    %% FN_SS_AccessionService_submit_study_for_user --> CF_SS_accession_samples
     FN_SS_AccessionService_submit_study_for_user ==> FN_SS_AccessionService_submit
     FN_SS_AccessionService_submit -..-> | FROM submit_study_for_user | FN_SS_Studies_accession
     FN_SS_Studies_rescue_accession_errors -..-> | flash message | User_SS_Users
