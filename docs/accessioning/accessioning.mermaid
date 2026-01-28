@@ -11,7 +11,7 @@ flowchart LR
     subgraph Legend [Legend]
         direction TB
         L_User(fa:fa-user User)
-        L_External(fa:fa-globe External System)
+        L_External(fa:fa-arrow-up External API)
         L_API(fa:fa-arrow-right-to-bracket API)
         L_Interface(fa:fa-computer-mouse User Interface)
         L_Model(fa:fa-square-caret-down Model)
@@ -41,11 +41,15 @@ flowchart LR
     User_LB_Users(fa:fa-user LB Users)
     User_Developers(fa:fa-user Developers)
     User_SS_Users(fa:fa-user SS Users)
-    External_EBI(fa:fa-globe EBI)
+
+    %% External Systems
+    External_EBI_Studies(fa:fa-arrow-up EBI Studies)
+    External_EBI_Samples(fa:fa-arrow-up EBI Samples)
 
     %% User Interfaces
     UI_LB_Charge_and_Pass(fa:fa-computer-mouse Charge and Pass)
     UI_SS_Sample_GAN(fa:fa-computer-mouse Generate Accession Number)
+    UI_SS_Sample_SAA(fa:fa-computer-mouse Save and Accession)
     UI_SS_Study_GAN(fa:fa-computer-mouse Generate Accession Number)
     UI_SS_Study_AAS(fa:fa-computer-mouse Accession all Samples)
     UI_SS_Manifest_Upload(fa:fa-computer-mouse Manifest Upload)
@@ -65,21 +69,26 @@ flowchart LR
 
     %% Views
     VW_SS_Sample(fa:fa-eye Sample View)
+    VW_SS_Study(fa:fa-eye Study View)
 
     %% Functions
+    FN_SS_SampleManifestExcel_Upload_Base_trigger_accessioning(fa:fa-caret-right SampleManifestExcel::Upload::Base#trigger_accessioning)
+    FN_SS_AccessionService_select_for_study(fa:fa-caret-right select_for_study)
     FN_SS_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
     FN_SS_AccessionService_submit(fa:fa-caret-right submit)
+    FN_SS_Accessionable_Study_update_accession_number(fa:fa-caret-right Accessionable::Study#update_accession_number!)
     FN_SS_Sample_accession(fa:fa-caret-right accession)
+    FN_SS_Sample_accession_and_handle_validation_errors(fa:fa-caret-right accession_and_handle_validation_errors)
     FN_SS_Sample_validate_accessionable(fa:fa-caret-right validate_accessionable!)
-    FN_SS_Sample_validate_ena_required_fields(fa:fa-caret-right validate_ena_required_fields!)
     FN_SS_Samples_accession(fa:fa-caret-right accession)
     FN_SS_Study_accession_all_samples(fa:fa-caret-right accession_all_samples)
     FN_SS_Studies_accession_all_samples(fa:fa-caret-right accession_all_samples)
     FN_SS_Studies_accession(fa:fa-caret-right accession)
-    FN_SS_Studies_validate_ena_required_fields(fa:fa-caret-right validate_ena_required_fields!)
     FN_SS_Studies_rescue_accession_errors(fa:fa-caret-right rescue_accession_errors)
     FN_SS_Accession_accession_sample(fa:fa-caret-right accession_sample)
     FN_SS_Accession_Sample_validate(fa:fa-caret-right Accession::Sample#validate)
+    FN_SS_Accession_Sample_update_accession_number(fa:fa-caret-right Accession::Sample#update_accession_number)
+    FN_SS_Study_validate_study_for_accessioning(fa:fa-caret-right validate_study_for_accessioning!)
 
     %% Libraries
     LB_SS_AccessioningV1Client(fa:fa-book AccessioningV1Client)
@@ -87,7 +96,6 @@ flowchart LR
     %% Other Components
     API_SS_OrderResource(fa:fa-arrow-right-to-bracket Order Resource)
     CP_SS_AccessionSubmission(fa:fa-book Accession::Submission)
-    CP_SS_SampleManifestExcel_Upload(SampleManifestExcel::Upload)
     DJ_SS_SampleAccessioningJob(fa:fa-clock SampleAccessioningJob)
 
     %% Config
@@ -110,7 +118,7 @@ flowchart LR
     subgraph Application_Sequencescape[Sequencescape Application]
         UI_SS_Manifest_Upload
         MD_SS_SampleManifest_Uploader
-        CP_SS_SampleManifestExcel_Upload
+        FN_SS_SampleManifestExcel_Upload_Base_trigger_accessioning
         MD_SS_Order
         MD_SS_Submission_AccessionBehaviour
         CF_SS_accession_samples
@@ -120,9 +128,13 @@ flowchart LR
         LB_SS_AccessioningV1Client
         MD_SS_AccessionStatuses
 
+        FN_SS_Accessionable_Study_update_accession_number
+
         VW_SS_Sample
+        VW_SS_Study
 
         subgraph Samples
+            UI_SS_Sample_SAA
             UI_SS_Sample_GAN
         end        
         subgraph Studies
@@ -135,11 +147,11 @@ flowchart LR
         subgraph CT_SS_Studies[fa:fa-arrows-spin Studies Controller]
             FN_SS_Studies_accession_all_samples
             FN_SS_Studies_accession
-            FN_SS_Studies_validate_ena_required_fields
             FN_SS_Studies_rescue_accession_errors
         end
         subgraph MD_SS_Study[fa:fa-square-caret-down Study Model]
             FN_SS_Study_accession_all_samples
+            FN_SS_Study_validate_study_for_accessioning
         end
         subgraph CT_SS_Samples[fa:fa-arrows-spin Samples Controller]
             FN_SS_Samples_accession
@@ -148,16 +160,22 @@ flowchart LR
             FN_SS_Accession_accession_sample
             CP_SS_AccessionSubmission
             FN_SS_Accession_Sample_validate
+            FN_SS_Accession_Sample_update_accession_number
         end
         subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - studies only]
+            FN_SS_AccessionService_select_for_study
             FN_SS_AccessionService_submit_study_for_user
             FN_SS_AccessionService_submit
         end
         subgraph MD_SS_Sample[fa:fa-square-caret-down Sample Model]
             FN_SS_Sample_accession
+            FN_SS_Sample_accession_and_handle_validation_errors
             FN_SS_Sample_validate_accessionable
-            FN_SS_Sample_validate_ena_required_fields
         end
+    end
+    subgraph External_EBI[fa:fa-globe EBI ENA Webin REST V1]
+        External_EBI_Studies
+        External_EBI_Samples
     end
     subgraph Consumers
         User_LB_Users
@@ -182,52 +200,51 @@ flowchart LR
 
     %% Manifest upload
     User_SSR --> RES_Manifest -..-> UI_SS_Manifest_Upload --> MD_SS_SampleManifest_Uploader 
-    MD_SS_SampleManifest_Uploader --> CP_SS_SampleManifestExcel_Upload ---> FN_SS_Sample_accession
+    MD_SS_SampleManifest_Uploader --> FN_SS_SampleManifestExcel_Upload_Base_trigger_accessioning ---> FN_SS_Accession_accession_sample
     
     %% Sample generate accession number
-    User_Neil --> UI_SS_Sample_GAN
     User_SSR --> UI_SS_Sample_GAN
-    %% FN_SS_Samples_accession --> | 1. |CF_SS_accession_samples
+    User_Neil --> UI_SS_Sample_GAN
     UI_SS_Sample_GAN --> FN_SS_Samples_accession
-    FN_SS_Samples_accession --> | 2. | FN_SS_Sample_validate_ena_required_fields
-    FN_SS_Sample_accession ==> FN_SS_Accession_accession_sample
+    FN_SS_Samples_accession <--> | 1. | FN_SS_Accession_accession_sample
     FN_SS_Accession_accession_sample ==> DJ_SS_SampleAccessioningJob
-    DJ_SS_SampleAccessioningJob --> | 1. | FN_SS_Accession_Sample_validate
+    DJ_SS_SampleAccessioningJob <--> | 1. | FN_SS_Accession_Sample_validate
     DJ_SS_SampleAccessioningJob ==> | 2. | CP_SS_AccessionSubmission
     CP_SS_AccessionSubmission ==> LB_SS_AccessioningV1Client
-    LB_SS_AccessioningV1Client ==> External_EBI
-    FN_SS_AccessionService_submit ==> External_EBI
-    External_EBI ==> MD_SS_AccessionStatuses
-    MD_SS_AccessionStatuses ==> VW_SS_Sample ==> User_SS_Users
-    FN_SS_Sample_validate_ena_required_fields -..-> | Validation Failed | FN_SS_Samples_accession
-    External_EBI -..-> | FROM AccessionService.submit | FN_SS_AccessionService_submit
-    FN_SS_Samples_accession -..-> | flash message | User_SS_Users
+    LB_SS_AccessioningV1Client ==> External_EBI_Samples
+    External_EBI_Samples ==> | Success: accession number | FN_SS_Accession_Sample_update_accession_number
+    External_EBI_Samples ==> | Failure: reason | MD_SS_AccessionStatuses
+    FN_SS_Accession_Sample_update_accession_number -.- VW_SS_Sample
+    MD_SS_AccessionStatuses -.- VW_SS_Sample
+    FN_SS_Samples_accession --> | 2. | VW_SS_Sample
+    VW_SS_Sample --> User_SS_Users
+
+    %% Sample save and accession
+    User_SSR --> UI_SS_Sample_SAA
+    UI_SS_Sample_SAA --> FN_SS_Sample_accession_and_handle_validation_errors
+    FN_SS_Sample_accession_and_handle_validation_errors --> FN_SS_Accession_accession_sample
 
     %% Study accession all samples
-    User_Study_Owners --> UI_SS_Study_AAS
     User_Neil --> UI_SS_Study_AAS
+    User_Study_Owners --> UI_SS_Study_AAS
     UI_SS_Study_AAS --> FN_SS_Studies_accession_all_samples 
-    FN_SS_Studies_accession_all_samples -->  FN_SS_Study_accession_all_samples
-    FN_SS_Study_accession_all_samples -..-> | error messages | FN_SS_Studies_accession_all_samples
-    FN_SS_Studies_accession_all_samples -..-> | flash message | User_SS_Users
-    FN_SS_Study_accession_all_samples --> FN_SS_Sample_accession
-    FN_SS_Sample_accession -..-> | FROM accession_all_samples, error messages | FN_SS_Study_accession_all_samples
-    %% FN_SS_Sample_accession --> | 1. | CF_SS_accession_samples
-    FN_SS_Sample_accession --> | 2. | FN_SS_Sample_validate_accessionable
+    FN_SS_Studies_accession_all_samples <--> | 1. | FN_SS_Study_accession_all_samples
+    FN_SS_Study_accession_all_samples --> FN_SS_Accession_accession_sample
+    FN_SS_Studies_accession_all_samples --> | 2. | VW_SS_Study
 
     %% Study generate accession number
     User_Study_Owners --> UI_SS_Study_GAN
     UI_SS_Study_GAN --> FN_SS_Studies_accession
-    FN_SS_Studies_accession --> | 1. | FN_SS_Studies_validate_ena_required_fields
-    FN_SS_Studies_accession --> | 2. | FN_SS_AccessionService_submit_study_for_user
-    FN_SS_Studies_accession -..-> | 3. IF success -- flash message | User_SS_Users
-    FN_SS_Studies_accession --> | IF error | FN_SS_Studies_rescue_accession_errors
-    %% FN_SS_AccessionService_submit_study_for_user --> CF_SS_accession_samples
+    FN_SS_Studies_accession <--> | 1. | FN_SS_Study_validate_study_for_accessioning
+    FN_SS_Studies_accession <--> | 2. | FN_SS_AccessionService_select_for_study
+    FN_SS_Studies_accession <--> | 3. | FN_SS_AccessionService_submit_study_for_user
+    FN_SS_Studies_accession --> | 4. IF success -- flash message | VW_SS_Study
+    FN_SS_Studies_accession --> | 4. IF error | FN_SS_Studies_rescue_accession_errors
     FN_SS_AccessionService_submit_study_for_user ==> FN_SS_AccessionService_submit
-    FN_SS_AccessionService_submit -..-> | FROM submit_study_for_user | FN_SS_Studies_accession
-    FN_SS_Studies_rescue_accession_errors -..-> | flash message | User_SS_Users
-
-    User_Developers -.-> | slack / email | User_SS_Users
+    FN_SS_AccessionService_submit ==> External_EBI_Studies
+    External_EBI_Studies ==> FN_SS_Accessionable_Study_update_accession_number
+    FN_SS_Studies_rescue_accession_errors --> | flash message | VW_SS_Study
+    VW_SS_Study --> User_SS_Users
 
     %% Subgraph styling
 
@@ -261,4 +278,4 @@ flowchart LR
     class L_Model,MD_SS_Study,MD_SS_AccessionService,MD_SS_Sample,MD_SS_SampleManifest_Uploader,MD_SS_Order,MD_SS_Submission_AccessionBehaviour railsModel;
     class L_Controller,CT_SS_Samples,CT_SS_Studies railsController;
     class L_User,User_SeqOps,User_Study_Owners,User_Neil,User_SSR,User_LB_Users,User_SS_Users,User_Developers users;
-    class L_Interface,UI_LB_Charge_and_Pass,UI_SS_Sample_GAN,UI_SS_Study_GAN,UI_SS_Study_AAS,UI_SS_Manifest_Upload userInterface;
+    class L_Interface,UI_LB_Charge_and_Pass,UI_SS_Sample_GAN,UI_SS_Sample_SAA,UI_SS_Study_GAN,UI_SS_Study_AAS,UI_SS_Manifest_Upload userInterface;
