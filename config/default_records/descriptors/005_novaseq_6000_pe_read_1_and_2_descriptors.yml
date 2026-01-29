@@ -1,0 +1,16 @@
+---
+# Descriptors for Task - Read 1 & 2
+iPCR batch:
+  name: iPCR batch
+  task: Read 1 & 2
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 8
+Comment:
+  name: Comment
+  task: Read 1 & 2
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 9
