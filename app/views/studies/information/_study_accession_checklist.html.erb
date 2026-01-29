@@ -7,86 +7,62 @@
 <% end %>
 
 <%= tag.div(class: 'checks p-2') do %>
+  <%= checklist_item(
+        condition: accessioning_enabled?,
+        good: "Accessioning is <strong>Enabled</strong>".html_safe,
+        bad: "Accessioning is <strong>Disabled</strong>".html_safe,
+        action: "Please raise a #{fresh_service_link} ticket for more details".html_safe
+      ) %>
 
-  <%= tag.div do %>
-    <% if accessioning_enabled? %>
-      <%= good_icon %> Accessioning is <strong>Enabled</strong>
-    <% else %>
-      <%= bad_icon %> Accessioning is <strong>Disabled</strong> - Please raise a <%= fresh_service_link %> ticket for more details
-    <% end %>
-  <% end %>
+  <%= checklist_item(
+        condition: @study.active?,
+        good: "Study is <strong>#{@study.state.capitalize}</strong>".html_safe,
+        bad: "Study is <strong>#{@study.state.capitalize}</strong>".html_safe,
+        action: link_to('Activate study', state_study_path(@study)),
+        action_permission: can?(:activate, @study),
+        fallback: checklist_fallback_link('study collaborator', collaborators_study_path(@study))
+      ) %>
 
-  <%= tag.div do %>
-    <% if @study.active? %>
-      <%= good_icon %> Study is <strong><%= @study.state.capitalize %></strong>
-    <% else %>
-      <%= bad_icon %> Study is <strong><%= @study.state.capitalize %></strong> -
-      <% if can?(:activate, @study) %>
-        <%= link_to('Activate study', state_study_path(@study)) %>
-      <% else %>
-        Please contact a <%= link_to('study collaborator', collaborators_study_path(@study)) %>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= checklist_item(
+        condition: !@study.study_metadata.strategy_not_applicable?,
+        good: "Study release strategy is #{Study::DATA_RELEASE_STRATEGY_OPEN.humanize} or #{Study::DATA_RELEASE_STRATEGY_MANAGED.humanize} #{tag.strong { "(#{@study.study_metadata.data_release_strategy.humanize})" }}".html_safe,
+        bad: "Study release strategy is <strong>#{Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize}</strong>".html_safe,
+        action: link_to('Change release strategy', edit_study_path(@study)),
+        action_permission: can?(:edit, @study),
+        fallback: checklist_fallback_link('study collaborator', collaborators_study_path(@study))
+      ) %>
 
-  <%= tag.div do %>
-    <% if @study.study_metadata.strategy_not_applicable? %>
-      <%= bad_icon %> Study release strategy is <strong><%= Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize %></strong> -
-      <% if can?(:edit, @study) %>
-        <%= link_to('Change release strategy', edit_study_path(@study)) %>
-      <% else %>
-        Please contact a <%= link_to('study collaborator', collaborators_study_path(@study)) %>
-      <% end %>
-    <% else %>
-      <%= good_icon %> Study release strategy is <%= Study::DATA_RELEASE_STRATEGY_OPEN.humanize %> or <%= Study::DATA_RELEASE_STRATEGY_MANAGED.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_strategy.humanize})" } %>
-    <% end %>
-  <% end %>
+  <%= checklist_item(
+        condition: !@study.study_metadata.never_release?,
+        good: "Study release timing is <strong>#{@study.study_metadata.data_release_timing.humanize}</strong>".html_safe,
+        bad: "Study release timing is <strong>#{Study::DATA_RELEASE_TIMING_NEVER.humanize}</strong>".html_safe,
+        action: link_to('Change release settings', edit_study_path(@study)),
+        action_permission: can?(:edit, @study),
+        fallback: checklist_fallback_link('study collaborator', collaborators_study_path(@study))
+      ) %>
 
-  <%= tag.div do %>
-    <% if @study.study_metadata.never_release? %>
-      <%= bad_icon %> Study release timing is <strong><%= Study::DATA_RELEASE_TIMING_NEVER.humanize %></strong> -
-      <% if can?(:edit, @study) %>
-        <%= link_to('Change release settings', edit_study_path(@study)) %>
-      <% else %>
-        Please contact a <%= link_to('study collaborator', collaborators_study_path(@study)) %>
-      <% end %>
-    <% else %>
-      <%= good_icon %> Study release timing is <strong><%= @study.study_metadata.data_release_timing.humanize %></strong>
-    <% end %>
-  <% end %>
+  <%= checklist_item(
+        condition: @study.enforce_accessioning?,
+        good: "Study accession numbers are <strong>Enforced</strong> for data release".html_safe,
+        bad: "Study accession numbers are <strong>Not Enforced</strong> for data release".html_safe,
+        action: link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)),
+        action_permission: can?(:administer, @study),
+        fallback: checklist_fallback_link('study collaborator', collaborators_study_path(@study))
+      ) %>
 
-  <%= tag.div do %>
-    <% if @study.enforce_accessioning? %>
-      <%= good_icon %> Study accession numbers are <strong>Enforced</strong> for data release
-    <% else %>
-      <%= bad_icon %> Study accession numbers are <strong>Not Enforced</strong> for data release -
-      <% if can?(:administer, @study) %>
-        <%= link_to('Enforce accession numbers', url_for(controller: "admin/studies", action: "show", id: @study.id)) %>
-      <% else %>
-        Please contact a <%= link_to('study collaborator', collaborators_study_path(@study)) %>
-      <% end %>
-    <% end %>
-  <% end %>
+  <%= checklist_item(
+        condition: @study.accession_number?,
+        good: "Study has an accession number #{tag.strong { "(#{@study.ebi_accession_number})" }}".html_safe,
+        bad: "Study is <strong>missing an accession number</strong>".html_safe,
+        action: link_to('Generate accession number', url_for(controller: '/studies', action: 'accession', id: @study.id)),
+        action_permission: can?(:accession, @study),
+        fallback: checklist_fallback_link('study collaborator', collaborators_study_path(@study))
+      ) %>
 
-  <%= tag.div do %>
-    <% if @study.accession_number? %>
-      <%= good_icon %> Study has an accession number <%= tag.strong { "(#{@study.ebi_accession_number})" } %>
-    <% else %>
-      <%= bad_icon %> Study is <strong>missing an accession number</strong> -
-      <% if can?(:accession, @study) %>
-        <%= link_to('Generate accession number', url_for(controller: '/studies', action: 'accession', id: @study.id)) %>
-      <% else %>
-        Please contact a <%= link_to('study collaborator', collaborators_study_path(@study)) %>
-      <% end %>
-    <% end %>
-  <% end %>
-
-  <%= tag.div do %>
-    <% if permitted_to_accession?(@study) %>
-      <%= good_icon %> You <strong>have permission</strong> to accession samples in this study
-    <% else %>
-      <%= bad_icon %> You <strong>do not have permission</strong> to accession samples in this study - Please contact your team lead or raise a <%= fresh_service_link %> ticket
-    <% end %>
-  <% end %>
-
+  <%= checklist_item(
+        condition: permitted_to_accession?(@study),
+        good: "You <strong>have permission</strong> to accession samples in this study".html_safe,
+        bad: "You <strong>do not have permission</strong> to accession samples in this study".html_safe,
+        action: "Please contact your team lead or raise a #{fresh_service_link} ticket".html_safe
+      ) %>
 <% end %>
