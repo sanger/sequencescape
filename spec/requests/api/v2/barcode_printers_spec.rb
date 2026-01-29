@@ -30,6 +30,7 @@ describe 'Barcode Printers API', with: :api_v2 do
       expect(json.dig('data', 'attributes', 'name')).to eq(resource_model.name)
       expect(json.dig('data', 'attributes', 'print_service')).to eq(resource_model.print_service)
       expect(json.dig('data', 'attributes', 'barcode_type')).to eq(resource_model.barcode_printer_type.name)
+      expect(json.dig('data', 'attributes', 'active')).to eq(resource_model.active)
     end
   end
 
