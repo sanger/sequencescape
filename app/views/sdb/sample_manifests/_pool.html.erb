@@ -1,9 +1,10 @@
-<br>
 <% if sample_manifest.asset_type == "library" %>
-  <%= form_for :pooling, url: new_pooling_path, method: :get do |form| -%>
-    <% sample_manifest.barcodes.each do |barcode| %>
-      <%= form.hidden_field :barcodes, multiple: true, value: barcode %>
+  <%= panel :info, title:'Pooling' do %>
+    <%= form_for :pooling, url: new_pooling_path, method: :get do |form| -%>
+      <% sample_manifest.barcodes.each do |barcode| %>
+        <%= form.hidden_field :barcodes, multiple: true, value: barcode %>
+      <% end %>
+      <%= form.submit 'Pool', class: 'btn btn-success' %>
     <% end %>
-    <%= form.submit 'Pool', class: 'btn btn-success' %>
   <% end %>
 <% end %>
