@@ -28,7 +28,7 @@
     <% if @study.study_metadata.strategy_not_applicable? %>
       <%= bad_icon %> Study release strategy is <strong><%= Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize %></strong> - <%= link_to('Change release strategy', edit_study_path(@study)) if can?(:edit, @study) %>
     <% else %>
-      <%= good_icon %> Study release strategy is not <%= Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_strategy.humanize})" } %>
+      <%= good_icon %> Study release strategy is <%= Study::DATA_RELEASE_STRATEGY_OPEN.humanize %> or <%= Study::DATA_RELEASE_STRATEGY_MANAGED.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_strategy.humanize})" } %>
     <% end %>
   <% end %>
 
@@ -36,7 +36,7 @@
     <% if @study.study_metadata.never_release? %>
       <%= bad_icon %> Study release timing is <strong><%= Study::DATA_RELEASE_TIMING_NEVER.humanize %></strong> - <%= link_to('Change release settings', edit_study_path(@study)) if can?(:edit, @study) %>
     <% else %>
-      <%= good_icon %> Study release timing is not <%= Study::DATA_RELEASE_TIMING_NEVER.humanize %> <%= tag.strong { "(#{@study.study_metadata.data_release_timing.humanize})" } %>
+      <%= good_icon %> Study release timing is <strong><%= @study.study_metadata.data_release_timing.humanize %></strong>
     <% end %>
   <% end %>
 
