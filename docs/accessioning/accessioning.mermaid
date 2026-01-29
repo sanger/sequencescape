@@ -77,17 +77,15 @@ flowchart LR
     FN_SS_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
     FN_SS_AccessionService_submit(fa:fa-caret-right submit)
     FN_SS_Accessionable_Study_update_accession_number(fa:fa-caret-right Accessionable::Study#update_accession_number!)
-    FN_SS_Sample_accession(fa:fa-caret-right accession)
     FN_SS_Sample_accession_and_handle_validation_errors(fa:fa-caret-right accession_and_handle_validation_errors)
-    FN_SS_Sample_validate_accessionable(fa:fa-caret-right validate_accessionable!)
     FN_SS_Samples_accession(fa:fa-caret-right accession)
     FN_SS_Study_accession_all_samples(fa:fa-caret-right accession_all_samples)
     FN_SS_Studies_accession_all_samples(fa:fa-caret-right accession_all_samples)
     FN_SS_Studies_accession(fa:fa-caret-right accession)
     FN_SS_Studies_rescue_accession_errors(fa:fa-caret-right rescue_accession_errors)
     FN_SS_Accession_accession_sample(fa:fa-caret-right accession_sample)
-    FN_SS_Accession_Sample_validate(fa:fa-caret-right Accession::Sample#validate)
-    FN_SS_Accession_Sample_update_accession_number(fa:fa-caret-right Accession::Sample#update_accession_number)
+    FN_SS_Accession_Sample_validate(fa:fa-caret-right validate)
+    FN_SS_Accession_Sample_update_accession_number(fa:fa-caret-right update_accession_number)
     FN_SS_Study_validate_study_for_accessioning(fa:fa-caret-right validate_study_for_accessioning!)
 
     %% Libraries
@@ -141,6 +139,9 @@ flowchart LR
             UI_SS_Study_GAN
             UI_SS_Study_AAS
         end
+        subgraph Sample Manifests
+            UI_SS_Manifest_Upload
+        end
         subgraph SS_API["SS API"]
             API_SS_OrderResource
         end
@@ -159,8 +160,10 @@ flowchart LR
         subgraph LB_SS_Accession[fa:fa-book Accession - samples only]
             FN_SS_Accession_accession_sample
             CP_SS_AccessionSubmission
-            FN_SS_Accession_Sample_validate
-            FN_SS_Accession_Sample_update_accession_number
+            subgraph MD_SS_Accession_Sample[fa:fa-square-caret-down Accession::Sample Model]
+                FN_SS_Accession_Sample_validate
+                FN_SS_Accession_Sample_update_accession_number
+            end
         end
         subgraph MD_SS_AccessionService[fa:fa-square-caret-down AccessionService Model - studies only]
             FN_SS_AccessionService_select_for_study
@@ -168,9 +171,7 @@ flowchart LR
             FN_SS_AccessionService_submit
         end
         subgraph MD_SS_Sample[fa:fa-square-caret-down Sample Model]
-            FN_SS_Sample_accession
             FN_SS_Sample_accession_and_handle_validation_errors
-            FN_SS_Sample_validate_accessionable
         end
     end
     subgraph External_EBI[fa:fa-globe EBI ENA Webin REST V1]
@@ -188,8 +189,8 @@ flowchart LR
     Providers ~~~ Application_Limber ~~~ Consumers
     Providers ~~~ Application_Sequencescape ~~~ Consumers
 
-    CT_SS_Studies ~~~ MD_SS_Study ~~~ CT_SS_Samples ~~~ MD_SS_Sample
-    FN_SS_Samples_accession ~~~ FN_SS_AccessionService_submit_study_for_user
+    External_EBI_Studies ~~~ External_EBI_Samples
+    %% External_EBI_Samples ~~~ External_EBI_Studies
 
     %% Limber-related
     User_SeqOps --> UI_LB_Charge_and_Pass -...-> User_LB_Users
