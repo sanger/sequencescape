@@ -22,7 +22,8 @@ module RecordLoader
     # @return [Task, nil] The created Task, or `nil` if the Workflow is not found in specific environments.
     # @raise [ActiveRecord::RecordNotFound] If the Workflow is not found in environments other than
     # `development`, `staging`, or `cucumber`.
-    def create_or_update!(name, options)
+    def create_or_update!(section_name, options)
+      name = options['name'] || section_name # use name from options if provided
       workflow_name = options.delete('workflow')
       workflow = find_workflow!(workflow_name, name)
       return unless workflow
