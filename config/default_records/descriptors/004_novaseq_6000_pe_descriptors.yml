@@ -1,7 +1,7 @@
 ---
 # Descriptors for Task - Loading
-NovaSeq 6000 PE Loading Workflow (Standard or Xp) Standard:
-  name: Workflow (Standard or Xp) Standard
+NovaSeq 6000 PE Loading Workflow (Standard or Xp):
+  name: Workflow (Standard or Xp)
   task: Loading
   workflow: NovaSeq 6000 PE
   kind: Selection
