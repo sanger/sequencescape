@@ -48,7 +48,10 @@ class UatActions::GenerateTubes < UatActions
             sanger_sample_id: sample_name,
             studies: [study],
             sample_metadata_attributes: {
-              supplier_name: sample_name
+              supplier_name: sample_name,
+              collected_by: UatActions::StaticRecords.collection_site,
+              donor_id: "#{sample_name}_donor",
+              sample_common_name: 'human'
             }
           ),
         study: study
