@@ -208,8 +208,10 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def subject_type
-    'well'
+    @subject_type ||= 'well'
   end
+
+  attr_writer :subject_type
 
   def outer_request(submission_id)
     outer_requests.order(id: :desc).find_by(submission_id:)

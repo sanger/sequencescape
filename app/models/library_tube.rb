@@ -13,6 +13,10 @@ class LibraryTube < Tube
     Tube::Purpose.stock_library_tube
   end
 
+  def subject_type
+    'library_tube'
+  end
+
   def library_information # rubocop:todo Metrics/AbcSize
     tag = aliquots.first.tag
     tag2 = aliquots.first.tag2

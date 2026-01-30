@@ -5,5 +5,9 @@ module SampleManifest::LibraryPlateBehaviour
   # it sets library_id on aliquots in wells and doesn't generate stock assets.
   class Core < SampleManifest::PlateBehaviour::Base
     include SampleManifest::CoreBehaviour::LibraryAssets
+
+    def stocks?
+      true
+    end
   end
 end

@@ -96,6 +96,7 @@ module SampleManifest::CoreBehaviour
 
   # rubocop:todo Metrics/MethodLength
   def behaviour_module # rubocop:todo Metrics/CyclomaticComplexity
+    # asset_type comes from the query params for the new/create manifest actions page.
     case asset_type
     when '1dtube'
       'SampleTubeBehaviour'
