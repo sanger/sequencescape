@@ -578,4 +578,50 @@ describe BulkSubmission, with: :uploader do
       expect(generated_submission.orders.first.request_options['read_length']).to eq('50')
     end
   end
+
+  context 'a submission with a NovaSeq 6000 PE sequencing request type' do
+    let(:spreadsheet_filename) { 'nova_seq_6000_pe_bulk_submission.csv' }
+    let!(:request_types) { [create(:nova_seq_6000_p_e_sequencing_request_type)] }
+    let(:study) { create(:study, name: 'UAT Study') }
+    let!(:tubes) do
+      Array.new(6) do |index|
+        create(:library_tube).tap do |tube|
+          tube.barcodes << Barcode.new(format: :sanger_ean13, barcode: "NT#{index + 1}")
+        end
+      end
+    end
+
+    let(:submission_template_hash) do
+      {
+        name: 'Limber-Htp - WGS - NovaSeq 6000 Paired end sequencing',
+        submission_class_name: 'LinearSubmission',
+        product_catalogue: 'Generic',
+        submission_parameters: {
+          request_options: {},
+          request_types: request_types.map(&:key)
+        }
+      }
+    end
+
+    before { SubmissionSerializer.construct!(submission_template_hash) }
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+
+    it 'generates submissions when processed' do
+      subject.process
+      expect(number_submissions_created).to eq(1)
+    end
+
+    it 'generates submissions with 5 orders' do
+      subject.process
+      expect(generated_submission.orders.count).to eq(5)
+    end
+
+    it 'set the expected read length options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options['read_length']).to eq('50')
+    end
+  end
 end

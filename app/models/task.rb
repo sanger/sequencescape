@@ -8,7 +8,7 @@
 # Tasks have three key methods
 # {Task#render_task}: Which handles rendering the form displayed to the user
 # {Task#do_task}: Which takes the parameters from the form, and performs the task in question
-# {Task#partial}: Inicates which partial to render when displaying the form.
+# {Task#partial}: Indicates which partial to render when displaying the form.
 #
 # @note A large number of tasks delegate a large portion of their behaviour back to the
 # {WorkflowsController}. This behaviour is mostly defined in modules under {Task}.
