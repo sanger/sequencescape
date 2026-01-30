@@ -17,7 +17,7 @@ module RecordLoader
     # If the Workflow is found, it assigns its ID to the `pipeline_workflow_id` attribute
     # and creates or updates the Task.
     #
-    # @param name [String] The name of the Task.
+    # @param section_name [String] The key or section name of the Task in the YAML file.
     # @param options [Hash] The options for creating or updating the Task.
     # @return [Task, nil] The created Task, or `nil` if the Workflow is not found in specific environments.
     # @raise [ActiveRecord::RecordNotFound] If the Workflow is not found in environments other than
