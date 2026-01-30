@@ -18,8 +18,7 @@ configatron.accession do |accession|
   accession.ega.password = 'ega_accession_password'
   accession.ena.user = 'era_accession_login'
   accession.ena.password = 'era_accession_password'
-  accession.drop_box_url = 'http://localhost:9999/ena/submit/drop-box/'
-  accession.browser_url = 'http://localhost:9999/ena/browser/api/xml/'
+  accession.drop_box_url = 'https://localhost:9999/ena/submit/drop-box/'
 end
 
 configatron.admin_email = 'admin@test.com'
@@ -52,6 +51,8 @@ configatron.external_applications = [
   ['Generic Lims', 'http://www.example.com'],
   %w[Gatekeeper http://www.example.com]
 ]
+
+configatron.location_reports_fetch_count_max = 25000
 
 if Rails.env.development? || Rails.env.profile?
   configatron.asset_audits_url = 'http://localhost:3014/process_plates/new'
