@@ -397,16 +397,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         end
 
-  scope :for_sample_accessioning,
-        -> do
-          joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
-            study_metadata: {
-              data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE + Study::DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE
-            }
-          )
-        end
-
   scope :awaiting_ethical_approval,
         -> do
           joins(:study_metadata).where(
@@ -570,6 +560,18 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def accession_number?
     ebi_accession_number.present?
+  end
+
+  # Returns true if the samples in this study are eligible for accessioning
+  #
+  # A study's samples are eligible for accessioning if:
+  # - the study is not set to never release
+  # - the study has an accession number
+  # - the study requires accessioning
+  #
+  # @return [Boolean] true if the samples in this study are eligible for accessioning, false otherwise
+  def samples_accessionable?
+    !study_metadata.never_release? & accession_number? & accession_required?
   end
 
   # Accession all samples in the study.

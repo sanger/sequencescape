@@ -347,45 +347,6 @@ RSpec.describe Study do
       end
     end
 
-    describe '#for_sample_accessioning' do
-      let!(:study_1) { create(:open_study) }
-      let!(:study_2) { create(:open_study, name: 'Study 2', accession_number: 'ENA123') }
-      let!(:study_3) { create(:open_study, name: 'Study 3', accession_number: 'ENA456') }
-      let!(:study_4) { create(:managed_study) }
-      let!(:study_5) { create(:managed_study, name: 'Study 4', accession_number: 'ENA666') }
-      let!(:study_6) { create(:managed_study, name: 'Study 5', accession_number: 'ENA777') }
-      let!(:study_7) { create(:managed_study, name: 'Study 6', accession_number: 'ENA888') }
-      let!(:study_8) { create(:not_app_study) }
-      let!(:study_9) do
-        metadata_options = {
-          data_release_timing: Study::DATA_RELEASE_TIMING_PUBLICATION,
-          data_release_timing_publication_comment: 'Testing data release timing publication',
-          data_share_in_preprint: Study::YES
-        }
-        create(:open_study, name: 'Study 9', accession_number: 'ENA999', metadata_options: metadata_options)
-      end
-
-      it 'include studies that adhere to accessioning guidelines' do
-        expect(described_class.for_sample_accessioning.count).to eq(6)
-      end
-
-      it 'includes open studies with data release timing publication' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).to include(study_9)
-      end
-
-      it 'not include studies that do not have accession numbers' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).not_to include(study_1)
-        expect(studies).not_to include(study_4)
-      end
-
-      it 'not include studies that do not have the correct data release strategy or timing' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).not_to include(study_8)
-      end
-    end
-
     describe '#each_well_for_qc_report_in_batches' do
       let!(:study) { create(:study) }
       let(:purpose_1) { PlatePurpose.stock_plate_purpose }

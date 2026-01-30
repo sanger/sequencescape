@@ -12,11 +12,11 @@ RSpec.describe SampleAccessioningJob, type: :job do
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
-  let(:logger) { instance_double(Logger, error: nil, debug: nil) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
-    allow(Rails).to receive(:logger).and_return(logger)
+    allow(Rails.logger).to receive(:info).and_call_original
+    allow(Rails.logger).to receive(:error).and_call_original
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
@@ -57,7 +57,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
         end
 
         it 'logs the error' do
-          expect(logger).to have_received(:error).with(
+          expect(Rails.logger).to have_received(:error).with(
             "Sample '#{sample.name}' cannot be accessioned: " \
             'Sample does not have the required metadata: sample-taxon-id.'
           )
@@ -146,7 +146,7 @@ RSpec.describe SampleAccessioningJob, type: :job do
       end
 
       it 'logs the error' do
-        expect(logger).to have_received(:error).with(
+        expect(Rails.logger).to have_received(:error).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
           'Failed to process accessioning response'
         )

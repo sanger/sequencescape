@@ -55,11 +55,14 @@ RSpec.describe Accession do
             accessionable_sample.ena_study.enforce_accessioning = false
           end
 
-          it 'raises an internal validation error' do
-            expect { described_class.accession_sample(accessionable_sample, event_user) }
-              .to raise_error(Accession::InternalValidationError,
-                              "Sample '#{accessionable_sample.name}' cannot be accessioned: " \
-                              'Sample is linked to a study that does not require accessioning.')
+          it 'logs a message' do
+            allow(Rails.logger).to receive(:info).and_call_original
+
+            described_class.accession_sample(accessionable_sample, event_user)
+            expect(Rails.logger).to have_received(:info).with(
+              "Sample '#{accessionable_sample.name}' should not be accessioned " \
+              'as it belongs to 0 accessionable studies.'
+            )
           end
 
           it 'does not receive an accession number' do
