@@ -31,7 +31,7 @@ describe 'SampleManifest controller', :sample_manifest do
       select(printer.name, from: 'Barcode printer')
       select(selected_purpose.name, from: 'Purpose') if selected_purpose
       click_button('Create manifest and print labels')
-      expect(page).to have_text('Upload a sample manifest')
+      expect(page).to have_text('Upload a Sample Manifest')
       expect(created_plate.purpose).to eq(created_purpose)
       click_on 'Download Blank Manifest'
       expect(page.driver.response.headers['Content-Type']).to(
@@ -95,7 +95,7 @@ describe 'SampleManifest controller', :sample_manifest do
       end
       select(selected_tube_rack_purpose.name, from: 'Tube rack purpose') if selected_tube_rack_purpose
       click_button('Create manifest')
-      expect(page).to have_text('Upload a sample manifest')
+      expect(page).to have_text('Upload a Sample Manifest')
       click_on 'Download Blank Manifest'
       expect(page.driver.response.headers['Content-Type']).to(
         eq('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
