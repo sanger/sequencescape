@@ -7,12 +7,12 @@
   <p class="lead">Created by <%= link_to @sample_manifest.user.login, profile_path(@sample_manifest.user) %></p>
 <% end %>
 
-<%= panel do %>
+<%= panel :info, title:'Actions' do %>
   <% if @sample_manifest.generated_document %>
     <%= link_to "Download Blank Manifest", export_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-primary' %>
   <% else %>
+    <div>Spreadsheets may be missing for manifests created via the API</div>
     <span class="btn btn-lg btn-secondary disabled">No Spreadsheet available</span>
-    <small>Spreadsheets may be missing for manifests created via the API</small>
   <% end %>
   <% if @sample_manifest.uploaded_document %>
     <%= link_to 'Download Completed Manifest', uploaded_spreadsheet_sample_manifest_path(@sample_manifest), class: 'btn btn-lg btn-secondary' %>
@@ -21,49 +21,52 @@
   <% end %>
 <% end %>
 
-<%= panel do %>
-  <%= render partial: "upload" %>
-<% end %>
+<%= render partial: "upload" %>
 
 <% if @sample_manifest.last_errors %>
-  <h2>Errors</h2>
-  <div class="help">
-  Since there are errors no samples have been updated. Please fix them and upload again.
-  </div>
-  <ul>
-
+  <%= alert(:warning) do %>
+    <h2>Errors</h2>
+    Since there are errors no samples have been updated. Please fix them and upload again.
+    <ul>
     <% @sample_manifest.last_errors.each do |error| %>
       <li><%= error %></li>
     <% end %>
-  </ul>
+    </ul>
+  <% end %>
 <% end %>
 
 <%= render partial: "pool", locals: { sample_manifest: @sample_manifest} %>
 
-<%= panel do %>
-  <%= form_for(@sample_manifest, url: {action: "print_labels"}, method: :post) do |f| %>
+<%= panel :info, title:'Barcodes' do %>
+  <%= tag.div(class: "row") do %>
+    <%= tag.div(class: "col-md-3") do %>
+      <%= form_for(@sample_manifest, url: {action: "print_labels"}, method: :post) do |f| %>
 
-    <div class="form-group">
-      <%= label_tag :barcode_printer, 'Barcode printer' %>
-      <%= render partial: "shared/printer_list" %>
-    </div>
+        <div class="form-group">
+          <%= label_tag :barcode_printer, 'Barcode printer' %>
+          <%= render partial: "shared/printer_list" %>
+        </div>
 
-    <div class="form-group">
-      <%= f.submit "Reprint all labels", class: 'btn btn-success' %>
-    </div>
+        <div class="form-group mb-0">
+          <%= f.submit "Reprint all #{@sample_manifest.barcodes&.size || ''} labels", class: 'btn btn-success' %>
+        </div>
 
-  <% end %>
-  <% if @sample_manifest.barcodes %>
-    <%= bs_column do %>
-      <h2>Barcodes</h2>
-      <ul>
-      <% @sample_manifest.barcodes.each do |barcode| %>
-        <li><%= barcode %></li>
       <% end %>
-      </ul>
+    <% end %>
+    <% if @sample_manifest.barcodes %>
+      <%= tag.div(class: "col-md-9", style: "column-count: 4;") do %>
+        <% @sample_manifest.barcodes.each do |barcode| %>
+          <div><%= barcode %></div>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
 
-<%= render partial: "samples", locals: { samples: @samples} %>
-
+<%= panel_no_body :info, title:'Samples' do %>
+  <% if @samples.empty? %>
+    <%= tag.div(class: 'p-3') { "Samples will be generated on upload" } %>
+  <% else %>
+    <%= render partial: "samples", locals: { samples: @samples} %>
+  <% end %>
+<% end %>
