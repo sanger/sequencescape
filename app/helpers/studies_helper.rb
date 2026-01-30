@@ -62,9 +62,15 @@ module StudiesHelper
             bad_icon,
             ' ',
             bad,
-            ' - ',
-            (action if action && (action_permission.nil? || action_permission)),
-            (fallback if fallback && (action_permission == false))
+            content_tag(:span, class: 'text-muted') do
+              safe_join(
+                [
+                  ' — ',
+                  (action if action && (action_permission.nil? || action_permission)),
+                  (fallback if fallback && (action_permission == false))
+                ]
+              )
+            end
           ]
         )
       end
