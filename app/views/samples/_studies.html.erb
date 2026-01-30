@@ -26,5 +26,12 @@
       <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
       <%= form.submit "Add" %>
     <% end %>
+    <% if permitted_to_accession?(@sample) %>
+      <%= tag.div(class: 'mt-3') do %>
+        <% if !@sample.should_be_accessioned? %>
+          <%= alert(:warning){ "Sample cannot be accessioned as it belongs to #{@sample.studies_for_accessioning.size} accessionable studies" } %>
+        <% end %>
+      <% end %>
+    <% end %>
   <% end %>
 <% end %>
