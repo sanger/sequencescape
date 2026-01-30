@@ -18,7 +18,6 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   extend Submission::StateMachine
   include Submission::DelayedJobBehaviour
-  include ModelExtensions::Submission
   include Submission::Priorities
 
   PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected].freeze

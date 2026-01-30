@@ -2,10 +2,10 @@
 # This is effectively pooling: all wells that have come from the same submission will be transferred
 # into the same well on the destination plate.
 class Transfer::BetweenPlatesBySubmission < Transfer
-  extend ::ModelExtensions::Plate::NamedScopeHelpers
+  # extend ::ModelExtensions::Plate::NamedScopeHelpers
 
-  include_plate_named_scope :source
-  include_plate_named_scope :destination
+  # include_plate_named_scope :source
+  # include_plate_named_scope :destination
 
   include TransfersToKnownDestination
   include ControlledDestinations

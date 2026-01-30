@@ -15,7 +15,6 @@ require 'lab_where_client'
 #
 class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Api::PlateIo::Extensions
-  include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
   include Asset::Ownership::Owned

@@ -19,8 +19,6 @@ Rails.application.routes.draw do
   get '/500', to: 'errors#internal_server_error'
   get '/503', to: 'errors#service_unavailable'
 
-  mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
-
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
   #   and more. Include all actions in the except block for immutable resources.
   #   See [Y25-236](https://github.com/sanger/sequencescape/issues/4812).

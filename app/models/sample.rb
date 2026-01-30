@@ -62,7 +62,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   self.per_page = 500
 
-  include ModelExtensions::Sample
   include Api::SampleIo::Extensions
   include Uuid::Uuidable
   include StandardNamedScopes
