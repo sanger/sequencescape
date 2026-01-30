@@ -6,8 +6,10 @@ class StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
+
   include REXML
   include Informatics::Globals
+  include ::AccessionHelper
 
   before_action :login_required
   authorize_resource only: %i[grant_role remove_role update edit]
@@ -217,8 +219,7 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def rescue_accession_errors # rubocop:todo Metrics/AbcSize
+  def rescue_accession_errors # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     yield
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Please fill in the required fields'
@@ -234,11 +235,20 @@ class StudiesController < ApplicationController
     redirect_to(edit_study_path(@study))
   end
 
-  # rubocop:enable Metrics/MethodLength
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    @study = Study.find(params[:id])
 
-  def accession
+    unless accessioning_enabled?
+      flash[:warning] = 'Accessioning is not enabled in this environment.'
+      return redirect_to(study_path(@study))
+    end
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
+
     rescue_accession_errors do
-      @study = Study.find(params[:id])
       @study.validate_study_for_accessioning!
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_study_for_user(@study, current_user)
@@ -248,8 +258,19 @@ class StudiesController < ApplicationController
     end
   end
 
-  def accession_all_samples
+  def accession_all_samples # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
+
+    unless accessioning_enabled?
+      flash[:warning] = 'Accessioning is not enabled in this environment.'
+      return redirect_to(study_path(@study))
+    end
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
+
     @study.accession_all_samples(current_user)
 
     if @study.errors.any?
@@ -263,8 +284,15 @@ class StudiesController < ApplicationController
   end
 
   def dac_accession
+    @study = Study.find(params[:id])
+
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
+
     rescue_accession_errors do
-      @study = Study.find(params[:id])
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_dac_for_user(@study, current_user)
 
@@ -274,8 +302,15 @@ class StudiesController < ApplicationController
   end
 
   def policy_accession
+    @study = Study.find(params[:id])
+
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # unless permitted_to_accession?(@study)
+    #   flash[:error] = 'Permission required to accession this study'
+    #   return redirect_to(study_path(@study))
+    # end
+
     rescue_accession_errors do
-      @study = Study.find(params[:id])
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_policy_for_user(@study, current_user)
 

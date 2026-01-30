@@ -1,7 +1,7 @@
 <%# Top content %>
 <% content_for :top_content do %>
   <%= tag.div(class: 'd-flex justify-content-end') do %>
-    <% unless configatron.accession_samples %>
+    <% unless accessioning_enabled? %>
       <%= tag.span('Accessioning is currently disabled.', class: 'text-muted') %>
     <% else %>
       <%= link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
@@ -43,7 +43,7 @@
         <td><%= accession_status&.status&.capitalize %></td>
         <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
         <td>
-          <% if can?(:accession, sample) && configatron.accession_samples %>
+          <% if permitted_to_accession?(sample) & sample.should_be_accessioned? & accessioning_enabled? %>
             <%# Add link to perform sample accessioning %>
             <% if sample.current_accession_status %>
               <%# If status exists, offer retry %>

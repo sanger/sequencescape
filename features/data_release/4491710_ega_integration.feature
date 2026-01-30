@@ -14,9 +14,7 @@ Feature: Generate accession nubmers for a sample
     Given a sample named "Sample4491710" exists
     Given I am the owner of sample "Sample4491710"
     Given I am on the show page for sample "Sample4491710"
-    Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
-    When I follow "Generate Accession Number"
-    Then I should not see "Accession number generated: EGAN00001000234"
+    Then I should not see "Generate Accession Number"
 
   Scenario: The sample doesn't have the required properties filled in
     Given a study named "Study 4491710" exists
@@ -36,8 +34,7 @@ Feature: Generate accession nubmers for a sample
 
     Given I am on the show page for sample "Sample4491710"
     Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
-    When I follow "Generate Accession Number"
-    Then I should not see "Accession number generated: EGAN00001000234"
+    Then I should not see "Generate Accession Number"
 
   Scenario: Study doesn't have any of the required properties filled in
     Given a study named "Study 4491710" exists
@@ -51,9 +48,7 @@ Feature: Generate accession nubmers for a sample
 
     Given I am on the show page for sample "Sample4491710"
     Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
-    When I follow "Generate Accession Number"
-    Then I should not see "Accession number generated: EGAN00001000234"
-
+    Then I should not see "Generate Accession Number"
 
   Scenario Outline: Study doesn't have some of the required data release properties filled in
     Given a study named "Study 4491710" exists
@@ -75,8 +70,7 @@ Feature: Generate accession nubmers for a sample
 
     Given I am on the show page for sample "Sample4491710"
     Given an accessioning webservice exists which returns a sample accession number "EGAN00001000234"
-    When I follow "Generate Accession Number"
-    Then I should not see "Accession number generated: EGAN00001000234"
+    Then I should not see "Generate Accession Number"
     # NOTE: strategy, timing and description cannot be empty by definition
     Examples:
       | Strategy | title    | type                    | study_abstract |

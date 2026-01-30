@@ -39,4 +39,41 @@ module StudiesHelper
     link_text = tag.strong(study.name) << ' ' << badge(study.state, type: 'study-state')
     link_to(link_text, study_path(study), options)
   end
+
+  def good_icon
+    icon('fas', 'check', class: 'text-success')
+  end
+
+  def bad_icon
+    icon('fas', 'xmark', class: 'text-danger')
+  end
+
+  def checklist_fallback_link(text, path)
+    "Please contact a #{link_to(text, path)}".html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  def checklist_item(condition:, good:, bad:, action: nil, action_permission: nil, fallback: nil) # rubocop:disable Metrics/ParameterLists
+    content_tag(:div) do
+      if condition
+        safe_join([good_icon, ' ', good])
+      else
+        safe_join(
+          [
+            bad_icon,
+            ' ',
+            bad,
+            content_tag(:span, class: 'text-muted') do
+              safe_join(
+                [
+                  ' — ',
+                  (action if action && (action_permission.nil? || action_permission)),
+                  (fallback if fallback && (action_permission == false))
+                ]
+              )
+            end
+          ]
+        )
+      end
+    end
+  end
 end

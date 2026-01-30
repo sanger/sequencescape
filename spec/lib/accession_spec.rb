@@ -14,16 +14,9 @@ RSpec.describe Accession do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
       let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
-      it 'raises an exception if the sample cannot be accessioned' do
-        expect { described_class.accession_sample(sample, event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
-      end
+      it 'does not add an accession number' do
+        described_class.accession_sample(sample, event_user)
 
-      it 'does not add an accession number if it fails' do
-        begin
-          described_class.accession_sample(sample, event_user)
-        rescue AccessionService::AccessioningDisabledError
-          # Ignore the error and continue execution
-        end
         expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
       end
     end
