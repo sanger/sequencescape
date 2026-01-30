@@ -16,11 +16,6 @@ class AccessionService::UnsuitableService < AccessionService::BaseService
           I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
   end
 
-  def submit_sample_for_user(_sample, _user)
-    raise AccessionService::NumberNotGenerated,
-          I18n.t(:no_suitable_study, scope: 'accession_service.unsuitable', study_ids: @study_ids.to_sentence)
-  end
-
   def submit_study_for_user(_study, _user)
     raise StandardError,
           # rubocop:todo Layout/LineLength
