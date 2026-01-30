@@ -27,6 +27,17 @@ GIT
   specs:
     sanger_barcode_format (0.2.0)
 
+GIT
+  remote: https://github.com/sanger/warren.git
+  revision: fcee96dbf39e8187fe1759a0b0c80cdf98740d1d
+  branch: master
+  specs:
+    sanger_warren (0.5.1)
+      bunny (~> 2.17)
+      connection_pool (~> 2.2)
+      multi_json (>= 1.0, < 1.18.0)
+      thor (~> 1.1)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -319,7 +330,7 @@ GEM
     mocha (3.0.1)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.0)
-    multi_json (1.19.1)
+    multi_json (1.17.0)
     multi_test (1.1.0)
     multipart-post (2.4.1)
     mustermann (3.0.0)
@@ -370,7 +381,7 @@ GEM
       pry (>= 0.13.0)
     psych (3.3.4)
     public_suffix (6.0.2)
-    puma (7.1.0)
+    puma (7.2.0)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.21)
@@ -541,16 +552,11 @@ GEM
       concurrent-ruby
       csv
       railties (>= 4.1)
-    sanger_warren (0.5.0)
-      bunny (~> 2.17)
-      connection_pool (~> 2.2)
-      multi_json (~> 1.0)
-      thor (~> 1.1)
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.39.0)
+    selenium-webdriver (4.40.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -734,7 +740,7 @@ DEPENDENCIES
   ruby-units
   sanger-jsonapi-resources (~> 0.1.2)
   sanger_barcode_format!
-  sanger_warren
+  sanger_warren!
   selenium-webdriver (~> 4.1)
   shoulda-context (~> 3.0.0.rc1)
   shoulda-matchers (~> 6.0)
