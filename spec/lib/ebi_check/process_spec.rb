@@ -99,10 +99,10 @@ describe EbiCheck::Process do
         output = buffer.string
 
         expect(output).to include(
-          format(described_class::TEMP_STUDY_INFO, study1.id, study1.ebi_accession_number)
+          format(described_class::TEMPLATE_STUDY_INFO, study1.id, study1.ebi_accession_number)
         )
         expect(output).to include(
-          format(described_class::TEMP_STUDY_INFO, study2.id, study2.ebi_accession_number)
+          format(described_class::TEMPLATE_STUDY_INFO, study2.id, study2.ebi_accession_number)
         )
       end
 
@@ -112,20 +112,20 @@ describe EbiCheck::Process do
 
         key = :title
         sanitized_title = study1.study_metadata.study_study_title.gsub(/[^a-z\d]/i, '_')
-        expect(output).to include(format(described_class::TEMP_SC, key, sanitized_title))
-        expect(output).to include(format(described_class::TEMP_EBI, key, "changed #{sanitized_title}"))
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sanitized_title))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key, "changed #{sanitized_title}"))
         key = :description
-        expect(output).to include(format(described_class::TEMP_SC, key, study1.study_metadata.study_description))
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, study1.study_metadata.study_description))
         expect(output).to include(
-          format(described_class::TEMP_EBI, key, "changed #{study1.study_metadata.study_description}")
+          format(described_class::TEMPLATE_EBI, key, "changed #{study1.study_metadata.study_description}")
         )
         key = :project_name
-        expect(output).to include(format(described_class::TEMP_SC, key, sanitized_title))
-        expect(output).to include(format(described_class::TEMP_EBI, key, "changed #{sanitized_title}"))
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sanitized_title))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key, "changed #{sanitized_title}"))
         key = :title
         sanitized_title = study2.study_metadata.study_study_title.gsub(/[^a-z\d]/i, '_')
-        expect(output).to include(format(described_class::TEMP_SC, key, sanitized_title))
-        expect(output).to include(format(described_class::TEMP_EBI, key, "changed #{sanitized_title}"))
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sanitized_title))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key, "changed #{sanitized_title}"))
       end
     end
 
@@ -317,10 +317,10 @@ describe EbiCheck::Process do
         output = buffer.string
 
         expect(output).to include(
-          format(described_class::TEMP_STUDY_INFO, study1.id, study1.ebi_accession_number)
+          format(described_class::TEMPLATE_STUDY_INFO, study1.id, study1.ebi_accession_number)
         )
         expect(output).to include(
-          format(described_class::TEMP_STUDY_INFO, study2.id, study2.ebi_accession_number)
+          format(described_class::TEMPLATE_STUDY_INFO, study2.id, study2.ebi_accession_number)
         )
       end
 
@@ -329,10 +329,10 @@ describe EbiCheck::Process do
         output = buffer.string
 
         expect(output).to include(
-          format(described_class::TEMP_SAMPLE_INFO, sample1.id, sample1.ebi_accession_number)
+          format(described_class::TEMPLATE_SAMPLE_INFO, sample1.id, sample1.ebi_accession_number)
         )
         expect(output).to include(
-          format(described_class::TEMP_SAMPLE_INFO, sample2.id, sample2.ebi_accession_number)
+          format(described_class::TEMPLATE_SAMPLE_INFO, sample2.id, sample2.ebi_accession_number)
         )
       end
 
@@ -341,18 +341,18 @@ describe EbiCheck::Process do
         output = buffer.string
 
         key = :'sample description'
-        expect(output).to include(format(described_class::TEMP_SC, key, sample1.sample_metadata.sample_description))
-        expect(output).to include(format(described_class::TEMP_EBI, key,
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sample1.sample_metadata.sample_description))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key,
                                          "changed #{sample1.sample_metadata.sample_description}"))
 
         key = :gender
-        expect(output).to include(format(described_class::TEMP_SC, key, sample1.sample_metadata.sample_description))
-        expect(output).to include(format(described_class::TEMP_EBI, key,
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sample1.sample_metadata.sample_description))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key,
                                          "changed #{sample1.sample_metadata.sample_description}"))
 
         key = :'geographic location (country and/or sea)'
-        expect(output).to include(format(described_class::TEMP_SC, key, sample2.sample_metadata.country_of_origin))
-        expect(output).to include(format(described_class::TEMP_EBI, key,
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sample2.sample_metadata.country_of_origin))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key,
                                          "changed #{sample2.sample_metadata.country_of_origin}"))
       end
     end

@@ -30,10 +30,10 @@ module EbiCheck
     EGA = 'EGA'
     ENA = 'ENA'
     # Templates for printing information
-    TEMP_STUDY_INFO = 'Study ID: %s, EBI Accession Number: %s'
-    TEMP_SAMPLE_INFO = ' Sample ID: %s, EBI Accession Number: %s'
-    TEMP_SC = '  SC:  %s=%s'  # SC = Sequencescape side
-    TEMP_EBI = '  EBI: %s=%s' # EBI = EBI EGA / ENA side
+    TEMPLATE_STUDY_INFO = 'Study ID: %s, EBI Accession Number: %s'
+    TEMPLATE_SAMPLE_INFO = ' Sample ID: %s, EBI Accession Number: %s'
+    TEMPLATE_SC = '  SC:  %s=%s'  # SC = Sequencescape side
+    TEMPLATE_EBI = '  EBI: %s=%s' # EBI = EBI EGA / ENA side
 
     # Initializes a new EbiCheck::Process instance.
     # @param out [IO] The output stream for printing results (default: $stdout).
@@ -165,14 +165,14 @@ module EbiCheck
     # @param study [Study] The study to print information for.
     # @return [void]
     def print_study_info(study)
-      out.puts format(TEMP_STUDY_INFO, study.id, study.ebi_accession_number)
+      out.puts format(TEMPLATE_STUDY_INFO, study.id, study.ebi_accession_number)
     end
 
     # Prints information about a sample, including its ID and EBI accession number.
     # @param sample [Sample] The sample to print information for.
     # @return [void]
     def print_sample_info(sample)
-      out.puts format(TEMP_SAMPLE_INFO, sample.id, sample.ebi_accession_number)
+      out.puts format(TEMPLATE_SAMPLE_INFO, sample.id, sample.ebi_accession_number)
     end
 
     # Prints the differences between local and remote data.
@@ -186,8 +186,8 @@ module EbiCheck
 
         next if (key == :'subject id') && (local[key] == remote[:title])
 
-        out.puts format(TEMP_SC, key, value)
-        out.puts format(TEMP_EBI, key, remote_value)
+        out.puts format(TEMPLATE_SC, key, value)
+        out.puts format(TEMPLATE_EBI, key, remote_value)
       end
     end
 
