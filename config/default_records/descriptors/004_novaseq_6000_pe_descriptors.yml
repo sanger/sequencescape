@@ -46,8 +46,8 @@ NovaSeq 6000 PE Loading Pipette Carousel:
   kind: Text
   required: false
   sorter: 8
-NovaSeq 6000 PE Loading PhiX lot:
-  name: PhiX lot
+"NovaSeq 6000 PE Loading PhiX lot #":
+  name: "PhiX lot #"
   task: Loading
   workflow: NovaSeq 6000 PE
   kind: Text
@@ -75,8 +75,8 @@ NovaSeq 6000 PE Loading Comment:
   required: false
   sorter: 12
 # Descriptors for Task - Read 1 & 2
-NovaSeq 6000 PE Read 1 & 2 iPCR batch:
-  name: iPCR batch
+"NovaSeq 6000 PE Read 1 & 2 iPCR batch #":
+  name: "iPCR batch #"
   task: Read 1 & 2
   workflow: NovaSeq 6000 PE
   kind: Text
