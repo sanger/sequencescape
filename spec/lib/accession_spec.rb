@@ -35,14 +35,24 @@ RSpec.describe Accession do
         let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
         let(:invalid_sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
-        it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
-          expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
-          expect_accession.to raise_error(Accession::InternalValidationError) do |error|
-            expect(error.message).to eq(
-              "Sample '#{invalid_sample.name}' cannot be accessioned: " \
-              'Sample does not have the required metadata: sample-taxon-id.'
-            )
-          end
+        it 'does not raise an error if performing asynchronously' do
+          described_class.accession_sample(invalid_sample, event_user)
+        end
+
+        it 'does not add an accession number' do
+          described_class.accession_sample(invalid_sample, event_user)
+          expect(invalid_sample.sample_metadata.sample_ebi_accession_number).to be_nil
+        end
+
+        it 'logs an error message' do
+          allow(Rails.logger).to receive(:error).and_call_original
+
+          described_class.accession_sample(invalid_sample, event_user)
+
+          expect(Rails.logger).to have_received(:error).with(
+            "Sample '#{invalid_sample.name}' cannot be accessioned: " \
+            'Sample does not have the required metadata: sample-taxon-id.'
+          )
         end
       end
 
@@ -55,11 +65,15 @@ RSpec.describe Accession do
             accessionable_sample.ena_study.enforce_accessioning = false
           end
 
-          it 'raises an internal validation error' do
-            expect { described_class.accession_sample(accessionable_sample, event_user) }
-              .to raise_error(Accession::InternalValidationError,
-                              "Sample '#{accessionable_sample.name}' cannot be accessioned: " \
-                              'Sample is linked to a study that does not require accessioning.')
+          it 'logs an error message' do
+            allow(Rails.logger).to receive(:error).and_call_original
+
+            described_class.accession_sample(accessionable_sample, event_user)
+
+            expect(Rails.logger).to have_received(:error).with(
+              "Sample '#{accessionable_sample.name}' cannot be accessioned: " \
+              'Sample is linked to a study that does not require accessioning.'
+            )
           end
 
           it 'does not receive an accession number' do

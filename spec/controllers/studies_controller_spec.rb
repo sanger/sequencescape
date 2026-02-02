@@ -213,53 +213,44 @@ RSpec.describe StudiesController do
         expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
       end
 
-      it 'does not set a flash notice message' do
-        expect(flash[:notice]).to be_nil
+      it 'does not set a flash info message' do
+        expect(flash[:info]).to be_nil
       end
 
-      it 'sets a flash error message' do
-        # rubocop:disable Layout/LineLength
-        expect(flash[:error]).to eq(
-          [
-            'The samples in this study could not be accessioned, please check the following errors:',
-            "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
-            "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
-            "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
-            "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
-            "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'."
-          ]
-        )
-        # rubocop:enable Layout/LineLength
+      it 'does not set a flash notice message' do
+        expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+      end
+
+      it 'sets a flash warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil
       end
 
       context 'when the study has many samples' do
         let(:number_of_samples) { 10 }
 
-        it 'does not set a flash notice message' do
-          expect(flash[:notice]).to be_nil
+        it 'does not set a flash info message' do
+          expect(flash[:info]).to be_nil
         end
 
-        it 'sets a flash error message' do
-          # rubocop:disable Layout/LineLength
-          expect(flash[:error]).to eq(
-            [
-              'The samples in this study could not be accessioned, please check the following errors:',
-              "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
-              "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
-              "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
-              "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
-              "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'.",
-              "Sample 'Sample6' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study6: Manages' and 'Study1: Open'.",
-              '...',
-              'Only the first 6 of 10 errors are shown.'
-            ]
-          )
-          # rubocop:enable Layout/LineLength
+        it 'does not set a flash notice message' do
+          expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+        end
+
+        it 'sets a flash warning message' do
+          expect(flash[:warning]).to be_nil
+        end
+
+        it 'does not set a flash error message' do
+          expect(flash[:error]).to be_nil
         end
 
         it 'shows the error messages in the accession statuses of the samples' do
           study.samples.each do |sample|
-            sample_status = Accession::SampleStatus.where(sample:).first
+            sample_status = Accession::SampleStatus.where(sample:).first!
             expect(sample_status).to have_attributes(
               status: 'failed',
               message: "Sample '#{sample.name}' cannot be accessioned: " \
