@@ -15,7 +15,7 @@
 #     bundle exec rake ebi:check_samples study_numbers=ERP123456,EGAS12345678901
 #     bundle exec rake ebi:check_samples sample_numbers=ERS12345678,EGAN12345678901
 #
-# These tasks compare local Sequencescape XML with remote EBI/ENA/EGA XML,
+# These tasks compare local Sequencescape XML with remote EBI ENA/EGA XML,
 # extract relevant fields, and print any differences found.
 #
 # rubocop:disable Rails/Output
@@ -24,7 +24,7 @@ namespace :ebi do
   task :check_studies, [:study_ids] => :environment do
     study_ids = (ENV['study_ids'] || '').split(',').reject(&:empty?)
     study_numbers = (ENV['study_numbers'] || '').split(',').reject(&:empty?)
-    if study_ids.empty? && study_numbers.empty?
+    if [study_ids, study_numbers].all?(&:empty?)
       puts <<~USAGE
         Usage: bundle exec rake ebi:check_studies study_ids=<study_id>,... \
           study_numbers=<study_number>,...
@@ -54,8 +54,7 @@ namespace :ebi do
     study_numbers = (ENV['study_numbers'] || '').split(',').reject(&:empty?)
     sample_numbers = (ENV['sample_numbers'] || '').split(',').reject(&:empty?)
 
-    if study_ids.empty? && sample_ids.empty? && study_numbers.empty? && sample_numbers.empty?
-
+    if [study_ids, sample_ids, study_numbers, sample_numbers].all?(&:empty?)
       puts <<~USAGE
         Usage: bundle exec rake ebi:check_samples \
           study_ids=<study_id>,... \
