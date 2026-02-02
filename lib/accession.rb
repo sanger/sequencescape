@@ -114,7 +114,7 @@ module Accession
       end
 
       accessionable = build_accessionable(sample)
-      job = SampleAccessioningJob.new(accessionable, event_user)
+      job = SampleAccessioningJob.new(accessionable, event_user, perform_now)
 
       if perform_now
         inline_accession_job!(job)

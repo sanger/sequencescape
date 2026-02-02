@@ -7,7 +7,7 @@ require 'exception_notification'
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do
+  Struct.new(:accessionable, :event_user, :synchronous?) do
     # Retrieve the contact user for accessioning submissions
     def self.contact_user
       User.find_by(api_key: configatron.accession_local_key)
@@ -18,6 +18,12 @@ SampleAccessioningJob =
       submission = Accession::Submission.new(contact_user, accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
+    rescue Accession::InternalValidationError => e
+      handle_job_error(e, submission)
+
+      # If an InternalValidationError occurs during synchronous accessioning, re-raise the error for upstream handling
+      raise if synchronous?
+      # If performing asynchronously, do not raise an error to prevent unnecessary retries for known validation issues
     rescue StandardError => e
       handle_job_error(e, submission)
 

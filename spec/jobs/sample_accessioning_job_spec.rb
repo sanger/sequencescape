@@ -26,67 +26,141 @@ RSpec.describe SampleAccessioningJob, type: :job do
       allow(described_class).to receive(:contact_user).and_return(contact_user)
     end
 
-    context 'when the submission fails validation' do
-      let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
-      let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+    context 'when the job is performed asynchronously' do
+      let(:job) { described_class.new(accessionable, nil, false) }
 
-      before do
-        create(:accession_sample_status, sample: sample, status: 'processing')
+      context 'when the submission fails validation' do
+        let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+        let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
 
-        if enable_y25_705_notify_on_internal_accessioning_validation_failures
-          Flipper.enable(:y25_705_notify_on_internal_accessioning_validation_failures)
-        else
-          Flipper.disable(:y25_705_notify_on_internal_accessioning_validation_failures)
-        end
-
-        expect { job.perform }.to raise_error(Accession::InternalValidationError)
-      end
-
-      context 'when accessioning tag validation is enabled' do
         before do
-          Flipper.disable(:y25_714_skip_accessioning_tag_validation)
+          create(:accession_sample_status, sample: sample, status: 'processing')
+
+          if enable_y25_705_notify_on_internal_accessioning_validation_failures
+            Flipper.enable(:y25_705_notify_on_internal_accessioning_validation_failures)
+          else
+            Flipper.disable(:y25_705_notify_on_internal_accessioning_validation_failures)
+          end
+
+          job.perform
         end
 
-        it 'sets the accession sample status to failed' do
-          sample_status = Accession::SampleStatus.where(sample:).first
-          expect(sample_status).to have_attributes(
-            status: 'failed',
-            message: "Sample '#{sample.name}' cannot be accessioned: " \
-                     'Sample does not have the required metadata: sample-taxon-id.'
-          )
-        end
+        context 'when accessioning tag validation is enabled' do
+          before do
+            Flipper.disable(:y25_714_skip_accessioning_tag_validation)
+          end
 
-        it 'logs the error' do
-          expect(logger).to have_received(:error).with(
-            "Sample '#{sample.name}' cannot be accessioned: " \
-            'Sample does not have the required metadata: sample-taxon-id.'
-          )
-        end
+          it 'sets the accession sample status to failed' do
+            sample_status = Accession::SampleStatus.where(sample:).first
+            expect(sample_status).to have_attributes(
+              status: 'failed',
+              message: "Sample '#{sample.name}' cannot be accessioned: " \
+                       'Sample does not have the required metadata: sample-taxon-id.'
+            )
+          end
 
-        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is disabled' do
-          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+          it 'logs the error' do
+            expect(logger).to have_received(:error).with(
+              "Sample '#{sample.name}' cannot be accessioned: " \
+              'Sample does not have the required metadata: sample-taxon-id.'
+            )
+          end
 
-          it 'does not send an exception notification' do
-            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is disabled' do
+            let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+
+            it 'does not send an exception notification' do
+              expect(ExceptionNotifier).not_to have_received(:notify_exception)
+            end
+          end
+
+          context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is enabled' do
+            let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { true }
+
+            it 'notifies ExceptionNotifier' do
+              sample_name = sample.name # 'Sample 1'
+              expect(ExceptionNotifier).to have_received(:notify_exception).with(
+                instance_of(Accession::InternalValidationError),
+                data: {
+                  message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                           "Sample '#{sample_name}' cannot be accessioned: " \
+                           'Sample does not have the required metadata: sample-taxon-id.',
+                  sample_name: sample_name,
+                  service_provider: 'ENA',
+                  user: nil
+                }
+              )
+            end
           end
         end
+      end
+    end
 
-        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is enabled' do
-          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { true }
+    context 'when the job is performed synchronously' do
+      let(:job) { described_class.new(accessionable, nil, true) }
 
-          it 'notifies ExceptionNotifier' do
-            sample_name = sample.name # 'Sample 1'
-            expect(ExceptionNotifier).to have_received(:notify_exception).with(
-              instance_of(Accession::InternalValidationError),
-              data: {
-                message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                         "Sample '#{sample_name}' cannot be accessioned: " \
-                         'Sample does not have the required metadata: sample-taxon-id.',
-                sample_name: sample_name,
-                service_provider: 'ENA',
-                user: nil
-              }
+      context 'when the submission fails validation' do
+        let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+        let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+
+        before do
+          create(:accession_sample_status, sample: sample, status: 'processing')
+
+          if enable_y25_705_notify_on_internal_accessioning_validation_failures
+            Flipper.enable(:y25_705_notify_on_internal_accessioning_validation_failures)
+          else
+            Flipper.disable(:y25_705_notify_on_internal_accessioning_validation_failures)
+          end
+
+          expect { job.perform }.to raise_error(Accession::InternalValidationError)
+        end
+
+        context 'when accessioning tag validation is enabled' do
+          before do
+            Flipper.disable(:y25_714_skip_accessioning_tag_validation)
+          end
+
+          it 'sets the accession sample status to failed' do
+            sample_status = Accession::SampleStatus.where(sample:).first
+            expect(sample_status).to have_attributes(
+              status: 'failed',
+              message: "Sample '#{sample.name}' cannot be accessioned: " \
+                       'Sample does not have the required metadata: sample-taxon-id.'
             )
+          end
+
+          it 'logs the error' do
+            expect(logger).to have_received(:error).with(
+              "Sample '#{sample.name}' cannot be accessioned: " \
+              'Sample does not have the required metadata: sample-taxon-id.'
+            )
+          end
+
+          context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is disabled' do
+            let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+
+            it 'does not send an exception notification' do
+              expect(ExceptionNotifier).not_to have_received(:notify_exception)
+            end
+          end
+
+          context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is enabled' do
+            let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { true }
+
+            it 'notifies ExceptionNotifier' do
+              sample_name = sample.name # 'Sample 1'
+              expect(ExceptionNotifier).to have_received(:notify_exception).with(
+                instance_of(Accession::InternalValidationError),
+                data: {
+                  message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
+                           "Sample '#{sample_name}' cannot be accessioned: " \
+                           'Sample does not have the required metadata: sample-taxon-id.',
+                  sample_name: sample_name,
+                  service_provider: 'ENA',
+                  user: nil
+                }
+              )
+            end
           end
         end
       end
