@@ -13,7 +13,7 @@ require_relative 'utils'
 #
 # Example usage:
 #
-#   process = EbiCheck::Process.new
+#   process = EBICheck::Process.new
 #
 #   process.studies_by_ids([123, 456])
 #   process.studies_by_accession_numbers(['ERP123456', 'EGAS12345678901'])
@@ -24,7 +24,7 @@ require_relative 'utils'
 #   process.samples_by_ids([789, 1011])
 #   process.samples_by_accession_numbers(['ERS12345678', 'EGAN12345678901'])
 #
-module EbiCheck
+module EBICheck
   class Process # rubocop:disable Metrics/ClassLength
     # Service names to identify EGA and ENA accessions
     EGA = 'EGA'
@@ -35,7 +35,7 @@ module EbiCheck
     TEMPLATE_SC = '  SC:  %s=%s'  # SC = Sequencescape side
     TEMPLATE_EBI = '  EBI: %s=%s' # EBI = EBI EGA / ENA side
 
-    # Initializes a new EbiCheck::Process instance.
+    # Initializes a new EBICheck::Process instance.
     # @param out [IO] The output stream for printing results (default: $stdout).
     def initialize(out = $stdout)
       @out = out
@@ -113,8 +113,8 @@ module EbiCheck
 
     private
 
-    delegate :extract_study_fields, to: EbiCheck::Utils
-    delegate :extract_sample_fields, to: EbiCheck::Utils
+    delegate :extract_study_fields, to: EBICheck::Utils
+    delegate :extract_sample_fields, to: EBICheck::Utils
 
     attr_reader :out # The output stream for printing results.
 
@@ -194,7 +194,7 @@ module EbiCheck
     # Returns the appropriate client for accessing study data based on the
     # study's EBI accession number, i.e. EGA or ENA.
     # @param study [Study] The study to get the client for.
-    # @return [EbiCheck::Client] The client for accessing the study data.
+    # @return [EBICheck::Client] The client for accessing the study data.
     def client_for_study(study)
       if study.ebi_accession_number.start_with?(EGA)
         client_for_ega_studies
@@ -206,7 +206,7 @@ module EbiCheck
     # Returns the appropriate client for accessing sample data based on the
     # sample's EBI accession number, i.e. EGA or ENA.
     # @param sample [Sample] The sample to get the client for.
-    # @return [EbiCheck::Client] The client for accessing the sample data.
+    # @return [EBICheck::Client] The client for accessing the sample data.
     def client_for_sample(sample)
       if sample.ebi_accession_number.start_with?(EGA)
         client_for_ega_samples
@@ -216,27 +216,27 @@ module EbiCheck
     end
 
     # Memoized client for ENA samples for reuse.
-    # @return [EbiCheck::Client] The ENA samples client.
+    # @return [EBICheck::Client] The ENA samples client.
     def client_for_ena_samples
-      @client_for_ena_samples ||= EbiCheck::Client.for_ena_samples
+      @client_for_ena_samples ||= EBICheck::Client.for_ena_samples
     end
 
     # Memoized client for EGA samples for reuse.
-    # @return [EbiCheck::Client] The EGA samples client.
+    # @return [EBICheck::Client] The EGA samples client.
     def client_for_ega_samples
-      @client_for_ega_samples ||= EbiCheck::Client.for_ega_samples
+      @client_for_ega_samples ||= EBICheck::Client.for_ega_samples
     end
 
     # Memoized client for ENA studies for reuse.
-    # @return [EbiCheck::Client] The ENA studies client.
+    # @return [EBICheck::Client] The ENA studies client.
     def client_for_ena_studies
-      @client_for_ena_studies ||= EbiCheck::Client.for_ena_studies
+      @client_for_ena_studies ||= EBICheck::Client.for_ena_studies
     end
 
     # Memoized client for EGA studies for reuse.
-    # @return [EbiCheck::Client] The EGA studies client.
+    # @return [EBICheck::Client] The EGA studies client.
     def client_for_ega_studies
-      @client_for_ega_studies ||= EbiCheck::Client.for_ega_studies
+      @client_for_ega_studies ||= EBICheck::Client.for_ega_studies
     end
   end
 end

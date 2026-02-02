@@ -34,7 +34,7 @@ namespace :ebi do
       exit 1
     end
 
-    process = EbiCheck::Process.new
+    process = EBICheck::Process.new
 
     if study_ids.any?
       puts 'Processing Study IDs'
@@ -70,7 +70,7 @@ namespace :ebi do
       exit 1
     end
 
-    process = EbiCheck::Process.new
+    process = EBICheck::Process.new
 
     if study_ids.any?
       puts 'Processing Study IDs'

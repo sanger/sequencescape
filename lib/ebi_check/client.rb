@@ -17,18 +17,18 @@
 #
 # Example usage:
 #
-#   ega_study_client = EbiCheck::Client.for_ega_studies
+#   ega_study_client = EBICheck::Client.for_ega_studies
 #   response = ega_study_client.get('EGAS12345678901')
 #
-#   ena_sample_client = EbiCheck::Client.for_ena_samples
+#   ena_sample_client = EBICheck::Client.for_ena_samples
 #   response = ena_sample_client.get('ERS12345678')
 #
 # The response from the .get method is a Faraday::Response object,
 # with the XML data accessible via the .body method.
 #
-module EbiCheck
+module EBICheck
   class Client < HTTPClients::BaseClient
-    # Initializes a new EbiCheck::Client instance.
+    # Initializes a new EBICheck::Client instance.
     # @param url [String] The base URL for the service
     # @param options [Hash] Options including user credentials
     # @option options [String] :user The username for basic authentication.
@@ -68,25 +68,25 @@ module EbiCheck
 
     class << self
       # Creates a client for accessing EGA sample data.
-      # @return [EbiCheck::Client] The EGA samples client.
+      # @return [EBICheck::Client] The EGA samples client.
       def for_ega_samples
         new(samples_url, ega_options)
       end
 
       # Creates a client for accessing EGA study data.
-      # @return [EbiCheck::Client] The EGA studies client.
+      # @return [EBICheck::Client] The EGA studies client.
       def for_ega_studies
         new(studies_url, ega_options)
       end
 
       # Creates a client for accessing ENA study data.
-      # @return [EbiCheck::Client] The ENA studies client.
+      # @return [EBICheck::Client] The ENA studies client.
       def for_ena_studies
         new(studies_url, ena_options)
       end
 
       # Creates a client for accessing ENA sample data.
-      # @return [EbiCheck::Client] The ENA samples client.
+      # @return [EBICheck::Client] The ENA samples client.
       def for_ena_samples
         new(samples_url, ena_options)
       end

@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'ebi_check/utils'
 
-RSpec.describe EbiCheck::Utils do
+RSpec.describe EBICheck::Utils do
   describe '.extract_study_fields' do
     let(:xml) do
       <<~XML

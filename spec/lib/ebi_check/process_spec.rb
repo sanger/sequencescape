@@ -4,7 +4,7 @@ require 'rails_helper'
 require 'ebi_check/process'
 
 # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
-describe EbiCheck::Process do
+describe EBICheck::Process do
   let(:buffer) { StringIO.new } # to capture output
   let(:study1_number) { 'EGA123' }
   let(:study2_number) { 'ENA456' }

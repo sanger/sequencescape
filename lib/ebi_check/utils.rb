@@ -14,10 +14,10 @@
 #
 # Example usage:
 #
-#   study_fields = EbiCheck::Utils.extract_study_fields(study_xml)
-#   sample_fields = EbiCheck::Utils.extract_sample_fields(sample_xml)
+#   study_fields = EBICheck::Utils.extract_study_fields(study_xml)
+#   sample_fields = EBICheck::Utils.extract_sample_fields(sample_xml)
 #
-module EbiCheck
+module EBICheck
   module Utils
     # Study XPaths
     XPATH_STUDY_TITLE = '//STUDY_TITLE'
