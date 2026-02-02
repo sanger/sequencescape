@@ -70,7 +70,7 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
           },
           {
             'role_type' => 'sequencing_source_labware',
-            'subject_type' => 'library_tube',
+            'subject_type' => 'tube',
             'uuid' => stock_asset.uuid,
             'friendly_name' => stock_asset.human_barcode
           }
@@ -100,7 +100,7 @@ RSpec.describe BroadcastEvent::LabEvent, :broadcast_event do
           },
           {
             'role_type' => 'sequencing_source_labware',
-            'subject_type' => 'library_tube',
+            'subject_type' => 'tube',
             'uuid' => stock_asset.uuid,
             'friendly_name' => stock_asset.human_barcode
           }

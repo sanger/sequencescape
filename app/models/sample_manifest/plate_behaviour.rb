@@ -11,15 +11,6 @@ module SampleManifest::PlateBehaviour
       @plates = []
     end
 
-    # Generates plates and associated data for the sample manifest.
-    #
-    # Steps:
-    # 1. Generates new plates for the given purpose.
-    # 2. Inserts Sanger sample IDs for the plates.
-    # 3. Builds well data mapping plates, maps, and sample IDs.
-    # 4. Enqueues asynchronous jobs to build wells for each plate.
-    # 5. Constructs an array of details for each well.
-    # 6. Updates the manifest with the barcodes of the generated plates.
     def generate
       @plates = generate_plates(purpose)
 

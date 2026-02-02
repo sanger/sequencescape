@@ -113,7 +113,7 @@ module SampleManifestExcel
                           "Skipping accessioning of samples in manifest #{sample_manifest.id}."
       end
 
-      # If samples have been created, register a stock_resource record in the MLWH
+      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
       def register_stock_resources
         stock_receptacles_to_be_registered.each(&:register_stock!)
       end
@@ -190,20 +190,10 @@ module SampleManifestExcel
         @changed_labware ||= rows.select(&:changed?).reduce(Set.new) { |set, row| set << row.labware }
       end
 
-      def update_subject_type_for_library_receptacles!(asset)
-        return unless sample_manifest.core_behaviour.to_s.include?('LibraryPlateBehaviour')
-
-        asset.subject_type = 'library_plate_well'
-      end
-
       def stock_receptacles_to_be_registered
         return [] unless sample_manifest.core_behaviour.stocks?
 
-        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?)
-          .map(&:asset)
-          .each do |asset|
-            update_subject_type_for_library_receptacles!(asset)
-        end
+        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
       end
     end
   end

@@ -17,10 +17,6 @@ class MultiplexedLibraryTube < Tube
     LibraryTube
   end
 
-  def subject_type
-    'multiplexed_library_tube'
-  end
-
   def team
     creation_requests.first&.product_line
   end

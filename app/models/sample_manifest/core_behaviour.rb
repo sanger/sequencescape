@@ -74,7 +74,7 @@ module SampleManifest::CoreBehaviour
     end
 
     def stocks?
-      false
+      true
     end
   end
 
