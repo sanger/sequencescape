@@ -31,9 +31,11 @@
 <% if permitted_to_accession?(@study) %>
   <% add :menu,
     @study.accession_number? ? "Update Study Data for Accessioning" : "Generate Accession Number" =>
-     (accessioning_enabled? ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
-  <% add :menu, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
-  <% add :menu, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
+      (accessioning_enabled? ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
+  <% add :menu, "Generate DAC Accession Number" =>
+    (accessioning_enabled? ? url_for(controller: '/studies', action: 'dac_accession', id: @study.id) : 'disabled' ) -%>
+  <% add :menu, "Generate Policy Accession Number" =>
+    (accessioning_enabled? ? url_for(controller: '/studies', action: 'policy_accession', id: @study.id) : 'disabled' ) -%>
 <% end -%>
 
 <% if can? :edit, @study %>
