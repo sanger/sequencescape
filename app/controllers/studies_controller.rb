@@ -219,8 +219,10 @@ class StudiesController < ApplicationController
     end
   end
 
-  def rescue_accession_errors # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def handle_accession_action(notice:) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     yield
+    flash[:notice] = notice.call
+    redirect_to(study_path(@study))
   rescue ActiveRecord::RecordInvalid => e
     flash.now[:error] = 'Please fill in the required fields'
     render(action: :edit)
@@ -235,41 +237,28 @@ class StudiesController < ApplicationController
     redirect_to(edit_study_path(@study))
   end
 
-  def accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def accession
     @study = Study.find(params[:id])
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
 
-    unless accessioning_enabled?
-      flash[:warning] = 'Accessioning is not enabled in this environment.'
-      return redirect_to(study_path(@study))
-    end
     # TODO: Y26-026 - Enforce accessioning permissions
-    # unless permitted_to_accession?(@study)
-    #   flash[:error] = 'Permission required to accession this study'
-    #   return redirect_to(study_path(@study))
-    # end
+    # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
-    rescue_accession_errors do
+    handle_accession_action(
+      notice: -> { "Accession number generated: #{@study.ebi_accession_number}" }
+    ) do
       @study.validate_study_for_accessioning!
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_study_for_user(@study, current_user)
-
-      flash[:notice] = "Accession number generated: #{@study.ebi_accession_number}"
-      redirect_to(study_path(@study))
     end
   end
 
   def accession_all_samples # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
 
-    unless accessioning_enabled?
-      flash[:warning] = 'Accessioning is not enabled in this environment.'
-      return redirect_to(study_path(@study))
-    end
     # TODO: Y26-026 - Enforce accessioning permissions
-    # unless permitted_to_accession?(@study)
-    #   flash[:error] = 'Permission required to accession this study'
-    #   return redirect_to(study_path(@study))
-    # end
+    # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
     @study.accession_all_samples(current_user)
 
@@ -285,45 +274,31 @@ class StudiesController < ApplicationController
 
   def dac_accession
     @study = Study.find(params[:id])
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
 
-    unless accessioning_enabled?
-      flash[:warning] = 'Accessioning is not enabled in this environment.'
-      return redirect_to(study_path(@study))
-    end
     # TODO: Y26-026 - Enforce accessioning permissions
-    # unless permitted_to_accession?(@study)
-    #   flash[:error] = 'Permission required to accession this study'
-    #   return redirect_to(study_path(@study))
-    # end
+    # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
-    rescue_accession_errors do
+    handle_accession_action(
+      notice: -> { "Accession number generated: #{@study.dac_accession_number}" }
+    ) do
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_dac_for_user(@study, current_user)
-
-      flash[:notice] = "Accession number generated: #{@study.dac_accession_number}"
-      redirect_to(study_path(@study))
     end
   end
 
   def policy_accession
     @study = Study.find(params[:id])
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
 
-    unless accessioning_enabled?
-      flash[:warning] = 'Accessioning is not enabled in this environment.'
-      return redirect_to(study_path(@study))
-    end
     # TODO: Y26-026 - Enforce accessioning permissions
-    # unless permitted_to_accession?(@study)
-    #   flash[:error] = 'Permission required to accession this study'
-    #   return redirect_to(study_path(@study))
-    # end
+    # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
-    rescue_accession_errors do
+    handle_accession_action(
+      notice: -> { "Accession number generated: #{@study.policy_accession_number}" }
+    ) do
       accession_service = AccessionService.select_for_study(@study)
       accession_service.submit_policy_for_user(@study, current_user)
-
-      flash[:notice] = "Accession number generated: #{@study.policy_accession_number}"
-      redirect_to(study_path(@study))
     end
   end
 
@@ -417,6 +392,16 @@ class StudiesController < ApplicationController
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def accessioning_not_enabled_redirect
+    flash[:warning] = 'Accessioning is not enabled in this environment.'
+    redirect_to(study_path(@study))
+  end
+
+  def accession_permission_denied_redirect
+    flash[:error] = 'Permission required to accession this study'
+    redirect_to(study_path(@study))
+  end
 
   def rescue_validation
     yield
