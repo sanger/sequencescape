@@ -24,7 +24,7 @@
     <% if can? :link_sample, any: @sample.studies %>
       <%= tag.div(class: 'd-flex') do %>
         <%= label("study", "id", 'Add to study', style: 'display:none') %>
-        <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
+        <%= collection_select("study", :id, @studies - @sample.studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
         <%= form.submit("Add", class: 'ml-2') %>
       <% end %>
     <% end %>
