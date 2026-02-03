@@ -172,15 +172,14 @@ RSpec.configure do |config|
   #     end
   #   end
   config.around(:each, :accessioning_enabled) do |example|
-    original_value = configatron.accession_samples
     original_config = Accession.configuration
     Accession.configure do |accession|
       accession.folder = File.join('spec', 'data', 'accession')
       accession.load!
     end
-    configatron.accession_samples = true
+    Flipper.enable(:y25_706_enable_accessioning)
     example.run
-    configatron.accession_samples = original_value
+    Flipper.disable(:y25_706_enable_accessioning)
     Accession.configuration = original_config
   end
 
