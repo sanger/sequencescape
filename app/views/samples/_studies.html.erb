@@ -22,9 +22,11 @@
       </tbody>
     </table>
     <% if can? :link_sample, any: @sample.studies %>
-      <%= label("study", "id", 'Add to study', style: 'display:none') %>
-      <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
-      <%= form.submit "Add" %>
+      <%= tag.div(class: 'd-flex') do %>
+        <%= label("study", "id", 'Add to study', style: 'display:none') %>
+        <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
+        <%= form.submit("Add", class: 'ml-2') %>
+      <% end %>
     <% end %>
     <% if permitted_to_accession?(@sample) %>
       <%= tag.div(class: 'mt-3') do %>
