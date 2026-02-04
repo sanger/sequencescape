@@ -13,6 +13,7 @@ configatron.accession do |accession|
   accession.ega.password = 'ega_accession_password'
   accession.ena.user = 'era_accession_login'
   accession.ena.password = 'era_accession_password'
+  accession.drop_box_url = 'http://localhost:9999/ena/submit/drop-box/'
 end
 
 configatron.admin_email = 'admin@test.com'
