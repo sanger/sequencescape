@@ -11,7 +11,7 @@ RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   before do
     Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
     Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
-    Rake.load_rakefile('tasks/ebi_check.rake')
+    Rake.rake_require('tasks/ebi_check')
     Rake::Task.define_task(:environment)
     allow(EBICheck::Process).to receive(:new).and_return(process)
   end
