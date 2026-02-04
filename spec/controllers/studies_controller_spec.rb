@@ -170,11 +170,13 @@ RSpec.describe StudiesController do
   end
 
   describe '#accession_all_samples', :accessioning_enabled, :un_delay_jobs do
-    let(:samples) { create_list(:sample_for_accessioning_with_open_study, 5) }
-    let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
+    let(:number_of_samples) { 5 }
+    let(:samples) { create_list(:sample_for_accessioning_with_open_study, number_of_samples) }
+    let(:study) { samples.first.studies.first }
 
     before do
       create(:user, api_key: configatron.accession_local_key) # create contact user
+      allow(Rails.logger).to receive(:info).and_call_original
       allow(Accession::Submission).to receive(:client).and_return(
         stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
       )
@@ -196,7 +198,10 @@ RSpec.describe StudiesController do
       end
 
       it 'sets a flash notice message' do
-        expect(flash[:notice]).to eq('All of the samples in this study have been sent for accessioning.')
+        expect(flash[:notice]).to eq(
+          'All of the samples in this study have been sent for accessioning. ' \
+          'Please check back in 5 minutes to confirm that accessioning was successful.'
+        )
       end
 
       it 'does not set a flash info message' do
@@ -205,9 +210,9 @@ RSpec.describe StudiesController do
     end
 
     context 'when the accessioning of samples fails' do
-      let(:number_of_samples) { 5 }
-      # tags provided for managed study, when open study is expected
-      let(:samples) { create_list(:sample_for_accessioning_with_managed_study, number_of_samples) }
+      # no tags provided for samples, when managed study tags are expected
+      let(:samples) { create_list(:sample, number_of_samples) }
+      let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
 
       it 'redirects to the accession-statuses tab of the study page' do
         expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
@@ -222,11 +227,11 @@ RSpec.describe StudiesController do
         expect(flash[:error]).to eq(
           [
             'The samples in this study could not be accessioned, please check the following errors:',
-            "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
-            "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
-            "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
-            "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
-            "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'."
+            "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+            "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+            "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+            "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+            "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id."
           ]
         )
         # rubocop:enable Layout/LineLength
@@ -244,12 +249,12 @@ RSpec.describe StudiesController do
           expect(flash[:error]).to eq(
             [
               'The samples in this study could not be accessioned, please check the following errors:',
-              "Sample 'Sample1' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study1: Manages' and 'Study1: Open'.",
-              "Sample 'Sample2' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study2: Manages' and 'Study1: Open'.",
-              "Sample 'Sample3' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study3: Manages' and 'Study1: Open'.",
-              "Sample 'Sample4' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study4: Manages' and 'Study1: Open'.",
-              "Sample 'Sample5' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study5: Manages' and 'Study1: Open'.",
-              "Sample 'Sample6' cannot be accessioned: Sample must be linked to exactly one study but is linked to studies 'Study6: Manages' and 'Study1: Open'.",
+              "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              "Sample 'Sample6' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
               '...',
               'Only the first 6 of 10 errors are shown.'
             ]
@@ -263,9 +268,36 @@ RSpec.describe StudiesController do
             expect(sample_status).to have_attributes(
               status: 'failed',
               message: "Sample '#{sample.name}' cannot be accessioned: " \
-                       'Sample must be linked to exactly one study but is linked to studies ' \
-                       "'Study#{sample.name.remove('Sample')}: Manages' and 'Study1: Open'."
+                       'Sample does not have the required metadata: ' \
+                       'donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.'
             )
+          end
+        end
+      end
+
+      context 'when samples are part of two accessionable studies' do
+        let(:samples) { create_list(:sample_for_accessioning_with_open_study, number_of_samples) }
+        let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
+
+        it 'redirects to the accession-statuses tab of the study page' do
+          expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
+        end
+
+        it 'sets a flash notice message' do
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'Please check back in 5 minutes to confirm that accessioning was successful.'
+          )
+        end
+
+        it 'does not set a flash error message' do
+          expect(flash[:error]).to be_nil
+        end
+
+        it 'shows the logs' do
+          samples.each do |sample|
+            expect(Rails.logger).to have_received(:info)
+              .with("Sample '#{sample.name}' should not be accessioned as it belongs to 2 accessionable studies.")
           end
         end
       end
