@@ -151,7 +151,8 @@ module EBICheck
     # @param sample [Sample] The sample to generate XML for.
     # @return [String] The local sample XML.
     def local_sample_xml(sample)
-      Accessionable::Sample.new(sample).xml
+      tags = Accession.configuration.tags
+      Accession::Sample.new(tags, sample).to_xml
     end
 
     # Retrieves the remote sample XML for the given sample from EBI.
