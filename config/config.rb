@@ -6,11 +6,6 @@ configatron.amqp.lims_id = 'SQSCP'
 configatron.team_name = 'Production Software Development'
 configatron.team_url = 'http://www.sanger.ac.uk/science/groups/production-software-development'
 
-# This is set in the deployment project to allow per-environment enabling of accessioning
-# This flag currently only affects the manifest upload code path and not sample updates - to be addressed in Y25-286.
-# Also search for `configatron.disable_accession_check`, as this is used to disable post-accessioning checks.
-configatron.accession_samples = false
-
 configatron.accession do |accession|
   accession.url = 'http://localhost:9999/accession_service/'
   accession.view_url = 'http://localhost:9999/view_accession/'
