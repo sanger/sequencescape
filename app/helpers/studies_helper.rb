@@ -76,4 +76,16 @@ module StudiesHelper
       end
     end
   end
+
+  def accession_all_samples_button(study)
+    if !accessioning_enabled?
+      tag.span('Accessioning is currently disabled.', class: 'text-muted')
+    elsif !(permitted_to_accession?(study) && study.samples_accessionable?)
+      tag.span('Unable to accession study.', class: 'text-muted')
+    else
+      link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
+              accession_all_samples_study_path(study),
+              class: 'btn btn-sm btn-outline-primary')
+    end
+  end
 end

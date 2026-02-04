@@ -6,10 +6,10 @@
 # See Sample#should_be_accessioned? for sample level.
 module AccessionHelper
   # Checks if accessioning is enabled in this environment.
-  # This is controlled by a flag in the deployment project.
+  # This is controlled by a a feature flag
   # @return [Boolean] true if accessioning is enabled, false otherwise
   def accessioning_enabled?
-    configatron.accession_samples
+    Flipper.enabled?(:y25_706_enable_accessioning)
   end
 
   # Checks if the current user is permitted to accession the given object.

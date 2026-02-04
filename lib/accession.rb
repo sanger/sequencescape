@@ -6,7 +6,7 @@ module Accession
   #   configatron.proxy
   #   configatron.accession url, ega.user, ega.password, ena.user, ena.password
   # check that Sequencescape sample sample_metadata meets accessioning requirements
-  # configatron.accession_samples flag should be set to true to automatically accession a sample after save
+  # feature flag y25_706_enable_accessioning should be set to true to automatically accession a sample after save
   # (app/models/sample.rb)
   #
   # Accessioning steps:
