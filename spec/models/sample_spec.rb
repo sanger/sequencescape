@@ -106,6 +106,69 @@ RSpec.describe Sample, :cardinal do
     end
   end
 
+  describe '#studies_for_accessioning' do
+    let(:open_no_accession) { create(:open_study) }
+    let(:open_with_accession_1) { create(:open_study, accession_number: 'ENA123') }
+    let(:open_with_accession_2) { create(:open_study, accession_number: 'ENA456') }
+    let(:managed_no_accession) { create(:managed_study) }
+    let(:managed_with_accession_1) { create(:managed_study, accession_number: 'ENA666') }
+    let(:managed_with_accession_2) { create(:managed_study, accession_number: 'ENA777') }
+    let(:managed_with_accession_3) { create(:managed_study, accession_number: 'ENA888') }
+    let(:not_app_study) { create(:not_app_study) }
+    let(:open_publication) do
+      create(
+        :open_study,
+        accession_number: 'ENA999',
+        metadata_options: {
+          data_release_timing: Study::DATA_RELEASE_TIMING_PUBLICATION,
+          data_release_timing_publication_comment: 'Test comment',
+          data_share_in_preprint: Study::YES
+        }
+      )
+    end
+
+    let(:sample) do
+      create(
+        :sample,
+        studies: [
+          open_no_accession,
+          open_with_accession_1,
+          open_with_accession_2,
+          managed_no_accession,
+          managed_with_accession_1,
+          managed_with_accession_2,
+          managed_with_accession_3,
+          not_app_study,
+          open_publication
+        ]
+      )
+    end
+
+    it 'returns only studies eligible for accessioning' do
+      eligible = sample.studies_for_accessioning
+      expect(eligible).to contain_exactly(
+        open_with_accession_1,
+        open_with_accession_2,
+        managed_with_accession_1,
+        managed_with_accession_2,
+        managed_with_accession_3,
+        open_publication
+      )
+    end
+
+    it 'includes open studies with publication timing' do
+      expect(sample.studies_for_accessioning).to include(open_publication)
+    end
+
+    it 'excludes studies without accession numbers' do
+      expect(sample.studies_for_accessioning).not_to include(open_no_accession, managed_no_accession)
+    end
+
+    it 'excludes studies with ineligible strategy or timing' do
+      expect(sample.studies_for_accessioning).not_to include(not_app_study)
+    end
+  end
+
   context 'updating supplier name' do
     let(:sample) { create(:sample) }
 

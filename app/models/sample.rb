@@ -519,15 +519,49 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
+  # Returns an array of studies linked to this sample that are eligible for accessioning
+  # A study is eligible for accessioning if:
+  # - it is active
+  # - it is set to open or managed
+  # - it is not set to never release
+  # - it requires accessioning
+  # - it has an accession number
+  # @return [Array<Study>] the studies linked to this sample that are eligible for accessioning
+  def studies_for_accessioning
+    studies.select(&:samples_accessionable?)
+  end
+
+  # Criteria for whether a sample should be accessioned.
+  # A sample should be accessioned if:
+  # - it is part of a single accessionable study
+  # - that study is active
+  # - that study is set to open or managed
+  # - that study is set to be released
+  # - that study requires accessioning
+  # - that study has an accession number
+  # @return [Boolean] true if the sample should be accessioned, false otherwise
+  def should_be_accessioned?
+    # If updating this method, please also update app/views/samples/_studies.html.erb
+    accessioning_criteria = [
+      studies_for_accessioning.size == 1
+    ]
+    return true if accessioning_criteria.all?
+
+    Rails.logger.info("Sample '#{name}' should not be accessioned as it " \
+                      "belongs to #{studies_for_accessioning.size} accessionable studies.")
+
+    false
+  end
+
+  # NOTE: this does not check whether the current user is permitted to accession the sample
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
     Accession.accession_sample(self, event_user, perform_now: true)
-    Rails.logger.info("Accessioning succeeded for sample '#{name}'")
 
-    # Save error messages for later feedback to the user in a flash message
+  # Save error messages for later feedback to the user in a flash message
   rescue Accession::InternalValidationError
     # validation errors have already been added to the sample in Accession::Sample.validate!
-  rescue AccessionService::AccessioningDisabledError, Accession::Error, Faraday::Error => e
+  rescue Accession::Error, Faraday::Error => e
     message = Accession.user_error_message(e)
     errors.add(:base, message)
   end
@@ -538,6 +572,11 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def ena_study
     studies.first
+  end
+
+  def study_for_accessioning
+    # There should only be one study for accessioning, if we want to accession, so we return the only one
+    studies_for_accessioning.first
   end
 
   # Validates that the sample and it's study are valid for ALL accessioning services accessioning
