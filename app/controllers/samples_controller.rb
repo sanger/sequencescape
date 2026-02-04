@@ -6,6 +6,8 @@ class SamplesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
+  include AccessionHelper
+
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
     respond_to do |format|
@@ -151,10 +153,17 @@ class SamplesController < ApplicationController
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    unless configatron.accession_samples
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
+    unless accessioning_enabled?
+      flash[:error] = 'Accessioning is not enabled in this environment'
+      redirect_to sample_path(@sample)
+      return
     end
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # unless permitted_to_accession?(@sample)
+    #   flash[:error] = 'Permission required to accession this sample'
+    #   redirect_to sample_path(@sample)
+    #   return
+    # end
 
     # Must check if an accession number is assigned _before_ performing the accession
     accession_action = @sample.accession_number? ? :update : :create
@@ -174,7 +183,7 @@ class SamplesController < ApplicationController
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-  rescue AccessionService::AccessioningDisabledError, Accession::Error => e
+  rescue Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
   rescue Faraday::Error => e
     flash[:error] = "Accessioning failed with a network error: #{e.message}"

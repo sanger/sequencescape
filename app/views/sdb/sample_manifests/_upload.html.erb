@@ -1,17 +1,16 @@
-
-<h2>Upload a sample manifest</h2>
-
-<%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
-  <fieldset>
-    <div class="form-group">
-      <%= label_tag :upload, 'File to upload', style: "display: none;" %></br>
-      <%= file_field_tag :upload, required: true %>
-    </div>
-    <div class="form-group">
-      <%= check_box_tag :override %>&nbsp;<%= label_tag :override, 'Override previously uploaded samples' %>
-    </div>
-    <div class="form-group">
-      <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
-    </div>
-  </fieldset>
-<% end -%>
+<%= panel :info, title:'Upload a Sample Manifest'  do %>
+  <%= form_tag(sample_manifest_upload_with_tag_sequences_path, multipart: true) do -%>
+    <fieldset>
+      <div class="form-group">
+        <%= label_tag :upload, 'File to upload', style: "display: none;" %>
+        <%= file_field_tag :upload, required: true %>
+      </div>
+      <div class="form-group">
+        <%= check_box_tag :override %>&nbsp;<%= label_tag :override, 'Override previously uploaded samples' %>
+      </div>
+      <div class="form-group mb-0">
+        <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
+      </div>
+    </fieldset>
+  <% end -%>
+<% end %>

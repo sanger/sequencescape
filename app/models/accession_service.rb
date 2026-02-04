@@ -26,7 +26,6 @@
 module AccessionService
   # Define custom error classes for the AccessionService
   AccessionServiceError = Class.new(StandardError)
-  AccessioningDisabledError = Class.new(AccessionServiceError)
   AccessionValidationFailed = Class.new(AccessionServiceError)
   NumberNotRequired = Class.new(AccessionServiceError)
   NumberNotGenerated = Class.new(AccessionServiceError)

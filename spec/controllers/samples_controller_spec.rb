@@ -111,6 +111,11 @@ RSpec.describe SamplesController do
   end
 
   describe '#accession' do
+    # TODO: Y26-026 - Enforce accessioning permissions
+    # let(:current_user) { create(:admin) } # required for accession permissions
+    let(:current_user) { create(:user) }
+    let(:accession_individual_samples_with_sample_accessioning_job) { false }
+
     before do
       allow(Accession::Submission).to receive(:client).and_return(
         stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
@@ -127,7 +132,7 @@ RSpec.describe SamplesController do
       end
 
       it 'displays an error message indicating accessioning is not enabled' do
-        expect(flash[:error]).to eq('Accessioning Service Failed: Accessioning is not enabled in this environment.')
+        expect(flash[:error]).to eq('Accessioning is not enabled in this environment')
       end
     end
 
