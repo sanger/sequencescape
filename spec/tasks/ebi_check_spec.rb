@@ -5,20 +5,17 @@ require 'rake'
 
 # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
 RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
-  let(:process) { instance_double(EBICheck::Process) }
   let(:task) { Rake::Task[task_name] }
+  let(:process) { instance_double(EBICheck::Process) }
 
   before do
     Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
     Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
-    Rake.rake_require('tasks/ebi_check')
+    Rake.load_rakefile('tasks/ebi_check.rake')
     Rake::Task.define_task(:environment)
-    allow(EBICheck::Process).to receive(:new).and_return(process)
-  end
-
-  after do
     %w[study_ids sample_ids study_numbers sample_numbers].each { |k| ENV.delete(k) }
     Rake::Task[task_name].reenable
+    allow(EBICheck::Process).to receive(:new).and_return(process)
   end
 
   describe 'ebi:check_studies' do

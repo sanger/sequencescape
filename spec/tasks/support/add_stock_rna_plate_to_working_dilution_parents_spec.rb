@@ -3,6 +3,9 @@
 require 'rails_helper'
 
 describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task do
+  let(:task_name) { self.class.top_level_description }
+  let(:task) { Rake::Task[task_name] }
+
   let(:source_purpose_name) { 'Stock RNA Plate' }
   let(:target_purpose_name) { 'Working Dilution' }
   let(:plate_creator_name) { 'Working dilution' }
@@ -11,17 +14,12 @@ describe 'support:add_stock_rna_plate_to_working_dilution_parents', type: :task 
   let(:target_purpose) { create(:plate_purpose, name: target_purpose_name, stock_plate: false) }
   let(:plate_creator) { create(:plate_creator, name: plate_creator_name) }
 
-  let(:task) { Rake::Task[self.class.top_level_description] }
-
-  # rubocop:disable RSpec/BeforeAfterAll
-  before(:all) do
-    Rake.application.rake_require('tasks/support/add_stock_rna_plate_to_working_dilution_parents')
-    Rake::Task.define_task(:environment)
-  end
-  # rubocop:enable RSpec/BeforeAfterAll
-
   before do
-    task.reenable
+    Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
+    Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
+    Rake.load_rakefile('tasks/support/add_stock_rna_plate_to_working_dilution_parents.rake')
+    Rake::Task.define_task(:environment)
+    Rake::Task[task_name].reenable
     plate_creator # The task assumes the plate creator already exists
     target_purpose # The task assumes the target purpose already exists
   end

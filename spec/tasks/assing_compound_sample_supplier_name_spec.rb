@@ -2,14 +2,8 @@
 require 'rails_helper'
 
 RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_samples', type: :task do
-  # rubocop:disable RSpec/BeforeAfterAll
-  before(:all) do
-    Rake.application.rake_require 'tasks/assign_compound_sample_supplier_name'
-    Rake::Task.define_task(:environment)
-  end
-  # rubocop:enable RSpec/BeforeAfterAll
-
-  let(:task) { Rake::Task[self.class.top_level_description] }
+  let(:task_name) { self.class.top_level_description }
+  let(:task) { Rake::Task[task_name] }
 
   let(:compound_sample_id) { 12 }
   let(:component_sample_id1) { 10 }
@@ -23,7 +17,11 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
   end
 
   before do
-    task.reenable
+    Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
+    Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
+    Rake.load_rakefile('tasks/assign_compound_sample_supplier_name.rake')
+    Rake::Task.define_task(:environment)
+    Rake::Task[task_name].reenable
   end
 
   context 'when setting supplier names for previously created sample compounds' do

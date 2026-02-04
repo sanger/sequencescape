@@ -4,17 +4,18 @@ require 'rake'
 
 # rubocop:todo RSpec/DescribeClass
 describe 'mbrave tasks' do
-  # rubocop:disable RSpec/BeforeAfterAll
-  before(:all) do
-    Rake.application.rake_require('tasks/create_mbrave_tags')
-    Rake::Task.define_task(:environment)
-  end
-  # rubocop:enable RSpec/BeforeAfterAll
+  let(:task) { Rake::Task[task_name] }
 
-  before { task.reenable }
+  before do
+    Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
+    Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
+    Rake.load_rakefile('tasks/create_mbrave_tags.rake')
+    Rake::Task.define_task(:environment)
+    Rake::Task[task_name].reenable
+  end
 
   describe 'mbrave:create_tag_plates' do
-    let(:task) { Rake::Task['mbrave:create_tag_plates'] }
+    let(:task_name) { 'mbrave:create_tag_plates' }
 
     describe 'when invoked without arguments' do
       it 'does not do anything' do
@@ -35,7 +36,7 @@ describe 'mbrave tasks' do
   end
 
   describe 'mbrave:create_tag_groups' do
-    let(:task) { Rake::Task['mbrave:create_tag_groups'] }
+    let(:task_name) { 'mbrave:create_tag_groups' }
 
     describe 'when invoked without arguments' do
       it 'does not write the file' do
