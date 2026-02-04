@@ -32,12 +32,17 @@ i7:
   validation:
     options:
       type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      operator: :between
+      formula1: "1"
+      formula2: "255"
       allowBlank: false
       showInputMessage: true
+      showErrorMessage: true
       promptTitle: "i7"
       prompt: "Input i7."
+      errorStyle: :warning
+      errorTitle: "i7"
+      error: "i7 cannot be blank"
   conditional_formattings:
     empty_mandatory_cell_2:
 i5:
@@ -46,11 +51,15 @@ i5:
   validation:
     options:
       type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      operator: :between
+      formula1: "1"
+      formula2: "255"
       allowBlank: false
       showInputMessage: true
+      showErrorMessage: true
       errorStyle: :warning
+      errorTitle: "i5"
+      error: "i5 cannot be blank"
       promptTitle: "i5"
       prompt: "Input i5."
   conditional_formattings:
@@ -138,7 +147,7 @@ chromium_tag_group:
       prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
     range_name: :chromium_tag_groups
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
 chromium_tag_well:
   heading: CHROMIUM TAG WELL
   unlocked: true
@@ -156,7 +165,7 @@ chromium_tag_well:
       errorTitle: "Tag well"
       error: "Tag Index must be a well."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
     is_number:
     len:
       formula:
@@ -236,7 +245,7 @@ dual_index_tag_set:
       prompt: "Input the name of a valid dual index tag plate."
     range_name: :dual_index_tag_sets
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
 dual_index_tag_well:
   heading: DUAL INDEX TAG WELL
   unlocked: true
@@ -254,7 +263,7 @@ dual_index_tag_well:
       errorTitle: "Dual index tag well"
       error: "Dual Index Tag must be a well."
   conditional_formattings:
-    empty_cell:
+    empty_mandatory_cell_2:
     is_number:
     len:
       formula:
