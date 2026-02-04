@@ -161,7 +161,7 @@ RSpec.configure do |config|
   end
 
   # Add accessioning_enabled to a spec to automatically:
-  # - Set accession_samples to true before the test, and roll it back afterward
+  # - Set y25_706_enable_accessioning to true before the test, and roll it back afterward
   # - Configure Accession service with the config defined in spec/data/assession
   # - Ensure accession service configuration is rolled back afterward
   #
@@ -184,7 +184,7 @@ RSpec.configure do |config|
   end
 
   # Add accessioning_disabled to a spec to automatically:
-  # - Set accession_samples to false before the test, and roll it back afterward
+  # - Set y25_706_enable_accessioning to false before the test
   # - Ensure accession service configuration is rolled back afterward
   #
   # @example
@@ -194,10 +194,12 @@ RSpec.configure do |config|
   #     end
   #   end
   config.around(:each, :accessioning_disabled) do |example|
+    accessioning_enabled = Flipper.enabled?(:y25_706_enable_accessioning)
+    Flipper.disable(:y25_706_enable_accessioning)
     original_config = Accession.configuration.dup
-    configatron.accession_samples = false
     example.run
     Accession.configuration = original_config
+    Flipper.enable(:y25_706_enable_accessioning, accessioning_enabled)
   end
 
   # Temporarily disables Delayed::Job backgrounding for the duration of the example.

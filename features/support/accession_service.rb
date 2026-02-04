@@ -22,6 +22,7 @@ class FakeAccessionService
     target.instance_eval do
       Before(tags) do |_scenario|
         # Enable accessioning
+        @accessioning_enabled = Flipper.enabled?(:y25_706_enable_accessioning)
         Flipper.enable(:y25_706_enable_accessioning)
 
         # Set up our evesdropper
@@ -53,7 +54,7 @@ class FakeAccessionService
         AccessionService::BaseService.rest_client_class = RestClient::Resource
 
         # Revert accessioning
-        Flipper.disable(:y25_706_enable_accessioning)
+        Flipper.enable(:y25_706_enable_accessioning, @accessioning_enabled)
       end
     end
   end
