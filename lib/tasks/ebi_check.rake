@@ -18,7 +18,6 @@
 # These tasks compare local Sequencescape XML with remote EBI ENA/EGA XML,
 # extract relevant fields, and print any differences found.
 #
-# rubocop:disable Rails/Output
 namespace :ebi do
   desc 'Check study data uploaded to the EBI EGA & ENA databases'
   task :check_studies, [:study_ids] => :environment do
@@ -92,4 +91,3 @@ namespace :ebi do
     end
   end
 end
-# rubocop:enable Rails/Output
