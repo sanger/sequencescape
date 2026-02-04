@@ -191,8 +191,8 @@ RSpec.describe StudiesController do
     end
 
     context 'when the accessioning succeeds' do
-      it 'redirects to the accession-statuses tab of the study page' do
-        expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
       end
 
       it 'does not set a flash error message' do
@@ -220,8 +220,8 @@ RSpec.describe StudiesController do
       let(:samples) { create_list(:sample, number_of_samples) }
       let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
 
-      it 'redirects to the accession-statuses tab of the study page' do
-        expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
       end
 
       it 'does not set a flash notice message' do
@@ -285,8 +285,8 @@ RSpec.describe StudiesController do
         let(:samples) { create_list(:sample_for_accessioning_with_open_study, number_of_samples) }
         let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
 
-        it 'redirects to the accession-statuses tab of the study page' do
-          expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
+        it 'redirects to the study page' do
+          expect(subject).to redirect_to(study_path(study))
         end
 
         it 'sets a flash notice message' do

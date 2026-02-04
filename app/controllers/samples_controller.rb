@@ -189,7 +189,7 @@ class SamplesController < ApplicationController
     flash[:error] = "Accessioning failed with a network error: #{e.message}"
   ensure
     # Redirect back to where we came from if not already redirected
-    redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
+    redirect_back_with_anchor_or_to(sample_path(@sample)) unless performed?
   end
 
   private
