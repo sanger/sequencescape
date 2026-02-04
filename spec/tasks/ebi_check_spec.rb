@@ -7,9 +7,14 @@ require 'rake'
 RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   let(:process) { instance_double(EBICheck::Process) }
 
-  before do
+  # rubocop:disable RSpec/BeforeAfterAll
+  before(:all) do
     Rake.application.rake_require('tasks/ebi_check')
     Rake::Task.define_task(:environment)
+  end
+  # rubocop:enable RSpec/BeforeAfterAll
+
+  before do
     %w[study_ids sample_ids study_numbers sample_numbers].each { |k| ENV.delete(k) }
     Rake::Task.tasks.each(&:reenable)
     allow(EBICheck::Process).to receive(:new).and_return(process)
