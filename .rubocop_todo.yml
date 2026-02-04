@@ -1790,13 +1790,6 @@ Style/MissingRespondToMissing:
     - 'lib/informatics/test/helpers/authentication_helper.rb'
     - 'lib/validateable.rb'
 
-# Offense count: 2
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: AllowedMethods.
-Style/ModuleMemberExistenceCheck:
-  Exclude:
-    - 'test/unit/api/core/io/json/grammar_test.rb'
-
 # Offense count: 40
 Style/MultilineBlockChain:
   Exclude:
