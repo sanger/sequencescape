@@ -6,14 +6,8 @@ require 'rake'
 describe 'mbrave tasks' do
   # rubocop:disable RSpec/BeforeAfterAll
   before(:all) do
-    # Ensure Rake is properly initialised before all tests
-    @original_rake_app = Rake.application
-    Rake.application = Rake::Application.new
-    Rails.application.load_tasks
-  end
-
-  after(:all) do
-    Rake.application = @original_rake_app
+    Rake.application.rake_require('tasks/mbrave')
+    Rake::Task.define_task(:environment)
   end
   # rubocop:enable RSpec/BeforeAfterAll
 
