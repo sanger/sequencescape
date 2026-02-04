@@ -56,6 +56,8 @@ module Accession
   require_relative 'accession/submission'
   require_relative 'accession/configuration'
 
+  require_relative '../app/helpers/accession_helper'
+
   String.include CoreExtensions::String
 
   # Generic high-level accessioning error
@@ -106,12 +108,20 @@ module Accession
   # Allows accessioning to be triggered from anywhere in the application.
   # Encapsulates logic for validation, synchronous or asynchronous job execution,
   # and supports private helper methods for internal workflow.
+  #
+  # Note: does not include permission checks - these are Rails based and should be in the appropriate controller.
+  #
+  # @param sample [Sample] The sample to be accessioned.
+  # @param event_user [User] The user triggering the accessioning event.
+  # @param perform_now [Boolean] Whether to perform accessioning synchronously.
+  # @return [void]
+  # @raise [Accession::Error] for general accessioning errors.
   class SampleAccessioning
+    include ::AccessionHelper
+
     def perform(sample, event_user, perform_now)
-      # Flag set in the deployment project to allow per-environment enabling of accessioning
-      unless configatron.accession_samples
-        raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-      end
+      return unless accessioning_enabled?
+      return unless sample.should_be_accessioned?
 
       accessionable = build_accessionable(sample)
       job = SampleAccessioningJob.new(accessionable, event_user)
