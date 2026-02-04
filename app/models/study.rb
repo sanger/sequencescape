@@ -565,13 +565,22 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Returns true if the samples in this study are eligible for accessioning
   #
   # A study's samples are eligible for accessioning if:
+  # - the study is active
+  # - the study's data release strategy open or managed
   # - the study is not set to never release
-  # - the study has an accession number
   # - the study requires accessioning
+  # - the study has an accession number
   #
   # @return [Boolean] true if the samples in this study are eligible for accessioning, false otherwise
   def samples_accessionable?
-    !study_metadata.never_release? & accession_number? & accession_required?
+    # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
+    [
+      active?,
+      !study_metadata.strategy_not_applicable?,
+      !study_metadata.never_release?,
+      accession_required?,
+      accession_number?
+    ].all?
   end
 
   # Accession all samples in the study.
@@ -581,9 +590,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # unless the sample already has an accession number.
   # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
   #
+  # NOTE: this does not check if the current user has permission to accession samples in this study
+  #
   # @return [void]
   def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
+
+    unless samples_accessionable?
+      return errors.add(:base,
+                        'Study cannot accession samples, see Study Accessioning tab for details')
+    end
 
     samples.find_each do |sample|
       Accession.accession_sample(sample, event_user) unless sample.accession_number?

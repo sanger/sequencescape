@@ -190,9 +190,8 @@ RSpec.configure do |config|
   #
   # @example
   #   context 'when accessioning is disabled', accessioning_disabled: true do
-  #     it 'raises an exception if accessioning is attempted' do
-  #       expect { Accession.accession_sample(sample, user) }
-  #         .to raise_error(AccessionService::AccessioningDisabledError)
+  #     it 'response appropriately if accessioning is attempted' do
+  #       ...
   #     end
   #   end
   config.around(:each, :accessioning_disabled) do |example|
