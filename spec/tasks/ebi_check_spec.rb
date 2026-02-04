@@ -16,7 +16,7 @@ RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
 
   before do
     %w[study_ids sample_ids study_numbers sample_numbers].each { |k| ENV.delete(k) }
-    Rake::Task.tasks.each(&:reenable)
+    task.reenable
     allow(EBICheck::Process).to receive(:new).and_return(process)
   end
 
