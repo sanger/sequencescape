@@ -5,18 +5,21 @@ require 'rake'
 
 # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
 RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
+  let(:task) { Rake::Task[task_name] }
   let(:process) { instance_double(EBICheck::Process) }
 
   before do
-    Rake.application.rake_require('tasks/ebi_check')
+    Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
+    Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
+    Rake.load_rakefile('tasks/ebi_check.rake')
     Rake::Task.define_task(:environment)
     %w[study_ids sample_ids study_numbers sample_numbers].each { |k| ENV.delete(k) }
-    Rake::Task.tasks.each(&:reenable)
+    Rake::Task[task_name].reenable
     allow(EBICheck::Process).to receive(:new).and_return(process)
   end
 
   describe 'ebi:check_studies' do
-    let(:task) { Rake::Task['ebi:check_studies'] }
+    let(:task_name) { 'ebi:check_studies' }
 
     context 'with no arguments' do
       it 'prints usage and exits with status 1' do
@@ -59,7 +62,7 @@ RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   end
 
   describe 'ebi:check_samples' do
-    let(:task) { Rake::Task['ebi:check_samples'] }
+    let(:task_name) { 'ebi:check_samples' }
 
     context 'with no arguments' do
       it 'prints usage and exits with status 1' do
