@@ -1534,34 +1534,6 @@ Style/DocumentDynamicEvalDefinition:
     - 'app/models/well.rb'
     - 'features/support/api.rb'
 
-# Offense count: 33
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: class_definition, class_new
-Style/EmptyClassDefinition:
-  Exclude:
-    - 'app/api/core/endpoint/basic_handler/endpoint_lookup.rb'
-    - 'app/api/core/registry.rb'
-    - 'app/controllers/npg_actions/assets_controller.rb'
-    - 'app/models/accession_service.rb'
-    - 'app/models/accessionable/base.rb'
-    - 'app/models/aliquot.rb'
-    - 'app/models/asset/finder.rb'
-    - 'app/models/barcode_printer.rb'
-    - 'app/models/cherrypick.rb'
-    - 'app/models/order.rb'
-    - 'app/models/plate/creator.rb'
-    - 'app/models/product_catalogue.rb'
-    - 'app/models/product_criteria/basic.rb'
-    - 'app/models/qc_metric.rb'
-    - 'app/models/qc_report/file.rb'
-    - 'app/models/request/change_decision.rb'
-    - 'app/models/sample_manifest/multiplexed_library_behaviour.rb'
-    - 'app/models/submission/project_validation.rb'
-    - 'app/models/submission/submission_creator.rb'
-    - 'lib/lab_where_client.rb'
-    - 'lib/label_printer/pmb_client.rb'
-
 # Offense count: 1
 # This cop supports safe autocorrection (--autocorrect).
 # Configuration parameters: EnforcedStyle, AllowComments.
