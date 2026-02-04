@@ -177,9 +177,10 @@ RSpec.configure do |config|
       accession.folder = File.join('spec', 'data', 'accession')
       accession.load!
     end
+    accessioning_enabled = Flipper.enabled?(:y25_706_enable_accessioning)
     Flipper.enable(:y25_706_enable_accessioning)
     example.run
-    Flipper.disable(:y25_706_enable_accessioning)
+    Flipper.enable(:y25_706_enable_accessioning, accessioning_enabled)
     Accession.configuration = original_config
   end
 
