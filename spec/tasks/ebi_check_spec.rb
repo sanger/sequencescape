@@ -8,7 +8,6 @@ RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   let(:process) { instance_double(EBICheck::Process) }
   let(:task) { Rake::Task[task_name] }
 
-  # https://docs.knapsackpro.com/ruby/troubleshooting/#rake-tasks-under-tests-are-run-more-than-once-in-queue-mode
   before do
     Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
     Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
