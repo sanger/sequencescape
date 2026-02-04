@@ -9,20 +9,21 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
   end
   # rubocop:enable RSpec/BeforeAfterAll
 
-  before do
-    Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].reenable
-  end
+  let(:task) { Rake::Task[self.class.top_level_description] }
 
   let(:compound_sample_id) { 12 }
   let(:component_sample_id1) { 10 }
   let(:component_sample_id2) { 11 }
-
   let!(:samples) do
     [
       Sample.create!(id: compound_sample_id, name: 'compound_sample'),
       Sample.create!(id: component_sample_id1, name: 'component_sample_1'),
       Sample.create!(id: component_sample_id2, name: 'component_sample_2')
     ]
+  end
+
+  before do
+    task.reenable
   end
 
   context 'when setting supplier names for previously created sample compounds' do
@@ -42,7 +43,7 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'set compound sample to the same supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.to change { samples[0].reload.sample_metadata.supplier_name }.from(nil).to('Supplier X')
       end
     end
@@ -58,7 +59,7 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'keeps the component sample supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.not_to(change { samples[0].reload.sample_metadata.supplier_name })
       end
     end
@@ -74,7 +75,7 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'keeps the component sample supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.not_to(change { samples[0].reload.sample_metadata.supplier_name })
       end
     end
