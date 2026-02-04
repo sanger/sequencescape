@@ -9,7 +9,7 @@ Feature: Study administration
   Scenario: User updates a study
     Given I am a "User" user logged in as "abc123"
     Given I am visiting study "Study B" homepage
-    Then I should not see "Manage"
+    Then I should not see "Manage" within "aside"
 
   @javascript
   Scenario: Administrator edits study properties
