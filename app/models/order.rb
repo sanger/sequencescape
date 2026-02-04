@@ -266,6 +266,10 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
     @first_request_type ||= RequestType.find(request_types.first)
   end
 
+  def request_type_multiplier
+    yield(request_types.last.to_s.to_sym) if request_types.present?
+  end
+
   # Return the list of input fields to edit when creating a new submission
   # Unless you are doing something fancy, fall back on the defaults
   def input_field_infos
