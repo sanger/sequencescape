@@ -91,7 +91,7 @@ module EBICheck
     # Compares local and remote sample XML data for the given sample IDs.
     # @param sample_ids [Array<Integer>] The IDs of the samples to check.
     # @return [void]
-    def samples_by_ids(sample_ids)
+    def samples_by_ids(sample_ids) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       samples = Sample.where(id: sample_ids)
       samples_by_study = samples.group_by { |sample| sample.studies.first }
 
