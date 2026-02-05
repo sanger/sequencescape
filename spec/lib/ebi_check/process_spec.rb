@@ -144,7 +144,7 @@ describe EBICheck::Process do
     end
   end
 
-  context 'when checking samples' do
+  context 'when checking samples', :accessioning_enabled do
     let(:sample1_number) { 'EGAS12345678901' }
     let(:sample2_number) { 'ERS98765432' }
     let(:sample1) do
