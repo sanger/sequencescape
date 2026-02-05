@@ -31,7 +31,9 @@ module EBICheck
     ENA = 'ENA'
     # Templates for printing information
     TEMPLATE_STUDY_INFO = 'Study ID: %s, EBI Accession Number: %s'
+    TEMPLATE_STUDY_ERROR = ' Error retrieving study XML - %s'
     TEMPLATE_SAMPLE_INFO = ' Sample ID: %s, EBI Accession Number: %s'
+    TEMPLATE_SAMPLE_ERROR = '  Error retrieving sample XML - %s'
     TEMPLATE_SC = '  SC:  %s=%s'  # SC = Sequencescape side
     TEMPLATE_EBI = '  EBI: %s=%s' # EBI = EBI EGA / ENA side
 
@@ -44,7 +46,7 @@ module EBICheck
     # Compares local and remote study XML data for the given study IDs.
     # @param study_ids [Array<Integer>] The IDs of the studies to check.
     # @return [void]
-    def studies_by_ids(study_ids)
+    def studies_by_ids(study_ids) # rubocop:disable Metrics/MethodLength
       study_ids.each do |study_id|
         study = Study.find_by(id: study_id)
         print_study_info(study)
@@ -56,6 +58,8 @@ module EBICheck
         remote = extract_study_fields(xml)
 
         print_differences(local, remote)
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
@@ -70,13 +74,17 @@ module EBICheck
     # Compares local and remote sample XML data for the given study IDs.
     # @param study_ids [Array<Integer>] The IDs of the studies whose samples to check.
     # @return [void]
-    def samples_by_study_ids(study_ids)
+    def samples_by_study_ids(study_ids) # rubocop:disable Metrics/MethodLength
       study_ids.each do |study_id|
         study = Study.find_by(id: study_id)
         print_study_info(study)
         study.samples.each do |sample|
           check_sample(sample)
+        rescue StandardError, Faraday::Error => e
+          out.puts format(TEMPLATE_SAMPLE_ERROR, e.message)
         end
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
@@ -91,7 +99,11 @@ module EBICheck
         print_study_info(study)
         samples.each do |sample|
           check_sample(sample)
+        rescue StandardError, Faraday::Error => e
+          out.puts format(TEMPLATE_SAMPLE_ERROR, e.message)
         end
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
@@ -122,6 +134,8 @@ module EBICheck
     # @param sample [Sample] The sample to check.
     # @return [void]
     def check_sample(sample)
+      raise StandardError, "Sample '#{sample.name}' does not have an accession number" unless sample.accession_number?
+
       print_sample_info(sample)
 
       xml = local_sample_xml(sample)
