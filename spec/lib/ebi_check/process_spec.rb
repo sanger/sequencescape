@@ -346,9 +346,9 @@ describe EBICheck::Process do
                                          "changed #{sample1.sample_metadata.sample_description}"))
 
         key = :gender
-        expect(output).to include(format(described_class::TEMPLATE_SC, key, sample1.sample_metadata.sample_description))
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, sample1.sample_metadata.gender.downcase))
         expect(output).to include(format(described_class::TEMPLATE_EBI, key,
-                                         "changed #{sample1.sample_metadata.sample_description}"))
+                                         "changed #{sample1.sample_metadata.gender.downcase}"))
 
         key = :'geographic location (country and/or sea)'
         expect(output).to include(format(described_class::TEMPLATE_SC, key, sample2.sample_metadata.country_of_origin))
