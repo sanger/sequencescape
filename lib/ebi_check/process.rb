@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'hashdiff'
+
 require_relative 'client'
 require_relative 'utils'
 
@@ -194,15 +196,22 @@ module EBICheck
     # @param local [Hash] The local data.
     # @param remote [Hash] The remote data.
     # @return [void]
-    def print_differences(local, remote)
-      local.each do |key, value|
-        remote_value = remote[key] || ''
-        next unless value != remote_value
+    def print_differences(local, remote) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+      diffs = Hashdiff.diff(local, remote, indifferent: true, ignore_keys: [:'subject id', :title])
+      return if diffs.empty?
 
-        next if (key == :'subject id') && (local[key] == remote[:title])
-
-        out.puts format(TEMPLATE_SC, key, value)
-        out.puts format(TEMPLATE_EBI, key, remote_value)
+      diffs.each do |diff_type, key, value, remote_value|
+        case diff_type
+        when '~' # Changed value - ['~', key, local_value, remote_value]
+          out.puts format(TEMPLATE_SC, key, value) # Local value
+          out.puts format(TEMPLATE_EBI, key, remote_value)
+        when '-' # Key missing in remote - ['-', key, value]
+          out.puts format(TEMPLATE_SC, key, value)
+          out.puts format(TEMPLATE_EBI, key, '<missing>')
+        when '+' # Key missing in local - ['+', key, value]
+          out.puts format(TEMPLATE_SC, key, '<missing>')
+          out.puts format(TEMPLATE_EBI, key, value)
+        end
       end
     end
 
