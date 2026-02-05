@@ -200,6 +200,8 @@ module EBICheck
       diffs = Hashdiff.diff(local, remote, indifferent: true, ignore_keys: [:'subject id', :title])
       return if diffs.empty?
 
+      diffs = diffs.sort_by { |_diff_type, key, *_values| key } # Sort by key name for consistent output
+
       diffs.each do |diff_type, key, value, remote_value|
         case diff_type
         when '~' # Changed value - ['~', key, local_value, remote_value]

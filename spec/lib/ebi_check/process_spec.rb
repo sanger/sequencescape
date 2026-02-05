@@ -158,12 +158,14 @@ describe EBICheck::Process do
                                      sample_ebi_accession_number: sample2_number))
     end
     let(:study1) do
-      create(:study, metadata_options: {
+      create(:study, enforce_accessioning: true, metadata_options: {
+               data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN,
                study_ebi_accession_number: study1_number
              })
     end
     let(:study2) do
-      create(:study, metadata_options: {
+      create(:study, enforce_accessioning: true, metadata_options: {
+               data_release_strategy: Study::DATA_RELEASE_STRATEGY_OPEN,
                study_ebi_accession_number: study2_number
              })
     end
@@ -354,6 +356,18 @@ describe EBICheck::Process do
         expect(output).to include(format(described_class::TEMPLATE_SC, key, sample2.sample_metadata.country_of_origin))
         expect(output).to include(format(described_class::TEMPLATE_EBI, key,
                                          "changed #{sample2.sample_metadata.country_of_origin}"))
+
+        # Value defined in EBI, but not locally
+        key = :'sample description'
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, '<missing>'))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key,
+                                         'changed'))
+
+        # Value defined locally, but not in EBI
+        key = :'arrayexpress-growth_condition'
+        expect(output).to include(format(described_class::TEMPLATE_SC, key, 'No'))
+        expect(output).to include(format(described_class::TEMPLATE_EBI, key,
+                                         '<missing>'))
       end
     end
 
