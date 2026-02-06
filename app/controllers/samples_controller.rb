@@ -149,7 +149,7 @@ class SamplesController < ApplicationController
     end
   end
 
-  def accession # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
+  def accession # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
@@ -165,18 +165,11 @@ class SamplesController < ApplicationController
     #   return
     # end
 
+    # Must check if an accession number is assigned _before_ performing the accession
     accession_action = @sample.accession_number? ? :update : :create
 
-    if Flipper.enabled?(:y25_286_accession_individual_samples_with_sample_accessioning_job)
-      # Synchronously perform accessioning job
-      Accession.accession_sample(@sample, current_user, perform_now: true)
-    else
-      # TODO: when removing the y25_286_accession_individual_samples_with_sample_accessioning_job feature flag
-      #       and this accessioning path also remove the AccessionService and ActiveRecord errors below
-      @sample.validate_sample_for_accessioning!
-      accession_service = AccessionService.select_for_sample(@sample)
-      accession_service.submit_sample_for_user(@sample, current_user)
-    end
+    # Synchronously perform accessioning job
+    Accession.accession_sample(@sample, current_user, perform_now: true)
 
     if accession_action == :create
       flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
@@ -185,23 +178,18 @@ class SamplesController < ApplicationController
     end
 
     # Handle errors for both synchronous and asynchronous accessioning
-    # When the feature flag above (y25_286_accession_individual_samples_with_sample_accessioning_job) is removed,
-    # the AccessionService and ActiveRecord errors should also be removed. These errors are only raised in the old
-    # synchronous accessioning code path and are not required for the updated SampleAccessioningJob path.
-  rescue ActiveRecord::RecordInvalid, Accession::InternalValidationError
+  rescue Accession::InternalValidationError
     flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
-  rescue AccessionService::NumberNotRequired => e
-    flash[:warning] = e.message || 'An accession number is not required for this study'
-  rescue AccessionService::NumberNotGenerated, Accession::ExternalValidationError => e
+  rescue Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
-  rescue AccessionService::AccessionServiceError, Accession::Error => e
+  rescue Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
   rescue Faraday::Error => e
     flash[:error] = "Accessioning failed with a network error: #{e.message}"
   ensure
     # Redirect back to where we came from if not already redirected
-    redirect_back_with_anchor_or_to(sample_path(@sample), anchor: 'accession-statuses') unless performed?
+    redirect_back_with_anchor_or_to(sample_path(@sample)) unless performed?
   end
 
   private

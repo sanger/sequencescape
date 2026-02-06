@@ -5,10 +5,6 @@ RSpec.describe Accession do
   describe '.accession_sample' do
     include AccessionV1ClientHelper
 
-    before do
-      create(:user, api_key: configatron.accession_local_key) # create contact user
-    end
-
     context 'when accessioning is disabled', :accessioning_disabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }

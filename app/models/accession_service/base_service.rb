@@ -110,10 +110,6 @@ class AccessionService::BaseService
     accessionables.map(&:accession_number)
   end
 
-  def submit_sample_for_user(sample, user)
-    submit(user, Accessionable::Sample.new(sample))
-  end
-
   def submit_study_for_user(study, user)
     unless study.accession_required?
       raise AccessionService::NumberNotRequired,
@@ -137,10 +133,6 @@ class AccessionService::BaseService
 
   def accession_study_xml(study)
     Accessionable::Study.new(study).xml
-  end
-
-  def accession_sample_xml(sample)
-    Accessionable::Sample.new(sample).xml
   end
 
   def accession_policy_xml(study)

@@ -117,18 +117,9 @@ RSpec.describe SamplesController do
     let(:accession_individual_samples_with_sample_accessioning_job) { false }
 
     before do
-      if accession_individual_samples_with_sample_accessioning_job
-        Flipper.enable :y25_286_accession_individual_samples_with_sample_accessioning_job
-
-        create(:user, api_key: configatron.accession_local_key) # create contact user
-        allow(Accession::Submission).to receive(:client).and_return(
-          stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
-        )
-      else
-        Flipper.disable :y25_286_accession_individual_samples_with_sample_accessioning_job
-
-        allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_sample_accession_response)
-      end
+      allow(Accession::Submission).to receive(:client).and_return(
+        stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+      )
 
       get :accession,
           params: { id: sample.id },
@@ -190,8 +181,7 @@ RSpec.describe SamplesController do
         it 'displays an error message indicating the validation failure' do
           expect(flash[:error]).to eq(<<~MSG.squish)
             Please fill in the required fields:
-            Sample metadata gender is required, Sample metadata phenotype is required,
-            Sample metadata donor is required, Sample metadata is invalid
+            Sample does not have the required metadata: donor-id, gender, and phenotype.
           MSG
         end
       end
@@ -203,56 +193,36 @@ RSpec.describe SamplesController do
 
         before { sample.reload } # Reload to get updated accession number
 
-        context 'when the accession_individual_samples_with_sample_accessioning_job feature flag is disabled' do
-          let(:accession_individual_samples_with_sample_accessioning_job) { false }
-
-          it 'assigns an accession number to the sample' do
-            expect(sample.ebi_accession_number).to eq('EGA00001000240')
-          end
-
-          it 'redirects to the sample page' do
-            expect(response).to redirect_to(sample_path(sample.id))
-          end
-
-          it 'displays a notice message with the generated accession number' do
-            expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
-          end
+        it 'assigns an accession number to the sample' do
+          expect(sample.ebi_accession_number).to eq('EGA00001000240')
         end
 
-        context 'when the accession_individual_samples_with_sample_accessioning_job feature flag is enabled' do
-          let(:accession_individual_samples_with_sample_accessioning_job) { true }
+        it 'redirects to the sample page' do
+          expect(response).to redirect_to(sample_path(sample.id))
+        end
 
-          it 'assigns an accession number to the sample' do
-            expect(sample.ebi_accession_number).to eq('EGA00001000240')
+        it 'displays a notice message with the generated accession number' do
+          expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
+        end
+
+        context 'when a network error occurs during accessioning' do
+          before do
+            allow(Accession::Submission).to receive(:client).and_return(
+              stub_accession_client(:submit_and_fetch_accession_number,
+                                    raise_error: Faraday::ConnectionFailed.new('Network connection failed'))
+            )
+
+            get :accession,
+                params: { id: sample.id },
+                session: { user: current_user.id }
           end
 
           it 'redirects to the sample page' do
             expect(response).to redirect_to(sample_path(sample.id))
           end
 
-          it 'displays a notice message with the generated accession number' do
-            expect(flash[:notice]).to eq("Accession number generated: #{sample.ebi_accession_number}")
-          end
-
-          context 'when a network error occurs during accessioning' do
-            before do
-              allow(Accession::Submission).to receive(:client).and_return(
-                stub_accession_client(:submit_and_fetch_accession_number,
-                                      raise_error: Faraday::ConnectionFailed.new('Network connection failed'))
-              )
-
-              get :accession,
-                  params: { id: sample.id },
-                  session: { user: current_user.id }
-            end
-
-            it 'redirects to the sample page' do
-              expect(response).to redirect_to(sample_path(sample.id))
-            end
-
-            it 'displays an error message indicating a network error occurred' do
-              expect(flash[:error]).to eq('Accessioning failed with a network error: Network connection failed')
-            end
+          it 'displays an error message indicating a network error occurred' do
+            expect(flash[:error]).to eq('Accessioning failed with a network error: Network connection failed')
           end
         end
 

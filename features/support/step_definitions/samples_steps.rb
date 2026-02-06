@@ -49,44 +49,6 @@ Then /^the reference genome for the sample "([^"]+)" should be "([^"]+)"$/ do |n
   assert_equal(genome, sample.sample_metadata.reference_genome.name)
 end
 
-# rubocop:todo Layout/LineLength
-Then /^the XML root attribute "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  # rubocop:enable Layout/LineLength
-  sample = Sample.find_by(name: sample_name) or
-    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{xml_attr}").map(&:to_s)[0])
-end
-
-Then /^the XML sent for sample "([^"]+)" validates with the schema "([^"]+)"$/ do |sample_name, schema|
-  sample = Sample.find_by(name: sample_name) or
-    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-
-  # Schema downloaded from http://www.ebi.ac.uk/ena/submit/data-formats
-  xsd = Nokogiri::XML.Schema(File.open(schema))
-  result = xsd.validate(Nokogiri(xml))
-  assert(result.length == 0, result.map(&:message).join(''))
-end
-
-# rubocop:todo Layout/LineLength
-Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be not present$/ do |xml_attr, sample_name|
-  # rubocop:enable Layout/LineLength
-  sample = Sample.find_by(name: sample_name) or
-    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(true, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").length == 0)
-end
-
-# rubocop:todo Layout/LineLength
-Then /^the XML tag "([^"]+)" sent to the accession service for sample "([^"]+)" should be "(.*?)"$/ do |xml_attr, sample_name, value|
-  # rubocop:enable Layout/LineLength
-  sample = Sample.find_by(name: sample_name) or
-    raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
-  xml = FakeAccessionService.instance.sent.last['SAMPLE'].to_s
-  assert_equal(value, Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/#{xml_attr}").text)
-end
-
 Given /^the metadata attribute "(.*?)" of the sample "(.*?)" is "(.*?)"$/ do |attr_name, sample_name, value|
   sample = Sample.find_by(name: sample_name) or
     raise StandardError, "Cannot find sample with name #{sample_name.inspect}"
@@ -140,20 +102,6 @@ When /^I (create|update) an? accession number for sample "([^"]+)"$/ do |action_
   step "I am on the show page for sample \"#{sample_name}\""
   action_str = action_type == 'create' ? 'Generate Accession Number' : 'Update Sample Data for Accessioning'
   step("I follow \"#{action_str}\"")
-end
-
-# rubocop:todo Layout/LineLength
-Then /^I (should|should not) have (sent|received) the attribute "([^"]*)" for the sample element (to|from) the accessioning service$/ do |state_action, type_action, attr_name, _dest|
-  # rubocop:enable Layout/LineLength
-  xml =
-    if type_action == 'sent'
-      FakeAccessionService.instance.sent.last['SAMPLE']
-    else
-      FakeAccessionService.instance.last_received
-    end
-  assert_equal (state_action == 'should'),
-               Nokogiri(xml).xpath("/SAMPLE_SET/SAMPLE/@#{attr_name}").map(&:to_s).present?,
-               "XML was: #{xml}"
 end
 
 Given /^sample "([^"]*)" came from a sample manifest$/ do |sample_name|

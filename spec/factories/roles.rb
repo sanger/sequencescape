@@ -45,4 +45,9 @@ FactoryBot.define do
     transient { follower { build(:user) } }
     roles { |role| [role.association(:role, name: 'follower', users: [follower])] }
   end
+
+  trait :with_data_access_contacts do
+    transient { data_access_contacts { build_list(:user, 1) } }
+    roles { |role| [role.association(:role, name: 'Data Access Contact', users: data_access_contacts)] }
+  end
 end

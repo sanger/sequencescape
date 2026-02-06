@@ -269,7 +269,7 @@ class StudiesController < ApplicationController
       flash[:notice] = 'All of the samples in this study have been sent for accessioning. ' \
                        'Please check back in 5 minutes to confirm that accessioning was successful.'
     end
-    redirect_to(study_path(@study, anchor: 'accession-statuses'))
+    redirect_to(study_path(@study))
   end
 
   def dac_accession

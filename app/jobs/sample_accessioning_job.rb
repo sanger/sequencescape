@@ -8,14 +8,8 @@ require 'exception_notification'
 # @see Accession::Submission
 SampleAccessioningJob =
   Struct.new(:accessionable, :event_user) do
-    # Retrieve the contact user for accessioning submissions
-    def self.contact_user
-      User.find_by(api_key: configatron.accession_local_key)
-    end
-
     def perform
-      contact_user = self.class.contact_user
-      submission = Accession::Submission.new(contact_user, accessionable)
+      submission = Accession::Submission.new(accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
       Rails.logger.info("Accessioning succeeded for sample '#{accessionable.sample.name}'")
