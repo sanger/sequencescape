@@ -46,7 +46,7 @@ class EventTest < ActiveSupport::TestCase
           location: 'Loc'
         }
 
-        assert @request.pending?
+        assert_predicate @request, :pending?
       end
 
       context 'when QC message is unknown' do
@@ -75,7 +75,7 @@ class EventTest < ActiveSupport::TestCase
           message: 'updating request'
         }
 
-        assert @request.started?
+        assert_predicate @request, :started?
       end
 
       context 'when pass' do
@@ -87,7 +87,7 @@ class EventTest < ActiveSupport::TestCase
         end
 
         should 'pass request' do
-          assert @request.passed?
+          assert_predicate @request, :passed?
         end
       end
 
@@ -110,7 +110,7 @@ class EventTest < ActiveSupport::TestCase
           end
 
           should 'update request state' do
-            assert @request.failed?
+            assert_predicate @request, :failed?
           end
         end
       end
@@ -189,9 +189,9 @@ class EventTest < ActiveSupport::TestCase
 
         should 'create valid events' do
           # must create an event correctly
-          assert @lib_prep_event.valid?
-          assert @mx_lib_prep_event.valid?
-          assert @pe_sequencing_event.valid?
+          assert_predicate @lib_prep_event, :valid?
+          assert_predicate @mx_lib_prep_event, :valid?
+          assert_predicate @pe_sequencing_event, :valid?
         end
 
         # must update the request correctly
@@ -200,10 +200,11 @@ class EventTest < ActiveSupport::TestCase
           @multiplexed_library_creation_request.reload
           @pe_sequencing_request.reload
           @request_for_control.reload
-          assert @library_creation_request.passed?
-          assert @multiplexed_library_creation_request.passed?
-          assert @pe_sequencing_request.passed?
-          assert @request_for_control.passed?
+
+          assert_predicate @library_creation_request, :passed?
+          assert_predicate @multiplexed_library_creation_request, :passed?
+          assert_predicate @pe_sequencing_request, :passed?
+          assert_predicate @request_for_control, :passed?
         end
       end
 
@@ -270,10 +271,10 @@ class EventTest < ActiveSupport::TestCase
           @pe_sequencing_request.reload
           @request_for_control.reload
 
-          assert @library_creation_request.failed?
-          assert @multiplexed_library_creation_request.failed?
-          assert @pe_sequencing_request.failed?
-          assert @request_for_control.failed?
+          assert_predicate @library_creation_request, :failed?
+          assert_predicate @multiplexed_library_creation_request, :failed?
+          assert_predicate @pe_sequencing_request, :failed?
+          assert_predicate @request_for_control, :failed?
         end
       end
 
@@ -317,9 +318,9 @@ class EventTest < ActiveSupport::TestCase
           @multiplexed_library_creation_request.reload
           @pe_sequencing_request.reload
 
-          assert @library_creation_request.started?
-          assert @multiplexed_library_creation_request.started?
-          assert @pe_sequencing_request.started?
+          assert_predicate @library_creation_request, :started?
+          assert_predicate @multiplexed_library_creation_request, :started?
+          assert_predicate @pe_sequencing_request, :started?
         end
       end
     end

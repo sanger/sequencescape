@@ -39,6 +39,7 @@ class OwnerTest < ActionController::TestCase
             'A1' => 'A1'
           }
         )
+
       assert_equal @child_plate.owner, @user2
       assert_equal @child_plate.plate_owner.eventable, @tf_event
     end
