@@ -118,7 +118,7 @@ module SampleManifestExcel
         end
       end
 
-      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
+      # If samples have been created, register a stock_resource record in the MLWH
       def register_stock_resources
         stock_receptacles_to_be_registered.each(&:register_stock!)
       end
