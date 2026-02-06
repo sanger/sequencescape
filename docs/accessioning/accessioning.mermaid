@@ -187,7 +187,7 @@ flowchart LR
     %% Edge connections between nodes
 
     Providers ~~~ Application_Limber ~~~ Consumers
-    Providers ~~~ Application_Sequencescape ~~~ Consumers
+    Providers ~~~ RES_Manifest ~~~ Application_Sequencescape ~~~ Consumers
 
     External_EBI_Studies ~~~ External_EBI_Samples
     %% External_EBI_Samples ~~~ External_EBI_Studies
@@ -198,6 +198,11 @@ flowchart LR
     MD_SS_Order --> MD_SS_Submission_AccessionBehaviour
     MD_SS_Submission_AccessionBehaviour --> CF_SS_disable_accession_check
     MD_SS_Submission_AccessionBehaviour -..-> | exception email | User_Developers
+
+    %% Sample save and accession
+    User_SSR --> UI_SS_Sample_SAA
+    UI_SS_Sample_SAA --> FN_SS_Sample_accession_and_handle_validation_errors
+    FN_SS_Sample_accession_and_handle_validation_errors --> FN_SS_Accession_accession_sample
 
     %% Manifest upload
     User_SSR --> RES_Manifest --> UI_SS_Manifest_Upload --> MD_SS_SampleManifest_Uploader 
@@ -219,12 +224,7 @@ flowchart LR
     MD_SS_AccessionStatuses -.- VW_SS_Sample
     FN_SS_Samples_accession --> | 2. | VW_SS_Sample
     VW_SS_Sample --> User_SS_Users
-
-    %% Sample save and accession
-    User_SSR --> UI_SS_Sample_SAA
-    UI_SS_Sample_SAA --> FN_SS_Sample_accession_and_handle_validation_errors
-    FN_SS_Sample_accession_and_handle_validation_errors --> FN_SS_Accession_accession_sample
-
+    
     %% Study accession all samples
     User_Neil --> UI_SS_Study_AAS
     User_Study_Owners --> UI_SS_Study_AAS
