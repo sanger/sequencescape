@@ -22,6 +22,54 @@ module SampleManifestExcel
       validate :country_of_origin_has_correct_case,
                if: -> { data.present? && columns.present? && columns.names.include?('country_of_origin') }
 
+      validate :i7_present
+      # Ensure i7 column is not blank if it exists in the manifest
+      def i7_present
+        return unless columns.present? && data.present? && columns.names.include?('i7') && value('i7').blank?
+
+        errors.add(:base, "#{row_title} i7 can't be blank")
+      end
+
+      validate :i5_present
+      # Ensure i5 column is not blank if it exists in the manifest
+      def i5_present
+        return unless columns.present? && data.present? && columns.names.include?('i5') && value('i5').blank?
+
+        errors.add(:base, "#{row_title} i5 can't be blank, putting “n/a” in i5 if only needs one set of tags")
+      end
+
+      validate :chromium_tag_group
+      # Ensure chromium_tag_group column is not blank if it exists in the manifest
+      def chromium_tag_group
+        return unless columns.present? && data.present? && columns.names.include?('chromium_tag_group') && value('chromium_tag_group').blank?
+
+        errors.add(:base, "#{row_title} chromium_tag_group can't be blank")
+      end
+
+      validate :chromium_tag_well
+      # Ensure chromium_tag_well column is not blank if it exists in the manifest
+      def chromium_tag_well
+        return unless columns.present? && data.present? && columns.names.include?('chromium_tag_well') && value('chromium_tag_well').blank?
+
+        errors.add(:base, "#{row_title} chromium_tag_well can't be blank")
+      end
+
+      validate :dual_index_tag_set
+      # Ensure dual_index_tag_set column is not blank if it exists in the manifest
+      def dual_index_tag_set
+        return unless columns.present? && data.present? && columns.names.include?('dual_index_tag_set') && value('dual_index_tag_set').blank?
+
+        errors.add(:base, "#{row_title} dual_index_tag_set can't be blank")
+      end
+
+      validate :dual_index_tag_well
+      # Ensure dual_index_tag_well column is not blank if it exists in the manifest
+      def dual_index_tag_well
+        return unless columns.present? && data.present? && columns.names.include?('dual_index_tag_well') && value('dual_index_tag_well').blank?
+
+        errors.add(:base, "#{row_title} dual_index_tag_well can't be blank")
+      end
+
       delegate :present?, to: :sample, prefix: true
       delegate :aliquots, :asset, to: :manifest_asset
 
