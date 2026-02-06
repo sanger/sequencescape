@@ -27,16 +27,32 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     create(:insdc_country, name: 'Niue')
   end
 
-  it "is not sent for accessioning if the sample doesn't have an appropriate study" do
-    expect(described_class.new(tag_list, create(:sample))).not_to be_valid
-    expect(described_class.new(tag_list, create(:sample, studies: [create(:open_study)]))).not_to be_valid
+  context 'when validating based on study release strategy' do
+    context 'with no accessionable study' do
+      let(:sample) { create(:sample) }
 
-    sample =
-      create(
-        :sample,
-        studies: [create(:open_study, accession_number: 'ENA123'), create(:managed_study, accession_number: 'ENA123')]
-      )
-    expect(described_class.new(tag_list, sample)).not_to be_valid
+      it 'is not valid for accessioning' do
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
+
+    context 'with an open un-accessionable study' do
+      let(:sample) { create(:sample, studies: [create(:open_study)]) }
+
+      it 'is not valid for accessioning' do
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
+
+    context 'with multiple un-accessionable studies' do
+      let(:open_study) { create(:open_study, accession_number: 'ENA123') }
+      let(:managed_study) { create(:managed_study, accession_number: 'EGA123') }
+      let(:sample) { create(:sample, studies: [open_study, managed_study]) }
+
+      it 'is not valid for accessioning' do
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
   end
 
   context 'when validating' do
@@ -86,15 +102,21 @@ RSpec.describe Accession::Sample, :accession, type: :model do
     end
   end
 
-  it 'an appropriate service should be chosen based on the associated study' do
-    sample = create(:sample_for_accessioning_with_open_study)
-    expect(described_class.new(tag_list, sample).service).to be_ena
+  describe '#service' do
+    it 'returns :ena for a sample with an open study' do
+      sample = create(:sample_for_accessioning_with_open_study)
+      expect(described_class.new(tag_list, sample).service).to be_ena
+    end
 
-    sample = create(:sample_for_accessioning_with_managed_study)
-    expect(described_class.new(tag_list, sample).service).to be_ega
+    it 'returns :ega for a sample with a managed study' do
+      sample = create(:sample_for_accessioning_with_managed_study)
+      expect(described_class.new(tag_list, sample).service).to be_ega
+    end
 
-    sample = create(:sample, studies: [create(:open_study)])
-    expect(described_class.new(tag_list, sample).service).not_to be_valid
+    it 'is not valid for a sample with only an open study and no accession number' do
+      sample = create(:sample, studies: [create(:open_study)])
+      expect(described_class.new(tag_list, sample).service).not_to be_valid
+    end
   end
 
   it 'has a name and a title' do

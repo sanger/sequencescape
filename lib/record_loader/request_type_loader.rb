@@ -10,18 +10,29 @@ module RecordLoader
     config_folder 'request_types'
 
     def create_or_update!(key, options)
-      RequestType
-        .create_with(filter_options(options))
-        .find_or_create_by!(key:)
-        .tap do |request_type|
-          add_library_types(request_type, options.fetch('library_types', []))
-          add_acceptable_purposes(request_type, options.fetch('acceptable_purposes', []))
-        end
+      request_type = create_or_update_request_type(key, options)
+      add_library_types(request_type, options.fetch('library_types', []))
+      add_acceptable_purposes(request_type, options.fetch('acceptable_purposes', []))
+      request_type
     rescue StandardError => e
       raise StandardError, "Failed to create #{key} due to: #{e.message}"
     end
 
     private
+
+    def create_or_update_request_type(key, options)
+      request_type = RequestType.find_by(key:)
+      attrs = filter_options(options)
+      if request_type
+        # This only updates the request_class_name, other attributes are not expected to change but could be added here
+        if attrs['request_class_name'] && request_type.request_class_name != attrs['request_class_name']
+          request_type.update!(request_class_name: attrs['request_class_name'])
+        end
+      else
+        request_type = RequestType.create!(attrs.merge(key:))
+      end
+      request_type
+    end
 
     def add_library_types(request_type, library_types)
       rt_lts = request_type.library_types.pluck(:name)

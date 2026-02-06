@@ -126,6 +126,7 @@ class PmbClientTest < ActiveSupport::TestCase
         }
       )
       .returns(201)
+
     assert_equal 201, LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
 
     RestClient
@@ -138,6 +139,7 @@ class PmbClientTest < ActiveSupport::TestCase
         }
       )
       .returns('{"data":[{"id":"49","type":"printers","attributes":{"name":"test_printer","protocol":"LPD"}}]}')
+
     assert_not LabelPrinter::PmbClient.register_printer('test_printer', 'squix')
   end
 
@@ -148,12 +150,14 @@ class PmbClientTest < ActiveSupport::TestCase
 
     # rubocop:enable Layout/LineLength
     pretty_errors = 'Printer does not exist; Label template does not exist'
+
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
 
   test 'should return pretty errors with old json' do
     errors = '{"errors":{"printer":["Something is wrong","Something else is wrong"],"labels":["Something is wrong"]}}'
     pretty_errors = 'Printer: Something is wrong, Something else is wrong; Labels: Something is wrong'
+
     assert_equal pretty_errors, LabelPrinter::PmbClient.pretty_errors(errors)
   end
 end

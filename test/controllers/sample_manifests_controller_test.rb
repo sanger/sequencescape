@@ -21,6 +21,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
 
       should 'return expected sample manifest' do
         get :show, params: { id: @sample_manifest.id }
+
         assert_response :success
         assert_equal @sample_manifest, assigns(:sample_manifest)
         assert_equal @sample_manifest.samples, assigns(:samples)
@@ -30,6 +31,7 @@ class SampleManifestsControllerTest < ActionController::TestCase
     context '#new' do
       should 'be a success' do
         get :new, params: { type: 'plate' }
+
         assert_response :success
       end
     end

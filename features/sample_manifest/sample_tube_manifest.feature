@@ -42,7 +42,7 @@ Feature: Sample manifest
     And I reset all of the sanger sample ids to a known number sequence
     When I follow "View all manifests"
     Then I should see "Sample Manifests"
-    Then I should see "Upload a sample manifest"
+    Then I should see "Upload a Sample Manifest"
     Then I should see the manifest table:
       | Contains  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 5 1dtubes | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |

@@ -81,7 +81,7 @@ group :default do
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
 
   # Wraps bunny with connection pooling and consumer process handling
-  gem 'sanger_warren'
+  gem 'sanger_warren', github: 'sanger/warren', branch: 'master'
 
   # Use bunny for simple RabbitMQ publishing operations
   gem 'bunny', '>= 2.22.0'
@@ -127,6 +127,9 @@ group :default do
   gem 'flipper', '~> 1.0'
   gem 'flipper-active_record', '~> 1.0'
   gem 'flipper-ui', '~> 1.0'
+
+  # For comparing accessioning changes, see EBICheck::Process
+  gem 'hashdiff'
 end
 
 group :development do
@@ -151,6 +154,7 @@ group :development, :linting do
   gem 'rubocop', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-factory_bot', require: false
+  gem 'rubocop-minitest', require: false
   gem 'rubocop-performance', require: false
   gem 'rubocop-rails', require: false
   gem 'rubocop-rspec', require: false

@@ -79,7 +79,23 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   DATA_RELEASE_TIMING_IMMEDIATE = 'immediate'
   DATA_RELEASE_TIMING_PUBLICATION = 'delay until publication'
 
-  DATA_RELEASE_TIMINGS = [
+  # The list of all possible data release timings
+  ALL_DATA_RELEASE_TIMINGS = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_NEVER,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for open studies
+  DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE = [
+    DATA_RELEASE_TIMING_STANDARD,
+    DATA_RELEASE_TIMING_IMMEDIATE,
+    DATA_RELEASE_TIMING_DELAYED,
+    DATA_RELEASE_TIMING_PUBLICATION
+  ].freeze
+  # Release timings for managed studies
+  DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE = [
     DATA_RELEASE_TIMING_STANDARD,
     DATA_RELEASE_TIMING_IMMEDIATE,
     DATA_RELEASE_TIMING_DELAYED
@@ -249,7 +265,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :data_release_timing,
       required: true,
       default: DATA_RELEASE_TIMING_STANDARD,
-      in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_NEVER] + [DATA_RELEASE_TIMING_PUBLICATION]
+      in: ALL_DATA_RELEASE_TIMINGS
     )
     custom_attribute(
       :data_release_delay_reason,
@@ -378,16 +394,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
         ->(assets) do
           select('DISTINCT studies.*').joins(['LEFT JOIN aliquots ON aliquots.study_id = studies.id']).where(
             ['aliquots.receptacle_id IN (?)', assets.map(&:id)]
-          )
-        end
-
-  scope :for_sample_accessioning,
-        -> do
-          joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
-            study_metadata: {
-              data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS + [Study::DATA_RELEASE_TIMING_PUBLICATION]
-            }
           )
         end
 
@@ -556,6 +562,27 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ebi_accession_number.present?
   end
 
+  # Returns true if the samples in this study are eligible for accessioning
+  #
+  # A study's samples are eligible for accessioning if:
+  # - the study is active
+  # - the study's data release strategy open or managed
+  # - the study is not set to never release
+  # - the study requires accessioning
+  # - the study has an accession number
+  #
+  # @return [Boolean] true if the samples in this study are eligible for accessioning, false otherwise
+  def samples_accessionable?
+    # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
+    [
+      active?,
+      !study_metadata.strategy_not_applicable?,
+      !study_metadata.never_release?,
+      accession_required?,
+      accession_number?
+    ].all?
+  end
+
   # Accession all samples in the study.
   #
   # If the study does not have an accession number, adds an error to the study and returns.
@@ -563,9 +590,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # unless the sample already has an accession number.
   # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
   #
+  # NOTE: this does not check if the current user has permission to accession samples in this study
+  #
   # @return [void]
   def accession_all_samples(event_user)
     return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
+
+    unless samples_accessionable?
+      return errors.add(:base,
+                        'Study cannot accession samples, see Study Accessioning tab for details')
+    end
 
     samples.find_each do |sample|
       Accession.accession_sample(sample, event_user) unless sample.accession_number?
@@ -705,18 +739,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     validate :sanity_check_y_separation, if: :separate_y_chromosome_data?
 
-    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS }, if: :data_release_strategy_must_be_managed?
-    validates :data_release_timing,
-              inclusion: {
-                in: [DATA_RELEASE_TIMING_NEVER]
-              },
-              if: :data_release_timing_must_be_never?
-
-    validates :data_release_timing,
-              inclusion: {
-                in: DATA_RELEASE_TIMINGS + [DATA_RELEASE_TIMING_PUBLICATION]
-              },
-              if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE },
+                                    if: :data_release_strategy_must_be_managed?
+    validates :data_release_timing, inclusion: { in: DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE },
+                                    if: :data_release_timing_must_be_open?
+    validates :data_release_timing, inclusion: { in: [DATA_RELEASE_TIMING_NEVER] },
+                                    if: :data_release_timing_must_be_never?
 
     def data_release_timing_must_be_never?
       Flipper.enabled?(:y24_052_enable_data_release_timing_validation) && data_release_strategy.present? &&

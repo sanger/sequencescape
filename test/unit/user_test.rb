@@ -25,11 +25,11 @@ class UserTest < ActiveSupport::TestCase
       setup { @user = create(:admin) }
 
       should 'be able to access admin functions' do
-        assert @user.administrator?
+        assert_predicate @user, :administrator?
       end
 
       should 'be able to access manager functions' do
-        assert @user.manager_or_administrator?
+        assert_predicate @user, :manager_or_administrator?
       end
     end
 
@@ -41,11 +41,11 @@ class UserTest < ActiveSupport::TestCase
       end
 
       should 'be able to access manager functions' do
-        assert @user.manager_or_administrator?
+        assert_predicate @user, :manager_or_administrator?
       end
 
       should 'have be manager' do
-        assert @user.manager?
+        assert_predicate @user, :manager?
       end
     end
 
@@ -82,7 +82,8 @@ class UserTest < ActiveSupport::TestCase
       context 'when profile is complete' do
         setup do
           @user = create(:user, first_name: 'Alan', last_name: 'Brown')
-          assert @user.valid?
+
+          assert_predicate @user, :valid?
         end
         should 'return full name' do
           assert_equal 'Alan Brown', @user.name
@@ -91,7 +92,8 @@ class UserTest < ActiveSupport::TestCase
       context 'when profile is incomplete' do
         setup do
           @user = create(:user, login: 'abc123', first_name: 'Alan', last_name: nil)
-          assert @user.valid?
+
+          assert_predicate @user, :valid?
         end
         should 'return login' do
           assert_equal 'abc123', @user.name
@@ -129,7 +131,7 @@ class UserTest < ActiveSupport::TestCase
       setup { @user = create(:data_access_coordinator) }
 
       should 'be able to access data_access_coordinator functions' do
-        assert @user.data_access_coordinator?
+        assert_predicate @user, :data_access_coordinator?
       end
     end
   end

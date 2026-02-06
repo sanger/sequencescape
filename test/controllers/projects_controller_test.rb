@@ -47,6 +47,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         should set_flash.to('Your project has been created')
         should redirect_to('last project page') { project_path(Project.last) }
+
         should 'change Project.count by 1' do
           assert_equal 1, Project.count - @project_counter
         end
@@ -68,6 +69,7 @@ class ProjectsControllerTest < ActionController::TestCase
         end
 
         should render_template :new
+
         should 'not change Project.count' do
           assert_equal @initial_project_count, Project.count
         end
@@ -92,6 +94,7 @@ class ProjectsControllerTest < ActionController::TestCase
 
         should redirect_to('last project added page') { project_path(Project.last) }
         should set_flash.to('Your project has been created')
+
         should 'change Project.count by 1' do
           assert_equal 1, Project.count - @project_counter
         end

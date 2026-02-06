@@ -92,4 +92,22 @@ RSpec.describe RecordLoader::RequestTypeLoader, :loader, type: :model do
       )
     end
   end
+
+  context 'when the request type exists but we are updating request_class_name' do
+    let(:selected_files) { 'request_types_updated_class_name' }
+
+    before do
+      create(:plate_purpose, name: 'Example purpose 2')
+      a_new_record_loader('request_types_basic').create!
+      record_loader.create!
+    end
+
+    it 'updates the request class name of the last record' do
+      expect(RequestType.last.request_class_name).to eq('SequencingRequest')
+    end
+
+    it 'does not change the request class name of the first record' do
+      expect(RequestType.first.request_class_name).to eq('SequencingRequest')
+    end
+  end
 end
