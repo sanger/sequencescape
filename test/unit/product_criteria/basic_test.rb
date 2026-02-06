@@ -49,6 +49,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
           gel_pass: 'OKAY',
           conflicting_gender_markers: 2
         }
+
         assert_equal expected_hash, @criteria.values
       end
     end
@@ -64,7 +65,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
       end
 
       should '#pass? should return false' do
-        assert_equal [], @criteria.comment
+        assert_empty @criteria.comment
         assert_equal 'passed', @criteria.qc_decision, 'Well failed when it should have passed'
       end
 
@@ -76,6 +77,7 @@ class ProductCriteriaBasicTest < ActiveSupport::TestCase
           gel_pass: 'OKAY',
           conflicting_gender_markers: 0
         }
+
         assert_equal expected_hash, @criteria.values
       end
     end

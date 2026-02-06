@@ -152,18 +152,21 @@ class BatchesControllerTest < ActionController::TestCase
 
         should '#index' do
           get :index
+
           assert_response :success
           assert assigns(:batches)
         end
 
         should '#show' do
           get :show, params: { id: @batch_one.id }
+
           assert_response :success
           assert_equal @batch_one, assigns(:batch)
         end
 
         should '#edit' do
           get :edit, params: { id: @batch_one }
+
           assert_response :success
           assert_equal @batch_one, assigns(:batch)
         end
@@ -191,6 +194,7 @@ class BatchesControllerTest < ActionController::TestCase
                  'barcode_1' => '3980123456878',
                  :verification_flavour => 'tube'
                }
+
           assert_equal 'All of the tubes are in their correct positions.', flash[:notice]
         end
 
@@ -202,6 +206,7 @@ class BatchesControllerTest < ActionController::TestCase
                  'barcode_1' => '3980654321768',
                  :verification_flavour => 'tube'
                }
+
           assert_equal [
             'The tube at position 1 is incorrect: expected NT654321L.',
             'The tube at position 2 is incorrect: expected NT123456W.'
@@ -213,6 +218,7 @@ class BatchesControllerTest < ActionController::TestCase
           post :verify_layout,
                params: { :id => @batch.id, 'barcode_0' => '3980654321768', 'barcode_1' => '',
                          :verification_flavour => 'tube' }
+
           assert_equal ['The tube at position 2 is incorrect: expected NT123456W.'], flash[:error]
         end
 
@@ -298,6 +304,7 @@ class BatchesControllerTest < ActionController::TestCase
         should '#update' do
           @pipeline_user = create(:pipeline_admin, login: 'ur1', first_name: 'Ursula', last_name: 'Robinson')
           put :update, params: { id: @batch_one.id, batch: { assignee_id: @pipeline_user.id } }
+
           assert_redirected_to batch_path(assigns(:batch))
           assert_equal assigns(:batch).assignee, @pipeline_user
           assert_includes flash[:notice], 'Assigned to Ursula Robinson (ur1)'
@@ -305,6 +312,7 @@ class BatchesControllerTest < ActionController::TestCase
 
         should 'redirect on update without param' do
           put :update, params: { id: @batch_one.id, batch: { id: 'bad id' } }
+
           assert_response :redirect
         end
 
@@ -346,7 +354,7 @@ class BatchesControllerTest < ActionController::TestCase
               assert_redirected_to pipeline_path(@pipeline)
               assert_equal 'Requests hidden from inbox', flash[:notice]
               assert_not @request_three.reload.hold?
-              assert @request_four.reload.hold?
+              assert_predicate @request_four.reload, :hold?
             end
           end
 
@@ -367,7 +375,7 @@ class BatchesControllerTest < ActionController::TestCase
               assert_redirected_to pipeline_path(@pipeline)
               assert_equal 'Requests cancelled', flash[:notice]
               assert_not @request_three.reload.cancelled?
-              assert @request_four.reload.cancelled?
+              assert_predicate @request_four.reload, :cancelled?
             end
           end
 
@@ -390,6 +398,7 @@ class BatchesControllerTest < ActionController::TestCase
         context '#released' do
           should 'return all released batches if passed params' do
             get :released, params: { id: @pipeline.id }
+
             assert_response :success
           end
         end
@@ -397,13 +406,15 @@ class BatchesControllerTest < ActionController::TestCase
         context '#fail' do
           should 'render fail reasons when internal' do
             get :fail, params: { id: @batch_one.id }
-            assert @batch_one.workflow.source_is_internal?
+
+            assert_predicate @batch_one.workflow, :source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
           end
 
           should 'render fail reasons when external' do
             get :fail, params: { id: @batch_two.id }
+
             assert_not @batch_two.workflow.source_is_internal?
             assert_response :success
             assert assigns(:fail_reasons)
@@ -512,7 +523,7 @@ class BatchesControllerTest < ActionController::TestCase
 
                 # Second item
                 assert_equal 0, @batch_one.requests.last.failures.size
-                assert flash['error'].include?("Couldn't find all Requests with 'id'")
+                assert_includes flash['error'], "Couldn't find all Requests with 'id'"
               end
             end
           end

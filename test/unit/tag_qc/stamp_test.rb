@@ -24,6 +24,7 @@ class StampTest < ActiveSupport::TestCase
         # @qcable.expects(:do_stamp!).returns(true)
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         @stamp = create(:stamp, stamp_qcables: [sqc])
+
         assert_equal 'pending', @qcable.reload.state
       end
 
@@ -35,6 +36,7 @@ class StampTest < ActiveSupport::TestCase
 
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         @stamp = create(:stamp, stamp_qcables: [sqc])
+
         assert_equal 'pending', @qcable.reload.state
         assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
       end
@@ -51,6 +53,7 @@ class StampTest < ActiveSupport::TestCase
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         sqc_2 = Stamp::StampQcable.new(bed: '2', order: 2, qcable: @qcable_2)
         @stamp = create(:stamp, stamp_qcables: [sqc, sqc_2])
+
         assert_equal 'pending', @qcable.reload.state
         assert_equal 1, @qcable.asset.wells.located_at('A2').first.aliquots.count
         assert_equal 'pending', @qcable_2.reload.state

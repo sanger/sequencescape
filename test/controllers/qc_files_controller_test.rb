@@ -29,6 +29,7 @@ class QcFilesControllerTest < ActionController::TestCase
 
     should 'return the file' do
       get :show, params: { id: @qc_file.id }
+
       assert_response :success
       assert_equal 'application/vnd.ms-excel', response.media_type
     end

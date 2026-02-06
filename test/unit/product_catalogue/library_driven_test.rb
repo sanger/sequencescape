@@ -126,6 +126,7 @@ class LibraryDrivenTest < ActiveSupport::TestCase
 
           should 'select the first product of the default products' do
             order3 = @submission_template3.new_order
+
             assert_equal @product3, order3.product
           end
         end
@@ -146,6 +147,7 @@ class LibraryDrivenTest < ActiveSupport::TestCase
           end
           should 'select the first product of the default products' do
             order = @submission_template4.new_order
+
             assert_equal @product3, order.product
           end
         end
@@ -170,6 +172,7 @@ class LibraryDrivenTest < ActiveSupport::TestCase
           end
           should 'select the first product of the default products' do
             order = @submission_template5.new_order
+
             assert_equal @product, order.product
           end
         end

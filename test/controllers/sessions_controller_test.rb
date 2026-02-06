@@ -23,12 +23,14 @@ class SessionsControllerTest < ActionController::TestCase
 
   def test_should_login_and_redirect
     post :login, params: { login: 'john', password: 'test' }
+
     assert session[:user]
     # assert_response :redirect
   end
 
   def test_should_fail_login_and_not_redirect
     post :login, params: { login: 'john', password: 'bad password' }
+
     assert_nil session[:user]
     assert_response :success
   end
@@ -36,6 +38,7 @@ class SessionsControllerTest < ActionController::TestCase
   def test_should_logout
     login_as @user
     get :logout
+
     assert_nil session[:user]
     assert_response :redirect
   end

@@ -33,8 +33,8 @@ class ExternalValidatorTest < ActiveSupport::TestCase
       end
 
       should 'should be valid' do
-        assert_equal [], @order.errors.full_messages
-        assert @order.valid?
+        assert_empty @order.errors.full_messages
+        assert_predicate @order, :valid?
       end
     end
   end

@@ -30,6 +30,7 @@ module QcableStatemachineChecks
               should "transition from #{state} to #{end_state}" do
                 @qcable.state = state
                 @qcable.send(:"#{name}")
+
                 assert_equal end_state.to_s, @qcable.state
               end
             end

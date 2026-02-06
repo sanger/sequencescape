@@ -32,6 +32,7 @@ class QcableTest < ActiveSupport::TestCase
       should 'create an asset of the given purpose' do
         factory_attributes = attributes_for(:qcable, lot: @mock_lot)
         @qcable = Qcable.create!(factory_attributes)
+
         assert_equal 'created', @qcable.state
       end
     end
@@ -49,6 +50,7 @@ class QcableTest < ActiveSupport::TestCase
         # set BEFORE the lot is assigned.
         factory_attributes = attributes_for(:qcable, lot: @mock_lot)
         @qcable = Qcable.create!(factory_attributes)
+
         assert_equal @mock_purpose, @qcable.asset.purpose
         assert_equal 'pending', @qcable.state
       end

@@ -36,8 +36,9 @@ class DataReleaseTest < ActiveSupport::TestCase
 
               @study.save!
             end
+
             should 'return true' do
-              assert Study.find(@study.id).valid_data_release_properties?
+              assert_predicate Study.find(@study.id), :valid_data_release_properties?
             end
           end
         end
@@ -69,12 +70,14 @@ class DataReleaseTest < ActiveSupport::TestCase
 
         should 'return true when data release timing is standard' do
           @study.study_metadata.data_release_timing = 'standard'
-          assert @study.accession_required?
+
+          assert_predicate @study, :accession_required?
         end
 
         should 'return true when data release timing is immediate' do
           @study.study_metadata.data_release_timing = 'immediate'
-          assert @study.accession_required?
+
+          assert_predicate @study, :accession_required?
         end
       end
 
@@ -119,7 +122,7 @@ class DataReleaseTest < ActiveSupport::TestCase
                   end
 
                   should 'should require ena accession number' do
-                    assert @study.accession_required?
+                    assert_predicate @study, :accession_required?
                   end
                 end
               end

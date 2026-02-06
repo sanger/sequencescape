@@ -20,6 +20,7 @@ class BarcodeTest < ActiveSupport::TestCase
 
     should 'generate a barcode' do
       b = Barcode.calculate_barcode(@prefix, @number)
+
       assert b
       assert_equal 13, b.to_s.size
     end
@@ -27,6 +28,7 @@ class BarcodeTest < ActiveSupport::TestCase
     should 'generate a human barcode' do
       b = Barcode.calculate_barcode(@prefix, @number)
       human = Barcode.barcode_to_human b
+
       assert human
       assert_equal @human, human
     end
@@ -69,6 +71,7 @@ class BarcodeTest < ActiveSupport::TestCase
 
   context 'A number with more than 7 digits' do
     setup { @number = 12_345_678 }
+
     should 'raise a error' do
       assert_raise ArgumentError do
         Barcode.calculate_barcode 'DN', @number

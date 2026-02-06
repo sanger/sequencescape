@@ -17,6 +17,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'EGA' # European Genome-phenome Archive
   inflect.acronym 'ENA' # European Nucleotide Archive
   inflect.acronym 'HTTP' # HyperText Transfer Protocol
+  inflect.acronym 'EBI'  # European Bioinformatics Institute
 end
 
 # These inflection rules are supported but not enabled by default:

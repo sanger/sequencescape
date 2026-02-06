@@ -347,45 +347,6 @@ RSpec.describe Study do
       end
     end
 
-    describe '#for_sample_accessioning' do
-      let!(:study_1) { create(:open_study) }
-      let!(:study_2) { create(:open_study, name: 'Study 2', accession_number: 'ENA123') }
-      let!(:study_3) { create(:open_study, name: 'Study 3', accession_number: 'ENA456') }
-      let!(:study_4) { create(:managed_study) }
-      let!(:study_5) { create(:managed_study, name: 'Study 4', accession_number: 'ENA666') }
-      let!(:study_6) { create(:managed_study, name: 'Study 5', accession_number: 'ENA777') }
-      let!(:study_7) { create(:managed_study, name: 'Study 6', accession_number: 'ENA888') }
-      let!(:study_8) { create(:not_app_study) }
-      let!(:study_9) do
-        metadata_options = {
-          data_release_timing: Study::DATA_RELEASE_TIMING_PUBLICATION,
-          data_release_timing_publication_comment: 'Testing data release timing publication',
-          data_share_in_preprint: Study::YES
-        }
-        create(:open_study, name: 'Study 9', accession_number: 'ENA999', metadata_options: metadata_options)
-      end
-
-      it 'include studies that adhere to accessioning guidelines' do
-        expect(described_class.for_sample_accessioning.count).to eq(6)
-      end
-
-      it 'includes open studies with data release timing publication' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).to include(study_9)
-      end
-
-      it 'not include studies that do not have accession numbers' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).not_to include(study_1)
-        expect(studies).not_to include(study_4)
-      end
-
-      it 'not include studies that do not have the correct data release strategy or timing' do
-        studies = described_class.for_sample_accessioning
-        expect(studies).not_to include(study_8)
-      end
-    end
-
     describe '#each_well_for_qc_report_in_batches' do
       let!(:study) { create(:study) }
       let(:purpose_1) { PlatePurpose.stock_plate_purpose }
@@ -487,6 +448,75 @@ RSpec.describe Study do
         expect(study.data_release_delay_options(assay_option: true)).to eq(
           [*Study::DATA_RELEASE_DELAY_REASONS_STANDARD, *Study::DATA_RELEASE_DELAY_REASONS_ASSAY]
         )
+      end
+    end
+  end
+
+  describe '#samples_accessionable?' do
+    let(:accession_number) { 'ENA123' }
+    let(:study) { create(:open_study, accession_number:) }
+
+    context 'when it is a standard test open study' do
+      let(:study) { create(:open_study) }
+
+      it 'returns true' do
+        expect(study.samples_accessionable?).to be false
+      end
+    end
+
+    context 'when all conditions are met' do
+      it 'returns true' do
+        expect(study.samples_accessionable?).to be true
+      end
+    end
+
+    context 'when study is pending' do
+      let(:study) { create(:open_study, state: Study::STATE_PENDING, accession_number: accession_number) }
+
+      it 'returns false' do
+        expect(study.samples_accessionable?).to be false
+      end
+    end
+
+    context 'when study release strategy is not applicable' do
+      let(:study_metadata) do
+        create(:study_metadata,
+               data_release_strategy: Study::DATA_RELEASE_STRATEGY_NOT_APPLICABLE,
+               study_ebi_accession_number: accession_number)
+      end
+      let(:study) { create(:study, study_metadata:) }
+
+      it 'returns false' do
+        expect(study.samples_accessionable?).to be false
+      end
+    end
+
+    context 'when study release timing is never' do
+      let(:study_metadata) do
+        create(:study_metadata,
+               data_release_timing: Study::DATA_RELEASE_TIMING_NEVER,
+               data_release_prevention_reason: Study::DATA_RELEASE_PREVENTION_REASONS.first)
+      end
+      let(:study) { create(:open_study, study_metadata:, accession_number:) }
+
+      it 'returns false' do
+        expect(study.samples_accessionable?).to be false
+      end
+    end
+
+    context 'when accessioning is not required' do
+      let(:study) { create(:open_study, enforce_accessioning: false, accession_number: accession_number) }
+
+      it 'returns false' do
+        expect(study.samples_accessionable?).to be false
+      end
+    end
+
+    context 'when accession number is missing' do
+      let(:study) { create(:open_study, accession_number: nil) }
+
+      it 'returns false' do
+        expect(study.samples_accessionable?).to be false
       end
     end
   end

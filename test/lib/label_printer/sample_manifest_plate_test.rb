@@ -53,6 +53,7 @@ class SampleManifestPlateTest < ActiveSupport::TestCase
     should 'have the right plates if only first label required' do
       options = { sample_manifest: manifest, only_first_label: true }
       @plate_label = LabelPrinter::Label::SampleManifestPlate.new(options)
+
       assert_equal 1, plate_label.plates.count
       assert_equal [plate1], plate_label.plates
     end

@@ -18,7 +18,8 @@ class ProductTest < ActiveSupport::TestCase
     should 'allow products with the same name if one is deprecated' do
       @product_a = create(:product, deprecated_at: Time.zone.now)
       @product_b = create(:product, name: @product_a.name)
-      assert @product_b.valid?
+
+      assert_predicate @product_b, :valid?
     end
 
     should 'not be destroyable' do
@@ -32,8 +33,9 @@ class ProductTest < ActiveSupport::TestCase
     should 'be deprecatable' do
       @product_a = create(:product)
       @product_a.deprecate!
-      assert @product_a.deprecated?
-      assert @product_a.deprecated_at != nil
+
+      assert_predicate @product_a, :deprecated?
+      assert_not_equal @product_a.deprecated_at, nil
     end
   end
 
@@ -45,7 +47,7 @@ class ProductTest < ActiveSupport::TestCase
 
     context '::active' do
       should 'return non-deprecated products only' do
-        assert Product.active.include?(@product_b), 'Did not return active products'
+        assert_includes Product.active, @product_b, 'Did not return active products'
         assert_not Product.active.include?(@product_a), 'Returned deprecated products'
       end
     end

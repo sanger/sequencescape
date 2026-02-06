@@ -28,12 +28,14 @@
 <% add :menu, display_follow(@study, current_user, "Study") => follow_study_path(@study) -%>
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
-<% if can? :accession, @study %>
+<% if permitted_to_accession?(@study) %>
   <% add :menu,
     @study.accession_number? ? "Update Study Data for Accessioning" : "Generate Accession Number" =>
-     (configatron.accession_samples ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
-  <% add :menu, "Generate DAC Accession Number" => url_for(controller: '/studies', action: 'dac_accession', id: @study.id) -%>
-  <% add :menu, "Generate Policy Accession Number" => url_for(controller: '/studies', action: 'policy_accession', id: @study.id) -%>
+      (accessioning_enabled? ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
+  <% add :menu, "Generate DAC Accession Number" =>
+    (accessioning_enabled? ? url_for(controller: '/studies', action: 'dac_accession', id: @study.id) : 'disabled' ) -%>
+  <% add :menu, "Generate Policy Accession Number" =>
+    (accessioning_enabled? ? url_for(controller: '/studies', action: 'policy_accession', id: @study.id) : 'disabled' ) -%>
 <% end -%>
 
 <% if can? :edit, @study %>
@@ -49,7 +51,9 @@
 <% add :menu, "QC Reports" => qc_reports_path -%>
 <% add :menu, "Study QC Reports" => study_reports_study_path(@study) -%>
 
-<% add :menu, "Accession all Samples" => configatron.accession_samples ? accession_all_samples_study_path(@study) : 'disabled' -%>
+<% if permitted_to_accession?(@study) & @study.samples_accessionable? %>
+  <% add :menu, "Accession all Samples" => accessioning_enabled? ? accession_all_samples_study_path(@study) : 'disabled' -%>
+<% end %>
 
 <% add :legend_option, icon('fas', 'hourglass-start', 'Pending') => "" -%>
 <% add :legend_option, icon('fas', 'cog', 'Started') => "" -%>

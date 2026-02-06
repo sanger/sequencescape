@@ -56,6 +56,7 @@ class QcReportPresenterTest < ActiveSupport::TestCase
     should 'generate an appropriate csv file' do
       csv = +''
       Presenters::QcReportPresenter.new(@report).to_csv(csv)
+
       assert_equal EXPECTED_CSV % @asset_ids, csv
     end
   end

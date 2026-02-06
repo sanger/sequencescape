@@ -9,7 +9,7 @@ class PhiXSpikedBufferTest < ActiveSupport::TestCase
     setup { @phi_x_spiked_buffer = FactoryBot.create(:phi_x_spiked_buffer) }
 
     should 'create a PhiX Stock' do
-      assert @phi_x_spiked_buffer.valid?
+      assert_predicate @phi_x_spiked_buffer, :valid?
     end
 
     should 'Have 1 items in created spiked buffers' do

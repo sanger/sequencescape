@@ -23,6 +23,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
         @old_wells = Well.count
         @template.update_params!(name: 'a', value: '2', wells: { 'A1' => '123' })
       end
+
       should 'be added' do
         assert_equal @old_wells + 1, Well.count
       end
@@ -35,6 +36,7 @@ class PlateTemplateTest < ActiveSupport::TestCase
         @old_asset_link = AssetLink.count
         @template.update_params!(name: 'a', value: '2', wells: { 'A1' => '123', 'B3' => '345' })
       end
+
       should 'be added' do
         assert_equal @old_wells + 2, Well.count
       end

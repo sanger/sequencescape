@@ -8,10 +8,11 @@ class BatchTest < ActiveSupport::TestCase
       setup { @batch = build(:batch) }
 
       should 'have begin in pending then change to started' do
-        assert_equal @batch.state, 'pending'
+        assert_equal 'pending', @batch.state
         @batch.start!(create(:user))
-        assert_equal @batch.state, 'started'
-        assert_equal @batch.started?, true
+
+        assert_equal 'started', @batch.state
+        assert_equal true, @batch.started?
       end
     end
   end
@@ -42,6 +43,7 @@ class BatchTest < ActiveSupport::TestCase
           @batch
             .batch_requests
             .each_with_object({}) { |batch_request, memo| memo[batch_request.request_id] = batch_request.position }
+
         assert_equal(expected, actual, 'Positions of requests do not match')
       end
     end
@@ -63,6 +65,7 @@ class BatchTest < ActiveSupport::TestCase
     should 'have initially have a pending status for batch requests' do
       assert_equal 'pending', @batch.requests.first.state
       @batch.start!(create(:user))
+
       assert_equal 'started', @batch.state
       assert_equal 'started', @batch.requests.reload.first.state
     end
@@ -76,7 +79,8 @@ class BatchTest < ActiveSupport::TestCase
           end
           should 'leave 1 requests behind' do
             @batch.requests.reload
-            assert @batch.requests.include?(@request1)
+
+            assert_includes @batch.requests, @request1
             assert @batch.requests.exclude?(@request2)
             assert_equal @batch_requests_count - 1, @batch.requests.count
           end
@@ -108,6 +112,7 @@ class BatchTest < ActiveSupport::TestCase
         assert_equal false, @batch.has_event('Tube layout verified')
         @lab_event.description = 'Tube layout verified'
         @batch.lab_events << @lab_event
+
         assert_equal true, @batch.has_event('Tube layout verified')
       end
     end
@@ -122,7 +127,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'with no requests' do
       should 'return an empty array' do
-        assert @batch.requests.for_studies(@study1).empty?
+        assert_empty @batch.requests.for_studies(@study1)
       end
     end
 
@@ -133,8 +138,8 @@ class BatchTest < ActiveSupport::TestCase
       end
 
       should 'return correct studies' do
-        assert @batch.requests.for_studies(@study1).include?(@request1)
-        assert @batch.requests.for_studies(@study2).all.empty?
+        assert_includes @batch.requests.for_studies(@study1), @request1
+        assert_empty @batch.requests.for_studies(@study2).all
       end
     end
 
@@ -150,7 +155,7 @@ class BatchTest < ActiveSupport::TestCase
       should 'return correct studies' do
         assert_includes @batch.requests.for_studies(@study1), @request1
         assert_includes @batch.requests.for_studies(@study2), @request2
-        assert @batch.requests.for_studies(@study3).all.empty?
+        assert_empty @batch.requests.for_studies(@study3).all
       end
     end
   end
@@ -164,7 +169,7 @@ class BatchTest < ActiveSupport::TestCase
 
     context 'with no requests' do
       should 'not return plate ids' do
-        assert @batch.plate_ids_in_study(@study1).empty?
+        assert_empty @batch.plate_ids_in_study(@study1)
       end
     end
 
@@ -184,8 +189,8 @@ class BatchTest < ActiveSupport::TestCase
       end
       should 'return 1 plate id where they are in given study' do
         assert_equal 2, @batch.plate_ids_in_study(@study1).size
-        assert @batch.plate_ids_in_study(@study1).include?(@plate1.id)
-        assert @batch.plate_ids_in_study(@study1).include?(@plate2.id)
+        assert_includes @batch.plate_ids_in_study(@study1), @plate1.id
+        assert_includes @batch.plate_ids_in_study(@study1), @plate2.id
       end
       should 'not return a plate id where they are not in the given study' do
         assert_not @batch.plate_ids_in_study(@study2).include?(@plate1.id)
@@ -216,7 +221,7 @@ class BatchTest < ActiveSupport::TestCase
         # This is dependent of some aspects of pipelines and request types.
         # Its all a bit convoluted and inconsistent.
         assert_equal 4, Receptacle.count - @asset_count, 'Expected Receptacle.count to change by 4'
-        @requests.each { |r| assert r.reload.target_asset.present?, 'Request has no target asset' }
+        @requests.each { |r| assert_predicate r.reload.target_asset, :present?, 'Request has no target asset' }
       end
 
       should 'not have same asset name' do
@@ -252,9 +257,10 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'return true if batch has failed and have 2 requests' do
         @batch.fail(@reason, @comment)
-        assert_equal @batch.production_state, 'fail'
-        assert @batch.failed?
-        assert_equal @batch.request_count, 2
+
+        assert_equal 'fail', @batch.production_state
+        assert_predicate @batch, :failed?
+        assert_equal 2, @batch.request_count
       end
 
       should 'raise an exception if you try and ignore requests' do
@@ -319,16 +325,17 @@ class BatchTest < ActiveSupport::TestCase
           @requests = [@request1.id.to_s, @request2.id.to_s]
           @request1.expects(:terminated?).returns(true).times(1)
           @request2.expects(:terminated?).returns(true).times(1)
-          assert @batch.failures.empty?
+
+          assert_empty @batch.failures
           @batch.fail_requests(@requests, @reason, @comment)
         end
 
         should 'if all the requests within the batch are failing, fail the batch too' do
-          assert @batch.failed?
+          assert_predicate @batch, :failed?
         end
 
         should 'create a batch failure' do
-          assert @batch.failures.one?
+          assert_predicate @batch.failures, :one?
         end
       end
     end
@@ -349,18 +356,21 @@ class BatchTest < ActiveSupport::TestCase
 
       should 'return ordered requests' do
         v = @batch.ordered_requests
+
         assert_equal @request2, v[0]
         assert_equal @request1, v[1]
       end
 
       should 'return true if the tubes are scanned in in the correct order' do
         number_of_batch_events = @batch.lab_events.size
+
         assert @batch.verify_tube_layout([@asset2.machine_barcode, @asset1.machine_barcode])
         assert_equal number_of_batch_events + 1, @batch.lab_events.size
       end
 
       should 'return false and add errors to the batch if the tubes are not in the correct order' do
         number_of_batch_events = @batch.lab_events.size
+
         assert_not @batch.verify_tube_layout([@asset1.machine_barcode, @asset2.machine_barcode])
         assert_not @batch.errors.empty?
         assert_equal number_of_batch_events, @batch.lab_events.size
@@ -373,6 +383,7 @@ class BatchTest < ActiveSupport::TestCase
       should 'return user login' do
         @user = create(:user)
         @batch.assignee_id = @user.id
+
         assert 'lg1', @batch.assigned_user
       end
 
@@ -384,7 +395,7 @@ class BatchTest < ActiveSupport::TestCase
         end
 
         should 'return true a request has resource' do
-          assert @batch.has_control?
+          assert_predicate @batch, :has_control?
         end
 
         should 'return the first request with resource' do
@@ -395,7 +406,8 @@ class BatchTest < ActiveSupport::TestCase
       should 'return true if self has item_limit' do
         @pipeline.workflow.update!(item_limit: 4)
         @batch.reload
-        assert @batch.has_limit?
+
+        assert_predicate @batch, :has_limit?
       end
 
       context 'underrun' do
@@ -409,12 +421,14 @@ class BatchTest < ActiveSupport::TestCase
           @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 3)
           @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 4)
           @batch.batch_requests.create!(request: @pipeline.request_types.last.create!, position: 5)
+
           assert_equal(-1, @batch.underrun)
         end
       end
 
       should 'return 0 if batch has no request_limit set' do
         @pipeline.workflow.update!(item_limit: nil)
+
         assert_equal 0, @batch.underrun
       end
     end
@@ -427,6 +441,7 @@ class BatchTest < ActiveSupport::TestCase
           assert_equal 'qc_pending', @batch.qc_state
           @batch.qc_state = 'qc_manual_in_progress'
           @batch.qc_complete
+
           assert_equal 'qc_completed', @batch.qc_state
         end
       end
@@ -490,8 +505,10 @@ class BatchTest < ActiveSupport::TestCase
       should 'move batch to previous qc state' do
         assert_equal 'qc_completed', @batch.qc_state
         @batch.qc_previous_state!(@user)
+
         assert_equal 'qc_manual_in_progress', @batch.qc_state
         @batch.qc_previous_state!(@user)
+
         assert_equal 'qc_manual', @batch.qc_state
       end
     end
@@ -563,7 +580,7 @@ class BatchTest < ActiveSupport::TestCase
 
           should 'leave the target asset from the request but remove the request from the batch' do
             assert_equal @lib_prep_request.target_asset, @library_tube.receptacle
-            assert @lib_prep_batch.requests.include?(@lib_prep_request)
+            assert_includes @lib_prep_batch.requests, @lib_prep_request
           end
         end
 
@@ -652,6 +669,7 @@ class BatchTest < ActiveSupport::TestCase
         @requests.each { |r| r.events.create!(family: 'pass') }
         @batch.npg_set_state
       end
+
       should 'should complete the batch' do
         assert_equal 'qc_completed', @batch.qc_state
       end
@@ -662,6 +680,7 @@ class BatchTest < ActiveSupport::TestCase
         @requests.first.events.create!(family: 'pass')
         @batch.npg_set_state
       end
+
       should 'should not complete the batch' do
         assert_equal 'qc_manual_in_progress', @batch.qc_state
       end
@@ -676,6 +695,7 @@ class BatchTest < ActiveSupport::TestCase
         @batch.requests.last.asset.update!(resource: true)
         @batch.npg_set_state
       end
+
       should 'should complete the batch' do
         assert_equal 'qc_completed', @batch.qc_state
       end
@@ -704,7 +724,8 @@ class BatchTest < ActiveSupport::TestCase
     should 'check that I can create a batch with valid requests ready?' do
       @library_creation_request.start
       @library_creation_request.pass!
-      assert @batch.valid?
+
+      assert_predicate @batch, :valid?
     end
   end
 end

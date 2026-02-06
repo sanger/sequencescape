@@ -16,6 +16,7 @@ module RecordLoader
       Workflow.create_with(options['workflow']).find_or_create_by!(name: options['workflow']['name'])
     end
 
+    # TODO: tasks and descriptors should be defined in yml files and loaded via their own loaders
     def add_spiked_in_control_event(workflow)
       AddSpikedInControlTask.create_with(
         name: 'Add Spiked in control',

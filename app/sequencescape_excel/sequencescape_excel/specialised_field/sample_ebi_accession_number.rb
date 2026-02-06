@@ -5,7 +5,7 @@ module SequencescapeExcel
     ##
     # The accession number should only be updated if it is currently null or it is the same
     # If the accession number differs from the current one the world will come crashing down.
-    class SampleEbiAccessionNumber
+    class SampleEBIAccessionNumber
       include Base
 
       validate :check_equality

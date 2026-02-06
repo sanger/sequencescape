@@ -86,18 +86,20 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'pass processing' do
         assert_equal true, @qcr_file.process, 'Processing failed unexpectedly'
-        assert_equal [], @qcr_file.errors
+        assert_empty @qcr_file.errors
       end
 
       should 'complete the report and set the proceed flags' do
         @qcr_file.process
         @report.reload
+
         assert_equal 'complete', @report.state
         assert @report.qc_metrics.all?(&:proceed), 'Not all metrics are proceed'
       end
 
       should 'not adjust the qc_decision flag' do
         @qcr_file.process
+
         assert_equal %w[passed failed], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 
@@ -131,6 +133,7 @@ class QcReport::FileTest < ActiveSupport::TestCase
 
       should 'adjust the qc_decision flag' do
         @qcr_file.process
+
         assert_equal %w[passed manually_passed], @report.qc_metrics.order(:asset_id).map(&:qc_decision)
       end
 

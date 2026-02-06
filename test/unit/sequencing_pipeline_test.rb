@@ -27,6 +27,7 @@ class SequencingPipelineTest < ActiveSupport::TestCase
           )
 
         clone = @pipeline.detach_request_from_batch(batch, request)
+
         assert_equal('pending', clone.state)
         assert_nil(clone.target_asset, 'Target asset is not nil')
         assert_comment_exists(clone, /removed from batch #{batch.id}/i, 'Cannot find removal comment')

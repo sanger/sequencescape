@@ -79,6 +79,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
     context 'before uploading the fluidigm file to a corresponding plate' do
       should 'we get this plate inside the requiring_fluidigm_data scope' do
         @plates_requiring_fluidigm = Plate.requiring_fluidigm_data
+
         assert_includes @plates_requiring_fluidigm, @plate1
         assert_includes @plates_requiring_fluidigm, @plate2
       end
@@ -95,6 +96,7 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
 
       should 'update the plate fluidigm data' do
         well = @stock_plate.wells.located_at('A1').first
+
         assert_equal %w[M M M], well.get_gender_markers
         assert_equal 89, well.get_sequenom_count
         assert_equal 2, well.qc_results.count

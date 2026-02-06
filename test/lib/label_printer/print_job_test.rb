@@ -56,17 +56,20 @@ class PrintJobTest < ActiveSupport::TestCase
 
   test 'should know number of labels, return correct success message' do
     print_job.build_attributes
+
     assert_equal 1, print_job.number_of_labels
     assert_equal "Your 1 label(s) have been sent to printer #{barcode_printer.name}", print_job.success
   end
 
   test 'should contact pmb to print labels' do
     LabelPrinter::PmbClient.expects(:print).with(attributes)
+
     assert print_job.execute
   end
 
   test '#execute is false if printer is not registered in ss' do
     print_job = LabelPrinter::PrintJob.new('not_registered', LabelPrinter::Label::PlateCreator, {})
+
     assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end
@@ -74,12 +77,14 @@ class PrintJobTest < ActiveSupport::TestCase
   test '#execute is false if pmb is down' do
     print_job = LabelPrinter::PrintJob.new(barcode_printer.name, LabelPrinter::Label::PlateCreator, {})
     RestClient.expects(:post).raises(Errno::ECONNREFUSED)
+
     assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end
 
   test '#execute is false if something goes wrong within pmb' do
     RestClient.expects(:post).raises(RestClient::UnprocessableEntity)
+
     assert_not print_job.execute
     assert_equal 1, print_job.errors.count
   end

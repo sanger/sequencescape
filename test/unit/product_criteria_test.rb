@@ -21,14 +21,16 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     should 'allow multiple active criteria with different stages' do
       @criteria_b = create(:product_criteria, product: @product_a, stage: 'another_stage')
-      assert @criteria_b.valid?
+
+      assert_predicate @criteria_b, :valid?
     end
 
     should 'allow products with the same name if one is deprecated' do
       @criteria_a.deprecated_at = Time.zone.now
       @criteria_a.save
       @criteria_2 = create(:product_criteria, product: @product_a)
-      assert @criteria_2.valid?
+
+      assert_predicate @criteria_2, :valid?
     end
 
     should 'automatically version criteria' do
@@ -36,6 +38,7 @@ class ProductCriteriaTest < ActiveSupport::TestCase
       @criteria_a.deprecated_at = Time.zone.now
       @criteria_a.save
       @criteria_b = create(:product_criteria, product: @product_a)
+
       assert_equal 2, @criteria_b.version
     end
 
@@ -47,8 +50,9 @@ class ProductCriteriaTest < ActiveSupport::TestCase
 
     should 'be deprecatable' do
       @criteria_a.deprecate!
-      assert @criteria_a.deprecated?
-      assert @criteria_a.deprecated_at != nil
+
+      assert_predicate @criteria_a, :deprecated?
+      assert_not_equal @criteria_a.deprecated_at, nil
     end
 
     should 'be otherwise immutable' do
@@ -57,24 +61,27 @@ class ProductCriteriaTest < ActiveSupport::TestCase
     end
 
     should 'serialize configuration' do
-      assert @criteria_a.configuration.is_a?(Hash)
+      assert_kind_of Hash, @criteria_a.configuration
       @criteria_a.reload
-      assert @criteria_a.configuration.is_a?(Hash)
+
+      assert_kind_of Hash, @criteria_a.configuration
     end
 
     should 'validate wells with the provided criteria' do
       well_attribute = create(:well_attribute, concentration: 800, current_volume: 100)
       well = create(:well, well_attribute:)
       assesment = @criteria_a.assess(well)
-      assert assesment.is_a?(ProductCriteria::Basic)
-      assert assesment.passed?
+
+      assert_kind_of ProductCriteria::Basic, assesment
+      assert_predicate assesment, :passed?
     end
 
     should 'be able to take metrics' do
       well = { concentration: 800, current_volume: 100, total_micrograms: 90 }
       assesment = @criteria_a.assess(well)
-      assert assesment.is_a?(ProductCriteria::Basic)
-      assert assesment.passed?
+
+      assert_kind_of ProductCriteria::Basic, assesment
+      assert_predicate assesment, :passed?
     end
   end
 end

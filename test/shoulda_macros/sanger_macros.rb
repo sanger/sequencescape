@@ -9,7 +9,7 @@ module Sanger
         def should_have_instance_methods(*methods)
           dt = described_type
           should "have instance methods #{methods.join(',')}" do
-            methods.each { |method| assert dt.new.respond_to?(method), "Missing instance methods #{method} on #{dt}" }
+            methods.each { |method| assert_respond_to dt.new, method, "Missing instance methods #{method} on #{dt}" }
           end
         end
 
@@ -37,6 +37,7 @@ module Sanger
                     assert true
                   end
                 end
+
                 should 'not redirect' do
                   assert_not (300..307).to_a.include?(@response.code)
                 end

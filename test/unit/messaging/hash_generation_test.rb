@@ -62,6 +62,7 @@ class HashGenerationTest < ActiveSupport::TestCase
     context 'A simple model' do
       should 'generate the expected hash' do
         hash = ExampleApi.to_hash(@example_model)
+
         assert_equal(
           {
             'name' => 'example',
@@ -81,6 +82,7 @@ class HashGenerationTest < ActiveSupport::TestCase
 
       should 'record an updated timestamp' do
         hash = ExampleApi.to_hash(@example_model)
+
         assert_equal(
           {
             'name' => 'example',

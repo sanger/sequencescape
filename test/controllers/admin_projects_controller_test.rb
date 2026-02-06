@@ -31,7 +31,7 @@ module Admin
           setup { put :managed_update, params: { id: @project.id, project: { name: @project.name } } }
 
           should 'not send an email' do
-            assert_equal [], emails
+            assert_empty emails
           end
 
           should redirect_to('admin projects') { "/admin/projects/#{@project.id}" }

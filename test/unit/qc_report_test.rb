@@ -47,7 +47,7 @@ class QcReportTest < ActiveSupport::TestCase
       end
 
       should 'assign a report identifier' do
-        assert @qc_report.report_identifier.present?, 'No identifier assigned'
+        assert_predicate @qc_report.report_identifier, :present?, 'No identifier assigned'
         assert_match(
           /wtccc_product[0-9]+_[0-9]{12}/,
           @qc_report.report_identifier,
@@ -162,10 +162,13 @@ class QcReportTest < ActiveSupport::TestCase
     should 'follow expected state machine' do
       assert_equal 'queued', @qc_report.state
       @qc_report.generate!
+
       assert_equal 'generating', @qc_report.state
       @qc_report.generation_complete!
+
       assert_equal 'awaiting_proceed', @qc_report.state
       @qc_report.proceed_decision!
+
       assert_equal 'complete', @qc_report.state
     end
   end

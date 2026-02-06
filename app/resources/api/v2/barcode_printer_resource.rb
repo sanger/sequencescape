@@ -47,6 +47,10 @@ module Api
       #   @return [String] The name of the barcode type for this printer. e.g "96 Well Plate"
       attribute :barcode_type, readonly: true
 
+      # @!attribute [r] active
+      #  @return [Boolean] Whether the barcode printer is active.
+      attribute :active, readonly: true
+
       ###
       # Getters and Setters
       ###

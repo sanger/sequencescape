@@ -1,0 +1,14 @@
+---
+# Example Record Loader file for RequestType::Validator records
+FlowcellRequestedExample:
+  request_type_key: example_request_type_key
+  request_option: flowcell_requested_example
+  valid_options: !ruby/object:RequestType::Validator::FlowcellTypeValidator
+    request_type_key: example_request_type_key
+ReadLengthExample:
+  request_type_key: example_request_type_key
+  request_option: read_length_example
+  valid_options:
+    - 50
+    - 100
+    - 150

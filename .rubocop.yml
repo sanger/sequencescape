@@ -1,18 +1,21 @@
 inherit_from:
   - .rubocop_todo.yml
-require:
-  - test_prof/rubocop
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-minitest
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
+  - test-prof
 
 inherit_mode:
   merge:
     - Exclude
+
+inherit_gem:
+  test-prof: config/rubocop-rspec.yml
 
 AllCops:
   NewCops: enable
@@ -72,6 +75,10 @@ Style/CollectionQuerying:
   Enabled: false
 
 Style/Documentation:
+  Enabled: false
+
+# The single-line syntax can be clearer than the multi-line version for multiple definitions
+Style/EmptyClassDefinition:
   Enabled: false
 
 Style/EmptyMethod:

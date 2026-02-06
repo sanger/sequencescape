@@ -381,7 +381,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
   end
 
-  describe SequencescapeExcel::SpecialisedField::SampleEbiAccessionNumber do
+  describe SequencescapeExcel::SpecialisedField::SampleEBIAccessionNumber do
     it 'will not be valid if the value is different to the sample accession number' do
       expect(described_class.new(value: '', sample_manifest_asset: sample_manifest_asset)).to be_valid
       expect(described_class.new(value: 'EB123', sample_manifest_asset: sample_manifest_asset)).to be_valid

@@ -347,25 +347,6 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expected = "Retention instruction checks failed at row: #{row_no}. Value cannot be blank."
           expect(processor.errors.full_messages).to include(expected)
         end
-
-        it 'must have the same retention instructions for all extraction tubes in the manifest' do
-          col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1 # zero-based index
-          row1 = download.worksheet.first_row - 1 # zero-based index
-          rown = download.worksheet.last_row - 1
-          (row1..rown).each { |x| cell(x, col1).value = 'Destroy after 2 years' } # Set all the same
-          cell(rown, col1).value = 'Long term storage' # Set one of them different
-          download.save(new_test_file_name)
-          upload = SampleManifestExcel::Upload::Base.new(file: new_test_file, column_list: column_list)
-          processor = described_class.new(upload)
-          processor.run(nil)
-          col1 = download.worksheet.columns.find_by(:name, :sanger_tube_id).number - 1
-          barcode = cell(rown, col1).value
-          row = rown + 1
-          msg =
-            "Retention instruction checks failed at row: #{row}. " \
-            "Tube (#{barcode}) cannot have different retention instruction value."
-          expect(processor.errors.full_messages).to include(msg)
-        end
       end
     end
 

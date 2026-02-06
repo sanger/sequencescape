@@ -35,7 +35,7 @@ module Admin
           end
 
           should 'not send an email' do
-            assert_equal [], @emails
+            assert_empty @emails
           end
 
           should redirect_to('admin studies path') { "/admin/studies/#{@study.id}" }
@@ -46,6 +46,7 @@ module Admin
             Rails.logger.info '******** First Request'
             put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
             @study.reload
+
             assert_not @study.ethically_approved
           end
         end
@@ -57,6 +58,7 @@ module Admin
             Rails.logger.info '******** First Request'
             put :managed_update, params: { id: @study.id, study: { name: @study.name, ethically_approved: '1' } }
             @study.reload
+
             assert @study.ethically_approved
           end
         end

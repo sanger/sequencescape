@@ -19,7 +19,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
       end
 
       should 'return a BioanalysisCsvParser' do
-        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::BioanalysisCsvParser)
+        assert_kind_of Parsers::BioanalysisCsvParser, Parsers.parser_for(@filename, nil, @content)
       end
     end
 
@@ -79,6 +79,7 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
           [145, 146],
           [157, 158]
         ]
+
         assert_equal test_data, @parser.get_groups(/Overall.*/m)
       end
 
@@ -104,10 +105,11 @@ class BioanalysisCsvParserTest < ActiveSupport::TestCase
           ['C2', { 'concentration' => Unit.new('10.65 ng/ul'), 'molarity' => Unit.new('30.0 nmol/l') }],
           ['D2', { 'concentration' => Unit.new('25.38 ng/ul'), 'molarity' => Unit.new('73.2 nmol/l') }]
         ]
+
         @parser.each_well_and_parameters do |*args|
-          assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
+          assert_predicate results.delete(args), :present?, "#{args.inspect} was an unexpected result"
         end
-        assert results.empty?, "Some expected results were not returned: #{results.inspect}"
+        assert_empty results, "Some expected results were not returned: #{results.inspect}"
       end
     end
     context 'with an invalid CSV biorobot file' do

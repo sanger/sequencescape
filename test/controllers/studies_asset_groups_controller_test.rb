@@ -45,6 +45,7 @@ module Studies
             @study_count = Study.count
             get controller_method, params: { study_id: @study.id, id: @asset_group.id }
           end
+
           should 'change AssetGroup.count by 0' do
             assert_equal 0, AssetGroup.count - @assetgroup_count, 'Expected AssetGroup.count to change by 0'
           end

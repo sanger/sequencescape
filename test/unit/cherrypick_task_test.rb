@@ -98,11 +98,13 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
           plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+
           assert_equal(expected, plates, 'Incorrect partial plate representation')
         end
 
         should 'generate a second plate when the partial is full' do
           plates, _source_plates = @task.pick_onto_partial_plate(@requests, @template, @robot, @partial)
+
           assert_equal(2, plates.size, 'Incorrect number of plates')
         end
 
@@ -115,6 +117,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           pad_expected_plate_with_empty_wells(@template, expected.first)
 
           plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
+
           assert_equal(expected, plates, 'Incorrect plate pick')
         end
       end
@@ -140,6 +143,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             end
 
           plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
 
@@ -155,6 +159,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
             end
 
           plates, _source_plates = @task.pick_onto_partial_plate(@requests.slice(0, 4), @template, @robot, @partial)
+
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
       end
@@ -177,6 +182,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           expected.concat([CherrypickTask::TEMPLATE_EMPTY_WELL] * 3) # Column 12
 
           plates, _source_plates = @task.pick_onto_partial_plate([], @template, @robot, @partial)
+
           assert_equal([expected], plates, 'Incorrect partial plate representation')
         end
 
@@ -200,6 +206,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
           pad_expected_plate_with_empty_wells(@template, expected_second)
 
           plates, _source_plates = @task.pick_onto_partial_plate(requests, @template, @robot, @partial)
+
           assert_equal([expected_partial, expected_second], plates, 'Incorrect partial plate representation')
         end
       end
@@ -216,6 +223,7 @@ class CherrypickTaskTest < ActiveSupport::TestCase
 
         teardown do
           plates, _source_plates = @task.pick_new_plate(@requests, @template, @robot, @target_purpose)
+
           assert_equal([@expected], plates, 'Incorrect plate pick')
         end
 

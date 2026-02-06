@@ -27,6 +27,7 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
     context 'with one tube per submission' do
       should 'should create transfers to the target tube' do
         @transfer = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_a)
+
         assert_equal @final_tube, @transfer.destination
         assert_equal @final_tube.receptacle, @tube_a.transfer_requests_as_source.first.target_asset
       end
@@ -52,10 +53,12 @@ class TransferBetweenTubesBySubmissionTest < ActiveSupport::TestCase
 
       should 'create transfers to the target tube each time' do
         @transfer = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_a)
+
         assert_equal @final_tube, @transfer.destination
         assert_equal @final_tube.receptacle, @tube_a.transfer_requests_as_source.first.target_asset
 
         @transfer_b = Transfer::BetweenTubesBySubmission.create!(user: @user, source: @tube_b)
+
         assert_equal @final_tube, @transfer_b.destination
         assert_equal @final_tube.receptacle, @tube_b.transfer_requests_as_source.first.target_asset
       end

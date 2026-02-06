@@ -39,11 +39,13 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
         assert_equal @criteria.most_recent_concentration_from_target_well_by_updating_date,
                      @target_wells[4].get_concentration
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
+
         assert_nil @criteria2.most_recent_concentration_from_target_well_by_updating_date
       end
       should 'get the most recent concentration from normalization' do
-        assert_equal @criteria.concentration_from_normalization, 30
+        assert_equal 30, @criteria.concentration_from_normalization
         @criteria2 = ProductCriteria::Advanced.new(@params, @well, nil)
+
         assert_nil @criteria2.concentration_from_normalization
       end
     end
@@ -56,7 +58,7 @@ class ProductCriteriaAdvancedTest < ActiveSupport::TestCase
       end
 
       should '#qc_decision should return "passed"' do
-        assert_equal [], @criteria.comment
+        assert_empty @criteria.comment
         assert_equal 'passed', @criteria.qc_decision, 'Well failed when it should have passed'
       end
     end

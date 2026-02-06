@@ -2,21 +2,26 @@
 require 'rails_helper'
 
 RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_samples', type: :task do
-  before do
-    Rake.application.rake_require 'tasks/assign_compound_sample_supplier_name'
-    Rake::Task.define_task(:environment)
-  end
+  let(:task_name) { self.class.top_level_description }
+  let(:task) { Rake::Task[task_name] }
 
   let(:compound_sample_id) { 12 }
   let(:component_sample_id1) { 10 }
   let(:component_sample_id2) { 11 }
-
   let!(:samples) do
     [
       Sample.create!(id: compound_sample_id, name: 'compound_sample'),
       Sample.create!(id: component_sample_id1, name: 'component_sample_1'),
       Sample.create!(id: component_sample_id2, name: 'component_sample_2')
     ]
+  end
+
+  before do
+    Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
+    Rake::Task[:environment].clear if Rake::Task.task_defined?(:environment)
+    Rake.load_rakefile('tasks/assign_compound_sample_supplier_name.rake')
+    Rake::Task.define_task(:environment)
+    Rake::Task[task_name].reenable
   end
 
   context 'when setting supplier names for previously created sample compounds' do
@@ -27,8 +32,6 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
     describe 'component samples with a consistent supplier_name' do
       before do
-        Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].reenable
-
         # Set component samples to the same supplier_name
         samples[0].sample_metadata.supplier_name = nil
         samples[1].sample_metadata.supplier_name = 'Supplier X'
@@ -38,15 +41,13 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'set compound sample to the same supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.to change { samples[0].reload.sample_metadata.supplier_name }.from(nil).to('Supplier X')
       end
     end
 
     describe 'component samples with a a no consistent supplier_name' do
       before do
-        Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].reenable
-
         # Set component samples to different supplier names
         samples[0].sample_metadata.supplier_name = nil
         samples[1].sample_metadata.supplier_name = 'Supplier X'
@@ -56,15 +57,13 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'keeps the component sample supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.not_to(change { samples[0].reload.sample_metadata.supplier_name })
       end
     end
 
     describe 'compound sample already contains a supplier name' do
       before do
-        Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].reenable
-
         # Set component samples to different supplier names
         samples[0].sample_metadata.supplier_name = 'Supplier XY'
         samples[1].sample_metadata.supplier_name = 'Supplier X'
@@ -74,7 +73,7 @@ RSpec.describe 'compound_sample:set_consistent_supplier_name_for_compound_sample
 
       it 'keeps the component sample supplier name' do
         expect do
-          Rake::Task['compound_sample:set_consistent_supplier_name_for_compound_samples'].invoke
+          task.invoke
         end.not_to(change { samples[0].reload.sample_metadata.supplier_name })
       end
     end

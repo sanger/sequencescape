@@ -11,10 +11,10 @@
 <% if can? :release, @sample %>
   <% add :menu, { "Flag for public release" => url_for({controller: "samples", action: "release", id: @sample.id }) } -%>
 <% end %>
-<% if can? :accession, @sample %>
+<% if @sample.should_be_accessioned? & permitted_to_accession?(@sample) %>
   <% add :menu,
     @sample.accession_number? ? "Update Sample Data for Accessioning" : "Generate Accession Number" =>
-     (configatron.accession_samples ? url_for({controller: 'samples', action: 'accession', id: @sample.id}) : 'disabled' ) -%>
+     (accessioning_enabled? ? url_for({controller: 'samples', action: 'accession', id: @sample.id}) : 'disabled' ) -%>
 <% end %>
 
 <% if @sample.accession_number? %>

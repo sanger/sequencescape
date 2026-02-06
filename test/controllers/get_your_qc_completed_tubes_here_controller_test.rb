@@ -35,6 +35,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
       should 'create some assets, redirect to the asset group' do
         LibPoolNormTubeGenerator.stubs(:new).returns(generator)
         post :create, params: { barcode: plate.human_barcode, study: study.id }
+
         assert_equal 3, assigns(:generator).asset_group.assets.length
         assert_redirected_to study_asset_groups_path(assigns(:generator).study.id)
         assert_match "QC Completed tubes successfully created for #{plate.human_barcode}. Go celebrate!", flash[:notice]
@@ -44,6 +45,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
         generator.stubs(:create!).returns(false)
         LibPoolNormTubeGenerator.stubs(:new).returns(generator)
         post :create, params: { barcode: plate.human_barcode, study: study.id }
+
         assert_match "Oh dear, your tubes weren't created. It's not you its me so please contact PSD.", flash[:error]
       end
     end
@@ -51,6 +53,7 @@ class GetYourQcCompletedTubesHereControllerTest < ActionController::TestCase
     context 'no plate' do
       should 'return an error if the plate does not exist' do
         post :create, params: { barcode: 'No plate here, move on!' }
+
         assert_match 'Barcode does not relate to any existing plate', flash[:error]
       end
     end

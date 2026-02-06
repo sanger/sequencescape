@@ -71,7 +71,7 @@ class PlateTest < ActiveSupport::TestCase
     context 'with 1 request' do
       context 'with a valid well asset' do
         should 'return correct plate ids' do
-          assert Plate.plate_ids_from_requests([@request1]).include?(@plate1.id)
+          assert_includes Plate.plate_ids_from_requests([@request1]), @plate1.id
         end
       end
     end
@@ -84,8 +84,8 @@ class PlateTest < ActiveSupport::TestCase
       end
       context 'with a valid well assets' do
         should 'return a single plate ID' do
-          assert Plate.plate_ids_from_requests([@request1, @request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request2, @request1]).include?(@plate1.id)
+          assert_includes Plate.plate_ids_from_requests([@request1, @request2]), @plate1.id
+          assert_includes Plate.plate_ids_from_requests([@request2, @request1]), @plate1.id
         end
       end
     end
@@ -102,10 +102,10 @@ class PlateTest < ActiveSupport::TestCase
       end
       context 'with a valid well assets' do
         should 'return 2 plate IDs' do
-          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request1, @request2, @request3]).include?(@plate2.id)
-          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate1.id)
-          assert Plate.plate_ids_from_requests([@request3, @request1, @request2]).include?(@plate2.id)
+          assert_includes Plate.plate_ids_from_requests([@request1, @request2, @request3]), @plate1.id
+          assert_includes Plate.plate_ids_from_requests([@request1, @request2, @request3]), @plate2.id
+          assert_includes Plate.plate_ids_from_requests([@request3, @request1, @request2]), @plate1.id
+          assert_includes Plate.plate_ids_from_requests([@request3, @request1, @request2]), @plate2.id
         end
       end
     end
@@ -130,7 +130,7 @@ class PlateTest < ActiveSupport::TestCase
 
     context 'without attachments' do
       should 'not report any qc_data' do
-        assert @plate.qc_files.empty?
+        assert_empty @plate.qc_files
       end
     end
 
@@ -138,7 +138,7 @@ class PlateTest < ActiveSupport::TestCase
       setup { File.open('test/data/manifests/mismatched_plate.csv') { |file| @plate.add_qc_file file } }
 
       should 'return any qc data' do
-        assert @plate.qc_files.count == 1
+        assert_equal 1, @plate.qc_files.count
         File.open('test/data/manifests/mismatched_plate.csv') do |file|
           assert_equal file.read, @plate.qc_files.first.uploaded_data.file.read
         end
@@ -154,7 +154,7 @@ class PlateTest < ActiveSupport::TestCase
       end
 
       should 'return multiple qc data' do
-        assert @plate.qc_files.count == 2
+        assert_equal 2, @plate.qc_files.count
       end
     end
   end
@@ -171,18 +171,20 @@ class PlateTest < ActiveSupport::TestCase
       well_b1 = @plate.wells.detect { |w| w.map_description == 'B1' }.reload
       well_c1 = @plate.wells.detect { |w| w.map_description == 'C1' }.reload
 
-      assert_equal 2.0, well_b1.get_concentration
-      assert_equal 3.0, well_b1.get_molarity
-      assert_equal 4.0, well_c1.get_concentration
-      assert_equal 5.0, well_c1.get_molarity
+      assert_in_delta(2.0, well_b1.get_concentration)
+      assert_in_delta(3.0, well_b1.get_molarity)
+      assert_in_delta(4.0, well_c1.get_concentration)
+      assert_in_delta(5.0, well_c1.get_molarity)
     end
 
     should 'create QcResults per well' do
       well_b1 = @plate.wells.detect { |w| w.map_description == 'B1' }.reload
       well_c1 = @plate.wells.detect { |w| w.map_description == 'C1' }.reload
+
       assert_equal 4, well_b1.qc_results.count
       assert_equal 4, well_c1.qc_results.count
       keys = well_b1.qc_results.map(&:key)
+
       assert_includes keys, 'Concentration'
       assert_includes keys, 'Molarity'
       assert_equal 'Mock parser', well_b1.qc_results.first.assay_type
@@ -191,13 +193,15 @@ class PlateTest < ActiveSupport::TestCase
 
     should 'not create QcResults for missing wells' do
       well_a1 = @plate.wells.detect { |w| w.map_description == 'A1' }.reload
+
       assert_equal 0, well_a1.qc_results.count
     end
 
     should 'not clear existing data' do
       well_a1 = @plate.wells.detect { |w| w.map_description == 'A1' }.reload
-      assert_equal 12.0, well_a1.get_concentration
-      assert_equal 34.0, well_a1.get_molarity
+
+      assert_in_delta(12.0, well_a1.get_concentration)
+      assert_in_delta(34.0, well_a1.get_molarity)
     end
   end
 
@@ -210,6 +214,7 @@ class PlateTest < ActiveSupport::TestCase
 
     should 'find source plates with owners' do
       create(:plate_owner, user: @user, plate: @child_plate)
+
       assert_includes Plate.with_descendants_owned_by(@user), @source_plate
     end
 
@@ -219,6 +224,7 @@ class PlateTest < ActiveSupport::TestCase
 
     should 'allow filtering of source plates' do
       plates = Plate.source_plates
+
       assert_includes plates, @source_plate
       assert_not_includes plates, @child_plate
     end

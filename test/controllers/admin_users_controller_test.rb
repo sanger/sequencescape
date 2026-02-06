@@ -44,6 +44,7 @@ module Admin
           post :filter, params: { q: 'Some' }
 
           @users = assigns(:users)
+
           assert_equal @user_to_find, @users.first
         end
 
@@ -51,6 +52,7 @@ module Admin
           post :filter, params: { q: 'sb' }
 
           @users = assigns(:users)
+
           assert_equal @user_to_find, @users.first
         end
 
@@ -58,6 +60,7 @@ module Admin
           post :filter, params: { q: '1' }
 
           @users = assigns(:users)
+
           assert @users.detect { |u| u == @user_to_find }
           assert @users.detect { |u| u == @another_user }
         end
@@ -66,6 +69,7 @@ module Admin
           post :filter, params: { q: 'o' }
 
           @users = assigns(:users)
+
           assert @users.detect { |u| u == @user_to_find }
           assert @users.detect { |u| u == @another_user }
         end

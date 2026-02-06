@@ -120,11 +120,6 @@ class AccessionService::BaseService
             'An accession number is not required for this study'
     end
 
-    # Flag set in the deployment project to allow per-environment enabling of accessioning
-    unless configatron.accession_samples
-      raise AccessionService::AccessioningDisabledError, 'Accessioning is not enabled in this environment.'
-    end
-
     # TODO: check error
     # raise AccessionServiceError, "Cannot generate accession number: #{ sampledata[:error] }" if sampledata[:error]
 

@@ -22,7 +22,7 @@ class QuantParserTest < ActiveSupport::TestCase
       end
 
       should 'return a QuantParser' do
-        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::QuantParser)
+        assert_kind_of Parsers::QuantParser, Parsers.parser_for(@filename, nil, @content)
       end
 
       context 'processing the file' do
@@ -100,7 +100,7 @@ class QuantParserTest < ActiveSupport::TestCase
       end
 
       should 'return a QuantParser' do
-        assert Parsers.parser_for(@filename, nil, @content).is_a?(Parsers::QuantParser)
+        assert_kind_of Parsers::QuantParser, Parsers.parser_for(@filename, nil, @content)
       end
 
       context 'processing the file' do
