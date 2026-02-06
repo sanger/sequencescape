@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Core::Io::Base::JsonFormattingBehaviour::Input
-  class ReadOnlyAttribute < ::Core::Service::Error
+  class ReadOnlyAttribute < StandardError
     def initialize(attribute)
       super('is read-only')
       @attribute = attribute

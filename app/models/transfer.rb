@@ -17,7 +17,7 @@ class Transfer < ApplicationRecord
   # You can only transfer from one plate to another once, anything else is an error.
   belongs_to :source, class_name: 'Plate'
   validates :source, presence: true
-  scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
+  # scope :include_source, -> { includes(source: ModelExtensions::Plate::PLATE_INCLUDES) }
 
   belongs_to :destination, class_name: 'Labware'
 
