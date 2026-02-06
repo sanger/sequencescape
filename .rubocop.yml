@@ -13,6 +13,9 @@ inherit_mode:
   merge:
     - Exclude
 
+inherit_gem:
+  test-prof: config/rubocop-rspec.yml
+
 AllCops:
   NewCops: enable
   Exclude:
