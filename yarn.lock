@@ -963,19 +963,19 @@ datatables.net-rowgroup@1.6.0:
     datatables.net "^2"
     jquery ">=1.7"
 
-datatables.net-rowreorder-bs4@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder-bs4/-/datatables.net-rowreorder-bs4-1.5.0.tgz#5006eb235d9dfd78974d113df25a6b921328f013"
-  integrity sha512-4C9tzLRaisO+IOdJ1n6NRQ8ak0zC0IbX50Ed5hg+5PT7VJLI9klH+GBwE6hpF28UTWk7E6somzOwnRHLexqXdA==
+datatables.net-rowreorder-bs4@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder-bs4/-/datatables.net-rowreorder-bs4-1.5.1.tgz#85fd5a4c2741f678da27a6798869b1d8ff1f600d"
+  integrity sha512-26Xx4JbrKhHQDh+GgvVK/XXeFIW6RLQnU5mLtMpy2S+K/9Yffyc71aZ8lyEmm5q7rNnw3LE+hY/FZN5sPTldTQ==
   dependencies:
     datatables.net-bs4 ">=1.11.0"
-    datatables.net-rowreorder "1.5.0"
+    datatables.net-rowreorder "1.5.1"
     jquery ">=1.7"
 
-datatables.net-rowreorder@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder/-/datatables.net-rowreorder-1.5.0.tgz#f8b5242bd97df6b9522573378e98e8c7d64002dd"
-  integrity sha512-Kkq57tdJHrUCYkS8vywhL5tqKtl2q3K3p8A6wkIdwMX2b8YVjtywhQbXvvVLZnlMQsdX194FXVK1AgAwcm4hFg==
+datatables.net-rowreorder@1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/datatables.net-rowreorder/-/datatables.net-rowreorder-1.5.1.tgz#257aa1dc2c29ed4421a95434a7044d3d4dd2a7fe"
+  integrity sha512-hVGXjl9lcLXHMdtwzCs2y47ZqYbSz9XhV+KSVkGsXu8M0MHma1rJXY7uOeCy5u/PMD4oONzgT2B8QCUBBbqvQA==
   dependencies:
     datatables.net ">=1.11.0"
     jquery ">=1.7"
