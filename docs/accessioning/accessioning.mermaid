@@ -200,7 +200,7 @@ flowchart LR
     MD_SS_Submission_AccessionBehaviour -..-> | exception email | User_Developers
 
     %% Manifest upload
-    User_SSR --> RES_Manifest -..-> UI_SS_Manifest_Upload --> MD_SS_SampleManifest_Uploader 
+    User_SSR --> RES_Manifest --> UI_SS_Manifest_Upload --> MD_SS_SampleManifest_Uploader 
     MD_SS_SampleManifest_Uploader --> FN_SS_SampleManifestExcel_Upload_Base_trigger_accessioning ---> FN_SS_Accession_accession_sample
     
     %% Sample generate accession number
@@ -244,6 +244,7 @@ flowchart LR
     FN_SS_AccessionService_submit_study_for_user ==> FN_SS_AccessionService_submit
     FN_SS_AccessionService_submit ==> External_EBI_Studies
     External_EBI_Studies ==> FN_SS_Accessionable_Study_update_accession_number
+    FN_SS_Accessionable_Study_update_accession_number --> MD_SS_Study
     FN_SS_Studies_rescue_accession_errors --> | flash message | VW_SS_Study
     VW_SS_Study --> User_SS_Users
 
