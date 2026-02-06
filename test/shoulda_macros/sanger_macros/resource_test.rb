@@ -171,6 +171,7 @@ module Sanger
                         get :index, params: @input_params
                       end
                       should respond_with :success
+
                       should 'have api version attribute on root object' do
                         assert_select resource_name.to_s.pluralize do
                           assert_select "[api_version='0.6']"
@@ -202,8 +203,9 @@ module Sanger
                         get :index, params: @input_params
                       end
                       should respond_with :success
+
                       should 'be JSON' do
-                        assert ActiveSupport::JSON.decode(@response.body).size > 0
+                        assert_operator ActiveSupport::JSON.decode(@response.body).size, :>, 0
                       end
                     end
                   end
@@ -216,6 +218,7 @@ module Sanger
                         get :show, params: @input_params
                       end
                       should respond_with :success
+
                       should 'be JSON' do
                         assert_equal @object.to_json, @response.body
                       end

@@ -12,13 +12,15 @@ class ApiApplicationTest < ActiveSupport::TestCase
 
     should 'automatically generate a key if no present' do
       @app = ApiApplication.create
-      assert @app.key.present?, 'No key generated'
-      assert @app.key.length >= 20, 'Key too short'
+
+      assert_predicate @app.key, :present?, 'No key generated'
+      assert_operator @app.key.length, :>=, 20, 'Key too short'
     end
 
     should 'not generate a key if present' do
       @app = ApiApplication.create(key: 'test')
-      assert @app.key.present?
+
+      assert_predicate @app.key, :present?
       assert_equal 'test', @app.key
     end
   end
