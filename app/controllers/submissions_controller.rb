@@ -115,6 +115,12 @@ class SubmissionsController < ApplicationController
     @submissions = @study.submissions
   end
 
+  def download_scrna_core_cdna_pooling_plan
+    csv_string = ''
+    send_data csv_string, type: 'text/plain', filename: "#{params[:id]}_scrna_core_cdna_pooling_plan.csv",
+                          disposition: 'attachment'
+  end
+
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
 

@@ -4,6 +4,10 @@
   add :menu, "Print labels for #{order.asset_group.name}" => print_study_asset_group_path(order.study,order.asset_group) unless order.asset_group.nil?
 end %>
 <%- add :menu, "Submissions Inbox" => submissions_path if can? :read, Submission -%>
+<%- add :menu, "Download scRNA Core cDNA pooling plan" => download_scrna_core_cdna_pooling_plan_submission_path(@presenter.submission.id) if
+    # TODO - Move this to a helper method
+    @presenter.submission.orders.first.template_name == 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p' 
+-%>
 
 
 <%= page_title("Submission", "#{@presenter.submission.id} - #{@presenter.template_name}") %>
@@ -69,6 +73,5 @@ end %>
   class: "button btn btn-danger" %>
 <% end %>
 <% end %>
-
 
 <%= vite_javascript_tag 'submissions' %>
