@@ -47,7 +47,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
 
         should 'be a multiplexed submission' do
-          assert @mpx_submission.multiplexed?
+          assert_predicate @mpx_submission, :multiplexed?
         end
 
         context '#process!' do
@@ -95,9 +95,9 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         should 'set an appropriate criteria and set responsibility' do
           @mpx_submission.process!
           @mpx_submission.requests.each do |request|
-            assert request.qc_metrics.include?(@metric),
-                   # rubocop:todo Layout/LineLength
-                   "Metric not included in #{request.request_type.name}: List #{request.qc_metrics.inspect}, Expected: #{@metric}"
+            assert_includes request.qc_metrics, @metric,
+                            # rubocop:todo Layout/LineLength
+                            "Metric not included in #{request.request_type.name}: List #{request.qc_metrics.inspect}, Expected: #{@metric}"
 
             # rubocop:enable Layout/LineLength
             assert_equal true,
@@ -143,7 +143,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           end
 
           should 'be a multiplexed submission' do
-            assert @xs_mpx_submission.multiplexed?
+            assert_predicate @xs_mpx_submission, :multiplexed?
           end
 
           context '#process!' do
@@ -238,7 +238,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
         end
 
         should 'be a multiplexed submission' do
-          assert @mpx_submission.multiplexed?
+          assert_predicate @mpx_submission, :multiplexed?
         end
 
         context '#process!' do
@@ -259,14 +259,15 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
               @assets
                 .group_by { |well| well.map.row }
                 .each do |row, wells|
-                  assert rows.delete(row).present?, "Row #{row} was unexpected"
+                  assert_predicate rows.delete(row), :present?, "Row #{row} was unexpected"
                   unique_target_assets = wells.map { |w| w.requests.first.target_asset }.uniq
-                  assert_equal unique_target_assets.count, 1
-                  assert (used_assets & unique_target_assets).empty?, 'Target assets are reused'
+
+                  assert_equal 1, unique_target_assets.count
+                  assert_empty (used_assets & unique_target_assets), 'Target assets are reused'
                   used_assets.concat(unique_target_assets)
                 end
 
-              assert rows.empty?, "Didn't see rows #{rows.to_sentence}"
+              assert_empty rows, "Didn't see rows #{rows.to_sentence}"
             end
           end
         end
@@ -326,12 +327,14 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
                 submission_id: @mx_submission_with_multiplication_factor,
                 request_type_id: @mx_request_type.id
               )
+
             assert_equal 16, lib_requests.count
             seq_requests =
               Request.where(
                 submission_id: @mx_submission_with_multiplication_factor,
                 request_type_id: @pe_request_type.id
               )
+
             assert_equal 16, seq_requests.count
           end
         end
@@ -379,6 +382,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           should 'multiply the sequencing' do
             ids = []
             @mx_submission_with_multiplication_factor.orders.first.request_type_multiplier { |id| ids << id }
+
             assert_equal [:"#{@pe_request_type.id}"], ids
           end
         end
@@ -402,6 +406,7 @@ class FlexibleSubmissionTest < ActiveSupport::TestCase
           should 'multiply the library creation' do
             ids = []
             @ux_submission_with_multiplication_factor.orders.first.request_type_multiplier { |id| ids << id }
+
             assert_equal [:"#{@ux_request_type.id}"], ids
           end
         end

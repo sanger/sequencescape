@@ -1,0 +1,91 @@
+---
+# Descriptors for Task - Loading
+NovaSeq 6000 PE Loading Workflow (Standard or Xp):
+  name: Workflow (Standard or Xp)
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Selection
+  value: Standard
+  selection:
+    Standard: Standard
+    XP: XP
+  required: false
+  sorter: 3
+NovaSeq 6000 PE Loading DPX1:
+  name: DPX1
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 4
+NovaSeq 6000 PE Loading DPX2:
+  name: DPX2
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 5
+NovaSeq 6000 PE Loading DPX3:
+  name: DPX3
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 6
+NovaSeq 6000 PE Loading NovaSeq Xp Mainfold:
+  name: NovaSeq Xp Mainfold
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 7
+NovaSeq 6000 PE Loading Pipette Carousel:
+  name: Pipette Carousel
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 8
+"NovaSeq 6000 PE Loading PhiX lot #":
+  name: "PhiX lot #"
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 9
+NovaSeq 6000 PE Loading PhiX %:
+  name: PhiX %
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 10
+NovaSeq 6000 PE Loading Lane loading concentration (pM):
+  name: Lane loading concentration (pM)
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 11
+NovaSeq 6000 PE Loading Comment:
+  name: Comment
+  task: Loading
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 12
+# Descriptors for Task - Read 1 & 2
+"NovaSeq 6000 PE Read 1 & 2 iPCR batch #":
+  name: "iPCR batch #"
+  task: Read 1 & 2
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 8
+NovaSeq 6000 PE Read 1 & 2 Comment:
+  name: Comment
+  task: Read 1 & 2
+  workflow: NovaSeq 6000 PE
+  kind: Text
+  required: false
+  sorter: 9

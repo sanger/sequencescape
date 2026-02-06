@@ -49,6 +49,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         end
         should respond_with :redirect
         should set_flash.to('Template saved')
+
         should 'increment plate templates' do
           assert_equal @old_count_plate + 1, PlateTemplate.count
         end
@@ -65,6 +66,7 @@ class PlateTemplatesControllerTest < ActionController::TestCase
         @count_plate = PlateTemplate.count
         post :update, params: { name: 'updated', id: @plate.id, user_id: @user.id, rows: 8, cols: 12 }
       end
+
       should 'change name' do
         assert_equal 'updated', PlateTemplate.find(@plate.id).name
       end

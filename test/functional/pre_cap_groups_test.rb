@@ -85,6 +85,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
               'C1' => 2
             }
           }
+
           assert_equal 8, @target_plate.transfer_requests.count
           @target_plate.transfer_requests.each do |request|
             assert_equal transfer_sub[request.asset.map_description][request.target_asset.map_description],
@@ -136,6 +137,7 @@ class PreCapGroupsTest < ActiveSupport::TestCase
           .located_at(%w[A1 D1])
           .each { |well| create(:re_isc_request, asset: well, pre_capture_pool: @pools[2], submission_id: 3) }
       end
+
       should 'include all pools' do
         assert_equal(
           [[@pools[0].uuid, %w[A1 B1 C1]], [@pools[1].uuid, %w[D1 E1 F1]], [@pools[2].uuid, %w[A1 D1]]],

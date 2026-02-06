@@ -32,7 +32,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
   context Core::Io::Json::Grammar::Node do
     should 'implement the Intermediate module' do
-      assert(Core::Io::Json::Grammar::Node.include?(Core::Io::Json::Grammar::Intermediate))
+      assert_includes(Core::Io::Json::Grammar::Node, Core::Io::Json::Grammar::Intermediate)
     end
 
     should 'place children inside a block' do
@@ -52,7 +52,7 @@ class Core::Io::Json::GrammarTest < ActiveSupport::TestCase
 
   context Core::Io::Json::Grammar::Root do
     should 'implement the Intermediate module' do
-      assert(Core::Io::Json::Grammar::Root.include?(Core::Io::Json::Grammar::Intermediate))
+      assert_includes(Core::Io::Json::Grammar::Root, Core::Io::Json::Grammar::Intermediate)
     end
 
     context 'with object' do
