@@ -133,11 +133,11 @@ module Accession
       end
     end
 
-    private
-
     def build_accessionable(sample)
       Accession::Sample.new(Accession.configuration.tags, sample)
     end
+
+    private
 
     # Perform accessioning job synchronously
     def inline_accession_job!(job)
