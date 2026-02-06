@@ -25,7 +25,7 @@ RSpec.describe 'Study accession number', :accessioning_enabled, :js, type: :feat
 
   context 'when the study already has an accession number' do
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
+      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response) # rubocop:disable RSpec/AnyInstance
 
       study.study_metadata.update!(study_ebi_accession_number: 'EGAN00001000234')
       visit study_path(study)
@@ -50,7 +50,8 @@ RSpec.describe 'Study accession number', :accessioning_enabled, :js, type: :feat
 
   context 'when the study gets a valid accession number' do
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(successful_study_accession_response)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
+        .and_return(successful_study_accession_response)
 
       visit study_path(study)
     end
@@ -66,7 +67,8 @@ RSpec.describe 'Study accession number', :accessioning_enabled, :js, type: :feat
 
   context 'when the accession number service gives an error' do
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
+        .and_return(failed_accession_response)
 
       visit study_path(study)
     end
@@ -79,7 +81,8 @@ RSpec.describe 'Study accession number', :accessioning_enabled, :js, type: :feat
 
   context 'when the accession number service is unavailable' do
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_raise(RestClient::ServiceUnavailable)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
+        .and_raise(RestClient::ServiceUnavailable)
 
       visit study_path(study)
     end

@@ -16,7 +16,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js, ty
     let(:study) { create(:managed_study, :with_data_access_contacts, data_access_contacts:) }
 
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
         .and_return(successful_dac_policy_accession_response)
 
       visit study_path(study)
@@ -34,7 +34,9 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js, ty
     let(:study) { create(:open_study, :with_data_access_contacts, data_access_contacts:) }
 
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
+        .and_return(failed_accession_response)
+
       visit study_path(study)
     end
 
@@ -48,7 +50,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js, ty
     let(:study) { create(:managed_study, :with_data_access_contacts, data_access_contacts:) }
 
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
         .and_return(successful_dac_policy_accession_response)
 
       study.study_metadata.update(ega_dac_accession_number: 'EGAD0001000234') # DAC required prior to Policy
@@ -68,7 +70,8 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js, ty
     let(:study) { create(:open_study, :with_data_access_contacts, data_access_contacts:) }
 
     before do
-      allow_any_instance_of(RestClient::Resource).to receive(:post).and_return(failed_accession_response)
+      allow_any_instance_of(RestClient::Resource).to receive(:post) # rubocop:disable RSpec/AnyInstance
+        .and_return(failed_accession_response)
 
       visit study_path(study)
     end
