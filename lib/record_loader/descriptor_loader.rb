@@ -13,7 +13,8 @@ module RecordLoader
   class DescriptorLoader < ApplicationRecordLoader
     config_folder 'descriptors'
 
-    def create_or_update!(name, options)
+    def create_or_update!(section_name, options)
+      name = options['name'] || section_name # use name from options if provided
       workflow_name = options.delete('workflow')
       workflow = Workflow.find_by!(name: workflow_name)
       task_name = options.delete('task')
