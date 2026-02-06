@@ -322,6 +322,7 @@ Rails.application.routes.draw do
     member do
       post :change_priority
       post :cancel
+      get :download_scrna_core_cdna_pooling_plan
     end
   end
 
