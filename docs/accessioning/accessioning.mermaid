@@ -286,8 +286,8 @@ flowchart LR
     class Application_Sequencescape,Application_Limber application;
     class L_Config,CF_disable_accession_check,CF_y25_706_enable_accessioning configuration;
     class DelayedJob,Samples,Studies,Submissions SequencescapeSection;
-    class L_Model,MD_Study,MD_AccessionService,MD_Sample,MD_SampleManifest_Uploader,MD_Order,MD_Submission_AccessionBehaviour railsModel;
+    class L_Model,MD_Study,MD_AccessionService,MD_Sample,MD_SampleManifest_Uploader,MD_Order,MD_Submission_AccessionBehaviour,MD_AccessionStatuses,MD_Accession_Sample,MD_AccessionService railsModel;
     class L_Controller,CT_Samples,CT_Studies railsController;
     class L_User,User_SeqOps,User_Study_Owners,User_Neil,User_SSR,User_LB_Users,User_Users,User_Developers users;
-    class L_Interface,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload userInterface;
+    class L_Interface,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload,VW_Sample,VW_Study userInterface;
     class L_LinkSource,L_LinkSink,LK_accessioning_enabled,LK_accessioning_enabled_AAS,LK_accessioning_enabled_Studies_accession,LK_accessioning_enabled_Samples_accession,LK_accessioning_enabled_trigger_accessioning,LK_accessioning_enabled_Accession_perform link;
