@@ -3,6 +3,7 @@ inherit_from:
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-minitest
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec

@@ -55,6 +55,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :open
         end
         should respond_with :success
+
         should 'Respond with xml' do
           assert_equal 'application/xml', @response.media_type
         end
@@ -65,6 +66,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :open
         end
         should respond_with :success
+
         should 'Respond with json' do
           assert_equal 'application/json', @response.media_type
         end
@@ -80,6 +82,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :restricted
         end
         should respond_with :success
+
         should 'Respond with xml' do
           assert_equal 'application/xml', @response.media_type
         end
@@ -90,6 +93,7 @@ class AuthenticationControllerTest < ActionController::TestCase
           get :restricted
         end
         should respond_with :success
+
         should 'Respond with json' do
           assert_equal 'application/json', @response.media_type
         end
@@ -130,6 +134,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'will allow access to open content' do
           setup { get :open }
           should respond_with :success
+
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
@@ -137,6 +142,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'will require login to restricted content' do
           setup { get :restricted }
           should respond_with :unauthorized
+
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
@@ -147,6 +153,7 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :restricted, params: { api_key: @user.api_key }
           end
           should respond_with :success
+
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
@@ -154,6 +161,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'with an invalid api_key will require login to restricted content' do
           setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
+
           should 'Respond with xml' do
             assert_equal 'application/xml', @response.media_type
           end
@@ -164,6 +172,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'will allow access to open content' do
           setup { get :open }
           should respond_with :success
+
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
@@ -171,6 +180,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'will require login to restricted content' do
           setup { get :restricted }
           should respond_with :unauthorized
+
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
@@ -181,6 +191,7 @@ class AuthenticationControllerTest < ActionController::TestCase
             get :restricted, params: { api_key: @user.api_key }
           end
           should respond_with :success
+
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
@@ -188,6 +199,7 @@ class AuthenticationControllerTest < ActionController::TestCase
         context 'with an invalid api_key will require login to restricted content' do
           setup { get :restricted, params: { api_key: 'fakeapikey' } }
           should respond_with :unauthorized
+
           should 'Respond with json' do
             assert_equal 'application/json', @response.media_type
           end
