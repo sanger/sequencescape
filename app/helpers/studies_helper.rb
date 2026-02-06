@@ -39,4 +39,53 @@ module StudiesHelper
     link_text = tag.strong(study.name) << ' ' << badge(study.state, type: 'study-state')
     link_to(link_text, study_path(study), options)
   end
+
+  def good_icon
+    icon('fas', 'check', class: 'text-success')
+  end
+
+  def bad_icon
+    icon('fas', 'xmark', class: 'text-danger')
+  end
+
+  def checklist_fallback_link(text, path)
+    "Please contact a #{link_to(text, path)}".html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  def checklist_item(condition:, good:, bad:, action: nil, action_permission: nil, fallback: nil) # rubocop:disable Metrics/ParameterLists
+    content_tag(:div) do
+      if condition
+        safe_join([good_icon, ' ', good])
+      else
+        safe_join(
+          [
+            bad_icon,
+            ' ',
+            bad,
+            content_tag(:span, class: 'text-muted') do
+              safe_join(
+                [
+                  ' — ',
+                  (action if action && (action_permission.nil? || action_permission)),
+                  (fallback if fallback && (action_permission == false))
+                ]
+              )
+            end
+          ]
+        )
+      end
+    end
+  end
+
+  def accession_all_samples_button(study)
+    if !accessioning_enabled?
+      tag.span('Accessioning is currently disabled.', class: 'text-muted')
+    elsif !(permitted_to_accession?(study) && study.samples_accessionable?)
+      tag.span('Unable to accession study.', class: 'text-muted')
+    else
+      link_to('<i class="fa fa-upload"></i> Accession all samples'.html_safe,
+              accession_all_samples_study_path(study),
+              class: 'btn btn-sm btn-outline-primary')
+    end
+  end
 end
