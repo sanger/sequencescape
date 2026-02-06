@@ -596,7 +596,7 @@ GEM
     sys-uname (1.4.1)
       ffi (~> 1.1)
       memoist3 (~> 1.0.0)
-    syslog (0.3.0)
+    syslog (0.4.0)
       logger
     temple (0.10.4)
     test-prof (1.5.0)
@@ -692,6 +692,7 @@ DEPENDENCIES
   flipper-active_record (~> 1.0)
   flipper-ui (~> 1.0)
   formtastic
+  hashdiff
   json
   jsonapi-resources-matchers
   knapsack_pro
