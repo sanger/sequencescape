@@ -36,12 +36,9 @@ flowchart LR
 
     %% Nodes
     %% Users
-    User_SeqOps(fa:fa-user SeqOps)
     User_Study_Owners(fa:fa-user Study Owners)
     User_Neil(fa:fa-user PSD Support)
     User_SSR(fa:fa-user SSRs)
-    User_LB_Users(fa:fa-user LB Users)
-    User_Developers(fa:fa-user Developers)
     User_SS_Users(fa:fa-user SS Users)
 
     %% External Systems
@@ -49,7 +46,6 @@ flowchart LR
     External_EBI_Samples(fa:fa-arrow-up ENA/EGA Samples)
 
     %% User Interfaces
-    UI_LB_Charge_and_Pass(fa:fa-computer-mouse Charge and Pass)
     UI_SS_Sample_GAN(fa:fa-computer-mouse Generate Accession Number)
     UI_SS_Sample_SAA(fa:fa-computer-mouse Save and Accession)
     UI_SS_Study_GAN(fa:fa-computer-mouse Generate Accession Number)
@@ -57,9 +53,7 @@ flowchart LR
     UI_SS_Manifest_Upload(fa:fa-computer-mouse Manifest Upload)
 
     %% Models   
-    MD_SS_Order(fa:fa-square-caret-down Order)
     %% MD_SS_AccessionService(fa:fa-square-caret-down AccessionService)
-    MD_SS_Submission_AccessionBehaviour(fa:fa-square-caret-down Submission::AccessionBehaviour)
     %% MD_SS_Sample(fa:fa-square-caret-down Sample)
     %% MD_SS_Study(fa:fa-square-caret-down Study)
     MD_SS_SampleManifest_Uploader(fa:fa-square-caret-down SampleManifest::Uploader)
@@ -104,13 +98,11 @@ flowchart LR
     LB_SS_AccessioningV1Client(fa:fa-book AccessioningV1Client)
 
     %% Other Components
-    API_SS_OrderResource(fa:fa-arrow-right-to-bracket Order Resource)
     CP_SS_AccessionSubmission(fa:fa-book Accession::Submission)
     DJ_SS_SampleAccessioningJob(fa:fa-clock SampleAccessioningJob)
 
     %% Config
     CF_SS_y25_706_enable_accessioning(fa:fa-screwdriver-wrench y25_706_enable_accessioning)
-    CF_SS_disable_accession_check(fa:fa-screwdriver-wrench disable_accession_check)
 
     %% Resources
     RES_Manifest(fa:fa-file Manifest)
@@ -122,15 +114,10 @@ flowchart LR
         User_Neil
         User_SSR
     end
-    subgraph Application_Limber[Limber Application]
-        UI_LB_Charge_and_Pass
-    end
     subgraph Application_Sequencescape[Sequencescape Application]
         UI_SS_Manifest_Upload
         MD_SS_SampleManifest_Uploader
         FN_SS_SampleManifestExcel_Upload_Base_trigger_accessioning
-        MD_SS_Order
-        MD_SS_Submission_AccessionBehaviour
 
         CF_SS_y25_706_enable_accessioning
         FN_SS_AccessionHelper_accessioning_enabled
@@ -141,7 +128,6 @@ flowchart LR
         LK_SS_accessioning_enabled_trigger_accessioning
         LK_SS_accessioning_enabled_Accession_perform
 
-        CF_SS_disable_accession_check
 
         DJ_SS_SampleAccessioningJob
         LB_SS_AccessioningV1Client
@@ -162,9 +148,6 @@ flowchart LR
         end
         subgraph Sample Manifests
             UI_SS_Manifest_Upload
-        end
-        subgraph SS_API["SS API"]
-            API_SS_OrderResource
         end
         subgraph CT_SS_Studies[fa:fa-arrows-spin Studies Controller]
             FN_SS_Studies_accession_all_samples
@@ -201,26 +184,15 @@ flowchart LR
         External_EBI_Samples
     end
     subgraph Consumers
-        User_LB_Users
         User_SS_Users
-        User_Developers
     end
 
     %% Edge connections between nodes
 
-    Providers ~~~ Application_Limber ~~~ Consumers
-    Providers ~~~ RES_Manifest ~~~ Application_Sequencescape ~~~ Consumers
     Providers ~~~ CF_SS_y25_706_enable_accessioning
 
     External_EBI_Studies ~~~ External_EBI_Samples
     %% External_EBI_Samples ~~~ External_EBI_Studies
-
-    %% Limber-related
-    User_SeqOps --> UI_LB_Charge_and_Pass -...-> User_LB_Users
-    UI_LB_Charge_and_Pass --> API_SS_OrderResource --> MD_SS_Order
-    MD_SS_Order --> MD_SS_Submission_AccessionBehaviour
-    MD_SS_Submission_AccessionBehaviour --> CF_SS_disable_accession_check
-    MD_SS_Submission_AccessionBehaviour -..-> | exception email | User_Developers
 
     %% Config
     CF_SS_y25_706_enable_accessioning --> FN_SS_AccessionHelper_accessioning_enabled --> LK_SS_accessioning_enabled
