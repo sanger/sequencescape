@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'hashdiff'
+
 require_relative 'client'
 require_relative 'utils'
 
@@ -31,7 +33,9 @@ module EBICheck
     ENA = 'ENA'
     # Templates for printing information
     TEMPLATE_STUDY_INFO = 'Study ID: %s, EBI Accession Number: %s'
+    TEMPLATE_STUDY_ERROR = ' Error retrieving study XML - %s'
     TEMPLATE_SAMPLE_INFO = ' Sample ID: %s, EBI Accession Number: %s'
+    TEMPLATE_SAMPLE_ERROR = '  Error retrieving sample XML - %s'
     TEMPLATE_SC = '  SC:  %s=%s'  # SC = Sequencescape side
     TEMPLATE_EBI = '  EBI: %s=%s' # EBI = EBI EGA / ENA side
 
@@ -44,7 +48,7 @@ module EBICheck
     # Compares local and remote study XML data for the given study IDs.
     # @param study_ids [Array<Integer>] The IDs of the studies to check.
     # @return [void]
-    def studies_by_ids(study_ids)
+    def studies_by_ids(study_ids) # rubocop:disable Metrics/MethodLength
       study_ids.each do |study_id|
         study = Study.find_by(id: study_id)
         print_study_info(study)
@@ -56,6 +60,8 @@ module EBICheck
         remote = extract_study_fields(xml)
 
         print_differences(local, remote)
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
@@ -70,20 +76,24 @@ module EBICheck
     # Compares local and remote sample XML data for the given study IDs.
     # @param study_ids [Array<Integer>] The IDs of the studies whose samples to check.
     # @return [void]
-    def samples_by_study_ids(study_ids)
+    def samples_by_study_ids(study_ids) # rubocop:disable Metrics/MethodLength
       study_ids.each do |study_id|
         study = Study.find_by(id: study_id)
         print_study_info(study)
         study.samples.each do |sample|
           check_sample(sample)
+        rescue StandardError, Faraday::Error => e
+          out.puts format(TEMPLATE_SAMPLE_ERROR, e.message)
         end
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
     # Compares local and remote sample XML data for the given sample IDs.
     # @param sample_ids [Array<Integer>] The IDs of the samples to check.
     # @return [void]
-    def samples_by_ids(sample_ids)
+    def samples_by_ids(sample_ids) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       samples = Sample.where(id: sample_ids)
       samples_by_study = samples.group_by { |sample| sample.studies.first }
 
@@ -91,7 +101,11 @@ module EBICheck
         print_study_info(study)
         samples.each do |sample|
           check_sample(sample)
+        rescue StandardError, Faraday::Error => e
+          out.puts format(TEMPLATE_SAMPLE_ERROR, e.message)
         end
+      rescue Faraday::Error => e
+        out.puts format(TEMPLATE_STUDY_ERROR, e.message)
       end
     end
 
@@ -122,6 +136,8 @@ module EBICheck
     # @param sample [Sample] The sample to check.
     # @return [void]
     def check_sample(sample)
+      raise StandardError, "Sample '#{sample.name}' does not have an accession number" unless sample.accession_number?
+
       print_sample_info(sample)
 
       xml = local_sample_xml(sample)
@@ -151,7 +167,8 @@ module EBICheck
     # @param sample [Sample] The sample to generate XML for.
     # @return [String] The local sample XML.
     def local_sample_xml(sample)
-      Accessionable::Sample.new(sample).xml
+      sample_accessioning = Accession::SampleAccessioning.new
+      sample_accessioning.build_accessionable(sample).to_xml
     end
 
     # Retrieves the remote sample XML for the given sample from EBI.
@@ -179,15 +196,24 @@ module EBICheck
     # @param local [Hash] The local data.
     # @param remote [Hash] The remote data.
     # @return [void]
-    def print_differences(local, remote)
-      local.each do |key, value|
-        remote_value = remote[key] || ''
-        next unless value != remote_value
+    def print_differences(local, remote) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+      diffs = Hashdiff.diff(local, remote, indifferent: true, ignore_keys: [:'subject id', :title])
+      return if diffs.empty?
 
-        next if (key == :'subject id') && (local[key] == remote[:title])
+      diffs = diffs.sort_by { |_diff_type, key, *_values| key } # Sort by key name for consistent output
 
-        out.puts format(TEMPLATE_SC, key, value)
-        out.puts format(TEMPLATE_EBI, key, remote_value)
+      diffs.each do |diff_type, key, value, remote_value|
+        case diff_type
+        when '~' # Changed value - ['~', key, local_value, remote_value]
+          out.puts format(TEMPLATE_SC, key, value) # Local value
+          out.puts format(TEMPLATE_EBI, key, remote_value)
+        when '-' # Key missing in remote - ['-', key, value]
+          out.puts format(TEMPLATE_SC, key, value)
+          out.puts format(TEMPLATE_EBI, key, '<missing>')
+        when '+' # Key missing in local - ['+', key, value]
+          out.puts format(TEMPLATE_SC, key, '<missing>')
+          out.puts format(TEMPLATE_EBI, key, value)
+        end
       end
     end
 

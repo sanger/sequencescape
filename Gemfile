@@ -127,6 +127,9 @@ group :default do
   gem 'flipper', '~> 1.0'
   gem 'flipper-active_record', '~> 1.0'
   gem 'flipper-ui', '~> 1.0'
+
+  # For comparing accessioning changes, see EBICheck::Process
+  gem 'hashdiff'
 end
 
 group :development do
