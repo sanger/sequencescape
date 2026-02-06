@@ -115,8 +115,32 @@ class SubmissionsController < ApplicationController
     @submissions = @study.submissions
   end
 
-  def download_scrna_core_cdna_pooling_plan
-    csv_string = ''
+  def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
+    submission = Submission.find(params[:id])
+
+    # Group requests by study/project/donor and cells_per_chip_well
+    grouped_labware = submission.requests.group_by do |request|
+      aliquot = request.asset.aliquots.first
+      study = aliquot.study.name
+      project = aliquot&.project&.name
+      donor_id = aliquot.sample.sample_metadata.donor_id
+      "#{study} / #{project} / #{donor_id}"
+    end
+
+    # Then group by cells_per_chip_well within those groups
+    grouped_labware = grouped_labware.flat_map do |key, group|
+      group.group_by { |request| request.request_metadata.cells_per_chip_well }
+        .map { |cells, subgroup| [key, cells, subgroup] }
+    end
+
+    csv_string = CSV.generate(row_sep: "\r\n") do |csv|
+      csv << ['Study / Project / Donor ID', 'Pools (num samples)', 'Cells per chip well']
+      grouped_labware.each do |study_project_donor, cells_per_chip_well, subgroup|
+        number_of_samples_in_pool, = subgroup.size.divmod(subgroup.first.request_metadata.number_of_pools)
+        csv << [study_project_donor, number_of_samples_in_pool, cells_per_chip_well]
+      end
+    end
+
     send_data csv_string, type: 'text/plain', filename: "#{params[:id]}_scrna_core_cdna_pooling_plan.csv",
                           disposition: 'attachment'
   end
