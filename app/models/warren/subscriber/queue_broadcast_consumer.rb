@@ -24,6 +24,9 @@ class Warren::Subscriber::QueueBroadcastConsumer < Warren::Subscriber::Base
   # Handles message processing. Messages are acknowledged automatically
   # on return from the method assuming they haven't been handled already.
   # In the event of an uncaught exception, the message will be dead-lettered.
+  #
+  # For example, if the message is `["Well", 1]`, this method will find the Well
+  # with ID 1 and call `broadcast` on it.
   def process
     klass = json.first.constantize
     klass.find(json.last).broadcast
