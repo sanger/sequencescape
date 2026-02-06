@@ -692,6 +692,7 @@ DEPENDENCIES
   flipper-active_record (~> 1.0)
   flipper-ui (~> 1.0)
   formtastic
+  hashdiff
   json
   jsonapi-resources-matchers
   knapsack_pro

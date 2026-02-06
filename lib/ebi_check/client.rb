@@ -54,15 +54,17 @@ module EBICheck
 
     attr_reader :url, :options
 
-    # Builds a Faraday connection for the client. This connection is configured
-    # with the base URL, headers, proxy settings, and basic authentication
-    # using the provided user credentials. This connection is memoized to avoid
-    # recreating it on each request.
+    # Builds a Faraday connection for the client.
+    # This connection is configured with the base URL, headers, proxy settings,
+    # and basic authentication using the provided user credentials.
+    # Any errors that occur are raised for attention.
+    # This connection is memoized to avoid recreating it on each request.
     # @return [Faraday::Connection] The configured Faraday connection.
     def conn
       @conn ||= Faraday.new(url:, headers:, proxy:) do |f|
         f.request :url_encoded
         f.request :authorization, :basic, options[:user], options[:password]
+        f.response :raise_error
       end
     end
 
