@@ -37,7 +37,7 @@ Feature: Sample manifest
     And I reset all of the sanger sample ids to a known number sequence
     When I follow "View all manifests"
     Then I should see "Sample Manifests"
-    Then I should see "Upload a sample manifest"
+    Then I should see "Upload a Sample Manifest"
     Then I should see the manifest table:
       | Contains                  | Study      | Supplier           | Manifest       | Upload          | Errors | State                | Created by |
       | 5 multiplexed_libraries   | Test study | Test supplier name | Blank manifest | Upload manifest |        | No manifest uploaded | john       |
@@ -119,5 +119,3 @@ Scenario: Create a dual indexed mx manifest
       | NT83         | sample_2         | test tag group  | 3         | test tag group2 | 1          | Standard     | 100              | 200            |
       | NT84         | sample_3         | test tag group3 | 1         | test tag group2 | 1          | Standard     | 100              | 200            |
       | NT85         | sample_4         | test tag group3 | 2         | test tag group2 | 1          | Standard     | 100              | 200            |
-
-

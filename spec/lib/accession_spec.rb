@@ -10,16 +10,9 @@ RSpec.describe Accession do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
       let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
-      it 'raises an exception if the sample cannot be accessioned' do
-        expect { described_class.accession_sample(sample, event_user) }.to raise_error(AccessionService::AccessioningDisabledError)
-      end
+      it 'does not add an accession number' do
+        described_class.accession_sample(sample, event_user)
 
-      it 'does not add an accession number if it fails' do
-        begin
-          described_class.accession_sample(sample, event_user)
-        rescue AccessionService::AccessioningDisabledError
-          # Ignore the error and continue execution
-        end
         expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
       end
     end
@@ -51,11 +44,14 @@ RSpec.describe Accession do
             accessionable_sample.ena_study.enforce_accessioning = false
           end
 
-          it 'raises an internal validation error' do
-            expect { described_class.accession_sample(accessionable_sample, event_user) }
-              .to raise_error(Accession::InternalValidationError,
-                              "Sample '#{accessionable_sample.name}' cannot be accessioned: " \
-                              'Sample is linked to a study that does not require accessioning.')
+          it 'logs a message' do
+            allow(Rails.logger).to receive(:info).and_call_original
+
+            described_class.accession_sample(accessionable_sample, event_user)
+            expect(Rails.logger).to have_received(:info).with(
+              "Sample '#{accessionable_sample.name}' should not be accessioned " \
+              'as it belongs to 0 accessionable studies.'
+            )
           end
 
           it 'does not receive an accession number' do

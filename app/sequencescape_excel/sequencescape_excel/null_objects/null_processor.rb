@@ -28,7 +28,9 @@ module SequencescapeExcel
       end
 
       def errors
-        { sample_manifest: 'does not exist. Double check that Sanger sample ids have not been changed.' }
+        msg = 'does not exist. Double check that Sanger sample ids have not been changed.'
+        msg += ' Check that the delayed jobs worker has run.' if Rails.env.development?
+        { sample_manifest: msg }
       end
     end
   end

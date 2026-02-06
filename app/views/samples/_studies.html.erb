@@ -22,9 +22,29 @@
       </tbody>
     </table>
     <% if can? :link_sample, any: @sample.studies %>
-      <%= label("study", "id", 'Add to study', style: 'display:none') %>
-      <%= collection_select("study", :id, @studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
-      <%= form.submit "Add" %>
+      <%= tag.div(class: 'd-flex') do %>
+        <%= label("study", "id", 'Add to study', style: 'display:none') %>
+        <%= collection_select("study", :id, @studies - @sample.studies, :id, :name, {prompt: "Add to study"}, class: "custom-select") %>
+        <%= form.submit("Add", class: 'ml-2') %>
+      <% end %>
+    <% end %>
+    <% if permitted_to_accession?(@sample) %>
+      <%= tag.div(class: 'mt-3') do %>
+        <% if !@sample.should_be_accessioned? %>
+          <% if @sample.studies_for_accessioning.size > 1 %>
+            <%= alert(:warning){ "Sample cannot be accessioned as it belongs to #{@sample.studies_for_accessioning.size} accessionable studies" } %>
+          <% else %>
+              <%= alert(:warning) do %>
+                Sample cannot be accessioned:
+                <%= tag.ul do %>
+                  <% @sample.studies.each do |study| %>
+                    <%= tag.li("Study '#{link_to(study.name, study_path(study))}' is missing an accession number".html_safe) %>
+                  <% end %>
+                <% end %>
+              <% end %>
+          <% end %>
+        <% end %>
+      <% end %>
     <% end %>
   <% end %>
 <% end %>
