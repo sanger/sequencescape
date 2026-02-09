@@ -12,7 +12,7 @@ flowchart LR
         direction TB
         L_User(fa:fa-user User)
         L_External(fa:fa-arrow-up External API)
-        L_Interface(fa:fa-computer-mouse User Interface)
+        L_Action(fa:fa-computer-mouse User Action)
         L_Model(fa:fa-square-caret-down Model)
         L_Controller(fa:fa-arrows-spin Controller)
         L_View(fa:fa-eye View)
@@ -24,7 +24,7 @@ flowchart LR
         L_LinkSource[/Link Source\]
         L_LinkSink[\Link Sink/]
     
-        L_User ~~~ L_External ~~~ L_Interface ~~~ L_Resource ~~~ L_Async ~~~ L_LinkSource
+        L_User ~~~ L_External ~~~ L_Action ~~~ L_Resource ~~~ L_Async ~~~ L_LinkSource
         L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_View ~~~ L_Function ~~~ L_Library ~~~ L_LinkSink
     
         InvisibleNodeA[ ] -..-> | Data flow | InvisibleNodeB[ ] -- Function calls --> InvisibleNodeC[ ] == Accessioning function calls ==> InvisibleNodeD[ ]
@@ -222,8 +222,8 @@ flowchart LR
     External_EBI_Samples ==> | Failure: reason | MD_AccessionStatuses
     External_EBI_Samples ==> | Success: accession number | FN_Accession_Sample_update_accession_number
     LK_accessioning_enabled_Sample_View -.-> VW_Sample
-    FN_Accession_Sample_update_accession_number -.- VW_Sample
-    MD_AccessionStatuses -.- VW_Sample
+    FN_Accession_Sample_update_accession_number -.-> VW_Sample
+    MD_AccessionStatuses -.-> VW_Sample
     FN_Samples_accession --> | 2. | VW_Sample
     VW_Sample --> User_Users
     
@@ -249,7 +249,7 @@ flowchart LR
     FN_AccessionService_post_files ==> LB_RestClient 
     LB_RestClient ==> External_EBI_Studies
     External_EBI_Studies ==> FN_Accessionable_Study_update_accession_number
-    FN_Accessionable_Study_update_accession_number -.- VW_Study
+    FN_Accessionable_Study_update_accession_number -.-> VW_Study
     FN_Studies_rescue_accession_errors --> | flash message | VW_Study
     VW_Study --> User_Users
     LK_accessioning_enabled_Study_View -.-> VW_Study
@@ -287,5 +287,5 @@ flowchart LR
     class L_Model,MD_Study,MD_AccessionService,MD_Sample,MD_SampleManifest_Uploader,MD_Order,MD_Submission_AccessionBehaviour,MD_AccessionStatuses,MD_Accession_Sample,MD_AccessionService,MD_Accessionable_Study railsModel;
     class L_Controller,CT_Samples,CT_Studies railsController;
     class L_User,User_SeqOps,User_Study_Owners,User_Neil,User_SSR,User_LB_Users,User_Users,User_Developers users;
-    class L_Interface,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload,VW_Sample,VW_Study userInterface;
+    class L_Action,L_View,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload,VW_Sample,VW_Study userInterface;
     class L_LinkSource,L_LinkSink,LK_accessioning_enabled,LK_accessioning_enabled_AAS,LK_accessioning_enabled_Studies_accession,LK_accessioning_enabled_Samples_accession,LK_accessioning_enabled_trigger_accessioning,LK_accessioning_enabled_Accession_perform,LK_accessioning_enabled_Study_View,LK_accessioning_enabled_Sample_View link;
