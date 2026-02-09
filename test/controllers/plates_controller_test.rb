@@ -229,6 +229,7 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'keep the created labware persisted' do
                 barcode = @tube_rack.children.first.barcodes.first.barcode
+
                 assert_equal(1, Plate.joins(:barcodes).where(barcodes: { barcode: }).count)
               end
 
@@ -277,7 +278,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'set the dilution factor to default (1.0)' do
-                  assert_equal 1.0, Plate.last.dilution_factor
+                  assert_in_delta(1.0, Plate.last.dilution_factor)
                 end
               end
 
@@ -300,7 +301,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'set the dilution factor to default (1.0)' do
-                  assert_equal 1.0, @parent_plate.children.first.dilution_factor
+                  assert_in_delta(1.0, @parent_plate.children.first.dilution_factor)
                 end
               end
 
@@ -325,7 +326,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'set the dilution factor to 3.53' do
-                  assert_equal 3.53, @parent_plate.children.first.dilution_factor
+                  assert_in_delta(3.53, @parent_plate.children.first.dilution_factor)
                 end
               end
 
@@ -364,8 +365,8 @@ class PlatesControllerTest < ActionController::TestCase
                     end
 
                     should 'set the dilution factor of each children to 3.53 and 4.56' do
-                      assert_equal 3.53, @parent_plate.children.first.dilution_factor
-                      assert_equal 4.56, @parent_plate2.children.first.dilution_factor
+                      assert_in_delta(3.53, @parent_plate.children.first.dilution_factor)
+                      assert_in_delta(4.56, @parent_plate2.children.first.dilution_factor)
                     end
                   end
 
@@ -394,8 +395,8 @@ class PlatesControllerTest < ActionController::TestCase
                       # and while MRI reports inequality with the float, Jruby declares them equal.
                       # This isn't actually true for ALL floats and their big decimal 'equivalent'
                       # so presumably its due to the accuracy of the float.
-                      assert_equal 7.06, @parent_plate.children.first.dilution_factor.to_f
-                      assert_equal 9.12, @parent_plate2.children.first.dilution_factor.to_f
+                      assert_in_delta(7.06, @parent_plate.children.first.dilution_factor.to_f)
+                      assert_in_delta(9.12, @parent_plate2.children.first.dilution_factor.to_f)
                     end
                   end
                 end
@@ -423,7 +424,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'set the dilution factor to 12.0' do
-                  assert_equal 12.0, Plate.last.dilution_factor
+                  assert_in_delta(12.0, Plate.last.dilution_factor)
                 end
               end
               context "when the parent doesn't have a dilution factor" do
@@ -446,7 +447,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'set the dilution factor to 12.0' do
-                  assert_equal 12.0, @parent_plate.children.first.dilution_factor
+                  assert_in_delta(12.0, @parent_plate.children.first.dilution_factor)
                 end
               end
 
@@ -472,7 +473,7 @@ class PlatesControllerTest < ActionController::TestCase
                 end
 
                 should 'sets the dilution factor to 48.0 (parent=4*child=12)' do
-                  assert_equal 48.0, @parent_plate.children.first.dilution_factor
+                  assert_in_delta(48.0, @parent_plate.children.first.dilution_factor)
                 end
               end
             end
@@ -504,7 +505,7 @@ class PlatesControllerTest < ActionController::TestCase
               end
 
               should 'add a child to the parent plate' do
-                assert Plate.find(@parent_plate.id).children.first.is_a?(Plate)
+                assert_kind_of Plate, Plate.find(@parent_plate.id).children.first
                 assert_equal @pico_purposes.first, Plate.find(@parent_plate.id).children.first.plate_purpose
               end
 
@@ -531,7 +532,8 @@ class PlatesControllerTest < ActionController::TestCase
 
               should 'create all the pico assay plates with dilution factor 48' do
                 childrens = Plate.find(@parent_plate.id).children
-                assert_equal 48.0, childrens.first.dilution_factor
+
+                assert_in_delta(48.0, childrens.first.dilution_factor)
                 assert_equal 1, childrens.map(&:dilution_factor).uniq.length
               end
             end
@@ -562,7 +564,7 @@ class PlatesControllerTest < ActionController::TestCase
 
             should 'have child plates' do
               [@parent_plate, @parent_plate2, @parent_plate3].each do |plate|
-                assert Plate.find(plate.id).children.first.is_a?(Plate)
+                assert_kind_of Plate, Plate.find(plate.id).children.first
                 assert_equal @pico_purposes.first, Plate.find(plate.id).children.first.plate_purpose
               end
             end

@@ -47,6 +47,7 @@ class CreatorTest < ActiveSupport::TestCase
     create_asset_group = 'No'
 
     @creator.execute(parent.machine_barcode, barcode_printer, user, create_asset_group)
+
     assert_equal 1, Plate.count - plate_count
     child = parent.reload.children.first
 
@@ -54,6 +55,7 @@ class CreatorTest < ActiveSupport::TestCase
 
     parent.wells.each_with_index do |well, i|
       matching_aliquots = well.aliquots.first.matches?(child.wells[i].aliquots.first)
+
       assert matching_aliquots,
              # rubocop:todo Layout/LineLength
              "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
@@ -103,6 +105,7 @@ class CreatorTest < ActiveSupport::TestCase
 
       assert_equal plate_count + 1, Plate.count
       created_plate = Plate.last
+
       assert_equal @creator_purpose, created_plate.purpose
 
       assert_equal tube1.samples.first, created_plate.wells[0].samples.first
@@ -141,6 +144,7 @@ class CreatorTest < ActiveSupport::TestCase
 
       assert_equal plate_count + 1, Plate.count
       created_plate = Plate.last
+
       assert_equal @creator_purpose, created_plate.purpose
 
       assert_equal tube1.samples.first, created_plate.wells[0].samples.first

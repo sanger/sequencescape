@@ -18,6 +18,7 @@ SampleAccessioningJob =
       submission = Accession::Submission.new(contact_user, accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
+      Rails.logger.info("Accessioning succeeded for sample '#{accessionable.sample.name}'")
     rescue StandardError => e
       handle_job_error(e, submission)
 

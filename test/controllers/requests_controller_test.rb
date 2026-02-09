@@ -26,7 +26,7 @@ class RequestsControllerTest < ActionController::TestCase
         get :cancel, params: { id: request.id }
 
         assert_equal flash[:notice], "Request #{request.id} has been cancelled"
-        assert Request.find(request.id).cancelled?
+        assert_predicate Request.find(request.id), :cancelled?
         assert_response :redirect
       end
 
@@ -60,6 +60,7 @@ class RequestsControllerTest < ActionController::TestCase
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
+
         assert_equal flash[:notice], "Created request #{@new_request.id}"
         assert_response :redirect
       end
@@ -76,6 +77,7 @@ class RequestsControllerTest < ActionController::TestCase
         get :copy, params: { id: @request_initial.id }
 
         @new_request = Request.last
+
         assert_equal flash[:notice], "Created request #{@new_request.id}"
         assert_response :redirect
 
@@ -155,9 +157,10 @@ class RequestsControllerTest < ActionController::TestCase
           @params = { request_metadata_attributes: { read_length: '37' }, state: 'failed' }
           put :update, params: { id: @reqwest.id, request: @params }
         end
+
         should 'not update the state' do
           # We really don't want arbitrary changing of state
-          assert @reqwest.state != 'failed'
+          assert_not_equal @reqwest.state, 'failed'
         end
       end
     end

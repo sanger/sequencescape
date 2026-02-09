@@ -17,7 +17,7 @@ class MultiplexedLibraryTubeTest < ActiveSupport::TestCase
       end
 
       should 'return true if it does have a stock asset' do
-        assert @multiplexed_library_tube_with_stock_tube.has_stock_asset?
+        assert_predicate @multiplexed_library_tube_with_stock_tube, :has_stock_asset?
       end
     end
   end
