@@ -36,7 +36,7 @@
         <td><%= accession_status&.status&.capitalize %></td>
         <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
         <td>
-          <% if permitted_to_accession?(sample) & sample.should_be_accessioned? & accessioning_enabled? %>
+          <% if [accessioning_enabled?, sample.should_be_accessioned?, permitted_to_accession?(sample)].all? %>
             <%# Add link to perform sample accessioning %>
             <% if sample.current_accession_status %>
               <%# If status exists, offer retry %>
