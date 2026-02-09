@@ -115,7 +115,7 @@ class SubmissionsController < ApplicationController # rubocop:disable Metrics/Cl
     @submissions = @study.submissions
   end
 
-  def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+  def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     begin
       submission = Submission.find(params[:id])
     rescue ActiveRecord::RecordNotFound
@@ -143,13 +143,18 @@ class SubmissionsController < ApplicationController # rubocop:disable Metrics/Cl
       csv << ['Study / Project', 'Pools (num samples)', 'Cells per chip well']
       # It would be nice to refactor the scRNA Validator logic here to pull out the pooling plan logic
       grouped_labware.each do |study_project, subgroup|
+        # Get number_of_pools requested from the submission
         number_of_pools = subgroup.first.request_metadata.number_of_pools
-        number_of_samples_in_pool, remainder = subgroup.size.divmod(number_of_pools)
-        samples_in_pool_string = ''
-        (1..number_of_pools).each do |_|
-          samples_in_pool_string += "#{number_of_samples_in_pool}, "
-        end
-        samples_in_pool_string += remainder.positive? ? remainder.to_s : ''
+        # Ideal pool size is just the number of samples divided by the number of pools, but we need to account for
+        # any remainder if the division isn't exact
+        ideal_pool_size, remainder = subgroup.size.divmod(number_of_pools)
+        # Build the pools
+        pool_sizes = Array.new(number_of_pools, ideal_pool_size)
+        # Add the remainders
+        remainder.times { |i| pool_sizes[i] += 1 }
+
+        # Join the pool sizes into a string for the CSV output
+        number_of_samples_in_pool = pool_sizes.join(', ')
 
         cells_per_chip_well = subgroup.first.request_metadata.cells_per_chip_well
 
