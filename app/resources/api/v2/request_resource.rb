@@ -115,6 +115,8 @@ module Api
       #   @note This attribute is read-only.
       attribute :library_type, readonly: true
 
+      attribute :id_wafer_lims, readonly: true
+
       ###
       # Relationships
       ###
@@ -203,6 +205,10 @@ module Api
       # @note This method retrieves the library type associated with the request.
       def library_type
         _model.try(:library_type)
+      end
+
+      def id_wafer_lims
+        _model.try(:id_wafer_lims)
       end
     end
   end

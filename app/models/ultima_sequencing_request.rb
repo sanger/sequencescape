@@ -35,6 +35,8 @@ class UltimaSequencingRequest < SequencingRequest
   # id_pool_lims, and request_order.
   # @return [String] unique wafer ID for LIMS
   def id_wafer_lims
+    return nil unless batch && source_labware && position
+
     "#{batch.id}_#{source_labware.human_barcode}_#{position}"
   end
 end
