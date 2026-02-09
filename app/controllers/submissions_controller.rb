@@ -5,7 +5,7 @@
 # such as the fields that get displayed when a submission template is selected, and
 # the creation of each independent order.
 # Most the actual heavy lifting occurs in {Submission::SubmissionCreator}
-class SubmissionsController < ApplicationController
+class SubmissionsController < ApplicationController # rubocop:disable Metrics/ClassLength
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -115,7 +115,7 @@ class SubmissionsController < ApplicationController
     @submissions = @study.submissions
   end
 
-  def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
     begin
       submission = Submission.find(params[:id])
     rescue ActiveRecord::RecordNotFound
@@ -131,21 +131,29 @@ class SubmissionsController < ApplicationController
       return
     end
 
-    # Group requests by study/project/donor
+    # Group requests by study/project
     grouped_labware = submission.requests.group_by do |request|
       aliquot = request.asset.aliquots.first
       study = aliquot.study.name
       project = aliquot&.project&.name
-      donor_id = aliquot.sample.sample_metadata.donor_id
-      "#{study} / #{project} / #{donor_id}"
+      "#{study} / #{project}"
     end
 
     csv_string = CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ['Study / Project / Donor ID', 'Pools (num samples)', 'Cells per chip well']
-      grouped_labware.each do |study_project_donor, subgroup|
-        number_of_samples_in_pool, = subgroup.size.divmod(subgroup.first.request_metadata.number_of_pools)
+      csv << ['Study / Project', 'Pools (num samples)', 'Cells per chip well']
+      # It would be nice to refactor the scRNA Validator logic here to pull out the pooling plan logic
+      grouped_labware.each do |study_project, subgroup|
+        number_of_pools = subgroup.first.request_metadata.number_of_pools
+        number_of_samples_in_pool, remainder = subgroup.size.divmod(number_of_pools)
+        samples_in_pool_string = ''
+        (1..number_of_pools).each do |_|
+          samples_in_pool_string += "#{number_of_samples_in_pool}, "
+        end
+        samples_in_pool_string += remainder.positive? ? remainder.to_s : ''
+
         cells_per_chip_well = subgroup.first.request_metadata.cells_per_chip_well
-        csv << [study_project_donor, number_of_samples_in_pool, cells_per_chip_well]
+
+        csv << [study_project, number_of_samples_in_pool, cells_per_chip_well]
       end
     end
 
