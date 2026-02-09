@@ -270,16 +270,16 @@ class StudiesController < ApplicationController
     # TODO: Y26-026 - Enforce accessioning permissions
     # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
-    unless accession_number?
+    unless @study.accession_number?
       flash[:error] = 'Please accession the study before accessioning samples'
       return redirect_to(study_path(@study))
     end
-    unless samples_accessionable?
+    unless @study.samples_accessionable?
       flash[:error] = 'Study cannot accession samples, see Study Accessioning tab for details'
       return redirect_to(study_path(@study))
     end
 
-    samples.find_each do |sample|
+    @study.samples.find_each do |sample|
       next if sample.accession_number?
 
       begin
