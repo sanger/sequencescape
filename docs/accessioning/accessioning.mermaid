@@ -1,5 +1,5 @@
 ---
-title: Accessioning Call Graph Overview
+title: Sequencescape Accessioning Processes
 ---
 %%{ init: { 
     'flowchart': { 'curve': 'curvy' },
@@ -11,7 +11,6 @@ flowchart LR
     subgraph Legend [Legend]
         direction TB
         L_Application(fa:fa-circle-arrow-right Application Process)
-        L_User(fa:fa-user User)
         L_External(fa:fa-arrow-up External API)
         L_Action(fa:fa-computer-mouse User Action)
         L_Model(fa:fa-square-caret-down Model)
@@ -25,21 +24,15 @@ flowchart LR
         L_LinkSource[/Link Source\]
         L_LinkSink[\Link Sink/]
     
-        L_Application ~~~ L_User ~~~ L_External ~~~ L_Action ~~~ L_Resource ~~~ L_Async ~~~ L_LinkSource
+        L_Application ~~~ L_External ~~~ L_Action ~~~ L_Resource ~~~ L_Async ~~~ L_LinkSource
         L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_View ~~~ L_Function ~~~ L_Library ~~~ L_LinkSink
     
         InvisibleNodeA[ ] -..-> | Data flow | InvisibleNodeB[ ] -- Function calls --> InvisibleNodeC[ ] == Accessioning function calls ==> InvisibleNodeD[ ]
     end
 
-    Legend ~~~ Providers
     %% End Legend
 
     %% Nodes
-    %% Users
-    User_Study_Owners(fa:fa-user Study Owners)
-    User_Neil(fa:fa-user PSD Support)
-    User_SSR(fa:fa-user SSRs)
-    User_Users(fa:fa-user SS Users)
 
     %% External Systems
     External_EBI_Studies(fa:fa-arrow-up ENA/EGA Studies)
@@ -103,12 +96,6 @@ flowchart LR
     RES_Manifest(fa:fa-file Manifest)
 
     %% Groupings of nodes
-    subgraph Providers
-        User_Study_Owners
-        User_Neil
-        User_SSR
-    end
-
     subgraph App_SS_Configuration[fa:fa-screwdriver-wrench Sequencescape Configuration]
         direction LR
         CF_y25_706_enable_accessioning
@@ -197,9 +184,7 @@ flowchart LR
         External_EBI_Studies
         External_EBI_Samples
     %% end
-    subgraph Consumers
-        User_Users
-    end
+
 
     %% Edge connections between nodes
 
@@ -210,19 +195,16 @@ flowchart LR
     CF_y25_706_enable_accessioning --> FN_AccessionHelper_accessioning_enabled --> LK_accessioning_enabled
 
     %% Sample save and accession
-    User_SSR --> UI_Sample_SAA
-    UI_Sample_SAA --> FN_Sample_accession_and_handle_validation_errors
+    UI_Sample_SAA ----> FN_Sample_accession_and_handle_validation_errors
     FN_Sample_accession_and_handle_validation_errors --> FN_Accession_accession_sample
 
     %% Manifest upload
-    RES_Manifest -.-> MD_SampleManifest_Uploader
-    User_SSR --> UI_Manifest_Upload --> MD_SampleManifest_Uploader
+    RES_Manifest -.-> UI_Manifest_Upload
+    UI_Manifest_Upload --> MD_SampleManifest_Uploader
     LK_accessioning_enabled_trigger_accessioning -.-> FN_SampleManifestExcel_Upload_Base_trigger_accessioning
     MD_SampleManifest_Uploader --> FN_SampleManifestExcel_Upload_Base_trigger_accessioning ---> FN_Accession_accession_sample
     
     %% Sample generate accession number
-    User_SSR --> UI_Sample_GAN
-    User_Neil --> UI_Sample_GAN
     LK_accessioning_enabled_Samples_accession -.-> FN_Samples_accession
     UI_Sample_GAN --> FN_Samples_accession
     FN_Samples_accession <--> | 1. | FN_Accession_accession_sample
@@ -238,19 +220,14 @@ flowchart LR
     LK_accessioning_enabled_Sample_View -.-> VW_Sample
     MD_AccessionStatuses -.-> VW_Sample
     FN_Samples_accession --> | 2. | VW_Sample
-    VW_Sample --> User_Users
     
     %% Study accession all samples
-    User_Neil --> UI_Study_AAS
-    User_Study_Owners --> UI_Study_AAS
     LK_accessioning_enabled_AAS -.-> FN_Studies_accession_all_samples
     UI_Study_AAS --> FN_Studies_accession_all_samples 
     FN_Studies_accession_all_samples <--> | 1. | FN_Accession_accession_sample
     FN_Studies_accession_all_samples --> | 2. | VW_Study
 
     %% Study generate accession number
-    User_SSR --> UI_Study_GAN
-    User_Study_Owners --> UI_Study_GAN
     UI_Study_GAN --> FN_Studies_accession
     LK_accessioning_enabled_Studies_accession -.-> FN_Studies_accession
     FN_Studies_accession <--> | 1. | FN_Study_validate_study_for_accessioning
@@ -262,7 +239,6 @@ flowchart LR
     FN_AccessionService_post_files ==> LB_RestClient 
     LB_RestClient ==> External_EBI_Studies
     External_EBI_Studies ==> FN_Accessionable_Study_update_accession_number
-    VW_Study --> User_Users
     LK_accessioning_enabled_Study_View -.-> VW_Study
 
     %% Subgraph styling
@@ -287,7 +263,7 @@ flowchart LR
     classDef link fill:#fde4cf;
     classDef railsModel fill:#98f5e1;
     classDef railsController fill:#b9fbc0;
-    classDef users fill:#f1c0e8;
+    %% classDef users fill:#f1c0e8;
     classDef userInterface fill:#a3c4f3;
 
     class InvisibleNodeA,InvisibleNodeB,InvisibleNodeC,InvisibleNodeD invisible;
@@ -297,6 +273,5 @@ flowchart LR
     class DelayedJob,Samples,Studies,Submissions SequencescapeSection;
     class L_Model,MD_Study,MD_AccessionService,MD_Sample,MD_SampleManifest_Uploader,MD_Order,MD_Submission_AccessionBehaviour,MD_AccessionStatuses,MD_Accession_Sample,MD_AccessionService,MD_Accessionable_Study railsModel;
     class L_Controller,CT_Samples,CT_Studies railsController;
-    class L_User,User_SeqOps,User_Study_Owners,User_Neil,User_SSR,User_LB_Users,User_Users,User_Developers users;
     class L_Action,L_View,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload,VW_Sample,VW_Study userInterface;
     class L_LinkSource,L_LinkSink,LK_accessioning_enabled,LK_accessioning_enabled_AAS,LK_accessioning_enabled_Studies_accession,LK_accessioning_enabled_Samples_accession,LK_accessioning_enabled_trigger_accessioning,LK_accessioning_enabled_Accession_perform,LK_accessioning_enabled_Study_View,LK_accessioning_enabled_Sample_View link;
