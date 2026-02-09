@@ -29,6 +29,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
         should 'include owned plates' do
           get :index
+
           assert_response :success
           assert_includes assigns(:plates), @source_plate_a
         end
@@ -53,6 +54,7 @@ class PlateSummariesControllerTest < ActionController::TestCase
           plates.each do |plate, barcodes|
             barcodes.each do |barcode|
               get :search, params: { plate_barcode: barcode }
+
               assert_redirected_to plate_summary_path(plate.human_barcode)
             end
           end
@@ -88,12 +90,14 @@ class PlateSummariesControllerTest < ActionController::TestCase
 
         should 'return expected plate' do
           get :show, params: { id: @source_plate_a.human_barcode }
+
           assert_response :success
           assert_equal @source_plate_a, assigns(:plate)
         end
 
         should 'show the metadata for the plate' do
           get :show, params: { id: @child_plate_a.human_barcode }
+
           assert_response :success
           assert_equal @collection.metadata.count, assigns(:plate).metadata.count
         end

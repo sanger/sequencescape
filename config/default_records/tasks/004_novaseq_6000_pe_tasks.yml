@@ -1,0 +1,19 @@
+---
+NovaSeq 6000 PE Add Spiked in control:
+  name: Add Spiked in control
+  workflow: NovaSeq 6000 PE
+  sorted: 0
+  lab_activity: true
+  sti_type: AddSpikedInControlTask
+NovaSeq 6000 PE Loading:
+  name: Loading
+  workflow: NovaSeq 6000 PE
+  sorted: 1
+  lab_activity: true
+  sti_type: SetDescriptorsTask
+NovaSeq 6000 PE Read 1 & 2:
+  name: Read 1 & 2
+  workflow: NovaSeq 6000 PE
+  sorted: 2
+  lab_activity: true
+  sti_type: SetDescriptorsTask

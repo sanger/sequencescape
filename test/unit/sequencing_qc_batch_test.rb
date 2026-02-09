@@ -71,16 +71,19 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
     context '#processing_in_manual_qc?' do
       should 'return true if current state is "qc_manual_in_progress"' do
         @batch.stubs(:qc_state).returns('qc_manual_in_progress')
-        assert @batch.processing_in_manual_qc?
+
+        assert_predicate @batch, :processing_in_manual_qc?
       end
 
       should 'return true if current state is "qc_manual"' do
         @batch.stubs(:qc_state).returns('qc_manual')
-        assert @batch.processing_in_manual_qc?
+
+        assert_predicate @batch, :processing_in_manual_qc?
       end
 
       should 'return false if the state is not manual QC' do
         @batch.stubs(:qc_state).returns('qc_completed')
+
         assert_not @batch.processing_in_manual_qc?
       end
     end
@@ -93,6 +96,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'return nil if the current state is the last one' do
         @batch.stubs(:qc_state).returns(STATES.last)
+
         assert_nil @batch.qc_next_state
       end
 
@@ -100,6 +104,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
         next_state = STATES[index + 1]
         should "return '#{next_state}' for current state of '#{current_state}'" do
           @batch.stubs(:qc_state).returns(current_state)
+
           assert_equal next_state, @batch.qc_next_state
         end
       end
@@ -113,6 +118,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'return nil if the current state is the first one' do
         @batch.stubs(:qc_state).returns(STATES.first)
+
         assert_nil @batch.qc_previous_state
       end
 
@@ -120,6 +126,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
         current_state = STATES[index + 1]
         should "return '#{previous_state}' for current state of '#{current_state}'" do
           @batch.stubs(:qc_state).returns(current_state)
+
           assert_equal previous_state, @batch.qc_previous_state
         end
       end
