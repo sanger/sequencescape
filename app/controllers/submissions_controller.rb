@@ -116,7 +116,20 @@ class SubmissionsController < ApplicationController
   end
 
   def download_scrna_core_cdna_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-    submission = Submission.find(params[:id])
+    begin
+      submission = Submission.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:error] = "Submission not found with id #{params[:id]}"
+      redirect_to submissions_path
+      return
+    end
+
+    unless submission.scrna_core_cdna_prep_gem_x_5p_submission?
+      flash[:error] =
+        'This submission does not have the correct template for downloading a scRNA Core cDNA pooling plan'
+      redirect_to submission
+      return
+    end
 
     # Group requests by study/project/donor
     grouped_labware = submission.requests.group_by do |request|
