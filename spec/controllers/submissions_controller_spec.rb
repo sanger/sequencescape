@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SubmissionsController do
+RSpec.describe SubmissionsController, type: :controller do
   render_views
 
   let(:request_type) { create(:well_request_type) }
@@ -354,6 +354,25 @@ RSpec.describe SubmissionsController do
       it 'not warn the user about duplicates or samples' do
         get :show, params: { id: @submission.id }
         assert_select 'div.alert-danger', 0
+      end
+    end
+
+    describe '#download_scrna_core_cdna_pooling_plan' do
+      before do
+        @template = create(:submission_template, name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p')
+        @study = create(:study, user: @user)
+        @project = create(:project)
+        submission_order = create(:order_with_submission, template_name: @template.name, study: @study,
+                                                          project: @project,
+                                                          user: @user,
+                                                          asset_group: create(:asset_group, study: @study))
+        @submission = submission_order.submission
+      end
+
+      it 'downloads a pooling plan' do
+        get :download_scrna_core_cdna_pooling_plan, params: { id: @submission.id }
+
+        expect(response.headers['Content-Disposition']).to include("#{@submission.id}_scrna_core_cdna_pooling_plan.csv")
       end
     end
   end

@@ -320,9 +320,9 @@ Rails.application.routes.draw do
       get :study
     end
     member do
+      get :download_scrna_core_cdna_pooling_plan
       post :change_priority
       post :cancel
-      get :download_scrna_core_cdna_pooling_plan
     end
   end
 
