@@ -192,6 +192,48 @@ RSpec.describe StudiesController do
     end
 
     context 'when the accessioning succeeds' do
+      it 'accessions all samples in the study' do
+        study.samples.each do |sample|
+          expect(sample.reload.sample_metadata.sample_ebi_accession_number).to eq('EGA00001000240')
+        end
+      end
+
+      it 'redirects to the accession-statuses tab of the study page' do
+        expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
+      end
+
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'does not set a flash warning message' do
+        expect(flash[:warning]).to be_nil
+      end
+
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq(
+          'All of the samples in this study have been sent for accessioning. ' \
+          'Please check back in 5 minutes to confirm that accessioning was successful.'
+        )
+      end
+
+      it 'does not set a flash info message' do
+        expect(flash[:info]).to be_nil
+      end
+    end
+
+    context 'when a sample already has an accession number' do
+      # add a 6th already accessioned sample to the study
+      let(:samples) { create_list(:sample_for_accessioning, number_of_samples) + create_list(:accessioned_sample, 1) }
+      let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
+
+      it 'does not attempt to accession accessioned samples' do
+        # confirm that only 5 calls were made to the accession client, not 6
+        expect(Accession::Submission.client)
+          .to have_received(:submit_and_fetch_accession_number)
+          .exactly(number_of_samples).times
+      end
+
       it 'redirects to the accession-statuses tab of the study page' do
         expect(subject).to redirect_to(study_path(study, anchor: 'accession-statuses'))
       end
