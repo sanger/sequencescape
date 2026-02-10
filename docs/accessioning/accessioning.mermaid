@@ -194,16 +194,16 @@ flowchart LR
     %% Config
     CF_y25_706_enable_accessioning --> FN_AccessionHelper_accessioning_enabled --> LK_accessioning_enabled
 
-    %% Sample save and accession
-    UI_Sample_SAA ----> FN_Sample_accession_and_handle_validation_errors
-    FN_Sample_accession_and_handle_validation_errors --> FN_Accession_accession_sample
-
     %% Manifest upload
     RES_Manifest -.-> UI_Manifest_Upload
     UI_Manifest_Upload --> MD_SampleManifest_Uploader
     LK_accessioning_enabled_trigger_accessioning -.-> FN_SampleManifestExcel_Upload_Base_trigger_accessioning
-    MD_SampleManifest_Uploader --> FN_SampleManifestExcel_Upload_Base_trigger_accessioning ---> FN_Accession_accession_sample
+    MD_SampleManifest_Uploader --> FN_SampleManifestExcel_Upload_Base_trigger_accessioning --> FN_Accession_accession_sample
     
+    %% Sample save and accession
+    UI_Sample_SAA ---> FN_Sample_accession_and_handle_validation_errors
+    FN_Sample_accession_and_handle_validation_errors --> FN_Accession_accession_sample
+
     %% Sample generate accession number
     LK_accessioning_enabled_Samples_accession -.-> FN_Samples_accession
     UI_Sample_GAN --> FN_Samples_accession
