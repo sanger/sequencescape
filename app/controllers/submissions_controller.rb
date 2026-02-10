@@ -5,7 +5,7 @@
 # such as the fields that get displayed when a submission template is selected, and
 # the creation of each independent order.
 # Most the actual heavy lifting occurs in {Submission::SubmissionCreator}
-class SubmissionsController < ApplicationController # rubocop:disable Metrics/ClassLength
+class SubmissionsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
@@ -131,36 +131,8 @@ class SubmissionsController < ApplicationController # rubocop:disable Metrics/Cl
       return
     end
 
-    # Group requests by study/project
-    grouped_labware = submission.requests.group_by do |request|
-      aliquot = request.asset.aliquots.first
-      study = aliquot.study.name
-      project = aliquot&.project&.name
-      "#{study} / #{project}"
-    end
-
-    csv_string = CSV.generate(row_sep: "\r\n") do |csv|
-      csv << ['Study / Project', 'Pools (num samples)', 'Cells per chip well']
-      # It would be nice to refactor the scRNA Validator logic here to pull out the pooling plan logic
-      grouped_labware.each do |study_project, subgroup|
-        # Get number_of_pools requested from the submission
-        number_of_pools = subgroup.first.request_metadata.number_of_pools
-        # Ideal pool size is just the number of samples divided by the number of pools, but we need to account for
-        # any remainder if the division isn't exact
-        ideal_pool_size, remainder = subgroup.size.divmod(number_of_pools)
-        # Build the pools
-        pool_sizes = Array.new(number_of_pools, ideal_pool_size)
-        # Add the remainders
-        remainder.times { |i| pool_sizes[i] += 1 }
-
-        # Join the pool sizes into a string for the CSV output
-        number_of_samples_in_pool = pool_sizes.join(', ')
-
-        cells_per_chip_well = subgroup.first.request_metadata.cells_per_chip_well
-
-        csv << [study_project, number_of_samples_in_pool, cells_per_chip_well]
-      end
-    end
+    # Generate the pooling plan CSV string using the ScrnaCoreCdnaPrepPoolingPlanGenerator module
+    csv_string = Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator.generate_pooling_plan(submission)
 
     send_data csv_string, type: 'text/plain', filename: "#{params[:id]}_scrna_core_cdna_pooling_plan.csv",
                           disposition: 'attachment'
