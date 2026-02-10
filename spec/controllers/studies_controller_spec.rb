@@ -350,6 +350,63 @@ RSpec.describe StudiesController do
           end
         end
       end
+
+      context 'when the study does not have an accession number' do
+        let(:study) { create(:managed_study, samples:) }
+
+        it 'does not attempt to accession samples' do
+          expect(Accession::Submission.client).not_to have_received(:submit_and_fetch_accession_number)
+        end
+
+        it 'redirects to the study page' do
+          expect(subject).to redirect_to(study_path(study))
+        end
+
+        it 'does not set a flash warning message' do
+          expect(flash[:warning]).to be_nil
+        end
+
+        it 'does not set a flash notice message' do
+          expect(flash[:notice]).to be_nil
+        end
+
+        it 'sets a flash error message' do
+          expect(flash[:error]).to eq('Please accession the study before accessioning samples')
+        end
+
+        it 'does not set a flash info message' do
+          expect(flash[:info]).to be_nil
+        end
+      end
+
+      context 'when a study is not longer accessionable' do
+        let(:study_metadata) { create(:study_metadata_for_accessioning, study_ebi_accession_number: 'EGA123') }
+        let(:study) { create(:study, study_metadata:, samples:) }
+
+        it 'does not attempt to accession samples' do
+          expect(Accession::Submission.client).not_to have_received(:submit_and_fetch_accession_number)
+        end
+
+        it 'redirects to the study page' do
+          expect(subject).to redirect_to(study_path(study))
+        end
+
+        it 'does not set a flash warning message' do
+          expect(flash[:warning]).to be_nil
+        end
+
+        it 'does not set a flash notice message' do
+          expect(flash[:notice]).to be_nil
+        end
+
+        it 'sets a flash error message' do
+          expect(flash[:error]).to eq('Study cannot accession samples, see Study Accessioning tab for details')
+        end
+
+        it 'does not set a flash info message' do
+          expect(flash[:info]).to be_nil
+        end
+      end
     end
   end
 end
