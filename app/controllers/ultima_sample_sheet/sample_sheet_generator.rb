@@ -34,9 +34,9 @@ module UltimaSampleSheet::SampleSheetGenerator
       study_id
     ].freeze
     NUM_COLUMS = SAMPLES_HEADERS.size
-    # The names of the Ultima tag groups names are listed here for consistent
-    # index numbers for the Barcode_Plate_Num column, i.e. 1 or 2. The number is
-    # also used for determining the consistent starting index number for the
+    # The names of the Ultima tag groups are listed here for consistent index
+    # numbers for the Barcode_Plate_Num column, i.e. 1 or 2. The number is also
+    # used for determining the consistent starting index number for the
     # Index_Barcode_Num column, i.e. Z0001 or Z097.
     ULTIMA_TAG_GROUP_NAMES = ['Ultima P1', 'Ultima P2'].freeze
 
