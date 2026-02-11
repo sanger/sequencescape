@@ -60,6 +60,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           assert_equal @plate_count + 1, Plate.count
         end
         should respond_with :ok
+
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
         end
@@ -99,6 +100,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           assert_equal @plate_count + 1, Plate.count
         end
         should respond_with :ok
+
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
         end
@@ -173,6 +175,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
           assert_equal @plate_count + 1, Plate.count
         end
         should respond_with :ok
+
         should 'create a plate with the correct barcode' do
           assert_equal 'SQPD-1234567', Plate.last.barcodes.first.barcode
         end
@@ -204,10 +207,12 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                  }
                }
         end
+
         should 'create a plate and increase the plate count' do
           assert_equal @plate_count + 2, Plate.count
         end
         should respond_with :ok
+
         should 'create a plate with the correct barcode' do
           assert_equal %w[SQPD-1234567 SQPD-1234568], Plate.all.map { |p| p.barcodes.first.barcode }.sort
         end
@@ -240,6 +245,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                  }
                }
         end
+
         should 'create a plate and increase the plate count' do
           assert_equal @plate_count + 1, Plate.count
         end
@@ -298,6 +304,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                  }
                }
         end
+
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end
@@ -434,6 +441,7 @@ class PlatesFromTubesControllerTest < ActionController::TestCase
                  }
                }
         end
+
         should 'not create a plate' do
           assert_equal 0, Plate.count
         end

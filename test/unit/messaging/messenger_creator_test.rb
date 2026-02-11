@@ -17,15 +17,17 @@ class MessengerCreatorTest < ActiveSupport::TestCase
 
       should 'create a messenger' do
         @messenger = @messenger_creator.create!(@plate)
-        assert @messenger.is_a?(Messenger)
+
+        assert_kind_of Messenger, @messenger
         assert_equal @messenger.target, @plate
-        assert_equal @messenger.root, 'a_plate'
-        assert_equal @messenger.template, 'FluidigmPlateIo'
+        assert_equal 'a_plate', @messenger.root
+        assert_equal 'FluidigmPlateIo', @messenger.template
       end
 
       should 'be handled automatically by the purpose' do
         @purpose.messenger_creators << @messenger_creator
         @plate.cherrypick_completed
+
         assert_equal 1, Messenger.count - @start_count
       end
     end
@@ -41,18 +43,20 @@ class MessengerCreatorTest < ActiveSupport::TestCase
 
       should 'create a messenger' do
         @messengers = @messenger_creator.create!(@plate)
-        assert @messengers.is_a?(Array)
+
+        assert_kind_of Array, @messengers
         assert_equal 3, @messengers.length
 
         @plate.wells.each { |well| assert_includes @messengers.map(&:target), well }
 
-        assert_equal @messengers.first.root, 'well'
-        assert_equal @messengers.first.template, 'FluidigmPlateIo'
+        assert_equal 'well', @messengers.first.root
+        assert_equal 'FluidigmPlateIo', @messengers.first.template
       end
 
       should 'be handled automatically by the purpose' do
         @purpose.messenger_creators << @messenger_creator
         @plate.cherrypick_completed
+
         assert_equal 3, Messenger.count - @start_count
       end
     end

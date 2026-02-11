@@ -80,10 +80,11 @@ class PlateReaderParserTest < ActiveSupport::TestCase
           ['C2', { 'concentration' => Unit.new('76.69 ng/ul') }],
           ['D2', { 'concentration' => Unit.new('80.721 ng/ul') }]
         ]
+
         @parser.each_well_and_parameters do |*args|
-          assert results.delete(args).present?, "#{args.inspect} was an unexpected result"
+          assert_predicate results.delete(args), :present?, "#{args.inspect} was an unexpected result"
         end
-        assert results.empty?, "Some expected results were not returned: #{results.inspect}"
+        assert_empty results, "Some expected results were not returned: #{results.inspect}"
       end
     end
     context 'with an invalid CSV ISC file' do
