@@ -43,7 +43,9 @@ module Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator
 
   # Groups the requests associated with a submission by study and project.
   def self.grouped_requests(submission)
-    submission.requests.group_by do |request|
+    # Unique by asset to avoid counting the same sample tube multiple times if it appears in multiple requests
+    # e.g. if a sample tube is requested in two different lanes, we only want to count it once for pooling plan purposes
+    submission.requests.uniq(&:asset).group_by do |request|
       study = request.initial_study.name
       project = request.initial_project.name
       "#{study} / #{project}"

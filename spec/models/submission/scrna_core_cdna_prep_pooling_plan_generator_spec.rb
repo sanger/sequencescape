@@ -92,21 +92,24 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
       # Add sample tubes and requests to the submission
       create_list(:sample_tube, 2, study:, project:).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
-                                  submission: submission, initial_study: study, initial_project: project)
+                                  submission: submission, initial_study: study, initial_project: project,
+                                  request_metadata_attributes: { number_of_pools: 1, cells_per_chip_well: 150 })
       end
 
       # Add sample tubes with the same study but different project to ensure grouping is correct
       project2 = create(:project)
       create_list(:sample_tube, 2, study: study, project: project2).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
-                                  submission: submission, initial_study: study, initial_project: project2)
+                                  submission: submission, initial_study: study, initial_project: project2,
+                                  request_metadata_attributes: { number_of_pools: 1, cells_per_chip_well: 150 })
       end
 
       # Add sample tubes with the same project but different study to ensure grouping is correct
       study2 = create(:study)
       create_list(:sample_tube, 3, study: study2, project: project).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
-                                  submission: submission, initial_study: study2, initial_project: project)
+                                  submission: submission, initial_study: study2, initial_project: project,
+                                  request_metadata_attributes: { number_of_pools: 1, cells_per_chip_well: 150 })
       end
 
       grouped = described_class.grouped_requests(submission)
@@ -121,6 +124,28 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
       expected_groups.each do |group, count|
         expect(grouped[group].size).to eq(count)
       end
+    end
+
+    it 'counts each sample tube only once even if it appears in multiple requests' do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+      # Create a sample tube
+      tube = create(:sample_tube, study:, project:)
+      # Create multiple requests for the same tube
+      create_list(:customer_request, 3, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                        submission: submission, initial_study: study, initial_project: project,
+                                        request_metadata_attributes: { number_of_pools: 1, cells_per_chip_well: 150 })
+
+      # Create some other requests for different tubes to ensure the grouping logic is still correct
+      create_list(:sample_tube, 2, study:, project:).each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission, initial_study: study, initial_project: project,
+                                  request_metadata_attributes: { number_of_pools: 1, cells_per_chip_well: 150 })
+      end
+
+      grouped = described_class.grouped_requests(submission)
+
+      expect(grouped.keys).to eq(["#{study.name} / #{project.name}"])
+      # 3 as we only have 3 requests with uniq assets.
+      expect(grouped["#{study.name} / #{project.name}"].size).to eq(3)
     end
   end
 end
