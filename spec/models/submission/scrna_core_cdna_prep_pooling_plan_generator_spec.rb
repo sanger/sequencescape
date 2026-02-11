@@ -5,6 +5,78 @@ require 'rails_helper'
 # NB. Search for 'scRNA Core Pooling Developer Documentation' page in Confluence (public)
 # for a more verbose explanation of the logic tested here.
 RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
+  let(:study) { create(:study) }
+  let(:project) { create(:project) }
+  let(:template) { create(:submission_template, name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p') }
+  let(:submission) do
+    submission_order = create(:order_with_submission, template_name: template.name, study: study,
+                                                      project: project,
+                                                      asset_group: create(:asset_group, study:))
+    submission_order.submission
+  end
+
+  describe '.generate_pooling_plan' do
+    it 'generates a CSV string with the correct headers' do
+      # A basic submission is fine for testing the headers
+      submission = create(:submission)
+      csv_string = described_class.generate_pooling_plan(submission)
+      csv = CSV.parse(csv_string, headers: true)
+
+      expect(csv.headers).to eq(['Study / Project', 'Pools (num samples)', 'Cells per chip well'])
+    end
+
+    it 'generates a CSV string with the correct pooling plan based on the submission requests' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # Add sample tubes and requests to the submission
+      sample_tubes = create_list(:sample_tube, 5, study:, project:)
+      sample_tubes.each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission,
+                                  request_metadata_attributes: { number_of_pools: 3, cells_per_chip_well: 100 })
+      end
+
+      csv_string = described_class.generate_pooling_plan(submission)
+      csv = CSV.parse(csv_string, headers: true)
+
+      expect(csv.length).to eq(1) # We have one study/project group
+      expect(csv[0]['Study / Project']).to eq("#{study.name} / #{project.name}")
+      expect(csv[0]['Pools (num samples)']).to eq('2, 2, 1') # With 5 samples and 3 pools, we expect a layout of 2, 2, 1
+      expect(csv[0]['Cells per chip well']).to eq('100') # We set this in the request metadata for each request
+    end
+
+    it 'handles multiple study/project groups correctly' do # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # Add sample tubes and requests for two different study/project groups
+      project2 = create(:project)
+      study2 = create(:study)
+      sample_tubes_group1 = create_list(:sample_tube, 4, study:, project:)
+      sample_tubes_group2 = create_list(:sample_tube, 8, study: study2, project: project2)
+
+      sample_tubes_group1.each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission,
+                                  request_metadata_attributes: { number_of_pools: 2, cells_per_chip_well: 50 })
+      end
+
+      sample_tubes_group2.each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission,
+                                  request_metadata_attributes: { number_of_pools: 3, cells_per_chip_well: 150 })
+      end
+
+      csv_string = described_class.generate_pooling_plan(submission)
+      csv = CSV.parse(csv_string, headers: true)
+
+      expect(csv.length).to eq(2) # We have two study/project groups
+
+      group1 = csv.find { |row| row['Study / Project'] == "#{study.name} / #{project.name}" }
+      expect(group1['Pools (num samples)']).to eq('2, 2') # With 4 samples and 2 pools, we expect a layout of 2, 2
+      expect(group1['Cells per chip well']).to eq('50')
+
+      group2 = csv.find { |row| row['Study / Project'] == "#{study2.name} / #{project2.name}" }
+      expect(group2['Pools (num samples)']).to eq('3, 3, 2') # With 8 samples and 3 pools, we expect a layout of 3, 3, 2
+      expect(group2['Cells per chip well']).to eq('150')
+    end
+  end
+
   describe '.calculate_pools_layout' do
     it 'evenly divides samples into pools when there is no remainder' do
       expect(described_class.calculate_pools_layout(12, 3)).to eq([4, 4, 4])
@@ -16,18 +88,7 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
   end
 
   describe '.grouped_labware' do
-    let(:study) { create(:study) }
-    let(:project) { create(:project) }
-    let(:template) { create(:submission_template, name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p') }
-    let(:library_request_type) { create(:library_request_type) }
-
     it 'groups labware by study and project' do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
-      # Build the submission with the correct template and study/project associations
-      submission_order = create(:order_with_submission, template_name: template.name, study: study,
-                                                        project: project,
-                                                        asset_group: create(:asset_group, study:))
-      submission = submission_order.submission
-
       # Add sample tubes and requests to the submission
       sample_tubes = create_list(:sample_tube, 2, study:, project:)
       # Add sample tubes with the same study but different project to ensure grouping is correct
@@ -37,10 +98,10 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
       study2 = create(:study)
       sample_tubes << create_list(:sample_tube, 3, study: study2, project: project)
 
-      # Create library requests for each sample tube in the submission
+      # Create customer requests for each sample tube in the submission
       sample_tubes.flatten.each do |tube|
-        create(:library_request, asset: tube.receptacle, submission: submission,
-                                 request_type: library_request_type)
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission)
       end
 
       grouped = described_class.grouped_labware(submission)
@@ -55,12 +116,6 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
       expected_groups.each do |group, count|
         expect(grouped[group].size).to eq(count)
       end
-    end
-  end
-
-  describe '.generate_pooling_plan', skip: 'todo' do
-    it 'generates a CSV string with the correct headers and pooling plan' do
-      # Add test to check csv contents
     end
   end
 end

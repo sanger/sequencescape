@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 #
 # This module provides a basic pooling plan generator for scRNA core cDNA prep submissions.
-# It generates a CSV string which outlines the pooling strategy for their samples
-# based on the number of pools and cells per chip well specified in their submission.
-# The pooling plan is generated based on the labware associated with the submission, grouped by study and project.
+# It generates a CSV string which outlines the pooling strategy for the submitted samples
+# based on the number of pools and cells per chip well specified in the submission and grouped by study and project.
 # The logic for determining the pool layout is aimed to be a mirror of the pooling logic
 # used in Limber, specifically in the DonorPoolingCalculator's allocate_wells_to_pools method.
 #
