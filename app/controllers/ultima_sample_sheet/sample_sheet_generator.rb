@@ -34,6 +34,11 @@ module UltimaSampleSheet::SampleSheetGenerator
       study_id
     ].freeze
     NUM_COLUMS = SAMPLES_HEADERS.size
+    # The names of the Ultima tag groups names are listed here for consistent
+    # index numbers for the Barcode_Plate_Num column, i.e. 1 or 2. The number is
+    # also used for determining the consistent starting index number for the
+    # Index_Barcode_Num column, i.e. Z0001 or Z097.
+    ULTIMA_TAG_GROUP_NAMES = ['Ultima P1', 'Ultima P2'].freeze
 
     # Initializes the generator with the given batch.
     # @param batch [UltimaSequencingBatch] the batch to generate sample sheets for
@@ -187,28 +192,31 @@ module UltimaSampleSheet::SampleSheetGenerator
       aliquot.study_id.to_s
     end
 
-    # Returns a mapping of tags to their respective 1-based index numbers.
-    # This sorts the tags by their tag group ID and map ID to ensure consistent ordering.
+    # Returns a mapping of all Ultima tags to their respective 1-based index
+    # numbers. This sorts the tags by their tag group ID and map ID to ensure
+    # consistent ordering. The index numbers run across all Ultima tag groups,
+    # i.e. the index is 1 for the first tag in the first tag group and 97 for
+    # the first tag in the second tag group.
     # @return [Hash{Tag => Integer}] mapping of tags to index numbers
     def tag_index_map
       @tag_index_map ||= begin
-        tags = batch_tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
+        tags = ultima_tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
         tags.each_with_index.to_h { |tag, i| [tag, i + 1] }
       end
     end
 
-    # Returns a mapping of tag groups to 1-based index numbers.
+    # Returns a mapping of all Ultima tag groups to 1-based index numbers.
+    # This sorts the tag groups by their ID to ensure consistent ordering.
     # @return [Hash{TagGroup => Integer}] mapping of tag groups to index numbers
     def tag_group_index_map
-      @tag_group_index_map ||= batch_tag_groups.each_with_index.to_h { |tg, i| [tg, i + 1] }
+      @tag_group_index_map ||= ultima_tag_groups.each_with_index.to_h { |tg, i| [tg, i + 1] }
     end
 
-    # Returns all unique tag groups used in the batch.
-    # This sorts the tag groups by their ID to ensure consistent ordering.
-    # @return [Array<TagGroup>] the tag groups of the batch's requests
-    def batch_tag_groups
-      @batch_tag_groups ||= batch_requests
-        .flat_map { |request| request.asset.aliquots.map { |aliquot| aliquot.tag.tag_group } }.uniq.sort_by(&:id)
+    # Returns all unique tag groups used for Ultima sequencing from database.
+    # The tag groups are sorted by ID to ensure consistent ordering.
+    # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
+    def ultima_tag_groups
+      @ultima_tag_groups ||= TagGroup.where(name: ULTIMA_TAG_GROUP_NAMES).order(:id)
     end
 
     # Returns the requests associated with the batch.

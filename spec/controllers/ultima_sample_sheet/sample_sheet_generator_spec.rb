@@ -50,8 +50,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   before { create(:ultima_global) }
 
   # Eagerly create tag groups and tags to get consistent IDs.
-  let!(:tag_group1) { create(:tag_group_with_tags, tag_count: 96) }
-  let!(:tag_group2) { create(:tag_group_with_tags, tag_count: 96) }
+  let!(:tag_group1) { create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P1') }
+  let!(:tag_group2) { create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P2') }
   let(:tag_groups) { [tag_group1, tag_group2] }
 
   let(:request_type) { create(:ultima_sequencing) }
