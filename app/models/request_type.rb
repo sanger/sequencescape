@@ -87,8 +87,6 @@ class RequestType < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   serialize :request_parameters, coder: YAML
 
-  delegate :accessioning_required?, :sequencing?, to: :request_class
-
   # Couple of named scopes for finding billable types
   scope :billable, -> { where(billable: true) }
   scope :active, -> { where(deprecated: false) }
