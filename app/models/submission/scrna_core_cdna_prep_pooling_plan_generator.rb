@@ -15,7 +15,7 @@ module Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator
     CSV.generate(row_sep: "\r\n") do |csv|
       csv << ['Study / Project', 'Pools (num samples)', 'Cells per chip well']
       # It would be nice to refactor the scRNA Validator logic here to pull out the pooling plan logic
-      grouped_labware(submission).each do |study_project, subgroup|
+      grouped_requests(submission).each do |study_project, subgroup|
         # Get number_of_pools and cells_per_chip_well requested from the submission
         number_of_pools = subgroup.first.request_metadata.number_of_pools
         cells_per_chip_well = subgroup.first.request_metadata.cells_per_chip_well
@@ -41,12 +41,11 @@ module Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator
     pools_layout
   end
 
-  # Groups the labware associated with a submission by study and project.
-  def self.grouped_labware(submission)
+  # Groups the requests associated with a submission by study and project.
+  def self.grouped_requests(submission)
     submission.requests.group_by do |request|
-      aliquot = request.asset.aliquots.first
-      study = aliquot.study.name
-      project = aliquot&.project&.name
+      study = request.initial_study.name
+      project = request.initial_project.name
       "#{study} / #{project}"
     end
   end

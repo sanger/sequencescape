@@ -27,10 +27,10 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
 
     it 'generates a CSV string with the correct pooling plan based on the submission requests' do # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
       # Add sample tubes and requests to the submission
-      sample_tubes = create_list(:sample_tube, 5, study:, project:)
-      sample_tubes.each do |tube|
+      create_list(:sample_tube, 5, study:, project:).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
                                   submission: submission,
+                                  initial_study: study, initial_project: project,
                                   request_metadata_attributes: { number_of_pools: 3, cells_per_chip_well: 100 })
       end
 
@@ -47,18 +47,18 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
       # Add sample tubes and requests for two different study/project groups
       project2 = create(:project)
       study2 = create(:study)
-      sample_tubes_group1 = create_list(:sample_tube, 4, study:, project:)
-      sample_tubes_group2 = create_list(:sample_tube, 8, study: study2, project: project2)
 
-      sample_tubes_group1.each do |tube|
+      create_list(:sample_tube, 4, study:, project:).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
                                   submission: submission,
+                                  initial_study: study, initial_project: project,
                                   request_metadata_attributes: { number_of_pools: 2, cells_per_chip_well: 50 })
       end
 
-      sample_tubes_group2.each do |tube|
+      create_list(:sample_tube, 8, study: study2, project: project2).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
                                   submission: submission,
+                                  initial_study: study2, initial_project: project2,
                                   request_metadata_attributes: { number_of_pools: 3, cells_per_chip_well: 150 })
       end
 
@@ -87,24 +87,29 @@ RSpec.describe Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator do
     end
   end
 
-  describe '.grouped_labware' do
-    it 'groups labware by study and project' do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+  describe '.grouped_requests' do
+    it 'groups requests by study and project' do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
       # Add sample tubes and requests to the submission
-      sample_tubes = create_list(:sample_tube, 2, study:, project:)
-      # Add sample tubes with the same study but different project to ensure grouping is correct
-      project2 = create(:project)
-      sample_tubes << create_list(:sample_tube, 2, study: study, project: project2)
-      # Add sample tubes with the same project but different study to ensure grouping is correct
-      study2 = create(:study)
-      sample_tubes << create_list(:sample_tube, 3, study: study2, project: project)
-
-      # Create customer requests for each sample tube in the submission
-      sample_tubes.flatten.each do |tube|
+      create_list(:sample_tube, 2, study:, project:).each do |tube|
         create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
-                                  submission: submission)
+                                  submission: submission, initial_study: study, initial_project: project)
       end
 
-      grouped = described_class.grouped_labware(submission)
+      # Add sample tubes with the same study but different project to ensure grouping is correct
+      project2 = create(:project)
+      create_list(:sample_tube, 2, study: study, project: project2).each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission, initial_study: study, initial_project: project2)
+      end
+
+      # Add sample tubes with the same project but different study to ensure grouping is correct
+      study2 = create(:study)
+      create_list(:sample_tube, 3, study: study2, project: project).each do |tube|
+        create(:customer_request, sti_type: 'PbmcPoolingCustomerRequest', asset: tube.receptacle,
+                                  submission: submission, initial_study: study2, initial_project: project)
+      end
+
+      grouped = described_class.grouped_requests(submission)
 
       expected_groups = {
         "#{study.name} / #{project.name}" => 2,
