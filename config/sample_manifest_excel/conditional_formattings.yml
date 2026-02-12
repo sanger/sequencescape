@@ -16,7 +16,7 @@ empty_mandatory_cell:
     formula: "FALSE"
     operator: :equal
     priority: 1
-empty_mandatory_cell_2:
+empty_warning_cell:
   style:
     bg_color: "FF991C"
     type: :dxf

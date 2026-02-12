@@ -44,7 +44,7 @@ i7:
       errorTitle: "i7"
       error: "i7 cannot be blank"
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_warning_cell:
 i5:
   heading: i5 TAG SEQUENCE
   unlocked: true
@@ -63,7 +63,7 @@ i5:
       promptTitle: "i5"
       prompt: "Input i5."
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
@@ -147,7 +147,7 @@ chromium_tag_group:
       prompt: "Input the name of a valid tag set. All samples in a library need to be tagged with the same tag set."
     range_name: :chromium_tag_groups
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_cell:
 chromium_tag_well:
   heading: CHROMIUM TAG WELL
   unlocked: true
@@ -165,7 +165,7 @@ chromium_tag_well:
       errorTitle: "Tag well"
       error: "Tag Index must be a well."
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_cell:
     is_number:
     len:
       formula:
@@ -245,7 +245,7 @@ dual_index_tag_set:
       prompt: "Input the name of a valid dual index tag plate."
     range_name: :dual_index_tag_sets
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_cell:
 dual_index_tag_well:
   heading: DUAL INDEX TAG WELL
   unlocked: true
@@ -263,7 +263,7 @@ dual_index_tag_well:
       errorTitle: "Dual index tag well"
       error: "Dual Index Tag must be a well."
   conditional_formattings:
-    empty_mandatory_cell_2:
+    empty_cell:
     is_number:
     len:
       formula:
