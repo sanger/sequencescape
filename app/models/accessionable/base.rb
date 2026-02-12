@@ -2,7 +2,6 @@
 # Base class to control generating XML for accessioning with the ENA or EGA
 # @see AccessionService
 class Accessionable::Base
-  InvalidData = Class.new(AccessionService::AccessionServiceError)
   attr_reader :accession_number, :name, :date, :date_short
 
   def initialize(accession_number)
