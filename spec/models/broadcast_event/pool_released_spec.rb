@@ -112,5 +112,14 @@ RSpec.describe BroadcastEvent::PoolReleased, :broadcast_event do
       expect(metadata['team']).not_to be_nil
       expect(metadata['team']).not_to eq('UNKNOWN')
     end
+
+    # This is an edge case, but we want to make sure that if there are no creation requests or ancestors
+    # we don't error out and instead return 'UNKNOWN' for the team.
+    it 'has an unknown team if tube has no creation requests' do
+      tube.ancestors = []
+      tube.save!
+
+      expect(metadata['team']).to eq('UNKNOWN')
+    end
   end
 end
