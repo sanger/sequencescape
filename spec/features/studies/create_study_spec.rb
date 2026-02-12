@@ -60,9 +60,9 @@ describe 'Create a study' do
 
     expect(page).to have_content "Name can't be blank"
     expect(page).to have_content "Study description can't be blank"
-    expect(page).to have_content "Study metadata ebi library strategy can't be blank"
-    expect(page).to have_content "Study metadata ebi library source can't be blank"
-    expect(page).to have_content "Study metadata ebi library selection can't be blank"
+    expect(page).to have_content "Study metadata EBI library strategy can't be blank"
+    expect(page).to have_content "Study metadata EBI library source can't be blank"
+    expect(page).to have_content "Study metadata EBI library selection can't be blank"
   end
 
   it 'create managed study', :js do

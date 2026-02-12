@@ -15,6 +15,8 @@ module SampleManifestExcel
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
+      require_relative '../../../helpers/accession_helper'
+      include AccessionHelper
       include ActiveModel::Model
 
       attr_accessor :file, :column_list, :start_row, :override
@@ -102,18 +104,21 @@ module SampleManifestExcel
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
+      # NOTE: this does not check if the current user has permission to accession samples in this manifest
       def trigger_accessioning(event_user)
+        unless accessioning_enabled?
+          Rails.logger.info 'Accessioning is not enabled in this environment. Skipping accessioning.'
+          return
+        end
+
         changed_samples.each do |sample|
           Accession.accession_sample(sample, event_user)
         rescue AccessionService::AccessionValidationFailed => e
           Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
         end
-      rescue AccessionService::AccessioningDisabledError
-        Rails.logger.info 'Accessioning is disabled. ' \
-                          "Skipping accessioning of samples in manifest #{sample_manifest.id}."
       end
 
-      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
+      # If samples have been created, register a stock_resource record in the MLWH
       def register_stock_resources
         stock_receptacles_to_be_registered.each(&:register_stock!)
       end

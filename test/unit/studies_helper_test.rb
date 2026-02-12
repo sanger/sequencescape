@@ -14,6 +14,7 @@ class StudiesHelperTest < ActiveSupport::TestCase
 
       teardown do
         study = mock('Study', owners: @owners)
+
         assert_equal @expected, @helper.display_owners(study)
       end
 

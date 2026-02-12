@@ -11,16 +11,19 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
 
     should 'generate empty object on open empty' do
       @stream.open { |_stream| true }
+
       assert_equal('{}', @buffer.string)
     end
 
     should 'allow for array generation' do
       @stream.open { |stream| stream.array('key', [1, 2, 3]) { |stream, object| stream.encode(object) } }
+
       assert_equal('{"key":[1,2,3]}', @buffer.string)
     end
 
     should 'generate a block for access' do
       @stream.open { |stream| stream.block('block') { |stream| stream.attribute('key', 'value') } }
+
       assert_equal('{"block":{"key":"value"}}', @buffer.string)
     end
 
@@ -30,6 +33,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
           stream.attribute('key1', 'value1')
           stream.attribute('key2', 'value2')
         end
+
         assert_equal('{"key1":"value1","key2":"value2"}', @buffer.string)
       end
 
@@ -38,6 +42,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
           stream.block('block1') { |stream| stream.attribute('key', 'value') }
           stream.block('block2') { |stream| stream.attribute('key', 'value') }
         end
+
         assert_equal('{"block1":{"key":"value"},"block2":{"key":"value"}}', @buffer.string)
       end
 
@@ -49,6 +54,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
           end
           stream.block('block2') { |stream| stream.attribute('key', 'value') }
         end
+
         assert_equal('{"block1":{"key1":"value1","key2":"value2"},"block2":{"key":"value"}}', @buffer.string)
       end
     end
@@ -56,6 +62,7 @@ class Core::Io::Json::StreamTest < ActiveSupport::TestCase
     context 'basic types' do
       teardown do
         @stream.open { |stream| stream.attribute('key', @value) }
+
         assert_equal("{\"key\":#{@expected}}", @buffer.string)
       end
 

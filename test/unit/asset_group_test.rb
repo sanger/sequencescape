@@ -30,13 +30,14 @@ class AssetGroupTest < ActiveSupport::TestCase
     end
 
     should 'support automatic_move?' do
-      assert @asset_group.automatic_move?
+      assert_predicate @asset_group, :automatic_move?
     end
 
     should 'add to its assets' do
       assert_equal 2, @asset_group.assets.size
       @asset_group.assets << @asset3
       @asset_group.reload
+
       assert_equal 3, @asset_group.assets.size
     end
   end
@@ -93,6 +94,7 @@ class AssetGroupTest < ActiveSupport::TestCase
       Study.destroy_all
       @study = create(:study)
     end
+
     should 'not allow an AssetGroup to be created without a study' do
       assert_raises ActiveRecord::RecordInvalid do
         @asset_group = create(:asset_group, study_id: nil)
@@ -134,7 +136,7 @@ class AssetGroupTest < ActiveSupport::TestCase
           should 'return true' do
             assert_equal 2, @asset_group.assets.size
             assert_not @asset_group.assets.first.primary_aliquot.sample.nil?
-            assert @asset_group.all_samples_have_accession_numbers?
+            assert_predicate @asset_group, :all_samples_have_accession_numbers?
           end
         end
         context 'except 1 have accession numbers' do
@@ -143,6 +145,7 @@ class AssetGroupTest < ActiveSupport::TestCase
             asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset.receptacle
           end
+
           should 'return false' do
             assert_not @asset_group.all_samples_have_accession_numbers?
           end
@@ -181,7 +184,7 @@ class AssetGroupTest < ActiveSupport::TestCase
           should 'return true' do
             assert_equal 2, @asset_group.assets.size
             assert_not @asset_group.assets.first.primary_aliquot.sample.nil?
-            assert @asset_group.all_samples_have_accession_numbers?
+            assert_predicate @asset_group, :all_samples_have_accession_numbers?
           end
         end
         context 'except 1 have accession numbers' do
@@ -190,6 +193,7 @@ class AssetGroupTest < ActiveSupport::TestCase
             asset.primary_aliquot.sample.update!(sample_metadata_attributes: { sample_ebi_accession_number: '' })
             @asset_group.assets << asset.receptacle
           end
+
           should 'return false' do
             assert_not @asset_group.all_samples_have_accession_numbers?
           end

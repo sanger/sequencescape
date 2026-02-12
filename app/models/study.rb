@@ -397,16 +397,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         end
 
-  scope :for_sample_accessioning,
-        -> do
-          joins(:study_metadata).where("study_metadata.study_ebi_accession_number <> ''").where(
-            study_metadata: {
-              data_release_strategy: [Study::DATA_RELEASE_STRATEGY_OPEN, Study::DATA_RELEASE_STRATEGY_MANAGED],
-              data_release_timing: Study::DATA_RELEASE_TIMINGS_FOR_OPEN_RELEASE + Study::DATA_RELEASE_TIMINGS_FOR_MANAGED_RELEASE
-            }
-          )
-        end
-
   scope :awaiting_ethical_approval,
         -> do
           joins(:study_metadata).where(
@@ -572,22 +562,25 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ebi_accession_number.present?
   end
 
-  # Accession all samples in the study.
+  # Returns true if the samples in this study are eligible for accessioning
   #
-  # If the study does not have an accession number, adds an error to the study and returns.
-  # Otherwise, iterates through each sample in the study and attempts to accession it,
-  # unless the sample already has an accession number.
-  # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
+  # A study's samples are eligible for accessioning if:
+  # - the study is active
+  # - the study's data release strategy open or managed
+  # - the study is not set to never release
+  # - the study requires accessioning
+  # - the study has an accession number
   #
-  # @return [void]
-  def accession_all_samples(event_user)
-    return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
-
-    samples.find_each do |sample|
-      Accession.accession_sample(sample, event_user) unless sample.accession_number?
-    rescue Accession::Error => e
-      errors.add(:base, e.message)
-    end
+  # @return [Boolean] true if the samples in this study are eligible for accessioning, false otherwise
+  def samples_accessionable?
+    # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
+    [
+      active?,
+      !study_metadata.strategy_not_applicable?,
+      !study_metadata.never_release?,
+      accession_required?,
+      accession_number?
+    ].all?
   end
 
   def abbreviation

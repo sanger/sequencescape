@@ -14,7 +14,7 @@ class StockLibraryTubeTest < ActiveSupport::TestCase
 
     context '#is_a_stock_asset?' do
       should 'return true' do
-        assert @stock_library.is_a_stock_asset?
+        assert_predicate @stock_library, :is_a_stock_asset?
       end
     end
   end

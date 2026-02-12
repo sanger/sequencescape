@@ -26,7 +26,7 @@ namespace :sequencing do
               asset_type: 'LibraryTube',
               order: 2,
               initial_state: 'pending',
-              request_class_name: 'HiSeqSequencingRequest',
+              request_class_name: 'NovaSeq6000PESequencingRequest',
               billable: true,
               product_line: ProductLine.find_by(name: 'Illumina-HTP'),
               request_purpose: :standard
@@ -35,7 +35,7 @@ namespace :sequencing do
               RequestType::Validator.create!(
                 request_type: rt,
                 request_option: 'read_length',
-                valid_options: [150, 50, 75, 100]
+                valid_options: [50, 75, 100, 150, 250]
               )
             end
         end
