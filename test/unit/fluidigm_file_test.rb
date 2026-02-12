@@ -37,31 +37,34 @@ class FluidigmFileTest < ActiveSupport::TestCase
     should 'find 95 wells' do
       count = 0
       @fluidigm.each_well { |_well| count += 1 }
+
       assert_equal 95, count
     end
 
     should 'provide an interface for wells' do
       checked = 0
       @fluidigm.each_well do |well|
-        assert well.description != 'S96'
+        assert_not_equal well.description, 'S96'
         next if @well_maps[well.description].nil?
 
         assert_equal @well_maps[well.description][:markers].sort, well.gender_markers.sort
         assert_equal @well_maps[well.description][:count], well.count
         checked += 1
       end
+
       assert_equal @well_maps.size, checked
     end
 
     should 'let us grab all well locations' do
       assert_equal 95, @fluidigm.well_locations.count
-      @fluidigm.well_locations.each { |l| assert l.is_a?(String) }
+      @fluidigm.well_locations.each { |l| assert_kind_of String, l }
     end
 
     should 'let us fetch individual wells' do
       @well_maps.each do |loc, _properties|
         well = @fluidigm.well_at(loc)
-        assert well.is_a?(FluidigmFile::FluidigmWell)
+
+        assert_kind_of FluidigmFile::FluidigmWell, well
         assert_equal loc, well.description
         assert_equal @well_maps[loc][:markers].sort, well.gender_markers.sort
         assert_equal @well_maps[loc][:count], well.count

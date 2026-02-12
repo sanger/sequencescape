@@ -87,6 +87,20 @@ FactoryBot.define do
     end
   end
 
+  factory :nova_seq_6000_p_e_sequencing_request, class: 'NovaSeq6000PESequencingRequest' do
+    request_type factory: %i[nova_seq_6000_p_e_sequencing_request_type]
+    request_purpose { :standard }
+    sti_type { 'NovaSeq6000PESequencingRequest' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        requested_flowcell_type: 'SP',
+        read_length: 150
+      }
+    end
+  end
+
   factory :ultima_sequencing_request, class: 'UltimaSequencingRequest' do
     request_type factory: %i[ultima_sequencing]
     request_purpose { :standard }

@@ -28,6 +28,7 @@ class QcMetricTest < ActiveSupport::TestCase
     ].each do |qc_state, proceed_state, poor_quality_proceed|
       should "return #{poor_quality_proceed} when the qc_state is #{qc_state} and proceed is #{proceed_state}" do
         qc = create(:qc_metric, qc_decision: qc_state, proceed: proceed_state)
+
         assert_equal poor_quality_proceed, qc.poor_quality_proceed
       end
     end
@@ -44,12 +45,14 @@ class QcMetricTest < ActiveSupport::TestCase
       should "#{'not ' unless proceedable}allow the proceed flag to be set to Y when #{qc_state}" do
         qc = create(:qc_metric, qc_decision: qc_state)
         qc.human_proceed = 'Y'
+
         assert_equal proceedable, qc.proceed
       end
 
       should "allow the proceed flag to be set to N when #{qc_state}" do
         qc = create(:qc_metric, qc_decision: qc_state)
         qc.human_proceed = 'N'
+
         assert_equal false, qc.proceed
       end
 
@@ -61,6 +64,7 @@ class QcMetricTest < ActiveSupport::TestCase
 
         # The data NEEDS to be persisted, so we reload to check this is the case.
         aliquot.reload
+
         assert_equal set_suboptimal, aliquot.suboptimal?
       end
     end

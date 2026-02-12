@@ -14,8 +14,9 @@ class SubmissionTemplateTest < ActiveSupport::TestCase
 
     should 'be able to create a new order' do
       order = @template.new_order
+
       assert order
-      assert order.is_a?(Order)
+      assert_kind_of Order, order
       assert_equal @product, order.product
     end
   end

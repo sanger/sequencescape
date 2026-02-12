@@ -11,8 +11,34 @@ module RecordLoader
 
     def create_or_update!(key, options)
       request_type_key = options.delete('request_type_key')
+      rt = find_request_type!(request_type_key, key)
+      find_or_update_validator!(rt, key, options)
+    end
+
+    private
+
+    # Finds a RequestType by key and handles missing records based on the environment.
+    def find_request_type!(request_type_key, key)
       rt = RequestType.find_by(key: request_type_key)
-      RequestType::Validator.create_with(options.merge(request_type_id: rt.id)).find_or_create_by!(key:)
+      if rt.nil?
+        message = "RequestType with key '#{request_type_key}' not found for RequestType::Validator with key '#{key}'"
+        if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber?
+          Rails.logger.warn(message)
+          return nil
+        end
+        raise ActiveRecord::RecordNotFound, message
+      end
+      rt
+    end
+
+    # Creates or finds and updates the RequestType::Validator.
+    def find_or_update_validator!(req_type, key, options)
+      validator = RequestType::Validator.find_or_initialize_by(
+        request_type_id: req_type.id,
+        request_option: options['request_option']
+      )
+      validator.assign_attributes(options.merge(request_type_id: req_type.id, key: key))
+      validator.save!
     end
   end
 end

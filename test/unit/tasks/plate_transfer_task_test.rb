@@ -72,6 +72,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         should 'create transfer to the Library tubes' do
           @batch.requests.each do |r|
             w = r.asset
+
             assert_equal r.target_asset,
                          Plate
                            .order(:id)

@@ -19,6 +19,7 @@ module Admin
         should 'create a new program' do
           num = Program.count
           post :create, params: { program: { name: 'A very new program name' } }
+
           assert_equal num + 1, Program.count
           assert assigns(:program)
           assert_redirected_to admin_program_path(assigns(:program))
@@ -27,6 +28,7 @@ module Admin
         should 'not create a new program with same name as a previous program' do
           num = Program.count
           post :create, params: { program: { name: 'My unique name of program' } }
+
           assert_equal num, Program.count
         end
       end
@@ -48,6 +50,7 @@ module Admin
 
         should 'display existing programs' do
           get :show, params: { id: @program.id }
+
           assert_equal @program, assigns(:program)
         end
       end

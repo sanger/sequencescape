@@ -1,18 +1,21 @@
 inherit_from:
   - .rubocop_todo.yml
-require:
-  - test_prof/rubocop
 plugins:
   - rubocop-capybara
   - rubocop-factory_bot
+  - rubocop-minitest
   - rubocop-performance
   - rubocop-rails
   - rubocop-rspec
   - rubocop-rspec_rails
+  - test-prof
 
 inherit_mode:
   merge:
     - Exclude
+
+inherit_gem:
+  test-prof: config/rubocop-rspec.yml
 
 AllCops:
   NewCops: enable

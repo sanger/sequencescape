@@ -16,6 +16,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
             library_type: 'Standard'
           }
         )
+
       assert r
     end
 
@@ -31,6 +32,7 @@ class IlluminaB::RequestValidationTest < ActiveSupport::TestCase
               library_type: 'Standard'
             }
           )
+
         assert r
       end
     end
