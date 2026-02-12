@@ -34,11 +34,14 @@ module UltimaSampleSheet::SampleSheetGenerator
       study_id
     ].freeze
     NUM_COLUMS = SAMPLES_HEADERS.size
-    # The names of the Ultima tag groups are listed here for consistent index
-    # numbers for the Barcode_Plate_Num column, i.e. 1 or 2. The number is also
-    # used for determining the consistent starting index number for the
+    # The names of the Ultima tag groups are mapped to the index numbers for
+    # the Barcode_Plate_Num column, i.e. 1 or 2. The number is also used for
+    # determining the consistent starting index number for the
     # Index_Barcode_Num column, i.e. Z0001 or Z097.
-    ULTIMA_TAG_GROUP_NAMES = ['Ultima P1', 'Ultima P2'].freeze
+    ULTIMA_TAG_GROUPS = {
+      'Ultima P1' => 1,
+      'Ultima P2' => 2
+    }.freeze
 
     # Initializes the generator with the given batch.
     # @param batch [UltimaSequencingBatch] the batch to generate sample sheets for
@@ -206,17 +209,16 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns a mapping of all Ultima tag groups to 1-based index numbers.
-    # This sorts the tag groups by their ID to ensure consistent ordering.
+    # This indexes the tag groups as given in the ULTIMA_TAG_GROUPS hash.
     # @return [Hash{TagGroup => Integer}] mapping of tag groups to index numbers
     def tag_group_index_map
-      @tag_group_index_map ||= ultima_tag_groups.each_with_index.to_h { |tg, i| [tg, i + 1] }
+      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ULTIMA_TAG_GROUPS[tg.name] }
     end
 
     # Returns all unique tag groups used for Ultima sequencing from database.
-    # The tag groups are sorted by ID to ensure consistent ordering.
     # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
     def ultima_tag_groups
-      @ultima_tag_groups ||= TagGroup.where(name: ULTIMA_TAG_GROUP_NAMES).order(:id)
+      @ultima_tag_groups ||= TagGroup.where(name: ULTIMA_TAG_GROUPS.keys)
     end
 
     # Returns the requests associated with the batch.
