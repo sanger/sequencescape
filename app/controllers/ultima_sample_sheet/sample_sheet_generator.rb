@@ -123,7 +123,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     def add_samples_section(csv, request)
       csv << pad(SAMPLES_TITLE)
       csv << pad(SAMPLES_HEADERS)
-      request.asset.aliquots.each do |aliquot|
+      request.asset.aliquots.sort_by(&:id).each do |aliquot|
         csv << [
           sample_id_for(aliquot),
           library_name_for(aliquot),
