@@ -24,3 +24,15 @@ limber_lcm_triomics_wgs:
     - LCMT DNA Adp Lig
   library_types:
     - LCMB
+limber_lcm_triomics_rnaseq:
+    name: LCM Triomics RNA-seq
+    asset_type: Well
+    order: 1
+    request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+    for_multiplexing: false
+    billable: true
+    product_line_name: Short Read
+    acceptable_purposes:
+      - LCMT Lysate
+    library_types:
+      - Combined LCM RNA
