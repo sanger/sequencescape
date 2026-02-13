@@ -5,7 +5,6 @@ module Accession
   #  check configuration settings, in particular:
   #   configatron.proxy
   #   configatron.accession url, ega.user, ega.password, ena.user, ena.password
-  #   configatron.accession_local_key (authorised user uuid)
   # check that Sequencescape sample sample_metadata meets accessioning requirements
   # feature flag y25_706_enable_accessioning should be set to true to automatically accession a sample after save
   # (app/models/sample.rb)
@@ -48,7 +47,6 @@ module Accession
 
   require_relative 'accession/core_extensions'
   require_relative 'accession/accessionable'
-  require_relative 'accession/contact'
   require_relative 'accession/service'
   require_relative 'accession/sample'
   require_relative 'accession/tag'
