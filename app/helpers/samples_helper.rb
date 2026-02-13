@@ -12,8 +12,10 @@ module SamplesHelper
   end
 
   def samples_not_accessioned(samples)
+    return 'No samples accessioned' if samples.empty? || samples.none?(&:accession_number?)
     return 'All samples accessioned' if samples.all?(&:accession_number?)
 
-    "#{samples.count { |sample| !sample.accession_number? }} samples not accessioned"
+    count = samples.count { |sample| !sample.accession_number? }
+    "#{pluralize(count, 'sample')} not accessioned"
   end
 end
