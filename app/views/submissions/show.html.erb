@@ -4,7 +4,7 @@
   add :menu, "Print labels for #{order.asset_group.name}" => print_study_asset_group_path(order.study,order.asset_group) unless order.asset_group.nil?
 end %>
 <%- add :menu, "Submissions Inbox" => submissions_path if can? :read, Submission -%>
-<%- add :menu, "Download scRNA Core cDNA pooling plan" => download_scrna_core_cdna_pooling_plan_submission_path(@presenter.submission.id) if
+<%- add :menu, "Download scRNA Core pooling plan" => download_scrna_core_pooling_plan_submission_path(@presenter.submission.id) if
     @presenter.submission.scrna_core_cdna_prep_gem_x_5p_submission?
 -%>
 

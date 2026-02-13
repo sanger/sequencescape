@@ -357,7 +357,7 @@ RSpec.describe SubmissionsController, type: :controller do
       end
     end
 
-    describe '#download_scrna_core_cdna_pooling_plan' do
+    describe '#download_scrna_core_pooling_plan' do
       before do
         @template = create(:submission_template, name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p')
         @study = create(:study, user: @user)
@@ -370,13 +370,13 @@ RSpec.describe SubmissionsController, type: :controller do
       end
 
       it 'downloads a pooling plan' do
-        get :download_scrna_core_cdna_pooling_plan, params: { id: @submission.id }
+        get :download_scrna_core_pooling_plan, params: { id: @submission.id }
 
-        expect(response.headers['Content-Disposition']).to include("#{@submission.id}_scrna_core_cdna_pooling_plan.csv")
+        expect(response.headers['Content-Disposition']).to include("#{@submission.id}_scrna_core_pooling_plan.csv")
       end
 
       it 'redirects with an error if the submission is not found' do
-        get :download_scrna_core_cdna_pooling_plan, params: { id: 'nonexistent' }
+        get :download_scrna_core_pooling_plan, params: { id: 'nonexistent' }
 
         expect(flash[:error]).to eq('Submission not found with id nonexistent')
         expect(response).to redirect_to(submissions_path)
@@ -385,10 +385,10 @@ RSpec.describe SubmissionsController, type: :controller do
       it 'redirects with an error if the submission does not have the correct template' do
         @submission.orders.first.update(template_name: 'Some other template')
 
-        get :download_scrna_core_cdna_pooling_plan, params: { id: @submission.id }
+        get :download_scrna_core_pooling_plan, params: { id: @submission.id }
 
         expect(flash[:error]).to eq(
-          'This submission does not have the correct template for downloading a scRNA Core cDNA pooling plan'
+          'This submission does not have the correct template for downloading a scRNA Core pooling plan'
         )
         expect(response).to redirect_to(submission_path(@submission))
       end

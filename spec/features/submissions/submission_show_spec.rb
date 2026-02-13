@@ -29,7 +29,7 @@ describe 'Submission show' do
       expect(page).to have_link('Print labels for')
       expect(page).to have_link('Submissions Inbox')
       # This should only be visible for submissions with the correct scRNA template
-      expect(page).to have_no_link('Download scRNA Core cDNA pooling plan')
+      expect(page).to have_no_link('Download scRNA Core pooling plan')
     end
   end
 
@@ -37,13 +37,13 @@ describe 'Submission show' do
     let(:template) { create(:submission_template, name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p') }
 
     it 'shows the correct sidebar links' do
-      expect(page).to have_link('Download scRNA Core cDNA pooling plan')
+      expect(page).to have_link('Download scRNA Core pooling plan')
     end
 
     it 'downloads the correct pooling plan' do
-      click_link 'Download scRNA Core cDNA pooling plan'
+      click_link 'Download scRNA Core pooling plan'
       expect(page.response_headers['Content-Disposition']).to include(
-        "#{submission.id}_scrna_core_cdna_pooling_plan.csv"
+        "#{submission.id}_scrna_core_pooling_plan.csv"
       )
     end
   end
