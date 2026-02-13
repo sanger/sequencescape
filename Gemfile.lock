@@ -289,7 +289,7 @@ GEM
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack_pro (9.2.1)
+    knapsack_pro (9.2.2)
       rake
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
