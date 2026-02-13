@@ -7,7 +7,7 @@
 
 <%# Aggregation summary for the top right %>
 <% content_for :aggregation do %>
-  <%= @study.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+    <%= samples_not_accessioned(@study.samples) %>
 <% end %>
 
 <%# Table contents %>

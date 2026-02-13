@@ -10,4 +10,10 @@ module SamplesHelper
 
     'Save Sample'
   end
+
+  def samples_not_accessioned(samples)
+    return 'All samples accessioned' if samples.all?(&:accession_number?)
+
+    "#{samples.count { |sample| !sample.accession_number? }} samples not accessioned"
+  end
 end
