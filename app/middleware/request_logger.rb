@@ -5,9 +5,9 @@
 # @param log_level [Symbol] the log level to use for logging requests (default: :info)
 #
 # Returns a JSON parseable log entry like:
-# [INFO] [RequestLogger] {"method":"GET","path":"/samples/1234","status_code":200,"status_message":"OK",
-#   "duration_ms":935,"client_ip":"172.21.43.210","request_id":"9fd18098-dea3-46f0-83c8-c41852441db3",
-#   "@timestamp":"2026-02-12T12:10:50.284+00:00"}
+# [INFO] [RequestLogger] {"method":"GET","path":"/samples/1234","format":"html","status_code":200,
+#   "status_message":"OK","duration_ms":935,"client_ip":"172.21.43.210",
+#   "request_id":"9fd18098-dea3-46f0-83c8-c41852441db3","@timestamp":"2026-02-12T12:10:50.284+00:00"}
 class RequestLogger
   def initialize(app, log_level: :info)
     @app = app
@@ -48,6 +48,7 @@ class RequestLogger
     record = {
       method: request.request_method,
       path: request.fullpath,
+      format: request.format.symbol,
       status_code: status_code,
       status_message: status_message,
       duration_ms: elapsed_ms,
