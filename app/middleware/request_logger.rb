@@ -2,13 +2,16 @@
 
 # Log request and response details for monitoring and high-level profiling.
 #
+# @param log_level [Symbol] the log level to use for logging requests (default: :info)
+#
 # Returns a JSON parseable log entry like:
 # [INFO] [RequestLogger] {"method":"GET","path":"/samples/1234","status_code":200,"status_message":"OK",
 #   "duration_ms":935,"client_ip":"172.21.43.210","request_id":"9fd18098-dea3-46f0-83c8-c41852441db3",
 #   "@timestamp":"2026-02-12T12:10:50.284+00:00"}
 class RequestLogger
-  def initialize(app)
+  def initialize(app, log_level: :info)
     @app = app
+    @log_level = log_level
   end
 
   def call(env)
@@ -52,6 +55,7 @@ class RequestLogger
       request_id: request.request_id,
       '@timestamp': timestamp
     }
-    Rails.logger.info("[RequestLogger] #{record.to_json}")
+
+    Rails.logger.public_send(@log_level, "[RequestLogger] #{record.to_json}")
   end
 end

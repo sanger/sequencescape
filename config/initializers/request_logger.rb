@@ -4,7 +4,7 @@ require_relative '../../app/middleware/request_logger'
 
 Rails.application.configure do
   # Insert RequestLogger near the top, before Rails::Rack::Logger
-  config.middleware.insert_before(Rails::Rack::Logger, RequestLogger)
+  config.middleware.insert_before(Rails::Rack::Logger, RequestLogger, log_level: :info)
 end
 
 # Add backtrace silencers for middleware so that we don't see it in backtraces.
