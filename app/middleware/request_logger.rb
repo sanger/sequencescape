@@ -1,26 +1,11 @@
 # frozen_string_literal: true
 
-# Log requests and their responses for monitoring.
+# Log request and response details for monitoring and high-level profiling.
 #
-# Ideally we would like this to produce an output that contains the following information:
-# {
-#   "method":"GET",
-#   "path":"/",
-#   "format":"html",
-#   "controller":"homes",
-#   "action":"show",
-#   "status":200,
-#   "duration":467.41,
-#   "view":383.75,
-#   "db":165.11,
-#   "ip":"::1",
-#   "route":"homes#show",
-#   "request_id":"ceede35e-0a35-4d6b-b7bc-735ff8daa91f",
-#   "source":"127.0.0.1",
-#   "tags":["request"],
-#   "@timestamp":"2026-02-14T14:38:54.264Z",
-#   "@version":"1"
-# }
+# Returns a JSON parseable log entry like:
+# [INFO] [RequestLogger] {"method":"GET","path":"/samples/1234","status_code":200,"status_message":"OK",
+#   "duration_ms":935,"client_ip":"172.21.43.210","request_id":"9fd18098-dea3-46f0-83c8-c41852441db3",
+#   "@timestamp":"2026-02-12T12:10:50.284+00:00"}
 class RequestLogger
   def initialize(app)
     @app = app
@@ -30,7 +15,6 @@ class RequestLogger
     response, elapsed_ms = elapsed_milliseconds { @app.call(env) }
 
     request = ActionDispatch::Request.new(env)
-    # debug(request, response)
     log_request(request, response, elapsed_ms)
 
     response
@@ -69,17 +53,5 @@ class RequestLogger
       '@timestamp': timestamp
     }
     Rails.logger.info("[RequestLogger] #{record.to_json}")
-  end
-
-  def debug(request, response)
-    _status_code, headers, _body = response
-
-    puts 'Request:'
-    pp (request.methods - Object.methods).sort
-    puts '-------'
-    puts "Request env: #{request.env.inspect}"
-    puts '-------'
-    puts "Response: #{headers.inspect}"
-    puts '-------'
   end
 end
