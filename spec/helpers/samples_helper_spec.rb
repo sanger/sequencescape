@@ -60,12 +60,30 @@ RSpec.describe SamplesHelper, type: :helper do
       end
 
       it { is_expected.to eq('2 samples not accessioned') }
+
+      context 'when only one sample is not accessioned' do
+        let(:samples) do
+          [
+            build(:accessioned_sample),
+            build(:accessioned_sample),
+            build(:sample)
+          ]
+        end
+
+        it { is_expected.to eq('1 sample not accessioned') }
+      end
     end
 
     context 'when no samples are accessioned' do
       let(:samples) { build_list(:sample, 3) }
 
-      it { is_expected.to eq('3 samples not accessioned') }
+      it { is_expected.to eq('No samples accessioned') }
+    end
+
+    context 'when there are no samples' do
+      let(:samples) { [] }
+
+      it { is_expected.to eq('No samples accessioned') }
     end
   end
 end
