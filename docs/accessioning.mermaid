@@ -1,0 +1,280 @@
+---
+title: Sequencescape Accessioning Processes
+---
+%%{ init: { 
+    'flowchart': { 'curve': 'curvy' },
+    'theme': 'neutral',
+    'themeVariables': { 'fontSize': '18px' }
+  }
+}%%
+flowchart LR
+    %% Legend
+    subgraph Legend [Legend]
+        direction TB
+        L_Application(fa:fa-circle-arrow-right Application Process)
+        L_External(fa:fa-arrow-up External API)
+        L_Action(fa:fa-computer-mouse User Action)
+        L_Model(fa:fa-square-caret-down Model)
+        L_Controller(fa:fa-arrows-spin Controller)
+        L_View(fa:fa-eye View)
+        L_Function(fa:fa-caret-right Function)
+        L_Validation_Function(fa:fa-caret-right Validation Function)
+        L_Config(fa:fa-screwdriver-wrench Configuration)
+        L_Resource(fa:fa-file Resource)
+        L_Library(fa:fa-book Library)
+        L_Async(fa:fa-clock Asynchronous Process)
+        L_LinkSource[/Link Source\]
+        L_LinkSink[\Link Sink/]
+    
+        L_Application ~~~ L_External ~~~ L_Action ~~~ L_Resource ~~~ L_Library ~~~ L_Async ~~~ L_LinkSource
+        L_Config ~~~ L_Controller ~~~ L_Model ~~~ L_View ~~~ L_Validation_Function ~~~ L_Function ~~~ L_LinkSink
+    
+        InvisibleNodeA[ ] -..-> | Data flow | InvisibleNodeB[ ] -- Function calls --> InvisibleNodeC[ ] == Accessioning function calls ==> InvisibleNodeD[ ]
+    end
+
+    %% End Legend
+
+    %% Nodes
+
+    %% External Systems
+    External_EBI_Studies(fa:fa-arrow-up ENA/EGA Studies)
+    External_EBI_Samples(fa:fa-arrow-up ENA/EGA Samples)
+
+    %% User Interfaces
+    UI_Sample_GAN(fa:fa-computer-mouse Generate Accession Number)
+    UI_Sample_SAA(fa:fa-computer-mouse Save and Accession)
+    UI_Study_GAN(fa:fa-computer-mouse Generate Accession Number)
+    UI_Study_AAS(fa:fa-computer-mouse Accession all Samples)
+    UI_Manifest_Upload(fa:fa-computer-mouse Manifest Upload)
+
+    %% Models   
+    MD_SampleManifest_Uploader(fa:fa-square-caret-down SampleManifest::Uploader)
+    MD_AccessionStatuses(fa:fa-square-caret-down AccessionStatuses)
+
+    %% Views
+    VW_Sample(fa:fa-eye Sample View)
+    VW_Study(fa:fa-eye Study View)
+
+    %% Functions
+    FN_Accession_accession_sample(fa:fa-caret-right accession_sample)
+    FN_Accession_Sample_update_accession_number(fa:fa-caret-right update_accession_number)
+    FN_Accession_Sample_validate(fa:fa-caret-right validate)
+    FN_Accession_SampleAccessioning_perform(fa:fa-caret-right Accession::SampleAccessioning<br/>#perform)
+    FN_Accessionable_Study_update_accession_number(fa:fa-caret-right update_accession_number!)
+    FN_AccessionHelper_accessioning_enabled(fa:fa-caret-right AccessionHelper<br/>#accessioning_enabled?)
+    FN_AccessionService_post_files(fa:fa-caret-right post_files)
+    FN_AccessionService_select_for_study(fa:fa-caret-right select_for_study)
+    FN_AccessionService_submit_study_for_user(fa:fa-caret-right submit_study_for_user)
+    FN_AccessionService_submit(fa:fa-caret-right submit)
+    FN_Sample_accession_and_handle_validation_errors(fa:fa-caret-right accession_and_handle_validation_errors)
+    FN_SampleManifestExcel_Upload_Base_trigger_accessioning(fa:fa-caret-right SampleManifestExcel::Upload::Base<br/>#trigger_accessioning)
+    FN_Samples_accession(fa:fa-caret-right accession)
+    FN_Studies_accession_all_samples(fa:fa-caret-right accession_all_samples)
+    FN_Studies_accession(fa:fa-caret-right accession)
+    FN_Study_validate_study_for_accessioning(fa:fa-caret-right validate_study_for_accessioning!)
+
+    %% Links
+    LK_accessioning_enabled[/accessioning_enabled?\]
+    LK_accessioning_enabled_AAS[\accessioning_enabled?/]
+    LK_accessioning_enabled_Studies_accession[\accessioning_enabled?/]
+    LK_accessioning_enabled_Samples_accession[\accessioning_enabled?/]
+    LK_accessioning_enabled_trigger_accessioning[\accessioning_enabled?/]
+    LK_accessioning_enabled_Accession_perform[\accessioning_enabled?/]
+    LK_accessioning_enabled_Study_View[\accessioning_enabled?/]
+    LK_accessioning_enabled_Sample_View[\accessioning_enabled?/]
+
+    %% Libraries
+    LB_AccessioningV1Client(fa:fa-book AccessioningV1Client)
+    LB_RestClient(fa:fa-book RestClient)
+
+    %% Other Components
+    CP_AccessionSubmission(fa:fa-book Accession::Submission)
+    DJ_SampleAccessioningJob(fa:fa-clock SampleAccessioningJob)
+
+    %% Config
+    CF_y25_706_enable_accessioning(fa:fa-screwdriver-wrench y25_706_enable_accessioning)
+
+    %% Resources
+    RES_Manifest(fa:fa-file Manifest)
+
+    %% Groupings of nodes
+    subgraph App_SS_Configuration[fa:fa-screwdriver-wrench Sequencescape Configuration]
+        direction LR
+        CF_y25_706_enable_accessioning
+        FN_AccessionHelper_accessioning_enabled
+        LK_accessioning_enabled
+    end
+
+    subgraph App_SS_Pages[fa:fa-eye Sequencescape Pages]
+        subgraph Study_Page[Study Page]
+            UI_Study_GAN
+            UI_Study_AAS
+        end
+        subgraph Samples
+            UI_Sample_SAA
+            UI_Sample_GAN
+        end        
+        subgraph Sample Manifests
+            RES_Manifest
+            UI_Manifest_Upload
+        end
+    end
+
+    subgraph App_SS_Study_Accessioning[fa:fa-circle-arrow-right Study Accessioning]
+        LB_RestClient
+
+        subgraph CT_Studies[fa:fa-arrows-spin Studies Controller]
+            LK_accessioning_enabled_AAS
+            LK_accessioning_enabled_Studies_accession
+            FN_Studies_accession_all_samples
+            FN_Studies_accession
+        end
+        subgraph MD_Study[fa:fa-square-caret-down Study Model]
+            FN_Study_validate_study_for_accessioning
+        end
+        subgraph MD_AccessionService[fa:fa-square-caret-down AccessionService Model - studies only]
+            FN_AccessionService_select_for_study
+            FN_AccessionService_submit_study_for_user
+            FN_AccessionService_submit
+            FN_AccessionService_post_files
+        end
+        subgraph MD_Accessionable_Study[fa:fa-square-caret-down Accessionable::Study Model]
+            FN_Accessionable_Study_update_accession_number
+        end
+    end
+
+    subgraph App_SS_Sample_Accessioning[fa:fa-circle-arrow-right Sample Accessioning]
+        subgraph CT_Samples[fa:fa-arrows-spin Samples Controller]
+            LK_accessioning_enabled_Samples_accession
+            FN_Samples_accession
+        end
+    end
+
+    subgraph App_SS_Sample_Save_and_Accession[fa:fa-circle-arrow-right Sample Save and Accession]
+        subgraph MD_Sample[fa:fa-square-caret-down Sample Model]
+            FN_Sample_accession_and_handle_validation_errors
+        end
+    end
+
+    subgraph App_SS_Sample_Manifest_Accessioning[fa:fa-circle-arrow-right Sample Manifest Accessioning]
+        MD_SampleManifest_Uploader
+        LK_accessioning_enabled_trigger_accessioning
+        FN_SampleManifestExcel_Upload_Base_trigger_accessioning
+    end
+    subgraph App_SS_Accession_Sample[fa:fa-circle-arrow-right Accession Sample]
+        DJ_SampleAccessioningJob
+        LB_AccessioningV1Client
+        MD_AccessionStatuses
+ 
+            LK_accessioning_enabled_Accession_perform    
+            FN_Accession_accession_sample
+            FN_Accession_SampleAccessioning_perform
+            CP_AccessionSubmission
+            subgraph MD_Accession_Sample[fa:fa-square-caret-down Accession::Sample Model]
+                FN_Accession_Sample_validate
+                FN_Accession_Sample_update_accession_number
+            end
+    end
+
+    subgraph App_SS_Views[fa:fa-circle-arrow-right Sequencescape Views]
+        LK_accessioning_enabled_Sample_View
+        VW_Sample
+        LK_accessioning_enabled_Study_View
+        VW_Study
+    end
+    %% subgraph External_EBI[fa:fa-globe EBI ENA Webin REST V1]
+        External_EBI_Studies
+        External_EBI_Samples
+    %% end
+
+
+    %% Edge connections between nodes
+
+    App_SS_Pages ~~~~ App_SS_Configuration
+    App_SS_Accession_Sample ~~~~ App_SS_Views
+
+    %% Config
+    CF_y25_706_enable_accessioning --> FN_AccessionHelper_accessioning_enabled --> LK_accessioning_enabled
+
+    %% Manifest upload
+    RES_Manifest -.-> UI_Manifest_Upload
+    UI_Manifest_Upload --> MD_SampleManifest_Uploader
+    LK_accessioning_enabled_trigger_accessioning -.-> FN_SampleManifestExcel_Upload_Base_trigger_accessioning
+    MD_SampleManifest_Uploader --> FN_SampleManifestExcel_Upload_Base_trigger_accessioning --> FN_Accession_accession_sample
+    
+    %% Sample save and accession
+    UI_Sample_SAA ---> FN_Sample_accession_and_handle_validation_errors
+    FN_Sample_accession_and_handle_validation_errors --> FN_Accession_accession_sample
+
+    %% Sample generate accession number
+    LK_accessioning_enabled_Samples_accession -.-> FN_Samples_accession
+    UI_Sample_GAN --> FN_Samples_accession
+    FN_Samples_accession <--> | 1. | FN_Accession_accession_sample
+    LK_accessioning_enabled_Accession_perform -.-> FN_Accession_SampleAccessioning_perform
+    FN_Accession_accession_sample ==> FN_Accession_SampleAccessioning_perform
+    FN_Accession_SampleAccessioning_perform ==> DJ_SampleAccessioningJob
+    DJ_SampleAccessioningJob <--> | 1. | FN_Accession_Sample_validate
+    DJ_SampleAccessioningJob ==> | 2. | CP_AccessionSubmission
+    CP_AccessionSubmission ==> LB_AccessioningV1Client
+    LB_AccessioningV1Client ==> External_EBI_Samples
+    External_EBI_Samples ==> | Failure: reason | MD_AccessionStatuses
+    External_EBI_Samples ==> | Success: accession number | FN_Accession_Sample_update_accession_number
+    LK_accessioning_enabled_Sample_View -.-> VW_Sample
+    MD_AccessionStatuses -.-> VW_Sample
+    FN_Samples_accession --> | 2. | VW_Sample
+    
+    %% Study accession all samples
+    LK_accessioning_enabled_AAS -.-> FN_Studies_accession_all_samples
+    UI_Study_AAS --> FN_Studies_accession_all_samples 
+    FN_Studies_accession_all_samples <--> | 1. | FN_Accession_accession_sample
+    FN_Studies_accession_all_samples --> | 2. | VW_Study
+
+    %% Study generate accession number
+    UI_Study_GAN --> FN_Studies_accession
+    LK_accessioning_enabled_Studies_accession -.-> FN_Studies_accession
+    FN_Studies_accession <--> | 1. | FN_Study_validate_study_for_accessioning
+    FN_Studies_accession <--> | 2. | FN_AccessionService_select_for_study
+    FN_Studies_accession <--> | 3. | FN_AccessionService_submit_study_for_user
+    FN_Studies_accession --> | 4. with flash message | VW_Study
+    FN_AccessionService_submit_study_for_user ==> FN_AccessionService_submit
+    FN_AccessionService_submit ==> FN_AccessionService_post_files 
+    FN_AccessionService_post_files ==> LB_RestClient 
+    LB_RestClient ==> External_EBI_Studies
+    External_EBI_Studies ==> FN_Accessionable_Study_update_accession_number
+    LK_accessioning_enabled_Study_View -.-> VW_Study
+
+    %% Subgraph styling
+
+    %% lemon-chiffon: #fbf8cc
+    %% champagne-pink: #fde4cf
+    %% tea-rose-red: #ffcfd2
+    %% pink-lavender: #f1c0e8
+    %% mauve: #cfbaf0
+    %% jordy-blue: #a3c4f3
+    %% non-photo-blue: #90dbf4
+    %% electric-blue: #8eecf5
+    %% aquamarine: #98f5e1
+    %% celadon: #b9fbc0
+
+    classDef default fill:#fafafa,stroke:#333,stroke-width:1px;
+
+    classDef invisible fill:transparent,stroke:transparent;
+    classDef legendTransparent fill:transparent,stroke:#333,stroke-width:1px;
+    classDef application fill:#90dbf4;
+    classDef configuration fill:#fbf8cc;
+    classDef link fill:#fde4cf;
+    classDef railsModel fill:#98f5e1;
+    classDef railsController fill:#b9fbc0;
+    classDef validation fill:#f1c0e8;
+    classDef userInterface fill:#a3c4f3;
+
+    class InvisibleNodeA,InvisibleNodeB,InvisibleNodeC,InvisibleNodeD invisible;
+    class Legend legendTransparent;
+    class L_Application,App_SS_Accession_Sample,App_SS_Configuration,App_SS_Pages,App_SS_Views,App_SS_Study_Accessioning,App_SS_Sample_Save_and_Accession,App_SS_Sample_Manifest_Accessioning,App_SS_Sample_Accessioning application;
+    class L_Config,CF_disable_accession_check,CF_y25_706_enable_accessioning configuration;
+    class DelayedJob,Samples,Studies,Submissions SequencescapeSection;
+    class L_Model,MD_Study,MD_AccessionService,MD_Sample,MD_SampleManifest_Uploader,MD_Order,MD_Submission_AccessionBehaviour,MD_AccessionStatuses,MD_Accession_Sample,MD_AccessionService,MD_Accessionable_Study railsModel;
+    class L_Controller,CT_Samples,CT_Studies railsController;
+    class L_Action,L_View,UI_LB_Charge_and_Pass,UI_Sample_GAN,UI_Sample_SAA,UI_Study_GAN,UI_Study_AAS,UI_Manifest_Upload,VW_Sample,VW_Study userInterface;
+    class L_LinkSource,L_LinkSink,LK_accessioning_enabled,LK_accessioning_enabled_AAS,LK_accessioning_enabled_Studies_accession,LK_accessioning_enabled_Samples_accession,LK_accessioning_enabled_trigger_accessioning,LK_accessioning_enabled_Accession_perform,LK_accessioning_enabled_Study_View,LK_accessioning_enabled_Sample_View link;
+    class L_Validation_Function,FN_Accession_Sample_validate,FN_Study_validate_study_for_accessioning validation;

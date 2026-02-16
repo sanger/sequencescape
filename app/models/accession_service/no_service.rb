@@ -14,11 +14,6 @@ class AccessionService::NoService < AccessionService::BaseService
     raise AccessionService::NumberNotRequired, I18n.t(:not_applicable_study, scope: 'accession_service.not_required')
   end
 
-  def submit_sample_for_user(_sample, _user)
-    raise AccessionService::NumberNotRequired,
-          I18n.t(:not_applicable_study_for_sample, scope: 'accession_service.not_required', study_id: @study_id)
-  end
-
   def submit_study_for_user(_study, _user)
     raise AccessionService::NumberNotRequired, I18n.t(:not_applicable_study, scope: 'accession_service.not_required')
   end
