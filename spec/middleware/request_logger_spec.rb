@@ -37,9 +37,8 @@ RSpec.describe RequestLogger do
 
   before do
     allow(Time.zone).to receive(:now).and_return(Time.parse('2026-02-12T12:10:50.284+00:00'))
+    allow(Rails.logger).to receive(:debug)
     allow(Rails.logger).to receive(:info)
-    allow(Rails.logger).to receive(:warn)
-    allow(Rails.logger).to receive(:error)
   end
 
   shared_examples 'logs request with' do |log_level|
@@ -50,8 +49,8 @@ RSpec.describe RequestLogger do
     end
 
     it 'logs the request with correct structure' do
-      expect(Rails.logger).to receive(log_level).with(a_string_matching(request_logger_regex))
       middleware.call(env)
+      expect(Rails.logger).to have_received(log_level).with(a_string_matching(request_logger_regex))
     end
   end
 
