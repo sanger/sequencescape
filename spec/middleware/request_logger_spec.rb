@@ -3,29 +3,11 @@
 require 'rails_helper'
 
 RSpec.describe RequestLogger do
-  let(:request_logger_regex) do
-    %r{
-          \[RequestLogger\]
-          .*
-          "method":"GET",
-          .*
-          "path":"/samples/1234\?foo=bar",
-          .*
-          "status_code":#{status_code},
-          .*
-          "client_ip":"127.0.0.1",
-          .*
-          "request_id":"test-request-id",
-          .*
-          "@timestamp":"2026-02-12T12:10:50.284\+00:00"
-        }x
-  end
-
   let(:env) do
     Rack::MockRequest.env_for(
       '/samples/1234?foo=bar',
       'REQUEST_METHOD' => 'GET',
-      'REMOTE_ADDR' => '127.0.0.1',
+      'REMOTE_ADDR' => '172.12.345.10',
       'action_dispatch.request_id' => 'test-request-id',
       'action_dispatch.request.parameters' => {},
       'action_dispatch.request.formats' => [Mime[:html]]
@@ -36,7 +18,8 @@ RSpec.describe RequestLogger do
   let(:app) { ->(_env) { [status_code, { 'Content-Type' => 'text/html' }, 'Response Body'] } }
 
   before do
-    allow(Time.zone).to receive(:now).and_return(Time.parse('2026-02-12T12:10:50.284+00:00'))
+    allow(Rack::Utils).to receive(:clock_time).and_return(1.0, 1.23) # Simulate elapsed time for request processing
+    allow(Time.zone).to receive(:now).and_return(Time.new(2026, 2, 12, 12, 10, 50, '+00:00'))
     allow(Rails.logger).to receive(:debug)
     allow(Rails.logger).to receive(:info)
   end
@@ -48,9 +31,49 @@ RSpec.describe RequestLogger do
       expect(middleware.call(env)).to eq([status_code, { 'Content-Type' => 'text/html' }, 'Response Body'])
     end
 
-    it 'logs the request with correct structure' do
-      middleware.call(env)
-      expect(Rails.logger).to have_received(log_level).with(a_string_matching(request_logger_regex))
+    context 'when logging a request' do
+      before do
+        middleware.call(env)
+      end
+
+      it 'records the request method' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"method":"GET"/))
+      end
+
+      it 'records the request path' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(%r{"path":"/samples/1234\?foo=bar"}))
+      end
+
+      it 'records the request format' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"format":"html"/))
+      end
+
+      it 'records the response status code' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"status_code":#{status_code}/))
+      end
+
+      it 'records the response status message' do
+        status_message = Rack::Utils::HTTP_STATUS_CODES[status_code] || 'Unknown Status'
+
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"status_message":"#{status_message}"/))
+      end
+
+      it 'records the request duration in milliseconds' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"duration_ms":230/))
+      end
+
+      it 'records the client IP address' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"client_ip":"172\.12\.345\.10"/))
+      end
+
+      it 'records the request ID' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"request_id":"test-request-id"/))
+      end
+
+      it 'records the timestamp' do
+        expect(Rails.logger).to have_received(log_level)
+          .with(a_string_matching(/"@timestamp":"2026-02-12T12:10:50\.000\+00:00"/))
+      end
     end
   end
 
