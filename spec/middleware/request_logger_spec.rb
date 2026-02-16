@@ -70,6 +70,21 @@ RSpec.describe RequestLogger do
         expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"request_id":"test-request-id"/))
       end
 
+      it 'includes the request tags' do # rubocop:disable RSpec/ExampleLength
+        request_tags = ['request']
+        request_tags << case status_code
+                        when 100..199 then 'informational'
+                        when 200..299 then 'success'
+                        when 300..399 then 'redirection'
+                        when 400..499 then 'client_error'
+                        when 500..599 then 'server_error'
+        end
+        request_tags.compact!
+
+        expect(Rails.logger).to have_received(log_level)
+          .with(a_string_matching(/"tags":\["#{request_tags.join('","')}"\]/))
+      end
+
       it 'records the timestamp' do
         expect(Rails.logger).to have_received(log_level)
           .with(a_string_matching(/"@timestamp":"2026-02-12T12:10:50\.000\+00:00"/))
@@ -91,6 +106,12 @@ RSpec.describe RequestLogger do
 
   context 'when response is 500 Internal Server Error' do
     let(:status_code) { 500 }
+
+    it_behaves_like 'logs request with', :info
+  end
+
+  context 'when response is 789 Unknown Status' do
+    let(:status_code) { 789 }
 
     it_behaves_like 'logs request with',  :info
   end

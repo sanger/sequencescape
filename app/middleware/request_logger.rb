@@ -39,11 +39,24 @@ class RequestLogger
     [result, elapsed_ms]
   end
 
+  def tag_for_status(status_code)
+    case status_code
+    when 100..199 then 'informational'
+    when 200..299 then 'success'
+    when 300..399 then 'redirection'
+    when 400..499 then 'client_error'
+    when 500..599 then 'server_error'
+    end
+  end
+
   def log_request(request, response, elapsed_ms)
     status_code, _headers, _body = response
 
     status_message = Rack::Utils::HTTP_STATUS_CODES[status_code] || 'Unknown Status'
     timestamp = Time.zone.now.iso8601(3)
+    tags = ['request']
+    tags << tag_for_status(status_code)
+    tags.compact!
 
     record = {
       method: request.request_method,
@@ -54,6 +67,7 @@ class RequestLogger
       duration_ms: elapsed_ms,
       client_ip: request.remote_ip,
       request_id: request.request_id,
+      tags: tags,
       '@timestamp': timestamp
     }
 
