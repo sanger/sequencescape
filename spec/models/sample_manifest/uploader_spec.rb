@@ -16,7 +16,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   let(:test_file_name) { 'test_file.xlsx' }
   let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
-  let(:user) { create(:user, api_key: configatron.accession_local_key) }
+  let(:user) { create(:user) }
 
   after(:all) { SampleManifestExcel.reset! }
 
@@ -109,7 +109,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         )
       download.save(test_file_name)
       uploader = described_class.new(test_file, SampleManifestExcel.configuration, user, false)
-      uploader.run!
+      expect { uploader.run! }.to change(Messenger, :count).by(6)
       expect(uploader).to be_processed
       expect(BroadcastEvent.count).to eq broadcast_events_count + 1
       expect(uploader.upload.sample_manifest).to be_completed

@@ -100,7 +100,6 @@ if Rails.env.development? || Rails.env.profile?
 
   configatron.data_sharing_contact.name = 'Datasharing'
   configatron.data_sharing_contact.email = 'datasharing@example.com'
-  configatron.accession_local_key = 'abc'
   configatron.sequencescape_email = 'sequencescape@example.com'
   configatron.default_email_domain = 'example.com'
   configatron.run_information_url = 'http://example.com/'
@@ -154,7 +153,6 @@ if Rails.env.test? || Rails.env.cucumber?
 
   configatron.data_sharing_contact.name = 'Datasharing'
   configatron.data_sharing_contact.email = 'datasharing@example.com'
-  configatron.accession_local_key = 'abc'
   configatron.sequencescape_email = 'sequencescape@example.com'
   configatron.default_email_domain = 'example.com'
   configatron.run_information_url = 'http://example.com/'
