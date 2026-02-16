@@ -9,9 +9,10 @@
 #   "status_message":"OK","duration_ms":935,"client_ip":"172.21.43.210",
 #   "request_id":"9fd18098-dea3-46f0-83c8-c41852441db3","@timestamp":"2026-02-12T12:10:50.284+00:00"}
 class RequestLogger
-  def initialize(app, log_level: :info)
+  def initialize(app, log_level: :info, environment_context: nil)
     @app = app
     @log_level = log_level
+    @environment_context = environment_context
   end
 
   def call(env)
@@ -70,6 +71,7 @@ class RequestLogger
       tags: tags,
       '@timestamp': timestamp
     }
+    record.merge!(@environment_context) if @environment_context.present?
 
     Rails.logger.public_send(@log_level, "[RequestLogger] #{record.to_json}")
   end

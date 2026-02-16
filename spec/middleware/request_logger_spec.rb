@@ -25,7 +25,10 @@ RSpec.describe RequestLogger do
   end
 
   shared_examples 'logs request with' do |log_level|
-    let(:middleware) { described_class.new(app, log_level:) }
+    let(:middleware) do
+      described_class.new(app, log_level: log_level,
+                               environment_context: { host: 'www.example.com', version: '1.2.3' })
+    end
 
     it 'calls the app and returns the response' do
       expect(middleware.call(env)).to eq([status_code, { 'Content-Type' => 'text/html' }, 'Response Body'])
@@ -68,6 +71,11 @@ RSpec.describe RequestLogger do
 
       it 'records the request ID' do
         expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"request_id":"test-request-id"/))
+      end
+
+      it 'records the environment context' do
+        expect(Rails.logger).to have_received(log_level)
+          .with(a_string_matching(/"host":"www\.example\.com","version":"1\.2\.3"/))
       end
 
       it 'includes the request tags' do # rubocop:disable RSpec/ExampleLength
