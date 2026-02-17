@@ -59,7 +59,7 @@ class RequestLogger
     tags
   end
 
-  def log_request(request, response, elapsed_ms)
+  def log_request(request, response, elapsed_ms) # rubocop:disable Metrics/AbcSize
     status_code, _headers, _body = response
 
     status_message = Rack::Utils::HTTP_STATUS_CODES[status_code] || 'Unknown Status'
