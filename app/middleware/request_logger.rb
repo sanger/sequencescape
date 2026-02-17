@@ -67,7 +67,8 @@ class RequestLogger
 
     record = {
       method: request.request_method,
-      path: request.fullpath,
+      url: request.fullpath,
+      path: request.path,
       format: request.format.symbol,
       status_code: status_code,
       status_message: status_message,

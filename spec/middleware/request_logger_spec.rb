@@ -43,8 +43,12 @@ RSpec.describe RequestLogger do
         expect(Rails.logger).to have_received(log_level).with(a_string_matching(/"method":"GET"/))
       end
 
+      it 'records the request URL' do
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(%r{"url":"/samples/1234\?foo=bar"}))
+      end
+
       it 'records the request path' do
-        expect(Rails.logger).to have_received(log_level).with(a_string_matching(%r{"path":"/samples/1234\?foo=bar"}))
+        expect(Rails.logger).to have_received(log_level).with(a_string_matching(%r{"path":"/samples/1234"}))
       end
 
       it 'records the request format' do
