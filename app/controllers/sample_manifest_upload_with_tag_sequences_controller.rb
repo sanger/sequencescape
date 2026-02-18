@@ -10,18 +10,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     return error('No file attached') if params[:upload].blank?
 
     if upload_manifest
-      @rows_with_warnings =
-        @uploader.upload.rows.select { |row| row.respond_to?(:warnings) && row.warnings.any? }
-      if @rows_with_warnings.any?
-        flash[:warnings] = 'Sample manifest uploaded with warnings!'
-        flash[:warning_messages] =
-          @rows_with_warnings.flat_map { |row| row.warnings.full_messages }.uniq
-      else
-        flash[:notice] = 'Sample manifest successfully uploaded.'
-      end
-      redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
-      redirect_to redirect_target
-
+      set_upload_flash_message
     else
       error('Your sample manifest couldn\'t be uploaded.')
     end
@@ -36,6 +25,26 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   def upload_manifest
     @uploader = create_uploader
     @uploader.run!
+  end
+
+  def set_upload_flash_message
+    warning_rows = rows_with_warnings
+    return success('Sample manifest successfully uploaded.') if warning_rows.empty?
+
+    apply_warning_flash(warning_rows)
+  end
+
+  def rows_with_warnings
+    @uploader.upload.rows.select do |row|
+      row.respond_to?(:warnings) && row.warnings.any?
+    end
+  end
+
+  def apply_warning_flash(rows)
+    flash[:warnings] = 'Sample manifest uploaded with warnings!'
+    flash[:warning_messages] = rows.flat_map { |row| row.warnings.full_messages }.uniq
+    redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
+    redirect_to redirect_target
   end
 
   def success(message)
