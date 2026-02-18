@@ -8,16 +8,25 @@
     <% @uploader.errors.full_messages.each do |message| %>
       <p><%= message %></p>
     <% end %>
+  <% end %>
+<% end %>
 
-   <% if flash[:warnings].present? %>
-      <%= alert(:warning) do %>
-        <% flash[:warnings].each do |message| %>
-          <p><%= message %></p>
+<p>======Warnings present? <%= flash[:warnings].present? %></p>
+<p>Warning messages present? <%= flash[:warning_messages].present? %></p>
+<% Rails.logger.info "flash[:warnings]: #{flash[:warnings].inspect}" %>
+<% Rails.logger.info "flash[:warning_messages]: #{flash[:warning_messages].inspect}" %>
+
+<% if flash[:warnings].present? %>
+  <%= alert(:warning) do %>
+    <p class="alert-summary"><strong><%= flash[:warnings] %></strong></p>
+
+    <% if flash[:warning_messages].present? %>
+      <ul class="alert-details mb-0">
+        <% flash[:warning_messages].each do |message| %>
+          <li><%= message %></li>
         <% end %>
-      <% end %>
+      </ul>
     <% end %>
-
-
   <% end %>
 <% end %>
 

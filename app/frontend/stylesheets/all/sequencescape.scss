@@ -171,6 +171,27 @@ h3.card-header-custom {
 .alert-cancelled {
   @extend .alert-warning;
 }
+
+.alert-warnings {
+  background-color: orange; /* your preferred orange */
+  color: black;
+  border-color: darkorange;
+}
+
+.alert-warnings .alert-summary {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.alert-warnings .alert-details {
+  padding-left: 1.25rem;
+}
+
+.alert-warnings .alert-details li {
+  margin-bottom: 0.4rem;
+  font-size: 0.95rem;
+}
+
 .text-notice,
 .text-passed {
   @extend .text-success;
