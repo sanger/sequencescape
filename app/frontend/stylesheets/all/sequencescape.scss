@@ -172,24 +172,16 @@ h3.card-header-custom {
   @extend .alert-warning;
 }
 
-.alert-warnings {
-  background-color: orange; /* your preferred orange */
+.alert-warnings,
+.alert-warning_messages {
+  background-color: orange;
   color: black;
   border-color: darkorange;
 }
 
-.alert-warnings .alert-summary {
-  font-size: 1rem;
-  margin-bottom: 0.75rem;
-}
-
-.alert-warnings .alert-details {
-  padding-left: 1.25rem;
-}
-
-.alert-warnings .alert-details li {
-  margin-bottom: 0.4rem;
-  font-size: 0.95rem;
+.alert-warnings {
+  font-size: 20px;   /* or whatever size you want */
+  font-weight: 600;  /* optional, makes it stand out */
 }
 
 .text-notice,
