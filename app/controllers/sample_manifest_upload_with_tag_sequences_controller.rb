@@ -15,7 +15,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
       if @rows_with_warnings.any?
         flash[:warnings] = 'Sample manifest uploaded with warnings!'
         flash[:warning_messages] =
-          @rows_with_warnings.flat_map { |row| row.warnings.full_messages }
+          @rows_with_warnings.flat_map { |row| row.warnings.full_messages }.uniq
       else
         flash[:notice] = 'Sample manifest successfully uploaded.'
       end

@@ -16,14 +16,6 @@ module SampleManifestExcel
       attr_accessor :number, :data, :columns, :cache
       attr_reader :sanger_sample_id
 
-      # attr_reader :warnings
-
-      # def initialize(attributes = {})
-      #   super
-      #   @warnings = ActiveModel::Errors.new(self)
-      # end
-
-      # @return [ActiveModel::Errors] the warnings collection
       def warnings
         @warnings ||= ActiveModel::Errors.new(self)
       end
