@@ -4,8 +4,11 @@ Rails.application.routes.draw do
 
   user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
   root to: 'homes#show'
-  resource :health, only: [:show]
   resource :home, only: [:show]
+
+  # Health check endpoints
+  get 'health' => 'health#show', constraints: ->(req) { req.format == :json } # json with stats
+  get 'health' => 'rails/health#show', as: :rails_health_check # default Rails health check
 
   resource :phi_x, only: [:show] do
     scope module: :phi_x do
