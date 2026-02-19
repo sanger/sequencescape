@@ -125,6 +125,7 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
 
     obj = { 'destination' => {} }
     data_object['destination'].each do |dest_plate_barcode, plate_details|
+      plate = Plate.find_by_barcode(dest_plate_barcode)
       plate_size = plate_details['plate_size']
       # Initialise the destination section
       obj['destination'][dest_plate_barcode] = {
@@ -135,10 +136,25 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
       index_to_mapping = plate_details['mapping'].index_by do |entry|
         description_to_column_index(entry['dst_well'], plate_size)
       end
+
       # Loop through the column order and generate new mapping entries
-      mapping = (1..plate_size).map do |index|
-        index_to_mapping[index] || {
-          'dst_well' => column_index_to_description(index, plate_size),
+      # Add existing mappings if present and skip non-empty wells in case it is partial plate.
+      mapping = []
+      (1..plate_size).each do |index|
+        # Add existing mapping if present for this column index.
+        if index_to_mapping.key?(index)
+          mapping << index_to_mapping[index]
+          next
+        end
+
+        # Check if the destination well empty, in case of partial plate.
+        dst_well = column_index_to_description(index, plate_size) # A1, B1, etc.
+        well = plate.find_well_by_name(dst_well) # Well object or nil
+        next if well.present? && !well.empty? # Skip non-empty wells
+
+        # Add buffer for empty well
+        mapping << {
+          'dst_well' => dst_well,
           'buffer_volume' => buffer_volume_for_empty_wells
         }
       end
