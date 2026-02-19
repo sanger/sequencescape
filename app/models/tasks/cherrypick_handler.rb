@@ -92,6 +92,8 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     else
       raise StandardError, "Invalid cherrypicking strategy '#{params[:cherrypick][:strategy]}'"
     end
+    # Y26-012: Add buffer volume for empty wells option to params for pass through
+    @buffer_volume_for_empty_wells = params[:buffer_volume_for_empty_wells]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
   end
@@ -128,6 +130,8 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         else
           raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_strategy]}"
         end
+
+      binding.pry
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations =
