@@ -16,6 +16,15 @@ empty_mandatory_cell:
     formula: "FALSE"
     operator: :equal
     priority: 1
+empty_warning_cell:
+  style:
+    bg_color: "FF991C"
+    type: :dxf
+  options:
+    type: :cellIs
+    formula: "FALSE"
+    operator: :equal
+    priority: 1
 len:
   style:
     bg_color: "FF0000"
