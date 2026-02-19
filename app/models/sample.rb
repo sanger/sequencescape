@@ -214,13 +214,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
-  # TODO: should be removed along with the removal of the accessioning feature flag
-  # y25_286_accession_individual_samples_with_sample_accessioning_job
-  def tags
-    accession_service = AccessionService.select_for_sample(self)
-    self.class.tags.select { |tag| tag.for?(accession_service.provider) }
-  end
-
   def self.tags
     @tags ||= []
   end
