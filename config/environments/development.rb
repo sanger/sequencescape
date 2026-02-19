@@ -53,6 +53,8 @@ Rails.application.configure do
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
+
+  # Logging configuration
   config.logger = ActiveSupport::Logger.new($stdout) if ENV['RAILS_LOG_TO_FILE'].blank?
   config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
   config.logger.formatter =
