@@ -131,8 +131,6 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
           raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_strategy]}"
         end
 
-      binding.pry
-
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations =
         Map
