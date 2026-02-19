@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Module with the file generation functionality for Tecan robots
-module Robot::Generator::Behaviours::TecanDefault
+module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/ModuleLength
   def mapping(data_object: picking_data)
     raise ArgumentError, 'Data object not present for Tecan mapping' if data_object.nil?
 
@@ -70,10 +70,11 @@ module Robot::Generator::Behaviours::TecanDefault
     'C;'
   end
 
-  def buffers(data_object)
+  def buffers(data_object) # rubocop:disable Metrics/AbcSize
+    data_object = data_object_for_buffers(data_object)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
-      next unless total_volume > mapping['volume']
+      next if mapping.key?('src_well') && total_volume <= mapping['volume']
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
       volume = mapping['buffer_volume']
@@ -112,5 +113,37 @@ module Robot::Generator::Behaviours::TecanDefault
 
   def description_to_column_index(well_name, plate_size)
     Map::Coordinate.description_to_vertical_plate_position(well_name, plate_size)
+  end
+
+  def column_index_to_description(index, plate_size)
+    Map::Coordinate.vertical_plate_position_to_description(index, plate_size)
+  end
+
+  def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    buffer_volume_for_empty_wells = @batch.get_poly_metadata(:buffer_volume_for_empty_wells)
+    return data_object unless buffer_volume_for_empty_wells
+
+    obj = { 'destination' => {} }
+    data_object['destination'].each do |dest_plate_barcode, plate_details|
+      plate_size = plate_details['plate_size']
+      # Initialise the destination section
+      obj['destination'][dest_plate_barcode] = {
+        'name' => plate_details['name'],
+        'plate_size' => plate_size
+      }
+      # Create a hash of column index to the existing mapping entries
+      index_to_mapping = plate_details['mapping'].index_by do |entry|
+        description_to_column_index(entry['dst_well'], plate_size)
+      end
+      # Loop through the column order and generate new mapping entries
+      mapping = (1..plate_size).map do |index|
+        index_to_mapping[index] || {
+          'dst_well' => column_index_to_description(index, plate_size),
+          'buffer_volume' => buffer_volume_for_empty_wells
+        }
+      end
+      obj['destination'][dest_plate_barcode]['mapping'] = mapping
+    end
+    obj
   end
 end
