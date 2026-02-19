@@ -26,4 +26,11 @@ module HasPolyMetadata
       record&.destroy!
     end
   end
+
+  # Returns the value of the PolyMetaDatum with the given key.
+  # @param key [String] The key of the PolyMetaDatum to retrieve.
+  # @return [String, nil] The value of the PolyMetaDatum, or nil if it does not exist.
+  def get_poly_metadata(key)
+    poly_metadata.find_by(key:)&.value
+  end
 end

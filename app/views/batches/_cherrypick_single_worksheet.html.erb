@@ -14,6 +14,8 @@
 <%# see Robot::Verification::Base#pick_number_to_expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>
 <% source_plate_colour = source_layout.transform_values { |sort_order| "colour#{sort_order%12}" } %>
+<!-- Y26-012 Get buffer_volume_for_empty_wells from batch poly_metadata -->
+<% buffer_volume_for_empty_wells = batch.get_poly_metadata(:buffer_volume_for_empty_wells) %>
 
 <div id="plate_details">
   <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Source plates', plates: source_layout, bed_prefix: 'SCRC' } %>
@@ -78,8 +80,8 @@
                 <% else %>
                   <td>
                 <% end -%>
-                <% if empty_well -%>
-                  e120.00
+                <% if empty_well && buffer_volume_for_empty_wells.present? -%>
+                  e<%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %>
                 <% end %>
                 </td>
             <% end -%>
@@ -100,8 +102,10 @@
 
 <div id="footer">
   <!-- Y26-012: Add buffer volume for empty wells to footer if the option was set; remove it otherwise-->
-  Buffer for empty wells: 120 µl<br>
-  v = picking volume µl; b = buffer volume µl; e = buffer for empty wells µl<br>
+  <% if buffer_volume_for_empty_wells.present? -%>
+    Buffer for empty wells: <%= buffer_volume_for_empty_wells %> µl<br>
+  <% end -%>
+  v = picking volume µl; b = buffer volume µl<% if buffer_volume_for_empty_wells.present? -%>; e = buffer for empty wells µl<br><% end -%>
   <!-- v = picking volume µl; b = buffer volume µl<br> -->
   Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %><br>
   Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
