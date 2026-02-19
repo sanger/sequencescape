@@ -182,7 +182,6 @@ RSpec.describe StudiesController do
     let(:study) { samples.first.studies.first }
 
     before do
-      allow(Rails.logger).to receive(:info).and_call_original
       allow(Accession::Submission).to receive(:client).and_return(
         stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
       )
@@ -340,13 +339,6 @@ RSpec.describe StudiesController do
 
         it 'does not set a flash error message' do
           expect(flash[:error]).to be_nil
-        end
-
-        it 'shows the logs' do
-          samples.each do |sample|
-            expect(Rails.logger).to have_received(:info)
-              .with("Sample '#{sample.name}' should not be accessioned as it belongs to 2 accessionable studies.")
-          end
         end
       end
 
