@@ -134,7 +134,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
       # Y26-012: Store the buffer volume for empty wells option in the batch's
       # poly_metadata for use in the worksheet rendering and robot driver file
       key = :buffer_volume_for_empty_wells
-      set_poly_metadata(key, params[key])
+      @batch.set_poly_metadata(key, params[key])
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations =
