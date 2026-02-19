@@ -119,8 +119,8 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     Map::Coordinate.vertical_plate_position_to_description(index, plate_size)
   end
 
-  def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-    buffer_volume_for_empty_wells = @batch.get_poly_metadata(:buffer_volume_for_empty_wells)
+  def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
+    buffer_volume_for_empty_wells = @batch&.get_poly_metadata(:buffer_volume_for_empty_wells)
     return data_object unless buffer_volume_for_empty_wells
 
     obj = { 'destination' => {} }
