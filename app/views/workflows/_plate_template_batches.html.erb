@@ -55,5 +55,6 @@
     <%= panel(:info, title: "Step 3: Set volumes and concentrations <a href='https://ssg-confluence.internal.sanger.ac.uk/x/NoHdDQ'><small>Information about cherrypicking options</small></a>".html_safe) do %>
       <%= render partial: 'cherrypick_strategies', locals: { form: form } %>
     <% end %>
+
   <%= render partial: "next_stage_submit" %>
 <% end %>
