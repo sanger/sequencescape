@@ -74,6 +74,8 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     data_object = data_object_for_buffers(data_object)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
+      # src_well is checked to distinguish between buffer for sample wells
+      # and buffer for empty wells.
       next if mapping.key?('src_well') && total_volume <= mapping['volume']
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
@@ -119,6 +121,42 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     Map::Coordinate.vertical_plate_position_to_description(index, plate_size)
   end
 
+  # Returns a new data object with buffer entries added for empty destination
+  # wells, if the option is enabled; otherwise returns the original data object.
+  # Only the fields used by the buffer steps are added to the new data object.
+  # @param data_object [Hash] the original data object
+  # @return [Hash] the new data object with buffer entries for empty wells,
+  #   or the original data object if the option is not enabled
+  # @example input data_object
+  #  {"destination" =>
+  #   {"SQPD-9101" =>
+  #     {"name" => "ABgene 0765",
+  #      "plate_size" => 96,
+  #      "control" => false,
+  #      "mapping" =>
+  #       [{"src_well" => ["SQPD-9089", "A1"], "dst_well" => "A1", "volume" => 100.0, "buffer_volume" => 0.0},
+  #        {"src_well" => ["SQPD-9089", "A2"], "dst_well" => "B1", "volume" => 100.0, "buffer_volume" => 0.0}]},
+  #  "source" =>
+  #   {"SQPD-9089" => {"name" => "ABgene 0800", "plate_size" => 96, "control" => false},
+  #    "SQPD-9090" => {"name" => "ABgene 0800", "plate_size" => 96, "control" => false}},
+  #  "time" => Thu, 19 Feb 2026 15:20:20.785717000 GMT +00:00,
+  #  "user" => "admin"}
+  #
+  # @example output data_object
+  #  {"destination" =>
+  #   {"SQPD-9101" =>
+  #     {"name" => "ABgene 0765",
+  #      "plate_size" => 96,
+  #      "control" => false,
+  #      "mapping" =>
+  #       [{"src_well" => ["SQPD-9089", "A1"], "dst_well" => "A1", "volume" => 100.0, "buffer_volume" => 0.0},
+  #        {"src_well" => ["SQPD-9089", "A2"], "dst_well" => "B1", "volume" => 100.0, "buffer_volume" => 0.0},
+  #        {"dst_well" => "C1", "buffer_volume" => 120.0}]},
+  #        {"dst_well" => "D1", "buffer_volume" => 120.0}]},
+  #        ...
+  #        ]},
+  #     }
+  #   }
   def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
     buffer_volume_for_empty_wells = @batch&.get_poly_metadata(:buffer_volume_for_empty_wells)
     return data_object unless buffer_volume_for_empty_wells
