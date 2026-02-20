@@ -1,0 +1,23 @@
+# frozen_string_literal: true
+# frozen_sring_literal: true
+
+module Cherrypick::Task::BufferVolumeForEmptyWellsOption
+  def create_buffer_volume_for_empty_wells_option(params)
+    return unless @batch
+
+    key = :automatic_buffer_addition
+    # The checkbox value is either "1", or nil if not checked.
+    @batch.set_poly_metadata(key, params[key])
+
+    return if params[key] != '1'
+
+    # If automatic buffer addition for empty wells is required.
+    key = :buffer_volume_for_empty_wells
+    unless valid_float_param?(params[key])
+      raise Cherrypick::VolumeError,
+            "Invalid buffer volume for empty wells: #{params[key]}"
+    end
+
+    @batch.set_poly_metadata(key, params[key])
+  end
+end
