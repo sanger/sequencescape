@@ -40,7 +40,8 @@
   <%= hidden_field_tag 'robot_id', @robot_id    %>
   <%= hidden_field_tag 'cherrypick_strategy', @cherrypick_strategy %>
   <%= hidden_field_tag 'plate_type', @plate_type %>
-  <!-- Y26-012: Add hidden field to carry over the buffer volume for empty wells option from the form on the previous page -->
+  <%# Add hidden fields for the buffer volume for empty wells option to carry over -%>
+  <%= hidden_field_tag 'automatic_buffer_addition', @automatic_buffer_addition %>
   <%= hidden_field_tag 'buffer_volume_for_empty_wells', @buffer_volume_for_empty_wells %>
 
   <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
