@@ -103,7 +103,7 @@
 <div id="footer">
   <%# Add buffer volume for empty wells to footer if the option was set -%>
   <% if buffer_volume_for_empty_wells.present? -%>
-    Buffer volume for empty wells: <%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %> %> µl<br>
+    Buffer volume for empty wells: <%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %> µl<br>
   <% end -%>
   v = picking volume µl; b = buffer volume µl<% if buffer_volume_for_empty_wells.present? -%>; e = buffer volume for empty wells µl<br><% end -%>
   Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %><br>
