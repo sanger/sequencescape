@@ -3,7 +3,7 @@ module Batch::PolyMetadataBehaviour
   # Returns whether the Cherrypick automatic_buffer_addition option is enabled
   # @return [Boolean] whether the automatic_buffer_addition option is enabled
   def automatic_buffer_addition?
-    get_poly_metadata(:automatic_buffer_addition) == '1'
+    %w[1 on].include?(get_poly_metadata(:automatic_buffer_addition))
   end
 
   # Returns the Cherrypick buffer_volume_for_empty_wells option value if

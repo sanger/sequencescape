@@ -9,7 +9,7 @@ module Cherrypick::Task::BufferVolumeForEmptyWellsOption
     # The checkbox value is either "1", or nil if not checked.
     @batch.set_poly_metadata(key, params[key])
 
-    return if params[key] != '1'
+    return unless %w[1 on].include?(params[key])
 
     # If automatic buffer addition for empty wells is required.
     key = :buffer_volume_for_empty_wells
