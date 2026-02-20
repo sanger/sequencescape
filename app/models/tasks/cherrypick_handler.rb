@@ -92,7 +92,8 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     else
       raise StandardError, "Invalid cherrypicking strategy '#{params[:cherrypick][:strategy]}'"
     end
-    # Y26-012: Add buffer volume for empty wells option to params for pass through
+    # Add buffer volume for empty wells option to params for pass through
+    @automatic_buffer_addition = params[:automatic_buffer_addition]
     @buffer_volume_for_empty_wells = params[:buffer_volume_for_empty_wells]
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
@@ -131,10 +132,8 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
           raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_strategy]}"
         end
 
-      # Y26-012: Store the buffer volume for empty wells option in the batch's
-      # poly_metadata for use in the worksheet rendering and robot driver file
-      key = :buffer_volume_for_empty_wells
-      @batch.set_poly_metadata(key, params[key])
+      # Store the buffer volume for empty wells option in the batch's poly_metadata
+      create_buffer_volume_for_empty_wells_option(params)
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations =
