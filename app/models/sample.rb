@@ -540,8 +540,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ]
     return true if accessioning_criteria.all?
 
-    Rails.logger.info("Sample '#{name}' should not be accessioned as it " \
-                      "belongs to #{studies_for_accessioning.size} accessionable studies.")
+    Rails.logger.debug do
+      "Sample '#{name}' should not be accessioned as it " \
+        "belongs to #{studies_for_accessioning.size} accessionable studies."
+    end
 
     false
   end
