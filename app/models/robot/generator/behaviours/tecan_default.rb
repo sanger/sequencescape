@@ -158,7 +158,7 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   #     }
   #   }
   def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
-    buffer_volume_for_empty_wells = @batch&.get_poly_metadata(:buffer_volume_for_empty_wells)
+    buffer_volume_for_empty_wells = @batch&.buffer_volume_for_empty_wells
     return data_object unless buffer_volume_for_empty_wells
 
     obj = { 'destination' => {} }
