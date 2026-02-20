@@ -50,6 +50,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # and JUST allowing comments on submissions
   has_many :comments_from_requests, through: :requests, source: :comments
 
+  # A submission can have multiple orders, and order can have multiple assets and each asset has multiple receptacles
   has_many :receptacles, through: :orders, source: :assets
   has_many :batches, -> { distinct }, through: :requests
 
