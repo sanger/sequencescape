@@ -7,7 +7,7 @@ Limber-Htp - LCM Triomics EMSeq:
     request_type_keys: ["limber_lcm_triomics_emseq"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
-    project_name: "UAT Study"
+    project_name: "UAT Project"
 # LCM Triomics WGS submission template
 Limber-Htp - LCM Triomics WGS:
   submission_class_name: "LinearSubmission"
@@ -22,4 +22,4 @@ Limber-Htp - LCM Triomics RNASeq:
     request_type_keys: ["limber_lcm_triomics_rnaseq"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
-    project_name: "UAT Study"
+    project_name: "UAT Project"
