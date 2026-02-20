@@ -16,8 +16,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include ::Batch::PipelineBehaviour
   include ::Batch::StateMachineBehaviour
   include UnderRepWellCommentsToBroadcast
-  # Y26-012: Added for storing buffer_volume_for_empty_wells option on Cherrypick batches.
+  # Added for storing buffer_volume_for_empty_wells option on Cherrypick batches.
   include HasPolyMetadata
+  include ::Batch::PolyMetadataBehaviour
   extend EventfulRecord
 
   # The three states of {Batch} Also @see {SequencingQcBatch}
