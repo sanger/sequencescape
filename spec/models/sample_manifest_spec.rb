@@ -226,6 +226,10 @@ RSpec.describe SampleManifest, :sample_manifest do
           expect { manifest.generate }.to change(BroadcastEvent, :count).by(1)
         end
 
+        it 'has stocks behavior' do
+          expect(manifest.core_behaviour.stocks?).to be true
+        end
+
         context 'once generated' do
           before { manifest.generate }
 

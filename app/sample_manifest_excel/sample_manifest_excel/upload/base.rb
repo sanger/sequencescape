@@ -114,11 +114,11 @@ module SampleManifestExcel
         changed_samples.each do |sample|
           Accession.accession_sample(sample, event_user)
         rescue AccessionService::AccessionValidationFailed => e
-          Rails.logger.warn "#{e.message} Skipping accessioning for this sample."
+          Rails.logger.info "#{e.message} Skipping accessioning for this sample."
         end
       end
 
-      # If samples have been created, and it's not a library plate/tube, register a stock_resource record in the MLWH
+      # If samples have been created, register a stock_resource record in the MLWH
       def register_stock_resources
         stock_receptacles_to_be_registered.each(&:register_stock!)
       end

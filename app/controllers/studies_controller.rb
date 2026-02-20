@@ -253,6 +253,16 @@ class StudiesController < ApplicationController
     end
   end
 
+  # Accession all samples in the study.
+  #
+  # If the study does not have an accession number, adds an error to the study and returns.
+  # Otherwise, iterates through each sample in the study and attempts to accession it,
+  # unless the sample already has an accession number.
+  # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
+  #
+  # NOTE: this does not check if the current user has permission to accession samples in this study
+  #
+  # @return [void]
   def accession_all_samples # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
     @study = Study.find(params[:id])
     return accessioning_not_enabled_redirect unless accessioning_enabled?
@@ -260,16 +270,32 @@ class StudiesController < ApplicationController
     # TODO: Y26-026 - Enforce accessioning permissions
     # return accession_permission_denied_redirect unless permitted_to_accession?(@study)
 
-    @study.accession_all_samples(current_user)
+    unless @study.accession_number?
+      flash[:error] = 'Please accession the study before accessioning samples'
+      return redirect_to(study_path(@study))
+    end
+    unless @study.samples_accessionable?
+      flash[:error] = 'Study cannot accession samples, see Study Accessioning tab for details'
+      return redirect_to(study_path(@study))
+    end
+
+    @study.samples.find_each do |sample|
+      next if sample.accession_number?
+
+      begin
+        Accession.accession_sample(sample, current_user)
+      rescue Accession::Error => e
+        @study.errors.add(:base, e.message)
+      end
+    end
 
     if @study.errors.any?
-      error_messages = compile_accession_errors(@study.errors)
-      flash[:error] = error_messages
+      flash[:error] = compile_accession_errors(@study.errors)
     else
       flash[:notice] = 'All of the samples in this study have been sent for accessioning. ' \
                        'Please check back in 5 minutes to confirm that accessioning was successful.'
     end
-    redirect_to(study_path(@study, anchor: 'accession-statuses'))
+    redirect_to(study_path(@study))
   end
 
   def dac_accession

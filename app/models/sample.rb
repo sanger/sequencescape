@@ -213,13 +213,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
-  # TODO: should be removed along with the removal of the accessioning feature flag
-  # y25_286_accession_individual_samples_with_sample_accessioning_job
-  def tags
-    accession_service = AccessionService.select_for_sample(self)
-    self.class.tags.select { |tag| tag.for?(accession_service.provider) }
-  end
-
   def self.tags
     @tags ||= []
   end
@@ -546,13 +539,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ]
     return true if accessioning_criteria.all?
 
-    Rails.logger.info("Sample '#{name}' should not be accessioned as it " \
-                      "belongs to #{studies_for_accessioning.size} accessionable studies.")
+    Rails.logger.debug do
+      "Sample '#{name}' should not be accessioned as it " \
+        "belongs to #{studies_for_accessioning.size} accessionable studies."
+    end
 
     false
   end
 
-  # NOTE: this does not check whether the current user is permitted to accession the sample
+  # NOTE: this does not check whether the current user is permitted to accession the sample,
+  # nor if accessioning is enabled, as these belong in a controller or library, rather than the model.
   def accession_and_handle_validation_errors
     event_user = current_user # the event_user for this sample must be set from the calling controller
     Accession.accession_sample(self, event_user, perform_now: true)

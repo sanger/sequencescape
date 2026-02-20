@@ -583,31 +583,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     ].all?
   end
 
-  # Accession all samples in the study.
-  #
-  # If the study does not have an accession number, adds an error to the study and returns.
-  # Otherwise, iterates through each sample in the study and attempts to accession it,
-  # unless the sample already has an accession number.
-  # If an Accession::Error occurs for a sample, adds the error message to the study's errors.
-  #
-  # NOTE: this does not check if the current user has permission to accession samples in this study
-  #
-  # @return [void]
-  def accession_all_samples(event_user)
-    return errors.add(:base, 'Please accession the study before accessioning samples') unless accession_number?
-
-    unless samples_accessionable?
-      return errors.add(:base,
-                        'Study cannot accession samples, see Study Accessioning tab for details')
-    end
-
-    samples.find_each do |sample|
-      Accession.accession_sample(sample, event_user) unless sample.accession_number?
-    rescue Accession::Error => e
-      errors.add(:base, e.message)
-    end
-  end
-
   def abbreviation
     abbreviation = study_metadata.study_name_abbreviation
     abbreviation.presence || "#{id}STDY"
