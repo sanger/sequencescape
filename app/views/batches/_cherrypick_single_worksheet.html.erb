@@ -14,8 +14,8 @@
 <%# see Robot::Verification::Base#pick_number_to_expected_layout for structure of robot_plate_layout %>
 <% destination_layout, source_layout, control_layout = robot_plate_layout %>
 <% source_plate_colour = source_layout.transform_values { |sort_order| "colour#{sort_order%12}" } %>
-<!-- Y26-012 Get buffer_volume_for_empty_wells from batch poly_metadata -->
-<% buffer_volume_for_empty_wells = batch.get_poly_metadata(:buffer_volume_for_empty_wells) %>
+<%# Get buffer_volume_for_empty_wells from batch as float or nil -%>
+<% buffer_volume_for_empty_wells = batch.buffer_volume_for_empty_wells %>
 
 <div id="plate_details">
   <%= render partial: 'cherrypick_worksheet_plate_list', locals: { section_name: 'Source plates', plates: source_layout, bed_prefix: 'SCRC' } %>
@@ -50,7 +50,7 @@
             <td><strong><%= rowchar %></strong></td>
             <% (num_columns).times do |column| -%>
               <% well = plate_wells[row*num_columns+column] -%>
-                <!--Y26-012: flag to check if well is empty and needs to be represented on the chart with 'e' followed by the buffer volume for empty wells, for example e120.0 -->
+                <%# Flag to check if well is empty and needs to be represented on the chart with 'e' followed by the buffer volume for empty wells, for example e120.00 -%>
                 <% empty_well = true %>
                 <% if  well.present? -%>
                   <% request = indexed_requests[well.id]  %>
@@ -66,7 +66,7 @@
                       <% else %>
                         <td>
                       <% end -%>
-                      <!--Y26-012: flag to set if the well is not empty -->
+                      <%# Flag to set if the well is not empty -%>
                       <% empty_well = false %>
                       <%= source_well.map_description %>
                       <%= source_well.plate.barcode_number %>
@@ -101,12 +101,11 @@
 </div>
 
 <div id="footer">
-  <!-- Y26-012: Add buffer volume for empty wells to footer if the option was set; remove it otherwise-->
+  <%# Add buffer volume for empty wells to footer if the option was set -%>
   <% if buffer_volume_for_empty_wells.present? -%>
-    Buffer volume for empty wells: <%= buffer_volume_for_empty_wells %> µl<br>
+    Buffer volume for empty wells: <%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %> %> µl<br>
   <% end -%>
   v = picking volume µl; b = buffer volume µl<% if buffer_volume_for_empty_wells.present? -%>; e = buffer volume for empty wells µl<br><% end -%>
-  <!-- v = picking volume µl; b = buffer volume µl<br> -->
   Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %><br>
   Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
 </div>
