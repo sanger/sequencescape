@@ -103,9 +103,9 @@
 <div id="footer">
   <!-- Y26-012: Add buffer volume for empty wells to footer if the option was set; remove it otherwise-->
   <% if buffer_volume_for_empty_wells.present? -%>
-    Buffer for empty wells: <%= buffer_volume_for_empty_wells %> µl<br>
+    Buffer volume for empty wells: <%= buffer_volume_for_empty_wells %> µl<br>
   <% end -%>
-  v = picking volume µl; b = buffer volume µl<% if buffer_volume_for_empty_wells.present? -%>; e = buffer for empty wells µl<br><% end -%>
+  v = picking volume µl; b = buffer volume µl<% if buffer_volume_for_empty_wells.present? -%>; e = buffer volume for empty wells µl<br><% end -%>
   <!-- v = picking volume µl; b = buffer volume µl<br> -->
   Created: <%= batch.updated_at.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= batch.user.login %><br>
   Printed: <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
