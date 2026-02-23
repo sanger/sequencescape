@@ -149,7 +149,10 @@ h3.card-header-custom {
   }
 }
 
-.alert-error ul {
+.alert-error ul,
+.alert-warning ul,
+.alert-notice ul,
+.alert-success ul {
   margin: 0;
 }
 
