@@ -22,7 +22,6 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
   include Submission::AccessionBehaviour
-  include ModelExtensions::Order
 
   self.inheritance_column = 'sti_type'
   self.per_page = 500
@@ -88,6 +87,16 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         }
 
+  has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
+  has_many :assets, through: :submitted_assets, before_add: :validate_new_record do
+    def <<(associated)
+      return super if associated.is_a?(Receptacle)
+
+      Rails.logger.warn("#{associated.class.name} passed to order.assets")
+      super(associated&.receptacle)
+    end
+  end
+
   delegate :role, to: :order_role, allow_nil: true
 
   class << self
@@ -108,7 +117,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def assets=(assets_to_add)
-    super(assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle })
+    assets_to_add.map { |a| a.is_a?(Receptacle) ? a : a.receptacle }
   end
 
   # We can't destroy orders once the submission has been finalized for building
@@ -255,6 +264,10 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def first_request_type
     @first_request_type ||= RequestType.find(request_types.first)
+  end
+
+  def request_type_multiplier
+    yield(request_types.last.to_s.to_sym) if request_types.present?
   end
 
   # Return the list of input fields to edit when creating a new submission

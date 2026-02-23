@@ -11,7 +11,7 @@ class PooledPlateCreation < AssetCreation
   # This is the child that is created from the parent.  It cannot be assigned before validation.
   has_many :parents, through: :parent_associations, class_name: 'Labware'
 
-  include_plate_named_scope :parents
+  # include_plate_named_scope :parents
 
   def parent
     parents.first

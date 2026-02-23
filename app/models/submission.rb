@@ -18,7 +18,6 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   extend Submission::StateMachine
   include Submission::DelayedJobBehaviour
-  include ModelExtensions::Submission
   include Submission::Priorities
 
   PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected].freeze
@@ -51,6 +50,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # and JUST allowing comments on submissions
   has_many :comments_from_requests, through: :requests, source: :comments
 
+  # A submission can have multiple orders, and order can have multiple assets and each asset has multiple receptacles
   has_many :receptacles, through: :orders, source: :assets
   has_many :batches, -> { distinct }, through: :requests
 
