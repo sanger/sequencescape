@@ -149,7 +149,10 @@ h3.card-header-custom {
   }
 }
 
-.alert-error ul {
+.alert-error ul,
+.alert-warning ul,
+.alert-notice ul,
+.alert-success ul {
   margin: 0;
 }
 
@@ -170,18 +173,6 @@ h3.card-header-custom {
 }
 .alert-cancelled {
   @extend .alert-warning;
-}
-
-.alert-warnings,
-.alert-warning_messages {
-  background-color: orange;
-  color: black;
-  border-color: darkorange;
-}
-
-.alert-warnings {
-  font-size: 20px; /* or whatever size you want */
-  font-weight: 600; /* optional, makes it stand out */
 }
 
 .text-notice,

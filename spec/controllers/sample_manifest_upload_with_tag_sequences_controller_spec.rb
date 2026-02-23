@@ -60,11 +60,7 @@ RSpec.describe SampleManifestUploadWithTagSequencesController, type: :controller
       end
 
       it 'sets warning flash message' do
-        expect(flash[:warnings]).to eq('Sample manifest uploaded with warnings!')
-      end
-
-      it 'sets warning messages' do
-        expect(flash[:warning_messages]).to eq(['Row 10 warning'])
+        expect(flash[:warning]).to eq({ 'Sample manifest uploaded with warnings!': ['Row 10 warning'] })
       end
 
       it 'redirects correctly' do

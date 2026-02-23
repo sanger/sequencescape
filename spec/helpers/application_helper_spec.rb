@@ -109,4 +109,55 @@ describe ApplicationHelper do
       end
     end
   end
+
+  describe '#render_message' do
+    let(:html) { helper.render_message(messages) }
+
+    context 'when messages is a Hash' do
+      let(:messages) { { 'Description 1' => ['Item 1', 'Item 2'], 'Description 2' => 'Single Item' } }
+
+      it 'renders each key as a div and each value as a list' do
+        expect(html).to include('<div>Description 1</div>')
+          .and include('<li>Item 1</li>')
+          .and include('<li>Item 2</li>')
+          .and include('<div>Description 2</div>')
+          .and include('<li>Single Item</li>')
+      end
+    end
+
+    context 'when messages is an Array with multiple items' do
+      let(:messages) { ['Error 1', 'Error 2'] }
+
+      it 'renders the messages as a list' do
+        expect(html).to include('<ul>')
+          .and include('<li>Error 1</li>')
+          .and include('<li>Error 2</li>')
+      end
+    end
+
+    context 'when messages is an Array with one item' do
+      let(:messages) { ['Only one error'] }
+
+      it 'renders the single message as a div' do
+        expect(html).to include('<div>Only one error</div>')
+      end
+    end
+
+    context 'when messages is a String' do
+      let(:messages) { 'Just a string' }
+
+      it 'renders the string as a div' do
+        expect(html).to include('<div>Just a string</div>')
+      end
+    end
+  end
+
+  describe '#render_in_list' do
+    it 'renders an array of messages as a list' do
+      html = helper.render_in_list(%w[foo bar])
+      expect(html).to include('<ul>')
+        .and include('<li>foo</li>')
+        .and include('<li>bar</li>')
+    end
+  end
 end
