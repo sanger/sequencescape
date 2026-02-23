@@ -45,13 +45,28 @@ require 'rails_helper'
 # 6,Sample6,Z0099,TCAG,2,C1,native,6
 #
 # rubocop:enable Layout/LineLength
+# rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
 RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   # Eagerly create the global section record.
   before { create(:ultima_global) }
 
+  # First oligo sequences for the two tag groups.
+  let(:plate1_first_oligo) { 'CAGCTCGAATGCGAT' }
+  let(:plate2_first_oligo) { 'CAGTCAGTTGCAGAT' }
+
   # Eagerly create tag groups and tags to get consistent IDs.
-  let!(:tag_group1) { create(:tag_group_with_tags, tag_count: 96) }
-  let!(:tag_group2) { create(:tag_group_with_tags, tag_count: 96) }
+  let!(:tag_group1) do
+    create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P1').tap do |tg|
+      # To test Z0001 matching with the oligo sequence.
+      tg.tags.first.update!(oligo: plate1_first_oligo)
+    end
+  end
+  let!(:tag_group2) do
+    create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P2').tap do |tg|
+      # To test Z0097 matching with the oligo sequence.
+      tg.tags.first.update!(oligo: plate2_first_oligo)
+    end
+  end
   let(:tag_groups) { [tag_group1, tag_group2] }
 
   let(:request_type) { create(:ultima_sequencing) }
@@ -210,7 +225,7 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv2[1].compact_blank).to eq(["Batch #{batch.id} #{tube2.human_barcode}"]) # Second CSV
     end
 
-    it 'generates global sections' do # rubocop:disable RSpec/MultipleExpectations
+    it 'generates global sections' do
       # Test: Add the following hardcoded values, Application(WGS native gDNA),
       # sequencing_recipe(UG_116cycles_Baseline_1.8.5.2) and analysis_recipe(wgs1)
       expect(csv1[3].compact_blank).to eq(generator.class::GLOBAL_TITLE)
@@ -219,11 +234,24 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv1[6].compact_blank).to eq([])
     end
 
-    it 'generates samples sections' do # rubocop:disable RSpec/MultipleExpectations
+    it 'generates samples sections' do
       expect(csv1[7].compact_blank).to eq(generator.class::SAMPLES_TITLE)
       expect(csv1[8].compact_blank).to eq(generator.class::SAMPLES_HEADERS)
       expect(csv1[9..]).to eq(csv1_samples) # First CSV
       expect(csv2[9..]).to eq(csv2_samples) # Second CSV
     end
+
+    it 'matches the z-indexes, oligo sequences, and plate numbers' do
+      # First CSV
+      expect(csv1[9][2]).to eq('Z0001') # Index_Barcode_Num
+      expect(csv1[9][3]).to eq(plate1_first_oligo) # Index_Barcode_Sequence
+      expect(csv1[9][4]).to eq('1') # Barcode_Plate_Num
+
+      # Second CSV
+      expect(csv2[9][2]).to eq('Z0097') # Index_Barcode_Num
+      expect(csv2[9][3]).to eq(plate2_first_oligo) # Index_Barcode_Sequence
+      expect(csv2[9][4]).to eq('2') # Barcode_Plate_Num
+    end
   end
 end
+# rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength

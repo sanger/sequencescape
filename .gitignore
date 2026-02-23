@@ -40,6 +40,10 @@ doc/*
 .yardoc/*
 app/sample_manifest_excel/doc/
 
+# Ignore generated diagrams from Mermaid
+docs/accessioning/**/*.png
+docs/accessioning/**/*.svg
+
 # Test files
 capybara*.html
 spec/examples.txt

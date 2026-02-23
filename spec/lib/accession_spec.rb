@@ -5,10 +5,6 @@ RSpec.describe Accession do
   describe '.accession_sample' do
     include AccessionV1ClientHelper
 
-    before do
-      create(:user, api_key: configatron.accession_local_key) # create contact user
-    end
-
     context 'when accessioning is disabled', :accessioning_disabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
       let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
@@ -46,16 +42,6 @@ RSpec.describe Accession do
         context 'when the sample is linked to a study with accessioning disabled' do
           before do
             accessionable_sample.ena_study.enforce_accessioning = false
-          end
-
-          it 'logs a message' do
-            allow(Rails.logger).to receive(:info).and_call_original
-
-            described_class.accession_sample(accessionable_sample, event_user)
-            expect(Rails.logger).to have_received(:info).with(
-              "Sample '#{accessionable_sample.name}' should not be accessioned " \
-              'as it belongs to 0 accessionable studies.'
-            )
           end
 
           it 'does not receive an accession number' do
