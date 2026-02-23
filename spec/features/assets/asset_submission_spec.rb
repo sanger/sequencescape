@@ -209,21 +209,9 @@ describe 'Asset submission', :js do
       select(selected_read_length, from: 'Read length')
       click_button 'Create'
 
-      # If an error occurs, the user is redirected to the 'new request' page
-      # of the current asset, with parameters included in the URL.
-      redirect_path =
-        new_request_receptacle_path(
-          asset.receptacle,
-          study_id: study.id,
-          project_id: project.id,
-          request_type_id: selected_request_type.id
-        )
-      expect(page).to have_current_path(redirect_path)
-
-      # The redirected page displays an error message detailing the issue
-      # encountered. In this particular case, the study does not have an
-      # accession number.
-      expect(page).to have_content "'#{study.name}' and all samples must have accession numbers"
+      # Does not check accessioning on samples anymore so completes successfully
+      # despite having unaccessioned samples
+      expect(page).to have_text 'Created request'
     end
   end
 
