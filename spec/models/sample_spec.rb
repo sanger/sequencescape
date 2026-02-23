@@ -106,6 +106,37 @@ RSpec.describe Sample, :cardinal do
     end
   end
 
+  describe '#should_be_accessioned?' do
+    let(:sample) { create(:sample) }
+    let(:study) { create(:study, samples: [sample]) }
+
+    context 'when there is exactly one accessionable study' do
+      before { allow(sample).to receive(:studies_for_accessioning).and_return([study]) }
+
+      it 'returns true' do
+        expect(sample.should_be_accessioned?).to be true
+      end
+    end
+
+    context 'when there are zero accessionable studies' do
+      before { allow(sample).to receive(:studies_for_accessioning).and_return([]) }
+
+      it 'returns false' do
+        expect(sample.should_be_accessioned?).to be false
+      end
+    end
+
+    context 'when there are multiple accessionable studies' do
+      let(:study2) { create(:study, samples: [sample]) }
+
+      before { allow(sample).to receive(:studies_for_accessioning).and_return([study, study2]) }
+
+      it 'returns false' do
+        expect(sample.should_be_accessioned?).to be false
+      end
+    end
+  end
+
   describe '#studies_for_accessioning' do
     let(:open_no_accession) { create(:open_study) }
     let(:open_with_accession_1) { create(:open_study, accession_number: 'ENA123') }

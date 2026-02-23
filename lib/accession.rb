@@ -160,7 +160,7 @@ module Accession
       if job
         Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
       else
-        Rails.logger.warn('Accessioning job enqueue returned nil.')
+        Rails.logger.warn('Accessioning job enqueue failed')
       end
     end
   end
