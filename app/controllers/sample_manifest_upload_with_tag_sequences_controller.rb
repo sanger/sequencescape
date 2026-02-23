@@ -41,8 +41,11 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def apply_warning_flash(rows)
-    flash[:warnings] = 'Sample manifest uploaded with warnings!'
-    flash[:warning_messages] = rows.flat_map { |row| row.warnings.full_messages }.uniq
+    flash[:warning] = {
+      'Sample manifest uploaded with warnings!':
+        rows.flat_map { |row| row.warnings.full_messages }.uniq
+    }
+
     redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
     redirect_to redirect_target
   end
