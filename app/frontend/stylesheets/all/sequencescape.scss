@@ -175,18 +175,6 @@ h3.card-header-custom {
   @extend .alert-warning;
 }
 
-.alert-warnings,
-.alert-warning_messages {
-  background-color: orange;
-  color: black;
-  border-color: darkorange;
-}
-
-.alert-warnings {
-  font-size: 20px; /* or whatever size you want */
-  font-weight: 600; /* optional, makes it stand out */
-}
-
 .text-notice,
 .text-passed {
   @extend .text-success;
