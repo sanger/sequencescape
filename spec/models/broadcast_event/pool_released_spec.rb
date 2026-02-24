@@ -113,11 +113,18 @@ RSpec.describe BroadcastEvent::PoolReleased, :broadcast_event do
       expect(metadata['team']).not_to eq('UNKNOWN')
     end
 
-    # This is an edge case, but we want to make sure that if there are no creation requests or ancestors
+    # These are edge cases, but we want to make sure that if there are no creation requests or ancestors
     # we don't error out and instead return 'UNKNOWN' for the team.
-    it 'has an unknown team if tube has no creation requests' do
+    it 'has an unknown team if tube has no parents' do
       tube.ancestors = []
       tube.save!
+
+      expect(metadata['team']).to eq('UNKNOWN')
+    end
+
+    it 'has an unknown team if tube has a parent with no requests_as_target' do
+      # This is the requests_as_target for the source plate
+      library_request.destroy
 
       expect(metadata['team']).to eq('UNKNOWN')
     end
