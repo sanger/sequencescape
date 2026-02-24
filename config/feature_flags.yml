@@ -12,6 +12,5 @@ y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
 # Accessioning
 y25_706_enable_accessioning: Enables the accessioning feature in the application
 y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning
-y25_286_accession_individual_samples_with_sample_accessioning_job: Accession individual samples with SampleAccessioningJob
 y25_705_notify_on_internal_accessioning_validation_failures: Sends email to developers when internal validation fails during accessioning
 y25_705_notify_on_external_accessioning_validation_failures: Sends email to developers when external validation fails during accessioning
