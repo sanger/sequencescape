@@ -345,10 +345,6 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
     Request.where(submission_id:, request_type_id:)
   end
 
-  def self.accessioning_required?
-    false
-  end
-
   def run_events
     events.loaded? ? events.select { |e| e.message.starts_with?('Run') } : where('message LIKE "Run%"')
   end
