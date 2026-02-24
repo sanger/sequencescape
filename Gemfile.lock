@@ -542,8 +542,9 @@ GEM
       rubocop-rspec (~> 3.5)
     ruby-graphviz (1.2.5)
       rexml
-    ruby-prof (1.7.2)
+    ruby-prof (2.0.2)
       base64
+      ostruct
     ruby-progressbar (1.13.0)
     ruby-units (4.1.0)
     ruby-vips (2.2.3)
