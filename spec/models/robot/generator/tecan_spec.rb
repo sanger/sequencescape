@@ -92,6 +92,40 @@ describe Robot::Generator::Tecan do
     end
 
     it_behaves_like 'a generator'
+
+    describe '#buffers' do
+      let(:batch) { instance_double(Batch, buffer_volume_for_empty_wells: 10.0) }
+      let(:data_object) do
+        {
+          'destination' => {
+            'DN12345U' => {
+              'name' => 'ABgene 0800',
+              'plate_size' => 96,
+              'mapping' => [
+                { 'src_well' => %w[95020 A1], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0 },
+                { 'dst_well' => 'B1', 'buffer_volume' => 10.0 }
+              ]
+            }
+          },
+          'source' => {
+            '95020' => { 'name' => 'ABgene 0765', 'plate_size' => 96 }
+          }
+        }
+      end
+      let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: nil) }
+
+      it 'skips buffer for sample wells when src_well is present and total_volume <= mapping["volume"]' do
+        allow(generator).to receive(:total_volume).and_return(13)
+        result = generator.buffers(data_object)
+        expect(result).not_to include('A;95020')
+      end
+
+      it 'includes buffer for empty wells (no src_well)' do
+        allow(generator).to receive(:total_volume).and_return(13)
+        result = generator.buffers(data_object)
+        expect(result).to include('A;')
+      end
+    end
   end
 
   context 'with multiple sources' do
