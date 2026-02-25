@@ -1,11 +1,6 @@
 # frozen_string_literal: true
 
 describe Robot::Generator::Tecan do
-  before do
-    create(:full_plate)
-    allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
-  end
-
   shared_examples 'a generator' do
     describe '.as_text' do
       let(:batch) { instance_double(Batch, total_volume_to_cherrypick: 13) }
@@ -13,6 +8,10 @@ describe Robot::Generator::Tecan do
       let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: layout) }
 
       context 'when mapping wells from 1 96 well source plate to 1 96 well destination plate' do
+        before do
+          allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
+        end
+
         it 'returns a String object' do
           expect(generator.as_text).to be_a String
         end
@@ -30,7 +29,7 @@ describe Robot::Generator::Tecan do
         end
 
         it 'contains a footer' do
-          assert_match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = DN[0-9]+U\n$/, generator.as_text)
+          assert_match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = SQPD\-[0-9]+\-U\n$/, generator.as_text)
         end
       end
     end
@@ -49,7 +48,7 @@ describe Robot::Generator::Tecan do
           }
         },
         'destination' => {
-          'DN12345U' => {
+          'SQPD-12345-U' => {
             'name' => 'ABgene 0800',
             'plate_size' => 96,
             'mapping' => [
@@ -98,7 +97,7 @@ describe Robot::Generator::Tecan do
       let(:data_object) do
         {
           'destination' => {
-            'DN12345U' => {
+            'SQPD-12345-U' => {
               'name' => 'ABgene 0800',
               'plate_size' => 96,
               'mapping' => [
@@ -113,6 +112,11 @@ describe Robot::Generator::Tecan do
         }
       end
       let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: nil) }
+      let(:dest_plate) { create(:plate_with_empty_wells, well_count: 4, barcode: 'SQPD-12345-U') }
+
+      before do
+        allow(Plate).to receive(:find_by_barcode).with('SQPD-12345-U').and_return(dest_plate)
+      end
 
       it 'skips buffer for sample wells when src_well is present and total_volume <= mapping["volume"]' do
         allow(generator).to receive(:total_volume).and_return(13)
@@ -126,10 +130,111 @@ describe Robot::Generator::Tecan do
         expect(result).to include('A;')
       end
     end
+
+    describe '#data_object_for_buffers' do
+      let(:batch) { build(:batch)}
+
+      let(:metadata_key_automatic_buffer_addition) { 'automatic_buffer_addition' }
+      let(:metadata_key_buffer_vol) { 'buffer_volume_for_empty_wells' }
+
+      let(:poly_metadatum_automatic_buffer_addition) do
+        create(:poly_metadatum, metadatable: batch, key: metadata_key_automatic_buffer_addition, value: '1')
+      end
+      let(:poly_metadatum_buffer_vol) do
+        create(:poly_metadatum, metadatable: batch, key: metadata_key_buffer_vol, value: 120.0)
+      end
+
+      let(:generator) { described_class.new(picking_data: nil, batch: batch, layout: nil) }
+      let(:time_of_test) { Time.now.utc }
+
+      let(:input_data_object) do
+        {
+          'destination' => {
+            'SQPD-9101' => {
+              'name' => 'ABgene 0800',
+              'plate_size' => 4,
+              'control' => false,
+              'mapping' => [
+                { 'src_well' => %w[SQPD-9089 A1], 'dst_well' => 'A1', 'volume' => 100.0, 'buffer_volume' => 0.0 },
+                { 'src_well' => %w[SQPD-9090 A2], 'dst_well' => 'B1', 'volume' => 100.0, 'buffer_volume' => 0.0 }
+              ]
+            }
+          },
+          'source' => {
+            'SQPD-9089' => { 'name' => 'ABgene 0800', 'plate_size' => 4, 'control' => false },
+            'SQPD-9090' => { 'name' => 'ABgene 0800', 'plate_size' => 4, 'control' => false }
+          },
+          'time' => time_of_test,
+          'user' => 'admin'
+        }
+      end
+
+      let(:expected_output) do
+        {
+          'destination' => {
+            'SQPD-9101' => {
+              'name' => 'ABgene 0800',
+              'plate_size' => 4,
+              'mapping' => [
+                { 'src_well' => %w[SQPD-9089 A1], 'dst_well' => 'A1', 'volume' => 100.0, 'buffer_volume' => 0.0 },
+                { 'src_well' => %w[SQPD-9090 A2], 'dst_well' => 'B1', 'volume' => 100.0, 'buffer_volume' => 0.0 },
+                { 'dst_well' => 'C1', 'buffer_volume' => 120.0 },
+                { 'dst_well' => 'D1', 'buffer_volume' => 120.0 }
+              ]
+            }
+          }
+        }
+      end
+
+      before do
+        # Stub Plate.find_by_barcode and well lookup logic
+        test_plate = create(:plate, barcode: 'SQPD-9101', size: 4)
+        allow(Plate).to receive(:find_by_barcode).with('SQPD-9101').and_return(test_plate)
+        allow(test_plate).to receive(:find_well_by_name) do |well_name|
+          # Only A1 and B1 are present and non-empty, C1 and D1 are empty
+          case well_name
+          when 'A1'
+            position = Map.for_position_on_plate(1, 96, test_plate.asset_shape).first
+            create(:well_with_sample_and_plate, map: position, plate: test_plate)
+          when 'B1'
+            position = Map.for_position_on_plate(2, 96, test_plate.asset_shape).first
+            create(:well_with_sample_and_plate, map: position, plate: test_plate)
+          when 'C1'
+            position = Map.for_position_on_plate(3, 96, test_plate.asset_shape).first
+            create(:well, map: position, plate: test_plate)
+          when 'D1'
+            position = Map.for_position_on_plate(4, 96, test_plate.asset_shape).first
+            create(:well, map: position, plate: test_plate)
+          end
+        end
+        allow(generator).to receive(:description_to_column_index) do |well_name, _|
+          # Map A1->1, B1->2, C1->3, D1->4
+          { 'A1' => 1, 'B1' => 2, 'C1' => 3, 'D1' => 4 }[well_name]
+        end
+        allow(generator).to receive(:column_index_to_description) do |index, _|
+          # Map 1->A1, 2->B1, 3->C1, 4->D1
+          { 1 => 'A1', 2 => 'B1', 3 => 'C1', 4 => 'D1' }[index]
+        end
+         # create the poly metadata for buffer addition and volume in the batch
+        poly_metadatum_automatic_buffer_addition
+        poly_metadatum_buffer_vol
+      end
+
+      it 'adds buffer entries for empty destination wells' do
+        result = generator.data_object_for_buffers(input_data_object)
+        expect(result).to eq(expected_output)
+      end
+
+      it 'returns original data_object if buffer_volume_for_empty_wells is nil' do
+        allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
+        result = generator.data_object_for_buffers(input_data_object)
+        expect(result).to eq(input_data_object)
+      end
+    end
   end
 
   context 'with multiple sources' do
-    let(:expected_output) { File.read('test/data/tecan/DN12345U.gwl') }
+    let(:expected_output) { File.read('test/data/tecan/SQPD-12345-U.gwl') }
     let(:data_object) do
       {
         'user' => 'xyz987',
@@ -149,7 +254,7 @@ describe Robot::Generator::Tecan do
           }
         },
         'destination' => {
-          'DN12345U' => {
+          'SQPD-12345-U' => {
             'name' => 'ABgene 0800',
             'plate_size' => 96,
             'mapping' => [
@@ -180,7 +285,7 @@ describe Robot::Generator::Tecan do
           }
         },
         'destination' => {
-          'DN12345U' => {
+          'SQPD-12345-U' => {
             'name' => 'ABgene 0800',
             'plate_size' => 96,
             'mapping' => [
