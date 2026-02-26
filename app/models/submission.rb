@@ -22,6 +22,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::Priorities
 
   PER_ORDER_REQUEST_OPTIONS = %w[pre_capture_plex_level gigabases_expected].freeze
+  SCRNA_CORE_CDNA_PREP_GEM_X_5P = 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p'
 
   self.per_page = 500
 
@@ -123,6 +124,10 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def multiplexed?
     orders.any?(&:multiplexed?)
+  end
+
+  def scrna_core_cdna_prep_gem_x_5p_submission?
+    orders.first.template_name == SCRNA_CORE_CDNA_PREP_GEM_X_5P
   end
 
   # Attempts to find the multiplexed asset (usually a multiplexed library tube) associated

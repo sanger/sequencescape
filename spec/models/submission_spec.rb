@@ -132,4 +132,24 @@ RSpec.describe Submission do
       expect(submission.used_tags).to eq([[tag_a.oligo, tag2_a.oligo], [tag_b.oligo, tag2_b.oligo]])
     end
   end
+
+  describe '#scrna_core_cdna_prep_gem_x_5p_submission?' do
+    let(:submission) { build(:submission, orders: [order]) }
+
+    context 'when the submission has an order with the Limber-Htp - scRNA Core cDNA Prep GEM-X 5p template' do
+      let(:order) { build(:order, template_name: 'Limber-Htp - scRNA Core cDNA Prep GEM-X 5p') }
+
+      it 'returns true' do
+        expect(submission.scrna_core_cdna_prep_gem_x_5p_submission?).to be true
+      end
+    end
+
+    context 'when the submission does not have an order with the Limber-Htp - scRNA Core cDNA Prep GEM-X 5p template' do
+      let(:order) { build(:order, template_name: 'Some other template') }
+
+      it 'returns false' do
+        expect(submission.scrna_core_cdna_prep_gem_x_5p_submission?).to be false
+      end
+    end
+  end
 end
