@@ -5,7 +5,7 @@
   <%= tag.div(page_summary(samples), class:'col-md-4') %>
   <%= tag.div(pagination(samples), class: 'col-md-4 d-flex justify-content-center mb--3') %>
   <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
-    <%= @sample_manifest.samples.select { |sample| !sample.accession_number? }.count %> samples not accessioned
+    <%= samples_not_accessioned(@sample_manifest.samples) %>
   <% end %>
 <% end %>
 
