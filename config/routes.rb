@@ -2,23 +2,39 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 
-  user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
+  # Home
   root to: 'homes#show'
-  resource :health, only: [:show]
   resource :home, only: [:show]
 
-  resource :phi_x, only: [:show] do
-    scope module: :phi_x do
-      resources :stocks
-      resources :spiked_buffers
-    end
-  end
+  # Health check endpoints
+  get 'health' => 'health#show', constraints: ->(req) { req.format == :json } # json with stats
+  get 'health' => 'rails/health#show', as: :rails_health_check # default Rails health check
 
   # Error handling endpoints
   get '/404', to: 'errors#not_found'
   get '/500', to: 'errors#internal_server_error'
   get '/503', to: 'errors#service_unavailable'
 
+  # Session authentication endpoints
+  match '/login' => 'sessions#login', :as => :login, :via => %i[get post]
+  match '/logout' => 'sessions#logout', :as => :logout, :via => %i[get post]
+  # this is for test only test/functional/authentication_controller_test.rb
+  # to be removed?
+  get 'authentication/open'
+  get 'authentication/restricted'
+
+  # Feature flags
+  user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
+  mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
+
+  # Search
+  resources :searches
+  resources :lab_searches
+
+  get 'advanced_search' => 'advanced_search#index'
+  post 'advanced_search/search' => 'advanced_search#search'
+
+  # API v1
   mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
@@ -140,9 +156,6 @@ Rails.application.routes.draw do
       post :remove_role
     end
   end
-
-  match '/login' => 'sessions#login', :as => :login, :via => %i[get post]
-  match '/logout' => 'sessions#logout', :as => :logout, :via => %i[get post]
 
   resources :plate_summaries, only: %i[index show] do
     collection { get :search }
@@ -344,8 +357,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :searches
-
   namespace :admin do
     resources :abilities, only: :index
     resources :custom_texts
@@ -449,11 +460,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :lab_searches
   resources :events
-
-  get 'advanced_search' => 'advanced_search#index'
-  post 'advanced_search/search' => 'advanced_search#search'
 
   resources :workflows, only: [] do
     member do
@@ -466,6 +473,13 @@ Rails.application.routes.draw do
       post 'stage/:id' => 'workflows#stage'
     end
     collection { get :generate_manifest }
+  end
+
+  resource :phi_x, only: [:show] do
+    scope module: :phi_x do
+      resources :stocks
+      resources :spiked_buffers
+    end
   end
 
   resources :asset_audits
@@ -627,11 +641,6 @@ Rails.application.routes.draw do
 
   resources :location_reports, only: %i[index show create]
 
-  # this is for test only test/functional/authentication_controller_test.rb
-  # to be removed?
-  get 'authentication/open'
-  get 'authentication/restricted'
-
   resources :messengers, only: :show
 
   # We removed workflows, which broke study links. Some customers may have their own studies bookmarked
@@ -645,8 +654,6 @@ Rails.application.routes.draw do
       get 'batches/:id', to: 'plate_picks#batches'
     end
   end
-
-  mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
 
   # Custom standalone route for bioscan control locations, allowing only
   # the POST request, migrated from the Lighthouse pickings endpoint.
