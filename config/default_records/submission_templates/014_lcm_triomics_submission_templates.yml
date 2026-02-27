@@ -1,12 +1,13 @@
 # Submission templates for LCM Triomics WGS and EMSeq
 ---
 # LCM Triomics EMSeq submission template
-Limber-Htp - LCM Triomics:
+Limber-Htp - LCM Triomics EMSeq:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_lcm_triomics_emseq"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
+    project_name: "UAT Project"
 # LCM Triomics WGS submission template
 Limber-Htp - LCM Triomics WGS:
   submission_class_name: "LinearSubmission"
@@ -14,3 +15,11 @@ Limber-Htp - LCM Triomics WGS:
     request_type_keys: ["limber_lcm_triomics_wgs"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
+# LCM Triomics RNASeq submission template
+Limber-Htp - LCM Triomics RNASeq:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_rnaseq"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
+    project_name: "UAT Project"
