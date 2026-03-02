@@ -4,7 +4,7 @@
 /* global describe, it, expect, beforeEach, jest */
 /* @jest-environment jsdom */
 
-describe('Buffer input toggle', () => {
+describe("Buffer input toggle", () => {
   let bufferInput, autoBufferCheckbox;
 
   beforeEach(() => {
@@ -14,20 +14,20 @@ describe('Buffer input toggle', () => {
     `;
     // Re-require the script to attach event listeners
     jest.resetModules();
-    require('./cherrypick_strategies.js');
-    bufferInput = document.getElementById('buffer_volume_for_empty_wells');
-    autoBufferCheckbox = document.getElementById('automatic_buffer_addition');
+    require("./cherrypick_strategies.js");
+    bufferInput = document.getElementById("buffer_volume_for_empty_wells");
+    autoBufferCheckbox = document.getElementById("automatic_buffer_addition");
   });
 
-  it('disables buffer input when checkbox is unchecked', () => {
+  it("disables buffer input when checkbox is unchecked", () => {
     autoBufferCheckbox.checked = false;
-    document.dispatchEvent(new Event('DOMContentLoaded'));
+    document.dispatchEvent(new Event("DOMContentLoaded"));
     expect(bufferInput.disabled).toBe(true);
   });
 
-  it('enables buffer input when checkbox is checked', () => {
+  it("enables buffer input when checkbox is checked", () => {
     autoBufferCheckbox.checked = true;
-    document.dispatchEvent(new Event('DOMContentLoaded'));
+    document.dispatchEvent(new Event("DOMContentLoaded"));
     expect(bufferInput.disabled).toBe(false);
   });
 });
