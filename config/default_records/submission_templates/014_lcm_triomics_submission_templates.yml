@@ -14,3 +14,10 @@ Limber-Htp - LCM Triomics WGS:
     request_type_keys: ["limber_lcm_triomics_wgs"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
+
+Limber-Htp - LCM Triomics RNA-seq:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_rnaseq"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
