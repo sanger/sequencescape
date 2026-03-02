@@ -37,7 +37,7 @@ i7:
       promptTitle: "i7"
       prompt: "Input i7."
   conditional_formattings:
-    empty_cell:
+    empty_warning_cell:
 i5:
   heading: i5 TAG SEQUENCE
   unlocked: true
@@ -50,6 +50,8 @@ i5:
       showInputMessage: true
       promptTitle: "i5"
       prompt: "i7."
+  conditional_formattings:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true

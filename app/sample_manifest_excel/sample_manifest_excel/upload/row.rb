@@ -16,11 +16,31 @@ module SampleManifestExcel
       attr_accessor :number, :data, :columns, :cache
       attr_reader :sanger_sample_id
 
+      def warnings
+        @warnings ||= ActiveModel::Errors.new(self)
+      end
+
       validates :number, presence: true, numericality: true
       validate :sanger_sample_id_exists?, if: :sanger_sample_id
       validates_presence_of :data, :columns
       validate :country_of_origin_has_correct_case,
                if: -> { data.present? && columns.present? && columns.names.include?('country_of_origin') }
+
+      validate :i7_present
+      # Ensure i7 column is not blank if it exists in the manifest
+      def i7_present
+        return unless columns.present? && data.present? && columns.names.include?('i7') && value('i7').blank?
+
+        warnings.add(:base, "#{row_title} i7 is blank! ")
+      end
+
+      validate :i5_present
+      # Ensure i5 column is not blank if it exists in the manifest
+      def i5_present
+        return unless columns.present? && data.present? && columns.names.include?('i5') && value('i5').blank?
+
+        warnings.add(:base, "#{row_title} i5 is blank! ")
+      end
 
       delegate :present?, to: :sample, prefix: true
       delegate :aliquots, :asset, to: :manifest_asset

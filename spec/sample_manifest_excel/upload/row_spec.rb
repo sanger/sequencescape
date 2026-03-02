@@ -24,7 +24,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       tube.human_barcode,
       sample_manifest.sample_manifest_assets.first.sanger_sample_id,
       'AA',
-      '',
+      'CC',
       'My reference genome',
       'My New Library Type',
       200,
@@ -184,7 +184,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     aliquot = row.aliquots.first
     expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')
-    expect(aliquot.tag2).to be_nil
+    expect(aliquot.tag2.oligo).to eq('CC')
     expect(aliquot.insert_size_from).to eq(200)
     expect(aliquot.insert_size_to).to eq(1500)
   end

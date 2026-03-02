@@ -6,7 +6,7 @@ require 'rails_helper'
 RSpec.describe SampleManifestUploadWithTagSequencesController, type: :controller do
   let(:user) { create(:user) }
   let(:upload_file) { 'pretend-this-is-an-actual-file' }
-  let(:uploader) { instance_double(SampleManifest::Uploader, run!: true, study: nil) }
+  let(:uploader) { instance_double(SampleManifest::Uploader, study: nil) }
 
   before do
     allow(controller).to receive(:current_user).and_return(user)
@@ -26,14 +26,44 @@ RSpec.describe SampleManifestUploadWithTagSequencesController, type: :controller
       end
     end
 
-    context 'when the file is uploaded successfully' do
-      before { post :create, params: { upload: upload_file } }
+    context 'when the file is uploaded successfully without warning' do
+      before do
+        allow(controller).to receive(:upload_manifest) do
+          controller.instance_variable_set(:@uploader, uploader)
+          true
+        end
+        allow(controller).to receive(:rows_with_warnings).and_return([])
+        post :create, params: { upload: upload_file }
+      end
 
       it 'sets a success flash message' do
         expect(flash[:notice]).to eq('Sample manifest successfully uploaded.')
       end
 
       it 'redirects to the appropriate path' do
+        expect(response).to redirect_to(sample_manifests_path)
+      end
+    end
+
+    context 'when upload succeeds with warnings' do
+      let(:warning_row) do
+        double(warnings: double(full_messages: ['Row 10 warning']))
+      end
+
+      before do
+        allow(controller).to receive(:upload_manifest) do
+          controller.instance_variable_set(:@uploader, uploader)
+          true
+        end
+        allow(controller).to receive(:rows_with_warnings).and_return([warning_row])
+        post :create, params: { upload: upload_file }
+      end
+
+      it 'sets warning flash message' do
+        expect(flash[:warning]).to eq({ 'Sample manifest uploaded with warnings!': ['Row 10 warning'] })
+      end
+
+      it 'redirects correctly' do
         expect(response).to redirect_to(sample_manifests_path)
       end
     end

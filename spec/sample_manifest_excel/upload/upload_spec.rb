@@ -28,7 +28,8 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
     download =
       build(
         :test_download_tubes,
-        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
+        columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
+        manifest_type: 'tube_library_with_tag_sequences'
       )
     download.save(test_file_name)
     upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
