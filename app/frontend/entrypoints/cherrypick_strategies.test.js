@@ -1,9 +1,8 @@
 // cherrypick_strategies.test.js
 // Tests for cherrypick_strategies.js buffer input toggle logic
 
-/**
- * @jest-environment jsdom
- */
+/* global describe, it, expect, beforeEach, jest */
+/* @jest-environment jsdom */
 
 describe('Buffer input toggle', () => {
   let bufferInput, autoBufferCheckbox;
