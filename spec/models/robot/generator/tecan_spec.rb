@@ -29,7 +29,7 @@ describe Robot::Generator::Tecan do
         end
 
         it 'contains a footer' do
-          assert_match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = SQPD\-[0-9]+\-U\n$/, generator.as_text)
+          assert_match(/C;\n(C; SCRC[0-9] = [0-9]+\n)+C;\nC; DEST[0-9] = SQPD-[0-9]+-U\n$/, generator.as_text)
         end
       end
     end
@@ -132,7 +132,7 @@ describe Robot::Generator::Tecan do
     end
 
     describe '#data_object_for_buffers' do
-      let(:batch) { build(:batch)}
+      let(:batch) { build(:batch) }
 
       let(:metadata_key_automatic_buffer_addition) { 'automatic_buffer_addition' }
       let(:metadata_key_buffer_vol) { 'buffer_volume_for_empty_wells' }
@@ -215,7 +215,7 @@ describe Robot::Generator::Tecan do
           # Map 1->A1, 2->B1, 3->C1, 4->D1
           { 1 => 'A1', 2 => 'B1', 3 => 'C1', 4 => 'D1' }[index]
         end
-         # create the poly metadata for buffer addition and volume in the batch
+        # create the poly metadata for buffer addition and volume in the batch
         poly_metadatum_automatic_buffer_addition
         poly_metadatum_buffer_vol
       end

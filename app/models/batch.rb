@@ -484,18 +484,16 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
       # Finally record the fact that the batch was swapped
       batch_request_left.batch.lab_events.create!(
         description: 'Lane swap',
-        # rubocop:todo Layout/LineLength
         message:
-          "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} lane #{batch_request_left.position}",
-        # rubocop:enable Layout/LineLength
+          "Lane #{batch_request_right.position} moved to #{batch_request_left.batch_id} " \
+          "lane #{batch_request_left.position}",
         user_id: current_user.id
       )
       batch_request_right.batch.lab_events.create!(
         description: 'Lane swap',
-        # rubocop:todo Layout/LineLength
         message:
-          "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} lane #{batch_request_right.position}",
-        # rubocop:enable Layout/LineLength
+          "Lane #{batch_request_left.position} moved to #{batch_request_right.batch_id} " \
+          "lane #{batch_request_right.position}",
         user_id: current_user.id
       )
     end
