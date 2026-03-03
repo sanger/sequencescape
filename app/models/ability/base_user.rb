@@ -32,7 +32,7 @@ class Ability::BaseUser
     can %i[read create], Study
     can :print_asset_group_labels, Study, owners: { id: user.id }
     can :print_asset_group_labels, Study, managers: { id: user.id }
-    can %i[read create update edit], Submission
+    can %i[read create update edit download_scrna_core_pooling_plan], Submission
     can :read, [TagGroup, TagLayoutTemplate, TagSet]
     can %i[read update print_swipecard], User, { id: user.id }
     can %i[projects study_reports], User
