@@ -7,7 +7,6 @@ Limber-Htp - LCM Triomics:
     request_type_keys: ["limber_lcm_triomics_emseq"]
     product_line_name: LCM Triomics
     product_catalogue_name: LCM Triomics
-
 # LCM Triomics WGS submission template
 Limber-Htp - LCM Triomics WGS:
   submission_class_name: "LinearSubmission"
