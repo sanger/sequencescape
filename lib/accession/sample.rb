@@ -124,6 +124,13 @@ module Accession
         errors.add(:sample,
                    "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
       end
+
+      service_context = service.ena? ? :ENA : :EGA
+      unless sample.valid?(service_context)
+        sample.sample_metadata.errors.each do |error|
+          errors.add(:sample, "Sample #{error.attribute} #{error.message}")
+        end
+      end
     end
 
     def missing_accession_tags
