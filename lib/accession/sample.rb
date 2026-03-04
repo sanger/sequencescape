@@ -113,12 +113,8 @@ module Accession
       # EBI will still perform its own validation on submission.
       return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
 
-      unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
-      end
-
-      service_context = service.ena? ? :ENA : :EGA
-      sample.errors.full_messages.each { |msg| errors.add(:sample, msg) } unless sample.valid?(service_context)
+      check_tags
+      check_samples
     end
 
     def check_studies
@@ -127,6 +123,16 @@ module Accession
       if accessionable_study.nil?
         errors.add(:sample, 'can only be accessioned if linked to a releasable, accessioned study.')
       end
+    end
+
+    def check_tags
+      unless tags.meets_service_requirements?(service, standard_tags)
+        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
+      end
+    end
+
+    def check_samples
+      sample.errors.full_messages.each { |msg| errors.add(:sample, msg) } unless sample.valid?(service.provider)
     end
   end
 end

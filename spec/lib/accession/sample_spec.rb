@@ -95,12 +95,12 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         expect(described_class.new(tag_list, sample)).to be_valid
       end
 
-      it 'can not have a leading space in gender' do
+      it 'cannot have a leading space in gender' do
         sample.sample_metadata.gender = ' Female'
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
 
-      it 'can not have a trailing space in gender' do
+      it 'cannot have a trailing space in gender' do
         sample.sample_metadata.gender = 'Female '
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
@@ -134,7 +134,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         sample.sample_metadata.gender = 'Invalid Gender'
         accession_sample = described_class.new(tag_list, sample)
         accession_sample.validate
-        expect(accession_sample.errors[:sample]).to include(
+        expect(accession_sample.errors.full_messages.join).to include(
           'Sample metadata gender must be Female, Male or Unknown'
         )
       end
