@@ -116,6 +116,9 @@ module Accession
       unless tags.meets_service_requirements?(service, standard_tags)
         errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
       end
+
+      service_context = service.ena? ? :ENA : :EGA
+      sample.errors.full_messages.each { |msg| errors.add(:sample, msg) } unless sample.valid?(service_context)
     end
 
     def check_studies
