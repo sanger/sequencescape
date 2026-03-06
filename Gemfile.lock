@@ -505,6 +505,7 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.7)
+    ruboclean (0.7.1)
     rubocop (1.85.1)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -742,6 +743,7 @@ DEPENDENCIES
   rspec-json_expectations
   rspec-longrun
   rspec-rails (~> 8.0.0)
+  ruboclean
   rubocop
   rubocop-capybara
   rubocop-factory_bot
