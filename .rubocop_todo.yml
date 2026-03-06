@@ -234,12 +234,6 @@ Lint/RedundantCopDisableDirective:
   Exclude:
     - 'app/models/role/user_role_helper.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-Lint/RedundantCopEnableDirective:
-  Exclude:
-    - 'spec/models/plate_purpose_spec.rb'
-
 # Offense count: 4
 Lint/ReturnInVoidContext:
   Exclude:
