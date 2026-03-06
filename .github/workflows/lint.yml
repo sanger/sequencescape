@@ -27,9 +27,6 @@ jobs:
       - name: Setup Ruby
         uses: sanger/.github/.github/actions/setup/ruby@master
 
-      - name: Set up yarn
-        run: yarn install
-
       - name: Cache Rubocop
         uses: sanger/.github/.github/actions/setup/cache@master
         with:
