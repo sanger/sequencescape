@@ -69,6 +69,11 @@ describe Robot::Generator::TecanV3 do
   # Expected output for the test cases.
   let(:expected_output) { File.read("spec/data/tecan_v3/case_#{case_num}.gwl") }
 
+  before do
+    allow(batch).to receive(:get_poly_metadata).with(:buffer_volume_for_empty_wells).and_return(nil)
+    allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
+  end
+
   shared_examples 'a TecanV3 generator' do
     it 'generates the expected output' do
       expect(generator.as_text).to eq expected_output
