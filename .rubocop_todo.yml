@@ -221,27 +221,6 @@ Lint/NestedMethodDefinition:
   Exclude:
     - 'lib/eventful_record.rb'
 
-# Offense count: 46
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Lint/NonAtomicFileOperation:
-  Exclude:
-    - 'lib/tasks/views_schema.rake'
-    - 'spec/bulk_submission_excel/data_worksheet_spec.rb'
-    - 'spec/bulk_submission_excel/download_spec.rb'
-    - 'spec/features/sample_manifests/uploader_for_manifests_with_tag_sequences_spec.rb'
-    - 'spec/jobs/export_pool_xp_to_traction_job_spec.rb'
-    - 'spec/models/sample_manifest/uploader_spec.rb'
-    - 'spec/sample_manifest_excel/download_spec.rb'
-    - 'spec/sample_manifest_excel/retention_instruction_verification_spec.rb'
-    - 'spec/sample_manifest_excel/tags_spec.rb'
-    - 'spec/sample_manifest_excel/test_download_spec.rb'
-    - 'spec/sample_manifest_excel/upload/data_spec.rb'
-    - 'spec/sample_manifest_excel/upload/processor_spec.rb'
-    - 'spec/sample_manifest_excel/upload/rows_spec.rb'
-    - 'spec/sample_manifest_excel/upload/upload_spec.rb'
-    - 'spec/sample_manifest_excel/worksheet_spec.rb'
-    - 'spec/sequencescape_excel/worksheet_spec.rb'
-
 # Offense count: 4
 Lint/NonLocalExitFromIterator:
   Exclude:

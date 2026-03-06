@@ -22,7 +22,7 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, :bulk_submission_e
 
   let(:spreadsheet) { Roo::Spreadsheet.open(test_file) }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   context 'data worksheet' do
     let!(:worksheet) do

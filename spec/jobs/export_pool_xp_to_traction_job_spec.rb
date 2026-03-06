@@ -96,7 +96,7 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
 
     before do
       # Remove any cached schema file
-      File.delete(cache_file_path) if File.exist?(cache_file_path)
+      FileUtils.rm_f(cache_file_path)
     end
 
     context 'when the schema is cached' do
