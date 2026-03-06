@@ -90,6 +90,55 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
 
+      it 'can have a gender of Female' do
+        sample.sample_metadata.gender = 'Female'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'cannot have a leading space in gender' do
+        sample.sample_metadata.gender = ' Female'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a trailing space in gender' do
+        sample.sample_metadata.gender = 'Female '
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'can have a gender of Male' do
+        sample.sample_metadata.gender = 'Male'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Unknown' do
+        sample.sample_metadata.gender = 'Unknown'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'cannot have a gender of Mixed' do
+        sample.sample_metadata.gender = 'Mixed'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a gender of Hermaphrodite' do
+        sample.sample_metadata.gender = 'Hermaphrodite'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a gender of Not Applicable' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'provides a clear error message about valid gender options' do
+        sample.sample_metadata.gender = 'Invalid Gender'
+        accession_sample = described_class.new(tag_list, sample)
+        accession_sample.validate
+        expect(accession_sample.errors.full_messages.join).to include(
+          'Sample metadata gender must be Female, Male or Unknown'
+        )
+      end
+
       it 'is required to define phenotype' do
         sample.sample_metadata.phenotype = nil
         expect(described_class.new(tag_list, sample)).not_to be_valid
