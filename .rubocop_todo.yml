@@ -2145,12 +2145,6 @@ Style/PerlBackrefs:
     - 'features/support/step_definitions/tag_layout_steps.rb'
     - 'lib/validateable.rb'
 
-# Offense count: 1
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/PredicateWithKind:
-  Exclude:
-    - 'app/models/presenters/batch_submenu_presenter.rb'
-
 # Offense count: 4
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: EnforcedStyle.
