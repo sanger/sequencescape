@@ -44,6 +44,9 @@ jobs:
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
 
+      - name: Clean rubocop config
+        run: bundle exec ruboclean --preserve-comments --verify
+
   prettier:
     name: Prettier
     runs-on: ubuntu-latest

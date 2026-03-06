@@ -1,4 +1,5 @@
 ---
+# To order the config, run: bundle exec ruboclean --preserve-comments
 
 inherit_from:
 - ".rubocop_todo.yml"
