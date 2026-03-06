@@ -71,6 +71,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # as being more concise as it has fewer states.
     state :pending, initial: true
     state :started
+    state :processed
     state :processed_1
     state :processed_2
     state :processed_3
@@ -83,6 +84,10 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # State Machine events
     event :start do
       transitions to: :started, from: [:pending], after: :on_started
+    end
+
+    event :progress do
+      transitions to: :processed, from: [:started], after: :on_started
     end
 
     event :process_1 do
@@ -104,7 +109,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     event :pass do
       # Jumping straight to passed moves through an implied started state.
       transitions to: :passed, from: :pending, after: :on_started
-      transitions to: :passed, from: %i[started failed processed_2 processed_3 processed_4]
+      transitions to: :passed, from: %i[started failed processed processed_2 processed_3 processed_4]
     end
 
     event :fail do
