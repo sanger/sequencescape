@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ExportPoolXpToTractionJob, type: :job do
+RSpec.describe ExportPoolXpToTractionJob do
   let(:export_job) { described_class.new(tube.human_barcode) }
   let(:tube) { create(:multiplexed_library_tube, sample_count: 3) }
 

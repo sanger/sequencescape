@@ -7,7 +7,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Api::V2::Concerns::DisableDestroyAction, type: :controller do
+RSpec.describe Api::V2::Concerns::DisableDestroyAction do
   # We explicitly use the constant `Api::V2::DisableDestroyAction` here instead of `described_class`
   # because `described_class` is not accessible at the top level of the spec file where the
   # anonymous controller is being defined. Attempting to use `described_class` in this context
