@@ -25,6 +25,8 @@ class Tag < ApplicationRecord
 
   broadcast_with_warren
 
+  validates :oligo, length: { maximum: 30 }, allow_blank: true
+
   scope :sorted, -> { order(:map_id) }
 
   def name
