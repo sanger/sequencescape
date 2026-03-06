@@ -43,7 +43,7 @@ RSpec.describe BulkSubmissionExcel::Worksheet::DataWorksheet, :bulk_submission_e
       @spreadsheet = Roo::Spreadsheet.open(test_file)
     end
 
-    it 'will have a axlsx worksheet' do
+    it 'has a axlsx worksheet' do
       expect(worksheet.axlsx_worksheet).to be_present
     end
 
