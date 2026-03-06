@@ -64,7 +64,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       LabelPrinter::PrintJob.new(
         params[:printer],
         LabelPrinter::Label::SampleManifestRedirect,
-        sample_manifest: @sample_manifest
+        sample_manifest: @sample_manifest,
+        label_template_name: label_template_for_2d_barcodes,
+        barcode_type: params[:barcode_type]
       )
     if print_job.execute
       flash[:notice] = print_job.success
@@ -112,6 +114,13 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_back_or_to(root_path)
     rescue ActionController::RedirectBackError
       redirect_to sample_manifests_path
+    end
+  end
+
+  def label_template_for_2d_barcodes
+    if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
+        SampleManifest.tube_asset_types.include?(params[:asset_type])
+      Rails.application.config.tube_manifest_barcode_config[:two_dimensional_label_template]
     end
   end
 end

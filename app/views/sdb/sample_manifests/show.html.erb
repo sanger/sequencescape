@@ -49,7 +49,7 @@
         
         <div class="form-group">
           <%= label_tag :barcode_printer_type_id, 'Barcode type' %>
-           <%= select_tag 'barcode_printer_type_id',options_for_select(Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values) %>
+          <%= select_tag :barcode_type, options_for_select(@barcode_types),class: "form-control select2" %>
         </div>
         
         <div class="form-group mb-0">
