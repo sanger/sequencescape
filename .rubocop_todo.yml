@@ -2231,15 +2231,6 @@ Style/SafeNavigation:
     - 'lib/event_factory.rb'
     - 'test/unit/qc_report_file_test.rb'
 
-# Offense count: 4
-# This cop supports unsafe autocorrection (--autocorrect-all).
-Style/SelectByKind:
-  Exclude:
-    - 'app/controllers/studies/asset_groups_controller.rb'
-    - 'app/models/broadcast_event/order_made.rb'
-    - 'app/models/lib_pool_norm_tube_generator.rb'
-    - 'features/support/step_definitions/transfer_steps.rb'
-
 # Offense count: 1
 # This cop supports unsafe autocorrection (--autocorrect-all).
 Style/SingleArgumentDig:
