@@ -2,7 +2,6 @@
 # frozen_string_literal: true
 
 class SequencingRequest < CustomerRequest
-  extend Request::AccessioningRequired
   include Api::Messages::FlowcellIo::LaneExtensions
 
   class_attribute :flowcell_identifier

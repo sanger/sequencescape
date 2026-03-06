@@ -57,7 +57,6 @@ if Rails.env.development? || Rails.env.profile?
   configatron.delayed_job.study_report_priority = 100
   configatron.delayed_job.submission_process_priority = 0
 
-  configatron.disable_accession_check = true
   configatron.disable_api_authentication = true
 
   configatron.ldap_port = 13_890
@@ -121,7 +120,6 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'
   configatron.invalid_policy_url_domains = %w[internal.example.com invalid.example.com]
 
-  configatron.disable_accession_check = false
   configatron.disable_api_authentication = true
   configatron.disable_web_proxy = true
 
