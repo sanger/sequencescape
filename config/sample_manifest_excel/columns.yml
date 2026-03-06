@@ -32,28 +32,38 @@ i7:
   validation:
     options:
       type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      operator: :between
+      formula1: "1"
+      formula2: "255"
       allowBlank: false
       showInputMessage: true
+      showErrorMessage: true
       promptTitle: "i7"
       prompt: "Input i7."
+      errorStyle: :warning
+      errorTitle: "i7"
+      error: "i7 cannot be blank"
   conditional_formattings:
-    empty_cell:
+    empty_warning_cell:
 i5:
   heading: i5 TAG SEQUENCE
   unlocked: true
   validation:
     options:
       type: :textLength
-      operator: :lessThanOrEqual
-      formula1: "255"
+      operator: :between
+      formula1: "1"
+      formula2: "255"
       allowBlank: false
       showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :warning
+      errorTitle: "i5"
+      error: "i5 cannot be blank"
       promptTitle: "i5"
       prompt: "Input i5."
   conditional_formattings:
-    empty_cell:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
