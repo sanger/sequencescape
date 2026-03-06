@@ -27,7 +27,7 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   it 'creates a file' do
     expect(File.file?(test_file))

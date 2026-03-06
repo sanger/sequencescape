@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe NovaSeq6000PESequencingRequest, type: :model do
+RSpec.describe NovaSeq6000PESequencingRequest do
   let(:request) { create(:nova_seq_6000_p_e_sequencing_request) }
   let(:validator) { NovaSeq6000PESequencingRequest::NovaSeq6000PERequestOptionsValidator.new(request) }
 

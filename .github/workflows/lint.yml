@@ -27,9 +27,6 @@ jobs:
       - name: Setup Ruby
         uses: sanger/.github/.github/actions/setup/ruby@master
 
-      - name: Set up yarn
-        run: yarn install
-
       - name: Cache Rubocop
         uses: sanger/.github/.github/actions/setup/cache@master
         with:
@@ -43,6 +40,9 @@ jobs:
       # and parallel to try and improve speed
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
+
+      - name: Clean rubocop config
+        run: bundle exec ruboclean --preserve-comments --verify
 
   prettier:
     name: Prettier

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe PolyMetadatum, type: :model do
+RSpec.describe PolyMetadatum do
   subject(:test_metadatum) { build(:poly_metadatum) }
 
   # Tests for validations

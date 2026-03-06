@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Study accession number', :accessioning_enabled, :js, type: :feature do
+RSpec.describe 'Study accession number', :accessioning_enabled, :js do
   include MockAccession
 
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }
