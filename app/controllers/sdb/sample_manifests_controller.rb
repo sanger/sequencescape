@@ -38,7 +38,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @samples = @sample_manifest.samples.paginate(page: params[:page])
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
-    assset_type = @sample_manifest.asset_type
+    @asset_type = @sample_manifest.asset_type
   end
 
   def new
