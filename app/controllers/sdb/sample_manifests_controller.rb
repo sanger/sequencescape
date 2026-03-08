@@ -38,6 +38,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     @samples = @sample_manifest.samples.paginate(page: params[:page])
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
     @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
+    assset_type = @sample_manifest.asset_type
   end
 
   def new
@@ -65,7 +66,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController
         params[:printer],
         LabelPrinter::Label::SampleManifestRedirect,
         sample_manifest: @sample_manifest,
-        label_template_name: label_template_for_2d_barcodes,
+        label_template_name: label_template_for_2d_barcodes(@sample_manifest.asset_type),
         barcode_type: params[:barcode_type]
       )
     if print_job.execute
@@ -117,9 +118,9 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     end
   end
 
-  def label_template_for_2d_barcodes
+  def label_template_for_2d_barcodes(asset_type)
     if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
-        SampleManifest.tube_asset_types.include?(params[:asset_type])
+        SampleManifest.tube_asset_types.include?(asset_type)
       Rails.application.config.tube_manifest_barcode_config[:two_dimensional_label_template]
     end
   end
