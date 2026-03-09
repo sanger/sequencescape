@@ -41,14 +41,8 @@ jobs:
       - name: Run rubocop
         run: bundle exec rubocop --extra-details --display-style-guide --parallel --format github --format progress
 
-      - name: Print rubocop config file before
-        run: cat .rubocop.yml
-
       - name: Clean rubocop config
-        run: bundle exec ruboclean --preserve-comments
-
-      - name: Print rubocop config file after
-        run: cat .rubocop.yml
+        run: bundle exec ruboclean --preserve-comments --verify
 
   prettier:
     name: Prettier
