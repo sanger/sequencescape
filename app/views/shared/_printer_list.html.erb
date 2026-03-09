@@ -1,8 +1,13 @@
 
 <div><label for="barcode_printer_list" style="display:none">Barcode Printer</label></div>
-  <select name="barcode_printer" id="barcode_printer" class="form-control select2">
-    <% @barcode_printers.each do |printer| %>
-      <option value="<%= printer %>"><%= printer %></option>
-    <% end %>
-  </select>
+  <select name="printer" id="barcode_printer_list" class="select2">
+   <% printer_list = BarcodePrinter.alphabetical.includes(:barcode_printer_type).all.group_by {|printer| "#{printer.barcode_printer_type.name} (#{printer.active? ? 'Active' : 'Inactive'})" } %>
+   <% printer_list.each do |group, printers| %>
+    <optgroup label="<%= group %>">
+      <% printers.each do |printer| %>
+        <option value="<%= printer.name %>"><%= printer.name %></option>
+      <% end %>
+    </optgroup>
+  <% end %>
+</select>
 
