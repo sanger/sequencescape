@@ -115,6 +115,29 @@ class SubmissionsController < ApplicationController
     @submissions = @study.submissions
   end
 
+  def download_scrna_core_pooling_plan # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    begin
+      submission = Submission.find(params[:id])
+    rescue ActiveRecord::RecordNotFound
+      flash[:error] = "Submission not found with id #{params[:id]}"
+      redirect_to submissions_path
+      return
+    end
+
+    unless submission.scrna_core_cdna_prep_gem_x_5p_submission?
+      flash[:error] =
+        'This submission does not have the correct template for downloading a scRNA Core pooling plan'
+      redirect_to submission
+      return
+    end
+
+    # Generate the pooling plan CSV string using the ScrnaCoreCdnaPrepPoolingPlanGenerator module
+    csv_string = Submission::ScrnaCoreCdnaPrepPoolingPlanGenerator.generate_pooling_plan(submission)
+
+    send_data csv_string, type: 'text/plain', filename: "#{params[:id]}_scrna_core_pooling_plan.csv",
+                          disposition: 'attachment'
+  end
+
   ###################################################               AJAX ROUTES
   # TODO[sd9]: These AJAX routes could be re-factored
 

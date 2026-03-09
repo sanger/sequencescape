@@ -18,7 +18,7 @@ class MultiplexedLibraryTube < Tube
   end
 
   def team
-    creation_requests.first&.product_line
+    creation_requests&.first&.product_line
   end
 
   def role
@@ -41,6 +41,8 @@ class MultiplexedLibraryTube < Tube
     direct = requests_as_target.where_is_a(Request::LibraryCreation)
     return direct unless direct.empty?
 
-    parents.includes(:requests_as_target).first.requests_as_target
+    # Parents should exist but in the case they don't (e.g. asset_links are yet to be created)
+    # we want to avoid an error and just return an empty array.
+    parents.includes(:requests_as_target).first&.requests_as_target || []
   end
 end
