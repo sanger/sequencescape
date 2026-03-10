@@ -530,12 +530,19 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # - or all of the accessionable studies it is part of are open
   # @return [Boolean] true if the sample should be accessioned, false otherwise
   def should_be_accessioned?
-    # If updating this method, please also update app/views/samples/_studies.html.erb
+    # If updating this method, also update should_be_accessioned_warning used in app/views/samples/_studies.html.erb
 
-    # Samples belonging to more than one study, can only be accessioned if all studies are open
-    return true if single_accessionable_study? || accessionable_studies_open.all?
-
-    false
+    case studies_for_accessioning.size
+    when 0
+      # No accessionable studies
+      false
+    when 1
+      # Always accession
+      true
+    else
+      # Samples belonging to more than one accessionables study can only be accessioned if all studies are open
+      all_accessionable_studies_open?
+    end
   end
 
   # NOTE: this does not check whether the current user is permitted to accession the sample,
@@ -628,18 +635,16 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     "Yes (#{type_text})"
   end
 
+  # Returns true if all accessionable studies are open, false otherwise.
+  # @return [Boolean]
+  def all_accessionable_studies_open?
+    studies_for_accessioning.all? { |study| study.study_metadata.open? }
+  end
+
   private
 
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
     throw(:abort)
-  end
-
-  def single_accessionable_study?
-    studies_for_accessioning.size == 1
-  end
-
-  def accessionable_studies_open
-    studies_for_accessioning.map { |study| study.study_metadata.open? }
   end
 end
