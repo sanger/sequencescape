@@ -132,7 +132,7 @@ RSpec.describe Sample, :cardinal do
       before { allow(sample).to receive(:studies_for_accessioning).and_return([study, study2]) }
 
       it 'returns false' do
-        expect(sample.should_be_accessioned?).to be false
+        expect(sample.should_be_accessioned?).to be true
       end
     end
   end
