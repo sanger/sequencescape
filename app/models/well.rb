@@ -367,6 +367,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   end
 
   def empty?
-    aliquots.blank? || aliquots.empty?
+    aliquots.blank?
   end
 end

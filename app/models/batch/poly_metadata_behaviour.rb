@@ -3,6 +3,7 @@ module Batch::PolyMetadataBehaviour
   # Returns whether the Cherrypick automatic_buffer_addition option is enabled
   # @return [Boolean] whether the automatic_buffer_addition option is enabled
   def automatic_buffer_addition?
+    # tests 1 and on to cover both visible and hidden option in the forms of successive pages
     %w[1 on].include?(get_poly_metadata(:automatic_buffer_addition))
   end
 

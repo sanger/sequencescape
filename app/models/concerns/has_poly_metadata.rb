@@ -11,6 +11,8 @@ module HasPolyMetadata
   # If value is present, it will create or update the PolyMetaDatum with the
   # given key and value, otherwise it will destroy the PolyMetaDatum with the
   # given key if that exists.
+  # NB: this is because PolyMetaDatum validations prevent key duplication and blank values,
+  # although there are no such DB constraints.
   # @param key [String] The key of the PolyMetaDatum to set.
   # @param value [String] The value of the PolyMetaDatum to set. If nil or empty, the PolyMetaDatum will be destroyed.
   # @return [void]
