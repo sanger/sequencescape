@@ -38,6 +38,18 @@ module Api
       # @!attribute [r] name
       #   @return [String] The name of the submission template.
       attribute :name
+
+      # @!attribute [r] request_type_keys
+      #   @return [Array<String>] The request type keys associated with this submission template.
+      attribute :request_type_keys
+
+      ###
+      # Filters
+      ###
+      # Allow filtering by UUID
+      filter :uuid, apply: lambda { |records, value, _options|
+        records.joins(:uuid_object).where(uuids: { external_id: value })
+      }
     end
   end
 end

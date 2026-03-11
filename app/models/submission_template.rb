@@ -3,7 +3,7 @@
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
 # Anyway that's basically a prototype factory
-class SubmissionTemplate < ApplicationRecord
+class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
 
   validates :name, presence: true
@@ -98,6 +98,14 @@ class SubmissionTemplate < ApplicationRecord
 
   def input_plate_purposes
     sorted_request_types.first.acceptable_purposes
+  end
+
+  def request_type_keys
+    request_types.pluck(:key)
+  end
+
+  def self.find_by_uuid(uuid)
+    joins(:uuid_object).find_by(uuids: { external_id: uuid })
   end
 
   private
