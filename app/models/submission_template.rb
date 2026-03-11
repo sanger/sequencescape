@@ -104,10 +104,6 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
     request_types.pluck(:key)
   end
 
-  def self.find_by_uuid(uuid)
-    joins(:uuid_object).find_by(uuids: { external_id: uuid })
-  end
-
   private
 
   # Retrieves the request types that are associated with this submission template,
