@@ -46,7 +46,14 @@ module Api
       ###
       # Filters
       ###
-      # Allow filtering by UUID
+      # @!method filter_uuid
+      # Filter SubmissionTemplate resource by template uuid. Allowing clients to retrieve a submission template by its UUID, 
+      #
+      # @example Filter submission templates by UUID
+      #   GET /api/v2/submission_templates?filter[uuid]=7a8029bc-1094-11f1-bb65-16cc5efe8600
+      #
+      # @param value [String] The UUID to filter by.
+      # @return [SubmissionTemplateResource] The filtered submission template.
       filter :uuid, apply: lambda { |records, value, _options|
         records.joins(:uuid_object).where(uuids: { external_id: value })
       }
