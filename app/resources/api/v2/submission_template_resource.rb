@@ -47,7 +47,7 @@ module Api
       # Filters
       ###
       # @!method filter_uuid
-      # Filter SubmissionTemplate resource by template uuid. Allowing clients to retrieve a submission template by its UUID, 
+      # Filter SubmissionTemplate resource by template uuid.
       #
       # @example Filter submission templates by UUID
       #   GET /api/v2/submission_templates?filter[uuid]=7a8029bc-1094-11f1-bb65-16cc5efe8600
