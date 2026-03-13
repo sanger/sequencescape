@@ -9,8 +9,6 @@ describe PlatePurpose do
   shared_examples 'a plate factory' do
     before { expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
 
-    # rubocop:enable RSpec/ExpectInHook
-
     describe '#create!' do
       subject { plate_purpose.create! }
 

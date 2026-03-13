@@ -16,7 +16,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file_name) if File.exist?(test_file_name) }
+  after { FileUtils.rm_f(test_file_name) }
 
   before do
     create(:insdc_country, name: 'United Kingdom')
@@ -39,7 +39,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
   end
 
   it 'is valid if some rows are empty' do
-    download = build(:test_download_tubes_partial, columns:)
+    download = build(:test_download_tubes_partial, columns: columns, manifest_type: 'tube_library_with_tag_sequences')
     download.save(test_file_name)
     expect(described_class.new(SampleManifestExcel::Upload::Data.new(test_file), columns)).to be_valid
   end

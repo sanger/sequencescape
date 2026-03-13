@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ErrorsController, type: :controller do
+RSpec.describe ErrorsController do
   errors = %i[not_found internal_server_error service_unavailable]
   formats = [nil, :html, :json, :png, :unknown]
 

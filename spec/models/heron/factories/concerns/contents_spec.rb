@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse, type: :model do
+RSpec.describe Heron::Factories::Concerns::Contents, :heron, :lighthouse do
   require 'rspec/mocks/standalone'
   let(:factory_klass) do
     Class.new do
