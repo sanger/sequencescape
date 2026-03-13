@@ -50,6 +50,9 @@ jobs:
       - name: Print rubocop config file after
         run: cat .rubocop.yml
 
+      - name: Verify rubocop config
+        run: bundle exec ruboclean --preserve-comments --preserve-paths --verify
+
   prettier:
     name: Prettier
     runs-on: ubuntu-latest
