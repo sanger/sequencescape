@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 describe Robot::Generator::Tecan do
-  before { create(:full_plate) }
+  before do
+    create(:full_plate)
+    allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
+  end
 
   shared_examples 'a generator' do
     describe '.as_text' do
