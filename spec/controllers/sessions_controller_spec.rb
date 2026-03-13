@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # Related authentication tests are in test/controllers/authentication_controller_test.rb
 
-RSpec.describe SessionsController, type: :controller do
+RSpec.describe SessionsController do
   describe 'POST #login' do
     let(:user) { instance_double(User, id: 1) }
 

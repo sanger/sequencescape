@@ -33,7 +33,7 @@ class LibPoolNormTubeGenerator
     @lib_pool_tubes ||=
       plate
         .children
-        .select { |c| c.is_a?(StockMultiplexedLibraryTube) }
+        .grep(StockMultiplexedLibraryTube)
         .reject { |tube| ignore_states.include?(tube.state) }
   end
 

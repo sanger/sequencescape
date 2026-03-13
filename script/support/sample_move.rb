@@ -4,11 +4,11 @@ class StudySample < ApplicationRecord
 end
 
 # added sample class as comments are not commentable at present 21/3/2019
-class Sample
+class Sample # rubocop:disable Style/OneClassPerFile
   include Commentable
 end
 
-class Asset
+class Asset # rubocop:disable Style/OneClassPerFile
   has_many :submitted_assets
   has_many :orders, through: :submitted_assets, as: :asset
 end

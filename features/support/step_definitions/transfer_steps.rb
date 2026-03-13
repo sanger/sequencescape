@@ -98,7 +98,7 @@ end
 def change_request_state(state, targets, direction, request_class)
   association = direction == 'to' ? :requests_as_target : :requests_as_source
   Request.where(
-    id: Array(targets).map(&association).flatten.select { |r| r.is_a?(request_class) }.map(&:id)
+    id: Array(targets).map(&association).flatten.grep(request_class).map(&:id)
   ).update_all(state:)
 end
 

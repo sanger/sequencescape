@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Heron::Factories::Sample, :heron, :lighthouse, type: :model do
+RSpec.describe Heron::Factories::Sample, :heron, :lighthouse do
   let(:study) { create(:study) }
 
   describe '#valid?' do
