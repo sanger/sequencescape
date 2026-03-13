@@ -96,6 +96,8 @@ class Map < ApplicationRecord
       PLATE_DIMENSIONS[plate_size].last
     end
 
+    # well number counting by columns, length is the number of rows in the plate
+    # e.g. B5 sends this 34 and 8
     def self.vertical_position_to_description(well_position, length)
       desc_letter = (((well_position - 1) % length) + 65).chr
       desc_number = ((well_position - 1) / length) + 1
