@@ -100,6 +100,13 @@ RSpec.describe TagGroup::FormObject do
         expect(tag_group_form_object.tag_group.tags.first.oligo).to eq('ACCTTGGA')
       end
     end
+
+    context 'when the oligos entered are longer than 30 charcters' do
+      it 'the model is invalid' do
+        tag_group_form_object.oligos_text = 'AAAAAAASACCCGGGTTTTTAAAAAATTTTTT'
+        expect(tag_group_form_object).not_to be_valid
+      end
+    end
   end
 
   context 'when no name is entered' do
