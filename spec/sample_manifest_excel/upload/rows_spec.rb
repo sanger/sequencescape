@@ -16,7 +16,7 @@ RSpec.describe SampleManifestExcel::Upload::Rows, :sample_manifest, :sample_mani
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file_name) if File.exist?(test_file_name) }
+  after { FileUtils.rm_f(test_file_name) }
 
   before do
     create(:insdc_country, name: 'United Kingdom')

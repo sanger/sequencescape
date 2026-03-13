@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js, type: :feature do
+RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
   include MockAccession
 
   let(:user) { create(:admin) }

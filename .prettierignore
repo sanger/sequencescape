@@ -4,6 +4,7 @@
 .history/*
 .Rakelist
 .rubocop_todo.yml
+.rubocop.yml
 .ruby-lsp/vendor
 .yardoc
 .yardoc/*

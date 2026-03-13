@@ -3,7 +3,7 @@ require 'rails_helper'
 
 # For more complete tests, see spec/features/sample_manifests/uploader_for_manifests_with_tag_sequences_spec.rb
 
-RSpec.describe SampleManifestUploadWithTagSequencesController, type: :controller do
+RSpec.describe SampleManifestUploadWithTagSequencesController do
   let(:user) { create(:user) }
   let(:upload_file) { 'pretend-this-is-an-actual-file' }
   let(:uploader) { instance_double(SampleManifest::Uploader, study: nil) }
