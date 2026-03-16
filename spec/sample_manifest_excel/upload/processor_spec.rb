@@ -44,7 +44,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       download.save(test_file_name)
     end
 
-    after { File.delete(test_file_name) if File.exist?(test_file_name) }
+    after { FileUtils.rm_f(test_file_name) }
 
     shared_examples 'it updates downstream aliquots' do |rows, columns|
       it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
@@ -296,7 +296,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
-        after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+        after { FileUtils.rm_f(new_test_file_name) }
 
         shared_examples_for 'a mandatory field in the manifest' do
           it 'cannot have blank' do
@@ -333,7 +333,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
         let(:new_test_file) { Rack::Test::UploadedFile.new(Rails.root.join(new_test_file_name), '') }
 
-        after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+        after { FileUtils.rm_f(new_test_file_name) }
 
         it 'cannot have blank retention instruction' do
           column = download.worksheet.columns.find_by(:name, :retention_instruction)
@@ -437,7 +437,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.sample_manifest.state = 'completed'
           end
 
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+          after { FileUtils.rm_f(new_test_file_name) }
 
           it_behaves_like 'it updates downstream aliquots', [10, 11], insert_size_from: 6, insert_size_to: 7, i7: 2
         end
@@ -509,7 +509,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.sample_manifest.state = 'completed'
           end
 
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+          after { FileUtils.rm_f(new_test_file_name) }
 
           it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
             cell(10, 7).value = '100'
@@ -685,7 +685,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.sample_manifest.state = 'completed'
           end
 
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+          after { FileUtils.rm_f(new_test_file_name) }
 
           it 'will update the samples if samples data has changed and override is set true' do
             reupload =
@@ -731,7 +731,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.sample_manifest.state = 'completed'
           end
 
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+          after { FileUtils.rm_f(new_test_file_name) }
 
           it 'the same barcode cannot be used for multiple plates' do
             cell(9, 0).value = 'CGAP-00000'
@@ -767,7 +767,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             upload.sample_manifest.state = 'completed'
           end
 
-          after { File.delete(new_test_file_name) if File.exist?(new_test_file_name) }
+          after { FileUtils.rm_f(new_test_file_name) }
 
           it 'the retention instructions cannot be left blank' do
             col1 = download.worksheet.columns.find_by(:name, :retention_instruction).number - 1

@@ -19,7 +19,7 @@ RSpec.describe SampleManifestExcel::Upload::Data, :sample_manifest, :sample_mani
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file_name) if File.exist?(test_file_name) }
+  after { FileUtils.rm_f(test_file_name) }
 
   it 'is not valid without a filename' do
     expect(described_class.new(nil)).not_to be_valid

@@ -20,7 +20,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file_name) if File.exist?(test_file_name) }
+  after { FileUtils.rm_f(test_file_name) }
 
   describe '#initialize' do
     it 'will not be valid without a filename' do

@@ -34,7 +34,7 @@ RSpec.describe SequencescapeExcel::Worksheet, :sample_manifest, :sample_manifest
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   describe 'validations ranges worksheet' do
     let!(:range_list) { SampleManifestExcel.configuration.ranges.dup }
