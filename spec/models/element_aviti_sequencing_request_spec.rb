@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ElementAvitiSequencingRequest, type: :model do
+RSpec.describe ElementAvitiSequencingRequest do
   let(:request) { create(:element_aviti_sequencing_request) }
   let(:validator) { ElementAvitiSequencingRequest::ElementAvitiRequestOptionsValidator.new(request) }
 

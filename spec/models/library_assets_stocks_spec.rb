@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe SampleManifest, type: :model do
+RSpec.describe SampleManifest do
   describe 'Library behaviours' do
     let(:study) { create(:study) }
 
