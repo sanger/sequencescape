@@ -68,7 +68,6 @@ RSpec.describe Sdb::SampleManifestsController do
       let!(:sample_manifest) { create(:sample_manifest, asset_type: 'plate') }
       let(:print_job) { instance_double(LabelPrinter::PrintJob) }
       let(:printer) { 'printer_1' }
-      let(:barcode_type) { '2d' }
 
       before do
         allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
@@ -76,7 +75,7 @@ RSpec.describe Sdb::SampleManifestsController do
         allow(controller).to receive(:redirect_back_or_to)
       end
 
-      it 'prints successfully' do
+      it 'prints successfully' do # rubocop:disable RSpec/MultipleExpectations
         post :print_labels,
              params: {
                id: sample_manifest.id,
@@ -84,6 +83,7 @@ RSpec.describe Sdb::SampleManifestsController do
              }
 
         expect(flash[:notice]).to eq('Printed')
+        expect(controller).to have_received(:redirect_back_or_to)
       end
     end
 
@@ -104,6 +104,7 @@ RSpec.describe Sdb::SampleManifestsController do
         allow(controller).to receive(:label_template_for_2d_barcodes).and_return('2d_template')
         allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
         allow(print_job).to receive_messages(execute: true, success: 'Printed')
+        allow(controller).to receive(:redirect_back_or_to)
         make_request
       end
 
@@ -119,8 +120,9 @@ RSpec.describe Sdb::SampleManifestsController do
         )
       end
 
-      it 'prints successfully' do
+      it 'prints successfully' do # rubocop:disable RSpec/MultipleExpectations
         expect(flash[:notice]).to eq('Printed')
+        expect(controller).to have_received(:redirect_back_or_to)
       end
     end
   end
