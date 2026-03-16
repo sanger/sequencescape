@@ -67,17 +67,20 @@ RSpec.describe Sdb::SampleManifestsController do
     context 'when printing labels for a plate manifest' do
       let!(:sample_manifest) { create(:sample_manifest, asset_type: 'plate') }
       let(:print_job) { instance_double(LabelPrinter::PrintJob) }
+      let(:printer) { 'printer_1' }
+      let(:barcode_type) { '2d' }
 
       before do
         allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
         allow(print_job).to receive_messages(execute: true, success: 'Printed')
+        allow(controller).to receive(:redirect_back_or_to)
       end
 
       it 'prints successfully' do
         post :print_labels,
              params: {
                id: sample_manifest.id,
-               printer: 'printer1'
+               printer: 'printer_1'
              }
 
         expect(flash[:notice]).to eq('Printed')
@@ -89,7 +92,7 @@ RSpec.describe Sdb::SampleManifestsController do
         post :print_labels,
              params: {
                id: sample_manifest.id,
-               printer: 'printer1',
+               printer: 'printer_1',
                barcode_type: '2D Barcode'
              }
       end
@@ -106,7 +109,7 @@ RSpec.describe Sdb::SampleManifestsController do
 
       it 'passes the 2D label template to the print job' do
         expect(LabelPrinter::PrintJob).to have_received(:new).with(
-          'printer1',
+          'printer_1',
           LabelPrinter::Label::SampleManifestRedirect,
           hash_including(
             sample_manifest: sample_manifest,
