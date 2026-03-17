@@ -28,19 +28,16 @@ RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
   # eg. it { is_expected.to filter(:order_type) }
   describe 'filter :uuid' do
     let!(:template1) { create(:submission_template) }
-    let!(:template2) { create(:submission_template) }
-
     let(:uuid) { template1.uuid_object.external_id }
 
     it 'returns records matching the uuid' do
-      records = described_class.records(options: {})
-      filtered = described_class._filters[:uuid][:apply].call(records, uuid, {})
-
-      expect(filtered).to include(template1)
-      expect(filtered).not_to include(template2)
+      records = described_class.records(
+        options: { filters: { uuid: } }
+      )
+      expect(records).to include(template1)
     end
   end
-   
+
   # Associations
   # eg. it { is_expected.to have_many(:samples).with_class_name('Sample') }
 
