@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rexml/text'
-
 #
 # A {Sample} is an abstract concept, with represents the life of a sample of DNA/RNA
 # as it moves through our processes. As a result, a sample may exist in multiple

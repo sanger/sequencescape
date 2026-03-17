@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class AccessionService::BaseService
-  include REXML
-
   # We overide this in testing to do a bit of evesdropping
   class_attribute :rest_client_class
   self.rest_client_class = RestClient::Resource
