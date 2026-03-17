@@ -62,8 +62,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   self.per_page = 500
 
-  extend EventfulRecord
-
   include ModelExtensions::Sample
   include Api::SampleIo::Extensions
   include Uuid::Uuidable
@@ -74,6 +72,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Role::Authorized
   include SampleAccessioning
 
+  extend EventfulRecord
   extend ValidationStateGuard
 
   # @!attribute empty_supplier_sample_name
