@@ -90,32 +90,21 @@ class SamplesController < ApplicationController
     redirect_to sample_path(@sample)
   end
 
-  # rubocop:todo Metrics/MethodLength
-  def update # rubocop:todo Metrics/AbcSize
+  def update
     @sample = Sample.find(params[:id])
     @sample.current_user = current_user
     authorize! :update, @sample
 
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
 
-    # if consent is being withdrawn and wasn't previously, set a couple of fields
-    if (cleaned_params[:sample_metadata_attributes][:consent_withdrawn] == 'true') && !@sample.consent_withdrawn
-      cleaned_params[:date_of_consent_withdrawn] = DateTime.now
-      cleaned_params[:user_id_of_consent_withdrawn] = current_user.id
-    end
+    handle_consent_withdrawal(cleaned_params, @sample, current_user)
 
     if @sample.update(cleaned_params)
-      flash[:notice] = 'Sample details have been updated'
-      flash[:warning] = @sample.errors.full_messages if @sample.errors.present? # also shows warnings from accessioning
-      redirect_to sample_path(@sample)
+      handle_page_update_success(@sample)
     else
-      flash[:error] = 'Failed to update attributes for sample'
-      flash[:warning] = @sample.errors.full_messages if @sample.errors.present?
-      redirect_to edit_sample_path(@sample)
+      handle_page_update_failure(@sample)
     end
   end
-
-  # rubocop:enable Metrics/MethodLength
 
   def history
     @sample = Sample.find(params[:id])
@@ -262,4 +251,25 @@ class SamplesController < ApplicationController
     }
   end
 end
+
+# If consent is being withdrawn and wasn't previously, set a couple of fields
+def handle_consent_withdrawal(cleaned_params, sample, user)
+  return unless (cleaned_params[:sample_metadata_attributes][:consent_withdrawn] == 'true') && !sample.consent_withdrawn
+
+  cleaned_params[:date_of_consent_withdrawn] = DateTime.now
+  cleaned_params[:user_id_of_consent_withdrawn] = user.id
+end
+
+def handle_page_update_success(sample)
+  flash[:notice] = 'Sample details have been updated'
+  flash[:warning] = sample.errors.full_messages if sample.errors.present?
+  redirect_to sample_path(sample)
+end
+
+def handle_page_update_failure(sample)
+  flash[:error] = 'Failed to update attributes for sample'
+  flash[:warning] = sample.errors.full_messages if sample.errors.present?
+  redirect_to edit_sample_path(sample)
+end
+
 # rubocop:enable Metrics/ClassLength
