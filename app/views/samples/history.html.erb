@@ -21,7 +21,9 @@
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "requests/event", collection: @sample.events.sort{ |a,b| a.id <=> b.id  } %>
+        <% @sample.events.sort_by(&:id).each do |event| %>
+          <%= render partial: event.to_partial_path, object: event %>
+        <% end %>
       </tbody>
     </table>
   <%- else %>

@@ -18,4 +18,8 @@ class Event::SampleMetadataEvent < Event
       created_by: user&.login
     )
   end
+
+  def to_partial_path
+    'events/diff_event'
+  end
 end

@@ -21,7 +21,7 @@
         </tr>
       </thead>
       <tbody>
-        <%= render partial: "requests/event", collection: @asset.events.sort{ |a,b| a.id <=> b.id  } %>
+        <%= render @asset.events.sort_by(&:id) %>
       </tbody>
     </table>
   <%- else %>
