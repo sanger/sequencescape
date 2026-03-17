@@ -27,7 +27,7 @@ RSpec.describe Api::V2::SubmissionTemplateResource, type: :resource do
   # Filters
   # eg. it { is_expected.to filter(:order_type) }
   describe 'filter :uuid' do
-    let!(:template1) { create(:submission_template) }
+    let(:template1) { create(:submission_template) }
     let(:uuid) { template1.uuid_object.external_id }
 
     it 'returns records matching the uuid' do
