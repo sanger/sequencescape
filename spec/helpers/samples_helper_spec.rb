@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SamplesHelper, type: :helper do
+RSpec.describe SamplesHelper do
   describe '#save_text' do
     subject { helper.save_text(sample) }
 

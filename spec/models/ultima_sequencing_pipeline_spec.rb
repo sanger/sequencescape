@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe UltimaSequencingPipeline, type: :model do
+RSpec.describe UltimaSequencingPipeline do
   let(:pipeline) do
     described_class.new(
       workflow: Workflow.new,

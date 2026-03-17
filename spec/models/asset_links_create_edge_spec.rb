@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe AssetLink, type: :model do
+RSpec.describe AssetLink do
   # rubocop:disable RSpec/InstanceVariable,Metrics/MethodLength,RSpec/ExampleLength,RSpec/MultipleExpectations
   # Test the overridden create_edge class method.
   describe '.create_edge' do

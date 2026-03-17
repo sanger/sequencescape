@@ -76,15 +76,35 @@ module ApplicationHelper
     nil
   end
 
-  # A helper method for render_flashes - If multiple messages, render them as a list, else render as a single div
-  # @param messages [Array<String>, String] The flash message or messages to be rendered
-  def render_message(messages)
-    messages = Array(messages)
-    if messages.size > 1
-      tag.ul { messages.each { |m| concat tag.li(m) } }
+  # A helper method for render_flashes.
+  # If messages is a Hash, renders them as a described list, with the keys as the description and
+  # the values as the items.
+  # If messages is an Array with multiple messages, renders them as a list.
+  # If a single message, renders as a single div.
+  #
+  # @param messages [Hash, Array<String>, String] The flash message or messages to be rendered
+  # @return [ActiveSupport::SafeBuffer] HTML-safe string for rendering the messages
+  def render_message(messages) # rubocop:disable Metrics/MethodLength
+    case messages
+    when Hash
+      safe_join(
+        messages.map do |description, items|
+          tag.div(description) + render_in_list(Array(items))
+        end
+      )
+    when Array
+      if messages.size > 1
+        render_in_list(messages)
+      else # messages has only one element, render it as a single div
+        tag.div(messages.first)
+      end
     else
-      tag.div(messages.first)
+      tag.div(messages)
     end
+  end
+
+  def render_in_list(messages)
+    tag.ul { messages.each { |message| concat tag.li(message) } }
   end
 
   def api_data

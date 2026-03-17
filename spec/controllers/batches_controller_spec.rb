@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BatchesController, type: :controller do
+RSpec.describe BatchesController do
   describe '#generate_ultima_sample_sheet' do
     let(:current_user) { create(:user) }
     let(:pipeline) { create(:ultima_sequencing_pipeline) }

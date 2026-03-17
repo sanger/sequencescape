@@ -1,0 +1,18 @@
+# Submission templates for LCM Triomics EMSeq and RNASeq ---
+# LCM Triomics EMSeq submission template
+Limber-Htp - LCM Triomics EMSeq:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_emseq"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
+    project_name: "UAT Project"
+
+# LCM Triomics RNASeq submission template
+Limber-Htp - LCM Triomics RNASeq:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_lcm_triomics_rnaseq"]
+    product_line_name: LCM Triomics
+    product_catalogue_name: LCM Triomics
+    project_name: "UAT Project"

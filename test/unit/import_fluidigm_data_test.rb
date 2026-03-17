@@ -9,23 +9,15 @@ class ImportFluidigmDataTest < ActiveSupport::TestCase
   NC = 'Unknown'
 
   def create_fluidigm_file
-    @file = File.open("#{Rails.root}/test/data/fluidigm.csv")
-    @fluidigm = FluidigmFile.new(@file.read)
-    @well_maps = {
-      'S06' => {
-        markers: [XY, XY, XY],
-        count: 94
-      },
-      'S04' => {
-        markers: [NC, XX, XX],
-        count: 92
-      },
-      'S43' => {
-        markers: [XX, XX, XX],
-        count: 94
+    File.open("#{Rails.root}/test/data/fluidigm.csv") do |file|
+      @fluidigm = FluidigmFile.new(file.read)
+      @well_maps = {
+        'S06' => { markers: [XY, XY, XY], count: 94 },
+        'S04' => { markers: [NC, XX, XX], count: 92 },
+        'S43' => { markers: [XX, XX, XX], count: 94 }
       }
-    }
-    @fluidigm
+      @fluidigm
+    end
   end
 
   def create_stock_plate(barcode)

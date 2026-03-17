@@ -107,11 +107,11 @@ RSpec.describe Sample, :cardinal do
   end
 
   describe '#should_be_accessioned?' do
-    let(:sample) { create(:sample) }
-    let(:study) { create(:study, samples: [sample]) }
+    let(:studies) { create_list(:study, 1) }
+    let(:sample) { create(:sample, studies:) }
 
     context 'when there is exactly one accessionable study' do
-      before { allow(sample).to receive(:studies_for_accessioning).and_return([study]) }
+      before { allow(sample).to receive(:studies_for_accessioning).and_return(studies) }
 
       it 'returns true' do
         expect(sample.should_be_accessioned?).to be true
@@ -126,13 +126,92 @@ RSpec.describe Sample, :cardinal do
       end
     end
 
-    context 'when there are multiple accessionable studies' do
-      let(:study2) { create(:study, samples: [sample]) }
+    context 'when there are multiple studies' do
+      let(:open_no_accession) { create(:open_study) }
+      let(:open_with_accession_1) { create(:open_study, accession_number: 'ENA123') }
+      let(:open_with_accession_2) { create(:open_study, accession_number: 'ENA456') }
+      let(:managed_no_accession) { create(:managed_study) }
+      let(:managed_with_accession_1) { create(:managed_study, accession_number: 'ENA666') }
+      let(:managed_with_accession_2) { create(:managed_study, accession_number: 'ENA777') }
 
-      before { allow(sample).to receive(:studies_for_accessioning).and_return([study, study2]) }
+      context 'if none are accessionable' do
+        let(:studies) { [open_no_accession, managed_no_accession] }
 
-      it 'returns false' do
-        expect(sample.should_be_accessioned?).to be false
+        it 'should not be accessioned' do
+          expect(sample.should_be_accessioned?).to be false
+        end
+      end
+
+      context 'with two open studies that are both accessionable' do
+        let(:studies) { [open_with_accession_1, open_with_accession_2] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with two managed studies that are both accessionable' do
+        let(:studies) { [managed_with_accession_1, managed_with_accession_2] }
+
+        it 'should not be accessioned' do
+          expect(sample.should_be_accessioned?).to be false
+        end
+      end
+
+      context 'with an open study and a managed study both of which are accessionable' do
+        let(:studies) { [open_with_accession_1, managed_with_accession_1] }
+
+        it 'should not be accessioned' do
+          expect(sample.should_be_accessioned?).to be false
+        end
+      end
+
+      context 'with one open study that is accessionable and one open study that is not accessionable' do
+        let(:studies) { [open_with_accession_1, open_no_accession] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with one managed study that is accessionable and one managed study that is not accessionable' do
+        let(:studies) { [managed_with_accession_1, managed_no_accession] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with an open study that is accessionable and a managed study that is not accessionable' do
+        let(:studies) { [open_with_accession_1, managed_no_accession] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with a managed study that is accessionable and an open study that is not accessionable' do
+        let(:studies) { [managed_with_accession_1, open_no_accession] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with two open studies that are accessionable and one managed study that is not accessionable' do
+        let(:studies) { [open_with_accession_1, open_with_accession_2, managed_no_accession] }
+
+        it 'should accession' do
+          expect(sample.should_be_accessioned?).to be true
+        end
+      end
+
+      context 'with two managed studies that are accessionable and one open study that is not accessionable' do
+        let(:studies) { [managed_with_accession_1, managed_with_accession_2, open_no_accession] }
+
+        it 'should not be accessioned' do
+          expect(sample.should_be_accessioned?).to be false
+        end
       end
     end
   end

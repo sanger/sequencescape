@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ExportPoolXpToTractionJob, type: :job do
+RSpec.describe ExportPoolXpToTractionJob do
   let(:export_job) { described_class.new(tube.human_barcode) }
   let(:tube) { create(:multiplexed_library_tube, sample_count: 3) }
 
@@ -96,7 +96,7 @@ RSpec.describe ExportPoolXpToTractionJob, type: :job do
 
     before do
       # Remove any cached schema file
-      File.delete(cache_file_path) if File.exist?(cache_file_path)
+      FileUtils.rm_f(cache_file_path)
     end
 
     context 'when the schema is cached' do
