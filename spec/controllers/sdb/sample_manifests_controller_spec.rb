@@ -125,6 +125,37 @@ RSpec.describe Sdb::SampleManifestsController do
         expect(controller).to have_received(:redirect_back_or_to)
       end
     end
+
+    context 'when printing fails' do
+      subject(:make_request) do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1',
+               barcode_type: '2D Barcode'
+             }
+      end
+
+      let!(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
+      let(:print_job) { instance_double(LabelPrinter::PrintJob) }
+      let(:errors) { instance_double(ActiveModel::Errors, full_messages: ['Printer error']) }
+
+      before do
+        allow(controller).to receive(:label_template_for_2d_barcodes).and_return('2d_template')
+        allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
+
+        allow(print_job).to receive_messages(execute: false, errors: errors)
+
+        allow(controller).to receive(:redirect_back_or_to)
+
+        make_request
+      end
+
+      it 'sets error flash and redirects' do # rubocop:disable RSpec/MultipleExpectations
+        expect(flash[:error]).to eq('Printer error')
+        expect(controller).to have_received(:redirect_back_or_to)
+      end
+    end
   end
 
   def expect_correct_attributes(sample_manifest, study, supplier, purpose) # rubocop:todo Metrics/AbcSize
