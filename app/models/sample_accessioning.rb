@@ -4,6 +4,13 @@
 module SampleAccessioning
   extend ActiveSupport::Concern
 
+  # Defines events related to sample accessioning which will be added to the Sample model
+  # See EventfulRecord.has_many_events for details
+  EVENTS = [
+    [:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!],
+    [:updated_accessioned_metadata!, Event::AccessioningEvent, :updated_accessioned_metadata!]
+  ].freeze
+
   def self.tags
     @tags ||= []
   end
@@ -24,11 +31,6 @@ module SampleAccessioning
   attr_accessor :current_user # required to be set from the controller
 
   included do
-    has_many_events do
-      event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
-      event_constructor(:updated_accessioned_metadata!, Event::AccessioningEvent, :updated_accessioned_metadata!)
-    end
-
     has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus', dependent: :destroy
 
     # TODO: these validations are for accessioning and MIGHT belong in this model - see `on: :accession`
