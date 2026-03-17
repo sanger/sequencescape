@@ -53,6 +53,6 @@ module SearchBehaviour
   end
 
   def wildcard_search
-    params[:type] == 'All (wildcard)'
+    ['All (wildcard)', 'Sample', 'Labware'].include? params[:type]
   end
 end
