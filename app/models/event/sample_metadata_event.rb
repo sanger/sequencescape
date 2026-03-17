@@ -2,15 +2,15 @@
 class Event::SampleMetadataEvent < Event
   # Indicates that the metadata associated with a sample has been updated.
   # Usage example:
-  #   sample.events.updated_sample_metadata!(changed_attributes, user)
-  def self.updated_sample_metadata!(changed_attributes, user)
-    return if changed_attributes.empty?
+  #   sample.events.updated_sample_metadata!(attribute_changes, user)
+  def self.updated_sample_metadata!(sample, attribute_changes, user)
+    return if attribute_changes.empty?
 
     message = 'Updated sample metadata'
-    content = changed_attributes.map { |field, (before, after)| "#{field}: #{before} -> #{after}" }.join('; ')
+    content = attribute_changes.to_json
 
     create!(
-      eventful: sample_now,
+      eventful: sample,
       message: message,
       content: content,
       family: 'sample_metadata',

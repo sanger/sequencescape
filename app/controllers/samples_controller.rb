@@ -95,8 +95,8 @@ class SamplesController < ApplicationController
     @sample.current_user = current_user
     authorize! :update, @sample
 
+    # Data cleaning and preparation
     cleaned_params = params[:sample].permit(default_permitted_metadata_fields)
-
     handle_consent_withdrawal(cleaned_params, @sample, current_user)
 
     if @sample.update(cleaned_params)
