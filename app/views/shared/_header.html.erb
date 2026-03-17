@@ -16,7 +16,7 @@
     <div class="navbar-nav">
     <%= form_tag searches_path, method: :get, role: "search" do %>
       <div class="input-group">
-        <%= select_tag :type, options_for_select(search_options,""), id: 'layout_search_options' %>
+        <%= select_tag :type, options_for_select(search_options,"All"), id: 'layout_search_options' %>
         <%= search_field_tag :q, "", size: 20, type: "search", placeholder: "name, id, barcode", id: 'layout_search' %>
       </div>
     <% end %>

@@ -12,7 +12,7 @@ class SearchesController < ApplicationController
 
   # SEARCHABLE_CLASSES = [ Project, Study, Sample, Labware, AssetGroup, Request, Supplier ]
   def searchable_classes
-    if params[:type].blank?
+    if ['All', 'All (wildcard)'].include?(params[:type])
       global_searchable_classes
     else
       [global_searchable_classes.detect { |klass| klass.name == params[:type] }]

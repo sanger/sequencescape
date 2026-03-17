@@ -31,7 +31,8 @@ module SearchBehaviour
   end
 
   def clazz_query(clazz, query)
-    clazz.for_search_query(query)
+    wildcard = wildcard_search
+    clazz.for_search_query(query, wildcard)
   end
 
   def each_non_empty_search_result
@@ -49,5 +50,9 @@ module SearchBehaviour
     return false if params[:q].length >= MINIMUM_QUERY_LENGTH
 
     flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
+  end
+
+  def wildcard_search
+    params[:type] == 'All (wildcard)'
   end
 end

@@ -113,8 +113,9 @@ class Labware < Asset
   has_many :qc_results, through: :receptacles
 
   scope :for_search_query,
-        lambda { |query|
-          where('labware.name LIKE :name', name: "%#{query}%").or(with_safe_id(query)).includes(:barcodes)
+        lambda { |query, wildcard = true|
+          wild = wildcard ? "%#{query}%" : "#{query}%"
+          where('labware.name LIKE :name', name: wild).or(with_safe_id(query)).includes(:barcodes)
         }
   scope :for_lab_searches_display,
         lambda { includes(:barcodes, requests_as_source: %i[pipeline batch]).order('requests.pipeline_id ASC') }
