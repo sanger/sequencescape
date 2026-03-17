@@ -295,6 +295,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:updated_sample_metadata!, Event::SampleMetadataEvent, :updated_sample_metadata!)
     # Add events defined in the included SampleAccessioning module
     SampleAccessioning::EVENTS.each do |model_event_name, event_class, event_class_method|
       event_constructor(model_event_name, event_class, event_class_method)
