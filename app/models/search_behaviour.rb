@@ -53,6 +53,7 @@ module SearchBehaviour
   end
 
   def wildcard_search
-    ['All (wildcard)', 'Sample', 'Labware'].include? params[:type]
+    # Only turn off wildcard search if the user has explicitly selected 'All'
+    ['All'].exclude? params[:type]
   end
 end
