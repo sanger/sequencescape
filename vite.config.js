@@ -22,9 +22,6 @@ export default defineConfig({
     alias: {
       "@": resolve(join(projectRoot, "app/frontend")),
       "@images": resolve(join(projectRoot, "app/frontend/images")),
-      // See config/vite.rb for where these are set
-      // https://vite-ruby.netlify.app/config/#ruby-configuration-file-💎
-      "@formtastic": process.env.FORMTASTIC_STYLESHEET_PATH,
     },
   },
   test: {
