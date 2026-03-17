@@ -15,7 +15,7 @@ class SearchesController < ApplicationController
     if ['All', 'All (wildcard)'].include?(params[:type])
       global_searchable_classes
     else
-      [global_searchable_classes.detect { |klass| klass.name == params[:type] }]
+      [global_searchable_classes.detect { |klass| klass.name == params[:type] }].compact
     end
   end
 end
