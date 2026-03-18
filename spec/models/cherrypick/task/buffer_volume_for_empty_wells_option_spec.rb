@@ -43,6 +43,20 @@ RSpec.describe Cherrypick::Task::BufferVolumeForEmptyWellsOption, type: :module 
         result = instance.create_buffer_volume_for_empty_wells_option(params)
         expect(result).to be_nil
       end
+
+      context 'when automatic_buffer_addition is not checked and buffer_volume_for_empty_wells is already set' do
+        let(:params) { { automatic_buffer_addition: nil } }
+
+        before do
+          allow(batch).to receive(:set_poly_metadata)
+          allow(batch).to receive(:get_poly_metadata).with(:buffer_volume_for_empty_wells).and_return('10.0')
+        end
+
+        it 'clears buffer_volume_for_empty_wells poly metadata' do
+          instance.create_buffer_volume_for_empty_wells_option(params)
+          expect(batch).to have_received(:set_poly_metadata).with(:buffer_volume_for_empty_wells, nil)
+        end
+      end
     end
 
     context 'when automatic_buffer_addition is checked' do
@@ -87,7 +101,8 @@ RSpec.describe Cherrypick::Task::BufferVolumeForEmptyWellsOption, type: :module 
 
       it 'sets poly metadata for automatic_buffer_addition' do
         instance.create_buffer_volume_for_empty_wells_option(params)
-        expect(batch).to have_received(:set_poly_metadata).with(:automatic_buffer_addition, 'on')
+        # recorded as 1 for consistency in code
+        expect(batch).to have_received(:set_poly_metadata).with(:automatic_buffer_addition, '1')
       end
 
       it 'calls valid_float_param? with buffer volume' do

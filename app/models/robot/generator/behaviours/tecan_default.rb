@@ -38,7 +38,7 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     data_object['destination'].each do |dest_plate_barcode, plate_details|
       mapping_by_well =
         plate_details['mapping'].sort_by do |mapping|
-          description_to_column_index(mapping['dst_well'], plate_details['plate_size'])
+          Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'], plate_details['plate_size'])
         end
 
       mapping_by_well.each { |mapping| yield(mapping, dest_plate_barcode, plate_details) }
@@ -51,8 +51,9 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
       source_barcode, source_well = mapping['src_well']
       source_name, source_size = data_object['source'][source_barcode.to_s].values_at('name', 'plate_size')
 
-      source_position = description_to_column_index(source_well, source_size)
-      destination_position = description_to_column_index(mapping['dst_well'], dest_plate['plate_size'])
+      source_position = Map::Coordinate.well_description_to_by_column_map_index(source_well, source_size)
+      destination_position = Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'],
+                                                                                     dest_plate['plate_size'])
 
       dyn_mappings << <<~TECAN
         A;#{source_barcode};;#{source_name};#{source_position};;#{tecan_precision_value(mapping['volume'])}
@@ -70,23 +71,13 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     'C;'
   end
 
-  def buffers(data_object) # rubocop:disable Metrics/AbcSize
+  def buffers(data_object)
     data_object = data_object_for_buffers(data_object)
     buffer = []
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
-      # src_well is checked to distinguish between buffer for sample wells
-      # and buffer for empty wells.
-      next if mapping.key?('src_well') && total_volume <= mapping['volume']
+      next if skip_buffer_entry?(mapping)
 
-      dest_name = data_object['destination'][dest_plate_barcode]['name']
-      volume = mapping['buffer_volume']
-      vert_map_id = description_to_column_index(mapping['dst_well'], plate_details['plate_size'])
-
-      buffer << <<~TECAN
-        A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}
-        D;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}
-        W;
-      TECAN
+      buffer << buffer_entry(mapping, dest_plate_barcode, plate_details, data_object)
     end
     buffer.join("\n")
   end
@@ -113,17 +104,10 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     dest_barcode_index.sort_by { |a| a[1] }
   end
 
-  def description_to_column_index(well_name, plate_size)
-    Map::Coordinate.description_to_vertical_plate_position(well_name, plate_size)
-  end
-
-  def column_index_to_description(index, plate_size)
-    Map::Coordinate.vertical_plate_position_to_description(index, plate_size)
-  end
-
   # Returns a new data object with buffer entries added for empty destination
   # wells, if the option is enabled; otherwise returns the original data object.
-  # Only the fields used by the buffer steps are added to the new data object.
+  # NB. Only the fields used by the buffer steps are added to the new data object,
+  # we cut out parts we don't need like the control flag and source plate details.
   # @param data_object [Hash] the original data object
   # @return [Hash] the new data object with buffer entries for empty wells,
   #   or the original data object if the option is not enabled
@@ -147,7 +131,6 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   #   {"SQPD-9101" =>
   #     {"name" => "ABgene 0765",
   #      "plate_size" => 96,
-  #      "control" => false,
   #      "mapping" =>
   #       [{"src_well" => ["SQPD-9089", "A1"], "dst_well" => "A1", "volume" => 100.0, "buffer_volume" => 0.0},
   #        {"src_well" => ["SQPD-9089", "A2"], "dst_well" => "B1", "volume" => 100.0, "buffer_volume" => 0.0},
@@ -157,47 +140,111 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   #        ]},
   #     }
   #   }
-  def data_object_for_buffers(data_object) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength,Metrics/CyclomaticComplexity
+  def data_object_for_buffers(data_object)
     buffer_volume_for_empty_wells = @batch&.buffer_volume_for_empty_wells
     return data_object unless buffer_volume_for_empty_wells
 
     obj = { 'destination' => {} }
     data_object['destination'].each do |dest_plate_barcode, plate_details|
-      plate = Plate.find_by_barcode(dest_plate_barcode)
-      plate_size = plate_details['plate_size']
-      # Initialise the destination section
-      obj['destination'][dest_plate_barcode] = {
-        'name' => plate_details['name'],
-        'plate_size' => plate_size
-      }
-      # Create a hash of column index to the existing mapping entries
-      index_to_mapping = plate_details['mapping'].index_by do |entry|
-        description_to_column_index(entry['dst_well'], plate_size)
-      end
-
-      # Loop through the column order and generate new mapping entries
-      # Add existing mappings if present and skip non-empty wells in case it is partial plate.
-      mapping = []
-      (1..plate_size).each do |index|
-        # Add existing mapping if present for this column index.
-        if index_to_mapping.key?(index)
-          mapping << index_to_mapping[index]
-          next
-        end
-
-        # Check if the destination well empty, in case of partial plate.
-        dst_well = column_index_to_description(index, plate_size) # A1, B1, etc.
-        well = plate.find_well_by_name(dst_well) # Well object or nil
-        next if well.present? && !well.empty? # Skip non-empty wells
-
-        # Add buffer for empty well
-        mapping << {
-          'dst_well' => dst_well,
-          'buffer_volume' => buffer_volume_for_empty_wells
-        }
-      end
-      obj['destination'][dest_plate_barcode]['mapping'] = mapping
+      obj['destination'][dest_plate_barcode] =
+        plate_mapping_for_buffers(dest_plate_barcode, plate_details, buffer_volume_for_empty_wells)
     end
     obj
+  end
+
+  private
+
+  # Builds a destination plate mapping with buffer entries for empty wells if required.
+  #
+  # @param dest_plate_barcode [String] The barcode of the destination plate
+  # @param plate_details [Hash] The details of the destination plate
+  # @param buffer_volume_for_empty_wells [Float] Buffer volume to add for empty wells
+  # @return [Hash] Plate mapping with buffer entries for empty wells
+  def plate_mapping_for_buffers(dest_plate_barcode, plate_details, buffer_volume_for_empty_wells)
+    plate = Plate.find_by_barcode(dest_plate_barcode)
+    plate_size = plate_details['plate_size']
+    mapping = build_buffer_mapping(plate, plate_details, plate_size, buffer_volume_for_empty_wells)
+    {
+      'name' => plate_details['name'],
+      'plate_size' => plate_size,
+      'mapping' => mapping
+    }
+  end
+
+  # Builds the mapping array for a plate, including buffer entries for empty wells.
+  #
+  # @param plate [Plate] The destination plate object
+  # @param plate_details [Hash] The details of the destination plate
+  # @param plate_size [Integer] The size of the plate (number of wells)
+  # @param buffer_volume_for_empty_wells [Float] Buffer volume to add for empty wells
+  # @return [Array<Hash>] Array of mapping and buffer entries
+  def build_buffer_mapping(plate, plate_details, plate_size, buffer_volume_for_empty_wells)
+    index_to_mapping = plate_details['mapping'].index_by { |entry| Map::Coordinate.well_description_to_by_column_map_index(entry['dst_well'], plate_size) }
+    opts = {
+      index_to_mapping:,
+      plate:,
+      plate_size:,
+      buffer_volume_for_empty_wells:
+    }
+    (1..plate_size).each_with_object([]) do |index, mapping|
+      mapping_or_buffer_entry(mapping, opts.merge(index:))
+    end
+  end
+
+  # Appends either a mapping entry or a buffer entry for the given well index.
+  #
+  # @param mapping [Array<Hash>] The mapping array being built
+  # @param opts [Hash] Options including :index_to_mapping, :plate, :index, :plate_size, :buffer_volume_for_empty_wells
+  # @return [void]
+  def mapping_or_buffer_entry(mapping, opts)
+    if opts[:index_to_mapping].key?(opts[:index])
+      mapping << opts[:index_to_mapping][opts[:index]]
+    else
+      buffer_entry = buffer_mapping_for_empty_well(opts[:plate], opts[:index], opts[:plate_size],
+                                                   opts[:buffer_volume_for_empty_wells])
+      mapping << buffer_entry if buffer_entry
+    end
+  end
+
+  # Returns a buffer entry for an empty well, or nil if the well is not empty.
+  #
+  # @param plate [Plate] The destination plate object
+  # @param index [Integer] The well index (by column order)
+  # @param plate_size [Integer] The size of the plate
+  # @param buffer_volume_for_empty_wells [Float] Buffer volume to add
+  # @return [Hash, nil] Buffer entry hash or nil if well is not empty
+  def buffer_mapping_for_empty_well(plate, index, plate_size, buffer_volume_for_empty_wells)
+    dst_well = Map::Coordinate.by_column_map_index_to_well_description(index, plate_size)
+    well = plate.find_well_by_name(dst_well)
+    return nil if well.present? && !well.empty?
+
+    { 'dst_well' => dst_well, 'buffer_volume' => buffer_volume_for_empty_wells }
+  end
+
+  # Determines if a buffer entry should be skipped for a mapping.
+  #
+  # @param mapping [Hash] The mapping entry
+  # @return [Boolean] True if the buffer entry should be skipped
+  def skip_buffer_entry?(mapping)
+    mapping.key?('src_well') && total_volume <= mapping['volume']
+  end
+
+  # Builds the buffer entry string for the Tecan file for a given mapping.
+  #
+  # @param mapping [Hash] The buffer mapping entry
+  # @param dest_plate_barcode [String] The destination plate barcode
+  # @param plate_details [Hash] The destination plate details
+  # @param data_object [Hash] The data object containing all mapping info
+  # @return [String] The buffer entry string for the Tecan file
+  def buffer_entry(mapping, dest_plate_barcode, plate_details, data_object)
+    dest_name = data_object['destination'][dest_plate_barcode]['name']
+    volume = mapping['buffer_volume']
+    vert_map_id = Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'],
+                                                                          plate_details['plate_size'])
+    <<~TECAN
+      A;#{buffer_info(vert_map_id)};;#{tecan_precision_value(volume)}
+      D;#{dest_plate_barcode};;#{dest_name};#{vert_map_id};;#{tecan_precision_value(volume)}
+      W;
+    TECAN
   end
 end
