@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Presenters::BatchSubmenuPresenter, type: :model do
+RSpec.describe Presenters::BatchSubmenuPresenter do
   subject(:batch_submenu_presenter) { described_class.new(current_user, batch) }
 
   context 'when we are in the Ultima sequencing pipeline' do

@@ -4,7 +4,7 @@ require 'rails_helper'
 
 # This test verifies moving samples from plates to tubes via /plates/to_sample_tubes .
 
-RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print barcodes', type: :feature do
+RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print barcodes' do
   let(:user) { create(:user, login: 'user') }
   let(:sanger_barcode) { Barcode.build_sanger_code39({ machine_barcode: '1220128459804', format: 'DN' }) }
   let!(:study) { create(:study, name: 'Study 4696931') }

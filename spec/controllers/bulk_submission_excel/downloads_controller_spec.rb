@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'rails_helper'
-RSpec.describe BulkSubmissionExcel::DownloadsController, type: :controller do
+RSpec.describe BulkSubmissionExcel::DownloadsController do
   subject(:downloads_controller) { described_class.new }
 
   let(:submission) { create(:submission) }

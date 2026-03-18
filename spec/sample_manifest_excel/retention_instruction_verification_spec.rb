@@ -14,7 +14,7 @@ RSpec.describe SampleManifestExcel::Download, :sample_manifest, :sample_manifest
 
   after do
     SampleManifestExcel.reset!
-    File.delete(test_file) if File.exist?(test_file)
+    FileUtils.rm_f(test_file)
   end
 
   shared_examples 'manifest with retention instruction' do |template_name, config_column|

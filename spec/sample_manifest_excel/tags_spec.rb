@@ -59,7 +59,7 @@ RSpec.describe SampleManifestExcel::Tags, :sample_manifest, :sample_manifest_exc
 
     after(:all) { SampleManifestExcel.reset! }
 
-    after { File.delete(test_file_name) if File.exist?(test_file_name) }
+    after { FileUtils.rm_f(test_file_name) }
 
     context 'tag sequences' do
       let(:columns) { SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup }

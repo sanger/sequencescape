@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe BioscanControlLocationsController, type: :controller do
+RSpec.describe BioscanControlLocationsController do
   describe 'POST #create' do
     # Plate with samples and controls
     let!(:plate) do

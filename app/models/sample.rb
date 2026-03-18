@@ -527,25 +527,22 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Criteria for whether a sample should be accessioned.
   # A sample should be accessioned if:
   # - it is part of a single accessionable study
-  # - that study is active
-  # - that study is set to open or managed
-  # - that study is set to be released
-  # - that study requires accessioning
-  # - that study has an accession number
+  # - or all of the accessionable studies it is part of are open
   # @return [Boolean] true if the sample should be accessioned, false otherwise
   def should_be_accessioned?
-    # If updating this method, please also update app/views/samples/_studies.html.erb
-    accessioning_criteria = [
-      studies_for_accessioning.size == 1
-    ]
-    return true if accessioning_criteria.all?
+    # If updating this method, also update should_be_accessioned_warning used in app/views/samples/_studies.html.erb
 
-    Rails.logger.debug do
-      "Sample '#{name}' should not be accessioned as it " \
-        "belongs to #{studies_for_accessioning.size} accessionable studies."
+    case studies_for_accessioning.size
+    when 0
+      # No accessionable studies
+      false
+    when 1
+      # Always accession
+      true
+    else
+      # Samples belonging to more than one accessionables study can only be accessioned if all studies are open
+      all_accessionable_studies_open?
     end
-
-    false
   end
 
   # NOTE: this does not check whether the current user is permitted to accession the sample,
@@ -636,6 +633,12 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     type_text = control_type || 'type unspecified'
     "Yes (#{type_text})"
+  end
+
+  # Returns true if all accessionable studies are open, false otherwise.
+  # @return [Boolean]
+  def all_accessionable_studies_open?
+    studies_for_accessioning.all? { |study| study.study_metadata.open? }
   end
 
   private
