@@ -20,8 +20,8 @@ describe("Buffer input toggle", () => {
   });
 
   it("enables and disables buffer input when checkbox is toggled", () => {
-   // register the change event handler
-   // bufferInput is initially disabled because autoBufferCheckbox is unchecked
+    // register the change event handler
+    // bufferInput is initially disabled because autoBufferCheckbox is unchecked
     document.dispatchEvent(new Event("DOMContentLoaded"));
 
     autoBufferCheckbox.click(); // unchecked to checked
