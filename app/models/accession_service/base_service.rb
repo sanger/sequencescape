@@ -59,7 +59,7 @@ class AccessionService::BaseService
                 "EBI Server Error. Could not get accession number: #{xml_result}"
         end
 
-        xmldoc = Document.new(xml_result)
+        xmldoc = REXML::Document.new(xml_result)
         success = xmldoc.root.attributes['success']
         accession_numbers = []
 

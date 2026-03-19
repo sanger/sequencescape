@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'rexml/document'
 
 # rubocop:todo Metrics/ClassLength
 class StudiesController < ApplicationController
@@ -7,7 +6,6 @@ class StudiesController < ApplicationController
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
 
-  include REXML
   include Informatics::Globals
   include ::AccessionHelper
 
