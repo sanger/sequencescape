@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Sample accession errors', :js, type: :feature do
+RSpec.describe 'Sample accession errors', :js do
   let(:user) { create(:admin) }
   let(:sample) { create(:sample) }
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Accessionable::Study, type: :model do
+RSpec.describe Accessionable::Study do
   let(:user) { create(:user) }
   let(:study_metadata) { create(:study_metadata, study_ebi_accession_number: nil) }
   let(:study) { create(:study, study_metadata:) }

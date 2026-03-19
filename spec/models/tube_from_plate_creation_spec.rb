@@ -3,7 +3,7 @@
 # spec/models/tube_from_plate_creation_spec.rb
 require 'rails_helper'
 
-RSpec.describe TubeFromPlateCreation, type: :model do
+RSpec.describe TubeFromPlateCreation do
   let(:child_purpose) { create(:tube_purpose) }
   let(:child) { create(:tube) }
   let(:parent) { create(:plate) }

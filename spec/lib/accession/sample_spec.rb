@@ -394,15 +394,13 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         end
 
         it 'validates against the SAMPLE XSD schema' do
-          # Schema downloaded from https://ena-docs.readthedocs.io/en/latest/submit/general-guide/webin-v1.html
           xsd_path = Rails.root.join('test/data/xsd/SRA.sample.xsd')
-          xsd_file = File.open(xsd_path)
-          schema = Nokogiri::XML::Schema(xsd_file)
-          document = Nokogiri::XML(xml)
-          errors = schema.validate(document)
-          expect(errors).to be_empty, "XML did not validate against XSD schema: #{errors.map(&:message).join('; ')}"
-        ensure
-          xsd_file.close
+          File.open(xsd_path) do |xsd_file|
+            schema = Nokogiri::XML::Schema(xsd_file)
+            document = Nokogiri::XML(xml)
+            errors = schema.validate(document)
+            expect(errors).to be_empty, "XML did not validate against XSD schema: #{errors.map(&:message).join('; ')}"
+          end
         end
       end
 

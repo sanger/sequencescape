@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe Map, type: :model do
+describe Map do
   context 'with Chromium Chip 16-well' do
     # The Map class contains a nested module called Coordinate. For clarity, we
     # use map_class to refer to the Map class and coordinate_module to refer to

@@ -12,7 +12,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
   end
 
   after do
-    File.delete(test_file) if File.exist?(test_file)
+    FileUtils.rm_f(test_file)
     Delayed::Worker.delay_jobs = true
   end
 
