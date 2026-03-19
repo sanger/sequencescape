@@ -31,8 +31,8 @@ module SearchBehaviour
   end
 
   def clazz_query(clazz, query)
-    wildcard = wildcard_search
-    clazz.for_search_query(query, wildcard)
+    leading_wildcard = leading_wildcard_search
+    clazz.for_search_query(query, leading_wildcard)
   end
 
   def each_non_empty_search_result
@@ -52,8 +52,9 @@ module SearchBehaviour
     flash.now[:error] = "Queries should be at least #{MINIMUM_QUERY_LENGTH} characters long"
   end
 
-  def wildcard_search
-    # Only turn off wildcard search if the user has explicitly selected 'All'
+  def leading_wildcard_search
+    # Only turn off leading wildcard search if the user has selected 'All'
+    # as it is expensive as indexes can't be used.
     ['All'].exclude? params[:type]
   end
 end

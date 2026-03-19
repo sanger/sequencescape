@@ -11,10 +11,10 @@ class LabSearchesController < ApplicationController
   private
 
   def perform_search(query)
-    @batches = Batch.for_search_query(query, wildcard: true).to_a
+    @batches = Batch.for_search_query(query, leading_wildcard: true).to_a
     @assets =
       (
-        Labware.for_search_query(query, wildcard: true).for_lab_searches_display.to_a +
+        Labware.for_search_query(query, leading_wildcard: true).for_lab_searches_display.to_a +
           Labware.with_barcode(query).for_lab_searches_display.to_a
       ).uniq
   end

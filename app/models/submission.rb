@@ -77,7 +77,7 @@ class Submission < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :latest_first, -> { order(id: :desc) }
 
-  scope :for_search_query, ->(query, _wildcard = true) { where(name: query) }
+  scope :for_search_query, ->(query, _leading_wildcard = true) { where(name: query) }
 
   # The class used to render warehouse messages
   def self.render_class
