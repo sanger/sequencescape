@@ -21,7 +21,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::AssetGroupBehaviour
   include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
-
+  include Extensions::Order
   self.inheritance_column = 'sti_type'
   self.per_page = 500
 
@@ -86,15 +86,6 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
           )
         }
 
-  has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
-  has_many :assets, through: :submitted_assets, before_add: :validate_new_record do
-    def <<(associated)
-      return super if associated.is_a?(Receptacle)
-
-      Rails.logger.warn("#{associated.class.name} passed to order.assets")
-      super(associated&.receptacle)
-    end
-  end
 
   delegate :role, to: :order_role, allow_nil: true
 
