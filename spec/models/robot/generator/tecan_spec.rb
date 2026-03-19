@@ -207,11 +207,11 @@ describe Robot::Generator::Tecan do
             create(:well, map: position, plate: test_plate)
           end
         end
-        allow(generator).to receive(:description_to_column_index) do |well_name, _|
+        allow(Map::Coordinate).to receive(:well_description_to_by_column_map_index) do |well_name, _|
           # Map A1->1, B1->2, C1->3, D1->4
           { 'A1' => 1, 'B1' => 2, 'C1' => 3, 'D1' => 4 }[well_name]
         end
-        allow(generator).to receive(:column_index_to_description) do |index, _|
+        allow(Map::Coordinate).to receive(:by_column_map_index_to_well_description) do |index, _|
           # Map 1->A1, 2->B1, 3->C1, 4->D1
           { 1 => 'A1', 2 => 'B1', 3 => 'C1', 4 => 'D1' }[index]
         end

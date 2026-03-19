@@ -23,7 +23,8 @@ class Robot::Generator::TecanV3 < Robot::Generator::TecanV2
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
       volume = mapping['buffer_volume']
-      vert_map_id = description_to_column_index(mapping['dst_well'], plate_details['plate_size'])
+      vert_map_id = Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'],
+                                                                            plate_details['plate_size'])
       channel = channel_number(vert_map_id)
 
       # No Wash after each step, as we are reusing tips for each channel.
