@@ -143,13 +143,13 @@ When /^I retrieve the JSON for the last request in the study "([^"]+)"$/ do |nam
 end
 
 Then /^show me the HTTP response body$/ do
-  $stderr.puts('=' * 80)
+  warn('=' * 80)
   begin
     $stderr.send(:pp, JSON.parse(page.source))
   rescue StandardError
-    $stderr.puts(page.source)
+    warn(page.source)
   end
-  $stderr.puts('=' * 80)
+  warn('=' * 80)
 end
 
 Then /^ignoring "([^"]+)" the JSON should be:$/ do |key_list, serialised_json|
@@ -165,7 +165,7 @@ end
 # rubocop:todo Metrics/PerceivedComplexity
 def strip_extraneous_fields(left, right) # rubocop:todo Metrics/CyclomaticComplexity
   if left.is_a?(Hash) && right.is_a?(Hash)
-    right.delete_if { |k, _| not left.key?(k) }
+    right.delete_if { |k, _| !left.key?(k) }
     left.each { |key, value| strip_extraneous_fields(value, right[key]) }
     right
   elsif left.is_a?(Array) && right.is_a?(Array)
@@ -180,7 +180,7 @@ end
 # I like to know where my JSON is wrong!
 def decode_json(json, source)
   ActiveSupport::JSON.decode(json)
-rescue StandardError => e
+rescue StandardError
   raise StandardError, "#{source} JSON is invalid: #{json.inspect}"
 end
 

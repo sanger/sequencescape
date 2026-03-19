@@ -22,6 +22,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
   include Extensions::Order
+
   self.inheritance_column = 'sti_type'
   self.per_page = 500
 
@@ -85,7 +86,6 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
             [:uuid_object, { assets: [:uuid_object] }, { project: :uuid_object }, { study: :uuid_object }, :user]
           )
         }
-
 
   delegate :role, to: :order_role, allow_nil: true
 

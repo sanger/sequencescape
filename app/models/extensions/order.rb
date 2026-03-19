@@ -21,7 +21,7 @@ module Extensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      not building? or request_options.present?
+      !building? or request_options.present?
     end
     private :validate_request_options?
 
@@ -34,7 +34,7 @@ module Extensions::Order
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
     # mean that we should not require values that are unset, until we're moving out of the building state.
     def include_unset_values?
-      not building?
+      !building?
     end
 
     def request_options_for_validation
@@ -43,7 +43,7 @@ module Extensions::Order
   end
 
   def validate_new_record(assets)
-    if (not new_record?) && asset_group? && assets.present?
+    if !new_record? && asset_group? && assets.present?
       raise StandardError, 'requested action is not supported on this resource'
     end
 
@@ -57,11 +57,10 @@ module Extensions::Order
 
       before_validation :merge_in_structured_request_options
 
-
       has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
       has_many :assets, through: :submitted_assets, before_add: :validate_new_record do
         def <<(associated)
-          return super(associated) if associated.is_a?(Receptacle)
+          return super if associated.is_a?(Receptacle)
 
           Rails.logger.warn("#{associated.class.name} passed to order.assets")
           super(associated&.receptacle)
@@ -171,9 +170,9 @@ module Extensions::Order
           attributes[:read_length] = json['read_length']
           attributes['library_type'] = json['library_type']
           attributes['fragment_size_required_from'] = json['fragment_size_required', 'from'] ||
-                                                      json['fragment_size_required_from']
+            json['fragment_size_required_from']
           attributes['fragment_size_required_to'] = json['fragment_size_required', 'to'] ||
-                                                    json['fragment_size_required_to']
+            json['fragment_size_required_to']
           attributes['pcr_cycles'] = json['pcr_cycles']
           attributes[:bait_library_name] = json['bait_library']
           attributes[:primer_panel_name] = json['primer_panel_name']
