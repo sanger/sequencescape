@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class Sdb::SampleManifestsController < Sdb::BaseController
+class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metrics/ClassLength
   before_action :set_sample_manifest_id, only: %i[show generated print_labels]
   before_action :validate_type, only: %i[new create]
 
@@ -59,15 +59,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     end
   end
 
-  def print_labels # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
-    print_job =
-      LabelPrinter::PrintJob.new(
-        params[:printer],
-        LabelPrinter::Label::SampleManifestRedirect,
-        sample_manifest: @sample_manifest,
-        label_template_name: label_template_for_2d_barcodes(@sample_manifest.asset_type),
-        barcode_type: params[:barcode_type]
-      )
+  def print_labels
+    print_job = setup_print_job
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -77,6 +70,16 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   private
+
+  def setup_print_job
+    LabelPrinter::PrintJob.new(
+      params[:printer],
+      LabelPrinter::Label::SampleManifestRedirect,
+      sample_manifest: @sample_manifest,
+      label_template_name: label_template_for_2d_barcodes(@sample_manifest.asset_type),
+      barcode_type: params[:barcode_type]
+    )
+  end
 
   def set_default_params
     params[:only_first_label] ||= false
