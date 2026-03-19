@@ -75,14 +75,21 @@ RSpec.describe Sdb::SampleManifestsController do
         allow(controller).to receive(:redirect_back_or_to)
       end
 
-      it 'prints successfully' do # rubocop:disable RSpec/MultipleExpectations
+      it 'prints successfully' do
         post :print_labels,
              params: {
                id: sample_manifest.id,
                printer: 'printer_1'
              }
-
         expect(flash[:notice]).to eq('Printed')
+      end
+
+      it 'redirects back or to' do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1'
+             }
         expect(controller).to have_received(:redirect_back_or_to)
       end
     end
