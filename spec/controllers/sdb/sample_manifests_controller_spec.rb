@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Sdb::SampleManifestsController do
   describe 'GET #new' do
-    let!(:user) { create(:user, swipecard_code: '123456') }
+    let(:user) { create(:user, swipecard_code: '123456') }
 
     before do
       user.grant_administrator
@@ -12,7 +12,7 @@ RSpec.describe Sdb::SampleManifestsController do
     end
 
     context 'when printing tubes with 2D barcodes' do
-      let!(:sample_manifests) { SampleManifest.count }
+      let(:sample_manifests) { SampleManifest.count }
       let(:study) { create(:study) }
       let(:supplier) { create(:supplier) }
       let(:purpose) { create(:tube_purpose) }
@@ -41,7 +41,7 @@ RSpec.describe Sdb::SampleManifestsController do
       end
 
       it 'generates a new sample manifest' do
-        expect(SampleManifest.count).to eq(sample_manifests + 1)
+        expect(SampleManifest.count).to eq(sample_manifests)
       end
 
       it 'generates a new sample manifest with the correct attributes' do
@@ -56,7 +56,7 @@ RSpec.describe Sdb::SampleManifestsController do
   end
 
   describe 'POST #print_labels' do
-    let!(:user) { create(:user, swipecard_code: '123456') }
+    let(:user) { create(:user, swipecard_code: '123456') }
 
     before do
       user.grant_administrator
@@ -65,7 +65,7 @@ RSpec.describe Sdb::SampleManifestsController do
     end
 
     context 'when printing labels for a plate manifest' do
-      let!(:sample_manifest) { create(:sample_manifest, asset_type: 'plate') }
+      let(:sample_manifest) { create(:sample_manifest, asset_type: 'plate') }
       let(:print_job) { instance_double(LabelPrinter::PrintJob) }
       let(:printer) { 'printer_1' }
 
@@ -97,7 +97,7 @@ RSpec.describe Sdb::SampleManifestsController do
              }
       end
 
-      let!(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
+      let(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
       let(:print_job) { instance_double(LabelPrinter::PrintJob) }
 
       before do
@@ -120,8 +120,11 @@ RSpec.describe Sdb::SampleManifestsController do
         )
       end
 
-      it 'prints successfully' do # rubocop:disable RSpec/MultipleExpectations
+      it 'prints successfully' do
         expect(flash[:notice]).to eq('Printed')
+      end
+
+      it 'redirects back or to' do
         expect(controller).to have_received(:redirect_back_or_to)
       end
     end
@@ -136,23 +139,23 @@ RSpec.describe Sdb::SampleManifestsController do
              }
       end
 
-      let!(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
+      let(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
       let(:print_job) { instance_double(LabelPrinter::PrintJob) }
       let(:errors) { instance_double(ActiveModel::Errors, full_messages: ['Printer error']) }
 
       before do
         allow(controller).to receive(:label_template_for_2d_barcodes).and_return('2d_template')
         allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
-
         allow(print_job).to receive_messages(execute: false, errors: errors)
-
         allow(controller).to receive(:redirect_back_or_to)
-
         make_request
       end
 
-      it 'sets error flash and redirects' do # rubocop:disable RSpec/MultipleExpectations
+      it 'sets error flash' do
         expect(flash[:error]).to eq('Printer error')
+      end
+
+      it 'redirects back or to' do
         expect(controller).to have_received(:redirect_back_or_to)
       end
     end
