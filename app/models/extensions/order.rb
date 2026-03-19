@@ -21,7 +21,7 @@ module Extensions::Order
     # request options have been specified.  Once they are specified they are always checked, unless they are
     # completely blanked.
     def validate_request_options?
-      !building? or request_options.present?
+      not building? or request_options.present?
     end
     private :validate_request_options?
 
@@ -34,7 +34,7 @@ module Extensions::Order
     # If this returns true then we check values that have not been set, otherwise we can ignore them.  This would
     # mean that we should not require values that are unset, until we're moving out of the building state.
     def include_unset_values?
-      !building?
+      not building?
     end
 
     def request_options_for_validation
@@ -43,7 +43,7 @@ module Extensions::Order
   end
 
   def validate_new_record(assets)
-    if !new_record? && asset_group? && assets.present?
+    if (not new_record?) && asset_group? && assets.present?
       raise StandardError, 'requested action is not supported on this resource'
     end
 
@@ -60,7 +60,7 @@ module Extensions::Order
       has_many :submitted_assets, -> { joins(:asset) }, inverse_of: :order
       has_many :assets, through: :submitted_assets, before_add: :validate_new_record do
         def <<(associated)
-          return super if associated.is_a?(Receptacle)
+          return super(associated) if associated.is_a?(Receptacle)
 
           Rails.logger.warn("#{associated.class.name} passed to order.assets")
           super(associated&.receptacle)
@@ -134,22 +134,22 @@ module Extensions::Order
     NonNilHash
       .new(:stringify_keys)
       .tap do |json|
-      NonNilHash
-        .new
-        .deep_merge(request_options)
-        .tap do |attributes|
-        json['read_length'] = attributes[:read_length].try(:to_i)
-        json['library_type'] = attributes[:library_type]
-        json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
-        json['fragment_size_required', 'to'] = attributes[:fragment_size_required_to].try(:to_i)
-        json['pcr_cycles'] = attributes[:pcr_cycles].try(:to_i)
-        json['bait_library'] = attributes[:bait_library_name]
-        json['primer_panel_name'] = attributes[:primer_panel_name]
-        json['sequencing_type'] = attributes[:sequencing_type]
-        json['insert_size'] = attributes[:insert_size].try(:to_i)
-        request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
+        NonNilHash
+          .new
+          .deep_merge(request_options)
+          .tap do |attributes|
+            json['read_length'] = attributes[:read_length].try(:to_i)
+            json['library_type'] = attributes[:library_type]
+            json['fragment_size_required', 'from'] = attributes[:fragment_size_required_from].try(:to_i)
+            json['fragment_size_required', 'to'] = attributes[:fragment_size_required_to].try(:to_i)
+            json['pcr_cycles'] = attributes[:pcr_cycles].try(:to_i)
+            json['bait_library'] = attributes[:bait_library_name]
+            json['primer_panel_name'] = attributes[:primer_panel_name]
+            json['sequencing_type'] = attributes[:sequencing_type]
+            json['insert_size'] = attributes[:insert_size].try(:to_i)
+            request_type_multiplier { |id| json['number_of_lanes'] = attributes[:multiplier, id] }
+          end
       end
-    end
       .to_hash
   end
 
@@ -161,26 +161,26 @@ module Extensions::Order
       NonNilHash
         .new
         .tap do |attributes|
-        NonNilHash
-          .new(:stringify_keys)
-          .deep_merge(values)
-          .tap do |json|
-          # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
-          # If the template uses symbol names then these need to be symbols too.
-          attributes[:read_length] = json['read_length']
-          attributes['library_type'] = json['library_type']
-          attributes['fragment_size_required_from'] = json['fragment_size_required', 'from'] ||
-            json['fragment_size_required_from']
-          attributes['fragment_size_required_to'] = json['fragment_size_required', 'to'] ||
-            json['fragment_size_required_to']
-          attributes['pcr_cycles'] = json['pcr_cycles']
-          attributes[:bait_library_name] = json['bait_library']
-          attributes[:primer_panel_name] = json['primer_panel_name']
-          attributes[:sequencing_type] = json['sequencing_type']
-          attributes[:insert_size] = json['insert_size']
-          request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
+          NonNilHash
+            .new(:stringify_keys)
+            .deep_merge(values)
+            .tap do |json|
+              # NOTE: Be careful with the names here to ensure that they match up, exactly with what is in a template.
+              # If the template uses symbol names then these need to be symbols too.
+              attributes[:read_length] = json['read_length']
+              attributes['library_type'] = json['library_type']
+              attributes['fragment_size_required_from'] = json['fragment_size_required', 'from'] ||
+                json['fragment_size_required_from']
+              attributes['fragment_size_required_to'] = json['fragment_size_required', 'to'] ||
+                json['fragment_size_required_to']
+              attributes['pcr_cycles'] = json['pcr_cycles']
+              attributes[:bait_library_name] = json['bait_library']
+              attributes[:primer_panel_name] = json['primer_panel_name']
+              attributes[:sequencing_type] = json['sequencing_type']
+              attributes[:insert_size] = json['insert_size']
+              request_type_multiplier { |id| attributes[:multiplier, id] = json['number_of_lanes'] }
+            end
         end
-      end
         .to_hash
   end
 
