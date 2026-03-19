@@ -168,6 +168,58 @@ RSpec.describe Sdb::SampleManifestsController do
     end
   end
 
+  describe '#label_template_for_2d_barcodes' do
+    subject(:template) { controller.send(:label_template_for_2d_barcodes, asset_type) }
+
+    let(:asset_type) { '1dtube' }
+
+    let(:config) do
+      {
+        barcode_type_labels: {
+          '1d' => '1D Barcode',
+          '2d' => '2D Barcode'
+        },
+        two_dimensional_label_template: 'tube_label_template'
+      }
+    end
+
+    before do
+      allow(Rails.application.config).to receive(:tube_manifest_barcode_config).and_return(config)
+    end
+
+    context 'when barcode type is 2d and asset type is valid' do
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '2D Barcode' })
+      end
+
+      it 'returns the 2d label template' do
+        expect(template).to eq('tube_label_template')
+      end
+    end
+
+    context 'when barcode type is not 2d' do
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '1D Barcode' })
+      end
+
+      it 'returns nil' do
+        expect(template).to be_nil
+      end
+    end
+
+    context 'when asset type is not a tube asset type' do
+      let(:asset_type) { 'Plate' }
+
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '2D Barcode' })
+      end
+
+      it 'returns nil' do
+        expect(template).to be_nil
+      end
+    end
+  end
+
   def expect_correct_attributes(sample_manifest, study, supplier, purpose) # rubocop:todo Metrics/AbcSize
     expect(sample_manifest.study_id).to eq(study.id)
     expect(sample_manifest.supplier_id).to eq(supplier.id)
