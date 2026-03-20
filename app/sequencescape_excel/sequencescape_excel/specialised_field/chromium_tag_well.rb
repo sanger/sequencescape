@@ -65,7 +65,7 @@ module SequencescapeExcel
       #
       # @return [Integer] The well index.
       def well_index
-        @well_index = Map::Coordinate.description_to_vertical_plate_position(value, 96)
+        @well_index = Map::Coordinate.well_description_to_by_column_map_index(value, 96)
       end
 
       ##

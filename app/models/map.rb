@@ -52,7 +52,9 @@ class Map < ApplicationRecord
       (width * split_well[:row]) + split_well[:col]
     end
 
-    def self.description_to_vertical_plate_position(well_description, plate_size)
+    # e.g. B5 returns 34 for a 96 well plate
+    # So 4 columns of 8 rows each, plus 2 for the B row
+    def self.well_description_to_by_column_map_index(well_description, plate_size)
       return nil unless Map.valid_well_description_and_plate_size?(well_description, plate_size)
 
       split_well = Map.split_well_description(well_description)
@@ -62,7 +64,9 @@ class Map < ApplicationRecord
       (length * (split_well[:col] - 1)) + split_well[:row] + 1
     end
 
-    def self.horizontal_plate_position_to_description(well_position, plate_size)
+    # e.g. 23 returns B11 for a 96 well plate
+    # So 1 full row of 12, plus 11, to give row B, column 11
+    def self.by_row_map_index_to_well_description(well_position, plate_size)
       return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
 
       width = plate_width(plate_size)
@@ -71,7 +75,9 @@ class Map < ApplicationRecord
       horizontal_position_to_description(well_position, width)
     end
 
-    def self.vertical_plate_position_to_description(well_position, plate_size)
+    # e.g. 23 returns G3 for a 96 well plate
+    # So 2 full columns of 8, plus 7, to give row G, column 3
+    def self.by_column_map_index_to_well_description(well_position, plate_size)
       return nil unless Map.valid_plate_position_and_plate_size?(well_position, plate_size)
 
       length = plate_length(plate_size)
@@ -96,6 +102,8 @@ class Map < ApplicationRecord
       PLATE_DIMENSIONS[plate_size].last
     end
 
+    # well number counting by columns, length is the number of rows in the plate
+    # e.g. B5 sends this 34 and 8
     def self.vertical_position_to_description(well_position, length)
       desc_letter = (((well_position - 1) % length) + 65).chr
       desc_number = ((well_position - 1) / length) + 1
@@ -117,7 +125,7 @@ class Map < ApplicationRecord
     end
 
     def self.location_from_index(index, size)
-      horizontal_plate_position_to_description(index + 1, size)
+      by_row_map_index_to_well_description(index + 1, size)
     end
 
     class << self

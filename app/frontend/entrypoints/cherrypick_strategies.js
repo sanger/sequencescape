@@ -1,3 +1,15 @@
+// Toggle buffer_volume_for_empty_wells input based on automatic_buffer_addition checkbox
+document.addEventListener("DOMContentLoaded", function () {
+  const bufferInput = document.getElementById("buffer_volume_for_empty_wells");
+  const autoBufferCheckbox = document.getElementById("automatic_buffer_addition");
+  if (bufferInput && autoBufferCheckbox) {
+    function toggleBufferInput() {
+      bufferInput.disabled = !autoBufferCheckbox.checked;
+    }
+    autoBufferCheckbox.addEventListener("change", toggleBufferInput);
+    toggleBufferInput(); // Set initial state
+  }
+});
 // apply a border highlight to the card, based on the cherrypick strategy selected
 // this is admittedly a gratuitous addition to the user experience, but it's a nice touch
 

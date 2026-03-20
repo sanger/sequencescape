@@ -37,7 +37,7 @@ module Robot::Generator::Behaviours::HamiltonDefault
       mapping_by_well = Hash.new { |h, i| h[i] = [] }
       plate_details['mapping'].each do |mapping|
         destination_position =
-          Map::Coordinate.description_to_vertical_plate_position(mapping['dst_well'], plate_details['plate_size'])
+          Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'], plate_details['plate_size'])
         mapping_by_well[destination_position] << mapping
       end
 
