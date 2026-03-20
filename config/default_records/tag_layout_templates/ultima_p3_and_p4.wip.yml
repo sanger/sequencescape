@@ -1,0 +1,8 @@
+Ultima P3:
+  :tag_group_name: Ultima P3
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+Ultima P4:
+  :tag_group_name: Ultima P4
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
