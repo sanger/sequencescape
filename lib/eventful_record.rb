@@ -8,7 +8,9 @@
 # Usage:
 #   include EventfulRecord
 #   has_many_events
-#   has_many_lab_events
+#   has_many_lab_events do
+#     event_constructor(:custom_event!, CustomEventClass, :create_for_model!)
+#   end
 #   has_one_event_with_family(:family_name)
 module EventfulRecord
   # Defines a has_many :events association with ordering and custom event constructor support.
