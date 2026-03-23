@@ -60,7 +60,6 @@ class LocationReportsController < ApplicationController
       :study_id,
       :start_date,
       :end_date,
-      :retention_instructions,
       :barcodes,
       :barcodes_text,
       faculty_sponsor_ids: [],
