@@ -54,8 +54,9 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def create_order!(attributes)
+  def create_order!(attributes, project = nil)
     new_order(attributes).tap do |order|
+      order.project = project if project
       yield(order) if block_given?
       order.save!
     end
