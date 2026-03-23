@@ -53,6 +53,8 @@ module Api
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class OrderResource < BaseResource
+
+
       ###
       # Attributes
       ###
@@ -74,6 +76,11 @@ module Api
       # @!attribute [r] uuid
       #   @return [String] The UUID of this {Order}.
       attribute :uuid, readonly: true
+
+      # @!attribute [w] project_uuid
+      #   @return [String] The UUID of the project to associate with this Order on creation.
+      attribute :project_uuid, writeonly: true
+      attr_writer :project_uuid # Not stored, consumed by OrderProcessor.
 
       ###
       # Relationships
@@ -131,7 +138,7 @@ module Api
       def self.create(context)
         return super if context[:template].nil?
 
-        order = context[:template].create_order!(context[:template_attributes])
+        order = context[:template].create_order!(context[:template_attributes], context[:project])
         new(order, context)
       end
     end
