@@ -60,6 +60,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   self.per_page = 500
 
+  include ActiveRecord::AttributeMethods::Dirty
   include ModelExtensions::Sample
   include Api::SampleIo::Extensions
   include Uuid::Uuidable
@@ -295,6 +296,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:updated_sample_metadata!, Event::SampleMetadataEvent, :updated_sample_metadata!)
     # Add events defined in the included SampleAccessioning module
     SampleAccessioning::EVENTS.each do |model_event_name, event_class, event_class_method|
       event_constructor(model_event_name, event_class, event_class_method)
@@ -366,6 +368,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  after_update :record_sample_metadata_changes
   before_destroy :safe_to_destroy
 
   # NOTE: Samples don't tend to get released through Sequencescape
@@ -519,6 +522,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  def record_sample_metadata_changes
+    return unless sample_metadata.saved_changes?
+
+    changes = sample_metadata.saved_changes.except('updated_at')
+    return if changes.empty?
+
+    events.updated_sample_metadata!(changes, current_user)
+  end
 
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')
