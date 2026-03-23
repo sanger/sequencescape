@@ -32,7 +32,7 @@ RSpec.describe BulkSubmissionExcel::Download, :bulk_submission_excel, type: :mod
   let(:assets) { create(:plate_with_untagged_wells).wells }
   let(:submission_template) { create(:library_and_sequencing_template) }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   context 'without columns' do
     let(:columns) { nil }

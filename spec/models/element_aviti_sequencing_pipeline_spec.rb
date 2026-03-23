@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe ElementAvitiSequencingPipeline, type: :model do
+RSpec.describe ElementAvitiSequencingPipeline do
   describe '#post_release_batch' do
     let(:pipeline) { create(:element_aviti_sequencing_pipeline) }
     let(:batch) { create(:batch) }

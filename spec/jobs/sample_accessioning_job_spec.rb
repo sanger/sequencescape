@@ -3,7 +3,7 @@ require 'rails_helper'
 
 # See additional related tests in spec/models/sample_spec.rb
 
-RSpec.describe SampleAccessioningJob, type: :job do
+RSpec.describe SampleAccessioningJob do
   include AccessionV1ClientHelper
 
   let(:sample_metadata) { create(:sample_metadata_for_accessioning) }

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe DelayedJobsHelper, type: :helper do
+RSpec.describe DelayedJobsHelper do
   let(:last_error) { nil }
   let(:job_name) { 'DefaultJob' }
   let(:locked_by) { nil }

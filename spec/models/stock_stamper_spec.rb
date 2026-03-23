@@ -100,10 +100,11 @@ describe StockStamper do
     end
 
     it 'generates the right tecan file' do
-      file = File.open('spec/data/tecan/stock_stamper.gwl', 'rb')
-      expected_output = file.read
-      @stock_stamper.generate_tecan_gwl_file_as_text
-      expect(@stock_stamper.file_content).to eq expected_output
+      File.open('spec/data/tecan/stock_stamper.gwl', 'rb') do |file|
+        expected_output = file.read
+        @stock_stamper.generate_tecan_gwl_file_as_text
+        expect(@stock_stamper.file_content).to eq expected_output
+      end
     end
 
     it 'creates asset_audit on plate' do

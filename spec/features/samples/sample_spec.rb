@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'Sample', :js, type: :feature do
+RSpec.describe 'Sample', :js do
   describe 'Sample study association' do
     let(:user) { create(:admin) }
     let!(:study) { create(:study, name: 'Study_PT_7125863') }
