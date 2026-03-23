@@ -40,7 +40,9 @@ module UltimaSampleSheet::SampleSheetGenerator
     # Index_Barcode_Num column, i.e. Z0001 or Z097.
     ULTIMA_TAG_GROUPS = {
       'Ultima P1' => 1,
-      'Ultima P2' => 2
+      'Ultima P2' => 2,
+      'Ultima P3' => 3,
+      'Ultima P4' => 4
     }.freeze
 
     # Initializes the generator with the given batch.
