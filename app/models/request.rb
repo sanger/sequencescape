@@ -299,7 +299,7 @@ class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   scope :for_request_types, ->(types) { joins(:request_type).where(request_types: { key: types }) }
 
-  scope :for_search_query, ->(query) { where(['id=?', query]) }
+  scope :for_search_query, ->(query, _leading_wildcard = true) { where(['id=?', query]) }
   scope :for_studies, ->(*studies) { where(initial_study_id: studies) }
 
   scope :with_assets_for_starting_requests,
