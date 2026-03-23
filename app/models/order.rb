@@ -21,7 +21,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::AssetGroupBehaviour
   include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
-  include ModelExtensions::Order
+  include Extensions::Order
 
   self.inheritance_column = 'sti_type'
   self.per_page = 500
@@ -104,6 +104,14 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def complete_building
     check_project_details!
     complete_building_asset_group
+  end
+
+  def validate_new_record(assets)
+    if !new_record? && asset_group? && assets.present?
+      raise StandardError, 'requested action is not supported on this resource'
+    end
+
+    true
   end
 
   def assets=(assets_to_add)
@@ -254,6 +262,10 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def first_request_type
     @first_request_type ||= RequestType.find(request_types.first)
+  end
+
+  def request_type_multiplier
+    yield(request_types.last.to_s.to_sym) if request_types.present?
   end
 
   # Return the list of input fields to edit when creating a new submission
