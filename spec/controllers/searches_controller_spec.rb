@@ -25,7 +25,7 @@ RSpec.describe SearchesController do
     end
 
     describe '#index' do
-      before { get :index, params: { q: query }, session: { user: current_user.id } }
+      before { get :index, params: { q: query, type: 'All (wildcard)' }, session: { user: current_user.id } }
 
       context 'with the valid search' do
         let(:query) { 'FindMe' }

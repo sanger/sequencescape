@@ -30,7 +30,7 @@ RSpec.describe SampleManifestExcel::Worksheet, :sample_manifest, :sample_manifes
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   context 'type' do
     let(:options) { { workbook: workbook, ranges: SampleManifestExcel.configuration.ranges.dup, password: '1111' } }

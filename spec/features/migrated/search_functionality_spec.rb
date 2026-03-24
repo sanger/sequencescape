@@ -28,6 +28,7 @@ RSpec.feature 'Searching sequencescape', :search do
   ].each do |example|
     scenario "Searching for #{example[:search]}" do
       fill_in 'Search for', with: example[:search]
+      select example[:type].capitalize, from: 'layout_search_options'
       click_on 'Go'
       expect(page).to have_current_path(searches_path, ignore_query: true)
       expect(page).to have_content("1 #{example[:type]}")
@@ -42,8 +43,9 @@ RSpec.feature 'Searching sequencescape', :search do
     expect(page).to have_content('No results')
   end
 
-  scenario 'Searching for everything' do
+  scenario 'Searching for All (wildcard)' do
     fill_in 'Search for', with: 'This'
+    select 'All (wildcard)', from: 'layout_search_options'
     click_on 'Go'
     expect(page).to have_current_path(searches_path, ignore_query: true)
 
@@ -57,5 +59,25 @@ RSpec.feature 'Searching sequencescape', :search do
       expect(page).to have_content("#{row[:section_count]} #{row[:section]}")
       expect(page).to have_content(row[:result])
     end
+  end
+
+  scenario 'Searching for All' do
+    fill_in 'Search for', with: 'This'
+    select 'All', from: 'layout_search_options'
+    click_on 'Go'
+    expect(page).to have_current_path(searches_path, ignore_query: true)
+
+    [
+      { section: 'project', section_count: 2, result: 'This Rabbit' },
+      { section: 'study',   section_count: 1, result: 'This Hedgehog' },
+      { section: 'labware', section_count: 1, result: 'This Asset' },
+      { section: 'project', section_count: 2, result: 'Project 2' }
+    ].each do |row|
+      expect(page).to have_content("#{row[:section_count]} #{row[:section]}")
+      expect(page).to have_content(row[:result])
+    end
+
+    # This is a wildcard search
+    expect(page).to have_no_content('SampleForThis')
   end
 end

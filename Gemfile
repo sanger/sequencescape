@@ -151,6 +151,7 @@ end
 
 group :development, :linting do
   # Enforces coding styles and detects some bad practices
+  gem 'ruboclean', require: false
   gem 'rubocop', require: false
   gem 'rubocop-capybara', require: false
   gem 'rubocop-factory_bot', require: false

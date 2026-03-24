@@ -86,11 +86,11 @@ module Presenters
     end
 
     # rubocop is suggesting changes that returns false positive
-    # rubocop: disable Performance/RedundantEqualityComparisonBlock
+    # rubocop: disable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
     def aviti_requests?
       @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
     end
-    # rubocop: enable Performance/RedundantEqualityComparisonBlock
+    # rubocop: enable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
 
     def ultima_run_manifest?
       @batch.released? && ultima_requests?

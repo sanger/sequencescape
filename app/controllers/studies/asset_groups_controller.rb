@@ -133,7 +133,7 @@ class Studies::AssetGroupsController < ApplicationController
     @asset_group = AssetGroup.find(params[:id])
     @study = Study.find(params[:study_id])
 
-    @labware = @asset_group.labware.select { |asset| asset.is_a?(Barcode::Barcodeable) }
+    @labware = @asset_group.labware.grep(Barcode::Barcodeable)
   end
 
   def print_labels # rubocop:todo Metrics/AbcSize, Metrics/MethodLength

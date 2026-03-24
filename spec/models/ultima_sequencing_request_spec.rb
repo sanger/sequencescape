@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe UltimaSequencingRequest, type: :model do
+RSpec.describe UltimaSequencingRequest do
   let(:request) { create(:ultima_sequencing_request) }
 
   describe 'Validations' do

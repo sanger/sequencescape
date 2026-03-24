@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'rails_helper'
 
-RSpec.describe Accession::SampleStatus, type: :model do
+RSpec.describe Accession::SampleStatus do
   let(:sample) { create(:sample) }
 
   describe 'associations' do

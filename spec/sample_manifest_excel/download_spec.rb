@@ -23,7 +23,7 @@ RSpec.describe SampleManifestExcel::Download, :sample_manifest, :sample_manifest
 
   after(:all) { SampleManifestExcel.reset! }
 
-  after { File.delete(test_file) if File.exist?(test_file) }
+  after { FileUtils.rm_f(test_file) }
 
   it 'is not valid without a sample manifest' do
     download =

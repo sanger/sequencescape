@@ -34,7 +34,7 @@ i7:
       type: :textLength
       operator: :between
       formula1: "1"
-      formula2: "255"
+      formula2: "30"
       allowBlank: false
       showInputMessage: true
       showErrorMessage: true
@@ -42,7 +42,7 @@ i7:
       prompt: "Input i7."
       errorStyle: :warning
       errorTitle: "i7"
-      error: "i7 cannot be blank"
+      error: "i7 cannot be blank and cannot exceed 30 characters"
   conditional_formattings:
     empty_warning_cell:
 i5:
@@ -53,13 +53,13 @@ i5:
       type: :textLength
       operator: :between
       formula1: "1"
-      formula2: "255"
+      formula2: "30"
       allowBlank: false
       showInputMessage: true
       showErrorMessage: true
       errorStyle: :warning
       errorTitle: "i5"
-      error: "i5 cannot be blank"
+      error: "i5 cannot be blank and cannot exceed 30 characters"
       promptTitle: "i5"
       prompt: "Input i5."
   conditional_formattings:
