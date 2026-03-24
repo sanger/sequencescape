@@ -6,6 +6,7 @@ class UltimaSequencingRequest < SequencingRequest
   FREE = 'Free'
   FLEX = 'Flex'
   OT_RECIPE_OPTIONS = [FREE, FLEX].freeze
+  WAFER_SIZE_OPTIONS = %w[5TB 10TB 20TB].freeze
 
   has_metadata as: Request do
     # Defining the sequencing request metadata here again, as 'has_metadata'
@@ -25,11 +26,13 @@ class UltimaSequencingRequest < SequencingRequest
 
     custom_attribute(:ot_recipe, default: FREE, in: OT_RECIPE_OPTIONS, required: true)
     enum :ot_recipe, { Free: 0, Flex: 1 }
+    custom_attribute(:wafer_size, default: '10TB', in: WAFER_SIZE_OPTIONS, required: true)
+    enum :wafer_size, { '5TB': 0, '10TB': 1, '20TB': 2 }
   end
 
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
-  delegate :ot_recipe, to: :request_metadata
+  delegate :ot_recipe, :wafer_size, to: :request_metadata
 
   # Generates unique wafer ID, concatenation of batch_for_opentrons,
   # id_pool_lims, and request_order.

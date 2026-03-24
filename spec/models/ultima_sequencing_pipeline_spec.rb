@@ -38,6 +38,35 @@ RSpec.describe UltimaSequencingPipeline do
     end
   end
 
+  describe '#wafer_size_consistent_for_batch?' do
+    it 'returns true when all requests have the same wafer_size' do
+      batch = pipeline.batches.build
+      r1 = create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' })
+      r2 = create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' })
+      batch.requests << [r1, r2]
+
+      expect(pipeline.wafer_size_consistent_for_batch?(batch)).to be true
+    end
+
+    it 'returns false when requests have different wafer_sizes' do
+      batch = pipeline.batches.build
+      req1 = create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '5TB' })
+      req2 = create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' })
+      batch.requests << [req1, req2]
+
+      expect(pipeline.wafer_size_consistent_for_batch?(batch)).to be false
+    end
+
+    it 'returns false when some requests are missing wafer_size' do
+      batch = pipeline.batches.build
+      r1 = create(:sequencing_request, request_metadata_attributes: { wafer_size: '10TB' })
+      r2 = create(:sequencing_request, request_metadata_attributes: {}) # no wafer_size
+      batch.requests << [r1, r2]
+
+      expect(pipeline.wafer_size_consistent_for_batch?(batch)).to be false
+    end
+  end
+
   describe '#post_release_batch' do
     let(:batch) { create(:batch) }
 

@@ -37,6 +37,38 @@ describe UltimaValidator do
       end
     end
 
+    context 'when batch contains two requests with the same Wafer Size' do
+      let(:pipeline) { UltimaSequencingPipeline.new }
+      let(:batch) { create(:batch, pipeline:) }
+      let(:request1) { create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' }) }
+      let(:request2) { create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' }) }
+
+      before do
+        batch.requests << [request1, request2]
+      end
+
+      it 'is valid' do
+        validator.validate(batch)
+        expect(batch.errors[:base]).to be_empty
+      end
+    end
+
+    context 'when batch contains two requests with different wafer_size' do
+      let(:pipeline) { UltimaSequencingPipeline.new }
+      let(:batch) { create(:batch, pipeline:) }
+      let(:request1) { create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '5TB' }) }
+      let(:request2) { create(:ultima_sequencing_request, request_metadata_attributes: { wafer_size: '10TB' }) }
+
+      before do
+        batch.requests << [request1, request2]
+      end
+
+      it 'is invalid due to wafer_size mismatch' do
+        validator.validate(batch)
+        expect(batch.errors[:base]).to include(described_class::WAFER_SIZE_CONSISTENT_MSG)
+      end
+    end
+
     context 'when batch contains a single request' do
       let(:pipeline) { UltimaSequencingPipeline.new }
       let(:batch) { create(:batch, pipeline:) }

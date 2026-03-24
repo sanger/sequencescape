@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_17_142326) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_24_112536) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1191,6 +1191,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_17_142326) do
     t.boolean "low_diversity"
     t.integer "percent_phix_requested"
     t.integer "ot_recipe"
+    t.integer "wafer_size"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
