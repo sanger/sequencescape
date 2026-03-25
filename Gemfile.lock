@@ -613,7 +613,7 @@ GEM
     syslog (0.4.0)
       logger
     temple (0.10.4)
-    test-prof (1.5.2)
+    test-prof (1.6.0)
     thor (1.5.0)
     tilt (2.6.1)
     timecop (0.9.10)
