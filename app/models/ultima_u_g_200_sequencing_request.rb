@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-class UltimaSequencingRequest < SequencingRequest
+# Request class specific to the Ultima UG200 sequencing platform.
+# Includes specific validation for wafer combination with read type.
+class UltimaUG200SequencingRequest < SequencingRequest
   include Api::Messages::UseqWaferIo::LaneExtensions
 
-  FREE = 'Free'
-  FLEX = 'Flex'
-  OT_RECIPE_OPTIONS = [FREE, FLEX].freeze
+  WAFER_SIZE_OPTIONS = %w[5TB 10TB 20TB].freeze
 
   has_metadata as: Request do
     # Defining the sequencing request metadata here again, as 'has_metadata'
@@ -23,13 +23,34 @@ class UltimaSequencingRequest < SequencingRequest
     custom_attribute(:fragment_size_required_from, integer: true, minimum: 1)
     custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
 
-    custom_attribute(:ot_recipe, default: FREE, in: OT_RECIPE_OPTIONS, required: true)
-    enum :ot_recipe, { Free: 0, Flex: 1 }
+    # TODO: the defaults set here do NOT work on the option lists in screens for some reason.
+    custom_attribute(:wafer_size, default: '10TB', in: WAFER_SIZE_OPTIONS, required: true)
+    enum :wafer_size, { '5TB': 0, '10TB': 1, '20TB': 2 }
+    custom_attribute(:read_length, default: 300, integer: true, validator: true, required: true, selection: true)
   end
 
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
-  delegate :ot_recipe, to: :request_metadata
+  delegate :wafer_size, :read_length, to: :request_metadata
+
+  class UltimaUG200RequestOptionsValidator < DelegateValidation::Validator
+    delegate :wafer_size, :read_length, :request_types, to: :target
+
+    validate :validate_read_length_by_wafer_size
+
+    def validate_read_length_by_wafer_size
+      puts "Wafer Size: #{wafer_size}, Read Length: #{read_length}"
+      binding.pry
+      return if wafer_size == '10TB' && read_length.to_i == 300
+
+      errors.add(:read_length,
+                 'The user can only select a Read Length of 300 with the 10TB wafer type for Ultima UG200 requests')
+    end
+  end
+
+  def self.delegate_validator
+    UltimaUG200SequencingRequest::UltimaUG200RequestOptionsValidator
+  end
 
   # Generates unique wafer ID, concatenation of batch_for_opentrons,
   # id_pool_lims, and request_order.

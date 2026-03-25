@@ -1,0 +1,15 @@
+---
+WaferSizeRequestedUltimaUG200Sequencing:
+  request_type_key: ultima_u_g_200_sequencing
+  request_option: wafer_size
+  valid_options:
+    - 5TB
+    - 10TB
+    - 20TB
+ReadLengthRequestedUltimaUG200Sequencing:
+  request_type_key: ultima_u_g_200_sequencing
+  request_option: read_length
+  valid_options:
+    - 150
+    - 200
+    - 300

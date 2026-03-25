@@ -109,8 +109,7 @@ FactoryBot.define do
       {
         fragment_size_required_from: 150,
         fragment_size_required_to: 400,
-        ot_recipe: 'Free',
-        wafer_size: '10TB'
+        ot_recipe: 'Free'
       }
     end
 
@@ -122,6 +121,20 @@ FactoryBot.define do
       after(:build) do |request, evaluator|
         request.lab_events << build(:flowcell_event, descriptors: evaluator.event_descriptors, batch: request.batch)
       end
+    end
+  end
+
+  factory(:ultima_u_g_200_sequencing_request) do
+    request_type factory: %i[ultima_u_g_200_sequencing]
+    request_purpose { :standard }
+    sti_type { 'UltimaUG200SequencingRequest' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        read_length: 300,
+        wafer_size: '10TB'
+      }
     end
   end
 
