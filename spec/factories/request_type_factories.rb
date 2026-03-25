@@ -139,7 +139,7 @@ FactoryBot.define do
       request_class { UltimaSequencingRequest }
     end
 
-    factory :ultima_u_g_200_sequencing do
+    factory :ultima_ug200_sequencing do
       asset_type { 'LibraryTube' }
       request_class { UltimaUG200SequencingRequest }
     end

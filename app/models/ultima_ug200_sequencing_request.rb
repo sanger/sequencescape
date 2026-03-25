@@ -5,8 +5,6 @@
 class UltimaUG200SequencingRequest < SequencingRequest
   include Api::Messages::UseqWaferIo::LaneExtensions
 
-  WAFER_SIZE_OPTIONS = %w[5TB 10TB 20TB].freeze
-
   has_metadata as: Request do
     # Defining the sequencing request metadata here again, as 'has_metadata'
     # does not automatically append these custom attributes to the request.
@@ -23,9 +21,9 @@ class UltimaUG200SequencingRequest < SequencingRequest
     custom_attribute(:fragment_size_required_from, integer: true, minimum: 1)
     custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
 
-    # TODO: the defaults set here do NOT work on the option lists in screens for some reason.
-    custom_attribute(:wafer_size, default: '10TB', in: WAFER_SIZE_OPTIONS, required: true)
-    enum :wafer_size, { '5TB': 0, '10TB': 1, '20TB': 2 }
+    # TODO: the defaults set here do NOT work on the option lists in the bulk submission screen,
+    # but do work on the request additional sequencing screen for some reason.
+    custom_attribute(:wafer_size, default: '10TB', validator: true, required: true, selection: true)
     custom_attribute(:read_length, default: 300, integer: true, validator: true, required: true, selection: true)
   end
 
@@ -39,8 +37,6 @@ class UltimaUG200SequencingRequest < SequencingRequest
     validate :validate_read_length_by_wafer_size
 
     def validate_read_length_by_wafer_size
-      puts "Wafer Size: #{wafer_size}, Read Length: #{read_length}"
-      binding.pry
       return if wafer_size == '10TB' && read_length.to_i == 300
 
       errors.add(:read_length,

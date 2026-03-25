@@ -2,18 +2,16 @@
 class UltimaValidator < ActiveModel::Validator
   TWO_REQUESTS_MSG = 'Batches must contain exactly two requests.'
   OT_RECIPE_CONSISTENT_MSG = 'OT Recipe must be the same for both requests.'
-  WAFER_SIZE_CONSISTENT_MSG = 'Wafer size must be the same for both requests.'
 
   # Used in _pipeline_limit.html to display custom validation warnings
   def self.validation_info
-    'OT Recipe and Wafer Size must be the same for both requests.'
+    'OT Recipe must be the same for both requests.'
   end
 
   # Validates that a batch contains the two requests.
   def validate(record)
     validate_exactly_two_requests(record)
     requests_have_same_ot_recipe(record)
-    requests_have_same_wafer_size(record)
   end
 
   private
@@ -28,11 +26,5 @@ class UltimaValidator < ActiveModel::Validator
     return if record.pipeline.ot_recipe_consistent_for_batch?(record)
 
     record.errors.add(:base, OT_RECIPE_CONSISTENT_MSG)
-  end
-
-  def requests_have_same_wafer_size(record)
-    return if record.pipeline.wafer_size_consistent_for_batch?(record)
-
-    record.errors.add(:base, WAFER_SIZE_CONSISTENT_MSG)
   end
 end

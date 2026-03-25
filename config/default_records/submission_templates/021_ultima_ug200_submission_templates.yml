@@ -4,7 +4,15 @@
 Limber-Htp - Ultima PCR Free - Ultima UG200 sequencing:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_ultima_htp_pcr_free", "limber_multiplexing_ultima", "ultima_u_g_200_sequencing"]
+    request_type_keys: ["limber_ultima_htp_pcr_free", "limber_multiplexing_ultima", "ultima_ug200_sequencing"]
+    order_role: PCR Free
+    product_line_name: Ultima
+    product_catalogue_name: GenericNoPCR
+# TODO: assumption that we need automated version for UG200, but is this the case?
+Limber-Htp - Ultima PCR Free - Ultima UG200 sequencing Automated:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["ultima_ug200_sequencing"]
     order_role: PCR Free
     product_line_name: Ultima
     product_catalogue_name: GenericNoPCR

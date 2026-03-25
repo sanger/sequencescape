@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe UltimaUG200SequencingRequest do
-  let(:request) { create(:ultima_u_g_200_sequencing_request) }
+  let(:request) { create(:ultima_ug200_sequencing_request) }
 
   describe 'Validations' do
     context 'when all attributes are valid' do

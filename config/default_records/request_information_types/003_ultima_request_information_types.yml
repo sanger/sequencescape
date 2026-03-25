@@ -6,13 +6,6 @@ ot_recipe:
   width: 5
   hide_in_inbox: 0
 
-wafer_size:
-  name: Wafer size
-  key: wafer_size
-  label: Wafer size
-  width: 5
-  hide_in_inbox: 0
-
 fragment_size_required_from:
   name: Fragment size required (from)
   key: fragment_size_required_from

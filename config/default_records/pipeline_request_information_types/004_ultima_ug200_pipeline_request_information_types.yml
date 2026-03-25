@@ -1,0 +1,17 @@
+---
+FragmentSizeRequiredFromInformationTypeForUltimaUG200:
+  pipeline_name: Ultima UG200
+  request_information_type_key: fragment_size_required_from
+
+FragmentSizeRequiredToInformationTypeForUltimaUG200:
+  pipeline_name: Ultima UG200
+  request_information_type_key: fragment_size_required_to
+
+WaferSizeInformationTypeForUltimaUG200:
+  pipeline_name: Ultima UG200
+  request_information_type_key: wafer_size
+
+# TODO: does readlength need to be here
+ReadLengthInformationTypeForUltimaUG200:
+  pipeline_name: Ultima UG200
+  request_information_type_key: read_length
