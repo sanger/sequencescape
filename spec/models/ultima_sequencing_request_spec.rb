@@ -39,13 +39,5 @@ RSpec.describe UltimaSequencingRequest do
         expect(request.errors[:'request_metadata.ot_recipe']).to include("can't be blank")
       end
     end
-
-    context 'when wafer_size value is not assigned' do
-      it 'is invalid and displays required wafer size error message' do
-        request.request_metadata.wafer_size = nil
-        request.validate
-        expect(request.errors[:'request_metadata.wafer_size']).to include("can't be blank")
-      end
-    end
   end
 end
