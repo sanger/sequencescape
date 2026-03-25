@@ -43,9 +43,9 @@ class LocationReport::LocationReportForm
           study_id: study_id,
           start_date: start_date&.to_datetime,
           end_date: end_date&.to_datetime,
-          retention_instructions: retention_instructions,
           plate_purpose_ids: plate_purpose_ids,
-          barcodes: barcodes
+          barcodes: barcodes,
+          retention_instructions: retention_instructions
         )
   end
 

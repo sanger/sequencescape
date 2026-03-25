@@ -142,6 +142,15 @@ class Labware < Asset
           end
         }
 
+  scope :filter_by_retention_instructions,
+        lambda { |retention_instructions|
+          if retention_instructions.blank?
+            all
+          else
+            where(retention_instruction: retention_instructions)
+          end
+        }
+
   scope :source_assets_from_machine_barcode,
         lambda { |destination_barcode|
           destination_asset = find_by_barcode(destination_barcode)
@@ -160,6 +169,7 @@ class Labware < Asset
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_between(params[:start_date], params[:end_date])
       .filter_by_barcode(params[:barcodes] || nil)
+      .filter_by_retention_instructions(params[:retention_instructions] || nil)
       .distinct
   end
 
@@ -169,6 +179,7 @@ class Labware < Asset
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_between(params[:start_date], params[:end_date])
       .filter_by_barcode(params[:barcodes] || nil)
+      .filter_by_retention_instructions(params[:retention_instructions] || nil)
       .distinct
       .count
   end

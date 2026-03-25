@@ -62,6 +62,7 @@ class LocationReportsController < ApplicationController
       :end_date,
       :barcodes,
       :barcodes_text,
+      retention_instructions: [],
       faculty_sponsor_ids: [],
       plate_purpose_ids: []
     )
