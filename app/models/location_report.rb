@@ -9,7 +9,7 @@ class LocationReport < ApplicationRecord
   serialize :faculty_sponsor_ids, type: Array, coder: YAML
   serialize :plate_purpose_ids, type: Array, coder: YAML
   serialize :barcodes, type: Array, coder: YAML
-  serialize :retention_instructions, type: Array, coder: YAML 
+  serialize :retention_instructions, type: Array, coder: YAML
   self.per_page = 20
   enum :report_type, { type_selection: 0, type_labwhere: 1 }
 
@@ -176,7 +176,8 @@ class LocationReport < ApplicationRecord
   end
 
   def search_for_labware_by_selection
-    params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes:, retention_instructions: }
+    params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes:,
+               retention_instructions: }
     count = Labware.search_for_count_of_labware(params)
     if count > configatron.fetch(:location_reports_fetch_count_max, 25000)
       errors.add(:base, I18n.t('location_reports.errors.too_many_labwares_found', count:))
@@ -184,6 +185,13 @@ class LocationReport < ApplicationRecord
     end
     # Only plates and tubes are currently supported by this report
     labwares = Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
+
+    # add filtering by retention instructions
+    return labwares if retention_instructions.blank?
+
+    labwares.select do |lw|
+      retention_instructions.include?(normalize_retention_instruction(lw.retention_instructions))
+    end
   end
 
   def search_for_labware_by_labwhere_locn_bc
@@ -207,6 +215,10 @@ class LocationReport < ApplicationRecord
     # search recursively in any child locations
     curr_locn_children = LabWhereClient::Location.children(curr_locn_bc)
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
+  end
+
+  def normalize_retention_instruction(value)
+    value.to_s.parameterize(separator: '_')
   end
 end
 # rubocop:enable Metrics/ClassLength
