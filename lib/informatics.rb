@@ -25,7 +25,10 @@ module Informatics
     end
 
     def search_options
-      global_searchable_classes.map { |klass| [klass.name] * 2 } << ['All', nil]
+      options = global_searchable_classes.map { |klass| [klass.name, klass.name] }
+      options << %w[All All]
+      options << ['All (wildcard)', 'All (wildcard)']
+      options
     end
   end
 end

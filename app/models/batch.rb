@@ -72,7 +72,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Named scope for search by query string behaviour
   scope :for_search_query,
-        ->(query) do
+        ->(query, _leading_wildcard = true) do
           user = User.find_by(login: query)
           if user
             where(user_id: user)

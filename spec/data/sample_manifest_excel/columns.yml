@@ -31,7 +31,7 @@ i7:
     options:
       type: :textLength
       operator: :lessThanOrEqual
-      formula1: "255"
+      formula1: "30"
       allowBlank: false
       showInputMessage: true
       promptTitle: "i7"
@@ -45,7 +45,7 @@ i5:
     options:
       type: :textLength
       operator: :lessThanOrEqual
-      formula1: "255"
+      formula1: "30"
       allowBlank: false
       showInputMessage: true
       promptTitle: "i5"
