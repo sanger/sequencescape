@@ -178,19 +178,27 @@ class LocationReport < ApplicationRecord
   def search_for_labware_by_selection
     params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes:,
                retention_instructions: }
-    count = Labware.search_for_count_of_labware(params)
-    if count > configatron.fetch(:location_reports_fetch_count_max, 25000)
-      errors.add(:base, I18n.t('location_reports.errors.too_many_labwares_found', count:))
-      return []
-    end
+    validate_result_size(params)
+
     # Only plates and tubes are currently supported by this report
     labwares = Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
 
-    # add filtering by retention instructions
+    filter_labware_by_retention_instructions(labwares)
+  end
+
+  def filter_labware_by_retention_instructions(labwares)
     return labwares if retention_instructions.blank?
 
     labwares.select do |lw|
       retention_instructions.include?(normalize_retention_instruction(lw.retention_instructions))
+    end
+  end
+
+  def validate_result_size(params)
+    count = Labware.search_for_count_of_labware(params)
+    if count > configatron.fetch(:location_reports_fetch_count_max, 25000)
+      errors.add(:base, I18n.t('location_reports.errors.too_many_labwares_found', count:))
+      []
     end
   end
 
