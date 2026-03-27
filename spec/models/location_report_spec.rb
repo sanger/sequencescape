@@ -145,7 +145,8 @@ RSpec.describe LocationReport do
         start_date:,
         end_date:,
         plate_purpose_ids:,
-        barcodes:
+        barcodes:,
+        retention_instructions:
       )
     end
     let(:report_type) { nil }
@@ -157,6 +158,7 @@ RSpec.describe LocationReport do
     let(:end_date) { nil }
     let(:plate_purpose_ids) { nil }
     let(:barcodes) { nil }
+    let(:retention_instructions) { nil }
 
     describe 'validations' do
       context 'when no report type is set' do
@@ -470,6 +472,24 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-05-01 00:00:00' }
           let(:end_date) { '2016-07-01 00:00:00' }
           let(:expected_lines) { [headers_line, plt_2_line_1, plt_2_line_2] }
+
+          it_behaves_like 'a successful report'
+        end
+
+        context 'with retention instructions' do
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:retention_instructions) { ['long_term_storage'] }
+
+          # Only plate_1, plate_3, and tube_1 have this metadata, and the value is 'Long term storage' for all
+          let(:expected_lines) do
+            [
+              headers_line,
+              plt_1_line,
+              plt_3_line,
+              tube_1_line
+            ]
+          end
 
           it_behaves_like 'a successful report'
         end
