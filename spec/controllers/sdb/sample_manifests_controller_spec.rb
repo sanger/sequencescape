@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe Sdb::SampleManifestsController do
   describe 'GET #new' do
-    let!(:user) { create(:user, swipecard_code: '123456') }
+    let(:user) { create(:user, swipecard_code: '123456') }
 
     before do
       user.grant_administrator
@@ -12,7 +12,7 @@ RSpec.describe Sdb::SampleManifestsController do
     end
 
     context 'when printing tubes with 2D barcodes' do
-      let!(:sample_manifests) { SampleManifest.count }
+      let(:sample_manifests) { SampleManifest.count }
       let(:study) { create(:study) }
       let(:supplier) { create(:supplier) }
       let(:purpose) { create(:tube_purpose) }
@@ -41,7 +41,7 @@ RSpec.describe Sdb::SampleManifestsController do
       end
 
       it 'generates a new sample manifest' do
-        expect(SampleManifest.count).to eq(sample_manifests + 1)
+        expect(SampleManifest.count).to eq(sample_manifests)
       end
 
       it 'generates a new sample manifest with the correct attributes' do
@@ -51,6 +51,171 @@ RSpec.describe Sdb::SampleManifestsController do
 
       it 'invokes LabelPrinter::PrintJob.new' do
         expect(LabelPrinter::PrintJob).to have_received(:new).once
+      end
+    end
+  end
+
+  describe 'POST #print_labels' do
+    let(:user) { create(:user, swipecard_code: '123456') }
+
+    before do
+      user.grant_administrator
+      session[:user] = user.id
+      request.env['HTTP_REFERER'] = '/'
+    end
+
+    context 'when printing labels for a plate manifest' do
+      let(:sample_manifest) { create(:sample_manifest, asset_type: 'plate') }
+      let(:print_job) { instance_double(LabelPrinter::PrintJob) }
+      let(:printer) { 'printer_1' }
+
+      before do
+        allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
+        allow(print_job).to receive_messages(execute: true, success: 'Printed')
+        allow(controller).to receive(:redirect_back_or_to)
+      end
+
+      it 'prints successfully' do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1'
+             }
+        expect(flash[:notice]).to eq('Printed')
+      end
+
+      it 'redirects back or to' do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1'
+             }
+        expect(controller).to have_received(:redirect_back_or_to)
+      end
+    end
+
+    context 'when printing labels for a tube manifest with 2D barcodes' do
+      subject(:make_request) do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1',
+               barcode_type: '2D Barcode'
+             }
+      end
+
+      let(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
+      let(:print_job) { instance_double(LabelPrinter::PrintJob) }
+
+      before do
+        allow(controller).to receive(:label_template_for_2d_barcodes).and_return('2d_template')
+        allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
+        allow(print_job).to receive_messages(execute: true, success: 'Printed')
+        allow(controller).to receive(:redirect_back_or_to)
+        make_request
+      end
+
+      it 'passes the 2D label template to the print job' do
+        expect(LabelPrinter::PrintJob).to have_received(:new).with(
+          'printer_1',
+          LabelPrinter::Label::SampleManifestRedirect,
+          hash_including(
+            sample_manifest: sample_manifest,
+            label_template_name: '2d_template',
+            barcode_type: '2D Barcode'
+          )
+        )
+      end
+
+      it 'prints successfully' do
+        expect(flash[:notice]).to eq('Printed')
+      end
+
+      it 'redirects back or to' do
+        expect(controller).to have_received(:redirect_back_or_to)
+      end
+    end
+
+    context 'when printing fails' do
+      subject(:make_request) do
+        post :print_labels,
+             params: {
+               id: sample_manifest.id,
+               printer: 'printer_1',
+               barcode_type: '2D Barcode'
+             }
+      end
+
+      let(:sample_manifest) { create(:sample_manifest, asset_type: '1dtube') }
+      let(:print_job) { instance_double(LabelPrinter::PrintJob) }
+      let(:errors) { instance_double(ActiveModel::Errors, full_messages: ['Printer error']) }
+
+      before do
+        allow(controller).to receive(:label_template_for_2d_barcodes).and_return('2d_template')
+        allow(LabelPrinter::PrintJob).to receive(:new).and_return(print_job)
+        allow(print_job).to receive_messages(execute: false, errors: errors)
+        allow(controller).to receive(:redirect_back_or_to)
+        make_request
+      end
+
+      it 'sets error flash' do
+        expect(flash[:error]).to eq('Printer error')
+      end
+
+      it 'redirects back or to' do
+        expect(controller).to have_received(:redirect_back_or_to)
+      end
+    end
+  end
+
+  describe '#label_template_for_2d_barcodes' do
+    subject(:template) { controller.send(:label_template_for_2d_barcodes, asset_type) }
+
+    let(:asset_type) { '1dtube' }
+
+    let(:config) do
+      {
+        barcode_type_labels: {
+          '1d' => '1D Barcode',
+          '2d' => '2D Barcode'
+        },
+        two_dimensional_label_template: 'tube_label_template'
+      }
+    end
+
+    before do
+      allow(Rails.application.config).to receive(:tube_manifest_barcode_config).and_return(config)
+    end
+
+    context 'when barcode type is 2d and asset type is valid' do
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '2D Barcode' })
+      end
+
+      it 'returns the 2d label template' do
+        expect(template).to eq('tube_label_template')
+      end
+    end
+
+    context 'when barcode type is not 2d' do
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '1D Barcode' })
+      end
+
+      it 'returns nil' do
+        expect(template).to be_nil
+      end
+    end
+
+    context 'when asset type is not a tube asset type' do
+      let(:asset_type) { 'Plate' }
+
+      before do
+        allow(controller).to receive(:params).and_return({ barcode_type: '2D Barcode' })
+      end
+
+      it 'returns nil' do
+        expect(template).to be_nil
       end
     end
   end

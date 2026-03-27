@@ -5,7 +5,7 @@
 
 <%= form_tag searches_path, method: :get, class: 'search-form' do -%>
   <%= label_tag 'q', 'Search for' %>
-  <%= select_tag :type, options_for_select(search_options, params[:type]||""), id: 'layout_search_options' %>
+  <%= select_tag :type, options_for_select(search_options, params[:type] || "All"), id: 'layout_search_options' %>
   <%= search_field_tag "q" %>
   <%= submit_tag "Go" %>
 <% end %>

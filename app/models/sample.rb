@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'rexml/text'
-
 #
 # A {Sample} is an abstract concept, with represents the life of a sample of DNA/RNA
 # as it moves through our processes. As a result, a sample may exist in multiple
@@ -70,6 +68,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Aliquot::Aliquotable
   include Commentable
   include Role::Authorized
+  include SampleAccessioning
 
   extend EventfulRecord
   extend ValidationStateGuard
@@ -212,25 +211,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  validates_associated :sample_metadata, on: %i[accession EGA ENA]
-
-  def self.tags
-    @tags ||= []
-  end
-
-  extend IncludeTag
-
-  include_tag(:sample_strain_att)
-  include_tag(:sample_description)
-
-  include_tag(:gender, mandatory_services: :EGA, downcase: true)
-  include_tag(:phenotype, mandatory_services: :EGA)
-  include_tag(:donor_id, mandatory_services: :EGA, as: 'subject_id')
-
-  include_tag(:country_of_origin)
-  include_tag(:date_of_sample_collection)
-  # End removal TODO
-
   # Reopens the Sample::Metadata class which was defined by has_metadata above
   # Sample::Metadata tracks sample information, either for use in the lab, or passing to
   # the EBI
@@ -285,9 +265,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # For attributing accessioning changes recorded in the SS events table
-  attr_accessor :current_user # required to be set from the controller
-
   # Create relationships with samples that contain this Sample via SampleCompoundComponent.
   has_many(
     :joins_as_component_sample,
@@ -318,8 +295,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
-    event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
-    event_constructor(:updated_accessioned_metadata!, Event::AccessioningEvent, :updated_accessioned_metadata!)
+    # Add events defined in the included SampleAccessioning module
+    SampleAccessioning::EVENTS.each do |model_event_name, event_class, event_class_method|
+      event_constructor(model_event_name, event_class, event_class_method)
+    end
   end
 
   has_many :study_samples, dependent: :destroy, inverse_of: :sample
@@ -332,8 +311,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   has_many :requests, through: :assets
   has_many :submissions, through: :requests
-
-  has_many :accession_sample_statuses, class_name: 'Accession::SampleStatus'
 
   belongs_to :sample_manifest, inverse_of: :samples
 
@@ -389,21 +366,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
-  # TODO: these validations are for accessioning and don't belong in this model - see `on: :accession`
-  # Together these two validations ensure that the first study exists and is valid for the ENA submission.
-  validates_each(:ena_study, on: %i[accession ENA EGA]) do |record, _attr, value|
-    record.errors.add(:base, 'Sample has no study') if value.blank?
-  end
-  validates_associated :ena_study, allow_blank: true, on: :accession, message: lambda { |record, _attr|
-    "is invalid: #{record.ena_study.errors.full_messages.join(', ')}"
-  }
-
   before_destroy :safe_to_destroy
-
-  # Processing_manifest is true if we're currently processing a manifest. We
-  # disable accessioning, as we'll perform it explicitly later. This avoids
-  # accidental calls to save triggering duplicate accessions.
-  after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
 
   # NOTE: Samples don't tend to get released through Sequencescape
   # so in reality these methods are usually misleading.
@@ -412,7 +375,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query,
-        lambda { |query|
+        lambda { |query, leading_wildcard = true|
           # NOTE: This search is performed in two stages so that we can make best use of our indicies
           # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
           # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -426,11 +389,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               exact: query
             ).pluck(:sample_id)
 
+          # We can't use our indexes if we having a leading wildcard, but we can if we don't.
+          # So we allow the caller to specify whether they want a leading wildcard or not, and default to allowing it.
+          wild = leading_wildcard ? "%#{query}%" : "#{query}%"
+
           # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an
           # array of numbers seems to massively increase the query length.
           where(
             'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
-            wild: "%#{query}%",
+            wild: wild,
             sm_ids: md,
             query: query,
             qid: query.to_i
@@ -460,13 +427,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
           ).where(['rc.labware_id = ? AND requests.order_id = ?', plate_id, order_id])
         }
 
-  scope :without_accession,
-        lambda {
-          # Pick up samples where the accession number is either NULL or blank.
-          # MySQL automatically trims '  ' so '  '=''
-          joins(:sample_metadata).where(sample_metadata: { sample_ebi_accession_number: [nil, ''] })
-        }
-
   # Truncates the sanger_sample_id for display on labels
   # - Returns the sanger_sample_id AS IS if it is nil or less than 10 characters
   # - Tries to truncate it to the last 7 digits, and returns that
@@ -489,14 +449,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def ebi_accession_number
-    sample_metadata.sample_ebi_accession_number
-  end
-
-  def accession_number?
-    ebi_accession_number.present?
-  end
-
   def error
     'Default error message'
   end
@@ -512,77 +464,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
       ['empty', 'blank', 'water', 'no supplier name available', 'none'].include?(supplier_sample_name.downcase)
   end
 
-  # Returns an array of studies linked to this sample that are eligible for accessioning
-  # A study is eligible for accessioning if:
-  # - it is active
-  # - it is set to open or managed
-  # - it is not set to never release
-  # - it requires accessioning
-  # - it has an accession number
-  # @return [Array<Study>] the studies linked to this sample that are eligible for accessioning
-  def studies_for_accessioning
-    studies.select(&:samples_accessionable?)
-  end
-
-  # Criteria for whether a sample should be accessioned.
-  # A sample should be accessioned if:
-  # - it is part of a single accessionable study
-  # - or all of the accessionable studies it is part of are open
-  # @return [Boolean] true if the sample should be accessioned, false otherwise
-  def should_be_accessioned?
-    # If updating this method, also update should_be_accessioned_warning used in app/views/samples/_studies.html.erb
-
-    case studies_for_accessioning.size
-    when 0
-      # No accessionable studies
-      false
-    when 1
-      # Always accession
-      true
-    else
-      # Samples belonging to more than one accessionables study can only be accessioned if all studies are open
-      all_accessionable_studies_open?
-    end
-  end
-
-  # NOTE: this does not check whether the current user is permitted to accession the sample,
-  # nor if accessioning is enabled, as these belong in a controller or library, rather than the model.
-  def accession_and_handle_validation_errors
-    event_user = current_user # the event_user for this sample must be set from the calling controller
-    Accession.accession_sample(self, event_user, perform_now: true)
-
-  # Save error messages for later feedback to the user in a flash message
-  rescue Accession::InternalValidationError
-    # validation errors have already been added to the sample in Accession::Sample.validate!
-  rescue Accession::Error, Faraday::Error => e
-    message = Accession.user_error_message(e)
-    errors.add(:base, message)
-  end
-
   def handle_update_event(user)
     events.updated_using_sample_manifest!(user)
-  end
-
-  def ena_study
-    studies.first
-  end
-
-  def study_for_accessioning
-    # There should only be one study for accessioning, if we want to accession, so we return the only one
-    studies_for_accessioning.first
-  end
-
-  # Validates that the sample and it's study are valid for ALL accessioning services accessioning
-  def validate_sample_for_accessioning!
-    accession_service = AccessionService.select_for_sample(self)
-    (valid?(:accession) && valid?(accession_service.provider)) || raise(ActiveRecord::RecordInvalid, self)
-  rescue ActiveRecord::RecordInvalid => e
-    ena_study.errors.full_messages.each { |message| errors.add(:base, "#{message} on study") } unless ena_study.nil?
-    raise e
-  end
-
-  def current_accession_status
-    accession_sample_statuses.last
   end
 
   def sample_reference_genome
@@ -633,12 +516,6 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     type_text = control_type || 'type unspecified'
     "Yes (#{type_text})"
-  end
-
-  # Returns true if all accessionable studies are open, false otherwise.
-  # @return [Boolean]
-  def all_accessionable_studies_open?
-    studies_for_accessioning.all? { |study| study.study_metadata.open? }
   end
 
   private
