@@ -40,11 +40,11 @@ RSpec.describe UltimaUG200SequencingRequest do
       end
     end
 
-    context 'when read_length value is not assigned' do
-      it 'is invalid and displays required read length error message' do
-        request.request_metadata.read_length = nil
+    context 'when ot_recipe value is not assigned' do
+      it 'is invalid and displays required OT recipe error message' do
+        request.request_metadata.ot_recipe = nil
         request.validate
-        expect(request.errors[:'request_metadata.read_length']).to include("can't be blank")
+        expect(request.errors[:'request_metadata.ot_recipe']).to include("can't be blank")
       end
     end
   end
