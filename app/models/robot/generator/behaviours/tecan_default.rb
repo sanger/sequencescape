@@ -163,6 +163,8 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   def plate_mapping_for_buffers(dest_plate_barcode, plate_details, buffer_volume_for_empty_wells)
     plate = Plate.find_by_barcode(dest_plate_barcode)
     plate_size = plate_details['plate_size']
+    # TODO: {PlateTemplate} fetch plate template assigned to batch here, use it to determine empty wells for buffer addition
+    # TODO: {PlateTemplate} method parameters into opts hash and pass to build_buffer_mapping instead of individual parameters
     mapping = build_buffer_mapping(plate, plate_details, plate_size, buffer_volume_for_empty_wells)
     {
       'name' => plate_details['name'],
@@ -218,6 +220,15 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     well = plate.find_well_by_name(dst_well)
     return nil if well.present? && !well.empty?
 
+    # TODO: {PlateTemplate} move this fetch above the per well loop so only fetch once
+    template_id = @batch&.plate_template_for_buffer_addition
+    template = PlateTemplate.find(template_id) if template_id.present?
+
+    # return if this well should remain empty according to the template
+    template_well = template.find_well_by_name(dst_well) if template.present?
+    return if template_well.present?
+
+    # else set the buffer volume for this empty well
     { 'dst_well' => dst_well, 'buffer_volume' => buffer_volume_for_empty_wells }
   end
 
