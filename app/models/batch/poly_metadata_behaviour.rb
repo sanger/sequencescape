@@ -13,4 +13,8 @@ module Batch::PolyMetadataBehaviour
   def buffer_volume_for_empty_wells
     get_poly_metadata(:buffer_volume_for_empty_wells).to_f if automatic_buffer_addition?
   end
+
+  def plate_template_for_buffer_addition
+    get_poly_metadata(:plate_template_for_buffer_addition) if automatic_buffer_addition?
+  end
 end

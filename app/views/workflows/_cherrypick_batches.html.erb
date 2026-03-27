@@ -43,6 +43,7 @@
   <%# Add hidden fields for the buffer volume for empty wells option to carry over -%>
   <%= hidden_field_tag 'automatic_buffer_addition', @automatic_buffer_addition %>
   <%= hidden_field_tag 'buffer_volume_for_empty_wells', @buffer_volume_for_empty_wells %>
+  <%= hidden_field_tag 'plate_template_for_buffer_addition', @plate_template_for_buffer_addition %>
 
   <%= render(partial: 'next_stage_submit', locals: { check_selection: true }) %>
 <% end %>
