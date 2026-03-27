@@ -132,7 +132,7 @@ FactoryBot.define do
       {
         fragment_size_required_from: 150,
         fragment_size_required_to: 400,
-        read_length: 300,
+        ot_recipe: 'Free',
         wafer_size: '10TB'
       }
     end
