@@ -17,6 +17,10 @@ class Event < ApplicationRecord
     eventful if request?
   end
 
+  def to_partial_path
+    'events/event'
+  end
+
   private
 
   include Event::RequestDescriptorUpdateEvent
