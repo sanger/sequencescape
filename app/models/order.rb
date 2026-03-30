@@ -61,7 +61,8 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   serialize :item_options, coder: YAML
 
   before_validation :set_study_from_aliquots, unless: :cross_study_allowed, if: :autodetect_studies
-  before_validation :set_project_from_aliquots, unless: :cross_project_allowed, if: [:autodetect_projects, :project_not_set]
+  before_validation :set_project_from_aliquots, unless: :cross_project_allowed,
+                                                if: %i[autodetect_projects project_not_set]
 
   def project_not_set
     project.blank?

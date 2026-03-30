@@ -3,6 +3,7 @@
 # We could have use a Prototype Factory , and so just associate a name to existing submission
 # but that doesn't work because the submission prototype doesn't pass the validation stage.
 # Anyway that's basically a prototype factory
+# rubocop:disable Metrics/ClassLength
 class SubmissionTemplate < ApplicationRecord
   include Uuid::Uuidable
 
@@ -147,3 +148,4 @@ class SubmissionTemplate < ApplicationRecord
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

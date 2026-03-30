@@ -53,8 +53,6 @@ module Api
     # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or refer to the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
     class OrderResource < BaseResource
-
-
       ###
       # Attributes
       ###
