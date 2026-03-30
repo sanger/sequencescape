@@ -11,7 +11,7 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
   let(:request) { batch.requests.first }
   let(:controller) { instance_double(WorkflowsController) }
   let(:user) { create(:user) }
-  let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1) }
+  let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1, descriptors: []) }
 
   describe '#perform' do
     context 'with all requests selected' do
@@ -44,6 +44,49 @@ RSpec.describe Tasks::SetDescriptorsHandler::Handler do
           },
           user: user
         )
+      end
+    end
+
+    # The handler delegates validation entirely to Descriptor#validate_value.
+    # Full Date validation rules are covered in spec/models/descriptor_spec.rb.
+    context 'when a descriptor returns no errors' do
+      let(:passing_descriptor) { instance_double(Descriptor, name: 'OTR carrier expiry') }
+      let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1, descriptors: [passing_descriptor]) }
+      let(:params) do
+        {
+          batch_id: batch.id.to_s,
+          descriptors: { 'OTR carrier expiry' => '2026-06-01' },
+          request: { request.id.to_s => 'on' }
+        }
+      end
+
+      before { allow(passing_descriptor).to receive(:validate_value).with('2026-06-01').and_return([]) }
+
+      it 'returns true' do
+        expect(handler.perform).to be true
+      end
+    end
+
+    context 'when a descriptor returns a validation error' do
+      let(:error_message) { "'not-a-date' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)" }
+      let(:failing_descriptor) { instance_double(Descriptor, name: 'OTR carrier expiry') }
+      let(:task) { instance_double(SetDescriptorsTask, name: 'Step 1', id: 1, descriptors: [failing_descriptor]) }
+      let(:params) do
+        {
+          batch_id: batch.id.to_s,
+          descriptors: { 'OTR carrier expiry' => 'not-a-date' },
+          request: { request.id.to_s => 'on' }
+        }
+      end
+
+      before { allow(failing_descriptor).to receive(:validate_value).with('not-a-date').and_return([error_message]) }
+
+      it 'returns [false, error_message]' do
+        expect(handler.perform).to eq([false, error_message])
+      end
+
+      it 'does not create any lab events' do
+        expect { handler.perform }.not_to change(LabEvent, :count)
       end
     end
   end
