@@ -120,9 +120,11 @@ SampleAccessioningJob =
     def notify_developers(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
       sample_name = submission.sample.sample.name
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
+      study_names = submission.sample.sample.studies_for_accessioning.map(&:name).join(', ')
       data = {
         message: message,
         sample_name: sample_name,
+        study_names: study_names,
         service_provider: submission.service&.provider.to_s,
         user: event_user&.login
       }
