@@ -1,3 +1,14 @@
+Quant method used:
+  name: Quant method used
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: Tapestation
+  selection:
+    Tapestation: Tapestation
+    Tapestation & qPCR: Tapestation & qPCR
+  required: true
+  sorter: -1
 Pipette Carousel:
   name: Pipette Carousel
   task: Loading
