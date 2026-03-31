@@ -52,7 +52,9 @@
               <% well = plate_wells[row*num_columns+column] -%>
                 <%# Flag to check if well is empty and needs to be represented on the chart with 'e' followed by the buffer volume for empty wells, for example e120.00 -%>
                 <% empty_well = true %>
-                <% if  well.present? -%>
+                <% if well.present? -%>
+                  <%# Flag to set if the well is not empty -%>
+                  <% empty_well = false %>
                   <% request = indexed_requests[well.id]  %>
                   <% source_well = request&.asset %>
                   <% if source_well.present? -%>
@@ -66,8 +68,6 @@
                       <% else %>
                         <td>
                       <% end -%>
-                      <%# Flag to set if the well is not empty -%>
-                      <% empty_well = false %>
                       <%= source_well.map_description %>
                       <%= source_well.plate.barcode_number %>
                       v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
@@ -80,10 +80,10 @@
                 <% else %>
                   <td>
                 <% end -%>
-                <% if empty_well && buffer_volume_for_empty_wells.present? -%>
-                  e<%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %>
-                <% end %>
-                </td>
+              <% if empty_well && buffer_volume_for_empty_wells.present? -%>
+                e<%= "%.#{configatron.tecan_precision}f" % buffer_volume_for_empty_wells %>
+              <% end %>
+              </td>
             <% end -%>
             <td><strong><%= rowchar %></strong></td>
           </tr>
