@@ -151,4 +151,3 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
