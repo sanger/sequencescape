@@ -7,7 +7,6 @@
 <% if can? :administer, @study %>
   <% add :menu, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% end %>
-<% add :menu, "View samples status" => study_path(@study) -%>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
 <div class="card my-4">
