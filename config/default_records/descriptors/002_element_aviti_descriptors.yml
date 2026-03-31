@@ -12,6 +12,17 @@ Final Loading Concentration (pM):
   kind: Text
   required: false
   sorter: 1
+Custom primer kit used:
+  name: Custom primer kit used
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: Yes
+  selection:
+    Yes: Yes
+    No: No
+  required: true
+  sorter: 1
 "200mM Tris PH7 lot#":
   name: "200mM Tris PH7 lot#"
   task: Loading
