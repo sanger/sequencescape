@@ -110,6 +110,12 @@ module ApplicationHelper
   end
 
   def render_in_list(messages)
+    # There are more than 10 messages, truncate the list and add a note about it.
+    # This is to prevent the flash from becoming too large and causing issues with cookies.
+    if messages.size > 10
+      # IfUnlessModifier doesn't improve readability
+      messages = messages.first(10) + ["and #{messages.size - 10} more..."]
+    end
     tag.ul { messages.each { |message| concat tag.li(message) } }
   end
 
