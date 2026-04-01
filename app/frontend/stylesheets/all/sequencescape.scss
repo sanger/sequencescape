@@ -823,6 +823,15 @@ td.qc_pass {
   background-color: #ff8;
 }
 
+#template_form_body table {
+  @extend .mb-2;
+}
+
+#template_form_body td {
+  vertical-align: top;
+  line-height: 1.1em;
+}
+
 #plate td.selected {
   background-color: #72cf3f;
 }
