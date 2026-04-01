@@ -72,7 +72,13 @@ module ApplicationHelper
   end
 
   def render_flashes
-    flash.each { |key, message| concat(alert(key, id: "message_#{key}") { render_message(message) }) }
+    flash.each do |key, message|
+      # Log the flash message for debugging purposes
+      # sometimes the cookie storing the flash can get too large and cause issues,
+      # and truncate_flash() is not 100% effective at preventing this
+      Rails.logger.info("[flash] #{key}: #{message}")
+      concat(alert(key, id: "message_#{key}") { render_message(message) })
+    end
     nil
   end
 
