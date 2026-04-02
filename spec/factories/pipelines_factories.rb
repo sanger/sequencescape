@@ -187,7 +187,7 @@ FactoryBot.define do
     end
   end
 
-  factory :ultima_ug200_sequencing_pipeline, class: 'Pipeline' do
+  factory :ultima_ug200_sequencing_pipeline do
     name { generate(:pipeline_name) }
     active { true }
 
