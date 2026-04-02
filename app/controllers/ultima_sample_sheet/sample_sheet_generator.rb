@@ -14,34 +14,44 @@ module UltimaSampleSheet::SampleSheetGenerator
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
   class Generator # rubocop:disable Metrics/ClassLength
-    PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
-    HEADER_TITLE = ['[Header]'].freeze
-    GLOBAL_TITLE = ['[Global]'].freeze
-    GLOBAL_HEADERS = %w[
-      Application
-      sequencing_recipe
-      analysis_recipe
-    ].freeze
-    SAMPLES_TITLE = ['[Samples]'].freeze
-    SAMPLES_HEADERS = %w[
-      Sample_ID
-      Library_name
-      Index_Barcode_Num
-      Index_Barcode_Sequence
-      Barcode_Plate_Num
-      Barcode_Plate_Well
-      application_type
-      study_id
-    ].freeze
-    NUM_COLUMS = SAMPLES_HEADERS.size
-    # The names of the Ultima tag groups are mapped to the index numbers for
-    # the Barcode_Plate_Num column, i.e. 1 or 2. The number is also used for
-    # determining the consistent starting index number for the
-    # Index_Barcode_Num column, i.e. Z0001 or Z097.
-    ULTIMA_TAG_GROUPS = {
-      'Ultima P1' => 1,
-      'Ultima P2' => 2
-    }.freeze
+    PLATE_LENGTH = 8
+
+    def header_title_config
+      ['[Header]'].freeze
+    end
+
+    def global_title_config
+      ['[Global]'].freeze
+    end
+
+    def global_headers_config
+      %w[Application sequencing_recipe analysis_recipe].freeze
+    end
+
+    def samples_title_config
+      ['[Samples]'].freeze
+    end
+
+    def samples_headers_config
+      %w[
+        Sample_ID
+        Library_name
+        Index_Barcode_Num
+        Index_Barcode_Sequence
+        Barcode_Plate_Num
+        Barcode_Plate_Well
+        application_type
+        study_id
+      ].freeze
+    end
+
+    def num_columns_config
+      samples_headers_config.size
+    end
+
+    def tag_groups_config
+      { 'Ultima P1' => 1, 'Ultima P2' => 2 }.freeze
+    end
 
     # Initializes the generator with the given batch.
     # @param batch [UltimaSequencingBatch] the batch to generate sample sheets for
@@ -96,7 +106,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param csv [CSV] the CSV object to append rows to
     # @param request [UltimaSequencingRequest] the request whose header data is to be added
     def add_header_section(csv, request)
-      csv << pad(HEADER_TITLE)
+      csv << pad(header_title_config)
       free_form_text = "Batch #{@batch.id} #{request.asset.human_barcode}"
       csv << pad([free_form_text])
     end
@@ -106,8 +116,8 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param csv [CSV] the CSV object to append rows to
     # @param _request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, _request)
-      csv << pad(GLOBAL_TITLE)
-      csv << pad(GLOBAL_HEADERS)
+      csv << pad(global_title_config)
+      csv << pad(global_headers_config)
       # Currently there is only one UltimaGlobal record; get the last one.
       # Future enhancements may allow selecting different records based on
       # sequencing request or batch properties.
@@ -121,20 +131,27 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param csv [CSV] the CSV object to append rows to
     # @param request [UltimaSequencingRequest] the request whose samples are to be added
     def add_samples_section(csv, request)
-      csv << pad(SAMPLES_TITLE)
-      csv << pad(SAMPLES_HEADERS)
+      csv << pad(samples_title_config)
+      csv << pad(samples_headers_config)
       request.asset.aliquots.sort_by(&:id).each do |aliquot|
-        csv << [
-          sample_id_for(aliquot),
-          library_name_for(aliquot),
-          index_barcode_num_for(aliquot),
-          index_barcode_sequence_for(aliquot),
-          barcode_plate_num_for(aliquot),
-          barcode_plate_well_for(aliquot),
-          'native', # application_type
-          study_id_for(aliquot)
-        ]
+        csv << sample_row_for(aliquot)
       end
+    end
+
+    # Returns the CSV row for a given aliquot.
+    # @param aliquot [Aliquot] the aliquot whose data is to be converted to a row
+    # @return [Array<String>] the CSV row as an array of column values
+    def sample_row_for(aliquot)
+      [
+        sample_id_for(aliquot),
+        library_name_for(aliquot),
+        index_barcode_num_for(aliquot),
+        index_barcode_sequence_for(aliquot),
+        barcode_plate_num_for(aliquot),
+        barcode_plate_well_for(aliquot),
+        'native', # application_type
+        study_id_for(aliquot)
+      ]
     end
 
     # Returns a unique sample_ID for the given aliquot. This prefixes numbers
@@ -203,22 +220,23 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [Hash{Tag => Integer}] mapping of tags to index numbers
     def tag_index_map
       @tag_index_map ||= begin
-        tags = ultima_tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
+        ordered_tag_groups = ultima_tag_groups.sort_by { |tg| tag_groups_config.fetch(tg.name) }
+        tags = ordered_tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
         tags.each_with_index.to_h { |tag, i| [tag, i + 1] }
       end
     end
 
     # Returns a mapping of all Ultima tag groups to 1-based index numbers.
-    # This indexes the tag groups as given in the ULTIMA_TAG_GROUPS hash.
+    # This indexes the tag groups as given in the tag_groups_config method.
     # @return [Hash{TagGroup => Integer}] mapping of tag groups to index numbers
     def tag_group_index_map
-      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ULTIMA_TAG_GROUPS[tg.name] }
+      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| tag_groups_config[tg.name] }
     end
 
     # Returns all unique tag groups used for Ultima sequencing from database.
     # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
     def ultima_tag_groups
-      @ultima_tag_groups ||= TagGroup.where(name: ULTIMA_TAG_GROUPS.keys)
+      @ultima_tag_groups ||= TagGroup.where(name: tag_groups_config.keys)
     end
 
     # Returns the requests associated with the batch.
@@ -250,7 +268,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param row [Array<String>] the row to pad (defaults to an empty array)
     # @return [Array<String>] the padded row
     def pad(row = [])
-      row + Array.new(NUM_COLUMS - row.size, '')
+      row + Array.new(num_columns_config - row.size, '')
     end
   end
 end
