@@ -1,3 +1,6 @@
+---
+# Ultima UG200 tag layout templates
+
 Ultima P3:
   :tag_group_name: Ultima P3
   :direction_algorithm: TagLayout::InColumns
