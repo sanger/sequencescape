@@ -139,9 +139,10 @@ FactoryBot.define do
       request_class { UltimaSequencingRequest }
     end
 
-    # We don't have UltimaUG200SequencingRequest in this PR.
-    # For now we can use UltimaSequencingRequest as a placeholder.
-    factory :ultima_ug200_sequencing, parent: :ultima_sequencing
+    factory :ultima_ug200_sequencing do
+      asset_type { 'LibraryTube' }
+      request_class { UltimaUG200SequencingRequest }
+    end
 
     factory :miseq_sequencing_request_type do
       request_class { MiSeqSequencingRequest }
