@@ -38,7 +38,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       ].freeze
     end
 
-    def num_colums_config
+    def num_columns_config
       samples_headers_config.size
     end
 
@@ -266,7 +266,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param row [Array<String>] the row to pad (defaults to an empty array)
     # @return [Array<String>] the padded row
     def pad(row = [])
-      row + Array.new(num_colums_config - row.size, '')
+      row + Array.new(num_columns_config - row.size, '')
     end
   end
 end
