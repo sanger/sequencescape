@@ -44,16 +44,17 @@ module UltimaSampleSheet::SampleSheetGenerator
       samples_headers_config.size
     end
 
-    # The names of the Ultima tag groups are mapped to the index numbers for
-    # the Barcode_Plate_Num column, i.e. 1 or 2. The number is also used for
-    # determining the consistent starting index number for the
-    # Index_Barcode_Num column, i.e. Z0001 or Z097.
+    # Tag group config used to derive CSV plate numbers and Z-index starts.
+    # Values are explicit to avoid arithmetic assumptions in index mapping.
     def ultima_tag_groups_config
       {
-        'Ultima P1' => 1,
-        'Ultima P2' => 2,
-        'Ultima P3' => 3,
-        'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => 4
+        'Ultima P1' => { plate_num: 1, z_start: 1 },
+        'Ultima P2' => { plate_num: 2, z_start: 97 },
+        'Ultima P3' => { plate_num: 3, z_start: 193 },
+        'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => {
+          plate_num: 4,
+          z_start: 289
+        }
       }.freeze
     end
 
@@ -217,15 +218,14 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns a mapping of all Ultima tags to their respective 1-based index
-    # numbers. This sorts the tags by their tag group ID and map ID to ensure
-    # consistent ordering. The index numbers run across all Ultima tag groups,
-    # i.e. the index is 1 for the first tag in the first tag group and 97 for
-    # the first tag in the second tag group.
+    # numbers. Each group's starting index is taken directly from
+    # ultima_tag_groups_config[:z_start], so numbering is independent of which
+    # other tag groups exist in the database.
     # @return [Hash{Tag => Integer}] mapping of tags to index numbers
     def tag_index_map
-      @tag_index_map ||= begin
-        tags = ultima_tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
-        tags.each_with_index.to_h { |tag, i| [tag, i + 1] }
+      @tag_index_map ||= ultima_tag_groups.each_with_object({}) do |tg, map|
+        start_index = ultima_tag_groups_config[tg.name][:z_start]
+        tg.tags.sort_by(&:map_id).each_with_index { |tag, i| map[tag] = start_index + i }
       end
     end
 
@@ -233,7 +233,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # This indexes the tag groups as given in the ultima_tag_groups_config hash.
     # @return [Hash{TagGroup => Integer}] mapping of tag groups to index numbers
     def tag_group_index_map
-      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ultima_tag_groups_config[tg.name] }
+      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
     end
 
     # Returns all unique tag groups used for Ultima sequencing from database,
@@ -241,7 +241,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
     def ultima_tag_groups
       @ultima_tag_groups ||= TagGroup.where(name: ultima_tag_groups_config.keys)
-        .sort_by { |tg| ultima_tag_groups_config[tg.name] }
+        .sort_by { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
     end
 
     # Returns the requests associated with the batch.
