@@ -15,6 +15,8 @@ module UltimaSampleSheet::SampleSheetGenerator
   # for each request in the given Ultima sequencing batch.
   class Generator # rubocop:disable Metrics/ClassLength
     PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
+
+    # Using config methods instead of constants to allow easier overriding.
     def header_title_config
       ['[Header]'].freeze
     end
@@ -47,7 +49,12 @@ module UltimaSampleSheet::SampleSheetGenerator
     # determining the consistent starting index number for the
     # Index_Barcode_Num column, i.e. Z0001 or Z097.
     def ultima_tag_groups_config
-      { 'Ultima P1' => 1, 'Ultima P2' => 2 }.freeze
+      {
+        'Ultima P1' => 1,
+        'Ultima P2' => 2,
+        'Ultima P3' => 3,
+        'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => 4
+      }.freeze
     end
 
     # Initializes the generator with the given batch.
