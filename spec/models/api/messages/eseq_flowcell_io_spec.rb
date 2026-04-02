@@ -24,8 +24,13 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
     let(:request_type) { sequencing_pipeline.request_types.first }
 
     let(:lane1) do
-      create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap(&:index_aliquots)
+      create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap do |lane|
+        lane.labware.parents << phix
+        lane.index_aliquots
+      end
     end
+
+    let(:phix) { create(:spiked_buffer, :tube_barcode, tag_option: 'Dual') }
 
     let(:tags) { lane1.aliquots.map(&:tag) }
     let(:tag2s) { lane1.aliquots.map(&:tag2) }
@@ -55,6 +60,16 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
                 'primer_panel' => aliquots[0].primer_panel.name,
                 'id_library_lims' => aliquots[0].library.human_barcode,
                 'entity_type' => 'library_indexed'
+              }
+            ],
+            'controls' => [
+              {
+                'tag_sequence' => 'TGTGCAGC',
+                'tag2_sequence' => 'ACTGATGT',
+                'pipeline_id_lims' => nil,
+                'sample_uuid' => phix.aliquots[0].sample.uuid,
+                'id_library_lims' => phix.human_barcode,
+                'entity_type' => 'library_indexed_spike'
               }
             ]
           }

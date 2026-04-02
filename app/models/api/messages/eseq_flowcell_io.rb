@@ -61,5 +61,17 @@ class Api::Messages::EseqFlowcellIo < Api::Base
       with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
     end
+
+    # The following methods come from the Aliquot model or the relevant module above.
+    # They are included in the MLWH message under 'controls'.
+    with_nested_has_many_association(:controls) do
+      with_association(:tag) { map_attribute_to_json_attribute(:oligo, 'tag_sequence') }
+      with_association(:tag2) { map_attribute_to_json_attribute(:oligo, 'tag2_sequence') }
+      map_attribute_to_json_attribute(:library_type, 'pipeline_id_lims')
+      with_association(:sample) { map_attribute_to_json_attribute(:uuid, 'sample_uuid') }
+      with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
+      with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
+      map_attribute_to_json_attribute(:control_aliquot_type, 'entity_type')
+    end
   end
 end
