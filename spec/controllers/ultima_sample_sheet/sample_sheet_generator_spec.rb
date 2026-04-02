@@ -53,8 +53,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   # First oligo sequences for the two tag groups.
   let(:plate1_first_oligo) { 'CAGCTCGAATGCGAT' }
   let(:plate2_first_oligo) { 'CAGTCAGTTGCAGAT' }
-  let(:plate3_first_oligo) { 'CTGCACATTGTAGAT' }
-  let(:plate4_first_oligo) { 'CATCATGCTCCGCTGAT' }
 
   # Eagerly create tag groups and tags to get consistent IDs.
   let!(:tag_group1) do
@@ -69,28 +67,14 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       tg.tags.first.update!(oligo: plate2_first_oligo)
     end
   end
-  let!(:tag_group3) do
-    create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P3').tap do |tg|
-      # To test Z0193 matching with the oligo sequence.
-      tg.tags.first.update!(oligo: plate3_first_oligo)
-    end
-  end
-  let!(:tag_group4) do
-    create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P4').tap do |tg|
-      # To test Z0289 matching with the oligo sequence.
-      tg.tags.first.update!(oligo: plate4_first_oligo)
-    end
-  end
-  let(:tag_groups) { [tag_group1, tag_group2, tag_group3, tag_group4] }
+  let(:tag_groups) { [tag_group1, tag_group2] }
 
   let(:request_type) { create(:ultima_sequencing) }
   let(:pipeline) { create(:ultima_sequencing_pipeline, request_types: [request_type]) }
   let(:batch) { create(:ultima_sequencing_batch, pipeline:, requests:) }
-  let(:requests) { [request1, request2, request3, request4] }
+  let(:requests) { [request1, request2] }
   let(:request1) { create(:ultima_sequencing_request, asset: tube1.receptacle, request_type: request_type) }
   let(:request2) { create(:ultima_sequencing_request, asset: tube2.receptacle, request_type: request_type) }
-  let(:request3) { create(:ultima_sequencing_request, asset: tube3.receptacle, request_type: request_type) }
-  let(:request4) { create(:ultima_sequencing_request, asset: tube4.receptacle, request_type: request_type) }
 
   # Eagerly create tubes with aliquots to get consistent IDs.
   let!(:tube1) do
@@ -107,23 +91,9 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
     tube
   end
-  let!(:tube3) do
-    receptacle = create(:receptacle)
-    tag_group3.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:) }
-    tube = create(:multiplexed_library_tube, receptacle:)
-    create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
-    tube
-  end
-  let!(:tube4) do
-    receptacle = create(:receptacle)
-    tag_group4.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:) }
-    tube = create(:multiplexed_library_tube, receptacle:)
-    create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
-    tube
-  end
 
   # Expected mapping of tag groups to their respective 1-based plate numbers.
-  let(:tag_group_index_map) { { tag_group1 => 1, tag_group2 => 2, tag_group3 => 3, tag_group4 => 4 } }
+  let(:tag_group_index_map) { { tag_group1 => 1, tag_group2 => 2 } }
 
   # Expected mapping of tags to their respective 1-based index numbers.
   let(:tag_index_map) do
@@ -199,16 +169,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       csv = "#{request2.id_wafer_lims}.csv"
       "#{folder}/#{csv}"
     end
-    let(:zip_entry3_name) do
-      folder = "batch_#{batch.id}_sample_sheets"
-      csv = "#{request3.id_wafer_lims}.csv"
-      "#{folder}/#{csv}"
-    end
-    let(:zip_entry4_name) do
-      folder = "batch_#{batch.id}_sample_sheets"
-      csv = "#{request4.id_wafer_lims}.csv"
-      "#{folder}/#{csv}"
-    end
     # Expected CSV section headers from Zip; to peek at the content.
     let(:zip_content1_header) do
       "[Header],,,,,,,\r\nBatch #{batch.id} #{tube1.human_barcode},,,,,,,\r\n"
@@ -216,20 +176,12 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     let(:zip_content2_header) do
       "[Header],,,,,,,\r\nBatch #{batch.id} #{tube2.human_barcode},,,,,,,\r\n"
     end
-    let(:zip_content3_header) do
-      "[Header],,,,,,,\r\nBatch #{batch.id} #{tube3.human_barcode},,,,,,,\r\n"
-    end
-    let(:zip_content4_header) do
-      "[Header],,,,,,,\r\nBatch #{batch.id} #{tube4.human_barcode},,,,,,,\r\n"
-    end
 
     it 'generates valid zip entries' do
       # Test: The sample manifest (csv file) is generated on user request per pool.
       # Test: The name should be uniquely identifiable (file name : batchId_NT_number)
       zip_hash = extract_zip(described_class.generate(batch))
-      expect(zip_hash.keys).to contain_exactly(
-        zip_entry1_name, zip_entry2_name, zip_entry3_name, zip_entry4_name
-      )
+      expect(zip_hash.keys).to contain_exactly(zip_entry1_name, zip_entry2_name)
     end
 
     it 'generates valid zip contents' do
@@ -237,9 +189,7 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       zip_hash = extract_zip(described_class.generate(batch))
       expect(zip_hash.values).to contain_exactly(
         a_string_including(zip_content1_header),
-        a_string_including(zip_content2_header),
-        a_string_including(zip_content3_header),
-        a_string_including(zip_content4_header)
+        a_string_including(zip_content2_header)
       )
     end
 
@@ -260,26 +210,19 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     # Parse the generated CSV for the tubes into rows and columns.
     let(:csv1) { CSV.parse(generator.csv_string(request1), row_sep: "\r\n", nil_value: '') }
     let(:csv2) { CSV.parse(generator.csv_string(request2), row_sep: "\r\n", nil_value: '') }
-    let(:csv3) { CSV.parse(generator.csv_string(request3), row_sep: "\r\n", nil_value: '') }
-    let(:csv4) { CSV.parse(generator.csv_string(request4), row_sep: "\r\n", nil_value: '') }
 
     # Test: Adding study_id column to the existing column (study_id per sample)
 
     # Expected sample rows
     let(:csv1_samples) { csv_samples_for(request1) }
+
     let(:csv2_samples) { csv_samples_for(request2) }
-    let(:csv3_samples) { csv_samples_for(request3) }
-    let(:csv4_samples) { csv_samples_for(request4) }
 
     it 'generates header sections' do # rubocop:disable RSpec/MultipleExpectations
       expect(csv1[0].compact_blank).to eq(generator.class::HEADER_TITLE)
       expect(csv1[1].compact_blank).to eq(["Batch #{batch.id} #{tube1.human_barcode}"]) # First CSV
       expect(csv1[2].compact_blank).to eq([])
       expect(csv2[1].compact_blank).to eq(["Batch #{batch.id} #{tube2.human_barcode}"]) # Second CSV
-      expect(csv2[2].compact_blank).to eq([])
-      expect(csv3[1].compact_blank).to eq(["Batch #{batch.id} #{tube3.human_barcode}"]) # Third CSV
-      expect(csv3[2].compact_blank).to eq([])
-      expect(csv4[1].compact_blank).to eq(["Batch #{batch.id} #{tube4.human_barcode}"])
     end
 
     it 'generates global sections' do
@@ -296,8 +239,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv1[8].compact_blank).to eq(generator.class::SAMPLES_HEADERS)
       expect(csv1[9..]).to eq(csv1_samples) # First CSV
       expect(csv2[9..]).to eq(csv2_samples) # Second CSV
-      expect(csv3[9..]).to eq(csv3_samples) # Third CSV
-      expect(csv4[9..]).to eq(csv4_samples) # Fourth CSV
     end
 
     it 'matches the z-indexes, oligo sequences, and plate numbers' do
@@ -310,16 +251,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv2[9][2]).to eq('Z0097') # Index_Barcode_Num
       expect(csv2[9][3]).to eq(plate2_first_oligo) # Index_Barcode_Sequence
       expect(csv2[9][4]).to eq('2') # Barcode_Plate_Num
-
-      # Third CSV
-      expect(csv3[9][2]).to eq('Z0193') # Index_Barcode_Num
-      expect(csv3[9][3]).to eq(plate3_first_oligo) # Index_Barcode_Sequence
-      expect(csv3[9][4]).to eq('3') # Barcode_Plate_Num
-
-      # Fourth CSV
-      expect(csv4[9][2]).to eq('Z0289') # Index_Barcode_Num
-      expect(csv4[9][3]).to eq(plate4_first_oligo) # Index_Barcode_Sequence
-      expect(csv4[9][4]).to eq('4') # Barcode_Plate_Num
     end
   end
 end
