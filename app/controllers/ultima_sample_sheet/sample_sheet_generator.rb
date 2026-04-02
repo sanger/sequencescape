@@ -229,10 +229,12 @@ module UltimaSampleSheet::SampleSheetGenerator
       @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ultima_tag_groups_config[tg.name] }
     end
 
-    # Returns all unique tag groups used for Ultima sequencing from database.
+    # Returns all unique tag groups used for Ultima sequencing from database,
+    # sorted by their index number as defined in ultima_tag_groups_config.
     # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
     def ultima_tag_groups
       @ultima_tag_groups ||= TagGroup.where(name: ultima_tag_groups_config.keys)
+        .sort_by { |tg| ultima_tag_groups_config[tg.name] }
     end
 
     # Returns the requests associated with the batch.
