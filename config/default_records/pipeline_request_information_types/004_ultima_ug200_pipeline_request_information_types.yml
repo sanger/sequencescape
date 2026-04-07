@@ -11,6 +11,6 @@ WaferSizeInformationTypeForUltimaUG200:
   pipeline_name: Ultima UG200
   request_information_type_key: wafer_size
 
-OTRecipeInformationTypeForUltima:
-  pipeline_name: Ultima
+OTRecipeInformationTypeForUltimaUG200:
+  pipeline_name: Ultima UG200
   request_information_type_key: ot_recipe
