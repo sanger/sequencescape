@@ -25,8 +25,6 @@ class UltimaUG200SequencingRequest < SequencingRequest
     custom_attribute(:fragment_size_required_from, integer: true, minimum: 1)
     custom_attribute(:fragment_size_required_to, integer: true, minimum: 1)
 
-    # TODO: the defaults set here do NOT work on the option lists in the bulk submission screen,
-    # but do work on the request additional sequencing screen for some reason.
     custom_attribute(:ot_recipe, default: FREE, in: OT_RECIPE_OPTIONS, required: true)
     enum :ot_recipe, { Free: 0, Flex: 1 }
     custom_attribute(:wafer_size, default: '10TB', validator: true, required: true, selection: true)
