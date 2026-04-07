@@ -11,7 +11,7 @@ limber_ultima_ug200_htp_pcr_free:
   acceptable_purposes:
     - UPF2 Cherrypicked
   library_types:
-    - Ultima High Throughput PCR Free 96  # same as UG100
+    - Ultima High Throughput PCR Free 96 # same as UG100
 limber_multiplexing_ultima_ug200:
   name: Limber Multiplexing Ultima UG200
   asset_type: Well
