@@ -42,7 +42,7 @@ class RequestcreateTest < ActiveSupport::TestCase
         setup { @project.update!(enforce_quotas: true) }
 
         should 'not fail' do
-          RequestFactory.copy_request(@request)
+          assert_nothing_raised { RequestFactory.copy_request(@request) }
         end
       end
     end
