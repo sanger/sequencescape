@@ -4,14 +4,15 @@
 Limber-Htp - Ultima PCR Free - Ultima UG200 sequencing:
   submission_class_name: "LinearSubmission"
   related_records:
-    request_type_keys: ["limber_ultima_htp_pcr_free", "limber_multiplexing_ultima", "ultima_ug200_sequencing"]
+    request_type_keys:
+      ["limber_ultima_ug200_htp_pcr_free", "limber_multiplexing_ultima_ug200", "ultima_ug200_sequencing"]
     order_role: PCR Free
-    product_line_name: Ultima
+    product_line_name: Ultima # same as UG100
     product_catalogue_name: GenericNoPCR
 Limber-Htp - Ultima PCR Free - Ultima UG200 sequencing Automated:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["ultima_ug200_sequencing"]
     order_role: PCR Free
-    product_line_name: Ultima
+    product_line_name: Ultima # same as UG100
     product_catalogue_name: GenericNoPCR

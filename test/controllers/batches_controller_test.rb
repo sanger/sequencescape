@@ -257,6 +257,9 @@ class BatchesControllerTest < ActionController::TestCase
                  "request_group_#{@plate.id}_#{@submission.id}_size": '1',
                  commit: 'Submit'
                }
+
+          assert_redirected_to batch_path(assigns(:batch))
+          assert_predicate assigns(:batch), :persisted?
         end
       end
 

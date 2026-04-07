@@ -1,11 +1,12 @@
 ---
-Opentrons:
+# Section names must be unique inside the record loader folder.
+Opentrons UG200:
   name: Opentrons
   workflow: Ultima UG200
   sorted: 0
   lab_activity: true
   sti_type: SetDescriptorsTask
-Amp:
+Amp UG200:
   name: Amp
   workflow: Ultima UG200
   sorted: 1
