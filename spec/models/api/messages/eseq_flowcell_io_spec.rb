@@ -44,7 +44,6 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
             'lane' => 1,
             'id_pool_lims' => mx_tube1.human_barcode,
             'entity_id_lims' => lane1.id,
-            'purpose' => 'standard',
             'quant_method_used' => 'Tapestation',
             'custom_primer_kit_used' => 'No',
             'samples' => [
@@ -127,7 +126,6 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
               'lane' => 1,
               'id_pool_lims' => mx_tube1.human_barcode,
               'entity_id_lims' => lane1.id,
-              'purpose' => 'standard',
               'quant_method_used' => 'Tapestation & qPCR',
               'custom_primer_kit_used' => 'Yes',
               'samples' => [

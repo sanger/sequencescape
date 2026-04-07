@@ -44,7 +44,6 @@ class Api::Messages::EseqFlowcellIo < Api::Base
     map_attribute_to_json_attribute(:position, 'lane')
     map_attribute_to_json_attribute(:mx_library, 'id_pool_lims')
     map_attribute_to_json_attribute(:lane_identifier, 'entity_id_lims')
-    map_attribute_to_json_attribute(:request_purpose, 'purpose')
     map_attribute_to_json_attribute(:quant_method_used)
     map_attribute_to_json_attribute(:custom_primer_kit_used)
 
