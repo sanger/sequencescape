@@ -389,7 +389,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   #
   # @return [Boolean] true if download is allowed, false otherwise
   def allow_sample_sheet_download?
-    @batch.pipeline.is_a?(UltimaSequencingPipeline) || logged_in?
+    return true if @batch.pipeline.is_a?(UltimaUG200SequencingPipeline)
+    return true if @batch.pipeline.is_a?(UltimaSequencingPipeline)
+
+    logged_in?
   end
 
   # Generates and sends the appropriate sample sheet(s) for the batch.
@@ -397,14 +400,12 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def generate_sample_sheet
     return redirect_to(login_path) unless allow_sample_sheet_download?
 
-    if @batch.pipeline.is_a?(ElementAvitiSequencingPipeline)
-      generate_element_aviti_sample_sheet
-    elsif @batch.pipeline.is_a?(UltimaSequencingPipeline)
-      generate_ultima_sample_sheet
-    else
-      flash[:error] = 'Sample sheet generation is not supported for this pipeline.'
-      redirect_to controller: 'batches', action: 'show', id: @batch.id
-    end
+    return generate_element_aviti_sample_sheet if @batch.pipeline.is_a?(ElementAvitiSequencingPipeline)
+    return generate_ultima_ug200_sample_sheet if @batch.pipeline.is_a?(UltimaUG200SequencingPipeline)
+    return generate_ultima_sample_sheet if @batch.pipeline.is_a?(UltimaSequencingPipeline)
+
+    flash[:error] = 'Sample sheet generation is not supported for this pipeline.'
+    redirect_to controller: 'batches', action: 'show', id: @batch.id
   end
 
   private
@@ -422,7 +423,21 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # Generates and sends the Ultima sample sheet ZIP archive for the batch.
   # @return [void]
   def generate_ultima_sample_sheet
-    zip_string = UltimaSampleSheet::SampleSheetGenerator.generate(@batch)
+    send_run_manifest_zip(UltimaSampleSheet::SampleSheetGenerator)
+  end
+
+  # Generates and sends the Ultima UG200 sample sheet ZIP archive for the batch.
+  # @return [void]
+  def generate_ultima_ug200_sample_sheet
+    send_run_manifest_zip(UltimaSampleSheet::UG200SampleSheetGenerator)
+  end
+
+  # Helper method to generate and send the Ultima sample sheet ZIP archive for
+  # the batch using the provided generator class.
+  # @param generator [Class] the sample sheet generator class to use
+  # @return [void]
+  def send_run_manifest_zip(generator)
+    zip_string = generator.generate(@batch)
     send_data zip_string,
               type: 'application/zip',
               filename: "batch_#{@batch.id}_run_manifest.zip",
