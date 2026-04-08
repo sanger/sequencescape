@@ -1,23 +1,13 @@
-# frozen_string_literal: true
-require 'active_support/core_ext/integer/time'
+require "active_support/core_ext/integer/time"
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Configure 'rails notes' to inspect Cucumber files
-  config.annotations.register_directories('features')
-  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+  # Make code changes take effect immediately without server restart.
+  config.enable_reloading = true
 
-  # Support requests coming from other Docker containers on localhost.
-  config.hosts << 'host.docker.internal'
-
-  # In the development environment your application's code is reloaded any time
-  # it changes. This slows down response time but is perfect for development
-  # since you don't have to restart the web server when you make code changes.
-  config.enable_reloading = ENV.fetch('ENABLE_RELOADING', 'true') == 'true'
-
-  # Do eager load code on boot.
-  config.eager_load = true
+  # Do not eager load code on boot.
+  config.eager_load = false
 
   # Show full error reports.
   config.consider_all_requests_local = true
@@ -25,19 +15,18 @@ Rails.application.configure do
   # Enable server timing.
   config.server_timing = true
 
-  # Enable/disable caching. By default caching is disabled.
-  # Run rails dev:cache to toggle caching.
-  if Rails.root.join('tmp/caching-dev.txt').exist?
+  # Enable/disable Action Controller caching. By default Action Controller caching is disabled.
+  # Run rails dev:cache to toggle Action Controller caching.
+  if Rails.root.join("tmp/caching-dev.txt").exist?
     config.action_controller.perform_caching = true
     config.action_controller.enable_fragment_cache_logging = true
-
-    config.cache_store = :memory_store
-    config.public_file_server.headers = { 'Cache-Control' => "public, max-age=#{2.days.to_i}" }
+    config.public_file_server.headers = { "cache-control" => "public, max-age=#{2.days.to_i}" }
   else
     config.action_controller.perform_caching = false
-
-    config.cache_store = :null_store
   end
+
+  # Change to :null_store to avoid any caching.
+  config.cache_store = :memory_store
 
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
@@ -45,60 +34,29 @@ Rails.application.configure do
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 
-  # Disable caching for Action Mailer templates even if Action Controller
-  # caching is enabled.
+  # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false
 
-  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  # Set localhost to be used by links generated in mailer templates.
+  config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
-  # Logging configuration
-  config.logger = ActiveSupport::Logger.new($stdout) if ENV['RAILS_LOG_TO_FILE'].blank?
-  config.log_level = ENV.fetch('LOG_LEVEL', :debug).to_sym
-  config.logger.formatter =
-    proc do |severity, _time, _progname, msg|
-      "[#{severity}] #{msg}\n" # includes non-breaking space to prevent whitespace collapse
-    end
-
-  # Raise exceptions for disallowed deprecations.
-  config.active_support.disallowed_deprecation = :raise
-
-  # Tell Active Support which deprecation messages to disallow.
-  config.active_support.disallowed_deprecation_warnings = []
-
   # Raise an error on page load if there are pending migrations.
-  # Disable this if we're pointing at a custom database url
-  custom_db = ENV.fetch('DATABASE_URL', nil).present?
-  config.active_record.migration_error = custom_db ? false : :page_load
+  config.active_record.migration_error = :page_load
 
   # Highlight code that triggered database queries in logs.
   config.active_record.verbose_query_logs = true
 
+  # Append comments with runtime information tags to SQL queries in logs.
+  config.active_record.query_log_tags_enabled = true
+
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
 
-  # Use an evented file watcher to asynchronously detect changes in source code,
-  # routes, locales, etc. This feature depends on the listen gem.
-  use_polling_file_watcher = ENV.fetch('USE_POLLING_FILE_WATCHER', 'false') == 'true'
-  polling_file_watcher = ActiveSupport::FileUpdateChecker
-  evented_file_watcher = ActiveSupport::EventedFileUpdateChecker
-  config.file_watcher = use_polling_file_watcher ? polling_file_watcher : evented_file_watcher
-
-  # Run on boot, but do not run again on reload
-  config.after_initialize do
-    Bullet.enable = ENV['WITH_BULLET'] == 'true'
-    Bullet.alert = ENV['NOISY_BULLET'] == 'true'
-    Bullet.bullet_logger = true
-    Bullet.rails_logger = true
-  end
-
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
-
-  # load WIP features flag
-  config.deploy_wip_pipelines = true
 
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
@@ -106,14 +64,9 @@ Rails.application.configure do
   # Uncomment if you wish to allow Action Cable access from any origin.
   # config.action_cable.disable_request_forgery_protection = true
 
-  # Added to enable development on pages that use <form> tags, as they don't pass a CSRF token.
-  config.action_controller.allow_forgery_protection = false
-
   # Raise error when a before_action's only/except options reference missing actions.
-  config.action_controller.raise_on_missing_callback_actions = false
+  config.action_controller.raise_on_missing_callback_actions = true
 
   # Apply autocorrection by RuboCop to files generated by `bin/rails generate`.
   # config.generators.apply_rubocop_autocorrect_after_generate!
 end
-
-Rack::MiniProfiler.config.position = 'right'
