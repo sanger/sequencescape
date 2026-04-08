@@ -26,11 +26,12 @@ plugins:
 AllCops:
   NewCops: enable
   Exclude:
+  - bin/*
+  - config/initializers/content_security_policy.rb
   - db/schema.rb
   - db/views_schema.rb
   - features/support/env.rb
   - lib/tasks/cucumber.rake
-  - bin/*
   - node_modules/**/*
   - tmp/**/*
 

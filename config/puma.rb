@@ -30,6 +30,20 @@ threads threads_count, threads_count
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 
+# Specifies the `environment` that Puma will run in.
+environment ENV.fetch('RAILS_ENV', 'development')
+
+# The `before_fork` and `before_worker_boot` blocks have been disabled as
+# are only used when using clustered mode (i.e. workers > 1) and we are
+# currently only using a single worker.
+
+# before_fork { Warren.handler.disconnect }
+
+# before_worker_boot do
+#   ActiveRecord::Base.establish_connection if defined?(ActiveRecord)
+#   Warren.handler.connect
+# end
+
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 

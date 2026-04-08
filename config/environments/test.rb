@@ -6,8 +6,14 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Configure 'rails notes' to inspect Cucumber files
+  config.annotations.register_directories('features')
+  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
+
   # While tests run files are not watched, reloading is not necessary.
   config.enable_reloading = false
+
+  config.cache_classes = true
 
   # Eager loading loads your entire application. When running a single test locally,
   # this is usually not necessary, and can slow down your test suite. However, it's
@@ -18,12 +24,15 @@ Rails.application.configure do
   # Configure public file server for tests with cache-control for performance.
   config.public_file_server.headers = { "cache-control" => "public, max-age=3600" }
 
-  # Show full error reports.
+  # Show full error reports and disable caching.
   config.consider_all_requests_local = true
   config.cache_store = :null_store
 
   # Render exception templates for rescuable exceptions and raise for other exceptions.
-  config.action_dispatch.show_exceptions = :rescuable
+  # config.action_dispatch.show_exceptions = :rescuable
+  #
+  # Raise exceptions instead of rendering exception templates.
+  config.action_dispatch.show_exceptions = :none
 
   # Disable request forgery protection in test environment.
   config.action_controller.allow_forgery_protection = false
@@ -42,6 +51,12 @@ Rails.application.configure do
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
 
+  # Raise exceptions for disallowed deprecations.
+  config.active_support.disallowed_deprecation = :raise
+
+  # Tell Active Support which deprecation messages to disallow.
+  config.active_support.disallowed_deprecation_warnings = []
+
   # Raises error for missing translations.
   # config.i18n.raise_on_missing_translations = true
 
@@ -50,4 +65,10 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # disable UI animations to avoid potential test failures
+  config.disable_animations = true
+
+  # load WIP features flag
+  config.deploy_wip_pipelines = true
 end

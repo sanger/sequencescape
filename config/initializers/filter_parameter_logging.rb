@@ -6,3 +6,7 @@
 Rails.application.config.filter_parameters += [
   :passw, :email, :secret, :token, :_key, :crypt, :salt, :certificate, :otp, :ssn, :cvv, :cvc
 ]
+# Sequencescape specific parameters to filter
+Rails.application.config.filter_parameters += [
+  :uploaded_data
+]
