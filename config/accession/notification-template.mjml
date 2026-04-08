@@ -1,0 +1,132 @@
+<!-- This is Accessioning MJML created to generate the Jinja template used to create the accessioning failure notification. -->
+<!-- It is not used directly by Sequencescape, but is uploaded to the Integration Hub and used by Y26-094. -->
+<!-- MJML Documentation: https://mjml.io/ -->
+<!-- In this template, you have access to a list of every attribute listed inside your `fields` attribute in each notification. -->
+<!-- NB: Note the use of <mj-raw>. It is required for MJML transpiler to not to strip-off any Jinja-related syntax. -->
+
+<mjml>
+  <mj-head>
+    <mj-title>Problems with Accessioning</mj-title>
+    <mj-preview>There are validation errors in the samples provided</mj-preview>
+    <mj-style inline="inline">
+      .email-card {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      }
+    </mj-style>
+    <mj-attributes>
+      <mj-all font-family="Arial, Helvetica, sans-serif" />
+      <mj-text font-size="14px" color="#333333" line-height="1.6" align="left" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#f4f6f8">
+    <mj-wrapper></mj-wrapper>
+    <mj-wrapper
+      css-class="email-card"
+      background-color="#ffffff"
+      border="1px solid #e0e0e0"
+      border-radius="8px"
+      padding="0"
+    >
+      <!-- Header Section -->
+      <mj-section background-color="#747067" padding="20px 25px 10px">
+        <mj-column>
+          <mj-text font-size="20px" font-weight="bold" color="#ffffff" align="left">
+            ⚠️ Problems with Accessioning ⚠️
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section background-color="#ffffff" padding="20px 25px">
+        <mj-column>
+          <mj-text>
+            There are validation errors in the samples provided for accessioning. This notification includes details of
+            <b>
+              <mj-raw> {{ fields | length }} </mj-raw>
+            </b>
+            &nbsp;accessioning samples.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <!-- Beginning of content -->
+      <!-- If 100 or more samples, display a compact summary -->
+      <mj-raw>{% if fields|length >= 100 %}</mj-raw>
+      <mj-raw>{% set samples = fields | map(attribute='sample-id') | list | unique | list %}</mj-raw>
+      <mj-section background-color="#ffffff" padding="0 25px 12px 25px">
+        <mj-column>
+          <mj-text> More than 100 samples have errored when accessioning. </mj-text>
+        </mj-column>
+        <mj-column background-color="rgb(251, 233, 173)" border="1px solid #d2c85b" border-radius="6px" padding="0">
+          <mj-text font-size="14px" color="#333333" align="left" background-color="#f1f3f5" padding="12px 15px">
+            <mj-raw
+              >{% set unique_attribute_values = fields | map(attribute='attributes') | sum(start=[]) |
+              map(attribute='key') | list | unique | list %}</mj-raw
+            >
+            <mj-raw>{% if unique_attribute_values | length == 0 and fields["manifest-id"] %}</mj-raw>
+            Some samples in the manifest
+            <b>
+              <mj-raw>{{ fields["manifest-id"] }}</mj-raw>
+            </b>
+            &nbsp;that have errored, due to incorrect values.
+            <mj-raw>{% elif unique_attribute_values | length > 5 %}</mj-raw>
+            Some samples in the manifest
+            <b>
+              <mj-raw>{{ fields[0]["manifest-id"] }}</mj-raw>
+            </b>
+            &nbsp;that have errored, due to incorrect values for fields like
+            <mj-raw>: {{ unique_attribute_values[:5] | join(", ") }}</mj-raw>
+            .
+            <mj-raw>{% else %}</mj-raw>
+            Some samples in the manifest
+            <b>
+              <mj-raw>{{ fields[0]["manifest-id"] }}</mj-raw>
+            </b>
+            &nbsp;that have errored, due to incorrect values for fields like
+            <mj-raw>: {{ unique_attribute_values | join(", ") }}</mj-raw>
+            .
+            <mj-raw>{% endif %}</mj-raw>
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-raw>{% else %}</mj-raw>
+      <!-- Display individual fields when fewer than 100 samples -->
+      <mj-raw>{% for field in fields %}</mj-raw>
+      <mj-section background-color="#ffffff" padding="0 25px 12px 25px">
+        <mj-column background-color="#fafafa" border="1px solid #e0e0e0" border-radius="6px" padding="0">
+          <mj-text
+            font-size="14px"
+            font-weight="bold"
+            color="#333333"
+            align="left"
+            background-color="#f1f3f5"
+            padding="12px 15px"
+          >
+            Sample ID:
+            <mj-raw>{{ field["sample-id"] }}</mj-raw>
+          </mj-text>
+          <mj-divider border-color="#e0e0e0" padding="0" />
+          <mj-raw>{% for attribute in field.attributes %}</mj-raw>
+          <mj-text font-size="13px" color="#555555" padding="6px 15px" align="left">
+            <strong style="color: #000000">
+              <mj-raw>{{ attribute.key }}</mj-raw>
+              :
+            </strong>
+            &nbsp;
+            <mj-raw>{{ attribute.value }}</mj-raw>
+          </mj-text>
+          <mj-raw>{% endfor %}</mj-raw>
+        </mj-column>
+      </mj-section>
+      <mj-raw>{% endfor %}</mj-raw>
+      <mj-raw>{% endif %}</mj-raw>
+      <!-- End of content -->
+      <!-- Footer section -->
+      <mj-section background-color="#ffffff" padding="8px 25px 20px 25px">
+        <mj-column>
+          <mj-text font-size="12px" color="#888888" align="center">
+            This is an automated message. Please do not reply.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+    <mj-wrapper></mj-wrapper>
+  </mj-body>
+</mjml>
