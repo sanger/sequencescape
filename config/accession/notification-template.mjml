@@ -14,35 +14,45 @@
       }
     </mj-style>
     <mj-attributes>
-      <mj-all font-family="Arial, Helvetica, sans-serif" />
-      <mj-text font-size="14px" color="#333333" line-height="1.6" align="left" />
+      <!-- Styling based on production Sequencescape -->
+      <!-- Classes inspired by Bootstrap 5.3 -->
+      <mj-class name="bg-sequencescape" background-color="#005dc0" />
+      <mj-class name="bg-light" background-color="rgb(248,249,250)" />
+      <mj-class name="bg-body" background-color="#ffffff" />
+      <mj-class name="text-light" color="#ffffff" />
+      <mj-class name="text-dark" color="rgb(41, 33, 33)" />
+      <mj-class name="text-muted" color="#7a7a7a" />
+      <mj-class name="border-1" border="1px solid #eaeaea" />
+      <mj-class name="border-radius-1" border-radius="8px" />
+      <mj-class name="p-0" padding="0" />
+      <mj-class name="py-3" padding-top="12px" padding-bottom="12px" />
+      <mj-all font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" />
+      <mj-text font-size="14px" mj-class="text-dark" line-height="1.6" align="left" />
     </mj-attributes>
   </mj-head>
-  <mj-body background-color="#f4f6f8">
+  <mj-body css-class="bg-light">
     <mj-wrapper></mj-wrapper>
-    <mj-wrapper
-      css-class="email-card"
-      background-color="#ffffff"
-      border="1px solid #e0e0e0"
-      border-radius="8px"
-      padding="0"
-    >
+    <mj-wrapper css-class="email-card" mj-class="p-0 bg-body border-1 border-radius-1">
       <!-- Header Section -->
-      <mj-section background-color="#747067" padding="20px 25px 10px">
+      <mj-section mj-class="bg-sequencescape py-3">
         <mj-column>
-          <mj-text font-size="20px" font-weight="bold" color="#ffffff" align="left">
-            ⚠️ Problems with Accessioning ⚠️
-          </mj-text>
+          <mj-text mj-class="text-light" font-size="24px" font-weight="500" align="left">Sequencescape</mj-text>
         </mj-column>
       </mj-section>
-      <mj-section background-color="#ffffff" padding="20px 25px">
+      <mj-section mj-class="bg-body py-3">
         <mj-column>
+          <mj-text font-size="20px" font-weight="500" align="left"> Accessioning Failure Notification</mj-text>
           <mj-text>
-            There are validation errors in the samples provided for accessioning. This notification includes details of
-            <b>
-              <mj-raw> {{ fields | length }} </mj-raw>
-            </b>
-            &nbsp;accessioning samples.
+            A batch of
+            <strong>
+              <mj-raw>{{ fields | length }}</mj-raw>
+            </strong>
+            samples have failed to accession for study
+            <strong>
+              <mj-raw>{{ study_name }}</mj-raw></strong
+            >.
+            <br />
+            Please review and address the warnings below:
           </mj-text>
         </mj-column>
       </mj-section>
@@ -119,9 +129,12 @@
       <mj-raw>{% endif %}</mj-raw>
       <!-- End of content -->
       <!-- Footer section -->
-      <mj-section background-color="#ffffff" padding="8px 25px 20px 25px">
+      <mj-section mj-class="py-3">
         <mj-column>
-          <mj-text font-size="12px" color="#888888" align="center">
+          <mj-button href="https://sanger.freshservice.com/support/catalog/items?category_id=53000051282">
+            Open a support ticket
+          </mj-button>
+          <mj-text mj-class="text-muted" font-size="12px" align="center">
             This is an automated message. Please do not reply.
           </mj-text>
         </mj-column>
