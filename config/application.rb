@@ -22,6 +22,9 @@ module Sequencescape
     config.action_controller.forgery_protection_origin_check = false
     config.action_controller.per_form_csrf_tokens = false
 
+    # Sets the exceptions application invoked by the ShowException middleware when an exception happens.
+    config.exceptions_app = routes
+
     config.logger = Logger.new(Rails.root.join('log', "#{Rails.env}.log"), 5, 10 * 1024 * 1024)
     config.logger.formatter = ::Logger::Formatter.new
 
