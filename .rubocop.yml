@@ -208,6 +208,10 @@ Rails/DynamicFindBy:
   - find_by_id_or_name!
   - find_by_barcode
 
+# The root.join syntax does not improve readability, although the slash syntax does have some merit
+Rails/FilePath:
+  Enabled: false
+
 # Not planning to internationalise the app, so this is not relevant
 Rails/I18nLocaleTexts:
   Enabled: false

@@ -1437,28 +1437,6 @@ Rails/DeprecatedActiveModelErrorsMethods:
   Exclude:
     - 'app/controllers/batches_controller.rb'
 
-# Offense count: 31
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: slashes, arguments
-Rails/FilePath:
-  Exclude:
-    - 'app/middleware/api/root_service.rb'
-    - 'app/uploaders/polymorphic_uploader.rb'
-    - 'config/application.rb'
-    - 'config/config.rb'
-    - 'config/initializers/accession.rb'
-    - 'config/initializers/failure_reasons.rb'
-    - 'config/initializers/i18n.rb'
-    - 'config/initializers/load_config.rb'
-    - 'features/support/step_definitions/49061511_qc_file_steps.rb'
-    - 'features/support/step_definitions/bulk_submission_steps.rb'
-    - 'lib/tasks/sample_manifest_excel_tests.rake'
-    - 'test/test_helper.rb'
-    - 'test/unit/fluidigm_file_test.rb'
-    - 'test/unit/import_fluidigm_data_test.rb'
-    - 'test/unit/qc_report_file_test.rb'
-
 # Offense count: 123
 Rails/HasManyOrHasOneDependent:
   Exclude:

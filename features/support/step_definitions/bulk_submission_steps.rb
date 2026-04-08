@@ -9,7 +9,7 @@ end
 def upload_custom_row_submission
   attach_file(
     'bulk_submission_spreadsheet',
-    Rails.root.join('features', 'submission', 'csv', 'template_for_bulk_submission.csv')
+    Rails.root.join('features/submission/csv/template_for_bulk_submission.csv')
   )
   click_button 'Create Bulk submission'
 end
