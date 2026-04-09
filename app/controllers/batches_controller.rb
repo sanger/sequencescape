@@ -387,6 +387,10 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   # the batch. Ultima sample sheets are allowed to be downloaded without
   # authentication. For all other pipelines, the user must be logged in.
   #
+  # @note When checking the pipeline class, always check the most specific
+  #   subclass first in the inheritance hierarchy, before considering parent
+  #   classes.
+  #
   # @return [Boolean] true if download is allowed, false otherwise
   def allow_sample_sheet_download?
     return true if @batch.pipeline.is_a?(UltimaUG200SequencingPipeline)
@@ -396,6 +400,11 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   end
 
   # Generates and sends the appropriate sample sheet(s) for the batch.
+  #
+  # @note When checking the pipeline class, always check the most specific
+  #   subclass first in the inheritance hierarchy, before considering parent
+  #   classes.
+  #
   # @return [void]
   def generate_sample_sheet
     return redirect_to(login_path) unless allow_sample_sheet_download?

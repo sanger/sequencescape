@@ -223,9 +223,9 @@ module UltimaSampleSheet::SampleSheetGenerator
     # other tag groups exist in the database.
     # @return [Hash{Tag => Integer}] mapping of tags to index numbers
     def tag_index_map
-      @tag_index_map ||= ultima_tag_groups.each_with_object({}) do |tg, map|
-        start_index = ultima_tag_groups_config[tg.name][:z_start]
-        tg.tags.sort_by(&:map_id).each_with_index { |tag, i| map[tag] = start_index + i }
+      @tag_index_map ||= ultima_tag_groups.each_with_object({}) do |tag_group, map|
+        start_index = ultima_tag_groups_config[tag_group.name][:z_start]
+        tag_group.tags.sort_by(&:map_id).each_with_index { |tag, i| map[tag] = start_index + i }
       end
     end
 
