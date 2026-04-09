@@ -12,11 +12,15 @@
       .email-card {
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
       }
+      .bg-sequencescape-gradient {
+        background: linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+      }
     </mj-style>
     <mj-attributes>
-      <!-- Styling based on production Sequencescape -->
+      <!-- Styling based on Sequencescape login screen -->
       <!-- Classes inspired by Bootstrap 5.3 -->
       <mj-class name="bg-sequencescape" background-color="#005dc0" />
+      <mj-class name="bg-sequencescape-gradient" background="linear-gradient(90deg, #005dc0 0%, #007bff 100%)" />
       <mj-class name="bg-light" background-color="rgb(248,249,250)" />
       <mj-class name="bg-body" background-color="#ffffff" />
       <mj-class name="text-light" color="#ffffff" />
@@ -30,7 +34,7 @@
       <mj-text font-size="14px" mj-class="text-dark" line-height="1.6" align="left" />
     </mj-attributes>
   </mj-head>
-  <mj-body css-class="bg-light">
+  <mj-body css-class="bg-sequencescape-gradient">
     <mj-wrapper></mj-wrapper>
     <mj-wrapper css-class="email-card" mj-class="p-0 bg-body border-1 border-radius-1">
       <!-- Header Section -->
