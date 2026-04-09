@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 class Admin::ProgramsController < ApplicationController
   authorize_resource
-  before_action :discover_program, only: %i[show edit update destroy]
+  before_action :discover_program, only: %i[show edit update]
 
   def index
     @programs = Program.all
