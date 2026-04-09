@@ -26,7 +26,6 @@ ultima_ug200_sequencing:
   order: 2
   initial_state: pending
   billable: true
-  # Using same product line name as Ultima UG100
   product_line_name: Ultima # same as UG100
   request_class_name: UltimaUG200SequencingRequest
   request_purpose: standard
