@@ -136,7 +136,7 @@
       <!-- Footer section -->
       <mj-section mj-class="py-3">
         <mj-column>
-          <mj-button href="https://sanger.freshservice.com/support/catalog/items?category_id=53000051282">
+          <mj-button href="https://sanger.freshservice.com/support/catalog/items/284">
             Open a support ticket
           </mj-button>
           <mj-text mj-class="text-muted" font-size="12px" align="center">
