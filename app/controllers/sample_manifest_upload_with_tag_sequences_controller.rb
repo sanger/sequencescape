@@ -40,11 +40,16 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     end
   end
 
-  def apply_warning_flash(rows)
-    flash[:warning] = {
-      'Sample manifest uploaded with warnings!':
-        rows.flat_map { |row| row.warnings.full_messages }.uniq
-    }
+  def apply_warning_flash(rows) # rubocop:disable Metrics/AbcSize
+    # There are more than 10 messages, truncate the list and add a note about it.
+    # This is to prevent the flash from becoming too large and causing issues with cookies.
+    row_messages = rows.flat_map { |row| row.warnings.full_messages }.uniq
+    if row_messages.size > 10
+      # IfUnlessModifier doesn't improve readability
+      row_messages = row_messages.first(10) + ["and #{row_messages.size - 10} more..."]
+    end
+
+    flash[:warning] = { 'Sample manifest uploaded with warnings!': row_messages }
 
     redirect_target = (@uploader.study.present? ? sample_manifests_study_path(@uploader.study) : sample_manifests_path)
     redirect_to redirect_target
