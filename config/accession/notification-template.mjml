@@ -9,7 +9,7 @@
     <mj-title>Problems with Accessioning</mj-title>
     <mj-preview>There are validation errors in the samples provided</mj-preview>
     <mj-style inline="inline">
-      .email-card {
+      .shadow {
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
       }
       .bg-sequencescape-gradient {
@@ -26,9 +26,9 @@
       <mj-class name="text-light" color="#ffffff" />
       <mj-class name="text-dark" color="rgb(41, 33, 33)" />
       <mj-class name="text-muted" color="#7a7a7a" />
-      <mj-class name="border-1" border="1px solid #eaeaea" />
-      <mj-class name="border-radius-1" border-radius="8px" />
+      <mj-class name="border-radius-1" border-radius="3px" />
       <mj-class name="p-0" padding="0" />
+      <mj-class name="py-0" padding-top="0" padding-bottom="0" />
       <mj-class name="py-3" padding-top="12px" padding-bottom="12px" />
       <mj-all font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" />
       <mj-text font-size="14px" mj-class="text-dark" line-height="1.6" align="left" />
@@ -36,16 +36,17 @@
   </mj-head>
   <mj-body css-class="bg-sequencescape-gradient">
     <mj-wrapper></mj-wrapper>
-    <mj-wrapper css-class="email-card" mj-class="p-0 bg-body border-1 border-radius-1">
+    <mj-wrapper css-class="shadow" mj-class="p-0 bg-body border-radius-1">
       <!-- Header Section -->
-      <mj-section mj-class="bg-sequencescape py-3">
+      <mj-section mj-class="bg-sequencescape"></mj-section>
+      <mj-section mj-class="p-0">
         <mj-column>
-          <mj-text mj-class="text-light" font-size="24px" font-weight="500" align="left">Sequencescape</mj-text>
+          <mj-text font-size="42px" font-weight="300" align="center">Sequencescape</mj-text>
         </mj-column>
       </mj-section>
-      <mj-section mj-class="bg-body py-3">
+      <mj-section mj-class="bg-body p-0">
         <mj-column>
-          <mj-text font-size="20px" font-weight="500" align="left"> Accessioning Failure Notification</mj-text>
+          <mj-text mj-class="py-0 text-muted" font-size="20px" align="left">Accessioning Failure Notification</mj-text>
           <mj-text>
             A batch of
             <strong>
@@ -139,7 +140,13 @@
             Open a support ticket
           </mj-button>
           <mj-text mj-class="text-muted" font-size="12px" align="center">
-            This is an automated message. Please do not reply.
+            Sent automatically by Sequencescape, on behalf of the
+            <a href="https://www.sanger.ac.uk/group/production-software-development/"
+              >Production Software Development</a
+            >
+            team.
+            <br />
+            Please do not reply.
           </mj-text>
         </mj-column>
       </mj-section>
