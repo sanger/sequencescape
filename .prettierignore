@@ -24,6 +24,7 @@
 /yarn-error.log
 app/sample_manifest_excel/doc/
 capybara*.html
+config/accession/*.j2
 config/cucumber.yml
 config/database.yml
 coverage
