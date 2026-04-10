@@ -13,6 +13,7 @@
 *.log
 *.log.[0-9]
 *.min.js
+*.mjml
 *.orig
 *.sublime-workspace
 *.swp
@@ -24,7 +25,6 @@
 /yarn-error.log
 app/sample_manifest_excel/doc/
 capybara*.html
-config/accession/*.j2
 config/cucumber.yml
 config/database.yml
 coverage
