@@ -35,7 +35,7 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def visible
-    superceded_by_id == LATEST_VERSION
+    superceded_by_id == LATEST_VERSION && !automated
   end
 
   def superceded_by_unknown!
@@ -89,7 +89,7 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def sequencing?
-    request_types.any?(&:sequencing)
+    request_types.any?(&:sequencing?)
   end
 
   def input_asset_type
