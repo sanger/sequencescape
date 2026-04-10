@@ -46,14 +46,15 @@ RSpec.describe LocationReport do
 
   # add retention instruction metadata to plate 1 custom metadatum collection
   let(:retention_key) { 'retention_instruction' }
-  let(:retention_value) { 'Long term storage' }
+  let(:retention_value_1) { 'Long term storage' }
+  let(:retention_value_2) { 'Return to customer after 2 years' }
   let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user: user) }
   let(:plate_1_custom_metadatum) do
     create(
       :custom_metadatum,
       custom_metadatum_collection: plate_1_custom_metadatum_collection,
       key: retention_key,
-      value: retention_value
+      value: retention_value_1
     )
   end
 
@@ -89,7 +90,7 @@ RSpec.describe LocationReport do
       :custom_metadatum,
       custom_metadatum_collection: plate_3_custom_metadatum_collection,
       key: retention_key,
-      value: retention_value
+      value: retention_value_2
     )
   end
 
@@ -110,7 +111,7 @@ RSpec.describe LocationReport do
       :custom_metadatum,
       custom_metadatum_collection: tube_1_custom_metadatum_collection,
       key: retention_key,
-      value: retention_value
+      value: retention_value_1
     )
   end
 
@@ -479,7 +480,7 @@ RSpec.describe LocationReport do
         context 'with retention instructions' do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
-          let(:retention_instructions) { ['long_term_storage'] }
+          let(:retention_instructions) { ['long_term_storage'],['return_to_customer_after_2_years'] }
 
           # Only plate_1, plate_3, and tube_1 have this metadata, and the value is 'Long term storage' for all
           let(:expected_lines) do
