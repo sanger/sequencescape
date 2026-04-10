@@ -17,7 +17,7 @@ class AssetGroup < ApplicationRecord
   validates :name, presence: true, uniqueness: { case_sensitive: false }
   validates :study, presence: true
 
-  scope :for_search_query, ->(query) { where(['name LIKE ?', "%#{query}%"]) }
+  scope :for_search_query, ->(query, _leading_wildcard = true) { where(['name LIKE ?', "%#{query}%"]) }
 
   has_many :labware, -> { distinct }, through: :assets
 

@@ -60,6 +60,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   self.per_page = 500
 
+  include ActiveRecord::AttributeMethods::Dirty
   include Api::SampleIo::Extensions
   include Uuid::Uuidable
   include StandardNamedScopes
@@ -294,6 +295,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many_events do
     event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
     event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:updated_sample_metadata!, Event::SampleMetadataEvent, :updated_sample_metadata!)
     # Add events defined in the included SampleAccessioning module
     SampleAccessioning::EVENTS.each do |model_event_name, event_class, event_class_method|
       event_constructor(model_event_name, event_class, event_class_method)
@@ -365,6 +367,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validation_guard(:can_rename_sample)
   validation_guarded_by(:rename_to!, :can_rename_sample)
 
+  after_update :record_sample_metadata_changes
   before_destroy :safe_to_destroy
 
   # NOTE: Samples don't tend to get released through Sequencescape
@@ -374,7 +377,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   scope :with_gender, ->(*_names) { joins(:sample_metadata).where.not(sample_metadata: { gender: nil }) }
 
   scope :for_search_query,
-        lambda { |query|
+        lambda { |query, leading_wildcard = true|
           # NOTE: This search is performed in two stages so that we can make best use of our indicies
           # A naive search forces a full table lookup for all queries, ignoring the index in the sample metadata table
           # instead favouring the sample_id index. Rather than trying to bend MySQL to our will, we'll solve the
@@ -388,11 +391,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
               exact: query
             ).pluck(:sample_id)
 
+          # We can't use our indexes if we having a leading wildcard, but we can if we don't.
+          # So we allow the caller to specify whether they want a leading wildcard or not, and default to allowing it.
+          wild = leading_wildcard ? "%#{query}%" : "#{query}%"
+
           # The query id is kept distinct from the metadata retrieved ids, as including a string in what is otherwise an
           # array of numbers seems to massively increase the query length.
           where(
             'name LIKE :wild OR id IN (:sm_ids) OR id = :qid',
-            wild: "%#{query}%",
+            wild: wild,
             sm_ids: md,
             query: query,
             qid: query.to_i
@@ -514,6 +521,15 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  def record_sample_metadata_changes
+    return unless sample_metadata.saved_changes?
+
+    changes = sample_metadata.saved_changes.except('updated_at')
+    return if changes.empty?
+
+    events.updated_sample_metadata!(changes, current_user)
+  end
 
   def safe_to_destroy
     errors.add(:base, 'samples cannot be destroyed.')

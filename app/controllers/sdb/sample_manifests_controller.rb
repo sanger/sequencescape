@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-class Sdb::SampleManifestsController < Sdb::BaseController
-  before_action :set_sample_manifest_id, only: %i[show generated print_labels]
+class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metrics/ClassLength
+  before_action :set_sample_manifest_id, only: %i[show print_labels]
   before_action :validate_type, only: %i[new create]
 
   LIMIT_ERROR_LENGTH = 10_000
@@ -36,6 +36,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   def show
     @study_id = @sample_manifest.study_id
     @samples = @sample_manifest.samples.paginate(page: params[:page])
+    @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
+    @asset_type = @sample_manifest.asset_type
   end
 
   def new
@@ -57,13 +59,8 @@ class Sdb::SampleManifestsController < Sdb::BaseController
     end
   end
 
-  def print_labels # rubocop:todo Metrics/MethodLength
-    print_job =
-      LabelPrinter::PrintJob.new(
-        params[:printer],
-        LabelPrinter::Label::SampleManifestRedirect,
-        sample_manifest: @sample_manifest
-      )
+  def print_labels
+    print_job = setup_print_job
     if print_job.execute
       flash[:notice] = print_job.success
     else
@@ -73,6 +70,16 @@ class Sdb::SampleManifestsController < Sdb::BaseController
   end
 
   private
+
+  def setup_print_job
+    LabelPrinter::PrintJob.new(
+      params[:printer],
+      LabelPrinter::Label::SampleManifestRedirect,
+      sample_manifest: @sample_manifest,
+      label_template_name: label_template_for_2d_barcodes(@sample_manifest.asset_type),
+      barcode_type: params[:barcode_type]
+    )
+  end
 
   def set_default_params
     params[:only_first_label] ||= false
@@ -110,6 +117,13 @@ class Sdb::SampleManifestsController < Sdb::BaseController
       redirect_back_or_to(root_path)
     rescue ActionController::RedirectBackError
       redirect_to sample_manifests_path
+    end
+  end
+
+  def label_template_for_2d_barcodes(asset_type)
+    if params[:barcode_type] == Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels]['2d'] &&
+        SampleManifest.tube_asset_types.include?(asset_type)
+      Rails.application.config.tube_manifest_barcode_config[:two_dimensional_label_template]
     end
   end
 end

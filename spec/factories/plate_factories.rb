@@ -24,7 +24,7 @@ FactoryBot.define do
       studies_cycle { studies.cycle } # Allow us to rotate through listed studies when building out wells
       projects_cycle { projects.cycle } # Allow us to rotate through listed studies when building out wells
       well_locations { maps.where(well_order => occupied_well_index) }
-      occupied_well_index { (0...well_count) }
+      occupied_well_index { 0...well_count }
     end
 
     after(:build) do |plate, evaluator|

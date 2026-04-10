@@ -6,8 +6,11 @@ require 'rails_helper'
 RSpec.describe SampleAccessioningJob do
   include AccessionV1ClientHelper
 
+  let(:first_open_study) { create(:open_study, accession_number: 'ENA123') }
+  let(:second_open_study) { create(:open_study, accession_number: 'ENA124') }
+  let(:studies) { [first_open_study, second_open_study] }
   let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
-  let(:sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
+  let(:sample) { create(:sample_for_accessioning, sample_metadata:, studies:) }
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
@@ -79,6 +82,7 @@ RSpec.describe SampleAccessioningJob do
                          "Sample '#{sample_name}' cannot be accessioned: " \
                          'Sample does not have the required metadata: sample-taxon-id.',
                 sample_name: sample_name,
+                study_names: "#{first_open_study.name}, #{second_open_study.name}",
                 service_provider: 'ENA',
                 user: nil
               }
@@ -166,6 +170,7 @@ RSpec.describe SampleAccessioningJob do
               message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
                        'Failed to process accessioning response',
               sample_name: sample.name, # 'Sample 1',
+              study_names: "#{first_open_study.name}, #{second_open_study.name}",
               service_provider: 'ENA',
               user: nil
             }

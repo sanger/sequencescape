@@ -29,7 +29,7 @@ class Item < ApplicationRecord
               case_sensitive: false
             }
 
-  scope :for_search_query, ->(query) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
+  scope :for_search_query, ->(query, _leading_wildcard = true) { where(['name LIKE ? OR id=?', "%#{query}%", query]) }
 
   before_validation :set_version, on: :create
 

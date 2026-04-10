@@ -68,6 +68,47 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
       end
     end
 
+    context 'when the upload succeeds with more than 10 warnings' do
+      let(:warning_rows) do
+        (1..12).map do |i|
+          double(warnings: double(full_messages: ["Row #{i} warning"]))
+        end
+      end
+
+      before do
+        allow(controller).to receive(:upload_manifest) do
+          controller.instance_variable_set(:@uploader, uploader)
+          true
+        end
+        allow(controller).to receive(:rows_with_warnings).and_return(warning_rows)
+        post :create, params: { upload: upload_file }
+      end
+
+      it 'sets warning flash message' do
+        expect(flash[:warning]).to eq(
+          {
+            'Sample manifest uploaded with warnings!': [
+              'Row 1 warning',
+              'Row 2 warning',
+              'Row 3 warning',
+              'Row 4 warning',
+              'Row 5 warning',
+              'Row 6 warning',
+              'Row 7 warning',
+              'Row 8 warning',
+              'Row 9 warning',
+              'Row 10 warning',
+              'and 2 more...'
+            ]
+          }
+        )
+      end
+
+      it 'redirects correctly' do
+        expect(response).to redirect_to(sample_manifests_path)
+      end
+    end
+
     context 'when the upload fails due to invalid data' do
       before do
         allow(uploader).to receive(:run!).and_raise(AccessionService::AccessionValidationFailed, 'Invalid data')
