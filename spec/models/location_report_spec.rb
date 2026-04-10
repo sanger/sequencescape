@@ -480,8 +480,7 @@ RSpec.describe LocationReport do
         context 'with retention instructions' do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
-          let(:retention_instructions) { ['long_term_storage'],['return_to_customer_after_2_years'] }
-
+          let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
           # Only plate_1, plate_3, and tube_1 have this metadata, and the value is 'Long term storage' for all
           let(:expected_lines) do
             [

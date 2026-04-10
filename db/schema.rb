@@ -637,7 +637,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_25_134057) do
     t.string "report_filename"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.text "retention_instructions"
+    t.string "retention_instructions"
     t.index ["study_id"], name: "index_location_reports_on_study_id"
     t.index ["user_id"], name: "index_location_reports_on_user_id"
   end
