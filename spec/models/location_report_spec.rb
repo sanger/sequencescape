@@ -247,7 +247,7 @@ RSpec.describe LocationReport do
 
         let(:plt_1_line) do
           # rubocop:todo Layout/LineLength
-          "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
         let(:plt_2_line_1) do
@@ -262,12 +262,12 @@ RSpec.describe LocationReport do
         end
         let(:plt_3_line) do
           # rubocop:todo Layout/LineLength
-          "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+          "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_1},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
         let(:tube_1_line) do
           # rubocop:todo Layout/LineLength
-          "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 4,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 4,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
 
@@ -523,7 +523,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line] }
@@ -550,7 +550,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
@@ -565,7 +565,7 @@ RSpec.describe LocationReport do
           end
           let(:tube_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
@@ -627,7 +627,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
@@ -695,7 +695,7 @@ RSpec.describe LocationReport do
 
           # rubocop:todo Layout/LineLength
           let(:plt_1_line) do
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           end
           let(:plt_2_line_1) do
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{plt_2_received_date},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,Unknown,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
@@ -704,10 +704,10 @@ RSpec.describe LocationReport do
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{plt_2_received_date},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,Unknown,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
           let(:plt_3_line) do
-            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value_1},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
           let(:tube_1_line) do
-            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           end
 
           # rubocop:enable Layout/LineLength
