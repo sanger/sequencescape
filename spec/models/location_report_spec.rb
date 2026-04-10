@@ -90,7 +90,7 @@ RSpec.describe LocationReport do
       :custom_metadatum,
       custom_metadatum_collection: plate_3_custom_metadatum_collection,
       key: retention_key,
-      value: retention_value_2
+      value: retention_value_1
     )
   end
 
@@ -482,6 +482,35 @@ RSpec.describe LocationReport do
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
           # Only plate_1, plate_3, and tube_1 have this metadata, and the value is 'Long term storage' for all
+          let(:expected_lines) do
+            [
+              headers_line,
+              plt_1_line,
+              plt_3_line,
+              tube_1_line
+            ]
+          end
+
+          it_behaves_like 'a successful report'
+        end
+
+        context 'with multiple retention instruction filters' do
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
+          let(:plate_3_custom_metadatum) do
+            create(
+              :custom_metadatum,
+              custom_metadatum_collection: plate_3_custom_metadatum_collection,
+              key: retention_key,
+              value: retention_value_2
+            )
+          end
+          let(:plt_3_line) do
+            # rubocop:todo Layout/LineLength
+            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_2},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            # rubocop:enable Layout/LineLength
+          end
           let(:expected_lines) do
             [
               headers_line,
