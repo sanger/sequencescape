@@ -19,7 +19,8 @@
     <mj-attributes>
       <!-- Styling based on Sequencescape login screen -->
       <!-- Classes inspired by Bootstrap 5.3 -->
-      <mj-class name="bg-sequencescape" background-color="#005dc0" />
+      <mj-class name="bg-sequencescape-production" background-color="#005dc0" />
+      <mj-class name="bg-sequencescape-uat" background-color="#dc3545" />
       <mj-class name="bg-sequencescape-gradient" background="linear-gradient(90deg, #005dc0 0%, #007bff 100%)" />
       <mj-class name="bg-light" background-color="rgb(248,249,250)" />
       <mj-class name="bg-body" background-color="#ffffff" />
@@ -45,7 +46,8 @@
     <mj-wrapper></mj-wrapper>
     <mj-wrapper css-class="shadow" mj-class="p-0 bg-body border-radius-1">
       <!-- Header Section -->
-      <mj-section mj-class="bg-sequencescape"></mj-section>
+      <mj-section mj-class="bg-sequencescape-production"></mj-section>
+      <!-- <mj-section mj-class="bg-sequencescape-uat"></mj-section> -->
       <mj-section mj-class="p-0">
         <mj-column>
           <mj-text font-size="42px" font-weight="300" align="center">Sequencescape</mj-text>
