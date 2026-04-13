@@ -87,12 +87,21 @@ RSpec.describe SubmissionTemplate do
 
         expect(described_class.include_product_line.first.product_line).to eq(product_line)
       end
+    end
+  end
 
-      it "returns 'general' for templates without a product line" do
-        create(:submission_template, product_line: nil)
+  describe '#grouped_by_product_lines' do
+    it 'groups visible templates by product line name' do
+      product_line = create(:product_line)
+      submission_list = create_list(:submission_template, 5, product_line:)
 
-        expect(described_class.grouped_by_product_lines.keys).to include('General')
-      end
+      expect(described_class.grouped_by_product_lines).to eq({ product_line.name => submission_list })
+    end
+
+    it 'groups templates without a product line under "General"' do
+      submission_list = create_list(:submission_template, 5, product_line: nil)
+
+      expect(described_class.grouped_by_product_lines).to eq({ 'General' => submission_list })
     end
   end
 
