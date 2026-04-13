@@ -336,7 +336,9 @@ RSpec.describe NpgActions::AssetsController, type: :request do
       it 'renders the exception page' do
         regexp =
           Regexp.new(
-            ['<error><message>', 'param is missing or the value is empty: qc_information', '</message></error>'].join,
+            ['<error><message>',
+             'param is missing or the value is empty or invalid: qc_information',
+             '</message></error>'].join,
             Regexp::MULTILINE
           )
         expect(response).to have_http_status(:bad_request)

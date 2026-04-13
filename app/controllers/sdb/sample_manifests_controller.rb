@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metrics/ClassLength
-  before_action :set_sample_manifest_id, only: %i[show generated print_labels]
+  before_action :set_sample_manifest_id, only: %i[show print_labels]
   before_action :validate_type, only: %i[new create]
 
   LIMIT_ERROR_LENGTH = 10_000

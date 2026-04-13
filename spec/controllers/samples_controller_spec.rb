@@ -12,26 +12,51 @@ RSpec.describe SamplesController do
   it_behaves_like 'it requires login'
 
   describe '#update' do
-    context 'when the user is the owner of the study' do
-      before { current_user.roles.create(authorizable_id: sample.id, authorizable_type: 'Sample', name: 'owner') }
+    before { current_user.roles.create(authorizable_id: sample.id, authorizable_type: 'Sample', name: 'owner') }
 
-      let(:action) do
-        post :update,
-             session: {
-               user: current_user.id
-             },
-             params: {
-               id: sample.id,
-               sample: {
-                 sample_metadata_attributes: {
-                   consent_withdrawn: consent
-                 }
-               }
+    let(:action) do
+      post :update,
+           session: { user: current_user.id },
+           params: {
+             id: sample.id,
+             sample: {
+               sample_metadata_attributes:
              }
-        sample.reload
+           }
+      sample.reload
+    end
+
+    context "when changing a sample's metadata" do
+      let(:old_description) { 'Old description' }
+      let(:new_description) { 'Updated description' }
+
+      let(:sample) { create(:sample, sample_metadata: create(:sample_metadata, sample_description: old_description)) }
+      let(:sample_metadata_attributes) { { sample_description: new_description } }
+
+      before { action }
+
+      it 'updates the sample metadata' do
+        expect(sample.sample_metadata.sample_description).to eq(new_description)
       end
 
+      it 'creates a SampleMetadataEvent with the changes' do
+        event = sample.events.last
+        expect(event).to have_attributes(
+          message: 'Updated sample metadata',
+          content: '{"sample_description":["Old description","Updated description"]}',
+          family: 'sample_metadata',
+          of_interest_to: 'administrators',
+          created_by: current_user.login
+        )
+      end
+    end
+
+    context 'when changing the consent withdrawn status of a sample' do
+      let(:sample_metadata_attributes) { { consent_withdrawn: consent } }
+
       context 'when consent withdrawn starts off false' do
+        let(:sample) { create(:sample, consent_withdrawn: false) }
+
         context 'when changing withdraw consent' do
           let(:consent) { true }
 

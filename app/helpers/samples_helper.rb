@@ -36,7 +36,9 @@ module SamplesHelper
   def no_accessionable_studies_warning(sample)
     accession_warning(
       'Sample cannot be accessioned:',
-      sample.studies.map { |study| "Study '#{link(study)}' is missing an accession number" }
+      sample.studies.map do |study| # Add list item for each study
+        "Study '#{link(study)}' is not accessionable - #{accessioning_checklist_link(study)}"
+      end
     )
   end
 
@@ -64,5 +66,9 @@ module SamplesHelper
 
   def link(study)
     link_to(ERB::Util.html_escape(study.name), study_path(study))
+  end
+
+  def accessioning_checklist_link(study)
+    link_to 'view accessioning checklist', properties_study_path(study, anchor: 'study-accessioning-checklist')
   end
 end
