@@ -72,7 +72,7 @@ jobs:
         env:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
         run: |
-          bin/setup
+          bin/setup --skip-server
           bundle exec rake assets:precompile
 
       # Actually run our tests

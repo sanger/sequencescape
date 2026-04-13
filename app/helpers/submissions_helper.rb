@@ -139,7 +139,8 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
   def field_selection_tag(request_options, field_info, name_format, enforce_required)
     select_tag(
       name_format % field_info.key,
-      options_for_select(field_info.selection.map(&:to_s), request_options[field_info.key]),
+      options_for_select(field_info.selection.map(&:to_s),
+                         request_options[field_info.key].presence || field_info.default_value),
       class: 'custom-select',
       required: enforce_required && field_info.required,
       read_only: field_info.selection.size == 1

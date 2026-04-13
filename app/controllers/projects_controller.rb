@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
   before_action :login_required
-  before_action :set_variables_for_project, only: %i[show edit update destroy studies]
+  before_action :set_variables_for_project, only: %i[show edit update destroy]
 
   # TODO: before_action :redirect_if_not_owner_or_admin, :only => [:create, :update, :destroy, :edit, :new]
 
