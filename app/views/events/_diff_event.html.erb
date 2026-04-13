@@ -1,0 +1,7 @@
+
+<tr class="<%= cycle("rowodd", "roweven") %>">
+  <td><%= diff_event.message %></td>
+  <td><%= render_diff_event_content(diff_event.content) %></td>
+  <td><%= diff_event.created_at.to_formatted_s(:day_full_with_time) %></td>
+  <td><%= diff_event.created_by %></td>
+</tr>

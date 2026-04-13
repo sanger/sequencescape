@@ -132,11 +132,13 @@ RSpec.describe Accession do
               end
 
               sample_name = accessionable_sample.name # 'Sample1'
+              study_name = accessionable_sample.studies.first.name # 'Study1: Open'
               expect(ExceptionNotifier).to have_received(:notify_exception)
                 .with(instance_of(Accession::ExternalValidationError),
                       data: { message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
                                        'Failed to process accessioning response',
                               sample_name: sample_name,
+                              study_names: study_name,
                               service_provider: 'ENA',
                               user: event_user.login })
             end

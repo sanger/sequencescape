@@ -4,31 +4,40 @@
 <% if can? :edit, @study %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
+<% if can? :administer, @study %>
+  <% add :menu, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
+<% end %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
 
-<div id="content-links">
-  <%= link_to "View status", study_path(@study) %>
+<div class="card my-4">
+  <div class="card-body p-3">
+    <h1 class="text-center">Study Specification</h1>
+
+    <div id="template_form_body">
+      <table width='100%' cellspacing='0' cellpadding='0'>
+        <tbody>
+          <tr>
+            <td class="item" width="40%">Name:</td>
+            <td><strong><%=h @study.name %></strong></td>
+          </tr>
+          <tr>
+            <td class="item">Created at:</td>
+            <td><strong><%=h @study.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
+          </tr>
+          <tr>
+            <td class="item">Study reference genome:</td>
+            <td><strong><%= @study.study_metadata.reference_genome&.name %></strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <%= render partial: 'shared/metadata/show/study', locals: { study: @study } %>
+    </div>
+  </div>
 </div>
 
-<div class="page-header"><h1>Study Specification</h1></div>
-
-<table width='100%' cellspacing='0' cellpadding='0'>
-  <tbody>
-    <tr>
-      <td class="item" width="40%">Name:</td>
-      <td><strong><%=h @study.name %></strong></td>
-    </tr>
-    <tr>
-      <td class="item">Created at:</td>
-      <td><strong><%=h @study.created_at.to_formatted_s(:day_full_with_time) %></strong></td>
-    </tr>
-    <tr>
-      <td class="item">Study reference genome:</td>
-      <td><strong><%= @study.study_metadata.reference_genome&.name %></strong></td>
-    </tr>
-  </tbody>
-</table>
-
-<div id="template_form_body">
-  <%= render partial: 'shared/metadata/show/study', locals: { study: @study } %>
+<div class="card my-4" id="study-accessioning-checklist">
+  <div class="card-header">Study Accessioning Checklist</div>
+  <div class="card-body p-4">
+    <%= render partial: 'studies/information/study_accession_checklist' %>
+  </div>
 </div>
