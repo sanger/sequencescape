@@ -87,6 +87,12 @@ RSpec.describe SubmissionTemplate do
 
         expect(described_class.include_product_line.first.product_line).to eq(product_line)
       end
+
+      it "returns 'general' for templates without a product line" do
+        create(:submission_template, product_line: nil)
+
+        expect(described_class.grouped_by_product_lines.keys).to include('General')
+      end
     end
   end
 
