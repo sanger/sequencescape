@@ -123,7 +123,7 @@ class UserTest < ActiveSupport::TestCase
 
       should 'be able to have one assigned' do
         code = 'code'
-        @user.swipecard_code = code
+        assert_nothing_raised { @user.swipecard_code = code }
       end
     end
 
