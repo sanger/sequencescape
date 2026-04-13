@@ -21,7 +21,7 @@
 # - Release a batch (release)
 # - Show a batch summary (summary)
 class PipelinesController < ApplicationController
-  before_action :find_pipeline_by_id, only: %i[show activate deactivate destroy batches]
+  before_action :find_pipeline_by_id, only: %i[show activate deactivate batches]
   before_action :prepare_batch_and_pipeline, only: %i[summary finish]
 
   after_action :set_cache_disabled!, only: [:show]
