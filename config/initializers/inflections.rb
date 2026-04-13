@@ -16,7 +16,7 @@ ActiveSupport::Inflector.inflections(:en) do |inflect|
   inflect.acronym 'ENA' # European Nucleotide Archive
   inflect.acronym 'HTTP' # HyperText Transfer Protocol
   inflect.acronym 'EBI'  # European Bioinformatics Institute
-  inflect.acronym 'UG200' # Ultima Genomics 200
+  inflect.acronym 'UG200' # Ultima UG200
 end
 
 # These inflection rules are supported but not enabled by default:
