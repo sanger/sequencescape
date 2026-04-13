@@ -32,6 +32,11 @@
   </div>
 
   <div class='form-group'>
+    <%= f.label 'retention_instructions', 'Retention instructions' %>
+    <%= f.select :retention_instructions, options_for_select(retention_instruction_option_for_select, location_report_form.retention_instructions), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
+  </div>
+
+  <div class='form-group'>
     <%= f.label 'plate_purpose_ids', 'Labware purposes (can select multiple)' %>
     <%= f.select :plate_purpose_ids, options_for_select(Purpose.alphabetical.pluck(:name, :id), location_report_form.plate_purpose_ids), { include_hidden: false }, { class: 'form-control select2', :multiple => true } %>
   </div>
