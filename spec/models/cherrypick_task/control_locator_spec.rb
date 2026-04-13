@@ -83,7 +83,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:batch_id) { 1 }
       let(:total_wells) { 96 }
       let(:num_control_wells) { 8 }
-      let(:wells_to_leave_free) { (0...89) }
+      let(:wells_to_leave_free) { 0...89 }
 
       it_behaves_like 'an invalid ControlLocator', 0
     end
@@ -92,7 +92,7 @@ RSpec.describe CherrypickTask::ControlLocator do
       let(:batch_id) { 1 }
       let(:total_wells) { 96 }
       let(:num_control_wells) { 0 }
-      let(:wells_to_leave_free) { (0...100) }
+      let(:wells_to_leave_free) { 0...100 }
 
       it_behaves_like 'an invalid ControlLocator', 0, 'More wells left free than available'
     end
@@ -112,7 +112,7 @@ RSpec.describe CherrypickTask::ControlLocator do
         let(:batch_id) { batch_id }
         let(:total_wells) { 96 }
         let(:num_control_wells) { 2 }
-        let(:wells_to_leave_free) { (0...8) }
+        let(:wells_to_leave_free) { 0...8 }
 
         it_behaves_like 'a generator of valid positions', (8...96)
       end
@@ -139,7 +139,7 @@ RSpec.describe CherrypickTask::ControlLocator do
     context 'when over a range of batches' do
       skip 'This analysis is not required to be run every time, so we skip it by default'
 
-      let(:range) { (1...1000) }
+      let(:range) { 1...1000 }
       let(:control_positions) do
         range.map do |batch_id|
           described_class

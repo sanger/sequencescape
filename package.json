@@ -22,10 +22,10 @@
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^14.1.0",
     "postcss-preset-env": "^7.8.3",
-    "sass": "^1.98.0",
+    "sass": "^1.99.0",
     "select2": "^4.1.0-rc.0",
     "sortablejs": "^1.15.7",
-    "terser": "^5.46.0"
+    "terser": "^5.46.1"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^1.8",
