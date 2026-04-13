@@ -18,7 +18,7 @@ class EventTest < ActiveSupport::TestCase
           setup { @event = Event.create(descriptor_key: '') }
 
           should 'be valid' do
-            @event.valid?
+            assert_predicate @event, :valid?
           end
         end
       end
@@ -28,7 +28,7 @@ class EventTest < ActiveSupport::TestCase
           setup { @event = Event.create }
 
           should 'be valid' do
-            @event.valid?
+            assert_predicate @event, :valid?
           end
         end
       end

@@ -2,8 +2,8 @@
 
 require 'rails_helper'
 
-RSpec.describe UltimaSequencingRequest do
-  let(:request) { create(:ultima_sequencing_request) }
+RSpec.describe UltimaUG200SequencingRequest do
+  let(:request) { create(:ultima_ug200_sequencing_request) }
 
   describe 'Validations' do
     context 'when all attributes are valid' do
@@ -29,6 +29,14 @@ RSpec.describe UltimaSequencingRequest do
         expect(request.errors[:'request_metadata.fragment_size_required_to']).to include(
           'must be greater than or equal to 1'
         )
+      end
+    end
+
+    context 'when wafer_size value is not assigned' do
+      it 'is invalid and displays required wafer size error message' do
+        request.request_metadata.wafer_size = nil
+        request.validate
+        expect(request.errors[:'request_metadata.wafer_size']).to include("can't be blank")
       end
     end
 

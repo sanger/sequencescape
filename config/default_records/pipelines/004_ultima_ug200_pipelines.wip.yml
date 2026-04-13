@@ -1,0 +1,17 @@
+---
+Ultima UG200:
+  name: Ultima UG200 Sequencing
+  sti_type: UltimaUG200SequencingPipeline
+  validator_class_name: UltimaUG200Validator
+  sorter: 10
+  max_size: 2
+  summary: 1
+  externally_managed: 0
+  group_name: Sequencing
+  control_request_type_id: 0
+  min_size: 1
+  request_type_keys:
+    - ultima_ug200_sequencing
+  workflow:
+    name: Ultima UG200
+    item_limit: 2
