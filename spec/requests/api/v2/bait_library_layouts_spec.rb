@@ -319,7 +319,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
               'errors' => [
                 {
                   'title' => 'Missing parameter',
-                  'detail' => "param is missing or the value is empty: #{missing_parameter}",
+                  'detail' => "param is missing or the value is empty or invalid: #{missing_parameter}",
                   'code' => 400,
                   'status' => 400
                 }
