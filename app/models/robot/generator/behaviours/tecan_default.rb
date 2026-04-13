@@ -218,8 +218,17 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   def buffer_mapping_for_empty_well(plate, index, plate_size, buffer_volume_for_empty_wells)
     dst_well = Map::Coordinate.by_column_map_index_to_well_description(index, plate_size)
     well = plate.find_well_by_name(dst_well)
-    # This covers the case if the well is set in the template as empty, it will have an empty well
-    return nil if well.present?
+
+    # If the well exists and not empty, we skip adding a buffer entry for it.
+    return nil if well.present? && !well.empty?
+
+    # Check if we have a plate template that says the well should be left empty.
+    template_id = @batch&.plate_template_for_buffer_addition
+    template = PlateTemplate.find(template_id) if template_id.present?
+
+    # return if this well should remain empty according to the template
+    template_well = template.find_well_by_name(dst_well) if template.present?
+    return if template_well.present?
 
     # else set the buffer volume for this empty well
     { 'dst_well' => dst_well, 'buffer_volume' => buffer_volume_for_empty_wells }
