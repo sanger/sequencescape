@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Specialized sequencing pipeline for Ultima
+# Specialized sequencing pipeline for Ultima UG100
 class UltimaSequencingPipeline < SequencingPipeline
   def ot_recipe_consistent_for_batch?(batch)
     ot_recipe_list = batch.requests.filter_map { |request| request.request_metadata.ot_recipe }
