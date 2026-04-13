@@ -109,6 +109,7 @@ class Api::Messages::UseqWaferIo < Api::Base
     map_attribute_to_json_attribute(:amp_assign_control_bead_tube)
     map_attribute_to_json_attribute(:ot_recipe)
     map_attribute_to_json_attribute(:id_wafer_lims)
+    map_attribute_to_json_attribute(:wafer_size)
 
     # The following methods come from the Aliquot model or the relevant module above.
     # They are included in the MLWH message under 'samples'.
