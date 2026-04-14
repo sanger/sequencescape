@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Cherrypick::Task::BufferVolumeForEmptyWellsOption
+  # rubocop:disable Metrics/MethodLength
   def create_buffer_volume_for_empty_wells_option(params)
     return unless @batch
 
@@ -19,6 +20,8 @@ module Cherrypick::Task::BufferVolumeForEmptyWellsOption
       clear_plate_template_for_buffer_addition(params)
     end
   end
+
+  # rubocop:enable Metrics/MethodLength
 
   private
 

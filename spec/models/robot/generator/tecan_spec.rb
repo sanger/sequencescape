@@ -93,7 +93,9 @@ describe Robot::Generator::Tecan do
     it_behaves_like 'a generator'
 
     describe '#buffers' do
-      let(:batch) { instance_double(Batch, buffer_volume_for_empty_wells: 10.0) }
+      let(:batch) do
+        instance_double(Batch, buffer_volume_for_empty_wells: 10.0, plate_template_for_buffer_addition: nil)
+      end
       let(:data_object) do
         {
           'destination' => {
