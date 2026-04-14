@@ -6,11 +6,11 @@ RSpec.describe Descriptor do
   describe '#validate_value' do
     subject(:errors) { descriptor.validate_value(value) }
 
-    let(:feature) { :y25_105_validate_descriptor_required_field }
+    let(:feature_flag) { :y25_105_validate_descriptor_required_field }
 
     before do
       # By default, disable the feature flag
-      allow(Flipper).to receive(:enabled?).with(feature).and_return(false)
+      allow(Flipper).to receive(:enabled?).with(feature_flag).and_return(false)
     end
 
     context 'when kind is Date' do
@@ -28,7 +28,7 @@ RSpec.describe Descriptor do
 
           context 'when the feature flag is enabled' do
             before do
-              allow(Flipper).to receive(:enabled?).with(feature).and_return(true)
+              allow(Flipper).to receive(:enabled?).with(feature_flag).and_return(true)
             end
 
             it { is_expected.to contain_exactly('Some expiry is required') }
@@ -36,7 +36,7 @@ RSpec.describe Descriptor do
 
           context 'when the feature flag is disabled' do
             before do
-              allow(Flipper).to receive(:enabled?).with(feature).and_return(false)
+              allow(Flipper).to receive(:enabled?).with(feature_flag).and_return(false)
             end
 
             it { is_expected.to be_empty }
