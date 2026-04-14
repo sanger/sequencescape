@@ -91,45 +91,199 @@ describe Robot::Generator::Tecan do
     end
 
     it_behaves_like 'a generator'
+  end
+
+  context 'when adding buffer' do
+    let(:input_data_object) do
+      {
+        'user' => 'xyz987',
+        'time' => 'Tue Sep 29 11:00:42 2009',
+        'source' => {
+          '95020' => {
+            'name' => 'ABgene 0765',
+            'plate_size' => 96
+          }
+        },
+        'destination' => {
+          'SQPD-12345-U' => {
+            'name' => 'ABgene 0800',
+            'plate_size' => 96,
+            'mapping' => [
+              { 'src_well' => %w[95020 A1], 'dst_well' => 'A1', 'volume' => 13.0, 'buffer_volume' => 0.0 },
+              { 'src_well' => %w[95020 B1], 'dst_well' => 'B1', 'volume' => 7.0, 'buffer_volume' => 6.0 }
+            ]
+          }
+        }
+      }
+    end
 
     describe '#buffers' do
       let(:batch) do
-        instance_double(Batch, buffer_volume_for_empty_wells: 10.0, plate_template_for_buffer_addition: nil)
+        instance_double(Batch, buffer_volume_for_empty_wells: 120.0, plate_template_for_buffer_addition: nil)
       end
-      let(:data_object) do
-        {
-          'destination' => {
-            'SQPD-12345-U' => {
-              'name' => 'ABgene 0800',
-              'plate_size' => 96,
-              'mapping' => [
-                { 'src_well' => %w[95020 A1], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0 },
-                { 'dst_well' => 'B1', 'buffer_volume' => 10.0 }
-              ]
-            }
-          },
-          'source' => {
-            '95020' => { 'name' => 'ABgene 0765', 'plate_size' => 96 }
-          }
-        }
-      end
-      let(:generator) { described_class.new(picking_data: data_object, batch: batch, layout: nil) }
+      # TODO: remove
+      # let(:output_data_object) do
+      #   {
+      #     'destination' => {
+      #       'SQPD-12345-U' => {
+      #         'name' => 'ABgene 0800',
+      #         'plate_size' => 96,
+      #         'mapping' => [
+      #           { 'src_well' => %w[95020 A1], 'dst_well' => 'A1', 'volume' => 13, 'buffer_volume' => 0.0 },
+      #           { 'src_well' => %w[95020 B1], 'dst_well' => 'B1', 'volume' => 7.0, 'buffer_volume' => 6.0 },
+      #           { 'dst_well' => 'C1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H1', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H2', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H3', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H4', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H5', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H6', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H7', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H8', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H9', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H10', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H11', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'A12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'B12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'C12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'D12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'E12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'F12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'G12', 'buffer_volume' => 10.0 },
+      #           { 'dst_well' => 'H12', 'buffer_volume' => 10.0 }
+      #         ]
+      #       }
+      #     },
+      #     'source' => {
+      #       '95020' => { 'name' => 'ABgene 0765', 'plate_size' => 96 }
+      #     }
+      #   }
+      # end
+      let(:generator) { described_class.new(picking_data: input_data_object, batch: batch, layout: nil) }
       let(:dest_plate) { create(:plate_with_empty_wells, well_count: 4, barcode: 'SQPD-12345-U') }
 
       before do
         allow(Plate).to receive(:find_by_barcode).with('SQPD-12345-U').and_return(dest_plate)
+        allow(generator).to receive(:total_volume).and_return(13)
       end
 
-      it 'skips buffer for sample wells when src_well is present and total_volume <= mapping["volume"]' do
-        allow(generator).to receive(:total_volume).and_return(13)
-        result = generator.buffers(data_object)
-        expect(result).not_to include('A;95020')
+      context 'without a template' do
+        let(:result) { generator.buffers(input_data_object) }
+
+        it 'does not add buffer if sample volume is sufficient' do
+          expect(result).not_to include('D;SQPD-12345-U;;ABgene 0800;1;;10.0')
+        end
+
+        it 'tops up with buffer if sample volume is insufficient' do
+          expect(result).to include('D;SQPD-12345-U;;ABgene 0800;2;;6.0')
+        end
+
+        it 'fills the 94 empty wells with buffer to the volume specified' do
+          expect(result.scan(/D;.*;;120.0/).size).to eq(94)
+        end
       end
 
-      it 'includes buffer for empty wells (no src_well)' do
-        allow(generator).to receive(:total_volume).and_return(13)
-        result = generator.buffers(data_object)
-        expect(result).to include('A;')
+      context 'with a template' do
+        let!(:test_plate_template) do
+          create(:plate_template_with_well_in_H12, name: 'test_plate_template', size: 96)
+        end
+
+        let(:batch) do
+          instance_double(Batch, buffer_volume_for_empty_wells: 120.0,
+                                 plate_template_for_buffer_addition: test_plate_template.id.to_s)
+        end
+
+        let(:result) { generator.buffers(input_data_object) }
+
+        it 'does not add buffer if sample volume is sufficient' do
+          expect(result).not_to include('D;SQPD-12345-U;;ABgene 0800;1;;10.0')
+        end
+
+        it 'tops up with buffer if sample volume is insufficient' do
+          expect(result).to include('D;SQPD-12345-U;;ABgene 0800;2;;6.0')
+        end
+
+        it 'does not add buffer to the empty template well in H12' do
+          expect(result).not_to include('D;SQPD-12345-U;;ABgene 0800;H12;;120.0')
+        end
+
+        it 'fills the 93 empty wells with buffer to the volume specified' do
+          expect(result.scan(/D;.*;;120.0/).size).to eq(93)
+        end
       end
     end
 

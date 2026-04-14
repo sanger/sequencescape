@@ -80,7 +80,25 @@ FactoryBot.define do
 
     factory :plate_template_with_well do
       sequence(:name) { |n| "test_plate_template_#{n}" }
-      wells { [association(:well_with_sample_and_without_plate, map: association(:map))] }
+      wells do
+        [
+          association(:well_with_sample_and_without_plate, map: association(:map))
+        ]
+      end
+    end
+
+    factory :plate_template_with_well_in_H12 do
+      sequence(:name) { |n| "test_plate_template_#{n}" }
+      wells do
+        [
+          association(:well_with_sample_and_without_plate,
+                      map: association(:map, description: 'H12',
+                                             asset_size: '96',
+                                             location_id: 96,
+                                             row_order: 95,
+                                             column_order: 95))
+        ]
+      end
     end
   end
 
