@@ -25,7 +25,7 @@ class UltimaSequencingRequest < SequencingRequest
 
     custom_attribute(:ot_recipe, default: FREE, in: OT_RECIPE_OPTIONS, required: true)
     enum :ot_recipe, { Free: 0, Flex: 1 }
-    custom_attribute(:wafer_size, integer: true, minimum: 1)
+    custom_attribute(:wafer_size)
   end
 
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
