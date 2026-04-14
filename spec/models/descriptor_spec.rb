@@ -6,9 +6,16 @@ RSpec.describe Descriptor do
   describe '#validate_value' do
     subject(:errors) { descriptor.validate_value(value) }
 
+    let(:feature) { :y25_105_validate_descriptor_required_field }
+
+    before do
+      # By default, disable the feature flag
+      allow(Flipper).to receive(:enabled?).with(feature).and_return(false)
+    end
+
     context 'when kind is Date' do
       context 'when required is true' do
-        let(:descriptor) { described_class.new(name: 'OTR carrier expiry', kind: 'Date', required: true) }
+        let(:descriptor) { described_class.new(name: 'Some expiry', kind: 'Date', required: true) }
 
         context 'with a valid ISO 8601 date' do
           let(:value) { '2026-06-01' }
@@ -19,7 +26,21 @@ RSpec.describe Descriptor do
         context 'with a blank value' do
           let(:value) { '' }
 
-          it { is_expected.to contain_exactly('OTR carrier expiry is required') }
+          context 'when the feature flag is enabled' do
+            before do
+              allow(Flipper).to receive(:enabled?).with(feature).and_return(true)
+            end
+
+            it { is_expected.to contain_exactly('Some expiry is required') }
+          end
+
+          context 'when the feature flag is disabled' do
+            before do
+              allow(Flipper).to receive(:enabled?).with(feature).and_return(false)
+            end
+
+            it { is_expected.to be_empty }
+          end
         end
 
         context 'with an invalid date string' do
@@ -27,7 +48,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              "'not-a-date' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)"
+              "'not-a-date' is not a valid date for Some expiry (expected YYYY-MM-DD)"
             )
           }
         end
@@ -37,7 +58,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              "'01/06/2026' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)"
+              "'01/06/2026' is not a valid date for Some expiry (expected YYYY-MM-DD)"
             )
           }
         end
@@ -47,7 +68,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              'Date year for OTR carrier expiry must be between 1990 and 2100 (got 1989)'
+              'Date year for Some expiry must be between 1990 and 2100 (got 1989)'
             )
           }
         end
@@ -57,7 +78,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              'Date year for OTR carrier expiry must be between 1990 and 2100 (got 2101)'
+              'Date year for Some expiry must be between 1990 and 2100 (got 2101)'
             )
           }
         end
@@ -67,14 +88,14 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              "'62026-06-01' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)"
+              "'62026-06-01' is not a valid date for Some expiry (expected YYYY-MM-DD)"
             )
           }
         end
       end
 
       context 'when required is false' do
-        let(:descriptor) { described_class.new(name: 'OTR carrier expiry', kind: 'Date', required: false) }
+        let(:descriptor) { described_class.new(name: 'Some expiry', kind: 'Date', required: false) }
 
         context 'with a blank value' do
           let(:value) { '' }
@@ -93,7 +114,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              "'not-a-date' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)"
+              "'not-a-date' is not a valid date for Some expiry (expected YYYY-MM-DD)"
             )
           }
         end
@@ -103,7 +124,7 @@ RSpec.describe Descriptor do
 
           it {
             is_expected.to contain_exactly(
-              "'62026-06-01' is not a valid date for OTR carrier expiry (expected YYYY-MM-DD)"
+              "'62026-06-01' is not a valid date for Some expiry (expected YYYY-MM-DD)"
             )
           }
         end
