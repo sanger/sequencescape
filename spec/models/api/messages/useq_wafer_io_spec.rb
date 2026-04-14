@@ -6,7 +6,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
   let(:message) { described_class.to_hash(sequencing_batch.reload) }
 
   context 'with a batch' do
-    let(:sequencing_pipeline) { create(:ultima_sequencing_pipeline) }
+    let(:sequencing_pipeline) { create(:ultima_sequencing_pipeline, name: 'Ultima UG200 Sequencing') }
 
     let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
 
@@ -86,6 +86,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       let(:expected_json) do
         {
           'wafer_id' => sequencing_batch.id,
+          'sequencer_type' => 'UG200',
           'lanes' => [
             {
               'request_order' => 1,
@@ -150,6 +151,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       let(:expected_json) do
         {
           'wafer_id' => sequencing_batch.id,
+          'sequencer_type' => 'UG200',
           'lanes' => [
             {
               'request_order' => 1,
@@ -204,6 +206,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       let(:expected_json) do
         {
           'wafer_id' => sequencing_batch.id,
+          'sequencer_type' => 'UG200',
           'lanes' => [
             {
               'request_order' => 1,

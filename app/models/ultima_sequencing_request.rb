@@ -25,11 +25,13 @@ class UltimaSequencingRequest < SequencingRequest
 
     custom_attribute(:ot_recipe, default: FREE, in: OT_RECIPE_OPTIONS, required: true)
     enum :ot_recipe, { Free: 0, Flex: 1 }
+    custom_attribute(:wafer_size, integer: true, minimum: 1)
   end
 
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
   delegate :ot_recipe, to: :request_metadata
+  delegate :wafer_size, to: :request_metadata
 
   # Generates unique wafer ID, concatenation of batch_for_opentrons,
   # id_pool_lims, and request_order.

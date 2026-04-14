@@ -5,6 +5,7 @@
 # {Batch}
 class Api::Messages::UseqWaferIo < Api::Base
   self.includes = {
+    pipeline: [],
     requests: [
       {
         target_asset: {
@@ -88,6 +89,10 @@ class Api::Messages::UseqWaferIo < Api::Base
   map_attribute_to_json_attribute(:id, 'wafer_id')
 
   map_attribute_to_json_attribute(:updated_at)
+
+  extra_json_attributes do |batch, json_attributes|
+    json_attributes['sequencer_type'] = batch.pipeline&.name&.strip == 'Ultima UG200 Sequencing' ? 'UG200' : nil
+  end
 
   # The following methods come from the Request model or the relevant module above.
   # They are included in the MLWH message under 'lanes'.
