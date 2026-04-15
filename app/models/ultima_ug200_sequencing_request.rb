@@ -2,7 +2,7 @@
 
 # Request class specific to the Ultima UG200 sequencing platform.
 # Includes wafer size and OT recipe.
-class UltimaUG200SequencingRequest < SequencingRequest
+class UltimaUG200SequencingRequest < UltimaSequencingRequest
   include Api::Messages::UseqWaferIo::LaneExtensions
 
   FREE = 'Free'
@@ -30,16 +30,7 @@ class UltimaUG200SequencingRequest < SequencingRequest
     custom_attribute(:wafer_size, default: '10TB', validator: true, required: true, selection: true)
   end
 
-  # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
-  # This delegation has no real effect outside of the tests.
-  delegate :wafer_size, :ot_recipe, to: :request_metadata
-
-  # Generates unique wafer ID, concatenation of batch_for_opentrons,
-  # id_pool_lims, and request_order.
-  # @return [String] unique wafer ID for LIMS
-  def id_wafer_lims
-    "#{batch.id}_#{source_labware.human_barcode}_#{position}"
-  end
+  delegate :wafer_size, to: :request_metadata
 
   # Returns the sequencer type 'UG200' for UltimaUG200SequencingRequest.
   def sequencer_type
