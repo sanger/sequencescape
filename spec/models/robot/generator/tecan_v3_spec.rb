@@ -74,7 +74,10 @@ describe Robot::Generator::TecanV3 do
   let(:expected_output) { File.read("spec/data/tecan_v3/case_#{case_num}.gwl") }
 
   before do
-    allow(batch).to receive(:buffer_volume_for_empty_wells).and_return(nil)
+    allow(batch).to receive_messages(
+      buffer_volume_for_empty_wells: nil,
+      plate_template_for_buffer_addition: nil
+    )
   end
 
   shared_examples 'a TecanV3 generator' do
