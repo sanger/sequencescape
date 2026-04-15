@@ -5,7 +5,6 @@
 # {Batch}
 class Api::Messages::UseqWaferIo < Api::Base
   self.includes = {
-    pipeline: [],
     requests: [
       {
         target_asset: {
