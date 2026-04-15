@@ -28,10 +28,10 @@ Custom primer kit used:
   task: Loading
   workflow: Element Aviti
   kind: Selection
-  value: Yes
+  value: "true"
   selection:
-    Yes: Yes
-    No: No
+    true: true
+    false: false
   required: true
   sorter: 1
 "200mM Tris PH7 lot#":

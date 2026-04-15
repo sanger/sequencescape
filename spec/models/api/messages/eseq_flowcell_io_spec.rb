@@ -45,7 +45,7 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
             'id_pool_lims' => mx_tube1.human_barcode,
             'entity_id_lims' => lane1.id,
             'quant_method_used' => 'Tapestation',
-            'custom_primer_kit_used' => 'No',
+            'custom_primer_kit_used' => 'false',
             'samples' => [
               {
                 'tag_sequence' => tags[0].oligo,
@@ -79,7 +79,7 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
     let(:request_data) do
       {
         'Quant method used' => 'Tapestation',
-        'Custom primer kit used' => 'No'
+        'Custom primer kit used' => 'false'
       }
     end
 
@@ -113,7 +113,7 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
           batch: request.batch,
           descriptors: {
             'Quant method used' => 'Tapestation & qPCR',
-            'Custom primer kit used' => 'Yes'
+            'Custom primer kit used' => 'true'
           }
         )
       end
@@ -127,7 +127,7 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
               'id_pool_lims' => mx_tube1.human_barcode,
               'entity_id_lims' => lane1.id,
               'quant_method_used' => 'Tapestation & qPCR',
-              'custom_primer_kit_used' => 'Yes',
+              'custom_primer_kit_used' => 'true',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
