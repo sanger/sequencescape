@@ -247,4 +247,86 @@ RSpec.describe Api::Messages::UseqWaferIo do
       end
     end
   end
+
+  context 'with Ultima UG200 sequencing request' do
+    let(:sequencing_pipeline) { create(:ultima_ug200_sequencing_pipeline) }
+    let(:expected_json) do
+      {
+        'wafer_id' => sequencing_batch.id,
+        'lanes' => [
+          {
+            'request_order' => 1,
+            'id_wafer_lims' => "#{sequencing_batch.id}_#{mx_tube1.human_barcode}_1",
+            'id_pool_lims' => mx_tube1.human_barcode,
+            'entity_id_lims' => lane1.id,
+            'otr_instrument_name' => 'OTR Inst 1',
+            'amp_instrument_name' => 'UG Amp 1',
+            'ot_recipe' => 'Free',
+            'wafer_size' => '10TB',
+            'sequencer_type' => 'UG200',
+            'samples' => [
+              {
+                'tag_sequence' => tags[0].oligo,
+                'pipeline_id_lims' => 'Standard',
+                'bait_name' => aliquots[0].bait_library.name,
+                'requested_insert_size_from' => 100,
+                'requested_insert_size_to' => 200,
+                'sample_uuid' => aliquots[0].sample.uuid,
+                'study_uuid' => aliquots[0].study.uuid,
+                'primer_panel' => aliquots[0].primer_panel.name,
+                'id_library_lims' => aliquots[0].library.human_barcode,
+                'entity_type' => 'library_indexed'
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
+
+    let(:request_data) do
+      {
+        'UG AMP Inst. Name' => 'UG Amp 1',
+        'Opentrons Inst. Name' => 'OTR Inst 1'
+      }
+    end
+
+    let(:request1) do
+      create(
+        :ultima_ug200_sequencing_request,
+        asset: mx_tube1,
+        batch: sequencing_batch,
+        target_asset: lane1,
+        request_type: request_type
+      ).tap do |request|
+        create(:flowcell_event, descriptors: request_data, batch: request.batch, eventful: request)
+      end
+    end
+
+    let(:mx_tube1) { create(:multiplexed_library_tube, sample_count: 1) }
+
+    let(:request_type) { sequencing_pipeline.request_types.first }
+
+    let(:lane1) do
+      create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap(&:index_aliquots)
+    end
+
+    let(:tags) { lane1.aliquots.map(&:tag) }
+    let(:aliquots) { lane1.aliquots }
+
+    before do
+      create(
+        :event,
+        content: Time.zone.today.to_s,
+        message: 'scanned in',
+        family: 'scanned_into_lab',
+        eventful: mx_tube1
+      )
+    end
+
+    it 'generates valid json with sequencer_type and wafer_size' do
+      expect(message.as_json).to include_json(expected_json)
+    end
+  end
 end
