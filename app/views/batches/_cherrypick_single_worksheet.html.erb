@@ -34,6 +34,9 @@
   <% indexed_requests = batch.requests.includes(asset: [:map, { plate: :barcodes }]).index_by(&:target_asset_id) %>
   <% destination_layout.sort_by(&:last).each do |barcode, index| -%>
     <% plate = Plate.includes(wells: [:map, :well_attribute]).find_from_barcode(barcode) %>
+    <%# Fetch plate template from batch %>
+    <% template_id = batch.plate_template_for_buffer_addition %>
+    <% template = PlateTemplate.find(template_id) if template_id.present? %>
     <% if plate.buffer_required? %>
       <h3>Buffer Required</h3>
     <% end %>
@@ -87,11 +90,9 @@
               <% else %>
                 <td>
               <% end -%>
-              <%# # Check if the well is empty and buffer volume for empty wells is requested. %>
+              <%# Check if the well is empty and buffer volume for empty wells is requested. %>
               <% if empty_well && buffer_volume_for_empty_wells.present? -%>
-                <%# # Check if we have a plate template that says the well should be left empty. %>
-                <% template_id = batch.plate_template_for_buffer_addition %>
-                <% template = PlateTemplate.find(template_id) if template_id.present? %>
+                <%# Check if we have a plate template that says the well should be left empty. %>
                 <% well_name = rowchar + (column + 1).to_s %>
                 <% template_well = template.find_well_by_name(well_name) if template.present? %>
                 <% if template_well.blank? %>
