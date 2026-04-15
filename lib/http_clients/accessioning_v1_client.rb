@@ -6,7 +6,7 @@ module HTTPClients
   # Usage:
   #   ```rb
   #   client = HTTPClients::AccessioningClient.new
-  #   accession_number = client.submit_and_fetch_accession_number(submission)
+  #   accession_number = client.submit_and_fetch_accession_number(login, files)
   #   ````
   #
   # API documentation: https://ena-docs.readthedocs.io/en/latest/submit/general-guide/webin-v1.html
