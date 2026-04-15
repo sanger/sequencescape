@@ -163,10 +163,6 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   def plate_mapping_for_buffers(dest_plate_barcode, plate_details, buffer_volume_for_empty_wells)
     plate = Plate.find_by_barcode(dest_plate_barcode)
     plate_size = plate_details['plate_size']
-    # TODO: {PlateTemplate} fetch plate template assigned to batch here, use it to determine empty wells
-    # for buffer addition
-    # TODO: {PlateTemplate} method parameters into opts hash and pass to build_buffer_mapping instead of
-    # individual parameters
     mapping = build_buffer_mapping(plate, plate_details, plate_size, buffer_volume_for_empty_wells)
     {
       'name' => plate_details['name'],

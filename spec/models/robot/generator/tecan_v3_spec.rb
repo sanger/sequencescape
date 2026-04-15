@@ -245,4 +245,37 @@ describe Robot::Generator::TecanV3 do
     # wells with buffer, and add the 48 sample transfers as specified in the mapping data
     it_behaves_like 'a TecanV3 generator'
   end
+
+  context 'with automated buffer addition and a template with H12 empty' do
+    # half plate of samples, half empty wells, template has H12 empty so should not receive buffer
+    let(:indexes) { 1..48 }
+    let(:case_num) { 12 }
+    let(:test_plate_template) do
+      create(:plate_template_with_well_in_H12, name: 'test_plate_template', size: 96)
+    end
+
+    let(:mapping_data) do
+      indexes.filter_map do |index|
+        location = Map::Coordinate.vertical_position_to_description(index, number_of_rows)
+
+        volume = total_volume_to_cherrypick - 1 - index
+        buffer_volume = total_volume_to_cherrypick - volume
+
+        { 'src_well' => [source_barcode, location], 'dst_well' => location,
+          'volume' => volume, 'buffer_volume' => buffer_volume }
+      end
+    end
+
+    before do
+      allow(batch).to receive_messages(
+        buffer_volume_for_empty_wells: 120.0,
+        plate_template_for_buffer_addition: test_plate_template.id.to_s
+      )
+
+      dest_plate = create(:plate, barcode: dest_barcode, size: 96, sample_count: 0)
+      allow(Plate).to receive(:find_by_barcode).with(dest_barcode).and_return(dest_plate)
+    end
+
+    it_behaves_like 'a TecanV3 generator'
+  end
 end
