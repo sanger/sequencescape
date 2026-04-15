@@ -180,12 +180,19 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   # @return [Array<Hash>] Array of mapping and buffer entries
   def build_buffer_mapping(plate, plate_details, plate_size, buffer_volume_for_empty_wells)
     index_to_mapping = plate_details['mapping'].index_by { |entry| Map::Coordinate.well_description_to_by_column_map_index(entry['dst_well'], plate_size) }
+
+    # Check and fetch plate template if one is present, pass on to well loop in opts
+    template_id = @batch&.plate_template_for_buffer_addition
+    template = PlateTemplate.find(template_id) if template_id.present?
+
     opts = {
       index_to_mapping:,
       plate:,
       plate_size:,
-      buffer_volume_for_empty_wells:
+      buffer_volume_for_empty_wells:,
+      template:
     }
+
     (1..plate_size).each_with_object([]) do |index, mapping|
       mapping_or_buffer_entry(mapping, opts.merge(index:))
     end
@@ -200,8 +207,7 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
     if opts[:index_to_mapping].key?(opts[:index])
       mapping << opts[:index_to_mapping][opts[:index]]
     else
-      buffer_entry = buffer_mapping_for_empty_well(opts[:plate], opts[:index], opts[:plate_size],
-                                                   opts[:buffer_volume_for_empty_wells])
+      buffer_entry = buffer_mapping_for_empty_well(opts)
       mapping << buffer_entry if buffer_entry
     end
   end
@@ -213,23 +219,19 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
   # @param plate_size [Integer] The size of the plate
   # @param buffer_volume_for_empty_wells [Float] Buffer volume to add
   # @return [Hash, nil] Buffer entry hash or nil if well is not empty
-  def buffer_mapping_for_empty_well(plate, index, plate_size, buffer_volume_for_empty_wells)
-    dst_well = Map::Coordinate.by_column_map_index_to_well_description(index, plate_size)
-    well = plate.find_well_by_name(dst_well)
+  def buffer_mapping_for_empty_well(opts)
+    dst_well = Map::Coordinate.by_column_map_index_to_well_description(opts[:index], opts[:plate_size])
+    well = opts[:plate].find_well_by_name(dst_well)
 
     # If the well exists and not empty, we skip adding a buffer entry for it.
     return nil if well.present? && !well.empty?
 
-    # Check if we have a plate template that says the well should be left empty.
-    template_id = @batch&.plate_template_for_buffer_addition
-    template = PlateTemplate.find(template_id) if template_id.present?
-
     # return if this well should remain empty according to the template
-    template_well = template.find_well_by_name(dst_well) if template.present?
+    template_well = opts[:template].find_well_by_name(dst_well) if opts[:template].present?
     return if template_well.present?
 
     # else set the buffer volume for this empty well
-    { 'dst_well' => dst_well, 'buffer_volume' => buffer_volume_for_empty_wells }
+    { 'dst_well' => dst_well, 'buffer_volume' => opts[:buffer_volume_for_empty_wells] }
   end
 
   # Determines if a buffer entry should be skipped for a mapping.
