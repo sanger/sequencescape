@@ -292,7 +292,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       }
     end
 
-    let(:request1) do
+    let!(:request1) do
       create(
         :ultima_ug200_sequencing_request,
         asset: mx_tube1,
