@@ -59,13 +59,13 @@
           <mj-text>
             A batch of
             <strong>
-              <mj-raw>{{ fields | length }}</mj-raw> </strong
-            >&nbsp;samples have failed to accession for study
+              <mj-raw>{{ fields | length }}</mj-raw></strong
+            > samples have failed to accession for study
             <strong>
-              <mj-raw>{{ fields[0]["study_name"] }}</mj-raw> </strong
-            >&nbsp;and manifest
+              <mj-raw>{{ fields[0]["study_name"] }}</mj-raw></strong
+            > and manifest
             <strong>
-              <mj-raw>{{ fields[0]["manifest_id"] }}</mj-raw> </strong
+              <mj-raw>{{ fields[0]["manifest_id"] }}</mj-raw></strong
             >.
             <br />
             Please review and address the warnings below.
@@ -125,9 +125,9 @@
       <mj-section mj-class="py-0">
         <mj-column>
           <mj-text mj-class="py-0">
-            First&nbsp;
+            First
             <mj-raw>{{ [fields | length, 5] | min }}</mj-raw>
-            &nbsp;failures:
+            failures:
           </mj-text>
         </mj-column>
       </mj-section>
