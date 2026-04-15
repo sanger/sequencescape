@@ -8,6 +8,9 @@ module Tasks::SetDescriptorsHandler
     end
 
     def perform
+      errors = validate_descriptor_inputs
+      return [false, errors.join(', ')] if errors.any?
+
       # Process each request that has been selected in the front end
       # by default all requests are selected, but in rare circumstances the user
       # can uncheck a request to exclude it from the step
@@ -28,8 +31,37 @@ module Tasks::SetDescriptorsHandler
 
     private
 
+    # Iterates every descriptor on the task and asks each one to validate the
+    # submitted value.
+    # @return [Array<String>] An array of error messages, empty if all values are valid
+    def validate_descriptor_inputs
+      return [] if task.descriptors.empty?
+
+      selected_requests_for_validation.each_with_object([]) do |request, errors|
+        errors.concat(descriptor_errors_for(request))
+      end.uniq
+    end
+
     def params
       @params.respond_to?(:permit!) ? @params.permit!.to_h : @params
+    end
+
+    # Returns an array of the requests that have been selected in the UI for
+    # the Task Details form.
+    # @return [Array<Integer>] An array of selected requests
+    def selected_requests_for_validation
+      requests.select { |request| selected_requests.include?(request.id) }
+    end
+
+    # For a given request, returns an array of error messages for any descriptors
+    # that fail validation.
+    # @return [Array<String>] An array of error messages, empty if all values are valid
+    def descriptor_errors_for(request)
+      submitted = descriptors(request)
+
+      task.descriptors.each_with_object([]) do |descriptor, errors|
+        errors.concat(descriptor.validate_value(submitted[descriptor.name]))
+      end
     end
 
     def process_request(request)

@@ -178,7 +178,7 @@ It will pick up the version from the .ruby-version file automatically
 To automatically install the required gems, set-up default configuration files, and set up your database run:
 
 ```shell
-bin/setup
+bin/setup --skip-server
 ```
 
 ### Manual Sequencescape setup
