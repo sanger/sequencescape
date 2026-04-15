@@ -40,4 +40,9 @@ class UltimaUG200SequencingRequest < SequencingRequest
   def id_wafer_lims
     "#{batch.id}_#{source_labware.human_barcode}_#{position}"
   end
+
+  # Returns the sequencer type 'UG200' for UltimaUG200SequencingRequest.
+  def sequencer_type
+    'UG200'
+  end
 end
