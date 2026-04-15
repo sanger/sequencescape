@@ -16,7 +16,8 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
         batch: sequencing_batch,
         target_asset: lane1,
         request_type: request_type,
-        event_descriptors: request_data
+        event_descriptors: request_data,
+        sti_type: 'ElementAvitiSequencingRequest'
       )
     end
 

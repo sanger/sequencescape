@@ -3,7 +3,6 @@
 
 class SequencingRequest < CustomerRequest
   include Api::Messages::FlowcellIo::LaneExtensions
-  include Api::Messages::EseqFlowcellIo::LaneExtensions
 
   class_attribute :flowcell_identifier
 
