@@ -10,7 +10,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
 
     let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
 
-    let!(:request1) do
+    let(:request1) do
       create(
         :complete_ultima_sequencing_request,
         asset: mx_tube1,
@@ -33,6 +33,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
     let(:aliquots) { lane1.aliquots }
 
     before do
+      request1
       # Scanned in event
       create(
         :event,
@@ -292,7 +293,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       }
     end
 
-    let!(:request1) do
+    let(:request1) do
       create(
         :ultima_ug200_sequencing_request,
         asset: mx_tube1,
@@ -316,6 +317,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
     let(:aliquots) { lane1.aliquots }
 
     before do
+      request1
       create(
         :event,
         content: Time.zone.today.to_s,
