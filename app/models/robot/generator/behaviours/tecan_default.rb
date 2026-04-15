@@ -214,10 +214,12 @@ module Robot::Generator::Behaviours::TecanDefault # rubocop:disable Metrics/Modu
 
   # Returns a buffer entry for an empty well, or nil if the well is not empty.
   #
-  # @param plate [Plate] The destination plate object
-  # @param index [Integer] The well index (by column order)
-  # @param plate_size [Integer] The size of the plate
-  # @param buffer_volume_for_empty_wells [Float] Buffer volume to add
+  # @param opts [Hash] Options hash containing:
+  # @option opts [Plate] :plate The destination plate object
+  # @option opts [Integer] :index The well index (by column order)
+  # @option opts [Integer] :plate_size The size of the plate
+  # @option opts [Float] :buffer_volume_for_empty_wells Buffer volume to add
+  # @option opts [PlateTemplate, nil] :template Optional plate template to check for empty wells
   # @return [Hash, nil] Buffer entry hash or nil if well is not empty
   def buffer_mapping_for_empty_well(opts)
     dst_well = Map::Coordinate.by_column_map_index_to_well_description(opts[:index], opts[:plate_size])
