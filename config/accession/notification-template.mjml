@@ -46,6 +46,7 @@
     <mj-wrapper></mj-wrapper>
     <mj-wrapper css-class="shadow" mj-class="p-0 bg-body border-radius-1">
       <!-- Header Section -->
+      <!-- NOTE: uncomment the appropriate line for the deployed environment -->
       <mj-section mj-class="bg-sequencescape-production"></mj-section>
       <!-- <mj-section mj-class="bg-sequencescape-uat"></mj-section> -->
       <mj-section mj-class="p-0">
