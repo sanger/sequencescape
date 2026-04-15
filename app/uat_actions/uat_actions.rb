@@ -15,6 +15,7 @@ class UatActions
   CATEGORY_LIST = %i[setup_and_test generating_samples auxiliary_data quality_control uncategorised].freeze
 
   class_attribute :title, :description, :category, :message
+  self.category = CATEGORY_LIST.last # default category, intended to be overridden by subclasses
   self.message = 'Completed successfully'
 
   class << self
@@ -41,11 +42,6 @@ class UatActions
     # The hash of all registered uat_actions
     def uat_actions
       @uat_actions ||= {}
-    end
-
-    # Default category should one not be provided
-    def category
-      UatActions::CATEGORY_LIST.last
     end
 
     # Returns a hash of all registered uat_actions grouped by category and sorted
