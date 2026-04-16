@@ -106,6 +106,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_assign_control_bead_tube' => 'BeadTube002',
               'amp_instrument_name' => 'UG Amp 2',
               'ot_recipe' => 'Free',
+              'wafer_size' => nil,
+              'sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
@@ -170,6 +172,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_assign_control_bead_tube' => 'BeadTube001',
               'amp_instrument_name' => 'UG Amp 1',
               'ot_recipe' => 'Free',
+              'wafer_size' => nil,
+              'sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
@@ -224,6 +228,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_assign_control_bead_tube' => nil,
               'amp_instrument_name' => 'UG Amp 1',
               'ot_recipe' => 'Free',
+              'wafer_size' => nil,
+              'sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
