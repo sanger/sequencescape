@@ -4,6 +4,10 @@ require 'lab_where_client'
 
 RSpec.describe LabWhereClient do
   describe LabWhereClient::Scan do
+    before { configatron.labwhere_api = 'https://labwhere.example.com/api' }
+    # Reset the configatron value after the test to avoid affecting other tests
+    after { configatron.labwhere_api = nil }
+
     let(:scan_params) { { 'message' => 'Scan successful', 'errors' => nil } }
     let(:scan) { described_class.new(scan_params) }
 
@@ -41,10 +45,26 @@ RSpec.describe LabWhereClient do
         )
       end
 
-      it 'raises an error when Labwhere is down' do
-        labwhere = instance_double(LabWhereClient::LabWhere)
-        allow(LabWhereClient::LabWhere).to receive(:new).and_return(labwhere)
-        allow(labwhere).to receive(:post).and_raise(LabWhereClient::LabwhereException.new, 'LabWhere service is down')
+      it 'propagates labwhere errors when receieving unprocessible entity errors' do
+        error_response = RestClient::UnprocessableEntity.new
+        allow(error_response).to receive(:response).and_return({ errors: 'Invalid data' }.to_json)
+        allow(RestClient).to receive(:post).and_raise(error_response)
+
+        scan = described_class.create(location_barcode: '123', user_code: '456', labware_barcodes: ['789'])
+        expect(scan.valid?).to be false
+        expect(scan.errors).to eq('Invalid data')
+      end
+
+      it 'raises an error when Labwhere is unreachable' do
+        allow(RestClient).to receive(:post).and_raise(Errno::ECONNREFUSED)
+
+        expect do
+          described_class.create(location_barcode: '123', user_code: '456', labware_barcodes: ['789'])
+        end.to raise_error(LabWhereClient::LabwhereException, 'LabWhere service is down')
+      end
+
+      it 'raises an error on other rest client error types' do
+        allow(RestClient).to receive(:post).and_raise(RestClient::Exceptions::OpenTimeout)
 
         expect do
           described_class.create(location_barcode: '123', user_code: '456', labware_barcodes: ['789'])
