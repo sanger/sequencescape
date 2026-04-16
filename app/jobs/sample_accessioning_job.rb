@@ -117,7 +117,7 @@ SampleAccessioningJob =
     end
 
     # Log and email developers of the accessioning error
-    def notify_developers(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
+    def send_failure_notifications(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
       sample_name = submission.sample.sample.name
       message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
       study_names = submission.sample.sample.studies_for_accessioning.map(&:name).join(', ')
@@ -131,6 +131,27 @@ SampleAccessioningJob =
 
       Rails.logger.error(message)
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
+
+      if Flipper.enabled?(:y26_094_notify_email_on_accessioning_failures)
+        # Send an email to users when accessioning fails
+        sample = submission.sample.sample
+        failure_groups = []
+        case error
+        when Accession::ExternalValidationError
+          failure_groups << 'External failure'
+          if error.message.include?('No new objects can be added with MODIFY action.')
+            failure_groups << 'Existing accession number conflict'
+          end
+        when Accession::InternalValidationError
+          failure_groups << 'Internal validations'
+          Array(error.invalid_fields).each do |field|
+            failure_groups << "Invalid #{field.to_s.humanize.downcase}"
+          end
+        end
+
+        notification_client = HTTPClients::AccessioningNotificationClient.new
+        notification_client.create_notification(sample, error.message, failure_groups)
+      end
 
       case error
       when Accession::ExternalValidationError
@@ -147,6 +168,6 @@ SampleAccessioningJob =
     def handle_job_error(error, submission)
       message = Accession.user_error_message(error)
       fail_accession_status(message)
-      notify_developers(error, submission)
+      send_failure_notifications(error, submission)
     end
   end

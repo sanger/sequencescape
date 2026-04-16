@@ -54,7 +54,8 @@ module Accession
       # Add sample context to the error message for logging
       error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
-      raise Accession::InternalValidationError, error_message
+      puts errors.inspect # Log the full error details for debugging
+      raise Accession::InternalValidationError, error_message, invalid_fields: 'errors.fields'
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength

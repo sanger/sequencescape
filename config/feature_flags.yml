@@ -16,3 +16,4 @@ y25_706_enable_accessioning: Enables the accessioning feature in the application
 y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning
 y25_705_notify_on_internal_accessioning_validation_failures: Sends email to developers when internal validation fails during accessioning
 y25_705_notify_on_external_accessioning_validation_failures: Sends email to developers when external validation fails during accessioning
+y26_094_notify_email_on_accessioning_failures: Sends email to users when accessioning fails
