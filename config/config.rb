@@ -14,6 +14,12 @@ configatron.accession do |accession|
   accession.ena.user = 'era_accession_login'
   accession.ena.password = 'era_accession_password'
   accession.drop_box_url = 'http://localhost:9999/ena/submit/drop-box/'
+
+  accession.notifications.credentials do |credentials|
+    credentials.client_id = 'accession_notifications_client_id'
+    credentials.client_secret = 'accession_notifications_client_secret'
+    credentials.auth_token_url = 'http://localhost:9999/auth/token'
+  end
 end
 
 configatron.admin_email = 'admin@test.com'
