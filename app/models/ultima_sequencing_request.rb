@@ -43,6 +43,7 @@ class UltimaSequencingRequest < SequencingRequest
     'UG100'
   end
 
+  # Returns the wafer size for UltimaSequencingRequest as nil, as not tracked in UG100
   def wafer_size
     nil
   end
