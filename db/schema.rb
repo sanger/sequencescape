@@ -1191,6 +1191,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
     t.boolean "low_diversity"
     t.integer "percent_phix_requested"
     t.integer "ot_recipe"
+    t.string "wafer_size"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 

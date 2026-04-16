@@ -78,4 +78,16 @@ RSpec.describe Presenters::BatchSubmenuPresenter do
       end
     end
   end
+
+  context 'when we are in the Ultima UG200 sequencing pipeline' do
+    let(:current_user) { create(:user) }
+    let(:batch) { create(:ultima_ug200_sequencing_batch, state: 'released') }
+    let(:generate_sample_sheet_option) do
+      { label: 'Download Sample Sheet', url: "/batches/#{batch.id}/generate_sample_sheet" }
+    end
+
+    it 'includes a link to download the sample sheet' do
+      expect(batch_submenu_presenter.each_option.to_a).to include(generate_sample_sheet_option)
+    end
+  end
 end
