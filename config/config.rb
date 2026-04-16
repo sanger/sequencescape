@@ -18,7 +18,7 @@ configatron.accession do |accession|
   accession.notifications.credentials do |credentials|
     credentials.client_id = 'accession_notifications_client_id'
     credentials.client_secret = 'accession_notifications_client_secret'
-    credentials.auth_token_url = 'http://localhost:9999/auth/token'
+    credentials.auth_token_url = 'http://localhost:9998/oauth2/token'
   end
 end
 
