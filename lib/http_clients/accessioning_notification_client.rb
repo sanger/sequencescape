@@ -77,18 +77,24 @@ module HTTPClients
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
     def get_token_data(credentials)
-      response = Faraday.post(credentials.auth_token_url) do |req|
-        req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        req.body = URI.encode_www_form(
+      auth_conn = Faraday.new(url: credentials.auth_token_url) do |f|
+        f.request :url_encoded
+        f.response :json
+      end
+
+      response = auth_conn.post do |req|
+        # req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
+        # TODO: add test for correct content type header
+        req.body = {
           grant_type: 'client_credentials',
           client_id: credentials.client_id,
           client_secret: credentials.client_secret
-        )
+        }
       end
 
       raise "Failed to obtain auth token: #{response.status} - #{response.body}" unless response.success?
 
-      JSON.parse(response.body)
+      response.body
     end
   end
 end
