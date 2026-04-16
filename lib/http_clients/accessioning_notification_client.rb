@@ -20,6 +20,8 @@ module HTTPClients
       end
     end
 
+    # TODO: add tests for auth-token retrieval and caching
+
     # Post the submission to the appropriate accessioning service.
     # It will open the payload of the submission and make sure that the payload is closed afterwards.
     #
@@ -42,6 +44,7 @@ module HTTPClients
 
     # Creates a notification in the Integration Hub for a given sample and message.
     # TODO: update this docstring
+    # TODO: add tests for this method
     def create_notification(sample, message, etc_etc_etc)
       conn.request :authorization, 'Bearer', -> { auth_token }
 
@@ -57,8 +60,8 @@ module HTTPClients
       cached_token = Rails.cache.read(cache_key)
       return cached_token if cached_token.present?
 
-      credentials = configatron.accession_notifications.credentials
-      token_data = get_bearer_token(credentials)
+      credentials = configatron.accession.notifications.credentials
+      token_data = get_token_data(credentials)
 
       # Refresh 30 seconds early to avoid edge-of-expiry failures
       ttl_seconds = [token_data[:expires_in].to_i - 30, 1].max
