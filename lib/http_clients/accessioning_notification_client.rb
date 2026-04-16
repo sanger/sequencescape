@@ -40,45 +40,24 @@ module HTTPClients
         f.request :json
         f.request :authorization, 'Bearer', -> { auth_token }
 
-        f.response :raise_error, include_request: true # Raise exceptions on 4xx/5xx responses
+        f.response :raise_error # Raise exceptions on 4xx/5xx responses
         f.response :json
       end
     end
 
     # TODO: add tests for auth-token retrieval and caching
 
-    # Post the submission to the appropriate accessioning service.
-    # It will open the payload of the submission and make sure that the payload is closed afterwards.
-    #
-    # @param login [Hash{Symbol => String}] A hash with :username and :password for basic auth.
-    # @param files [Hash{String => File}] A hash mapping of file type names to open File objects.
-    #   The filename in the multipart payload will be the part of the file object's name after the first underscore.
-    # @return [String] The allocated accession number if successful.
-    # @raise [Accession::ExternalValidationError] If the response is not successful or does not indicate success.
-    # @raise [Faraday::Error] If the HTTP request fails.
-    def submit_and_fetch_accession_number(login, files)
-      # Clone the base connection and add basic auth for this request
-      conn_with_auth = conn.dup
-      conn_with_auth.request :authorization, :basic, login[:user], login[:password]
-
-      payload = build_payload(files)
-      response = conn_with_auth.post('', payload) # POST to the given API root with the payload as the body
-      extract_accession_number(response.body)
-    end
-
     # Creates a notification in the Integration Hub for a given sample and message.
     # TODO: update this docstring
     # TODO: add tests for this method
-    def create_notification(sample, message, etc_etc_etc)
-      payload = build_notification_payload(sample, message, etc_etc_etc)
+    # @param sample [Sample] The sample associated with the notification.
+    # @param message [String] The message to include in the notification.
+    # @return [String] The ID of the created notification if successful.
+    # @raise [Faraday::Error] If the HTTP request fails.
+    def create_notification(sample, message)
+      payload = build_notification_payload(sample, message)
       response = conn.post(NOTIFICATIONS_URL, payload)
-      puts "Notification API response: #{response.status} - #{response.body}"
-    rescue Faraday::Error => e
-      puts e.response_status #=> 404
-      # puts  e.response_headers  #=> { ... }
-      puts e.response_body #=> "..."
-      puts e.message #=> "the server responded with status 404"
-      puts e.inspect
+      response.body['notification_id']
     end
 
     private
@@ -90,30 +69,18 @@ module HTTPClients
     def auth_token
       cache_key = 'integration_hub/auth_token'
       cached_token = Rails.cache.read(cache_key)
-      puts cached_token
-      puts 'Using cached auth token {cached_token}' if cached_token.present?
       return cached_token if cached_token.present?
 
       credentials = configatron.integration_hub
       token_data = get_token_data(credentials)
 
-      puts token_data
       access_token = token_data['access_token']
       expires_in = token_data['expires_in']
 
       # Refresh 30 seconds early to avoid edge-of-expiry failures
       ttl_seconds = [expires_in.to_i - 30, 60].max
 
-      Rails.cache.write(cache_key,
-                        access_token,
-                        expires_in: ttl_seconds,
-                        race_condition_ttl: 30) # serverless provider can take time to spin up, so allow a bit extra
-
-      puts "Obtained new auth token for accessioning notifications, expires in #{ttl_seconds} seconds"
-
-      puts '-----'
-      puts access_token
-      puts '-----'
+      Rails.cache.write(cache_key, access_token, expires_in: ttl_seconds, race_condition_ttl: 10)
 
       access_token
     end
@@ -144,27 +111,30 @@ module HTTPClients
       response.body
     end
 
-    def build_notification_payload(sample, message, _etc_etc_etc) # rubocop:disable Metrics/AbcSize
+    def build_notification_payload(sample, message)
+      # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
+      sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
+      notifications_config = configatron.accession.notifications
       {
         channels: [
           {
-            type: configatron.accession.notifications.notification_type,
-            recipient: configatron.accession.notifications.recipient,
+            type: notifications_config.notification_type,
+            recipient: notifications_config.recipient,
+            content_type: notifications_config.content_type,
+            template_id: notifications_config.template_id,
             subject: SUBJECT,
-            content_type: configatron.accession.notifications.content_type,
-            template_id: configatron.accession.notifications.template_id,
             fields: {
               study_name: sample.studies.first.name, # TODO: update this to be more accurate
               manifest_id: 'manifest-123', # TODO: update this to be the actual manifest ID
               sample_name: sample.name,
               supplier_sample_name: sample.supplier_name || 'unknown supplier sample name',
               accessioning_status_message: message,
-              sample_path: Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk') # localhost causes a 502 from the Notifications API
+              sample_path: sample_path
             }
           }
         ],
         priority: PRIORITY,
-        aggregator_id: 'manifest-123'
+        aggregator_id: 'manifest-123' # TODO: update this to be the actual manifest ID
       }
     end
   end
