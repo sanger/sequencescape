@@ -5,10 +5,12 @@ module HTTPClients
   #
   # Usage:
   #   ```rb
-  #   accessioning_error = Accession::ExternalValidationError.new('Failed to process accessioning response')
+  #   sample = Sample.last
+  #   message = "Accessioning failed due to XYZ reason"
+  #   failure_groups = ['Internal validation failure', 'ENA validation failure'] # can be any consistent values
   #
   #   client = HTTPClients::AccessioningNotificationClient.new
-  #   client.create_notification(accessioning_error)
+  #   client.create_notification(sample, message, failure_groups)
   #   ````
   #
   # API documentation: https://integration-hub.sanger.ac.uk/docs/notification-api/how-to-use/#invoking-the-api
@@ -52,10 +54,11 @@ module HTTPClients
     # TODO: add tests for this method
     # @param sample [Sample] The sample associated with the notification.
     # @param message [String] The message to include in the notification.
+    # @param failure_groups [Array<String>] An array of failure group names to include in the notification summary.
     # @return [String] The ID of the created notification if successful.
     # @raise [Faraday::Error] If the HTTP request fails.
-    def create_notification(sample, message)
-      payload = build_notification_payload(sample, message)
+    def create_notification(sample, message, failure_groups)
+      payload = build_notification_payload(sample, message, failure_groups)
       response = conn.post(NOTIFICATIONS_URL, payload)
       response.body['notification_id']
     end
@@ -111,7 +114,7 @@ module HTTPClients
       response.body
     end
 
-    def build_notification_payload(sample, message)
+    def build_notification_payload(sample, message, failure_groups)
       # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
       notifications_config = configatron.accession.notifications
@@ -128,8 +131,9 @@ module HTTPClients
               manifest_id: 'manifest-123', # TODO: update this to be the actual manifest ID
               sample_name: sample.name,
               supplier_sample_name: sample.supplier_name || 'unknown supplier sample name',
+              sample_path: sample_path,
               accessioning_status_message: message,
-              sample_path: sample_path
+              failure_groups: failure_groups
             }
           }
         ],
