@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2026_03_24_112536) do
+ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1636,6 +1636,7 @@ ActiveRecord::Schema[7.2].define(version: 2026_03_24_112536) do
     t.integer "superceded_by_id", default: -1, null: false
     t.datetime "superceded_at", precision: nil
     t.integer "product_catalogue_id"
+    t.boolean "automated", default: false, null: false
     t.index ["name", "superceded_by_id"], name: "name_and_superceded_by_unique_idx", unique: true
     t.index ["product_catalogue_id"], name: "fk_submission_templates_to_product_catalogues"
   end
