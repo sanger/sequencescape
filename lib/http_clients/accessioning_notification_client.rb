@@ -40,7 +40,7 @@ module HTTPClients
         f.request :json
         f.request :authorization, 'Bearer', -> { auth_token }
 
-        f.response :raise_error # Raise exceptions on 4xx/5xx responses
+        f.response :raise_error, include_request: true # Raise exceptions on 4xx/5xx responses
         f.response :json
       end
     end
@@ -73,6 +73,12 @@ module HTTPClients
       payload = build_notification_payload(sample, message, etc_etc_etc)
       response = conn.post(NOTIFICATIONS_URL, payload)
       puts "Notification API response: #{response.status} - #{response.body}"
+    rescue Faraday::Error => e
+      puts e.response_status #=> 404
+      # puts  e.response_headers  #=> { ... }
+      puts e.response_body #=> "..."
+      puts e.message #=> "the server responded with status 404"
+      puts e.inspect
     end
 
     private
@@ -84,6 +90,7 @@ module HTTPClients
     def auth_token
       cache_key = 'integration_hub/auth_token'
       cached_token = Rails.cache.read(cache_key)
+      puts cached_token
       puts 'Using cached auth token {cached_token}' if cached_token.present?
       return cached_token if cached_token.present?
 
@@ -103,6 +110,10 @@ module HTTPClients
                         race_condition_ttl: 30) # serverless provider can take time to spin up, so allow a bit extra
 
       puts "Obtained new auth token for accessioning notifications, expires in #{ttl_seconds} seconds"
+
+      puts '-----'
+      puts access_token
+      puts '-----'
 
       access_token
     end
@@ -146,9 +157,9 @@ module HTTPClients
               study_name: sample.studies.first.name, # TODO: update this to be more accurate
               manifest_id: 'manifest-123', # TODO: update this to be the actual manifest ID
               sample_name: sample.name,
-              supplier_sample_name: sample.supplier_name,
+              supplier_sample_name: sample.supplier_name || 'unknown supplier sample name',
               accessioning_status_message: message,
-              sample_path: Rails.application.routes.url_helpers.sample_url(sample)
+              sample_path: Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk') # localhost causes a 502 from the Notifications API
             }
           }
         ],
