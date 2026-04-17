@@ -647,7 +647,7 @@ class BatchTest < ActiveSupport::TestCase
     end
 
     should 'check that with the pipeline that the batch is valid' do
-      @batch.complete!(@user)
+      assert_nothing_raised { @batch.complete!(@user) }
     end
   end
 
