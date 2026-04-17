@@ -52,14 +52,16 @@ module Accession
       # Add errors from the accession sample to the underlying sample for user feedback
       @sample.errors.add(:base, errors.full_messages.join(', '))
 
+      error_message = "accessioning failed: #{errors.full_messages.join(', ')}"
+
       # Add sample context to the error message for logging
-      error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
-      Rails.logger.error(error_message)
+      sample_error_message = "Sample '#{sample.name}' #{error_message}"
+      Rails.logger.error(sample_error_message)
 
       invalid_fields = missing_tags
-      raise Accession::InvalidFieldsError.new(error_message, invalid_fields) if invalid_fields.present?
+      raise Accession::InvalidFieldsError.new(error_message.upcase_first, invalid_fields) if invalid_fields.present?
 
-      raise Accession::InternalValidationError error_message
+      raise Accession::InternalValidationError error_message.upcase_first
     end
 
     def build_xml(xml) # rubocop:disable Metrics/MethodLength
