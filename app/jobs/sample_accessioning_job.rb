@@ -155,14 +155,13 @@ SampleAccessioningJob =
           end
         when Accession::InvalidFieldsError
           error.invalid_fields.each do |field|
-            puts "field: #{field}"
             failure_groups << "Invalid #{field}"
           end
         when Accession::InternalValidationError
           failure_groups << 'Internal validations'
         end
 
-        Delayed::Job.enqueue NotificationJob.new(sample, message, failure_groups)
+        Delayed::Job.enqueue NotificationJob.new(sample, error.message, failure_groups)
       end
 
       case error
