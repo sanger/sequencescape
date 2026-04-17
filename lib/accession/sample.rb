@@ -44,6 +44,7 @@ module Accession
     # If the sample is invalid, logs an error message and raisesAccession::InternalValidationError with
     # details of the validation errors.
     #
+    # @raise [Accession::InvalidFieldsError] if the sample is missing required fields for accessioning
     # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
     def validate!
       return if valid?
@@ -54,19 +55,8 @@ module Accession
       error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
 
-      # extract details['missing_tags'] from errors to get the list of missing tags, if present
-      invalid_fields = errors.details.filter_map do |_, details|
-        details.find do |d|
-          d[:missing_tags].present?
-        end&.dig(:missing_tags)
-      end.flatten.uniq
-
-      puts "invalid_fields: #{invalid_fields.inspect}"
-
-      if invalid_fields.present?
-        puts invalid_fields.inspect
-        raise Accession::InvalidFieldsError.new(error_message, invalid_fields)
-      end
+      invalid_fields = missing_tags
+      raise Accession::InvalidFieldsError.new(error_message, invalid_fields) if invalid_fields.present?
 
       raise Accession::InternalValidationError error_message
     end
@@ -127,12 +117,13 @@ module Accession
       # EBI will still perform its own validation on submission.
       return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
 
-      missing_tags = tags.missing_service_tags(service, standard_tags)
-      puts "Missing tags for service #{service.provider}: #{missing_tags.inspect}"
       unless missing_tags.empty?
-        errors.add(:sample, "does not have the required metadata: #{missing_tags.sort.to_sentence.dasherize}.",
-                   missing_tags:)
+        errors.add(:sample, "does not have the required metadata: #{missing_tags.sort.to_sentence.dasherize}.")
       end
+    end
+
+    def missing_tags
+      tags.missing_service_tags(service, standard_tags)
     end
 
     def check_studies
