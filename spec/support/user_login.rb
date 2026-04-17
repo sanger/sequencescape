@@ -10,6 +10,8 @@ module UserLogin
     fill_in 'Username', with: user.login
     fill_in 'Password', with: 'password'
     click_button 'Login'
+    # wait for the login to complete before returning, so ready for whatever is next
+    find('#message_notice', text: 'Logged in successfully')
     true
   end
 end
