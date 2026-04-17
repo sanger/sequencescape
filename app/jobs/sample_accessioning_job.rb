@@ -162,9 +162,7 @@ SampleAccessioningJob =
           failure_groups << 'Internal validations'
         end
 
-        notification_client = HTTPClients::AccessioningNotificationClient.new
-        puts "Creating notification - sample: #{sample.name}, message: #{message}, failure_groups: #{failure_groups.inspect}"
-        notification_client.create_notification(sample, error.message, failure_groups)
+        Delayed::Job.enqueue NotificationJob.new(sample, message, failure_groups)
       end
 
       case error
