@@ -560,7 +560,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.41.0)
+    selenium-webdriver (4.43.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -603,7 +603,7 @@ GEM
     syslog (0.4.0)
       logger
     temple (0.10.4)
-    test-prof (1.6.0)
+    test-prof (1.6.1)
     thor (1.5.0)
     tilt (2.6.1)
     timecop (0.9.10)
