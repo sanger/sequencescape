@@ -19,8 +19,6 @@ class Studies::InformationController < ApplicationController
     @page_name = @study.name
 
     @summary = params[:summary] || 'sample-progress'
-    @request_types = RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
-    @summaries = BASIC_TABS + @request_types.pluck(:key, :name)
 
     @submissions = @study.submissions
     @awaiting_submissions = @study.submissions.where.not(state: 'ready')
@@ -35,28 +33,38 @@ class Studies::InformationController < ApplicationController
     end
   end
 
+  def show_items
+    @summary = params[:summary] || 'sample-progress'
+    @request_types = study_request_types
+    @summaries = BASIC_TABS + @request_types.pluck(:key, :name)
+    @extra_params = params.except(%i[summary study_id id action controller])
+
+    render partial: 'items', locals: { summary: @summary }
+  end
+
+  def show_study_summary
+    @request_types = study_request_types
+
+    render partial: 'study_summary'
+  end
+
   # Dynamically load the contents of this endpoint via ajax_handling.js to populate the summary tab tables.
   def show_summary
     page_params = { page: params[:page] || 1, per_page: params[:per_page] || 50 }
 
-    if request.xhr?
-      @summary = params[:summary] || 'assets-progress'
+    @summary = params[:summary] || 'assets-progress'
 
-      case @summary
-      when 'summary'
-        render_summary(page_params)
-      when 'sample-progress'
-        render_sample_progress(page_params)
-      when 'assets-progress'
-        render_assets_progress(page_params)
-      when 'accession-statuses'
-        render_accession_statuses(page_params)
-      else
-        render_request_type_summary(page_params)
-      end
+    case @summary
+    when 'summary'
+      render_summary(page_params)
+    when 'sample-progress'
+      render_sample_progress(page_params)
+    when 'assets-progress'
+      render_assets_progress(page_params)
+    when 'accession-statuses'
+      render_accession_statuses(page_params)
     else
-      page_params[:summary] = params[:summary]
-      redirect_to study_information_path(@study, page_params)
+      render_request_type_summary(page_params)
     end
   end
 
@@ -81,15 +89,13 @@ class Studies::InformationController < ApplicationController
 
   def render_sample_progress(page_params)
     @page_elements = @study.samples.paginate(page_params)
-    @request_types =
-      RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
+    @request_types = study_request_types
 
     render partial: 'sample_progress', layout: PAGED_TABLE_LAYOUT
   end
 
   def render_assets_progress(page_params)
-    @request_types =
-      RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(:order, :id)
+    @request_types = study_request_types
     @labware_type = Labware.descendants.detect { |cls| cls.name == params[:labware_type] } || Labware
     @labware_type_name = params.fetch(:labware_type, 'All Assets').underscore.humanize
     @page_elements = @study.assets_through_aliquots.on_a(@labware_type).paginate(page_params)
@@ -126,5 +132,9 @@ class Studies::InformationController < ApplicationController
     else
       render partial: 'summary_for_request_type', layout: PAGED_TABLE_LAYOUT
     end
+  end
+
+  def study_request_types
+    @study_request_types ||= @study.request_types.standard.order(:order, :id)
   end
 end

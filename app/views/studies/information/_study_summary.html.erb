@@ -1,4 +1,7 @@
-<div class="assets tabbed-panel mb-3">
+<div>
+  <div class="card-header" >
+    <%= raw(progress_bar(@study.completed)) %>
+  </div>
   <header class='card-header'>
     <ul class="nav nav-tabs card-header-tabs" role="tablist">
       <%= tab 'Overview', active: true %>

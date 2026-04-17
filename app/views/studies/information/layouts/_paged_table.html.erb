@@ -6,7 +6,7 @@
 <%# Top Pagination %>
 <%= tag.div(class: 'row align-items-center px-3 pt-3') do %>
   <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
-  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center mb--3') %>
+  <%= tag.div(pagination(@page_elements, remote: true), class: 'col-md-4 d-flex justify-content-center mb--3') %>
   <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
     <%# insert aggregation summary as a block %>
     <%= content_for :aggregation %>
@@ -22,5 +22,5 @@
 <%# Bottom Pagination %>
 <%= tag.div(class: 'row px-3') do %>
   <%= tag.div(page_summary(@page_elements), class:'col-md-4') %>
-  <%= tag.div(pagination(@page_elements), class: 'col-md-4 d-flex justify-content-center') %>
+  <%= tag.div(pagination(@page_elements, remote: true), class: 'col-md-4 d-flex justify-content-center') %>
 <% end %>

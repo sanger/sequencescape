@@ -73,7 +73,6 @@
 
 <div class='lead'>
   Created on <%= @study.created_at.to_formatted_s(:long) %> <%= @study.state.capitalize %> <br />
-  Overall progress: <%= raw(progress_bar(@study.completed)) %>
 </div>
 
 <div class="content mt-3">
@@ -108,6 +107,44 @@
   <% end %>
 
   <%= render partial: "submission_warning" %>
-  <%= render partial: "study_summary", locals: { request_types: @request_types } %>
-  <%= render partial: "items", locals: {summary: @summary} %>
+
+  <%= link_to '',
+              show_study_summary_study_information_path(@study),
+              remote: true,
+              class: 'active d-none',
+              data: {
+                throbber: '#study-summary-loader',
+                failure: '#study-summary-error',
+                update: '#study-summary'
+              },
+              id: 'study-summary-remote-loader' %>
+
+  <%= link_to '',
+              show_items_study_information_path(@study, { summary: @summary }.merge(@extra_params.to_h)),
+              remote: true,
+              class: 'active d-none',
+              data: {
+                throbber: '#study-items-loader',
+                failure: '#study-items-error',
+                update: '#study-items'
+              },
+              id: 'study-items-remote-loader' %>
+
+  <div class="my-3">
+    <div class="assets tabbed-panel">
+      <h3 class="card-header">Summary</h3>
+      <div id="study-summary"></div>
+      <%= loading_bar('study-summary-loader', show: true) %>
+      <%= remote_error('study-summary-error') %>
+    </div>
+  </div>
+
+  <div>
+    <div class="assets tabbed-panel">
+      <h3 class="card-header">Items</h3>
+      <div id="study-items"></div>
+      <%= remote_error('study-items-error') %>
+      <%= loading_bar('study-items-loader', show: true) %>
+    </div>
+  </div>
 </div>

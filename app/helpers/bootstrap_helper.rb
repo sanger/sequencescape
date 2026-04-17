@@ -87,8 +87,12 @@ module BootstrapHelper
 
   # rubocop:enable Metrics/MethodLength
 
-  def pagination(collection)
-    will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
+  def pagination(collection, **params)
+    if params[:remote] == true
+      will_paginate collection, params.merge(renderer: RemoteLinkPaginationHelper::LinkRenderer, previous_label: '&laquo;', next_label: '&raquo;')
+    else
+      will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
+    end
   end
 
   # Return a page summary component like 'Showing 1 to 10 of 100 entries'
