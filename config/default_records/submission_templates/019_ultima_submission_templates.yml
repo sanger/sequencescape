@@ -9,6 +9,7 @@ Limber-Htp - Ultima PCR Free - Ultima sequencing:
     product_catalogue_name: GenericNoPCR
 Limber-Htp - Ultima PCR Free - Ultima sequencing Automated:
   submission_class_name: "LinearSubmission"
+  automated: true
   related_records:
     request_type_keys: ["ultima_sequencing"]
     order_role: PCR Free
