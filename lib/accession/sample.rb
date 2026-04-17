@@ -52,6 +52,7 @@ module Accession
       # Add errors from the accession sample to the underlying sample for user feedback
       @sample.errors.add(:base, errors.full_messages.join(', '))
 
+      # Add sample context to the error message for logging
       error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
 
