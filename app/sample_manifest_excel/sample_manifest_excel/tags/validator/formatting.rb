@@ -14,6 +14,7 @@ module SampleManifestExcel
           return if value.blank?
 
           errors.add(:tag, 'must be a combination of A,C,G,T or N') unless value.match?(/\A[acgtnACGTN]+\z/)
+          errors.add(:tag, 'length must not exceed 30 characters') if value.length > 30
         end
       end
     end

@@ -435,7 +435,7 @@ Rails.application.routes.draw do
     member { get :show }
   end
 
-  resources :pipelines, except: [:delete] do
+  resources :pipelines, except: [:destroy] do
     collection { post :update_priority }
     member do
       get :reception
@@ -482,7 +482,7 @@ Rails.application.routes.draw do
 
   resources :asset_audits
 
-  resources :qc_reports, except: %i[delete update] do
+  resources :qc_reports, except: %i[destroy update] do
     collection { post :qc_file }
   end
 

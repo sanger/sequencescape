@@ -1,7 +1,6 @@
-# frozen_string_literal: true
-ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../Gemfile', __dir__)
+ENV["BUNDLE_GEMFILE"] ||= File.expand_path("../Gemfile", __dir__)
 
-require 'bundler/setup' # Set up gems listed in the Gemfile.
+require "bundler/setup" # Set up gems listed in the Gemfile.
 
 # Bootsnap does not purge its cache, which can cause boot-times to increase
 # over time. This change will purge the cache every 30 days. In development
@@ -35,4 +34,4 @@ rescue Errno::ENOENT, NotImplementedError
 end
 # rubocop:enable Rails/Output, Rails/TimeZone
 
-require 'bootsnap/setup' # Speed up boot time by caching expensive operations.
+require "bootsnap/setup" # Speed up boot time by caching expensive operations.
