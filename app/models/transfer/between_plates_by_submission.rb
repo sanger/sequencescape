@@ -2,7 +2,6 @@
 # This is effectively pooling: all wells that have come from the same submission will be transferred
 # into the same well on the destination plate.
 class Transfer::BetweenPlatesBySubmission < Transfer
-
   include TransfersToKnownDestination
   include ControlledDestinations
 

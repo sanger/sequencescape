@@ -3,7 +3,6 @@
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.
 class Transfer::BetweenPlates < Transfer
-
   include TransfersBySchema
   include TransfersToKnownDestination
 
