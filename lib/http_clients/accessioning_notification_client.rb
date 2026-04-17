@@ -119,6 +119,9 @@ module HTTPClients
     def build_notification_payload(sample, message, failure_groups)
       # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
+      study_ids = sample.studies_for_accessioning.map(&:id).join('-')
+      study_names = sample.studies_for_accessioning.map(&:name).join(', ')
+      manifest_id = 'manifest-123' # TODO: update this to be the actual manifest ID if available
       notifications_config = configatron.accession.notifications
       {
         channels: [
@@ -129,8 +132,8 @@ module HTTPClients
             template_id: notifications_config.template_id,
             subject: SUBJECT,
             fields: {
-              study_name: sample.studies.first.name, # TODO: update this to be more accurate
-              manifest_id: 'manifest-123', # TODO: update this to be the actual manifest ID
+              study_name: study_names,
+              manifest_id: manifest_id,
               sample_name: sample.name,
               supplier_sample_name: sample.supplier_name || 'unknown supplier sample name',
               sample_path: sample_path,
@@ -140,7 +143,7 @@ module HTTPClients
           }
         ],
         priority: PRIORITY,
-        aggregator_id: 'manifest-123' # TODO: update this to be the actual manifest ID
+        aggregator_id: "accessioning-studies-#{study_ids}-manifest-#{manifest_id}"
       }
     end
   end
