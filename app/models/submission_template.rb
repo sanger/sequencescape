@@ -27,7 +27,7 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   SUPERCEDED_BY_UNKNOWN_TEMPLATE = -2
 
   scope :hidden, -> { order(product_line_id: :asc).where.not(superceded_by_id: LATEST_VERSION) }
-  scope :visible, -> { order(product_line_id: :asc).where(superceded_by_id: LATEST_VERSION) }
+  scope :visible, -> { order(product_line_id: :asc).where(superceded_by_id: LATEST_VERSION, automated: false) }
   scope :include_product_line, -> { includes(:product_line) }
 
   def self.grouped_by_product_lines
@@ -35,7 +35,7 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def visible
-    superceded_by_id == LATEST_VERSION
+    superceded_by_id == LATEST_VERSION && !automated
   end
 
   def superceded_by_unknown!
@@ -89,7 +89,7 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def sequencing?
-    request_types.any?(&:sequencing)
+    request_types.any?(&:sequencing?)
   end
 
   def input_asset_type
