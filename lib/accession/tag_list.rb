@@ -12,7 +12,7 @@ module Accession
     include Enumerable
     include Comparable
 
-    attr_reader :tags, :missing
+    attr_reader :tags
     attr_accessor :groups
 
     delegate :keys, :values, to: :tags

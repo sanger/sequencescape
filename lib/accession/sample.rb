@@ -52,7 +52,7 @@ module Accession
       # Add errors from the accession sample to the underlying sample for user feedback
       @sample.errors.add(:base, errors.full_messages.join(', '))
 
-      error_message = "accessioning failed: #{errors.full_messages.join(', ')}"
+      error_message = "cannot be accessioned: #{errors.full_messages.join(', ')}"
 
       # Add sample context to the error message for logging
       sample_error_message = "Sample '#{sample.name}' #{error_message}"
