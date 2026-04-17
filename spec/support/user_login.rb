@@ -11,7 +11,7 @@ module UserLogin
     fill_in 'Password', with: 'password'
     click_button 'Login'
     # wait for the login to complete before returning, so ready for whatever is next
-    find('#message_notice', text: 'Logged in successfully')
+    find_by_id('message_notice', text: 'Logged in successfully')
     true
   end
 end
