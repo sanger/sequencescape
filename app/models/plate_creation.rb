@@ -11,7 +11,6 @@ class PlateCreation < AssetCreation
   module Children
     def self.included(base)
       base.class_eval do
-        # include_plate_named_scope :child
         belongs_to :child, class_name: 'Plate'
 
         validates_unassigned(:child)
@@ -33,7 +32,6 @@ class PlateCreation < AssetCreation
     end
   end
 
-  # include_plate_named_scope :parent
   include Children
 
   # This is the child that is created from the parent.  It cannot be assigned before validation.

@@ -5,8 +5,6 @@
 class AssetAudit < ApplicationRecord
   include Uuid::Uuidable
 
-  # include ::Io::AssetAudit::ApiIoSupport
-
   belongs_to :asset, class_name: 'Labware'
 
   self.per_page = 500

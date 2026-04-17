@@ -2,8 +2,6 @@
 class BaitLibraryLayout < ApplicationRecord
   include Uuid::Uuidable
 
-  # include ModelExtensions::BaitLibraryLayout
-
   # So we can track who is requesting the layout of the bait libraries
   belongs_to :user
   validates :user, presence: true

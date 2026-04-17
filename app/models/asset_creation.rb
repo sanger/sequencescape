@@ -12,8 +12,6 @@ class AssetCreation < ApplicationRecord
   include Uuid::Uuidable
   include Asset::Ownership::ChangesOwner
 
-  # extend ModelExtensions::Plate::NamedScopeHelpers
-
   belongs_to :user
   validates :user, presence: true
 

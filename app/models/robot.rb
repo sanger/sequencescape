@@ -2,8 +2,6 @@
 class Robot < ApplicationRecord
   include Uuid::Uuidable
 
-  # include ModelExtensions::Robot
-
   validates :name, presence: true
   validates :location, presence: true
   has_many :robot_properties
