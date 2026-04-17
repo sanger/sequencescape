@@ -18,8 +18,6 @@ class Studies::InformationController < ApplicationController
   def show
     @page_name = @study.name
 
-    @summary = params[:summary] || 'sample-progress'
-
     @submissions = @study.submissions
     @awaiting_submissions = @study.submissions.where.not(state: 'ready')
 

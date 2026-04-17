@@ -89,7 +89,9 @@ module BootstrapHelper
 
   def pagination(collection, **params)
     if params[:remote] == true
-      will_paginate collection, params.merge(renderer: RemoteLinkPaginationHelper::LinkRenderer, previous_label: '&laquo;', next_label: '&raquo;')
+      will_paginate collection,
+                    params.merge(renderer: RemoteLinkPaginationHelper::LinkRenderer, previous_label: '&laquo;',
+                                 next_label: '&raquo;')
     else
       will_paginate collection, renderer: BootstrapPagination::Rails, previous_label: '&laquo;', next_label: '&raquo;'
     end
