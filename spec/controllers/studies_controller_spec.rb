@@ -314,7 +314,7 @@ RSpec.describe StudiesController do
             sample_status = Accession::SampleStatus.where(sample:).first
             expect(sample_status).to have_attributes(
               status: 'failed',
-              message: "Sample '#{sample.name}' cannot be accessioned: " \
+              message: 'Cannot be accessioned: ' \
                        'Sample does not have the required metadata: ' \
                        'donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.'
             )

@@ -59,20 +59,11 @@ RSpec.describe Accession::TagList, :accession, type: :model do
     expect(extract.find(:country_of_origin).value).to eq('Australia') # has to match with Insdc Country list
   end
 
-  it '#extract should create a taglist that has groups' do
-    extract = tag_list.extract(create(:minimal_sample_metadata_for_accessioning))
-    expect(extract.groups).to include(:sample_name, :sample_attributes, :array_express)
-  end
-
-  it 'indicates whether service requirements are met' do
-    extract = tag_list.extract(create(:sample_metadata_for_accessioning))
-    expect(extract).to be_meets_service_requirements(build(:ena_service), tag_list)
-    expect(extract).to be_meets_service_requirements(build(:ega_service), tag_list)
-
-    extract = tag_list.extract(create(:sample_metadata_for_accessioning, sample_taxon_id: nil))
-    expect(extract).not_to be_meets_service_requirements(build(:ena_service), tag_list)
-    expect(extract).not_to be_meets_service_requirements(build(:ega_service), tag_list)
-    expect(extract.missing).to include('sample_taxon_id')
+  describe '#extract' do
+    it 'creates a new tag list with tags that have groups' do
+      extract = tag_list.extract(create(:sample_metadata_for_accessioning))
+      expect(extract.groups).to include(:sample_name, :sample_attributes, :array_express)
+    end
   end
 
   it 'is able to create a list of tags from a hash of tags' do
@@ -81,7 +72,7 @@ RSpec.describe Accession::TagList, :accession, type: :model do
     expect(tag_list.count).to eq(tags.count)
   end
 
-  describe 'checking tag lists' do
+  describe '#missing_service_tags' do
     let(:sample_metadata) do
       Sample::Metadata.new(
         sample_taxon_id: 1, # mandatory
@@ -95,9 +86,9 @@ RSpec.describe Accession::TagList, :accession, type: :model do
     let(:sample_tag_list) { standard_tag_list.extract(sample_metadata) }
 
     context 'when all mandatory tags are present' do
-      it 'returns true' do
+      it 'returns an empty list' do
         result = sample_tag_list.missing_service_tags(build(:ena_service), standard_tag_list)
-        expect(result).to be true
+        expect(result).to eq([])
       end
     end
 
@@ -112,9 +103,9 @@ RSpec.describe Accession::TagList, :accession, type: :model do
         )
       end
 
-      it 'returns false' do
+      it 'returns the missing tags' do
         result = sample_tag_list.missing_service_tags(build(:ena_service), standard_tag_list)
-        expect(result).to be false
+        expect(result).to eq(['sample_common_name'])
       end
     end
   end

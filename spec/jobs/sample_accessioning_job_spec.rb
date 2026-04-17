@@ -18,7 +18,7 @@ RSpec.describe SampleAccessioningJob do
 
   before do
     allow(Rails.logger).to receive(:info).and_call_original
-    allow(Rails.logger).to receive(:error).and_call_original
+    allow(Rails.logger).to receive(:warn).and_call_original
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
@@ -50,14 +50,15 @@ RSpec.describe SampleAccessioningJob do
           sample_status = Accession::SampleStatus.where(sample:).first
           expect(sample_status).to have_attributes(
             status: 'failed',
-            message: "Sample '#{sample.name}' cannot be accessioned: " \
+            message: 'Cannot be accessioned: ' \
                      'Sample does not have the required metadata: sample-taxon-id.'
           )
         end
 
-        it 'logs the error' do
-          expect(Rails.logger).to have_received(:error).with(
-            "Sample '#{sample.name}' cannot be accessioned: " \
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'Cannot be accessioned: ' \
             'Sample does not have the required metadata: sample-taxon-id.'
           )
         end
@@ -76,10 +77,10 @@ RSpec.describe SampleAccessioningJob do
           it 'notifies ExceptionNotifier' do
             sample_name = sample.name # 'Sample 1'
             expect(ExceptionNotifier).to have_received(:notify_exception).with(
-              instance_of(Accession::InternalValidationError),
+              instance_of(Accession::InvalidFieldsError),
               data: {
                 message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                         "Sample '#{sample_name}' cannot be accessioned: " \
+                         'Cannot be accessioned: ' \
                          'Sample does not have the required metadata: sample-taxon-id.',
                 sample_name: sample_name,
                 study_names: "#{first_open_study.name}, #{second_open_study.name}",
@@ -145,8 +146,8 @@ RSpec.describe SampleAccessioningJob do
         expect { job.perform }.to raise_error(Accession::ExternalValidationError)
       end
 
-      it 'logs the error' do
-        expect(Rails.logger).to have_received(:error).with(
+      it 'logs the warning' do
+        expect(Rails.logger).to have_received(:warn).with(
           "SampleAccessioningJob failed for sample '#{sample.name}': " \
           'Failed to process accessioning response'
         )
