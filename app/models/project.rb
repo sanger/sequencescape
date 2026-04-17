@@ -58,7 +58,7 @@ class Project < ApplicationRecord
   validates :name, uniqueness: { on: :create, message: "already in use (#{name})", case_sensitive: false }
 
   scope :for_search_query,
-        ->(query) do
+        ->(query, _leading_wildcard = true) do
           joins(project_metadata: :project).where(
             'projects.name LIKE ? OR projects.id = ? OR project_cost_code LIKE ?',
             "%#{query}%",

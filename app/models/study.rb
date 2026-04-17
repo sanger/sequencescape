@@ -377,7 +377,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Scopes
   scope :for_search_query,
-        ->(query) do
+        ->(query, _leading_wildcard = true) do
           joins(:study_metadata).where(['name LIKE ? OR studies.id=? OR prelim_id=?', "%#{query}%", query, query])
         end
 

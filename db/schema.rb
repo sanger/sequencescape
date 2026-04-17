@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_11_20_204342) do
+ActiveRecord::Schema[7.2].define(version: 2026_03_17_142326) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -592,6 +592,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_11_20_204342) do
     t.datetime "updated_at", precision: nil, null: false
     t.integer "retention_instruction"
     t.index ["labware_type_id"], name: "fk_rails_32b35f8bf9"
+    t.index ["name"], name: "index_labware_on_name"
     t.index ["plate_purpose_id"], name: "fk_rails_745455e964"
     t.index ["sti_type", "plate_purpose_id"], name: "index_labware_on_sti_type_and_plate_purpose_id"
     t.index ["sti_type", "updated_at"], name: "index_labware_on_sti_type_and_updated_at"
