@@ -60,7 +60,16 @@ class PlateTemplatesController < ApplicationController
 
   def destroy
     pattern = PlateTemplate.find(params[:id])
-    pattern.destroy
+    begin
+      ActiveRecord::Base.transaction do
+        pattern.wells.destroy_all
+        pattern.destroy!
+      end
+
+      flash[:notice] = 'Template deleted'
+    rescue ActiveRecord::DeleteRestrictionError, ActiveRecord::RecordNotDestroyed
+      flash[:error] = 'Template cannot be deleted because it has dependent records'
+    end
 
     respond_to { |format| format.html { redirect_to(plate_templates_path) } }
   end
