@@ -51,11 +51,24 @@ module Accession
       # Add errors from the accession sample to the underlying sample for user feedback
       @sample.errors.add(:base, errors.full_messages.join(', '))
 
-      # Add sample context to the error message for logging
       error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
       Rails.logger.error(error_message)
-      puts errors.inspect # Log the full error details for debugging
-      raise Accession::InternalValidationError, error_message, invalid_fields: 'errors.fields'
+
+      # extract details['missing_tags'] from errors to get the list of missing tags, if present
+      invalid_fields = errors.details.filter_map do |_, details|
+        details.find do |d|
+          d[:missing_tags].present?
+        end&.dig(:missing_tags)
+      end.flatten.uniq
+
+      puts "invalid_fields: #{invalid_fields.inspect}"
+
+      if invalid_fields.present?
+        puts invalid_fields.inspect
+        raise Accession::InvalidFieldsError.new(error_message, invalid_fields)
+      end
+
+      raise Accession::InternalValidationError error_message
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -114,8 +127,11 @@ module Accession
       # EBI will still perform its own validation on submission.
       return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
 
-      unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
+      missing_tags = tags.missing_service_tags(service, standard_tags)
+      puts "Missing tags for service #{service.provider}: #{missing_tags.inspect}"
+      unless missing_tags.empty?
+        errors.add(:sample, "does not have the required metadata: #{missing_tags.sort.to_sentence.dasherize}.",
+                   missing_tags:)
       end
     end
 

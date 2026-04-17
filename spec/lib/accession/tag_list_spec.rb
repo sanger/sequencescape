@@ -96,7 +96,7 @@ RSpec.describe Accession::TagList, :accession, type: :model do
 
     context 'when all mandatory tags are present' do
       it 'returns true' do
-        result = sample_tag_list.meets_service_requirements?(build(:ena_service), standard_tag_list)
+        result = sample_tag_list.missing_service_tags(build(:ena_service), standard_tag_list)
         expect(result).to be true
       end
     end
@@ -113,7 +113,7 @@ RSpec.describe Accession::TagList, :accession, type: :model do
       end
 
       it 'returns false' do
-        result = sample_tag_list.meets_service_requirements?(build(:ena_service), standard_tag_list)
+        result = sample_tag_list.missing_service_tags(build(:ena_service), standard_tag_list)
         expect(result).to be false
       end
     end

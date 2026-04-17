@@ -77,9 +77,8 @@ module Accession
 
     # Check that the tag list meets the requirements for accessioning for a particular service
     # i.e. check that it has the required tags.
-    def meets_service_requirements?(service, standard_tags)
-      @missing = standard_tags.required_for(service).keys - required_for(service).keys
-      missing.empty?
+    def missing_service_tags(service, standard_tags)
+      standard_tags.required_for(service).keys - required_for(service).keys
     end
 
     def <=>(other)

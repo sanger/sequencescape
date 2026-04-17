@@ -64,6 +64,15 @@ module Accession
   class ExternalValidationError < Error; end
   class InternalValidationError < Error; end
 
+  class InvalidFieldsError < InternalValidationError
+    attr_reader :invalid_fields
+
+    def initialize(message, invalid_fields)
+      super(message)
+      @invalid_fields = invalid_fields
+    end
+  end
+
   CENTER_NAME = 'SC'
   XML_NAMESPACE = { 'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance' }.freeze
 

@@ -142,14 +142,17 @@ SampleAccessioningJob =
           if error.message.include?('No new objects can be added with MODIFY action.')
             failure_groups << 'Existing accession number conflict'
           end
-        when Accession::InternalValidationError
-          failure_groups << 'Internal validations'
-          Array(error.invalid_fields).each do |field|
+        when Accession::InvalidFieldsError
+          error.invalid_fields.each do |field|
+            puts "field: #{field}"
             failure_groups << "Invalid #{field.to_s.humanize.downcase}"
           end
+        when Accession::InternalValidationError
+          failure_groups << 'Internal validations'
         end
 
         notification_client = HTTPClients::AccessioningNotificationClient.new
+        puts "Creating notification - sample: #{sample.name}, message: #{message}, failure_groups: #{failure_groups.inspect}"
         notification_client.create_notification(sample, error.message, failure_groups)
       end
 
