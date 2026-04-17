@@ -20,22 +20,11 @@ module Api
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
     # of the JSON:API standard.
     class PlateTemplateResource < BaseResource
+      include Api::V2::SharedBehaviour::Labware
+
+      model_name 'PlateTemplate'
+
       default_includes :uuid_object
-
-      ###
-      # Attributes
-      ###
-
-      # @!attribute [r] uuid
-      #   @note This identifier is automatically assigned upon creation and cannot be modified.
-      #   @return [String] The UUID of the plate template.
-      attribute :uuid, readonly: true
-
-      # @!attribute [r] name
-      #   @note This name is intended for human readability and should clearly indicate the purpose
-      #      of the plate template e.g. 'h12_empty'. It is assigned upon creation in the UI and cannot be modified.
-      #   @return [String] The name of the plate template.
-      attribute :name, readonly: true
     end
   end
 end
