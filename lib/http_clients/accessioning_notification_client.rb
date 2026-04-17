@@ -58,6 +58,7 @@ module HTTPClients
     # @return [String] The ID of the created notification if successful.
     # @raise [Faraday::Error] If the HTTP request fails.
     def create_notification(sample, message, failure_groups)
+      Rails.logger.info("Creating notification for sample '#{sample.name}'")
       payload = build_notification_payload(sample, message, failure_groups)
       response = conn.post(NOTIFICATIONS_URL, payload)
       response.body['notification_id']
@@ -94,6 +95,7 @@ module HTTPClients
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
     def get_token_data(integration_hub)
+      Rails.logger.info('Requesting new auth token for Integration Hub Notification API')
       auth_conn = Faraday.new(url: integration_hub.auth_token_url) do |f|
         f.request :url_encoded
         f.response :json
