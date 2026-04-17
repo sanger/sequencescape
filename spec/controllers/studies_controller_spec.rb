@@ -189,7 +189,7 @@ RSpec.describe StudiesController do
       post :accession_all_samples, session: session, params: { id: study.id }
     end
 
-    context 'when the accessioning succeeds' do
+    context 'when the accessioning will succeed' do
       it 'accessions all samples in the study' do
         study.samples.each do |sample|
           expect(sample.reload.sample_metadata.sample_ebi_accession_number).to eq('EGA00001000240')
@@ -256,7 +256,7 @@ RSpec.describe StudiesController do
       end
     end
 
-    context 'when the accessioning of samples fails' do
+    context 'when the accessioning of samples will fail' do
       # no tags provided for samples, when managed study tags are expected
       let(:samples) { create_list(:sample, number_of_samples) }
       let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
@@ -265,48 +265,29 @@ RSpec.describe StudiesController do
         expect(subject).to redirect_to(study_path(study))
       end
 
-      it 'does not set a flash notice message' do
-        expect(flash[:notice]).to be_nil
+      it 'sets a flash notice message' do
+        expect(flash[:notice]).to eq(
+          'All of the samples in this study have been sent for accessioning. ' \
+          'You should receive an email should any samples fail to accession.'
+        )
       end
 
-      it 'sets a flash error message' do
-        # rubocop:disable Layout/LineLength
-        expect(flash[:error]).to eq(
-          [
-            'The samples in this study could not be accessioned, please check the following errors:',
-            "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id."
-          ]
-        )
-        # rubocop:enable Layout/LineLength
+      it 'does not set a flash error message' do
+        expect(flash[:error]).to be_nil
       end
 
       context 'when the study has many samples' do
         let(:number_of_samples) { 10 }
 
-        it 'does not set a flash notice message' do
-          expect(flash[:notice]).to be_nil
+        it 'sets a flash notice message' do
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'You should receive an email should any samples fail to accession.'
+          )
         end
 
-        it 'sets a flash error message' do
-          # rubocop:disable Layout/LineLength
-          expect(flash[:error]).to eq(
-            [
-              'The samples in this study could not be accessioned, please check the following errors:',
-              "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample6' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              '...',
-              'Only the first 6 of 10 errors are shown.'
-            ]
-          )
-          # rubocop:enable Layout/LineLength
+        it 'does not set a flash error message' do
+          expect(flash[:error]).to be_nil
         end
 
         it 'shows the error messages in the accession statuses of the samples' do
@@ -314,7 +295,7 @@ RSpec.describe StudiesController do
             sample_status = Accession::SampleStatus.where(sample:).first
             expect(sample_status).to have_attributes(
               status: 'failed',
-              message: "Sample '#{sample.name}' cannot be accessioned: " \
+              message: 'Cannot be accessioned: ' \
                        'Sample does not have the required metadata: ' \
                        'donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.'
             )
