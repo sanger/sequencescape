@@ -21,7 +21,7 @@ class Order < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Submission::AssetGroupBehaviour
   include Submission::ProjectValidation
   include Submission::RequestOptionsBehaviour
-  include ModelExtensions::Order
+  include Extensions::Order
 
   self.inheritance_column = 'sti_type'
   self.per_page = 500
