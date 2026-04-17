@@ -21,9 +21,9 @@ NotificationJob =
     # Implementing exponential backoff for retries: 10 minutes, 2 hours, 21 hours
     def reschedule_at(current_time, attempts)
       case attempts
-      when 0
-        current_time + 10.minutes
       when 1
+        current_time + 10.minutes
+      when 2
         current_time + 2.hours
       else
         current_time + 21.hours # under 24 hour delay from first attempt to allow for the next day's accessioning retry
