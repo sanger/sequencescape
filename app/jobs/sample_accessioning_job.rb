@@ -146,7 +146,7 @@ SampleAccessioningJob =
       if Flipper.enabled?(:y26_094_notify_email_on_accessioning_failures)
         # Send an email to users when accessioning fails
         sample = submission.sample.sample
-        Delayed::Job.enqueue NotificationJob.new(sample, error.message, failure_groups(error))
+        Delayed::Job.enqueue(NotificationJob.new(sample, error.message, failure_groups(error)), priority: 300)
       end
 
       case error
