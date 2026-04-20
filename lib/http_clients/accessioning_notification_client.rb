@@ -97,7 +97,7 @@ module HTTPClients
     #
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
-    def get_token_data(integration_hub)
+    def get_token_data(integration_hub) # rubocop:disable Metrics/AbcSize
       Rails.logger.info('Requesting new auth token for Integration Hub Notification API')
       auth_conn = Faraday.new(url: integration_hub.auth_token_url) do |f|
         f.request :url_encoded
@@ -119,7 +119,7 @@ module HTTPClients
       response.body
     end
 
-    def build_notification_payload(sample, message, failure_groups)
+    def build_notification_payload(sample, message, failure_groups) # rubocop:disable Metrics/AbcSize
       # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
       study_ids = sample.studies_for_accessioning.map(&:id).join('-')
