@@ -74,7 +74,7 @@ class Studies::InformationController < ApplicationController
   end
 
   def render_summary(page_params)
-    @page_elements = @study.assets_through_requests.for_summary.paginate(page_params)
+    @page_elements = @study.assets_through_requests.for_summary.includes('barcodes').paginate(page_params)
 
     render partial: 'summary', layout: PAGED_TABLE_LAYOUT
   end
