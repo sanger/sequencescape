@@ -62,8 +62,8 @@ module HTTPClients
       payload = build_notification_payload(sample, message, failure_groups)
       response = conn.post(NOTIFICATIONS_URL, payload)
       response.body['notification_id']
-    rescue Faraday::ClientError, Faraday::ServerError => e
-      Rails.logger.error("Faraday error while creating notification': #{e.response[:body]}")
+    rescue Faraday::Error => e
+      Rails.logger.error(notification_error_message(e))
       raise
     end
 
@@ -145,6 +145,17 @@ module HTTPClients
         priority: PRIORITY,
         aggregator_id: "study-#{study_ids}" # there's a length limit
       }
+    end
+
+    def notification_error_message(error)
+      case error
+      when Faraday::ClientError
+        "Client error while creating notification': #{error.response[:body]}"
+      when Faraday::ServerError
+        "Server error while creating notification': #{error.response[:body]}"
+      else
+        "Faraday error while creating notification: #{error.message}"
+      end
     end
   end
 end
