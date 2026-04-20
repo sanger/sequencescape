@@ -84,8 +84,8 @@ RSpec.describe Accession do
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
 
-          it 'logs an error' do
-            allow(Rails.logger).to receive(:error).and_call_original
+          it 'logs a warning' do
+            allow(Rails.logger).to receive(:warn).and_call_original
 
             begin
               described_class.accession_sample(accessionable_sample, event_user)
@@ -93,7 +93,7 @@ RSpec.describe Accession do
               # Ignore the error and continue execution
             end
 
-            expect(Rails.logger).to have_received(:error).with(
+            expect(Rails.logger).to have_received(:warn).with(
               "SampleAccessioningJob failed for sample '#{accessionable_sample.name}': " \
               'Failed to process accessioning response'
             )
