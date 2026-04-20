@@ -124,7 +124,6 @@ module HTTPClients
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
       study_ids = sample.studies_for_accessioning.map(&:id).join('-')
       study_names = sample.studies_for_accessioning.map(&:name).join(', ')
-      manifest_id = sample.sample_manifest&.id || 'unknown'
       notifications_config = configatron.accession.notifications
       {
         channels: [
@@ -136,9 +135,7 @@ module HTTPClients
             subject: SUBJECT,
             fields: {
               study_name: study_names,
-              manifest_id: manifest_id,
               sample_name: sample.name,
-              supplier_sample_name: sample.supplier_name || 'unknown supplier sample name',
               sample_path: sample_path,
               accessioning_status_message: message,
               failure_groups: failure_groups
@@ -146,7 +143,7 @@ module HTTPClients
           }
         ],
         priority: PRIORITY,
-        aggregator_id: "study-#{study_ids}-mani-#{manifest_id}" # there's a length limit
+        aggregator_id: "study-#{study_ids}" # there's a length limit
       }
     end
   end
