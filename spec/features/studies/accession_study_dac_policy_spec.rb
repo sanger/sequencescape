@@ -25,7 +25,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
     it 'generates a DAC accession number and displays it on study details' do
       click_link 'Generate DAC Accession Number'
       visit study_information_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('EGAD0001000234')
     end
   end
@@ -61,7 +61,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
     it 'generates a Policy accession number and displays it on study details' do
       click_link 'Generate Policy Accession Number'
       visit study_information_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('EGAP0001000234')
     end
   end
