@@ -606,7 +606,7 @@ GEM
     test-prof (1.6.1)
     thor (1.5.0)
     tilt (2.6.1)
-    timecop (0.9.10)
+    timecop (0.9.11)
     timeout (0.6.1)
     traceroute (0.8.1)
       rails (>= 3.0.0)
@@ -646,7 +646,7 @@ GEM
       will_paginate (>= 3.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.38)
+    yard (0.9.42)
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)
