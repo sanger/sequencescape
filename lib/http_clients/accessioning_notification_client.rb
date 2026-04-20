@@ -124,7 +124,7 @@ module HTTPClients
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
       study_ids = sample.studies_for_accessioning.map(&:id).join('-')
       study_names = sample.studies_for_accessioning.map(&:name).join(', ')
-      manifest_id = 'manifest-123' # TODO: update this to be the actual manifest ID if available
+      manifest_id = sample.sample_manifest&.id || 'unknown'
       notifications_config = configatron.accession.notifications
       {
         channels: [
