@@ -135,22 +135,7 @@ SampleAccessioningJob =
       if Flipper.enabled?(:y26_094_notify_email_on_accessioning_failures)
         # Send an email to users when accessioning fails
         sample = submission.sample.sample
-        failure_groups = []
-        case error
-        when Accession::ExternalValidationError
-          failure_groups << 'External failure'
-          if error.message.include?('No new objects can be added with MODIFY action.')
-            failure_groups << 'Existing accession number conflict'
-          end
-        when Accession::InvalidFieldsError
-          error.invalid_fields.each do |field|
-            failure_groups << "Invalid #{field.to_s.humanize.downcase}"
-          end
-        when Accession::InternalValidationError
-          failure_groups << 'Internal validations'
-        end
-
-        Delayed::Job.enqueue NotificationJob.new(sample, error.message, failure_groups)
+        Delayed::Job.enqueue NotificationJob.new(sample, error.message, failure_groups(error))
       end
 
       # Notify developers when there is a failure from the external service
@@ -164,5 +149,24 @@ SampleAccessioningJob =
       message = Accession.user_error_message(error)
       fail_accession_status(message)
       send_failure_notifications(error, submission)
+    end
+
+    # Group the failure into user-friendly categories for notification purposes.
+    # Allows for multiple groups per failure if relevant
+    def failure_groups(error)
+      failure_groups = []
+      case error
+      when Accession::AccessionNumberConflictError
+        failure_groups << 'Existing accession number conflict'
+      when Accession::ExternalValidationError
+        failure_groups << 'External failure'
+      when Accession::InvalidFieldsError
+        error.invalid_fields.each do |field|
+          failure_groups << "Invalid #{field.to_s.humanize.downcase}"
+        end
+      when Accession::InternalValidationError
+        failure_groups << 'Internal validations'
+      end
+      failure_groups
     end
   end

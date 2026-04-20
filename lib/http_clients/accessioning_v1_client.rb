@@ -100,6 +100,11 @@ module HTTPClients
       status_code = response.status || 'unknown'
       default_message = "Failed to process accessioning response, the response status code was #{status_code}."
       message = extract_error_messages(response.body) || default_message
+
+      if message.include?('No new objects can be added with MODIFY action.')
+        raise Accession::AccessionNumberConflictError, message
+      end
+
       raise Accession::ExternalValidationError, message
     end
   end

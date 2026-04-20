@@ -62,6 +62,11 @@ module Accession
   # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
   class Error < StandardError; end
   class ExternalValidationError < Error; end
+
+  class AccessionNumberConflictError < ExternalValidationError
+    # No new objects can be added with MODIFY action.
+  end
+
   class InternalValidationError < Error; end
 
   class InvalidFieldsError < InternalValidationError
