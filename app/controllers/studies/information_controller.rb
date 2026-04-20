@@ -98,7 +98,9 @@ class Studies::InformationController < ApplicationController
   end
 
   def render_accession_statuses(page_params)
-    @page_elements = @study.samples.paginate(page_params)
+    @page_elements = @study.samples
+      .includes(:sample_metadata, :accession_sample_statuses, studies: :study_metadata)
+      .paginate(page_params)
 
     render partial: 'accession_statuses', layout: PAGED_TABLE_LAYOUT
   end
