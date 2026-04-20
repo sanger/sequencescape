@@ -12,7 +12,7 @@ module SamplesHelper
   end
 
   def samples_not_accessioned(samples)
-    accession_numbers = fetch_accession_numbers(samples)
+    accession_numbers = samples.map(&:ebi_accession_number)
 
     return 'No samples accessioned' if accession_numbers.empty? || accession_numbers.none?(&:present?)
 
@@ -64,14 +64,6 @@ module SamplesHelper
           items.each { |item| concat tag.li(item.html_safe) } # rubocop:disable Rails/OutputSafety
         end
       )
-    end
-  end
-
-  def fetch_accession_numbers(samples)
-    if samples.loaded?
-      samples.map(&:ebi_accession_number)
-    else
-      samples.left_outer_joins(:sample_metadata).pluck('sample_metadata.sample_ebi_accession_number')
     end
   end
 
