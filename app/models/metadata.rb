@@ -41,23 +41,15 @@ module Metadata
     # our code, which would create a new default instance.
     # If lazy metadata is true we do NOT generate metadata upfront. This is the case for internal requests,
     # where metadata is unused anyway.
-    line = __LINE__ + 1
-    class_eval(
-      "
-      class_attribute :lazy_metadata
-      self.lazy_metadata = false
+    # vvv
+    class_attribute :lazy_metadata, default: false unless respond_to?(:lazy_metadata)
 
-      def #{association_name}
-        super ||
-        build_#{association_name}
-      end
+    # define_method(association_name) do
+    #   super() || public_send(:"build_#{association_name}")
+    # end
 
-      before_validation :#{association_name}, on: :create, unless: :lazy_metadata?
-
-    ",
-      __FILE__,
-      line
-    )
+    before_validation association_name, on: :create, unless: :lazy_metadata?
+    # ^^^
   end
 
   def construct_metadata_class(table_name, as_class, &)
