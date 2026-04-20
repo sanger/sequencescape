@@ -61,19 +61,10 @@
 <% add :legend_option, icon('far', 'times-circle', 'Failed') => "" -%>
 
 <%= page_title @study.name, @study.id, titlecase: false %>
-<%= alert(:info) do %>
-  <h3>Bioinformatician?</h3>
-  <p>If you are comfortable in a database, and want programmatic or large scale access to information you may find
-    <%= help_link 'these resources', 'Useful+resources+for+bioinformaticians' %> useful.</p>
+<%= alert(:info, class:'p-3') do %>
+  <p class="m-0"><b>Bioinformatician?</b> If you are comfortable in a database, and want programmatic or large scale access to information you may find
+  <%= help_link 'these resources', 'Useful+resources+for+bioinformaticians' %> useful.</p>
 <% end %>
-
-<div id='content-links'>
- <%= link_to "Study details", properties_study_path(@study) -%>
-</div>
-
-<div class='lead'>
-  Created on <%= @study.created_at.to_formatted_s(:long) %> <%= @study.state.capitalize %> <br />
-</div>
 
 <div class="content mt-3">
   <%#
@@ -133,6 +124,11 @@
   <div class="my-3">
     <div class="assets tabbed-panel">
       <h3 class="card-header">Summary</h3>
+      <div class="card-body">
+        <div><b>Created on:</b> <%= @study.created_at.to_formatted_s(:long) %></div>
+        <div><b>Status:</b> <%= @study.state.capitalize %> </div> 
+        <div class="text-muted font-italic">See <%= link_to "study details", properties_study_path(@study) -%> for more</div>
+      </div>
       <div id="study-summary"></div>
       <%= loading_bar('study-summary-loader', show: true) %>
       <%= remote_error('study-summary-error') %>

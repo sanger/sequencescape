@@ -1,6 +1,7 @@
 <div>
-  <div class="card-header" >
-    <%= raw(progress_bar(@study.completed)) %>
+  <div class="card-header d-flex align-items-center">
+    <p class="mb-0 pr-3 font-weight-bold">Overall progress</p>
+    <div class="flex-grow-1"><%= raw(progress_bar(@study.completed)) %></div>
   </div>
   <header class='card-header'>
     <ul class="nav nav-tabs card-header-tabs" role="tablist">
