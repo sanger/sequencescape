@@ -170,10 +170,7 @@ SampleAccessioningJob =
         # Do not notify developers as it is not expected to be resolved by code changes
       when Accession::ExternalValidationError
         if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
-          send_exception_notification(error, submission)
-        end
-      when Accession::InternalValidationError
-        if Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
+          # Notify developers when there is a failure from the external service
           send_exception_notification(error, submission)
         end
       end
