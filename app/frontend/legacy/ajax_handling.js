@@ -41,6 +41,7 @@ const updateDom = (targetField) =>
     const target = this.dataset[targetField] || this.dataset.update;
     $(target).html(xhr.responseText);
     $(document.body).trigger("ajaxDomUpdate", target);
+    $(this.dataset.throbber || "#update_loader").hide();
   };
 
 const updateDomSuccess = updateDom("success");
@@ -59,7 +60,11 @@ const attachEvents = () => {
   $("a[data-remote=true]")
     .on("ajax:beforeSend", function () {
       $(this.dataset.throbber || "#update_loader").show();
-      $(this.dataset.update).html("");
+      // If a child element is calling an update to a parent element
+      // we don't want to clear the parent element before the update, as this can cause issues with the throbber remaining visible indefinitely
+      if (!this.dataset.keepHtml) {
+        $(this.dataset.update).html("");
+      }
     })
     .on("ajax:complete", function () {
       $(this.dataset.throbber || "#update_loader").hide();

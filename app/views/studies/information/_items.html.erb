@@ -9,9 +9,9 @@
                       class: [selected, 'nav-link'],
                       remote: true,
                       data: {
-                        throbber: '.loading-bar-container',
+                        throbber: '#items-loader',
                         failure: '#remote_error',
-                        update: '#everything',
+                        update: '#items',
                         toggle: 'tab'
                       },
                       id: "tab-link-#{key}"
@@ -21,9 +21,9 @@
     </ul>
   </div>
   <div>
-    <%= loading_bar(classes: 'px-3') %>
+    <%= loading_bar('items-loader', classes: 'px-3') %>
     <%= remote_error %>
-    <div id="everything"></div>
+    <div id="items"></div>
   </div>
 </div>
 
