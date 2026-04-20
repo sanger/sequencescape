@@ -46,7 +46,7 @@ module Accession
     #
     # @raise [Accession::InvalidFieldsError] if the sample is missing required fields for accessioning
     # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
-    def validate!
+    def validate! # rubocop:disable Metrics/AbcSize
       return if valid?
 
       # Add errors from the accession sample to the underlying sample for user feedback
