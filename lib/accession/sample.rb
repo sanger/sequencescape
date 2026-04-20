@@ -64,7 +64,7 @@ module Accession
       raise Accession::InternalValidationError error_message.upcase_first
     end
 
-    def build_xml(xml) # rubocop:disable Metrics/MethodLength
+    def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       tag_groups = tags.by_group
 
       xml.SAMPLE_SET(XML_NAMESPACE) do # rubocop:disable Metrics/BlockLength
