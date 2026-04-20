@@ -41,16 +41,30 @@ const updateDom = (targetField) =>
     const target = this.dataset[targetField] || this.dataset.update;
     $(target).html(xhr.responseText);
     $(document.body).trigger("ajaxDomUpdate", target);
+    $(this.dataset.throbber || "#update_loader").hide();
   };
 
 const updateDomSuccess = updateDom("success");
 const updateDomError = updateDom("failure");
 
+const autoLoadActiveRemoteLinks = (root = document) => {
+  root.querySelectorAll("a[data-remote=true].active").forEach((element) => {
+    // Prevent repeated auto-firing of the same link in a stable DOM subtree.
+    if (element.dataset.autoloaded === "true") return;
+    element.dataset.autoloaded = "true";
+    Rails.fire(element, "click");
+  });
+};
+
 const attachEvents = () => {
   $("a[data-remote=true]")
     .on("ajax:beforeSend", function () {
       $(this.dataset.throbber || "#update_loader").show();
-      $(this.dataset.update).html("");
+      // If a child element is calling an update to a parent element
+      // we don't want to clear the parent element before the update, as this can cause issues with the throbber remaining visible indefinitely
+      if (!this.dataset.keepHtml) {
+        $(this.dataset.update).html("");
+      }
     })
     .on("ajax:complete", function () {
       $(this.dataset.throbber || "#update_loader").hide();
@@ -78,11 +92,15 @@ const attachEvents = () => {
 // At time of writing, CSP is 'report only', so this JS will still run, but will produce a console warning.
 $(() => {
   attachEvents();
-  // Trigger automatic loading if already flagged as active
-  document.querySelectorAll("a[data-remote=true].active").forEach((element) => {
-    Rails.fire(element, "click");
-  });
+  autoLoadActiveRemoteLinks();
 });
 
 // If we update the DOM via ajax we want to mount the included components
-$(document.body).on("ajaxDomUpdate", attachEvents);
+// And if the update includes new remote links, we want to auto-load any that are active
+$(document.body).on("ajaxDomUpdate", (_event, target) => {
+  attachEvents();
+
+  if (!target) return;
+  const root = document.querySelector(target);
+  if (root) autoLoadActiveRemoteLinks(root);
+});

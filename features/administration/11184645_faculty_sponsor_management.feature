@@ -77,7 +77,7 @@ Feature: Manage a list of faculty sponsors
       And I choose "Open (ENA)" from "What is the data release strategy for this study?"
       And I press "Create"
     Then I should see "Your study has been created"
-    When I follow "Study details"
+    When I follow "study details"
     Then I should see "John Doe"
 
   Scenario: Update the faculty sponsor on an existing study
@@ -85,13 +85,13 @@ Feature: Manage a list of faculty sponsors
     Given I am a "administrator" user logged in as "user"
       And I have an active study called "Test study"
       And I am on the information page for study "Test study"
-    When I follow "Study details"
+    When I follow "study details"
     Then I should see "John Doe"
     When I follow "Edit"
       And I select "Jack Sponsor" from "Faculty Sponsor"
       And I press "Save Study"
     Then I should see "Your study has been updated"
-    When I follow "Study details"
+    When I follow "study details"
     Then I should see "Jack Sponsor"
 
   Scenario Outline: Only admins can manage faculty sponsors
