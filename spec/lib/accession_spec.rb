@@ -20,15 +20,15 @@ RSpec.describe Accession do
     context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
 
-      context 'when sample fails internal validation' do
+      context 'when sample fails fields validation' do
         let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
         let(:invalid_sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
         it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
           expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
-          expect_accession.to raise_error(Accession::InternalValidationError) do |error|
+          expect_accession.to raise_error(Accession::InvalidFieldsError) do |error|
             expect(error.message).to eq(
-              "Sample '#{invalid_sample.name}' cannot be accessioned: " \
+              'Cannot be accessioned: ' \
               'Sample does not have the required metadata: sample-taxon-id.'
             )
           end
