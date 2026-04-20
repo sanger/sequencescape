@@ -275,4 +275,6 @@ RSpec.describe SampleAccessioningJob do
       )
     end
   end
+
+  # TODO: add test for when a study is accessioned synchronously, no accessioning notification is sent
 end
