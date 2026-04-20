@@ -162,7 +162,7 @@ SampleAccessioningJob =
         failure_groups << 'External failure'
       when Accession::InvalidFieldsError
         error.invalid_fields.each do |field|
-          failure_groups << "Invalid #{field.to_s.humanize.downcase}"
+          failure_groups << "Invalid #{field}"
         end
       when Accession::InternalValidationError
         failure_groups << 'Internal validations'

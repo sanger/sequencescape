@@ -95,7 +95,7 @@ RSpec.describe Accession::TagList, :accession, type: :model do
     context 'when a mandatory tag is missing' do
       let(:sample_metadata) do
         Sample::Metadata.new(
-          sample_taxon_id: 1, # mandatory
+          # sample_taxon_id: 1, # mandatory - missing and has no default value
           # sample_common_name: 'A common name', # mandatory - missing and has no default value
           country_of_origin: 'Australia', # mandatory
           date_of_sample_collection: '2000-01-01T00:00', # mandatory
@@ -105,7 +105,7 @@ RSpec.describe Accession::TagList, :accession, type: :model do
 
       it 'returns the missing tags' do
         result = sample_tag_list.missing_service_tags(build(:ena_service), standard_tag_list)
-        expect(result).to eq(['sample_common_name'])
+        expect(result).to eq(['sample taxon', 'sample common name'])
       end
     end
   end

@@ -53,7 +53,7 @@ RSpec.describe SampleAccessioningJob do
           expect(sample_status).to have_attributes(
             status: 'failed',
             message: 'Cannot be accessioned: ' \
-                     'Sample does not have the required metadata: sample-taxon-id.'
+                     'Sample does not have the required metadata: sample taxon.'
           )
         end
 
@@ -61,7 +61,7 @@ RSpec.describe SampleAccessioningJob do
           expect(Rails.logger).to have_received(:warn).with(
             "SampleAccessioningJob failed for sample '#{sample.name}': " \
             'Cannot be accessioned: ' \
-            'Sample does not have the required metadata: sample-taxon-id.'
+            'Sample does not have the required metadata: sample taxon.'
           )
         end
 

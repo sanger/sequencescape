@@ -78,7 +78,8 @@ module Accession
     # Check that the tag list meets the requirements for accessioning for a particular service
     # i.e. check that it has the required tags.
     def missing_service_tags(service, standard_tags)
-      standard_tags.required_for(service).keys - required_for(service).keys
+      missing_keys = standard_tags.required_for(service).keys - required_for(service).keys
+      missing_keys.map { |key| key.to_s.humanize.downcase }
     end
 
     def <=>(other)
