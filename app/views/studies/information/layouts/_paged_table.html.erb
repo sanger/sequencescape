@@ -18,6 +18,10 @@
     ),
     class: 'col-md-4 d-flex justify-content-center mb--3'
   ) %>
+  <%= tag.div(class: 'col-md-4 d-flex justify-content-end') do %>
+    <%# insert aggregation summary as a block %>
+    <%= content_for :aggregation %>
+  <% end %>
 <% end %>
 
 <%# Table %>
