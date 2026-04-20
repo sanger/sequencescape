@@ -58,6 +58,7 @@ class PlateTemplatesController < ApplicationController
     redirect_to plate_templates_path
   end
 
+  # rubocop:disable Metrics/MethodLength
   def destroy
     pattern = PlateTemplate.find(params[:id])
     begin
@@ -73,4 +74,6 @@ class PlateTemplatesController < ApplicationController
 
     respond_to { |format| format.html { redirect_to(plate_templates_path) } }
   end
+
+  # rubocop:enable Metrics/MethodLength
 end
