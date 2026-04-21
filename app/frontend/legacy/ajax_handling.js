@@ -39,8 +39,13 @@ const throttledUpdate = function () {
 const updateDom = (targetField) =>
   function ({ detail: [, , xhr] }) {
     const target = this.dataset[targetField] || this.dataset.update;
-    $(target).html(xhr.responseText);
-    $(document.body).trigger("ajaxDomUpdate", target);
+    if (targetField === "success") {
+      $(target).html(xhr.responseText);
+      $(document.body).trigger("ajaxDomUpdate", target);
+    }
+    if (targetField === "failure") {
+      $(this.dataset.failure || "#remote_error").show();
+    }
     $(this.dataset.throbber || "#update_loader").hide();
   };
 
@@ -59,6 +64,7 @@ const autoLoadActiveRemoteLinks = (root = document) => {
 const attachEvents = () => {
   $("a[data-remote=true]")
     .on("ajax:beforeSend", function () {
+      $(this.dataset.failure || "#remote_error").hide();
       $(this.dataset.throbber || "#update_loader").show();
       // If a child element is calling an update to a parent element
       // we don't want to clear the parent element before the update, as this can cause issues with the throbber remaining visible indefinitely
