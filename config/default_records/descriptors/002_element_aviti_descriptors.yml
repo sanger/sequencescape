@@ -8,21 +8,21 @@ Quant method used:
     Tapestation: Tapestation
     Tapestation & qPCR: Tapestation & qPCR
   required: true
-  sorter: -1
+  sorter: 0
 Pipette Carousel:
   name: Pipette Carousel
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 0
+  sorter: 1
 Final Loading Concentration (pM):
   name: Final Loading Concentration (pM)
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 1
+  sorter: 2
 Custom primer kit used:
   name: Custom primer kit used
   task: Loading
@@ -33,88 +33,89 @@ Custom primer kit used:
     true: true
     false: false
   required: true
-  sorter: 1
+  sorter: 3
 "200mM Tris PH7 lot#":
   name: "200mM Tris PH7 lot#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 2
+  sorter: 4
 200 mM Tris Expiry:
   name: 200 mM Tris Expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 3
+  sorter: 5
+# 006_element_aviti_phix_type.wip.yml (6) 
 "PhiX lot #":
   name: "PhiX lot #"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 5
+  sorter: 7
 PhiX Expiry:
   name: PhiX Expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 6
+  sorter: 8
 PhiX Concentration (pM):
   name: PhiX Concentration (pM)
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 7
+  sorter: 9
 PhiX %:
   name: PhiX %
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 8
+  sorter: 10
 "Library loading buffer lot#":
   name: "Library loading buffer lot#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 9
+  sorter: 11
 Library loading buffer expiry:
   name: Library loading buffer expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 10
+  sorter: 12
 "0.2N lot#":
   name: "0.2N lot#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 11
+  sorter: 13
 0.2N lot expiry:
   name: 0.2N lot expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 12
+  sorter: 14
 "iPCR batch#":
   name: "iPCR batch#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 13
+  sorter: 15
 Comment:
   name: Comment
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 14
+  sorter: 16
