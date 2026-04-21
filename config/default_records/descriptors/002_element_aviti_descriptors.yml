@@ -26,6 +26,17 @@ Final Loading Concentration (pM):
   kind: Date
   required: false
   sorter: 3
+Element Aviti PhiX type:
+  name: PhiX type
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: Element PhiX
+  selection:
+    Element PhiX: Element PhiX
+    Comp PhiX: Comp PhiX
+  required: true
+  sorter: 4
 "PhiX lot #":
   name: "PhiX lot #"
   task: Loading
