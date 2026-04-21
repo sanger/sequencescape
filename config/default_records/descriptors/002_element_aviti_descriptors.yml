@@ -54,67 +54,67 @@ Custom primer kit used:
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 4
+  sorter: 5
 PhiX Expiry:
   name: PhiX Expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 5
+  sorter: 6
 PhiX Concentration (pM):
   name: PhiX Concentration (pM)
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 6
+  sorter: 7
 PhiX %:
   name: PhiX %
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 7
+  sorter: 8
 "Library loading buffer lot#":
   name: "Library loading buffer lot#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 8
+  sorter: 9
 Library loading buffer expiry:
   name: Library loading buffer expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 9
+  sorter: 10
 "0.2N lot#":
   name: "0.2N lot#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 10
+  sorter: 11
 0.2N lot expiry:
   name: 0.2N lot expiry
   task: Loading
   workflow: Element Aviti
   kind: Date
   required: false
-  sorter: 11
+  sorter: 12
 "iPCR batch#":
   name: "iPCR batch#"
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 12
+  sorter: 13
 Comment:
   name: Comment
   task: Loading
   workflow: Element Aviti
   kind: Text
   required: false
-  sorter: 13
+  sorter: 14
