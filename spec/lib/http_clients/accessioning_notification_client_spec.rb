@@ -27,6 +27,101 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
   end
 
   describe '#create_notification' do
+    context 'when requesting the token from the authentication service' do
+      let(:cache_key) { 'integration_hub/auth_token' }
+      let(:token_response) { { 'access_token' => 'token-123', 'expires_in' => 120 } }
+
+      before do
+        # Override top-level stub for these tests
+        allow(client).to receive(:auth_token).and_call_original
+        Rails.cache.delete(cache_key)
+      end
+
+      after do
+        Rails.cache.delete(cache_key)
+      end
+
+      describe '#get_token_data' do
+        it 'returns token data from the auth endpoint' do
+          stub_request(:post, configatron.integration_hub.auth_token_url)
+            .to_return(status: 200, body: token_response.to_json, headers: { 'Content-Type' => 'application/json' })
+
+          result = client.send(:get_token_data, configatron.integration_hub)
+
+          expect(result).to eq(token_response)
+        end
+
+        it 'posts client credentials in the request body' do
+          stub_request(:post, configatron.integration_hub.auth_token_url)
+            .with(
+              body: hash_including(
+                'grant_type' => 'client_credentials',
+                'client_id' => 'test_client_id',
+                'client_secret' => 'test_client_secret'
+              )
+            )
+            .to_return(status: 200, body: token_response.to_json, headers: { 'Content-Type' => 'application/json' })
+
+          client.send(:get_token_data, configatron.integration_hub)
+
+          expect(WebMock).to have_requested(:post, configatron.integration_hub.auth_token_url)
+        end
+
+        it 'raises a RuntimeError when auth endpoint returns non-success' do
+          stub_request(:post, configatron.integration_hub.auth_token_url)
+            .to_return(status: 401,
+                       body: { error: 'unauthorized' }.to_json,
+                       headers: { 'Content-Type' => 'application/json' })
+
+          expect do
+            client.send(:get_token_data, configatron.integration_hub)
+          end.to raise_error(RuntimeError, /Failed to obtain auth token: 401/)
+        end
+      end
+
+      describe '#auth_token' do
+        it 'returns cached token and does not request a new token' do
+          # Mock the cache read to return a value, as caching is disabled in the test environment
+          allow(Rails.cache).to receive(:read).with(cache_key).and_return('cached-token')
+          allow(client).to receive(:get_token_data).and_raise('get_token_data should not be called')
+
+          token = client.send(:auth_token)
+
+          expect(token).to eq('cached-token')
+        end
+
+        it 'fetches token and caches it with shortened ttl' do # rubocop:disable RSpec/ExampleLength
+          allow(client).to receive(:get_token_data).and_return(token_response)
+          allow(Rails.cache).to receive(:write).and_call_original
+
+          client.send(:auth_token)
+
+          expect(Rails.cache).to have_received(:write).with(
+            cache_key,
+            'token-123',
+            expires_in: 90, # 120 - 30
+            race_condition_ttl: 10
+          )
+        end
+
+        it 'uses minimum ttl of 60 seconds when expires_in is too small' do # rubocop:disable RSpec/ExampleLength
+          allow(client).to receive(:get_token_data).and_return(
+            { 'access_token' => 'short-lived-token', 'expires_in' => 20 }
+          )
+          allow(Rails.cache).to receive(:write).and_call_original
+
+          client.send(:auth_token)
+
+          expect(Rails.cache).to have_received(:write).with(
+            cache_key,
+            'short-lived-token',
+            expires_in: 60, # max(20 - 30, 60)
+            race_condition_ttl: 10
+          )
+        end
+      end
+    end
+
     context 'when the request is made' do
       before do
         stub_request(:post, notifications_url)

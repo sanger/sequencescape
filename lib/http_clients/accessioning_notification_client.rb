@@ -85,7 +85,7 @@ module HTTPClients
       expires_in = token_data['expires_in']
 
       # Refresh 30 seconds early to avoid edge-of-expiry failures
-      ttl_seconds = [expires_in.to_i - 30, 60].max
+      ttl_seconds = [expires_in.to_i - 30, 60].max # minimum ttl of 60 seconds to avoid very short cache durations
 
       Rails.cache.write(cache_key, access_token, expires_in: ttl_seconds, race_condition_ttl: 10)
 
