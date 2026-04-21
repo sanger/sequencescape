@@ -201,6 +201,31 @@ RSpec.describe SampleAccessioningJob do
         end
       end
     end
+
+    context 'when an accession number conflict exception is raised during submission', :un_delay_jobs do
+      before do
+        create(:accession_sample_status, sample: sample, status: 'processing')
+
+        allow(Accession::Submission).to receive(:client).and_return(
+          stub_accession_client(:submit_and_fetch_accession_number,
+                                raise_error:
+                                Accession::AccessionNumberConflictError
+                                  .new('No new objects can be added with MODIFY action.'))
+        )
+
+        Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
+
+        expect { job.perform }.to raise_error(Accession::AccessionNumberConflictError)
+      end
+
+      it 'sends a notification to the API with the "Existing accession number conflict" group' do
+        expect(notification_client).to have_received(:create_notification).with(
+          sample,
+          'No new objects can be added with MODIFY action.',
+          ['Existing accession number conflict']
+        )
+      end
+    end
   end
 
   describe '#reschedule_at' do
