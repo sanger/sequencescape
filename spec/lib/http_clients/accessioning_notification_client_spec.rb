@@ -51,6 +51,14 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
           expect(result).to eq(token_response)
         end
 
+        it 'sends the correct content-type header' do
+          stub_request(:post, configatron.integration_hub.auth_token_url)
+            .with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
+
+          client.send(:get_token_data, configatron.integration_hub)
+          expect(WebMock).to have_requested(:post, configatron.integration_hub.auth_token_url)
+        end
+
         it 'posts client credentials in the request body' do
           stub_request(:post, configatron.integration_hub.auth_token_url)
             .with(
@@ -60,7 +68,6 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
                 'client_secret' => 'test_client_secret'
               )
             )
-            .to_return(status: 200, body: token_response.to_json, headers: { 'Content-Type' => 'application/json' })
 
           client.send(:get_token_data, configatron.integration_hub)
 
