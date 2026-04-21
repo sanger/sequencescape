@@ -48,7 +48,7 @@ Custom primer kit used:
   kind: Date
   required: false
   sorter: 5
-# 006_element_aviti_phix_type.wip.yml (6) 
+# 006_element_aviti_phix_type.wip.yml (6)
 "PhiX lot #":
   name: "PhiX lot #"
   task: Loading
