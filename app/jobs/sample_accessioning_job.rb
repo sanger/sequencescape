@@ -7,12 +7,18 @@ require 'exception_notification'
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do
+  Struct.new(:accessionable, :event_user) do # rubocop:disable Metrics/ClassLength
     def perform
       submission = Accession::Submission.new(accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
       submission.submit_accession(event_user)
       Rails.logger.info("Accessioning succeeded for sample '#{accessionable.sample.name}'")
+    rescue Accession::InternalValidationError => e
+      # Internal validation errors are not expected to be resolved by retrying
+      # Handle them and raise an error, but set the delayed-job attempts to the max to prevent retries
+      handle_job_error(e, submission)
+      prevent_retries!
+      raise
     rescue StandardError => e
       handle_job_error(e, submission)
 
@@ -55,7 +61,8 @@ SampleAccessioningJob =
     end
 
     # Called before the job is run
-    def before(_job)
+    def before(job)
+      @delayed_job = job # Store the job instance to update attempts for non-retryable errors
       progress_accession_status
     end
 
@@ -67,6 +74,14 @@ SampleAccessioningJob =
     # Called after the job has failed max_attempts times
     def failure(_job)
       abort_accession_status
+    end
+
+    # Set attempts to max-reties to prevent further attempts
+    def prevent_retries!
+      return unless @delayed_job
+
+      @delayed_job.attempts = @delayed_job.max_attempts + 1
+      @delayed_job.save!
     end
 
     private
