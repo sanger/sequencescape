@@ -12,11 +12,14 @@ module SamplesHelper
   end
 
   def samples_not_accessioned(samples)
-    return 'No samples accessioned' if samples.empty? || samples.none?(&:accession_number?)
-    return 'All samples accessioned' if samples.all?(&:accession_number?)
+    accession_numbers = samples.map(&:ebi_accession_number)
 
-    count = samples.count { |sample| !sample.accession_number? }
-    "#{pluralize(count, 'sample')} not accessioned"
+    return 'No samples accessioned' if accession_numbers.empty? || accession_numbers.none?(&:present?)
+
+    not_accessioned_count = accession_numbers.count(&:blank?)
+    return 'All samples accessioned' if not_accessioned_count.zero?
+
+    "#{pluralize(not_accessioned_count, 'sample')} not accessioned"
   end
 
   # Generate a warning providing feedback on why the sample cannot be accessioned
