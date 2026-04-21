@@ -297,7 +297,7 @@ RSpec.describe StudiesController do
               status: 'failed',
               message: 'Cannot be accessioned: ' \
                        'Sample does not have the required metadata: ' \
-                       'donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.'
+                       'donor, gender, phenotype, sample common name, and sample taxon.'
             )
           end
         end
