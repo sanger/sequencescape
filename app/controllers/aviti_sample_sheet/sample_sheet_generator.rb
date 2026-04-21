@@ -124,7 +124,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     #      }
     def group_samples_by_identity
       grouped_samples = Hash.new { |hash, key| hash[key] = new_group_entry(key) }
-      @batch.requests.reject(&:failed?).each { |request| add_request_to_grouped_samples(grouped_samples, request) }
+      batch_requests.each { |request| add_request_to_grouped_samples(grouped_samples, request) }
       grouped_samples
     end
 
@@ -194,7 +194,7 @@ module AvitiSampleSheet::SampleSheetGenerator
       task = @batch.tasks.find { |task| task.name == PHIX_TYPE_TASK_NAME }
       return ELEMENT_PHIX_TYPE if task.nil?
 
-      descriptors = task.descriptors_for(@batch.requests.first)
+      descriptors = task.descriptors_for(batch_requests.first)
       descriptor = descriptors.find { |desc| desc[:name] == PHIX_TYPE_DESCRIPTOR_NAME }
       return ELEMENT_PHIX_TYPE if descriptor.nil?
 
@@ -222,6 +222,13 @@ module AvitiSampleSheet::SampleSheetGenerator
         key = [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, aliquot.study.id]
         grouped_samples[key][:positions] << request.position
       end
+    end
+
+    # Returns the requests associated with the batch.
+    # This method rejects failed requests.
+    # @return [Array<ElementAvitiSequencingRequest>] the requests of the batch
+    def batch_requests
+      @batch.requests.reject(&:failed?)
     end
   end
 end
