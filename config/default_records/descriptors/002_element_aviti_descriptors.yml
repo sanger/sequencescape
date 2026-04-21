@@ -48,7 +48,17 @@ Custom primer kit used:
   kind: Date
   required: false
   sorter: 5
-# 006_element_aviti_phix_type.wip.yml (6)
+Element Aviti PhiX type:
+  name: PhiX type
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: Element PhiX
+  selection:
+    Element PhiX: Element PhiX
+    Comp PhiX: Comp PhiX
+  required: true
+  sorter: 6
 "PhiX lot #":
   name: "PhiX lot #"
   task: Loading
