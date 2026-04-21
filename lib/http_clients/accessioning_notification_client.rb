@@ -47,11 +47,8 @@ module HTTPClients
       end
     end
 
-    # TODO: add tests for auth-token retrieval and caching
-
     # Creates a notification in the Integration Hub for a given sample and message.
     # TODO: update this docstring
-    # TODO: add tests for this method
     # @param sample [Sample] The sample associated with the notification.
     # @param message [String] The message to include in the notification.
     # @param failure_groups [Array<String>] An array of failure group names to include in the notification summary.
