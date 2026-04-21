@@ -29,7 +29,7 @@ RSpec.describe Accession do
           expect_accession.to raise_error(Accession::InvalidFieldsError) do |error|
             expect(error.message).to eq(
               'Cannot be accessioned: ' \
-              'Sample does not have the required metadata: sample-taxon-id.'
+              'Sample does not have the required metadata: sample taxon.'
             )
           end
         end
