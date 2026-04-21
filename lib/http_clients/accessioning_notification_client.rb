@@ -47,8 +47,8 @@ module HTTPClients
       end
     end
 
-    # Creates a notification in the Integration Hub for a given sample and message.
-    # TODO: update this docstring
+    # Creates a notification in the Integration Hub for a given sample, message, and failure groups.
+    #
     # @param sample [Sample] The sample associated with the notification.
     # @param message [String] The message to include in the notification.
     # @param failure_groups [Array<String>] An array of failure group names to include in the notification summary.
@@ -91,7 +91,7 @@ module HTTPClients
 
     # Requests a bearer token from a separate authentication service using the OAuth 2.0 Client Credentials Flow.
     #
-    #
+    # @param integration_hub [Hash] A hash containing the credentials and URLs for obtaining the auth token.
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
     def get_token_data(integration_hub) # rubocop:disable Metrics/AbcSize
@@ -114,6 +114,9 @@ module HTTPClients
       response.body
     end
 
+    # Builds the payload for the notification API request based on the sample, message, and failure groups.
+    # The notification API will aggregate the provided fields where they are used by the notification template
+    # See config/accession/notification-template.mjml
     def build_notification_payload(sample, message, failure_groups) # rubocop:disable Metrics/AbcSize
       # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
