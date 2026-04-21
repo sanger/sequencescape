@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe HTTPClients::AccessioningV1Client do
+  # TODO: replace Faraday test stubs (tests middleware) with WebMock (tests endpoints)
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:test_conn) do
     Faraday.new do |f|

@@ -3,19 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe HTTPClients::AccessioningNotificationClient do
-  let(:stubs) { Faraday::Adapter::Test::Stubs.new }
-  let(:test_conn) do
-    Faraday.new(url: 'http://example.com') do |f|
-      f.response :raise_error
-      f.response :json
-      f.adapter :test, stubs
-    end
-  end
   let(:client) { described_class.new }
   let(:sample) { create(:sample_for_accessioning_with_open_study) }
   let(:message) { 'Accessioning failed due to missing metadata.' }
   let(:failure_groups) { ['Internal validations', 'Invalid sample common name'] }
   let(:notification_id) { 'notification-123' }
+  let(:notifications_url) { "https://integration-hub.example.com#{described_class::NOTIFICATIONS_URL}" }
 
   around do |example|
     configatron_dup = configatron.dup
@@ -28,44 +21,76 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
   end
 
   before do
-    allow(client).to receive_messages(conn: test_conn, auth_token: 'test_bearer_token')
+    allow(client).to receive(:auth_token).and_return('test_bearer_token')
     allow(Rails.logger).to receive(:info).and_call_original
     allow(Rails.logger).to receive(:error).and_call_original
   end
 
-  after do
-    Faraday.default_connection = nil # remove any stubs after each test
-  end
-
-  describe '#conn' do
-    # Use a fresh client without stubbed conn for these tests
-    let(:actual_client) { described_class.new }
-
-    before { allow(actual_client).to receive(:auth_token).and_return('token') }
-
-    it 'returns a Faraday connection with the configured base URL' do
-      expect(actual_client.conn.url_prefix.to_s).to eq('https://integration-hub.example.com/')
-    end
-
-    it 'sets the correct User-Agent header' do
-      expect(actual_client.conn.headers).to include(
-        'User-Agent' => 'Sequencescape Accessioning Notification Client'
-      )
-    end
-
-    it 'uses a proxy if configured' do
-      allow(actual_client).to receive(:proxy).and_return('http://proxy.example.com')
-      actual_client.conn
-      expect(actual_client).to have_received(:proxy)
-    end
-  end
-
   describe '#create_notification' do
+    context 'when the request is made' do
+      before do
+        stub_request(:post, notifications_url)
+          .to_return(
+            status: 201,
+            headers: { 'Content-Type' => 'application/json' },
+            body: { notification_id: }.to_json
+          )
+
+        client.create_notification(sample, message, failure_groups)
+      end
+
+      let(:expected_payload) do
+        {
+          channels: [
+            {
+              type: 'EMAIL',
+              recipient: ['PSD_EMAIL'],
+              content_type: 'html',
+              template_id: 'PSD_EMAIL',
+              subject: 'Accessioning Failure Notification',
+              fields: {
+                study_name: sample.studies_for_accessioning.first.name,
+                sample_name: sample.name,
+                sample_path: "http://uat.sequencescape.sanger.ac.uk/samples/#{sample.id}",
+                accessioning_status_message: 'Accessioning failed due to missing metadata.',
+                failure_groups: ['Internal validations', 'Invalid sample common name']
+              }
+            }
+          ],
+          priority: 'BATCH',
+          aggregator_id: "study-#{sample.studies_for_accessioning.map(&:id).join('-')}"
+        }
+      end
+
+      it 'sends the correct user-agent header' do
+        expect(WebMock).to have_requested(:post, notifications_url)
+          .with(headers: { 'User-Agent' => 'Sequencescape Accessioning Notification Client' })
+      end
+
+      it 'sends the correct authorization header' do
+        expect(WebMock).to have_requested(:post, notifications_url)
+          .with(headers: { 'Authorization' => 'Bearer test_bearer_token' })
+      end
+
+      it 'sends the correct content-type header' do
+        expect(WebMock).to have_requested(:post, notifications_url)
+          .with(headers: { 'Content-Type' => 'application/json' })
+      end
+
+      it 'sends the correct body' do
+        expect(WebMock).to have_requested(:post, notifications_url)
+          .with(body: expected_payload)
+      end
+    end
+
     context 'when the request succeeds' do
       before do
-        stubs.post(described_class::NOTIFICATIONS_URL) do
-          [201, { 'Content-Type' => 'application/json' }, { 'notification_id' => notification_id }.to_json]
-        end
+        stub_request(:post, notifications_url)
+          .to_return(
+            status: 201,
+            headers: { 'Content-Type' => 'application/json' },
+            body: { notification_id: }.to_json
+          )
       end
 
       it 'returns the notification_id from the response' do
@@ -82,7 +107,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
 
     context 'when the server returns a 400 client error' do
       before do
-        stubs.post(described_class::NOTIFICATIONS_URL) { [400, {}, 'Bad Request'] }
+        stub_request(:post, notifications_url).to_return(status: 400, body: 'Bad Request')
       end
 
       it 'raises a Faraday::ClientError' do
@@ -101,7 +126,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
 
     context 'when the server returns a 500 server error' do
       before do
-        stubs.post(described_class::NOTIFICATIONS_URL) { [500, {}, 'Internal Server Error'] }
+        stub_request(:post, notifications_url).to_return(status: 500, body: 'Internal Server Error')
       end
 
       it 'raises a Faraday::ServerError' do
@@ -120,7 +145,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
 
     context 'when the server is unreachable' do
       before do
-        stubs.post(described_class::NOTIFICATIONS_URL) { raise Faraday::ConnectionFailed, 'Connection failed' }
+        stub_request(:post, notifications_url).to_raise(Faraday::ConnectionFailed.new('Connection failed'))
       end
 
       it 'raises a Faraday::ConnectionFailed error' do
@@ -134,62 +159,6 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
         expect(Rails.logger).to have_received(:error).with(
           /Faraday error while creating notification: Connection failed/
         )
-      end
-    end
-
-    context 'when inspecting the outgoing request payload' do
-      # before do
-      #   stubs.post(described_class::NOTIFICATIONS_URL) do
-      #     [201, { 'Content-Type' => 'application/json' }, { 'notification_id' => notification_id }.to_json]
-      #   end
-      # end
-
-      before do
-        puts "Stubbing POST request to http://example.com#{described_class::NOTIFICATIONS_URL} with WebMock"
-        stub_request(:post, "http://example.com#{described_class::NOTIFICATIONS_URL}")
-          .to_return(
-            status: 201,
-            headers: { 'Content-Type' => 'application/json' },
-            body: { 'notification_id' => notification_id }.to_json
-          )
-
-        client.create_notification(sample, message, failure_groups)
-      end
-
-      it 'posts to the notifications URL with the correct payload shape' do
-        request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
-        body = JSON.parse(request.body)
-
-        expect(body).to include(
-          'priority' => described_class::PRIORITY,
-          'channels' => [
-            a_hash_including(
-              'subject' => described_class::SUBJECT,
-              'fields' => a_hash_including(
-                'accessioning_status_message' => message,
-                'failure_groups' => failure_groups,
-                'sample_name' => sample.name
-              )
-            )
-          ]
-        )
-      end
-
-      it 'sends a Bearer authorization header' do
-        request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
-        expect(request.headers['Authorization']).to eq('Bearer test_bearer_token')
-      end
-
-      it 'sends a JSON Content-Type header' do
-        request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
-        expect(request.headers['Content-Type']).to match(%r{application/json})
-      end
-
-      it 'sets the aggregator_id based on the sample studies' do
-        study_ids = sample.studies_for_accessioning.map(&:id).join('-')
-        request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
-        body = JSON.parse(request.body)
-        expect(body['aggregator_id']).to eq("study-#{study_ids}")
       end
     end
   end
