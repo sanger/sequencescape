@@ -3,23 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe HTTPClients::AccessioningV1Client do
-  let(:stubs) { Faraday::Adapter::Test::Stubs.new }
-  let(:test_conn) do
-    Faraday.new do |f|
-      f.adapter :test, stubs
-    end
-  end
   let(:client) { described_class.new }
   let(:login) { { user: 'user', password: 'pass' } }
-
-  let(:sample_file) do
-    instance_double(File, path: 'path/to/123_sample_file.xml', read: '<xml>sample</xml>', rewind: true, close: true)
-  end
-  let(:submission_file) do
-    instance_double(File, path: 'path/to/456_submission_file.xml', read: '<xml>submission</xml>', rewind: true,
-                          close: true)
-  end
-  let(:files) { { 'SAMPLE' => sample_file, 'SUBMISSION' => submission_file } }
+  let(:files) { {} }
 
   let(:success_response) do
     <<-XML
@@ -43,10 +29,6 @@ RSpec.describe HTTPClients::AccessioningV1Client do
     XML
   end
 
-  after do
-    Faraday.default_connection = nil # remove any stubs after each test
-  end
-
   describe '#conn' do
     it 'returns a Faraday connection with the correct URL' do
       expect(client.conn.url_prefix.to_s).to eq(configatron.accession.url)
@@ -67,13 +49,9 @@ RSpec.describe HTTPClients::AccessioningV1Client do
   end
 
   describe '#submit_and_fetch_accession_number' do
-    before do
-      allow(client).to receive(:conn).and_return(test_conn)
-    end
-
     context 'when the response is successful' do
       before do
-        stubs.post('') { [200, {}, success_response] }
+        stub_request(:post, configatron.accession.url).to_return(status: 200, body: success_response)
       end
 
       it 'returns the accession number' do
@@ -83,7 +61,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     context 'when the response is a failure' do
       before do
-        stubs.post('') { [200, {}, failure_response] }
+        stub_request(:post, configatron.accession.url).to_return(status: 200, body: failure_response)
       end
 
       it 'raises Accession::ExternalValidationError with error messages' do
@@ -95,7 +73,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     context 'when the server returns a 400 error with error messages' do
       before do
-        stubs.post('') { [400, {}, failure_response] }
+        stub_request(:post, configatron.accession.url).to_return(status: 400, body: failure_response)
       end
 
       it 'raises Accession::ExternalValidationError with error messages' do
@@ -107,7 +85,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     context 'when the server returns a 400 error with no body' do
       before do
-        stubs.post('') { [400, {}, 'Bad Request'] }
+        stub_request(:post, configatron.accession.url).to_return(status: 400, body: 'Bad Request')
       end
 
       it 'raises a Accession::ExternalValidationError' do
@@ -119,7 +97,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     context 'when the server returns a 500 error' do
       before do
-        stubs.post('') { [500, {}, 'Internal Server Error'] }
+        stub_request(:post, configatron.accession.url).to_return(status: 500, body: 'Internal Server Error')
       end
 
       it 'raises an Accession::ExternalValidationError' do
@@ -131,7 +109,7 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     context 'when the server is unreachable' do
       before do
-        stubs.post('') { raise Faraday::ConnectionFailed, 'Connection failed' }
+        stub_request(:post, configatron.accession.url).to_raise(Faraday::ConnectionFailed.new('Connection failed'))
       end
 
       it 'raises a Faraday::Error error' do
@@ -142,7 +120,6 @@ RSpec.describe HTTPClients::AccessioningV1Client do
     end
   end
 
-  # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
   context 'when inspecting the outgoing request' do
     # While not a perfect test, this checks that the client and resultant request are largely correct.
     # This makes a good reference for what the version 1 ENA API expects. Should the implementation
@@ -154,6 +131,21 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     before do
       stub_request(:post, 'http://example.com/submit/').to_return(status: 200, body: success_response)
+
+      Dir.mktmpdir do |tmpdir|
+        sample_file = File.join(tmpdir, 'sample.xml')
+        File.write(sample_file, '<xml>sample</xml>')
+
+        submission_file = File.join(tmpdir, 'submission.xml')
+        File.write(submission_file, '<xml>submission</xml>')
+
+        files = {
+          'SAMPLE' => File.open(sample_file, 'r'),
+          'SUBMISSION' => File.open(submission_file, 'r')
+        }
+
+        client.submit_and_fetch_accession_number(login, files)
+      end
     end
 
     around do |example|
@@ -167,38 +159,20 @@ RSpec.describe HTTPClients::AccessioningV1Client do
 
     let(:client) { described_class.new }
 
-    it 'sends the correct multipart/form-data payload' do
-      Dir.mktmpdir do |tmpdir|
-        sample_file = File.join(tmpdir, 'sample.xml')
-        File.write(sample_file, '<xml>sample</xml>')
+    it 'sends the correct multipart/form-data payload' do # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+      # Inspect the last request
+      request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
 
-        submission_file = File.join(tmpdir, 'submission.xml')
-        File.write(submission_file, '<xml>submission</xml>')
+      expect(request.headers['User-Agent']).to eq('Sequencescape Accessioning V1 Client')
+      expect(request.headers['Authorization']).to eq("Basic #{Base64.strict_encode64('user:pass')}")
+      expect(request.headers['Content-Type']).to match(%r{^multipart/form-data; boundary=})
 
-        files = {
-          'SAMPLE' => File.open(sample_file, 'r'),
-          'SUBMISSION' => File.open(submission_file, 'r')
-        }
+      expect(request.body).to include('Content-Disposition: form-data; name="SAMPLE"; filename="sample.xml"')
+      expect(request.body).to include('Content-Disposition: form-data; name="SUBMISSION"; filename="submission.xml"')
+      expect(request.body.scan('Content-Type: text/plain').size).to eq(2) # should appear once for each file
 
-        response = client.submit_and_fetch_accession_number(login, files)
-
-        expect(response).to eq('EGA00001000240')
-
-        # Inspect the last request
-        request = WebMock::RequestRegistry.instance.requested_signatures.hash.keys.last
-
-        expect(request.headers['User-Agent']).to eq('Sequencescape Accessioning V1 Client')
-        expect(request.headers['Authorization']).to eq("Basic #{Base64.strict_encode64('user:pass')}")
-        expect(request.headers['Content-Type']).to match(%r{^multipart/form-data; boundary=})
-
-        expect(request.body).to include('Content-Disposition: form-data; name="SAMPLE"; filename="sample.xml"')
-        expect(request.body).to include('Content-Disposition: form-data; name="SUBMISSION"; filename="submission.xml"')
-        expect(request.body.scan('Content-Type: text/plain').size).to eq(2) # should appear once for each file
-
-        expect(request.body).to include('<xml>sample</xml>')
-        expect(request.body).to include('<xml>submission</xml>')
-      end
+      expect(request.body).to include('<xml>sample</xml>')
+      expect(request.body).to include('<xml>submission</xml>')
     end
   end
-  # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
 end
