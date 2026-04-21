@@ -69,6 +69,16 @@ RSpec.describe HTTPClients::AccessioningV1Client do
           client.submit_and_fetch_accession_number(login, files)
         end.to raise_error(Accession::ExternalValidationError, "#{error_message1}; #{error_message2}")
       end
+
+      context 'when the error message includes "No new objects can be added with MODIFY action."' do
+        let(:error_message2) { 'No new objects can be added with MODIFY action.' }
+
+        it 'raises Accession::AccessionNumberConflictError' do
+          expect do
+            client.submit_and_fetch_accession_number(login, files)
+          end.to raise_error(Accession::AccessionNumberConflictError, "#{error_message1}; #{error_message2}")
+        end
+      end
     end
 
     context 'when the server returns a 400 error with error messages' do
