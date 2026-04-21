@@ -102,8 +102,6 @@ module HTTPClients
       end
 
       response = auth_conn.post do |req|
-        # req.headers['Content-Type'] = 'application/x-www-form-urlencoded'
-        # TODO: add test for correct content type header
         req.body = {
           grant_type: 'client_credentials',
           client_id: integration_hub.notifications_api.client_id,
