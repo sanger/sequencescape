@@ -41,6 +41,7 @@ RSpec.describe SampleAccessioningJob do
           Flipper.disable(:y26_094_notify_email_on_accessioning_failures)
         end
 
+        allow(job).to receive(:prevent_retries!)
         expect { job.perform }.to raise_error(Accession::InternalValidationError)
       end
 
@@ -64,6 +65,10 @@ RSpec.describe SampleAccessioningJob do
             'Cannot be accessioned: ' \
             'Sample does not have the required metadata: sample taxon.'
           )
+        end
+
+        it 'calls prevent_retries!' do
+          expect(job).to have_received(:prevent_retries!)
         end
 
         context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
@@ -300,7 +305,22 @@ RSpec.describe SampleAccessioningJob do
     end
   end
 
+  describe '#prevent_retries!' do
+    let(:delayed_job) { instance_double(Delayed::Job, max_attempts: job.max_attempts, attempts: 1) }
+
+    before do
+      job.instance_variable_set(:@delayed_job, delayed_job)
+      allow(delayed_job).to receive(:attempts=)
+      allow(delayed_job).to receive(:save!)
+    end
+
+    it 'sets attempts to max_attempts + 1, to prevent retires' do # rubocop:disable RSpec/MultipleExpectations
+      job.prevent_retries!
+
+      expect(delayed_job).to have_received(:attempts=).with(job.max_attempts + 1)
+      expect(delayed_job).to have_received(:save!)
+    end
+  end
+
   # TODO: add test for when a study is accessioned synchronously, no accessioning notification is sent
-  # TODO: add test for when an internal validation error is raised,
-  # the status is set to abort, and no repeats are attempted
 end
