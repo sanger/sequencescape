@@ -30,15 +30,15 @@ RSpec.describe SampleAccessioningJob do
 
     context 'when the submission fails validation' do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
-      let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+      let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
 
-        if enable_y26_094_notify_email_on_accessioning_failures
-          Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
+        if enable_y26_094_email_users_on_accessioning_failures
+          Flipper.enable(:y26_094_email_users_on_accessioning_failures)
         else
-          Flipper.disable(:y26_094_notify_email_on_accessioning_failures)
+          Flipper.disable(:y26_094_email_users_on_accessioning_failures)
         end
 
         allow(job).to receive(:prevent_retries!)
@@ -71,16 +71,16 @@ RSpec.describe SampleAccessioningJob do
           expect(job).to have_received(:prevent_retries!)
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
           it 'does not send a notification to the API' do
             expect(notification_client).not_to have_received(:create_notification)
           end
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
 
           it 'sends a notification to the API' do
             expect(notification_client).to have_received(:create_notification).with(
@@ -127,7 +127,7 @@ RSpec.describe SampleAccessioningJob do
     end
 
     context 'when an exception is raised during submission', :un_delay_jobs do
-      let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+      let(:enable_y26_094_email_users_on_accessioning_failures) { false }
       let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
 
       before do
@@ -136,10 +136,10 @@ RSpec.describe SampleAccessioningJob do
           stub_accession_client(:submit_and_fetch_accession_number, raise_error: external_error)
         )
 
-        if enable_y26_094_notify_email_on_accessioning_failures
-          Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
+        if enable_y26_094_email_users_on_accessioning_failures
+          Flipper.enable(:y26_094_email_users_on_accessioning_failures)
         else
-          Flipper.disable(:y26_094_notify_email_on_accessioning_failures)
+          Flipper.disable(:y26_094_email_users_on_accessioning_failures)
         end
 
         if enable_y25_705_notify_on_external_accessioning_validation_failures
@@ -161,16 +161,16 @@ RSpec.describe SampleAccessioningJob do
           )
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
           it 'does not send a notification to the API' do
             expect(notification_client).not_to have_received(:create_notification)
           end
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
 
           it 'sends a notification to the API with expected arguments' do
             expect(notification_client).to have_received(:create_notification).with(
@@ -217,16 +217,16 @@ RSpec.describe SampleAccessioningJob do
           )
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
           it 'does not send a notification to the API' do
             expect(notification_client).not_to have_received(:create_notification)
           end
         end
 
-        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
-          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
 
           it 'sends a notification to the API with the "Existing accession number conflict" group' do
             expect(notification_client).to have_received(:create_notification).with(

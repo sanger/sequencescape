@@ -143,7 +143,7 @@ SampleAccessioningJob =
       Rails.logger.warn("SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}")
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
 
-      if Flipper.enabled?(:y26_094_notify_email_on_accessioning_failures)
+      if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures)
         # Send an email to users when accessioning fails
         sample = submission.sample.sample
         Delayed::Job.enqueue(NotificationJob.new(sample, error.message, failure_groups(error)), priority: 300)
