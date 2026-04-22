@@ -133,9 +133,7 @@ RSpec.describe SampleAccessioningJob do
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
         allow(Accession::Submission).to receive(:client).and_return(
-          stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error:
-                                Accession::ExternalValidationError.new('Failed to process accessioning response'))
+          stub_accession_client(:submit_and_fetch_accession_number, raise_error: external_error)
         )
 
         if enable_y26_094_notify_email_on_accessioning_failures
@@ -150,85 +148,111 @@ RSpec.describe SampleAccessioningJob do
           Flipper.disable(:y25_705_notify_on_external_accessioning_validation_failures)
         end
 
-        expect { job.perform }.to raise_error(Accession::ExternalValidationError)
+        expect { job.perform }.to raise_error(external_error)
       end
 
-      it 'logs the warning' do
-        expect(Rails.logger).to have_received(:warn).with(
-          "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'Failed to process accessioning response'
-        )
-      end
+      context 'when a base external validation error is raised' do
+        let(:external_error) { Accession::ExternalValidationError.new('Failed to process accessioning response') }
 
-      context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
-        let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
-
-        it 'does not send a notification to the API' do
-          expect(notification_client).not_to have_received(:create_notification)
-        end
-      end
-
-      context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
-        let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
-
-        it 'sends a notification to the API with expected arguments' do
-          expect(notification_client).to have_received(:create_notification).with(
-            sample,
-            'Failed to process accessioning response',
-            ['External failure']
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'Failed to process accessioning response'
           )
         end
-      end
 
-      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
-        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
 
-        it 'does not send an exception notification' do
-          expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
+
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+
+          it 'sends a notification to the API with expected arguments' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'Failed to process accessioning response',
+              ['External failure']
+            )
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
+          it 'does not send an exception notification' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+
+          it 'notifies ExceptionNotifier' do
+            expect(ExceptionNotifier).to have_received(:notify_exception).with(
+              instance_of(Accession::ExternalValidationError),
+              data: {
+                message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
+                         'Failed to process accessioning response',
+                sample_name: sample.name, # 'Sample 1',
+                study_names: "#{first_open_study.name}, #{second_open_study.name}",
+                service_provider: 'ENA',
+                user: nil
+              }
+            )
+          end
         end
       end
 
-      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
-        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+      context 'when a accession number conflict error is raised' do
+        let(:external_error) { Accession::AccessionNumberConflictError.new('No new objects can be added with MODIFY action.') }
 
-        it 'notifies ExceptionNotifier' do
-          expect(ExceptionNotifier).to have_received(:notify_exception).with(
-            instance_of(Accession::ExternalValidationError),
-            data: {
-              message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
-                       'Failed to process accessioning response',
-              sample_name: sample.name, # 'Sample 1',
-              study_names: "#{first_open_study.name}, #{second_open_study.name}",
-              service_provider: 'ENA',
-              user: nil
-            }
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'No new objects can be added with MODIFY action.'
           )
         end
-      end
-    end
 
-    context 'when an accession number conflict exception is raised during submission', :un_delay_jobs do
-      before do
-        create(:accession_sample_status, sample: sample, status: 'processing')
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
 
-        allow(Accession::Submission).to receive(:client).and_return(
-          stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error:
-                                Accession::AccessionNumberConflictError
-                                  .new('No new objects can be added with MODIFY action.'))
-        )
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
 
-        Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
 
-        expect { job.perform }.to raise_error(Accession::AccessionNumberConflictError)
-      end
+          it 'sends a notification to the API with the "Existing accession number conflict" group' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'No new objects can be added with MODIFY action.',
+              ['Existing accession number conflict']
+            )
+          end
+        end
 
-      it 'sends a notification to the API with the "Existing accession number conflict" group' do
-        expect(notification_client).to have_received(:create_notification).with(
-          sample,
-          'No new objects can be added with MODIFY action.',
-          ['Existing accession number conflict']
-        )
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
+          it 'does not send an exception notification' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+
+          it 'does not send an exception notification for developers' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
       end
     end
   end

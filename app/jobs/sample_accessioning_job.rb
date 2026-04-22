@@ -153,8 +153,10 @@ SampleAccessioningJob =
         Delayed::Job.enqueue(NotificationJob.new(sample, error.message, failure_groups(error)), priority: 300)
       end
 
-      # Notify developers when there is a failure from the external service
-      if error.is_a?(Accession::ExternalValidationError) &&
+      # Notify developers when there is an unexpected failure from the external service
+      # AccessionNumberConflictError is expected
+      # ExternalValidationError is not
+      if error.is_a?(Accession::ExternalValidationError) && !error.is_a?(Accession::AccessionNumberConflictError) &&
           Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
         ExceptionNotifier.notify_exception(error, data:)
       end
