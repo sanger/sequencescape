@@ -274,11 +274,11 @@ RSpec.describe StudiesController do
         expect(flash[:error]).to eq(
           [
             'The samples in this study could not be accessioned, please check the following errors:',
-            "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-            "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id."
+            'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+            'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+            'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+            'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+            'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.'
           ]
         )
         # rubocop:enable Layout/LineLength
@@ -296,12 +296,12 @@ RSpec.describe StudiesController do
           expect(flash[:error]).to eq(
             [
               'The samples in this study could not be accessioned, please check the following errors:',
-              "Sample 'Sample1' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample2' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample3' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample4' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample5' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
-              "Sample 'Sample6' cannot be accessioned: Sample does not have the required metadata: donor-id, gender, phenotype, sample-common-name, and sample-taxon-id.",
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
+              'Cannot be accessioned: Sample does not have the required metadata: donor, gender, phenotype, sample common name, and sample taxon.',
               '...',
               'Only the first 6 of 10 errors are shown.'
             ]
