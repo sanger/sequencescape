@@ -84,9 +84,8 @@ RSpec.describe SampleAccessioningJob do
             expect(ExceptionNotifier).to have_received(:notify_exception).with(
               instance_of(Accession::InvalidFieldsError),
               data: {
-                message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                         'Cannot be accessioned: ' \
-                         'Sample does not have the required metadata: sample-taxon-id.',
+                message: 'Cannot be accessioned: ' \
+                         'Sample does not have the required metadata: sample taxon.',
                 sample_name: sample_name,
                 study_names: "#{first_open_study.name}, #{second_open_study.name}",
                 service_provider: 'ENA',
