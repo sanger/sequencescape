@@ -14,11 +14,14 @@ RSpec.describe SampleAccessioningJob do
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
+  let(:notification_client) { instance_double(HTTPClients::AccessioningNotificationClient) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
     allow(Rails.logger).to receive(:info).and_call_original
     allow(Rails.logger).to receive(:warn).and_call_original
+    allow(HTTPClients::AccessioningNotificationClient).to receive(:new).and_return(notification_client)
+    allow(notification_client).to receive(:create_notification).and_return('notification-id')
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
@@ -31,8 +34,6 @@ RSpec.describe SampleAccessioningJob do
 
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
-        allow_any_instance_of(HTTPClients::AccessioningNotificationClient) # rubocop:disable RSpec/AnyInstance
-          .to receive(:create_notification).and_return('notification-id')
 
         if enable_y26_094_notify_email_on_accessioning_failures
           Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
@@ -74,9 +75,7 @@ RSpec.describe SampleAccessioningJob do
           let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
 
           it 'does not send a notification to the API' do
-            expect(Rails.logger).not_to have_received(:info).with(
-              "Notification 'notification-id' created for sample '#{sample.name}'"
-            )
+            expect(notification_client).not_to have_received(:create_notification)
           end
         end
 
@@ -84,8 +83,10 @@ RSpec.describe SampleAccessioningJob do
           let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
 
           it 'sends a notification to the API' do
-            expect(Rails.logger).to have_received(:info).with(
-              "Notification 'notification-id' created for sample '#{sample.name}'"
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'Cannot be accessioned: Sample does not have the required metadata: sample taxon.',
+              ['Invalid sample taxon']
             )
           end
         end
@@ -134,8 +135,6 @@ RSpec.describe SampleAccessioningJob do
         allow(Accession::Submission).to receive(:client).and_return(
           stub_accession_client(:submit_and_fetch_accession_number, raise_error: external_error)
         )
-        allow_any_instance_of(HTTPClients::AccessioningNotificationClient) # rubocop:disable RSpec/AnyInstance
-          .to receive(:create_notification).and_return('notification-id')
 
         if enable_y26_094_notify_email_on_accessioning_failures
           Flipper.enable(:y26_094_notify_email_on_accessioning_failures)
@@ -174,18 +173,18 @@ RSpec.describe SampleAccessioningJob do
         let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
 
         it 'does not send a notification to the API' do
-          expect(Rails.logger).not_to have_received(:info).with(
-            "Notification 'notification-id' created for sample '#{sample.name}'"
-          )
+          expect(notification_client).not_to have_received(:create_notification)
         end
       end
 
       context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
         let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
 
-        it 'sends a notification to the API' do
-          expect(Rails.logger).to have_received(:info).with(
-            "Notification 'notification-id' created for sample '#{sample.name}'"
+        it 'sends a notification to the API with expected arguments' do
+          expect(notification_client).to have_received(:create_notification).with(
+            sample,
+            'Failed to process accessioning response',
+            ['External failure']
           )
         end
       end
