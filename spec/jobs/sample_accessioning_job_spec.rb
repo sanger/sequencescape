@@ -161,6 +161,26 @@ RSpec.describe SampleAccessioningJob do
           )
         end
 
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
+
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+
+          it 'sends a notification to the API with expected arguments' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'Failed to process accessioning response',
+              ['External failure']
+            )
+          end
+        end
+
         context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
           let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
 
@@ -169,28 +189,8 @@ RSpec.describe SampleAccessioningJob do
           end
         end
 
-      context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
-        let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
-
-        it 'does not send a notification to the API' do
-          expect(notification_client).not_to have_received(:create_notification)
-        end
-      end
-
-      context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
-        let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
-
-        it 'sends a notification to the API with expected arguments' do
-          expect(notification_client).to have_received(:create_notification).with(
-            sample,
-            'Failed to process accessioning response',
-            ['External failure']
-          )
-        end
-      end
-
-      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
-        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
 
           it 'notifies ExceptionNotifier' do
             expect(ExceptionNotifier).to have_received(:notify_exception).with(
@@ -215,6 +215,26 @@ RSpec.describe SampleAccessioningJob do
             "SampleAccessioningJob failed for sample '#{sample.name}': " \
             'No new objects can be added with MODIFY action.'
           )
+        end
+
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { false }
+
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
+
+        context 'when the y26_094_notify_email_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_notify_email_on_accessioning_failures) { true }
+
+          it 'sends a notification to the API with the "Existing accession number conflict" group' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'No new objects can be added with MODIFY action.',
+              ['Existing accession number conflict']
+            )
+          end
         end
 
         context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
@@ -324,5 +344,4 @@ RSpec.describe SampleAccessioningJob do
       expect(delayed_job).to have_received(:save!)
     end
   end
-  # TODO: add test for when a study is accessioned synchronously, no accessioning notification is sent
 end
