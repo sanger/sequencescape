@@ -187,7 +187,7 @@ RSpec.describe SampleAccessioningJob do
       end
 
       context 'when a accession number conflict error is raised' do
-        let(:external_error) { Accession::AccessionNumberConflictError.new('No new objects can be added with MODIFY action.') }
+        let(:external_error) { Accession::ExternalNumberConflictError.new('No new objects can be added with MODIFY action.') }
 
         it 'logs the warning' do
           expect(Rails.logger).to have_received(:warn).with(

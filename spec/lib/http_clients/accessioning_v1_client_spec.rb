@@ -73,10 +73,10 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       context 'when the error message includes "No new objects can be added with MODIFY action."' do
         let(:error_message2) { 'No new objects can be added with MODIFY action.' }
 
-        it 'raises Accession::AccessionNumberConflictError' do
+        it 'raises Accession::ExternalNumberConflictError' do
           expect do
             client.submit_and_fetch_accession_number(login, files)
-          end.to raise_error(Accession::AccessionNumberConflictError, "#{error_message1}; #{error_message2}")
+          end.to raise_error(Accession::ExternalNumberConflictError, "#{error_message1}; #{error_message2}")
         end
       end
     end
