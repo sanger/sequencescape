@@ -196,8 +196,7 @@ RSpec.describe SampleAccessioningJob do
             expect(ExceptionNotifier).to have_received(:notify_exception).with(
               instance_of(Accession::ExternalValidationError),
               data: {
-                message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
-                         'Failed to process accessioning response',
+                message: 'Failed to process accessioning response',
                 sample_name: sample.name, # 'Sample 1',
                 study_names: "#{first_open_study.name}, #{second_open_study.name}",
                 service_provider: 'ENA',

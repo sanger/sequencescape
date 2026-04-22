@@ -131,20 +131,16 @@ SampleAccessioningJob =
       Accession::SampleStatus.create_for_sample(accessionable.sample, 'aborted')
     end
 
-    # Log and email developers of the accessioning error
-    def send_failure_notifications(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
-      sample_name = submission.sample.sample.name
-      context_message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
-      study_names = submission.sample.sample.studies_for_accessioning.map(&:name).join(', ')
-      data = {
-        message: context_message,
-        sample_name: sample_name,
-        study_names: study_names,
-        service_provider: submission.service&.provider.to_s,
-        user: event_user&.login
-      }
+    def handle_job_error(error, submission)
+      message = Accession.user_error_message(error)
+      fail_accession_status(message)
+      send_failure_notifications(error, submission)
+    end
 
-      Rails.logger.warn(context_message)
+    # Log and email developers of the accessioning error
+    def send_failure_notifications(error, submission)
+      sample_name = submission.sample.sample.name
+      Rails.logger.warn("SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}")
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
 
       if Flipper.enabled?(:y26_094_notify_email_on_accessioning_failures)
@@ -153,19 +149,27 @@ SampleAccessioningJob =
         Delayed::Job.enqueue(NotificationJob.new(sample, error.message, failure_groups(error)), priority: 300)
       end
 
-      # Notify developers when there is an unexpected failure from the external service
-      # ExternalNumberConflictError is expected
-      # ExternalValidationError is not
-      if error.is_a?(Accession::ExternalValidationError) && !error.is_a?(Accession::ExternalNumberConflictError) &&
-          Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
-        ExceptionNotifier.notify_exception(error, data:)
+      # Notify developers only when there is an unexpected failure from the external service
+      # ie: only the general case of a base error, but not any of the specific expected errors that inherit from it
+      base_error = Accession::ExternalValidationError
+      specific_errors = [Accession::ExternalNumberConflictError]
+      unknown_error = error.is_a?(base_error) && specific_errors.none? { |e| error.is_a?(e) }
+
+      if unknown_error && Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures) # rubocop:disable Style/GuardClause
+        send_exception_notification(error, submission)
       end
     end
 
-    def handle_job_error(error, submission)
-      message = Accession.user_error_message(error)
-      fail_accession_status(message)
-      send_failure_notifications(error, submission)
+    # Send exception notification with context to developers
+    def send_exception_notification(error, submission)
+      data = {
+        message: error.message,
+        sample_name: submission.sample.sample.name,
+        study_names: submission.sample.sample.studies_for_accessioning.map(&:name).join(', '),
+        service_provider: submission.service&.provider.to_s,
+        user: event_user&.login
+      }
+      ExceptionNotifier.notify_exception(error, data:)
     end
 
     # Group the failure into user-friendly categories for notification purposes.
