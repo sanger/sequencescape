@@ -337,7 +337,7 @@ RSpec.describe SampleAccessioningJob do
       allow(delayed_job).to receive(:save!)
     end
 
-    it 'sets attempts to max_attempts + 1, to prevent retires' do # rubocop:disable RSpec/MultipleExpectations
+    it 'sets attempts to max_attempts + 1, to prevent retries' do # rubocop:disable RSpec/MultipleExpectations
       job.prevent_retries!
 
       expect(delayed_job).to have_received(:attempts=).with(job.max_attempts + 1)
