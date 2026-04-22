@@ -154,9 +154,9 @@ SampleAccessioningJob =
       end
 
       # Notify developers when there is an unexpected failure from the external service
-      # AccessionNumberConflictError is expected
+      # ExternalNumberConflictError is expected
       # ExternalValidationError is not
-      if error.is_a?(Accession::ExternalValidationError) && !error.is_a?(Accession::AccessionNumberConflictError) &&
+      if error.is_a?(Accession::ExternalValidationError) && !error.is_a?(Accession::ExternalNumberConflictError) &&
           Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
         ExceptionNotifier.notify_exception(error, data:)
       end
@@ -173,7 +173,7 @@ SampleAccessioningJob =
     def failure_groups(error)
       failure_groups = []
       case error
-      when Accession::AccessionNumberConflictError
+      when Accession::ExternalNumberConflictError
         failure_groups << 'Existing accession number conflict'
       when Accession::ExternalValidationError
         failure_groups << 'External failure'

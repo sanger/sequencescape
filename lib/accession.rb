@@ -61,14 +61,16 @@ module Accession
   # Generic high-level accessioning error
   # Usage: raise Accession::Error, "Accessioning failed: #{reason}"
   class Error < StandardError; end
+
+  # Base class for errors originating from the external accessioning services
   class ExternalValidationError < Error; end
+  # No new objects can be added with MODIFY action.
+  class ExternalNumberConflictError < ExternalValidationError; end
 
-  class AccessionNumberConflictError < ExternalValidationError
-    # No new objects can be added with MODIFY action.
-  end
-
+  # Base class for errors originating from internal validation before submission to external services
   class InternalValidationError < Error; end
 
+  # Fields required for accessioning are missing or invalid
   class InvalidFieldsError < InternalValidationError
     attr_reader :invalid_fields
 

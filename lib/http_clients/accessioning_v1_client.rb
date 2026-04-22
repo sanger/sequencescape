@@ -102,7 +102,7 @@ module HTTPClients
       message = extract_error_messages(response.body) || default_message
 
       if message.include?('No new objects can be added with MODIFY action.')
-        raise Accession::AccessionNumberConflictError, message
+        raise Accession::ExternalNumberConflictError, message
       end
 
       raise Accession::ExternalValidationError, message
