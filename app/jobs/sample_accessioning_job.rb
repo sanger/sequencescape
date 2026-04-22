@@ -131,20 +131,16 @@ SampleAccessioningJob =
       Accession::SampleStatus.create_for_sample(accessionable.sample, 'aborted')
     end
 
-    # Log and email developers of the accessioning error
-    def notify_developers(error, submission) # rubocop:disable Metrics/CyclomaticComplexity
-      sample_name = submission.sample.sample.name
-      context_message = "SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}"
-      study_names = submission.sample.sample.studies_for_accessioning.map(&:name).join(', ')
-      data = {
-        message: context_message,
-        sample_name: sample_name,
-        study_names: study_names,
-        service_provider: submission.service&.provider.to_s,
-        user: event_user&.login
-      }
+    def handle_job_error(error, submission)
+      message = Accession.user_error_message(error)
+      fail_accession_status(message)
+      send_failure_notifications(error, submission)
+    end
 
-      Rails.logger.warn(context_message)
+    # Log and email developers of the accessioning error
+    def send_failure_notifications(error, submission)
+      sample_name = submission.sample.sample.name
+      Rails.logger.warn("SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}")
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
 
       case error
@@ -153,18 +149,24 @@ SampleAccessioningJob =
         # Do not notify developers as it is not expected to be resolved by code changes
       when Accession::ExternalValidationError
         if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
-          ExceptionNotifier.notify_exception(error, data:)
+          send_exception_notification(error, submission)
         end
       when Accession::InternalValidationError
         if Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
-          ExceptionNotifier.notify_exception(error, data:)
+          send_exception_notification(error, submission)
         end
       end
     end
 
-    def handle_job_error(error, submission)
-      message = Accession.user_error_message(error)
-      fail_accession_status(message)
-      notify_developers(error, submission)
+    # Send exception notification with context to developers
+    def send_exception_notification(error, submission)
+      data = {
+        message: error.message,
+        sample_name: submission.sample.sample.name,
+        study_names: submission.sample.sample.studies_for_accessioning.map(&:name).join(', '),
+        service_provider: submission.service&.provider.to_s,
+        user: event_user&.login
+      }
+      ExceptionNotifier.notify_exception(error, data:)
     end
   end
