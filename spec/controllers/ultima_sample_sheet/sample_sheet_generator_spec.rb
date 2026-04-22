@@ -219,7 +219,7 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     let(:csv2_samples) { csv_samples_for(request2) }
 
     it 'generates header sections' do # rubocop:disable RSpec/MultipleExpectations
-      expect(csv1[0].compact_blank).to eq(generator.class::HEADER_TITLE)
+      expect(csv1[0].compact_blank).to eq(generator.header_title_config)
       expect(csv1[1].compact_blank).to eq(["Batch #{batch.id} #{tube1.human_barcode}"]) # First CSV
       expect(csv1[2].compact_blank).to eq([])
       expect(csv2[1].compact_blank).to eq(["Batch #{batch.id} #{tube2.human_barcode}"]) # Second CSV
@@ -228,15 +228,15 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     it 'generates global sections' do
       # Test: Add the following hardcoded values, Application(WGS native gDNA),
       # sequencing_recipe(UG_116cycles_Baseline_1.8.5.2) and analysis_recipe(wgs1)
-      expect(csv1[3].compact_blank).to eq(generator.class::GLOBAL_TITLE)
-      expect(csv1[4].compact_blank).to eq(generator.class::GLOBAL_HEADERS)
+      expect(csv1[3].compact_blank).to eq(generator.global_title_config)
+      expect(csv1[4].compact_blank).to eq(generator.global_headers_config)
       expect(csv1[5].compact_blank).to eq(['WGS native gDNA', 'UG_116cycles_Baseline_1.8.5.2', 'wgs1'])
       expect(csv1[6].compact_blank).to eq([])
     end
 
     it 'generates samples sections' do
-      expect(csv1[7].compact_blank).to eq(generator.class::SAMPLES_TITLE)
-      expect(csv1[8].compact_blank).to eq(generator.class::SAMPLES_HEADERS)
+      expect(csv1[7].compact_blank).to eq(generator.samples_title_config)
+      expect(csv1[8].compact_blank).to eq(generator.samples_headers_config)
       expect(csv1[9..]).to eq(csv1_samples) # First CSV
       expect(csv2[9..]).to eq(csv2_samples) # Second CSV
     end

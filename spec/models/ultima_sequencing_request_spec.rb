@@ -33,7 +33,7 @@ RSpec.describe UltimaSequencingRequest do
     end
 
     context 'when ot_recipe value is not assigned' do
-      it 'is invalid and displays required percent phix requested error message' do
+      it 'is invalid and displays required OT recipe error message' do
         request.request_metadata.ot_recipe = nil
         request.validate
         expect(request.errors[:'request_metadata.ot_recipe']).to include("can't be blank")

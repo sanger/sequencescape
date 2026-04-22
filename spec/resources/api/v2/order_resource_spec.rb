@@ -16,6 +16,7 @@ RSpec.describe Api::V2::OrderResource, type: :resource do
   it { is_expected.to have_readonly_attribute :request_options }
   it { is_expected.to have_readonly_attribute :request_types }
   it { is_expected.to have_readonly_attribute :uuid }
+  it { is_expected.to have_writeonly_attribute :project_uuid }
 
   # Relationships
   it { is_expected.to have_a_readonly_has_one(:project).with_class_name('Project') }
@@ -39,11 +40,14 @@ RSpec.describe Api::V2::OrderResource, type: :resource do
     end
 
     context 'with a template in the context' do
-      let(:context) { { template:, template_attributes: } }
+      let(:context) { { template:, template_attributes:, project: } }
       let(:template) { instance_double(SubmissionTemplate) }
       let(:template_attributes) { {} }
+      let(:project) { build_stubbed(:project) }
 
-      before { allow(template).to receive(:create_order!).with(template_attributes).and_return(resource_model) }
+      before do
+        allow(template).to receive(:create_order!).with(template_attributes, project).and_return(resource_model)
+      end
 
       it 'does not call create on the super class' do
         allow(described_class.superclass).to receive(:create)

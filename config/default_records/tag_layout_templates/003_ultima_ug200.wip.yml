@@ -1,0 +1,11 @@
+---
+# Ultima UG200 tag layout templates
+
+Ultima P3:
+  :tag_group_name: Ultima P3
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
+UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4):
+  :tag_group_name: UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
