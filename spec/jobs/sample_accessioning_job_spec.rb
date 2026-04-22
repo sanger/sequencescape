@@ -274,6 +274,4 @@ RSpec.describe SampleAccessioningJob do
       expect(delayed_job).to have_received(:save!)
     end
   end
-
-  # TODO: add test for when a study is accessioned synchronously, no accessioning notification is sent
 end
