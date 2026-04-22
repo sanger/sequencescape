@@ -148,6 +148,9 @@ SampleAccessioningJob =
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
 
       case error
+      when Accession::ExternalNumberConflictError
+        # This is a known error most likely due to incorrect study configuration
+        # Do not notify developers as it is not expected to be resolved by code changes
       when Accession::ExternalValidationError
         if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
           ExceptionNotifier.notify_exception(error, data:)
