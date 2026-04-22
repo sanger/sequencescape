@@ -7,7 +7,7 @@ require 'exception_notification'
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do # rubocop:disable Metrics/ClassLength
+  Struct.new(:accessionable, :event_user) do
     def perform
       submission = Accession::Submission.new(accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
