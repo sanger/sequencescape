@@ -118,8 +118,11 @@ module HTTPClients
     # The notification API will aggregate the provided fields where they are used by the notification template
     # See config/accession/notification-template.mjml
     def build_notification_payload(sample, message, failure_groups) # rubocop:disable Metrics/AbcSize
-      # the presence of a to http://localhost causes a 502 response from the Notifications API, default to uat instead
-      sample_path = Rails.application.routes.url_helpers.sample_url(sample, host: 'uat.sequencescape.sanger.ac.uk')
+      # A link to http://localhost is caught by the WAF (Web Application Firewall) and causes a 502 response to
+      # be returned from the Notifications API.
+      # Replace localhost with example.com, otherwise use the configured site_url
+      host = configatron.site_url.include?('localhost') ? 'example.com' : configatron.site_url
+      sample_path = Rails.application.routes.url_helpers.sample_url(sample, host:)
       study_ids = sample.studies_for_accessioning.map(&:id).join('-')
       study_names = sample.studies_for_accessioning.map(&:name).join(', ')
       notifications_config = configatron.accession.notifications

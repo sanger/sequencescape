@@ -153,7 +153,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
               fields: {
                 study_name: sample.studies_for_accessioning.first.name,
                 sample_name: sample.name,
-                sample_path: "http://uat.sequencescape.sanger.ac.uk/samples/#{sample.id}",
+                sample_path: "http://example.com/samples/#{sample.id}",
                 accessioning_status_message: 'Accessioning failed due to missing metadata.',
                 failure_groups: ['Internal validations', 'Invalid sample common name']
               }
