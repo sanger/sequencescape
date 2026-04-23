@@ -25,6 +25,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze
   GENDERS = ['Male', 'Female', 'Mixed', 'Hermaphrodite', 'Unknown', 'Not Applicable'].freeze
+  EGA_GENDERS = %w[Female Male Unknown].freeze
   DNA_SOURCES = [
     'Genomic',
     'Whole Genome Amplified',
@@ -194,6 +195,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     with_options(on: :EGA) do
       validates :gender, presence: { message: 'is required' }
+      one_of_ega_genders = EGA_GENDERS.to_sentence(last_word_connector: ' or ', two_words_connector: ' or ')
+      validates :gender, inclusion: { in: EGA_GENDERS, message: "must be #{one_of_ega_genders}" }
       validates :phenotype, presence: { message: 'is required' }
       validates :donor_id, presence: { message: 'is required' }
     end
