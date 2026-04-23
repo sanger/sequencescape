@@ -13,6 +13,7 @@
 *.log
 *.log.[0-9]
 *.min.js
+*.mjml
 *.orig
 *.sublime-workspace
 *.swp

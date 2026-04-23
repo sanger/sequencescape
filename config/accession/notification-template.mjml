@@ -1,0 +1,171 @@
+<!-- This is Accessioning MJML created to generate the Jinja template used to create the accessioning failure notification. -->
+<!-- It is not used directly by Sequencescape, but is uploaded to the Integration Hub and used by Y26-094. -->
+<!-- MJML Documentation: https://mjml.io/ -->
+<!-- In this template, you have access to a list of every attribute listed inside your `fields` attribute in each notification. -->
+<!-- NB: Note the use of <mj-raw>. It is required for MJML transpiler to not to strip-off any Jinja-related syntax. -->
+
+<mjml>
+  <mj-head>
+    <mj-title>Problems with Accessioning</mj-title>
+    <mj-preview>There are validation errors in the samples provided</mj-preview>
+    <mj-style inline="inline">
+      .shadow {
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+      }
+      .bg-sequencescape-gradient {
+        background: linear-gradient(45deg, rgba(3, 155, 229, 1) 0%, rgba(139, 195, 74, 1) 100%);
+      }
+    </mj-style>
+    <mj-attributes>
+      <!-- Styling based on Sequencescape login screen -->
+      <!-- Classes inspired by Bootstrap 5.3 -->
+      <mj-class name="bg-sequencescape-production" background-color="#005dc0" />
+      <mj-class name="bg-sequencescape-uat" background-color="#dc3545" />
+      <mj-class name="bg-sequencescape-gradient" background="linear-gradient(90deg, #005dc0 0%, #007bff 100%)" />
+      <mj-class name="bg-light" background-color="rgb(248,249,250)" />
+      <mj-class name="bg-body" background-color="#ffffff" />
+      <mj-class name="text-light" color="#ffffff" />
+      <mj-class name="text-dark" color="rgb(41, 33, 33)" />
+      <mj-class name="text-secondary" color="#505356" />
+      <mj-class name="text-muted" color="#7a7a7a" />
+      <mj-class name="border-1" border="1px solid #eaeaea" />
+      <mj-class name="border-radius-1" border-radius="3px" />
+      <mj-class name="border-radius-2" border-radius="6px" />
+      <mj-class name="p-0" padding="0" />
+      <mj-class name="p-3" padding="12px" />
+      <mj-class name="px-2" padding-left="6px" padding-right="6px" />
+      <mj-class name="px-3" padding-left="12px" padding-right="12px" />
+      <mj-class name="px-4" padding-left="24px" padding-right="24px" />
+      <mj-class name="py-0" padding-top="0" padding-bottom="0" />
+      <mj-class name="py-3" padding-top="12px" padding-bottom="12px" />
+      <mj-all font-family="'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif" />
+      <mj-text font-size="14px" mj-class="text-dark" line-height="1.6" align="left" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body css-class="bg-sequencescape-gradient">
+    <mj-wrapper></mj-wrapper>
+    <mj-wrapper css-class="shadow" mj-class="p-0 bg-body border-radius-1">
+      <!-- Header Section -->
+      <!-- NOTE: uncomment the appropriate line for the deployed environment -->
+      <mj-section mj-class="bg-sequencescape-production"></mj-section>
+      <!-- <mj-section mj-class="bg-sequencescape-uat"></mj-section> -->
+      <mj-section mj-class="p-0">
+        <mj-column>
+          <mj-text font-size="42px" font-weight="300" align="center">Sequencescape</mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-section mj-class="bg-body p-0">
+        <mj-column>
+          <mj-text mj-class="py-0 text-muted" font-size="20px" align="left">Accessioning Failure Notification</mj-text>
+          <mj-text>
+            A batch of
+            <strong>
+              <mj-raw>{{ fields | length }}</mj-raw></strong
+            > samples have failed to accession for study
+            <strong>
+              <mj-raw>{{ fields[0]["study_name"] }}</mj-raw></strong
+            > and manifest
+            <strong>
+              <mj-raw>{{ fields[0]["manifest_id"] }}</mj-raw></strong
+            >.
+            <br />
+            Please review and address the warnings below.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <!-- Beginning of content -->
+
+      <!-- Summary of sample errors -->
+      <mj-section mj-class="py-0">
+        <mj-column>
+          <mj-text mj-class="py-0">
+            Summary:
+              <!-- Given minimum samples:                                                  -->
+              <!-- "samples": [                                                            -->
+              <!--   {                                                                     -->
+              <!--     "sample_name": "Sample 1",                                          -->
+              <!--     "failure_groups": ["Invalid country"]                               -->
+              <!--   },                                                                    -->
+              <!--   {                                                                     -->
+              <!--     "sample_name": "Sample 2",                                          -->
+              <!--     "failure_groups": ["Invalid country", "Invalid gender"]             -->
+              <!--   }                                                                     -->
+              <!-- ]                                                                       -->
+              <!-- Extract a list of unique failure groups and count samples in each group -->
+              <!-- This would produce a summary like:                                      -->
+              <!-- - Invalid country: 2 samples                                            -->
+              <!-- - Invalid gender: 1 sample                                              -->
+            <ul>
+              <mj-raw>
+              <!-- Extract failure reasons -->
+                {% set ns = namespace(reasons=[]) %}
+                {% for item in fields %}
+                  {% for reason in item["failure_groups"] %}
+                    {% if reason not in ns.reasons %}
+                      {% set ns.reasons = ns.reasons + [reason] %}
+                    {% endif %}
+                  {% endfor %}
+                {% endfor %}
+              <!-- Aggregate failure reasons -->
+                {% for reason in ns.reasons %}
+                  {% set ns2 = namespace(count=0) %}
+                  {% for item in fields %}
+                    {% if reason in item["failure_groups"] %}
+                      {% set ns2.count = ns2.count + 1 %}
+                    {% endif %}
+                  {% endfor %}
+                  </mj-raw>
+                  <li><mj-raw>{{ reason }}: {{ ns2.count }} samples</mj-raw></li>
+                <mj-raw>{% endfor %}</mj-raw>
+            </ul>
+          </mj-text>
+        </mj-column>
+      </mj-section>
+
+      <!-- First 5 individual sample results -->
+      <mj-section mj-class="py-0">
+        <mj-column>
+          <mj-text mj-class="py-0">
+            First
+            <mj-raw>{{ [fields | length, 5] | min }}</mj-raw>
+            failures:
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-raw>{% for item in fields[:5] %}</mj-raw>
+      <mj-section mj-class="py-3 px-4">
+        <mj-column mj-class="bg-light border-1 border-radius-2">
+          <mj-text mj-class="text-secondary p-3" font-weight="bold">
+            <mj-raw>
+              <a href="{{ item['sample_path'] }}"> {{ item["sample_name"] }} ({{ item["supplier_sample_name"] }}) </a>
+            </mj-raw>
+          </mj-text>
+          <mj-divider border-color="#e0e0e0" padding="0" />
+          <mj-text mj-class="p-3">
+            <mj-raw>{{ item["accessioning_status_message"] }}</mj-raw>
+          </mj-text>
+        </mj-column>
+      </mj-section>
+      <mj-raw>{% endfor %}</mj-raw>
+      <!-- End of content -->
+      <!-- Footer section -->
+      <mj-section mj-class="py-3">
+        <mj-column>
+          <mj-button href="https://sanger.freshservice.com/support/catalog/items/284">
+            Open a support ticket
+          </mj-button>
+          <mj-text mj-class="text-muted" font-size="12px" align="center">
+            Sent automatically by Sequencescape, on behalf of the
+            <a href="https://www.sanger.ac.uk/group/production-software-development/">
+              Production Software Development
+            </a>
+            team.
+            <br />
+            Please do not reply to this email - open a support ticket if you would like further assistance.
+          </mj-text>
+        </mj-column>
+      </mj-section>
+    </mj-wrapper>
+    <mj-wrapper></mj-wrapper>
+  </mj-body>
+</mjml>
