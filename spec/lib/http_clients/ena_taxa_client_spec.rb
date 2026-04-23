@@ -1,16 +1,13 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
+require 'webmock/rspec'
 
 RSpec.describe HTTPClients::ENATaxaClient do
-  # TODO: replace Faraday test stubs (tests middleware) with WebMock (tests endpoints)
   let(:client) { described_class.new }
-  let(:stubs) { Faraday::Adapter::Test::Stubs.new }
-  let(:test_conn) do
-    Faraday.new do |f|
-      f.response :json
-      f.adapter :test, stubs
-    end
+
+  def ena_url(path)
+    URI.join(configatron.ena_taxon_lookup_url, path).to_s
   end
 
   describe '#conn' do
@@ -32,8 +29,8 @@ RSpec.describe HTTPClients::ENATaxaClient do
 
   describe '#taxon_from_text' do
     before do
-      stubs.get("any-name/#{suggestion}") { [200, {}, response_body] }
-      allow(client).to receive(:conn).and_return(test_conn)
+      stub_request(:get, ena_url("any-name/#{suggestion}"))
+        .to_return(status: 200, body: response_body.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
     context 'when species-level results are found' do
@@ -114,8 +111,8 @@ RSpec.describe HTTPClients::ENATaxaClient do
     let(:taxon_id) { '9606' }
 
     before do
-      stubs.get("tax-id/#{taxon_id}") { [200, {}, response_body] }
-      allow(client).to receive(:conn).and_return(test_conn)
+      stub_request(:get, ena_url("tax-id/#{taxon_id}"))
+        .to_return(status: 200, body: response_body.to_json, headers: { 'Content-Type' => 'application/json' })
     end
 
     context 'with a full response' do
