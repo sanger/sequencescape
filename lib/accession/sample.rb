@@ -58,7 +58,7 @@ module Accession
       sample_error_message = "Sample '#{sample.name}' #{error_message}"
       Rails.logger.error(sample_error_message)
 
-      invalid_fields = missing_tags
+      invalid_fields = missing_accession_tags
       raise Accession::InvalidFieldsError.new(error_message.upcase_first, invalid_fields) if invalid_fields.present?
 
       raise Accession::InternalValidationError error_message.upcase_first
@@ -120,12 +120,13 @@ module Accession
       # EBI will still perform its own validation on submission.
       return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
 
-      unless missing_tags.empty?
-        errors.add(:sample, "does not have the required metadata: #{missing_tags.sort.to_sentence.dasherize}.")
+      unless missing_accession_tags.empty?
+        errors.add(:sample,
+                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
       end
     end
 
-    def missing_tags
+    def missing_accession_tags
       tags.missing_service_tags(service, standard_tags)
     end
 
