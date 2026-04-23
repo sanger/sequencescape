@@ -120,8 +120,9 @@ module HTTPClients
     def build_notification_payload(sample, message, failure_groups) # rubocop:disable Metrics/AbcSize
       # A link to http://localhost is caught by the WAF (Web Application Firewall) and causes a 502 response to
       # be returned from the Notifications API.
-      # Replace localhost with example.com, otherwise use the configured site_url
-      host = configatron.site_url.include?('localhost') ? 'example.com' : configatron.site_url
+      # A link to an external URL is caught by the Sanger mail filter (Proofpoint)
+      # Replace localhost with example.sanger.ac.uk, otherwise use the configured site_url
+      host = configatron.site_url.include?('localhost') ? 'example.sanger.ac.uk' : configatron.site_url
       sample_path = Rails.application.routes.url_helpers.sample_url(sample, host:)
       study_ids = sample.studies_for_accessioning.map(&:id).join('-')
       study_names = sample.studies_for_accessioning.map(&:name).join(', ')
