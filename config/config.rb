@@ -16,7 +16,7 @@ configatron.accession do |accession|
   accession.drop_box_url = 'http://localhost:9999/ena/submit/drop-box/'
 
   accession.notifications do |notifications|
-    # Closely associated with the notifications_api config below, but specific for accessioning notifications
+    # Closely associated with the integration_hub config below, but specific for accessioning notifications
     notifications.recipient = ['PSD_EMAIL']
     notifications.template_id = 'PSD_EMAIL'
     notifications.notification_type = 'EMAIL'
