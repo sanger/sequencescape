@@ -1,3 +1,14 @@
+Quant method used:
+  name: Quant method used
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: Tapestation
+  selection:
+    Tapestation: Tapestation
+    Tapestation & qPCR: Tapestation & qPCR
+  required: true
+  sorter: 0
 Pipette Carousel:
   name: Pipette Carousel
   task: Loading
@@ -12,6 +23,17 @@ Final Loading Concentration (pM):
   kind: Text
   required: false
   sorter: 2
+Custom primer kit used:
+  name: Custom primer kit used
+  task: Loading
+  workflow: Element Aviti
+  kind: Selection
+  value: "true"
+  selection:
+    true: true
+    false: false
+  required: true
+  sorter: 3
 "200mM Tris PH7 lot#":
   name: "200mM Tris PH7 lot#"
   task: Loading
