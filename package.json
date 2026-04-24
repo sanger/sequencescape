@@ -28,7 +28,7 @@
     "terser": "^5.46.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^5.0",
+    "@vitejs/plugin-legacy": "^7.0",
     "eslint": "^9.19",
     "eslint-config-prettier": "^9.0",
     "globals": "^15.14",
