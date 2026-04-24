@@ -42,6 +42,7 @@ module Api
       #   @note This identifier is automatically assigned upon creation and cannot be modified.
       #   @return [String] The universally unique identifier (UUID) of project.
       attribute :uuid, readonly: true
+      attribute :state, readonly: true
 
       ###
       # Filters
