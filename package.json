@@ -18,7 +18,7 @@
     "jsbarcode": "^3.12.3",
     "jszip": "^3.10.1",
     "popper.js": "^1.16.1",
-    "postcss": "^8.5.8",
+    "postcss": "^8.5.9",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^14.1.0",
     "postcss-preset-env": "^7.8.3",
@@ -28,9 +28,9 @@
     "terser": "^5.46.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^1.8",
+    "@vitejs/plugin-legacy": "^5.0",
     "eslint": "^9.19",
-    "eslint-config-prettier": "^8.10",
+    "eslint-config-prettier": "^9.0",
     "globals": "^15.14",
     "jsdom": "^26.0",
     "prettier": "^3.3",
