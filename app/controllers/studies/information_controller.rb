@@ -135,6 +135,9 @@ class Studies::InformationController < ApplicationController
   end
 
   def study_request_types
-    @study_request_types ||= @study.request_types.standard.order(:order, :id)
+    # This is more performant than using study.request_types directly
+    @study_request_types ||= RequestType.where(id: @study.requests.distinct.pluck(:request_type_id)).standard.order(
+      :order, :id
+    )
   end
 end
