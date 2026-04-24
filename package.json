@@ -28,13 +28,13 @@
     "terser": "^5.46.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-legacy": "^7.0",
+    "@vitejs/plugin-legacy": "^8.0",
     "eslint": "^9.19",
     "eslint-config-prettier": "^9.0",
     "globals": "^15.14",
     "jsdom": "^26.0",
     "prettier": "^3.3",
-    "vite": "^7.0",
+    "vite": "^8.0",
     "vite-plugin-ruby": "^5.2.0"
   },
   "_comment": "Required to address https://github.com/npm/cli/issues/4828",
