@@ -43,6 +43,10 @@
     "@rollup/rollup-linux-x64-gnu": "*",
     "@rollup/rollup-win32-x64-msvc": "*"
   },
+  "_comment_esbuild": "https://github.com/vitejs/vite/issues/22225",
+  "resolutions": {
+    "esbuild": "0.27.4"
+  },
   "scripts": {
     "lint": "eslint app/frontend",
     "lintOnly": "eslint --ext .js"
