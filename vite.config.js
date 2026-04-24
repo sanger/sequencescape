@@ -6,7 +6,7 @@ import legacy from "@vitejs/plugin-legacy";
 export default defineConfig({
   build: {
     emptyOutDir: true,
-    target: ["chrome65", "es2019"],
+    targets: ["chrome65", "baseline-widely-available"],
   },
   css: {
     preprocessorOptions: {
