@@ -1,5 +1,6 @@
 ---
 Dual Index Tag2 sequences:
+  adapter_type_name: Sanger 168
   visible: true
   tags:
     1: TATAGCCT
@@ -8,6 +9,7 @@ Dual Index Tag2 sequences:
     4: GGCTCTGA
     999: TCTTTCCC
 Dual Index Tag2 sequences set B:
+  adapter_type_name: Sanger 168
   visible: true
   tags:
     5: AGGCGAAG
@@ -15,6 +17,7 @@ Dual Index Tag2 sequences set B:
     7: CAGGACGT
     8: GTACTGAC
 Dual Index Tag2 sequences set C:
+  adapter_type_name: Sanger 168
   visible: true
   tags:
     9: CTCTCTAT
@@ -22,6 +25,7 @@ Dual Index Tag2 sequences set C:
     11: AGAGTAGA
     12: GTAAGGAG
 Dual Index Tag2 sequences set D:
+  adapter_type_name: Sanger 168
   visible: true
   tags:
     13: CTATTAAG
