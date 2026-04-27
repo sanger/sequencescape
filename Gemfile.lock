@@ -378,7 +378,6 @@ GEM
       pry (>= 0.13, < 0.17)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
-    psych (3.3.4)
     public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
@@ -714,7 +713,6 @@ DEPENDENCIES
   prettier_print
   pry-byebug
   pry-rails
-  psych (< 4)
   puma
   rack-acceptable
   rack-cors
