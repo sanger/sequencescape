@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^8.0",
+    "@vitest/coverage-v8": "^4.0",
     "eslint": "^9.19",
     "eslint-config-prettier": "^9.0",
     "globals": "^15.14",
@@ -51,6 +52,7 @@
   "scripts": {
     "lint": "eslint app/frontend",
     "lintOnly": "eslint --ext .js",
-    "test": "vitest run"
+    "test": "vitest run",
+    "coverage": "vitest run --coverage"
   }
 }
