@@ -39,7 +39,7 @@ class UltimaSequencingRequest < SequencingRequest
   end
 
   # Returns the sequencer type 'UG100' for UltimaSequencingRequest.
-  def sequencer_type
+  def requested_sequencer_type
     'UG100'
   end
 
