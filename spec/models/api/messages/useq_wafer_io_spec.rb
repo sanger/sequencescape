@@ -107,7 +107,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_instrument_name' => 'UG Amp 2',
               'ot_recipe' => 'Free',
               'wafer_size' => nil,
-              'sequencer_type' => 'UG100',
+              'requested_sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
@@ -173,7 +173,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_instrument_name' => 'UG Amp 1',
               'ot_recipe' => 'Free',
               'wafer_size' => nil,
-              'sequencer_type' => 'UG100',
+              'requested_sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
@@ -229,7 +229,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
               'amp_instrument_name' => 'UG Amp 1',
               'ot_recipe' => 'Free',
               'wafer_size' => nil,
-              'sequencer_type' => 'UG100',
+              'requested_sequencer_type' => 'UG100',
               'samples' => [
                 {
                   'tag_sequence' => tags[0].oligo,
@@ -270,7 +270,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
             'amp_instrument_name' => 'UG Amp 1',
             'ot_recipe' => 'Free',
             'wafer_size' => '10TB',
-            'sequencer_type' => 'UG200',
+            'requested_sequencer_type' => 'UG200',
             'samples' => [
               {
                 'tag_sequence' => tags[0].oligo,
@@ -333,7 +333,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
       )
     end
 
-    it 'generates valid json with sequencer_type and wafer_size' do
+    it 'generates valid json with requested_sequencer_type and wafer_size' do
       expect(message.as_json).to include_json(expected_json)
     end
   end
