@@ -67,75 +67,77 @@ describe Map do
         end
       end
 
-      describe '.description_to_vertical_plate_position' do
+      describe '.well_description_to_by_column_map_index' do
         it 'returns nil if well description is invalid' do
-          expect(coordinate_module.description_to_vertical_plate_position('A1', '16')).to be_nil # string
-          expect(coordinate_module.description_to_vertical_plate_position('A1', 0)).to be_nil # zero
-          expect(coordinate_module.description_to_vertical_plate_position('A1', -1)).to be_nil # negative
+          expect(coordinate_module.well_description_to_by_column_map_index('A1', '16')).to be_nil # string
+          expect(coordinate_module.well_description_to_by_column_map_index('A1', 0)).to be_nil # zero
+          expect(coordinate_module.well_description_to_by_column_map_index('A1', -1)).to be_nil # negative
         end
 
         it 'returns nil if plate size is invalid' do
-          expect(coordinate_module.description_to_vertical_plate_position('', plate_size)).to be_nil
-          expect(coordinate_module.description_to_vertical_plate_position(nil, plate_size)).to be_nil
+          expect(coordinate_module.well_description_to_by_column_map_index('', plate_size)).to be_nil
+          expect(coordinate_module.well_description_to_by_column_map_index(nil, plate_size)).to be_nil
         end
 
         it 'returns one-based index of a well columns' do
           # Indexes of wells in columns: 1 to 16 for A1, B1, A2, B2, A3, B3, ..., A8, B8
           (1..8).each do |column|
-            expect(coordinate_module.description_to_vertical_plate_position("A#{column}", plate_size)).to eq(
+            expect(coordinate_module.well_description_to_by_column_map_index("A#{column}", plate_size)).to eq(
               (2 * column) - 1
             )
-            expect(coordinate_module.description_to_vertical_plate_position("B#{column}", plate_size)).to eq(2 * column)
+            expect(coordinate_module.well_description_to_by_column_map_index("B#{column}",
+                                                                             plate_size)).to eq(2 * column)
           end
         end
       end
 
-      describe '.horizontal_plate_position_to_description' do
+      describe '.by_row_map_index_to_well_description' do
         it 'returns nil if well position is invalid' do
-          expect(coordinate_module.horizontal_plate_position_to_description('1', plate_size)).to be_nil # string
-          expect(coordinate_module.horizontal_plate_position_to_description(0, plate_size)).to be_nil # zero
-          expect(coordinate_module.horizontal_plate_position_to_description(-1, plate_size)).to be_nil # negative
-          expect(coordinate_module.horizontal_plate_position_to_description(17, plate_size)).to be_nil # out of bound
+          expect(coordinate_module.by_row_map_index_to_well_description('1', plate_size)).to be_nil # string
+          expect(coordinate_module.by_row_map_index_to_well_description(0, plate_size)).to be_nil # zero
+          expect(coordinate_module.by_row_map_index_to_well_description(-1, plate_size)).to be_nil # negative
+          expect(coordinate_module.by_row_map_index_to_well_description(17, plate_size)).to be_nil # out of bound
         end
 
         it 'returns nil if plate size is invalid' do
-          expect(coordinate_module.horizontal_plate_position_to_description(1, '16')).to be_nil # string
-          expect(coordinate_module.horizontal_plate_position_to_description(1, 0)).to be_nil # zero
-          expect(coordinate_module.horizontal_plate_position_to_description(1, -1)).to be_nil # negative
+          expect(coordinate_module.by_row_map_index_to_well_description(1, '16')).to be_nil # string
+          expect(coordinate_module.by_row_map_index_to_well_description(1, 0)).to be_nil # zero
+          expect(coordinate_module.by_row_map_index_to_well_description(1, -1)).to be_nil # negative
         end
 
         it 'returns name of a well in rows by one-based index' do
           # Names of wells in rows: A1, A2, A3, ..., A8, B1, B2, B3, ..., B8 for indexes 1 to 16
           (1..8).each do |column|
-            expect(coordinate_module.horizontal_plate_position_to_description(column, plate_size)).to eq("A#{column}")
-            expect(coordinate_module.horizontal_plate_position_to_description(column + 8, plate_size)).to eq(
+            expect(coordinate_module.by_row_map_index_to_well_description(column, plate_size)).to eq("A#{column}")
+            expect(coordinate_module.by_row_map_index_to_well_description(column + 8, plate_size)).to eq(
               "B#{column}"
             )
           end
         end
       end
 
-      describe '.vertical_plate_position_to_description' do
+      describe '.by_column_map_index_to_well_description' do
         it 'returns nil if well position is invalid' do
-          expect(coordinate_module.vertical_plate_position_to_description('1', plate_size)).to be_nil # string
-          expect(coordinate_module.vertical_plate_position_to_description(0, plate_size)).to be_nil # zero
-          expect(coordinate_module.vertical_plate_position_to_description(-1, plate_size)).to be_nil # negative
-          expect(coordinate_module.vertical_plate_position_to_description(17, plate_size)).to be_nil # out of bound
+          expect(coordinate_module.by_column_map_index_to_well_description('1', plate_size)).to be_nil # string
+          expect(coordinate_module.by_column_map_index_to_well_description(0, plate_size)).to be_nil # zero
+          expect(coordinate_module.by_column_map_index_to_well_description(-1, plate_size)).to be_nil # negative
+          expect(coordinate_module.by_column_map_index_to_well_description(17, plate_size)).to be_nil # out of bound
         end
 
         it 'returns nil if plate size is invalid' do
-          expect(coordinate_module.vertical_plate_position_to_description(1, '16')).to be_nil # string
-          expect(coordinate_module.vertical_plate_position_to_description(1, 0)).to be_nil # zero
-          expect(coordinate_module.vertical_plate_position_to_description(1, -1)).to be_nil # negative
+          expect(coordinate_module.by_column_map_index_to_well_description(1, '16')).to be_nil # string
+          expect(coordinate_module.by_column_map_index_to_well_description(1, 0)).to be_nil # zero
+          expect(coordinate_module.by_column_map_index_to_well_description(1, -1)).to be_nil # negative
         end
 
         it 'returns name of a well in columns by one-based index' do
           # Names of wells in columns: A1, B1, A2, B2, A3, B3, ..., A8, B8 for indexes 1 to 16
           (1..8).each do |column|
-            expect(coordinate_module.vertical_plate_position_to_description((2 * column) - 1, plate_size)).to eq(
+            expect(coordinate_module.by_column_map_index_to_well_description((2 * column) - 1, plate_size)).to eq(
               "A#{column}"
             )
-            expect(coordinate_module.vertical_plate_position_to_description(2 * column, plate_size)).to eq("B#{column}")
+            expect(coordinate_module.by_column_map_index_to_well_description(2 * column,
+                                                                             plate_size)).to eq("B#{column}")
           end
         end
       end
