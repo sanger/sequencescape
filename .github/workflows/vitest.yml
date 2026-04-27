@@ -43,6 +43,6 @@ jobs:
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
-          flags: javascript,${{ github.event_name }}
+          flags: javascript
           disable-search: true
           files: ${{ github.workspace }}/app/frontend/coverage/lcov.info
