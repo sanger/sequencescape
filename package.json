@@ -37,7 +37,8 @@
     "jsdom": "^26.0",
     "prettier": "^3.3",
     "vite": "^8.0",
-    "vite-plugin-ruby": "^5.2.0"
+    "vite-plugin-ruby": "^5.2.0",
+    "vitest": "^4.1.5"
   },
   "_comment": "Required to address https://github.com/npm/cli/issues/4828",
   "optionalDependencies": {
@@ -52,7 +53,8 @@
   "scripts": {
     "lint": "eslint app/frontend",
     "lintOnly": "eslint --ext .js",
-    "test": "jest"
+    "test": "jest",
+    "_test": "vitest"
   },
   "jest": {
     "testEnvironment": "jest-environment-jsdom"
