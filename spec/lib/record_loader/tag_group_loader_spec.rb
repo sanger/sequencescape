@@ -40,4 +40,70 @@ RSpec.describe RecordLoader::TagGroupLoader, :loader, type: :model do
       expect(TagGroup.first).to have_attributes(expected_attributes)
     end
   end
+
+  describe '#create_or_update!' do
+    let(:adapter_type) { create(:adapter_type) }
+    let(:other_adapter_type) { create(:adapter_type) }
+    let(:section_name) { 'TestGroup' }
+    let(:tags) { { 1 => 'ATCG', 2 => 'GCTA' } }
+    let(:loader) { described_class.new }
+
+    it 'sets the TagGroup name to section_name if not provided in options' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect(tag_group.name).to eq(section_name)
+    end
+
+    it 'uses the name from options if provided' do
+      options = { 'name' => 'CustomName', 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect(tag_group.name).to eq('CustomName')
+    end
+
+    it 'assigns the correct adapter_type' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect(tag_group.adapter_type).to eq(adapter_type)
+    end
+
+    it 'creates the correct number of tags' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect(tag_group.tags.count).to eq(2)
+    end
+
+    it 'creates tags with the correct oligos' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect(tag_group.tags.pluck(:oligo)).to match_array(%w[ATCG GCTA])
+    end
+
+    it 'does not duplicate tags if already present' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect do
+        loader.create_or_update!(section_name, options)
+      end.not_to(change { tag_group.tags.count })
+    end
+
+    # rubocop:disable RSpec/ExampleLength
+    it 'updates adapter_type_id if different' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      # Now update to a different adapter_type
+      options = { 'adapter_type_name' => other_adapter_type.name }
+      loader.create_or_update!(section_name, options)
+      tag_group.reload
+      expect(tag_group.adapter_type).to eq(other_adapter_type)
+    end
+    # rubocop:enable RSpec/ExampleLength
+
+    it 'does nothing if adapter_type_id is the same' do
+      options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
+      tag_group = loader.create_or_update!(section_name, options)
+      expect do
+        loader.create_or_update!(section_name, options)
+      end.not_to(change { tag_group.reload.adapter_type_id })
+    end
+  end
 end

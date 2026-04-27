@@ -367,3 +367,22 @@ ot_recipe:
     range_name: :ot_recipe
   conditional_formattings:
     empty_cell:
+wafer_size:
+  heading: "Wafer Size"
+  unlocked: true
+  attribute: :wafer_size
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Wafer Size"
+      error: "You must enter a value from the list provided."
+      promptTitle: "Wafer Size"
+      prompt: "Select a value type from the approved list"
+    range_name: :wafer_size
+  conditional_formattings:
+    empty_cell:

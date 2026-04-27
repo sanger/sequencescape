@@ -75,6 +75,11 @@ module Api
       #   @return [String] The UUID of this {Order}.
       attribute :uuid, readonly: true
 
+      # @!attribute [w] project_uuid
+      #   @return [String] The UUID of the project to associate with this Order on creation.
+      attribute :project_uuid, writeonly: true
+      attr_writer :project_uuid # Not stored, consumed by OrderProcessor.
+
       ###
       # Relationships
       ###
@@ -131,7 +136,7 @@ module Api
       def self.create(context)
         return super if context[:template].nil?
 
-        order = context[:template].create_order!(context[:template_attributes])
+        order = context[:template].create_order!(context[:template_attributes], context[:project])
         new(order, context)
       end
     end

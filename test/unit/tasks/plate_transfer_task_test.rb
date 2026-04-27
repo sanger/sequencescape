@@ -100,6 +100,7 @@ class PlateTransferTaskTest < ActiveSupport::TestCase
         end
 
         should 'find the existing plate' do
+          assert_equal 1, Plate.count - @plate_count
         end
       end
 

@@ -45,7 +45,7 @@ RSpec.describe BioscanControlLocationsController do
     # @return [String] well description (e.g., "A1")
     def location_at(index)
       # 96-well plate with 8 rows
-      Map::Coordinate.vertical_plate_position_to_description(index, 96)
+      Map::Coordinate.by_column_map_index_to_well_description(index, 96)
     end
 
     context 'with valid plate and controls' do

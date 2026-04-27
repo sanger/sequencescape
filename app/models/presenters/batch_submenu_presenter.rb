@@ -71,12 +71,34 @@ module Presenters
                              only_path: true }
       end
       add_submenu_option 'NPG run data', "#{configatron.run_data_by_batch_id_url}#{@batch.id}"
-      return unless aviti_run_manifest? || ultima_run_manifest?
+      return unless run_manifest?
 
       add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches,
                                                   action: :generate_sample_sheet
     end
     # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+
+    # Determines whether to display the submenu option for downloading the sample sheet.
+    #
+    # @return [Boolean] true if the link for the download should be displayed
+    def run_manifest?
+      aviti_run_manifest? || ultima_run_manifest? || ultima_ug200_run_manifest?
+    end
+
+    # Determines whether the batch is released and contains any Ultima UG200
+    # sequencing requests.
+    #
+    # @return [Boolean] true if the batch is released and has Ultima UG200 requests
+    def ultima_ug200_run_manifest?
+      @batch.released? && ultima_ug200?
+    end
+
+    # Determines whether the batch is an Ultima UG200 batch.
+    #
+    # @return [Boolean] true if the batch's pipeline is Ultima UG200
+    def ultima_ug200?
+      @pipeline.instance_of?(UltimaUG200SequencingPipeline)
+    end
 
     # This is used to determine if we need to display the Aviti run manifest option
     # in the batch submenu.
@@ -120,8 +142,11 @@ module Presenters
       cherrypicking?
     end
 
+    # Determines whether the batch is an Ultima sequencing batch
+    # @return [Boolean] true if the batch's pipeline is Ultima
     def ultima?
-      @pipeline.is_a?(UltimaSequencingPipeline)
+      # Use instance_of? instead of is_a? to avoid picking up subclasses.
+      @pipeline.instance_of?(UltimaSequencingPipeline)
     end
   end
 end

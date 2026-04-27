@@ -1,0 +1,7 @@
+---
+wafer_size:
+  name: Wafer size
+  key: wafer_size
+  label: Wafer size
+  width: 5
+  hide_in_inbox: 0

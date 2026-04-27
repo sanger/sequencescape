@@ -12,6 +12,7 @@ Limber-Htp - Bioscan Lysate Prep:
 Limber-Htp - Bioscan Library Prep - Automated:
   name: "Limber-Htp - Bioscan Library Prep - Automated"
   submission_class_name: "AutomatedOrder"
+  automated: true
   related_records:
     request_type_keys: ["limber_bioscan_library_prep"]
     product_line_name: Bioscan

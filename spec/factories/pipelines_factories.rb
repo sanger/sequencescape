@@ -170,7 +170,7 @@ FactoryBot.define do
     workflow { build(:lab_workflow_for_pipeline) }
 
     after(:build) do |pipeline|
-      pipeline.request_types << create(:sequencing_request_type)
+      pipeline.request_types << create(:element_aviti_sequencing)
       pipeline.add_control_request_type
     end
   end
@@ -183,6 +183,18 @@ FactoryBot.define do
 
     after(:build) do |pipeline|
       pipeline.request_types << create(:ultima_sequencing)
+      pipeline.add_control_request_type
+    end
+  end
+
+  factory :ultima_ug200_sequencing_pipeline do
+    name { generate(:pipeline_name) }
+    active { true }
+
+    workflow { build(:lab_workflow_for_pipeline) }
+
+    after(:build) do |pipeline|
+      pipeline.request_types << create(:ultima_ug200_sequencing)
       pipeline.add_control_request_type
     end
   end

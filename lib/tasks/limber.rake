@@ -206,7 +206,8 @@ namespace :limber do
             project_id: Limber::Helper.find_project('Project Heron').id
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
-          product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
+          product_catalogue: ProductCatalogue.find_by!(name: 'Generic'),
+          automated: true
         )
       end
 
@@ -222,7 +223,8 @@ namespace :limber do
             project_id: Limber::Helper.find_project('Project Heron').id
           },
           product_line: ProductLine.find_by!(name: 'Illumina-HTP'),
-          product_catalogue: ProductCatalogue.find_by!(name: 'Generic')
+          product_catalogue: ProductCatalogue.find_by!(name: 'Generic'),
+          automated: true
         )
       end
 

@@ -44,6 +44,9 @@ app/sample_manifest_excel/doc/
 docs/accessioning/**/*.png
 docs/accessioning/**/*.svg
 
+# Generated files from notification templates
+config/accession/*.j2
+
 # Test files
 capybara*.html
 spec/examples.txt

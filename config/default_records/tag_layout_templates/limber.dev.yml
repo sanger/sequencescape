@@ -56,26 +56,6 @@ pWGS UDI tag layout v2 D:
   :tag2_group_name: pWGS i5 UDI tag group v2 D
   :direction_algorithm: TagLayout::InColumns
   :walking_algorithm: TagLayout::WalkWellsOfPlate
-GbS Tag Set A:
-  :tag_group_name: Sanger_168tags - 10 mer tags
-  :tag2_group_name: Dual Index Tag2 sequences
-  :direction_algorithm: TagLayout::InColumnsThenRows
-  :walking_algorithm: TagLayout::Quadrants
-GbS Tag Set B:
-  :tag_group_name: Sanger_168tags - 10 mer tags
-  :tag2_group_name: Dual Index Tag2 sequences set B
-  :direction_algorithm: TagLayout::InColumnsThenRows
-  :walking_algorithm: TagLayout::Quadrants
-GbS Tag Set C:
-  :tag_group_name: Sanger_168tags - 10 mer tags
-  :tag2_group_name: Dual Index Tag2 sequences set C
-  :direction_algorithm: TagLayout::InColumnsThenRows
-  :walking_algorithm: TagLayout::Quadrants
-GbS Tag Set D:
-  :tag_group_name: Sanger_168tags - 10 mer tags
-  :tag2_group_name: Dual Index Tag2 sequences set D
-  :direction_algorithm: TagLayout::InColumnsThenRows
-  :walking_algorithm: TagLayout::Quadrants
 384sc:
   :tag_group_name: sc384_i7
   :tag2_group_name: sc384_i5
