@@ -32,8 +32,6 @@
     "eslint": "^9.19",
     "eslint-config-prettier": "^9.0",
     "globals": "^15.14",
-    "jest": "^30.2.0",
-    "jest-environment-jsdom": "^30.2.0",
     "jsdom": "^26.0",
     "prettier": "^3.3",
     "vite": "^8.0",
@@ -53,10 +51,6 @@
   "scripts": {
     "lint": "eslint app/frontend",
     "lintOnly": "eslint --ext .js",
-    "test": "jest",
-    "_test": "vitest"
-  },
-  "jest": {
-    "testEnvironment": "jest-environment-jsdom"
+    "test": "vitest run"
   }
 }
