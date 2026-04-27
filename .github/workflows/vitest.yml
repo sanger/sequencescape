@@ -3,7 +3,17 @@ name: Unit tests
 on:
   # Warning: changing run conditions could prevent coverage report in PR, see codecov.yml for `after_n_builds`
   push:
+    branches:
+      - develop
+      - master
   pull_request:
+    types:
+      # defaults
+      - opened
+      - synchronize
+      - reopened
+      # custom
+      - ready_for_review # required for Github-created PRs
 
 jobs:
   js_test:
