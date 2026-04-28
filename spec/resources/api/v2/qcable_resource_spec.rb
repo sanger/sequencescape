@@ -13,6 +13,7 @@ RSpec.describe Api::V2::QcableResource, type: :resource do
 
   # Attributes
   it { is_expected.to have_readonly_attribute :labware_barcode }
+  it { is_expected.to have_readonly_attribute :stamp_index }
   it { is_expected.to have_readonly_attribute :state }
   it { is_expected.to have_readonly_attribute :uuid }
 

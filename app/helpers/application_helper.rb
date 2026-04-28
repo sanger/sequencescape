@@ -24,7 +24,7 @@ module ApplicationHelper
   #
   # @param identifier [String] The id of the element
   def remote_error(identifier = 'remote_error')
-    tag.div(id: identifier, class: 'error', style: 'display:none;') do
+    alert(:error, class: 'p-3 m-3', id: identifier, style: 'display:none;') do
       'An error has occurred and the results can not be shown at the moment'
     end
   end
