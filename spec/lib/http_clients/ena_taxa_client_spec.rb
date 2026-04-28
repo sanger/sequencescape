@@ -3,6 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe HTTPClients::ENATaxaClient do
+  # TODO: replace Faraday test stubs (tests middleware) with WebMock (tests endpoints)
   let(:client) { described_class.new }
   let(:stubs) { Faraday::Adapter::Test::Stubs.new }
   let(:test_conn) do
