@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class ElementAvitiSequencingRequest < SequencingRequest
+  include Api::Messages::EseqFlowcellIo::LaneExtensions
+
   YES = 'Yes'
   NO = 'No'
   YES_OR_NO = [NO, YES].freeze

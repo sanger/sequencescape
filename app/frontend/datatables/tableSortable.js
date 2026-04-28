@@ -12,16 +12,12 @@ import { cssSelectors, defaults } from "./config";
 import DataTable from "datatables.net-bs4";
 
 $(function () {
-  let datatable;
-
   document.querySelectorAll(cssSelectors.DefaultConfig).forEach((table) => {
-    datatable = new DataTable(table, { ...defaults, order: [] });
+    new DataTable(table, { ...defaults, order: [] });
   });
 
   // If we update the DOM via ajax we want to mount the included components
   $(document.body).on("ajaxDomUpdate", function (_event, target) {
-    // Remove existing datatable instance before re-initializing
-    if (datatable) datatable.destroy();
-    datatable = new DataTable($(target).find(cssSelectors.AjaxConfig), { ...defaults, order: [] });
+    new DataTable($(target).find(cssSelectors.AjaxConfig), { ...defaults, order: [] });
   });
 });
