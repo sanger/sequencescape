@@ -128,7 +128,6 @@ GEM
     ast (2.4.3)
     avro (1.12.1)
       multi_json (~> 1.0)
-    backports (3.25.2)
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.1.2)
@@ -650,8 +649,8 @@ GEM
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)
-    yard-junk (0.0.10)
-      backports (>= 3.18)
+    yard-junk (0.1.0)
+      benchmark
       ostruct
       rainbow
       yard
@@ -770,7 +769,7 @@ DEPENDENCIES
   will_paginate-bootstrap
   yard
   yard-activerecord (~> 0.0.16)
-  yard-junk (~> 0.0.9)
+  yard-junk (~> 0.1.0)
 
 BUNDLED WITH
    2.5.9
