@@ -10,7 +10,7 @@ describe 'View study properties' do
   it 'view open study properties', :js do
     login_user(user)
     visit study_path(study)
-    click_link 'Study details'
+    click_link 'study details'
     expect(page).to have_content('Alignments in BAM: true')
     expect(page).to have_content('HuMFre approval number: ')
     expect(page).to have_content("Prelim ID: #{prelim_id}")
@@ -23,7 +23,7 @@ describe 'View study properties' do
 
     login_user(user)
     visit study_path(study)
-    click_link 'Study details'
+    click_link 'study details'
     expect(page).to have_content('HuMFre approval number: 12345')
   end
 
@@ -35,7 +35,7 @@ describe 'View study properties' do
 
       login_user(user)
       visit study_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('What is the data release strategy for this study?: open')
       expect(page).to have_content('HuMFre approval number: 12345')
     end
@@ -47,7 +47,7 @@ describe 'View study properties' do
 
       login_user(user)
       visit study_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('What is the data release strategy for this study?: managed')
       expect(page).to have_content('HuMFre approval number: 12345')
     end
@@ -63,7 +63,7 @@ describe 'View study properties' do
 
       login_user(user)
       visit study_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('What is the data release strategy for this study?: not applicable')
       expect(page).to have_content('HuMFre approval number: 12345')
     end
