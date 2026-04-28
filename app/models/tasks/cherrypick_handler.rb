@@ -92,6 +92,12 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     else
       raise StandardError, "Invalid cherrypicking strategy '#{params[:cherrypick][:strategy]}'"
     end
+    # Add buffer volume for empty wells option to params for pass through
+    @automatic_buffer_addition = params[:automatic_buffer_addition]
+    @buffer_volume_for_empty_wells = params[:buffer_volume_for_empty_wells]
+    # plate_template is a hash of ActionController::Parameters with a key of '0' and value
+    # of the selected plate template id
+    @plate_template_for_buffer_addition = params[:plate_template]['0'].to_i
     @plate_purpose_id = params[:plate_purpose_id]
     @fluidigm_barcode = params[:fluidigm_plate]
   end
@@ -128,6 +134,9 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
         else
           raise StandardError, "Invalid cherrypicking type #{params[:cherrypick_strategy]}"
         end
+
+      # Store the buffer volume for empty wells option in the batch's poly_metadata
+      create_buffer_volume_for_empty_wells_option(params)
 
       # We can preload the well locations so that we can do efficient lookup later.
       well_locations =
