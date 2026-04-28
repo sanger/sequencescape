@@ -1,4 +1,4 @@
-<%# locals: { form: } -%>
+<%# locals: { form: } %>
 
 <p>Choose a strategy below:</p>
 
@@ -25,6 +25,25 @@
     </div>
   </div>
 
+</div>
+<%# Add form controls to collect the options for the buffer volume for empty wells -%>
+<p>Additional options:</p>
+
+<div class="row">
+  <div class="col-md-8">
+    <div class="form-group form-row">
+      <label class="col-12 col-lg-8 col-form-label" for="automatic_buffer_addition">Automatic buffer addition for empty wells required?</label>
+      <div class="col-12 col-lg-4">
+        <input type="checkbox" class="form-control text-right" name="automatic_buffer_addition" id="automatic_buffer_addition" />
+      </div>
+    </div>
+    <div class ="form-group form-row">
+      <label class="col-12 col-lg-8 col-form-label" for="buffer_volume_for_empty_wells">Buffer volume for empty wells (µl)</label>
+      <div class="col-12 col-lg-4">
+        <input type="text" class="form-control" id="buffer_volume_for_empty_wells" name="buffer_volume_for_empty_wells" value="120">
+      </div>
+    </div>
+  </div>
 </div>
 
 <%= vite_javascript_tag 'cherrypick_strategies' %>

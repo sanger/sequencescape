@@ -5,4 +5,5 @@ codecov:
     # rspec_unit_tests x4 (pull_request)
     # rspec_feature_tests x2 (pull_request)
     # cucumber_tests x2 (pull_request)
-    after_n_builds: 9
+    # vitest (pull_request)
+    after_n_builds: 10
