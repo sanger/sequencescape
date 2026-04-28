@@ -1,0 +1,163 @@
+# frozen_string_literal: true
+
+module HTTPClients
+  # Uploads accessioning failure notifications to the Integration Hub for emailing to users.
+  #
+  # Usage:
+  #   ```rb
+  #   sample = Sample.last
+  #   message = "Accessioning failed due to XYZ reason"
+  #   failure_groups = ['Internal validation failure', 'ENA validation failure'] # can be any consistent values
+  #
+  #   client = HTTPClients::AccessioningNotificationClient.new
+  #   client.create_notification(sample, message, failure_groups)
+  #   ````
+  #
+  # API documentation: https://integration-hub.sanger.ac.uk/docs/notification-api/how-to-use/#invoking-the-api
+  #
+  # Configuration options (see config/config.rb):
+  #
+  # configatron
+  #   .integration_hub
+  #     .auth_token_url
+  #     .base_url
+  #     .notifications_api
+  #       .client_id
+  #       .client_secret
+  #   .accession
+  #     .notifications
+  #       .recipient
+  #       .template_id
+  #       .notification_type
+  #       .content_type
+
+  class AccessioningNotificationClient < BaseClient
+    NOTIFICATIONS_URL = '/notifications/v1'
+    PRIORITY = 'BATCH'
+    SUBJECT = 'Accessioning Failure Notification'
+
+    def conn
+      url = configatron.integration_hub.base_url
+      @conn ||= Faraday.new(url:, headers:, proxy:) do |f|
+        f.request :json
+        f.request :authorization, 'Bearer', -> { auth_token }
+
+        f.response :raise_error # Raise exceptions on 4xx/5xx responses
+        f.response :json
+      end
+    end
+
+    # Creates a notification in the Integration Hub for a given sample, message, and failure groups.
+    #
+    # @param sample [Sample] The sample associated with the notification.
+    # @param message [String] The message to include in the notification.
+    # @param failure_groups [Array<String>] An array of failure group names to include in the notification summary.
+    # @return [String] The ID of the created notification if successful.
+    # @raise [Faraday::Error] If the HTTP request fails.
+    def create_notification(sample, message, failure_groups)
+      Rails.logger.info("Creating notification for sample '#{sample.name}'")
+      payload = build_notification_payload(sample, message, failure_groups)
+      response = conn.post(NOTIFICATIONS_URL, payload)
+      response.body['notification_id']
+    rescue Faraday::Error => e
+      Rails.logger.error(notification_error_message(e))
+      raise
+    end
+
+    private
+
+    def headers
+      default_headers
+    end
+
+    def auth_token
+      cache_key = 'integration_hub/auth_token'
+      cached_token = Rails.cache.read(cache_key)
+      return cached_token if cached_token.present?
+
+      credentials = configatron.integration_hub
+      token_data = get_token_data(credentials)
+
+      access_token = token_data['access_token']
+      expires_in = token_data['expires_in']
+
+      # Refresh 30 seconds early to avoid edge-of-expiry failures
+      ttl_seconds = [expires_in.to_i - 30, 60].max # minimum ttl of 60 seconds to avoid very short cache durations
+
+      Rails.cache.write(cache_key, access_token, expires_in: ttl_seconds, race_condition_ttl: 10)
+
+      access_token
+    end
+
+    # Requests a bearer token from a separate authentication service using the OAuth 2.0 Client Credentials Flow.
+    #
+    # @param integration_hub [Hash] A hash containing the credentials and URLs for obtaining the auth token.
+    # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
+    # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
+    def get_token_data(integration_hub) # rubocop:disable Metrics/AbcSize
+      Rails.logger.info('Requesting new auth token for Integration Hub Notification API')
+      auth_conn = Faraday.new(url: integration_hub.auth_token_url) do |f|
+        f.request :url_encoded
+        f.response :json
+      end
+
+      response = auth_conn.post do |req|
+        req.body = {
+          grant_type: 'client_credentials',
+          client_id: integration_hub.notifications_api.client_id,
+          client_secret: integration_hub.notifications_api.client_secret
+        }
+      end
+
+      raise "Failed to obtain auth token: #{response.status} - #{response.body}" unless response.success?
+
+      response.body
+    end
+
+    # Builds the payload for the notification API request based on the sample, message, and failure groups.
+    # The notification API will aggregate the provided fields where they are used by the notification template
+    # See config/accession/notification-template.mjml
+    def build_notification_payload(sample, message, failure_groups) # rubocop:disable Metrics/AbcSize
+      # A link to http://localhost is caught by the WAF (Web Application Firewall) and causes a 502 response to
+      # be returned from the Notifications API.
+      # A link to an external URL is caught by the Sanger mail filter (Proofpoint)
+      # Replace localhost with example.sanger.ac.uk, otherwise use the configured site_url
+      host = configatron.site_url.include?('localhost') ? 'example.sanger.ac.uk' : configatron.site_url
+      sample_path = Rails.application.routes.url_helpers.sample_url(sample, host:)
+      study_ids = sample.studies_for_accessioning.map(&:id).join('-')
+      study_names = sample.studies_for_accessioning.map(&:name).join(', ')
+      notifications_config = configatron.accession.notifications
+      {
+        channels: [
+          {
+            type: notifications_config.notification_type,
+            recipient: notifications_config.recipient,
+            content_type: notifications_config.content_type,
+            template_id: notifications_config.template_id,
+            subject: SUBJECT,
+            fields: {
+              study_name: study_names,
+              sample_name: sample.name,
+              sample_path: sample_path,
+              accessioning_status_message: message,
+              failure_groups: failure_groups
+            }
+          }
+        ],
+        priority: PRIORITY,
+        aggregator_id: "study-#{study_ids}" # there's a length limit
+      }
+    end
+
+    def notification_error_message(error)
+      case error
+      when Faraday::ClientError
+        "Client error while creating notification': #{error.response[:body]}"
+      when Faraday::ServerError
+        "Server error while creating notification': #{error.response[:body]}"
+      else
+        "Faraday error while creating notification: #{error.message}"
+      end
+    end
+  end
+end
