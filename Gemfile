@@ -220,7 +220,7 @@ group :test, :cucumber do
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda-context', '~> 3.0.0.rc1'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
