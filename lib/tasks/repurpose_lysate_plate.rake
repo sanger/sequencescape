@@ -19,7 +19,7 @@ namespace :LBSN_96_Lysate do
     puts "Found #{plates_without_parents.size} plates to repurpose"
 
     plates_without_parents.each do |plate|
-      plate.update(plate_purpose_id: lbsn_lysate_input_purpose.id)
+      plate.update!(plate_purpose_id: lbsn_lysate_input_purpose.id)
     end
 
     puts "Done: #{plates_without_parents.size} plates repurposed to 'LBSN-96 Lysate Input'"
