@@ -27,3 +27,8 @@ ot_recipe:
   options:
     - "Free"
     - "Flex"
+wafer_size:
+  options:
+    - "5TB"
+    - "10TB"
+    - "20TB"

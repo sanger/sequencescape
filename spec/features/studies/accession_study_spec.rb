@@ -60,7 +60,7 @@ RSpec.describe 'Study accession number', :accessioning_enabled, :js do
       click_link 'Generate Accession Number'
       expect(page).to have_css('.alert', text: 'Accession number generated: EGA00002000345')
       visit study_path(study)
-      click_link 'Study details'
+      click_link 'study details'
       expect(page).to have_content('EGA00002000345')
     end
   end

@@ -41,6 +41,11 @@ class WorkflowsController < ApplicationController
     @stage = params[:id].to_i
     @task = @workflow.tasks[@stage]
 
+    # Track whether the current task execution succeeded; defaults to true when
+    # just rendering so we only redirect on "Update" after a successful do_task
+    # call.
+    task_success = true
+
     # If params[:next_stage] is nil then just render the current task
     # else actually execute the task.
     unless params[:next_stage].nil?
@@ -67,7 +72,7 @@ class WorkflowsController < ApplicationController
       end
     end
 
-    if params[:commit] == 'Update'
+    if params[:commit] == 'Update' && task_success
       redirect_to batch_path(@batch)
     elsif @stage >= @workflow.tasks.size
       # All requests have finished all tasks: finish workflow

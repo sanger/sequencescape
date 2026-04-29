@@ -310,7 +310,9 @@ Rails.application.routes.draw do
     resource :information, controller: 'studies/information' do
       member do
         get :summary
+        get :show_items
         get :show_summary
+        get :show_study_summary
       end
 
       resources :assets # Legacy path, redirects to receptacles

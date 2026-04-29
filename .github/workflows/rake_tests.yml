@@ -14,6 +14,9 @@ env:
 
 on:
   push:
+    branches:
+      - develop
+      - master
   pull_request:
     types:
       # defaults
@@ -64,5 +67,6 @@ jobs:
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
+          flags: ruby
           disable-search: true
           files: ${{ github.workspace }}/lcov.info

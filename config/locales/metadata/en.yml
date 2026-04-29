@@ -79,6 +79,9 @@ en:
         ot_recipe:
           label: OT Recipe
 
+        wafer_size:
+          label: Wafer Size
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -105,6 +108,9 @@ en:
       <<: *REQUEST
 
     ultima_sequencing_request:
+      <<: *REQUEST
+
+    ultima_ug200_sequencing_request:
       <<: *REQUEST
 
     pulldown:

@@ -38,6 +38,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'do nothing if the next state is nil' do
         @batch.stubs(:qc_next_state).returns(nil)
+        @batch.expects(:update_attribute).never # no state update when there is no next state
         @batch.qc_submitted
       end
     end
@@ -51,6 +52,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'do nothing if the next state is nil' do
         @batch.stubs(:qc_next_state).returns(nil)
+        @batch.expects(:update_attribute).never # no state update when there is no next state
         @batch.qc_criteria_received
       end
     end
@@ -64,6 +66,7 @@ class SequencingQcBatchTest < ActiveSupport::TestCase
 
       should 'do nothing if the next state is nil' do
         @batch.stubs(:qc_next_state).returns(nil)
+        @batch.expects(:update_attribute).never # no state update when there is no next state
         @batch.qc_complete
       end
     end

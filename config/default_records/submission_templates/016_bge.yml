@@ -16,6 +16,7 @@ Limber-Htp - BGE ISC:
 Limber-Htp - BGE Transition - Automated:
   name: "Limber-Htp - BGE Transition - Automated"
   submission_class_name: "AutomatedOrder"
+  automated: true
   related_records:
     product_line_name: Illumina-HTP
     product_catalogue_name: BGE

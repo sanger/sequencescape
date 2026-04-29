@@ -17,6 +17,17 @@ module Api
       def prepare_context
         context[:template] = find_template
         context[:template_attributes] = template_attributes unless context[:template].nil?
+        context[:project] = find_project
+      end
+
+      def find_project
+        project_uuid = params[:data][:attributes][:project_uuid]
+        return nil if project_uuid.nil?
+
+        project = Project.with_uuid(project_uuid).first
+        raise JSONAPI::Exceptions::InvalidFieldValue.new(:project_uuid, project_uuid) if project.nil?
+
+        project
       end
 
       def find_template
