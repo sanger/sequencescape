@@ -165,7 +165,7 @@ group :development, :linting do
   # Automatically generate documentation
   gem 'yard', require: false
   gem 'yard-activerecord', '~> 0.0.16', require: false
-  gem 'yard-junk', '~> 0.0.9', require: false
+  gem 'yard-junk', '~> 0.1.0', require: false
 end
 
 group :linting, :test do
@@ -216,7 +216,7 @@ group :test, :cucumber do
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda-context', '~> 3.0.0.rc1'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
