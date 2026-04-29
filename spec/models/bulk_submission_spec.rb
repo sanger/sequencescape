@@ -420,13 +420,13 @@ describe BulkSubmission, with: :uploader do
     end
 
     context 'when an scRNA Bulk Submission given with invalid number of samples per pool' do
-      context 'number of samples per pool < 5' do
+      context 'when number of samples per pool < 5' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid.csv' }
 
         it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid', 4
       end
 
-      context 'number of samples per pool > 25' do
+      context 'when number of samples per pool > 25' do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid_greater.csv' }
 
         it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
