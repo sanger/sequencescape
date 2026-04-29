@@ -57,7 +57,7 @@ describe BulkSubmission, with: :uploader do
     create(:project, name: 'Test project')
   end
 
-  context 'a simple submission' do
+  context 'when creating a simple submission' do
     let(:submission_template_hash) do
       {
         name: 'Illumina-A - Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing',
@@ -93,7 +93,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'an asset driven submission' do
+  context 'when creating an asset driven submission' do
     let(:spreadsheet_filename) { 'template_for_bulk_submission.csv' }
     let!(:asset) { create(:plate, barcode: 'SQPD-1', well_count: 1, well_factory: :untagged_well) }
     let(:submission_template_hash) do
@@ -126,7 +126,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with PCR cycles' do
+  context 'when creating a submission with PCR cycles' do
     let(:spreadsheet_filename) { 'pcr_cycles.csv' }
 
     let!(:submission_template) do
@@ -157,7 +157,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with primer_panels' do
+  context 'when creating a submission with primer_panels' do
     let(:spreadsheet_filename) { 'primer_panels.csv' }
     let!(:primer_panel) { create(:primer_panel, name: 'Test panel') }
 
@@ -190,7 +190,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with bait libraries' do
+  context 'when creating a submission with bait libraries' do
     let(:spreadsheet_filename) { '2_valid_sc_submissions.csv' }
     let!(:bait_library) { create(:bait_library, name: 'Bait library 1') }
     let!(:bait_library_2) { create(:bait_library, name: 'Bait library 2') }
@@ -222,7 +222,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with a lowercase library type' do
+  context 'when creating a submission with a lowercase library type' do
     let(:spreadsheet_filename) { 'with_lowercase_library_type.csv' }
 
     let!(:submission_template) do
@@ -253,7 +253,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with an unrecognised library type' do
+  context 'when creating a submission with an unrecognised library type' do
     let(:spreadsheet_filename) { 'with_unknown_library_type.csv' }
 
     let!(:submission_template) do
@@ -274,7 +274,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with additional template name validations' do
+  context 'when creating a submission with additional template name validations' do
     context 'when valid for scRNA template' do
       let(:submission_template_hash) do
         {
@@ -434,7 +434,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with a NovaSeqX sequencing request type' do
+  context 'when creating a submission with a NovaSeqX sequencing request type' do
     let(:spreadsheet_filename) { 'novaseqx_bulk_submission.csv' }
     let!(:request_types) { [create(:nova_seq_x_sequencing_request_type)] }
     let(:study) { create(:study, name: 'UAT Study') }
@@ -480,7 +480,7 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
-  context 'a submission with a NovaSeq 6000 PE sequencing request type' do
+  context 'when creating a submission with a NovaSeq 6000 PE sequencing request type' do
     let(:spreadsheet_filename) { 'nova_seq_6000_pe_bulk_submission.csv' }
     let!(:request_types) { [create(:nova_seq_6000_p_e_sequencing_request_type)] }
     let(:study) { create(:study, name: 'UAT Study') }
