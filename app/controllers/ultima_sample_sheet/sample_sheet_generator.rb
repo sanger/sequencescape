@@ -121,7 +121,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # Adds the global section to the CSV.
     # The request parameter is currently unused.
     # @param csv [CSV] the CSV object to append rows to
-    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
+    # @param request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, request)
       return add_support_global_section(csv, request) if Flipper.enabled?(:y25_140_support_ultima_ug100_upgrade)
 
