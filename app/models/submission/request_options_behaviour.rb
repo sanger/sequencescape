@@ -7,7 +7,7 @@ module Submission::RequestOptionsBehaviour
     def self.load(hash_yaml)
       return hash_yaml if hash_yaml.nil?
 
-      YAML.unsafe_load(hash_yaml)
+      YAML.safe_load(hash_yaml)
     end
 
     def self.dump(hash)
