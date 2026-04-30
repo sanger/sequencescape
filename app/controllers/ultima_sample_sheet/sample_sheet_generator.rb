@@ -26,6 +26,8 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     def global_headers_config
+      return ['Application'].freeze if Flipper.enabled?(:y25_140_support_ultima_ug100_upgrade)
+
       %w[Application sequencing_recipe analysis_recipe].freeze
     end
 
@@ -120,7 +122,9 @@ module UltimaSampleSheet::SampleSheetGenerator
     # The request parameter is currently unused.
     # @param csv [CSV] the CSV object to append rows to
     # @param _request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_global_section(csv, _request)
+    def add_global_section(csv, request)
+      return add_support_global_section(csv, request) if Flipper.enabled?(:y25_140_support_ultima_ug100_upgrade)
+
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
       # Currently there is only one UltimaGlobal record; get the last one.
@@ -128,6 +132,19 @@ module UltimaSampleSheet::SampleSheetGenerator
       # sequencing request or batch properties.
       global = UltimaGlobal.last
       data = [global.application, global.sequencing_recipe, global.analysis_recipe]
+      csv << pad(data)
+    end
+
+    # Adds the new global section format to be used when the feature flag
+    # :y25_140_support_ultima_ug100_upgrade is enabled:
+    #   - Sets WGS Native as the application value.
+    #   - Removes sequencing_recipe and analysis_recipe columns.
+    # @param csv [CSV] the CSV object to append rows to
+    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
+    def add_support_global_section(csv, _request)
+      csv << pad(global_title_config)
+      csv << pad(global_headers_config)
+      data = ['WGS Native'] # Application
       csv << pad(data)
     end
 
