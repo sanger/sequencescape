@@ -12,10 +12,10 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
 
   around do |example|
     configatron_dup = configatron.dup
+    configatron.accession.notifications.client_id = 'test_client_id'
+    configatron.accession.notifications.client_secret = 'test_client_secret'
     configatron.integration_hub.base_url = 'https://integration-hub.example.com'
     configatron.integration_hub.auth_token_url = 'https://auth.example.com/oauth2/token'
-    configatron.integration_hub.notifications_api.client_id = 'test_client_id'
-    configatron.integration_hub.notifications_api.client_secret = 'test_client_secret'
     example.run
     configatron.reset_to(configatron_dup)
   end
@@ -42,11 +42,14 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
       end
 
       describe '#get_token_data' do
+        let(:auth_token_url) { configatron.integration_hub.auth_token_url }
+        let(:credentials) { configatron.accession.notifications }
+
         it 'returns token data from the auth endpoint' do
           stub_request(:post, configatron.integration_hub.auth_token_url)
             .to_return(status: 200, body: token_response.to_json, headers: { 'Content-Type' => 'application/json' })
 
-          result = client.send(:get_token_data, configatron.integration_hub)
+          result = client.send(:get_token_data, auth_token_url, credentials)
 
           expect(result).to eq(token_response)
         end
@@ -55,7 +58,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
           stub_request(:post, configatron.integration_hub.auth_token_url)
             .with(headers: { 'Content-Type' => 'application/x-www-form-urlencoded' })
 
-          client.send(:get_token_data, configatron.integration_hub)
+          client.send(:get_token_data, auth_token_url, credentials)
           expect(WebMock).to have_requested(:post, configatron.integration_hub.auth_token_url)
         end
 
@@ -69,7 +72,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
               )
             )
 
-          client.send(:get_token_data, configatron.integration_hub)
+          client.send(:get_token_data, auth_token_url, credentials)
 
           expect(WebMock).to have_requested(:post, configatron.integration_hub.auth_token_url)
         end
@@ -81,7 +84,7 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
                        headers: { 'Content-Type' => 'application/json' })
 
           expect do
-            client.send(:get_token_data, configatron.integration_hub)
+            client.send(:get_token_data, auth_token_url, credentials)
           end.to raise_error(RuntimeError, /Failed to obtain auth token: 401/)
         end
       end

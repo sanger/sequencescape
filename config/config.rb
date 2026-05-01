@@ -17,6 +17,9 @@ configatron.accession do |accession|
 
   accession.notifications do |notifications|
     # Closely associated with the integration_hub config below, but specific for accessioning notifications
+    notifications.client_id = ENV.fetch('NOTI_CLIENT_ID', 'notifications_client_id') # Set in the vault
+    notifications.client_secret = ENV.fetch('NOTI_CLIENT_SECRET', 'notifications_secret') # Set in the vault
+
     notifications.recipient = ['PSD_EMAIL']
     notifications.template_id = 'PSD_EMAIL'
     notifications.notification_type = 'EMAIL'
@@ -58,11 +61,6 @@ configatron.external_applications = [
 configatron.integration_hub do |integration_hub|
   integration_hub.auth_token_url = 'https://inthub-ppd.auth.eu-west-2.amazoncognito.com/oauth2/token'
   integration_hub.base_url = 'https://ppd.integration-hub.sanger.ac.uk'
-
-  integration_hub.notifications_api do |notifications_api|
-    notifications_api.client_id = ENV.fetch('NOTI_CLIENT_ID', 'notifications_client_id') # Set in the vault
-    notifications_api.client_secret = ENV.fetch('NOTI_CLIENT_SECRET', 'notifications_secret') # Set in the vault
-  end
 end
 
 configatron.location_reports_fetch_count_max = 25000

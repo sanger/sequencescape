@@ -21,11 +21,10 @@ module HTTPClients
   #   .integration_hub
   #     .auth_token_url
   #     .base_url
-  #     .notifications_api
-  #       .client_id
-  #       .client_secret
   #   .accession
   #     .notifications
+  #       .client_id
+  #       .client_secret
   #       .recipient
   #       .template_id
   #       .notification_type
@@ -70,13 +69,14 @@ module HTTPClients
       default_headers
     end
 
-    def auth_token
+    def auth_token # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       cache_key = 'integration_hub/auth_token'
       cached_token = Rails.cache.read(cache_key)
       return cached_token if cached_token.present?
 
-      credentials = configatron.integration_hub
-      token_data = get_token_data(credentials)
+      auth_token_url = configatron.integration_hub.auth_token_url
+      credentials = configatron.accession.notifications
+      token_data = get_token_data(auth_token_url, credentials)
 
       access_token = token_data['access_token']
       expires_in = token_data['expires_in']
@@ -91,12 +91,13 @@ module HTTPClients
 
     # Requests a bearer token from a separate authentication service using the OAuth 2.0 Client Credentials Flow.
     #
-    # @param integration_hub [Hash] A hash containing the credentials and URLs for obtaining the auth token.
+    # @param auth_token_url [String] The URL of the authentication service's token endpoint.
+    # @param accession_notifications [Hash] A hash containing the client_id and client_secret for the auth request.
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
-    def get_token_data(integration_hub) # rubocop:disable Metrics/AbcSize
+    def get_token_data(auth_token_url, accession_notifications_credentials)
       Rails.logger.info('Requesting new auth token for Integration Hub Notification API')
-      auth_conn = Faraday.new(url: integration_hub.auth_token_url) do |f|
+      auth_conn = Faraday.new(url: auth_token_url) do |f|
         f.request :url_encoded
         f.response :json
       end
@@ -104,8 +105,8 @@ module HTTPClients
       response = auth_conn.post do |req|
         req.body = {
           grant_type: 'client_credentials',
-          client_id: integration_hub.notifications_api.client_id,
-          client_secret: integration_hub.notifications_api.client_secret
+          client_id: accession_notifications_credentials.client_id,
+          client_secret: accession_notifications_credentials.client_secret
         }
       end
 
