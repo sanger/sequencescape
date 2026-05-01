@@ -92,10 +92,10 @@ module HTTPClients
     # Requests a bearer token from a separate authentication service using the OAuth 2.0 Client Credentials Flow.
     #
     # @param auth_token_url [String] The URL of the authentication service's token endpoint.
-    # @param accession_notifications [Hash] A hash containing the client_id and client_secret for the auth request.
+    # @param credentials [Hash] A hash containing the client_id and client_secret for the auth request.
     # @return [Hash{Symbol => String, Symbol => Integer}] A hash with :access_token and :expires_in keys if successful.
     # @raise [RuntimeError] If the HTTP request fails or returns a non-success status code.
-    def get_token_data(auth_token_url, accession_notifications_credentials)
+    def get_token_data(auth_token_url, credentials)
       Rails.logger.info('Requesting new auth token for Integration Hub Notification API')
       auth_conn = Faraday.new(url: auth_token_url) do |f|
         f.request :url_encoded
@@ -105,8 +105,8 @@ module HTTPClients
       response = auth_conn.post do |req|
         req.body = {
           grant_type: 'client_credentials',
-          client_id: accession_notifications_credentials.client_id,
-          client_secret: accession_notifications_credentials.client_secret
+          client_id: credentials.client_id,
+          client_secret: credentials.client_secret
         }
       end
 
