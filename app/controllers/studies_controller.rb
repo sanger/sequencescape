@@ -287,8 +287,12 @@ class StudiesController < ApplicationController
       end
     end
 
-    flash[:notice] = 'All of the samples in this study have been sent for accessioning. ' \
-                     'You should receive an email should any samples fail to accession.'
+    response_message = if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures)
+      'You should receive an email should any samples fail to accession.'
+    else
+      'Please check back in 5 minutes to confirm that accessioning was successful.'
+    end
+    flash[:notice] = "All of the samples in this study have been sent for accessioning. #{response_message}"
     redirect_to(study_path(@study))
   end
 

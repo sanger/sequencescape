@@ -180,10 +180,21 @@ RSpec.describe StudiesController do
     let(:number_of_samples) { 5 }
     let(:samples) { create_list(:sample_for_accessioning_with_open_study, number_of_samples) }
     let(:study) { samples.first.studies.first }
+    let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
     before do
       allow(Accession::Submission).to receive(:client).and_return(
         stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
+      )
+
+      if enable_y26_094_email_users_on_accessioning_failures
+        Flipper.enable(:y26_094_email_users_on_accessioning_failures)
+      else
+        Flipper.disable(:y26_094_email_users_on_accessioning_failures)
+      end
+      # Mock the notification client to prevent actual requests during testing
+      allow(HTTPClients::AccessioningNotificationClient).to receive(:new).and_return(
+        instance_double(HTTPClients::AccessioningNotificationClient, create_notification: 'notification_id')
       )
 
       post :accession_all_samples, session: session, params: { id: study.id }
@@ -208,15 +219,30 @@ RSpec.describe StudiesController do
         expect(flash[:warning]).to be_nil
       end
 
-      it 'sets a flash notice message' do
-        expect(flash[:notice]).to eq(
-          'All of the samples in this study have been sent for accessioning. ' \
-          'You should receive an email should any samples fail to accession.'
-        )
-      end
-
       it 'does not set a flash info message' do
         expect(flash[:info]).to be_nil
+      end
+
+      context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+        let(:enable_y26_094_email_users_on_accessioning_failures) { true }
+
+        it 'sets a receive-email flash notice message' do
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'You should receive an email should any samples fail to accession.'
+          )
+        end
+      end
+
+      context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+        let(:enable_y26_094_email_users_on_accessioning_failures) { false }
+
+        it 'sets a check-back flash notice message' do
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'Please check back in 5 minutes to confirm that accessioning was successful.'
+          )
+        end
       end
     end
 
@@ -245,9 +271,8 @@ RSpec.describe StudiesController do
       end
 
       it 'sets a flash notice message' do
-        expect(flash[:notice]).to eq(
-          'All of the samples in this study have been sent for accessioning. ' \
-          'You should receive an email should any samples fail to accession.'
+        expect(flash[:notice]).to match(
+          /All of the samples in this study have been sent for accessioning./
         )
       end
 
@@ -261,45 +286,45 @@ RSpec.describe StudiesController do
       let(:samples) { create_list(:sample, number_of_samples) }
       let(:study) { create(:managed_study, accession_number: 'EGA123', samples: samples) }
 
-      it 'redirects to the study page' do
-        expect(subject).to redirect_to(study_path(study))
+      it 'shows the error messages in the accession statuses of the samples' do
+        study.samples.each do |sample|
+          sample_status = Accession::SampleStatus.where(sample:).first
+          expect(sample_status).to have_attributes(
+            status: 'failed',
+            message: 'Cannot be accessioned: ' \
+                     'Sample does not have the required metadata: ' \
+                     'donor, gender, phenotype, sample common name, and sample taxon.'
+          )
+        end
       end
 
-      it 'sets a flash notice message' do
-        expect(flash[:notice]).to eq(
-          'All of the samples in this study have been sent for accessioning. ' \
-          'You should receive an email should any samples fail to accession.'
-        )
+      it 'redirects to the study page' do
+        expect(subject).to redirect_to(study_path(study))
       end
 
       it 'does not set a flash error message' do
         expect(flash[:error]).to be_nil
       end
 
-      context 'when the study has many samples' do
-        let(:number_of_samples) { 10 }
+      context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+        let(:enable_y26_094_email_users_on_accessioning_failures) { true }
 
-        it 'sets a flash notice message' do
+        it 'sets a receive-email flash notice message' do
           expect(flash[:notice]).to eq(
             'All of the samples in this study have been sent for accessioning. ' \
             'You should receive an email should any samples fail to accession.'
           )
         end
+      end
 
-        it 'does not set a flash error message' do
-          expect(flash[:error]).to be_nil
-        end
+      context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+        let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
-        it 'shows the error messages in the accession statuses of the samples' do
-          study.samples.each do |sample|
-            sample_status = Accession::SampleStatus.where(sample:).first
-            expect(sample_status).to have_attributes(
-              status: 'failed',
-              message: 'Cannot be accessioned: ' \
-                       'Sample does not have the required metadata: ' \
-                       'donor, gender, phenotype, sample common name, and sample taxon.'
-            )
-          end
+        it 'sets a check-back flash notice message' do
+          expect(flash[:notice]).to eq(
+            'All of the samples in this study have been sent for accessioning. ' \
+            'Please check back in 5 minutes to confirm that accessioning was successful.'
+          )
         end
       end
 
@@ -312,9 +337,8 @@ RSpec.describe StudiesController do
         end
 
         it 'sets a flash notice message' do
-          expect(flash[:notice]).to eq(
-            'All of the samples in this study have been sent for accessioning. ' \
-            'You should receive an email should any samples fail to accession.'
+          expect(flash[:notice]).to match(
+            /All of the samples in this study have been sent for accessioning./
           )
         end
 
