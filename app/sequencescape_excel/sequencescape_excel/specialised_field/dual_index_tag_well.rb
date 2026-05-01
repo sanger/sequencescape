@@ -27,7 +27,8 @@ module SequencescapeExcel
         return unless valid?
 
         # NB. the asset here is a well, and the well_has_single_aliquot? validation ensures there is only one aliquot
-        # NB. we are fetching via row so this is the same aliquot instance so saved_changes? works to detect substitutions
+        # NB. we are fetching via row so this is the same aliquot instance so saved_changes? works to detect
+        # substitutions
         row.aliquots.first.assign_attributes(tag:, tag2:)
       end
 
