@@ -23,8 +23,7 @@ describe 'Accession all samples', :accessioning_enabled, :un_delay_jobs do
     visit study_path(study.id)
     click_link 'Accession all Samples'
     expect(page).to have_content(
-      'All of the samples in this study have been sent for accessioning. ' \
-      'Please check back in 5 minutes to confirm that accessioning was successful.'
+      'All of the samples in this study have been sent for accessioning. '
     )
     expect(study.reload.samples).to be_all { |sample| sample.sample_metadata.sample_ebi_accession_number.present? }
   end

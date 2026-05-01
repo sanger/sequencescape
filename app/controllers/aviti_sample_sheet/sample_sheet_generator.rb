@@ -44,12 +44,30 @@ module AvitiSampleSheet::SampleSheetGenerator
     # The values are set according to the official documentation from Element Biosciences.
     # This section is static because metadata for control samples is not tracked in the Aviti pipeline.
     # Users can manually modify this section if necessary.
-    PHIX_SECTION = [
+    ELEMENT_PHIX_SECTION = [
       ['PhiX_Third', 'ATGTCGCTAG', 'CTAGCTCGTA', '1+2', nil],
       ['PhiX_Third', 'CACAGATCGT', 'ACGAGAGTCT', '1+2', nil],
       ['PhiX_Third', 'GCACATAGTC', 'GACTACTAGC', '1+2', nil],
       ['PhiX_Third', 'TGTGTCGACA', 'TGTCTGACAG', '1+2', nil]
     ].freeze
+
+    # 'Comp PhiX' values, particularly for runs using custom primers.
+    # This section is used instead of 'Element PhiX' section according to the
+    # PhiX type selection in the Loading task. Note that index1 and index2
+    # values may be truncated to match those of the samples within the sheet.
+    COMP_PHIX_SECTION = [
+      ['Comp_PhiX', 'TGTAGTAAAT', 'AACGTTGCCA', '1+2', nil]
+    ].freeze
+
+    # The name of the task where PhiX type is selected.
+    PHIX_TYPE_TASK_NAME = 'Loading'
+
+    # The name of the descriptor for PhiX type selection.
+    PHIX_TYPE_DESCRIPTOR_NAME = 'PhiX type'
+
+    # Possible values for PhiX type selection.
+    ELEMENT_PHIX_TYPE = 'Element PhiX'
+    COMP_PHIX_TYPE = 'Comp PhiX'
 
     def initialize(batch)
       @batch = batch
@@ -106,7 +124,7 @@ module AvitiSampleSheet::SampleSheetGenerator
     #      }
     def group_samples_by_identity
       grouped_samples = Hash.new { |hash, key| hash[key] = new_group_entry(key) }
-      @batch.requests.reject(&:failed?).each { |request| add_request_to_grouped_samples(grouped_samples, request) }
+      batch_requests.each { |request| add_request_to_grouped_samples(grouped_samples, request) }
       grouped_samples
     end
 
@@ -140,23 +158,47 @@ module AvitiSampleSheet::SampleSheetGenerator
       elsif sample_index_length < 10
         truncated_phix_indexes(sample_index_length)
       else
-        PHIX_SECTION
+        phix_section
       end
     end
 
     # Returns only the PhiX sample names (first column)
     def remove_phix_control_tags
-      PHIX_SECTION.map { |row| [row[0]] }
+      phix_section.map { |row| [row[0]] }
     end
 
     # Truncates PhiX indexes to match the given sample index length
     def truncated_phix_indexes(sample_index_length)
-      PHIX_SECTION.map do |row|
+      phix_section.map do |row|
         row = row.dup
         row[1] = row[1][0, sample_index_length] if row[1]
         row[2] = row[2][0, sample_index_length] if row[2]
         row
       end
+    end
+
+    # Returns the appropriate PhiX section for the sample sheet based on the
+    # selected PhiX type.
+    #
+    # @return [Array<Array>] The PhiX section rows for the sample sheet.
+    def phix_section
+      return COMP_PHIX_SECTION if selected_phix_type == COMP_PHIX_TYPE
+
+      ELEMENT_PHIX_SECTION # Default to Element PhiX
+    end
+
+    # Finds the selected PhiX type for the batch, defaults to {ELEMENT_PHIX_TYPE}.
+    #
+    # @return [String] The selected PhiX type, either {ELEMENT_PHIX_TYPE} or {COMP_PHIX_TYPE}.
+    def selected_phix_type
+      task = @batch.tasks.find { |task| task.name == PHIX_TYPE_TASK_NAME }
+      return ELEMENT_PHIX_TYPE if task.nil?
+
+      descriptors = task.descriptors_for(batch_requests.first)
+      descriptor = descriptors.find { |desc| desc[:name] == PHIX_TYPE_DESCRIPTOR_NAME }
+      return ELEMENT_PHIX_TYPE if descriptor.nil?
+
+      descriptor.value
     end
 
     # Initializes a new group entry hash for the given identity key.
@@ -175,10 +217,18 @@ module AvitiSampleSheet::SampleSheetGenerator
     # @param grouped_samples [Hash] the map of sample groups
     # @param request [Request] the sequencing request to process
     def add_request_to_grouped_samples(grouped_samples, request)
-      request.target_asset.aliquots.each do |aliquot|
+      # asset is tube; target_asset is lane
+      request.asset.aliquots.each do |aliquot|
         key = [aliquot.sample.name, aliquot.tag&.oligo, aliquot.tag2&.oligo, aliquot.study.id]
         grouped_samples[key][:positions] << request.position
       end
+    end
+
+    # Returns the requests associated with the batch.
+    # This method rejects failed requests.
+    # @return [Array<ElementAvitiSequencingRequest>] the requests of the batch
+    def batch_requests
+      @batch.requests.reject(&:failed?)
     end
   end
 end

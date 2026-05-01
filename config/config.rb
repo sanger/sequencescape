@@ -14,6 +14,17 @@ configatron.accession do |accession|
   accession.ena.user = 'era_accession_login'
   accession.ena.password = 'era_accession_password'
   accession.drop_box_url = 'http://localhost:9999/ena/submit/drop-box/'
+
+  accession.notifications do |notifications|
+    # Closely associated with the integration_hub config below, but specific for accessioning notifications
+    notifications.client_id = ENV.fetch('NOTI_CLIENT_ID', 'notifications_client_id') # Set in the vault
+    notifications.client_secret = ENV.fetch('NOTI_CLIENT_SECRET', 'notifications_secret') # Set in the vault
+
+    notifications.recipient = ['PSD_EMAIL']
+    notifications.template_id = 'PSD_EMAIL'
+    notifications.notification_type = 'EMAIL'
+    notifications.content_type = 'html'
+  end
 end
 
 configatron.admin_email = 'admin@test.com'
@@ -46,6 +57,11 @@ configatron.external_applications = [
   ['Generic Lims', 'http://www.example.com'],
   %w[Gatekeeper http://www.example.com]
 ]
+
+configatron.integration_hub do |integration_hub|
+  integration_hub.auth_token_url = 'https://inthub-ppd.auth.eu-west-2.amazoncognito.com/oauth2/token'
+  integration_hub.base_url = 'https://ppd.integration-hub.sanger.ac.uk'
+end
 
 configatron.location_reports_fetch_count_max = 25000
 
