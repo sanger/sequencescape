@@ -287,12 +287,12 @@ class StudiesController < ApplicationController
       end
     end
 
-    if @study.errors.any?
-      flash[:error] = compile_accession_errors(@study.errors)
+    response_message = if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures)
+      'You should receive an email should any samples fail to accession.'
     else
-      flash[:notice] = 'All of the samples in this study have been sent for accessioning. ' \
-                       'Please check back in 5 minutes to confirm that accessioning was successful.'
+      'Please check back in 5 minutes to confirm that accessioning was successful.'
     end
+    flash[:notice] = "All of the samples in this study have been sent for accessioning. #{response_message}"
     redirect_to(study_path(@study))
   end
 
@@ -433,16 +433,6 @@ class StudiesController < ApplicationController
     Rails.logger.warn "Failed to update attributes: #{@study.errors.map { |error| error.to_s }}" # rubocop:disable Style/SymbolProc
     flash.now[:error] = 'Failed to update attributes for study!'
     render action: 'edit', id: @study.id
-  end
-
-  def compile_accession_errors(errors, max_messages = 6)
-    error_messages = ['The samples in this study could not be accessioned, please check the following errors:']
-    error_messages.concat(errors.full_messages.first(max_messages))
-
-    return error_messages unless errors.size > max_messages
-
-    error_messages << '...'
-    error_messages << "Only the first #{max_messages} of #{errors.size} errors are shown."
   end
 end
 # rubocop:enable Metrics/ClassLength
