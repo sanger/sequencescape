@@ -16,7 +16,7 @@ shared_examples 'a sequencing procedure' do
 
     click_on 'Next step'
 
-    expect(page).to have_content("Can't find a spiked hybridization buffer with barcode Not a barcode")
+    expect(page).to have_text("Can't find a spiked hybridization buffer with barcode Not a barcode")
 
     find_by_id('sample-2-checkbox').uncheck
 
@@ -26,7 +26,7 @@ shared_examples 'a sequencing procedure' do
 
     find_by_id('sample-1-checkbox').uncheck
 
-    expect(page).to have_content('Request 1 :')
+    expect(page).to have_text('Request 1 :')
 
     click_on 'Next step'
 
@@ -58,15 +58,15 @@ shared_examples 'a sequencing procedure' do
       end
     end
     click_on 'Release this batch'
-    expect(page).to have_content('Batch released')
+    expect(page).to have_text('Batch released')
 
     first(:link, 'Lane').click
-    expect(page).to have_content("Spiked Buffer: #{spiked_buffer.display_name}")
+    expect(page).to have_text("Spiked Buffer: #{spiked_buffer.display_name}")
 
     go_back
 
     all(:link, 'Lane').last.click
-    expect(page).to have_no_content('Spiked Buffer')
+    expect(page).to have_no_text('Spiked Buffer')
 
     batch = Batch.last
     flowcell_message = batch.messengers.last
