@@ -88,15 +88,15 @@ describe 'Cherrypicking pipeline', :cherrypicking, :js do
     it 'requests leave the inbox once a batch has been created' do
       login_user(user)
       visit pipeline_path(pipeline)
-      expect(page).to have_content("Pipeline #{pipeline_name}")
-      expect(page).to have_content(plates[0].human_barcode)
+      expect(page).to have_text("Pipeline #{pipeline_name}")
+      expect(page).to have_text(plates[0].human_barcode)
       check("Select #{plates[0].human_barcode} for batch")
       check("Select #{plates[2].human_barcode} for batch")
       check("Select #{plates[1].human_barcode} for batch")
       first(:select, 'action_on_requests').select('Create Batch')
       first(:button, 'Submit').click
       click_link 'Back to pipeline'
-      expect(page).to have_no_content(plates[0].human_barcode)
+      expect(page).to have_no_text(plates[0].human_barcode)
     end
   end
 

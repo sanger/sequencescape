@@ -106,13 +106,13 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'a user visit the study sample page' do
       login_user user
       visit study_samples_path(study)
-      within('.withdrawn') { expect(page).to have_content "#{sample.name} - Consent withdrawn" }
+      within('.withdrawn') { expect(page).to have_text "#{sample.name} - Consent withdrawn" }
     end
 
     it 'a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).to have_content 'Patient consent has been withdrawn for this sample'
+      expect(page).to have_text 'Patient consent has been withdrawn for this sample'
     end
 
     it_behaves_like 'it reports information elsewhere'
@@ -127,16 +127,16 @@ describe 'Sample#consent_withdrawn', js: false do
     it 'and a user visit the study show page' do
       login_user user
       visit study_samples_path(study)
-      expect(page).to have_content sample.name
-      expect(page).to have_no_content "#{sample.name} - Consent withdrawn"
+      expect(page).to have_text sample.name
+      expect(page).to have_no_text "#{sample.name} - Consent withdrawn"
       expect(page).to have_no_css('.withdrawn')
     end
 
     it 'and a user visit the sample show page' do
       login_user user
       visit sample_path(sample)
-      expect(page).to have_content sample.name # confirm page has loaded
-      expect(page).to have_no_content 'Patient consent has been withdrawn for this sample'
+      expect(page).to have_text sample.name # confirm page has loaded
+      expect(page).to have_no_text 'Patient consent has been withdrawn for this sample'
     end
 
     it_behaves_like 'it reports information elsewhere'

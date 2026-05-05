@@ -24,7 +24,7 @@ RSpec.feature 'NPG batch state released via XML API', :allow_rescue, :api, :xml 
 
   scenario 'POST XML to change qc_state on an asset' do
     visit batch_path(batch)
-    expect(page).to have_content('started')
+    expect(page).to have_text('started')
 
     # to_xml accepts string or symbol keys; root element is set to remove 'hash' from the generated XML
     xml = { qc_information: { message: 'NPG change status in failed' } }.to_xml(root: 'qc_information')
@@ -38,7 +38,7 @@ RSpec.feature 'NPG batch state released via XML API', :allow_rescue, :api, :xml 
     expect(hash['asset']['qc_state']).to eq('passed')
 
     visit batch_path(batch)
-    expect(page).to have_content("Pipeline #{pipeline.name}")
-    expect(page).to have_content('released')
+    expect(page).to have_text("Pipeline #{pipeline.name}")
+    expect(page).to have_text('released')
   end
 end
