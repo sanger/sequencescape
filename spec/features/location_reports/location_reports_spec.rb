@@ -54,22 +54,21 @@ describe 'Location reports' do
     it 'with a start and end date selected' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'Start date', with: '01/01/2016'
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a faculty sponsor and start and end date selected' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         select(study_1_faculty_sponsor, from: 'Faculty Sponsors (can select multiple)')
@@ -77,15 +76,14 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/11/2016'
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a study, start and end date selected' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         select(study_1.name, from: 'Study')
@@ -93,15 +91,14 @@ describe 'Location reports' do
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a start and end date and a plate purpose seleced' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'Start date', with: '01/01/2016'
@@ -109,15 +106,14 @@ describe 'Location reports' do
         select(plt_1_purpose, from: 'Labware purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a start and end date and a tube purpose seleced' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'Start date', with: '01/01/2016'
@@ -125,15 +121,14 @@ describe 'Location reports' do
         select(tube_1_purpose, from: 'Labware purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with a faculty_sponsor, study, start and end date and a purpose selected' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         select(study_1_faculty_sponsor, from: 'Faculty Sponsors (can select multiple)')
@@ -143,46 +138,41 @@ describe 'Location reports' do
         select(plt_1_purpose, from: 'Labware purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'without a start date selected' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         select(study_1.name, from: 'Study')
         fill_in 'End date', with: '01/09/2016'
       end
       click_button('Create report from selection')
-      expect(
-        page
-        # rubocop:todo Layout/LineLength
-      ).to have_content 'Failed to create report: Start date Both start and end date are required if either one is used.'
-      # rubocop:enable Layout/LineLength
+      expect(page)
+        .to have_text 'Failed to create report: Start date Both start and end date are required if either one is used.'
     end
 
     it 'with a single valid barcode' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'List of Barcodes (separated by new lines, spaces or commas)', with: plate_1.machine_barcode
       end
       click_button('Create report from selection')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with selection criteria that find no results' do
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_selection') do
         fill_in 'Report name', with: 'Test report'
         select(study_1.name, from: 'Study')
@@ -191,7 +181,7 @@ describe 'Location reports' do
         select(plt_1_purpose, from: 'Labware purposes (can select multiple)')
       end
       click_button('Create report from selection')
-      expect(page).to have_content 'Failed to create report: That selection returns no labware, no report generated.'
+      expect(page).to have_text 'Failed to create report: That selection returns no labware, no report generated.'
     end
   end
 
@@ -213,15 +203,14 @@ describe 'Location reports' do
 
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_labwhere_location') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'LabWhere location barcode', with: labwhere_locn_bc
       end
       click_button('Create report from labwhere')
-      expect(
-        page
-      ).to have_content 'Your report has been requested and will be listed at the bottom of this page when complete.'
+      expect(page)
+        .to have_text 'Your report has been requested and will be listed at the bottom of this page when complete.'
     end
 
     it 'with an invalid labwhere location barcode' do
@@ -231,7 +220,7 @@ describe 'Location reports' do
 
       login_user user
       visit location_reports_path
-      expect(page).to have_content 'Labware Location Reports'
+      expect(page).to have_text 'Labware Location Reports'
       within('#new_report_from_labwhere_location') do
         fill_in 'Report name', with: 'Test report'
         fill_in 'LabWhere location barcode', with: labwhere_locn_bc
@@ -240,7 +229,7 @@ describe 'Location reports' do
       expect(
         page
         # rubocop:todo Layout/LineLength
-      ).to have_content 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
+      ).to have_text 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
       # rubocop:enable Layout/LineLength
     end
   end

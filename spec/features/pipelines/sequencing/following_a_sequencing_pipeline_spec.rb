@@ -101,7 +101,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       end
 
       click_on 'Release this batch'
-      expect(page).to have_content('Batch released')
+      expect(page).to have_text('Batch released')
 
       batch = Batch.last
       flowcell_message = batch.messengers.last
@@ -165,7 +165,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       click_on 'Update'
 
       # We expect to be back on the batch page, rather than the next step
-      expect(page).to have_content('Process your batch or change its composition')
+      expect(page).to have_text('Process your batch or change its composition')
 
       click_link 'View summary'
 
@@ -202,7 +202,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       click_on 'Update'
 
       # We expect to be back on the batch page, rather than the next step
-      expect(page).to have_content('Process your batch or change its composition')
+      expect(page).to have_text('Process your batch or change its composition')
 
       click_link 'View summary'
 
@@ -241,7 +241,7 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
       click_on 'Update'
 
       # We expect to be back on the batch page, rather than the next step
-      expect(page).to have_content('Process your batch or change its composition')
+      expect(page).to have_text('Process your batch or change its composition')
 
       click_link 'View summary'
 
@@ -253,8 +253,8 @@ RSpec.describe 'Following a Sequencing Pipeline', :js do
     it 'can have failed items' do
       login_user(user)
       visit batch_path(batch)
-      expect(page).to have_content('Fail batch or requests')
-      expect(page).to have_no_content('Batches can not be failed when pending')
+      expect(page).to have_text('Fail batch or requests')
+      expect(page).to have_no_text('Batches can not be failed when pending')
     end
   end
 end
