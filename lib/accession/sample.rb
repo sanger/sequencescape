@@ -44,17 +44,24 @@ module Accession
     # If the sample is invalid, logs an error message and raisesAccession::InternalValidationError with
     # details of the validation errors.
     #
+    # @raise [Accession::InvalidFieldsError] if the sample is missing required fields for accessioning
     # @raise [Accession::InternalValidationError] if the sample is not valid for accessioning
-    def validate!
+    def validate! # rubocop:disable Metrics/AbcSize
       return if valid?
 
       # Add errors from the accession sample to the underlying sample for user feedback
       @sample.errors.add(:base, errors.full_messages.join(', '))
 
+      error_message = "cannot be accessioned: #{errors.full_messages.join(', ')}"
+
       # Add sample context to the error message for logging
-      error_message = "Sample '#{sample.name}' cannot be accessioned: #{errors.full_messages.join(', ')}"
-      Rails.logger.error(error_message)
-      raise Accession::InternalValidationError, error_message
+      sample_error_message = "Sample '#{sample.name}' #{error_message}"
+      Rails.logger.error(sample_error_message)
+
+      invalid_fields = missing_accession_tags
+      raise Accession::InvalidFieldsError.new(error_message.upcase_first, invalid_fields) if invalid_fields.present?
+
+      raise Accession::InternalValidationError error_message.upcase_first
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -113,9 +120,14 @@ module Accession
       # EBI will still perform its own validation on submission.
       return if Flipper.enabled?(:y25_714_skip_accessioning_tag_validation)
 
-      unless tags.meets_service_requirements?(service, standard_tags)
-        errors.add(:sample, "does not have the required metadata: #{tags.missing.sort.to_sentence.dasherize}.")
+      unless missing_accession_tags.empty?
+        errors.add(:sample,
+                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
       end
+    end
+
+    def missing_accession_tags
+      tags.missing_service_tags(service, standard_tags)
     end
 
     def check_studies
