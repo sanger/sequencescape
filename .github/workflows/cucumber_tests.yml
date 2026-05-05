@@ -68,7 +68,7 @@ jobs:
         uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
           chrome-version: stable
-          install-chromedriver: true
+          install-chromedriver: false
           install-dependencies: false
 
       - name: Setup environment
