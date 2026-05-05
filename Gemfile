@@ -34,7 +34,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader', tag: 'v0.3.0'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
