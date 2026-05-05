@@ -19,7 +19,7 @@ class BroadcastEvent < ApplicationRecord
   # https://api.rubyonrails.org/classes/ActiveRecord/Inheritance/ClassMethods.html
   validates :sti_type, presence: true
 
-  serialize :properties, coder: YAML, yaml: { permitted_classes: [ActionController::Parameters, ActiveSupport::HashWithIndifferentAccess] }
+  serialize :properties, coder: YAML, yaml: { permitted_classes: [ActionController::Parameters] }
   self.inheritance_column = 'sti_type'
 
   broadcast_with_warren

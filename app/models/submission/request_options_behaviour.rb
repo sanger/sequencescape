@@ -8,7 +8,7 @@ module Submission::RequestOptionsBehaviour
       return hash_yaml if hash_yaml.nil?
 
       YAML.safe_load(hash_yaml,
-                     permitted_classes: [ActiveSupport::HashWithIndifferentAccess, ActiveSupport::TimeWithZone, Time])
+                     permitted_classes: [ActiveSupport::TimeWithZone, Time])
     end
 
     def self.dump(hash)

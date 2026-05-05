@@ -11,7 +11,7 @@ class PrimerPanel < ApplicationRecord
   include ActiveModel::Validations
   include SharedBehaviour::Named
 
-  serialize :programs, coder: YAML, yaml: { permitted_classes: [ActiveSupport::HashWithIndifferentAccess] }
+  serialize :programs, coder: YAML
 
   # The name: Used to identify the assay set.
   validates :name, presence: true
