@@ -26,7 +26,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
       click_link 'Generate DAC Accession Number'
       visit study_information_path(study)
       click_link 'study details'
-      expect(page).to have_content('EGAD0001000234')
+      expect(page).to have_text('EGAD0001000234')
     end
   end
 
@@ -42,7 +42,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
 
     it 'does not generate a DAC accession number' do
       click_link 'Generate DAC Accession Number'
-      expect(page).to have_content('No accession number was generated')
+      expect(page).to have_text('No accession number was generated')
     end
   end
 
@@ -62,7 +62,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
       click_link 'Generate Policy Accession Number'
       visit study_information_path(study)
       click_link 'study details'
-      expect(page).to have_content('EGAP0001000234')
+      expect(page).to have_text('EGAP0001000234')
     end
   end
 
@@ -78,7 +78,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
 
     it 'does not generate a Policy accession number' do
       click_link 'Generate Policy Accession Number'
-      expect(page).to have_content('No accession number was generated')
+      expect(page).to have_text('No accession number was generated')
     end
   end
 
@@ -91,7 +91,7 @@ RSpec.describe 'EGA DAC and Policy accessioning', :accessioning_enabled, :js do
 
     it 'shows error and does not display accession number on study details' do
       click_link 'Generate DAC Accession Number'
-      expect(page).to have_content('Data Access Contacts Empty')
+      expect(page).to have_text('Data Access Contacts Empty')
     end
   end
 end

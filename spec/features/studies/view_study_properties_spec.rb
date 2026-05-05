@@ -11,9 +11,9 @@ describe 'View study properties' do
     login_user(user)
     visit study_path(study)
     click_link 'study details'
-    expect(page).to have_content('Alignments in BAM: true')
-    expect(page).to have_content('HuMFre approval number: ')
-    expect(page).to have_content("Prelim ID: #{prelim_id}")
+    expect(page).to have_text('Alignments in BAM: true')
+    expect(page).to have_text('HuMFre approval number: ')
+    expect(page).to have_text("Prelim ID: #{prelim_id}")
   end
 
   it 'view properties of a study that requires ethical approval' do
@@ -24,7 +24,7 @@ describe 'View study properties' do
     login_user(user)
     visit study_path(study)
     click_link 'study details'
-    expect(page).to have_content('HuMFre approval number: 12345')
+    expect(page).to have_text('HuMFre approval number: 12345')
   end
 
   context 'with data release strategy' do
@@ -36,8 +36,8 @@ describe 'View study properties' do
       login_user(user)
       visit study_path(study)
       click_link 'study details'
-      expect(page).to have_content('What is the data release strategy for this study?: open')
-      expect(page).to have_content('HuMFre approval number: 12345')
+      expect(page).to have_text('What is the data release strategy for this study?: open')
+      expect(page).to have_text('HuMFre approval number: 12345')
     end
 
     it 'displays HuMFre approval number for Managed(EGA) data release strategy' do
@@ -48,8 +48,8 @@ describe 'View study properties' do
       login_user(user)
       visit study_path(study)
       click_link 'study details'
-      expect(page).to have_content('What is the data release strategy for this study?: managed')
-      expect(page).to have_content('HuMFre approval number: 12345')
+      expect(page).to have_text('What is the data release strategy for this study?: managed')
+      expect(page).to have_text('HuMFre approval number: 12345')
     end
 
     it 'displays HuMFre approval number for Not Applicable data release strategy' do
@@ -64,8 +64,8 @@ describe 'View study properties' do
       login_user(user)
       visit study_path(study)
       click_link 'study details'
-      expect(page).to have_content('What is the data release strategy for this study?: not applicable')
-      expect(page).to have_content('HuMFre approval number: 12345')
+      expect(page).to have_text('What is the data release strategy for this study?: not applicable')
+      expect(page).to have_text('HuMFre approval number: 12345')
     end
   end
 end

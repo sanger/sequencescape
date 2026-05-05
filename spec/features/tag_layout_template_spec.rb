@@ -17,47 +17,47 @@ describe 'Create a new tag layout template' do
   it 'create a new layout template from a tag group', :js do
     login_user user
     visit tag_group_path(tag_group_1)
-    expect(page).to have_content 'Test tag group 1'
+    expect(page).to have_text 'Test tag group 1'
     click_on 'Create a new tag layout template from this tag group'
-    expect(page).to have_content 'Tag Layout Template New'
+    expect(page).to have_text 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select('column', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'The Tag Layout Template has been successfully created.'
-    expect(page).to have_content 'Name: Test tag layout template'
-    expect(page).to have_content "Tag Group: #{tag_group_1.name}"
-    expect(page).to have_content 'Tag2 Group: na'
-    expect(page).to have_content 'Direction the tags are laid out by: column'
-    expect(page).to have_content 'Walking by: wells of plate'
-    expect(page).to have_content 'To tag layout templates list'
+    expect(page).to have_text 'The Tag Layout Template has been successfully created.'
+    expect(page).to have_text 'Name: Test tag layout template'
+    expect(page).to have_text "Tag Group: #{tag_group_1.name}"
+    expect(page).to have_text 'Tag2 Group: na'
+    expect(page).to have_text 'Direction the tags are laid out by: column'
+    expect(page).to have_text 'Walking by: wells of plate'
+    expect(page).to have_text 'To tag layout templates list'
   end
 
   it 'create a new layout template from a tag set', :js do
     login_user user
     visit tag_set_path(tag_set_1)
-    expect(page).to have_content 'Test tag set 1'
+    expect(page).to have_text 'Test tag set 1'
     click_on 'Create a new tag layout template from this tag set'
-    expect(page).to have_content 'Tag Layout Template New'
+    expect(page).to have_text 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select('column', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'The Tag Layout Template has been successfully created.'
-    expect(page).to have_content 'Name: Test tag layout template'
-    expect(page).to have_content "Tag Group: #{tag_set_1.tag_group.name}"
-    expect(page).to have_content "Tag2 Group: #{tag_set_1.tag2_group.name}"
-    expect(page).to have_content 'Direction the tags are laid out by: column'
-    expect(page).to have_content 'Walking by: wells of plate'
-    expect(page).to have_content 'To tag layout templates list'
+    expect(page).to have_text 'The Tag Layout Template has been successfully created.'
+    expect(page).to have_text 'Name: Test tag layout template'
+    expect(page).to have_text "Tag Group: #{tag_set_1.tag_group.name}"
+    expect(page).to have_text "Tag2 Group: #{tag_set_1.tag2_group.name}"
+    expect(page).to have_text 'Direction the tags are laid out by: column'
+    expect(page).to have_text 'Walking by: wells of plate'
+    expect(page).to have_text 'To tag layout templates list'
   end
 
   it 'create a new layout template directly', :js do
     login_user user
     visit new_tag_layout_template_path
-    expect(page).to have_content 'Tag Layout Template New'
+    expect(page).to have_text 'Tag Layout Template New'
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
       select(tag_group_1.name, from: 'tag_layout_template_tag_group_id')
@@ -65,19 +65,19 @@ describe 'Create a new tag layout template' do
       select('column', from: 'tag_layout_template_direction_algorithm')
       click_on 'Create tag layout template'
     end
-    expect(page).to have_content 'The Tag Layout Template has been successfully created.'
-    expect(page).to have_content 'Name: Test tag layout template'
-    expect(page).to have_content "Tag Group: #{tag_group_1.name}"
-    expect(page).to have_content "Tag2 Group: #{tag_group_2.name}"
-    expect(page).to have_content 'Direction the tags are laid out by: column'
-    expect(page).to have_content 'Walking by: wells of plate'
-    expect(page).to have_content 'To tag layout templates list'
+    expect(page).to have_text 'The Tag Layout Template has been successfully created.'
+    expect(page).to have_text 'Name: Test tag layout template'
+    expect(page).to have_text "Tag Group: #{tag_group_1.name}"
+    expect(page).to have_text "Tag2 Group: #{tag_group_2.name}"
+    expect(page).to have_text 'Direction the tags are laid out by: column'
+    expect(page).to have_text 'Walking by: wells of plate'
+    expect(page).to have_text 'To tag layout templates list'
   end
 
   it 'get an error when creating a new layout template', :js do
     login_user user
     visit new_tag_layout_template_path
-    expect(page).to have_content 'Tag Layout Template New'
+    expect(page).to have_text 'Tag Layout Template New'
 
     within('#new_tag_layout_template') do
       fill_in('tag_layout_template_name', with: 'Test tag layout template')
@@ -85,7 +85,7 @@ describe 'Create a new tag layout template' do
       click_on 'Create tag layout template'
     end
 
-    expect(page).to have_content 'error prohibited this tag layout template from being saved'
-    expect(page).to have_content 'Tag group must exist'
+    expect(page).to have_text 'error prohibited this tag layout template from being saved'
+    expect(page).to have_text 'Tag group must exist'
   end
 end
