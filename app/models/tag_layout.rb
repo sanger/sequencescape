@@ -48,7 +48,7 @@ class TagLayout < ApplicationRecord
 
   self.inheritance_column = 'sti_type'
 
-  serialize :substitutions, type: Hash, coder: YAML, yaml: { permitted_classes: [ActiveSupport::HashWithIndifferentAccess] }
+  serialize :substitutions, type: Hash, coder: YAML
 
   # The user performing the layout
   belongs_to :user, optional: false
