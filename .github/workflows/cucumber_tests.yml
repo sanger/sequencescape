@@ -64,6 +64,9 @@ jobs:
       - name: Setup Node
         uses: sanger/.github/.github/actions/setup/node@master
 
+      - name: Fix apt mirrors (avoid Azure mirror timeouts)
+        run: sudo sed -i 's|http://azure.archive.ubuntu.com|http://archive.ubuntu.com|g' /etc/apt/apt-mirrors.txt
+
       - name: Setup stable Chrome
         uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
