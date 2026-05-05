@@ -70,9 +70,9 @@ jobs:
       - name: Setup stable Chrome
         uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
-          chrome-version: stable
-          install-chromedriver: false
-          install-dependencies: false
+          chrome-version: 128
+          install-chromedriver: true
+          install-dependencies: true
 
       # Establish a cache of js modules to improve performance
       - name: Cache JS
