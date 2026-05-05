@@ -15,25 +15,25 @@ describe 'Manage users' do
     create(:role, name: 'manager')
     login_user user
     click_link 'Admin'
-    expect(page).to have_content('Administration')
+    expect(page).to have_text('Administration')
     click_on 'User management'
-    expect(page).to have_content('Registered users')
-    expect(page).to have_content('john')
+    expect(page).to have_text('Registered users')
+    expect(page).to have_text('john')
     click_on 'Edit user john'
-    expect(page).to have_content('Edit Profile John Smith')
+    expect(page).to have_text('Edit Profile John Smith')
   end
 
   it 'edit a user' do
     fill_in 'First name', with: 'Jack'
     fill_in 'Last name', with: 'Doe'
     click_button 'Update'
-    expect(page).to have_content 'Jack Doe'
+    expect(page).to have_text 'Jack Doe'
   end
 
   it 'grant universal roles' do
     check 'Lab manager'
     click_button 'Update'
-    expect(page).to have_content 'John Smith'
+    expect(page).to have_text 'John Smith'
     expect(test_user.roles.pluck(:name)).to eq(['lab_manager'])
   end
 
@@ -43,7 +43,7 @@ describe 'Manage users' do
       select('Study Name', from: 'for Study')
       click_button 'Add Study role'
     end
-    expect(page).to have_content 'Manager'
+    expect(page).to have_text 'Manager'
   end
 
   it 'assign a project role', :js do
@@ -52,6 +52,6 @@ describe 'Manage users' do
       select('Project Name', from: 'for Project')
       click_button 'Add Project role'
     end
-    expect(page).to have_content 'Manager'
+    expect(page).to have_text 'Manager'
   end
 end

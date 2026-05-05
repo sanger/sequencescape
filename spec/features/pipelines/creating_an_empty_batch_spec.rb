@@ -23,6 +23,6 @@ describe 'Empty batch creation', :js do
     login_user(user)
     visit pipeline_path(pipeline)
     click_on 'Submit', above: find('table#pipeline_inbox')
-    expect(page).to have_content 'Batches must contain at least one request'
+    expect(page).to have_text 'Batches must contain at least one request'
   end
 end

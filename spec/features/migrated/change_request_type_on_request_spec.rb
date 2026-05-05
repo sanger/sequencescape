@@ -30,15 +30,15 @@ RSpec.feature 'if request is pending then the admin could change of request type
   scenario 'The request is not pending. We should not see Request Type combo.' do
     request.update!(state: 'started')
     visit edit_request_path(request)
-    expect(page).to have_content('Edit your request')
-    expect(page).to have_no_content('Request Type:')
+    expect(page).to have_text('Edit your request')
+    expect(page).to have_no_text('Request Type:')
   end
 
   scenario 'Request is pending. I should see combobox Request Type. No change. it should work properly' do
     visit edit_request_path(request)
-    expect(page).to have_content('Request Type:')
+    expect(page).to have_text('Request Type:')
     click_on 'Save Request'
-    expect(page).to have_content('Request details have been updated')
+    expect(page).to have_text('Request details have been updated')
   end
 
   context 'with another request type' do
@@ -48,10 +48,10 @@ RSpec.feature 'if request is pending then the admin could change of request type
 
     scenario 'The user asks to change with Request Type' do
       visit edit_request_path(request)
-      expect(page).to have_content('Request Type:')
+      expect(page).to have_text('Request Type:')
       select 'Single ended sequencing', from: 'Request Type:'
       click_on 'Save Request'
-      expect(page).to have_content('Request details have been updated')
+      expect(page).to have_text('Request details have been updated')
     end
   end
 end

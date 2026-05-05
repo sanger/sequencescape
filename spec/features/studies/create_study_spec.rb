@@ -58,29 +58,29 @@ describe 'Create a study' do
 
     click_button 'Create'
 
-    expect(page).to have_content "Name can't be blank"
-    expect(page).to have_content "Study description can't be blank"
-    expect(page).to have_content "Study metadata EBI library strategy can't be blank"
-    expect(page).to have_content "Study metadata EBI library source can't be blank"
-    expect(page).to have_content "Study metadata EBI library selection can't be blank"
+    expect(page).to have_text "Name can't be blank"
+    expect(page).to have_text "Study description can't be blank"
+    expect(page).to have_text "Study metadata EBI library strategy can't be blank"
+    expect(page).to have_text "Study metadata EBI library source can't be blank"
+    expect(page).to have_text "Study metadata EBI library selection can't be blank"
   end
 
   it 'create managed study', :js do
     login_user user
     visit root_path
     click_link 'Create Study'
-    expect(page).to have_content('Study Create')
+    expect(page).to have_text('Study Create')
     choose('Managed (EGA)', allow_label_click: true)
-    expect(page).to have_content('HuMFre approval number')
+    expect(page).to have_text('HuMFre approval number')
     click_button 'Create'
-    expect(page).to have_no_content "Study metadata HuMFre approval number can't be blank"
+    expect(page).to have_no_text "Study metadata HuMFre approval number can't be blank"
   end
 
   it 'create open study', :js do
     login_user user
     visit new_study_path
-    expect(page).to have_content('Study Create')
-    expect(page).to have_content('Alignments in BAM')
+    expect(page).to have_text('Study Create')
+    expect(page).to have_text('Alignments in BAM')
     bam = find_by_id('study_study_metadata_attributes_bam')
     expect(bam).to be_checked
     uncheck 'study_study_metadata_attributes_bam'
@@ -115,9 +115,9 @@ describe 'Create a study' do
     end
 
     choose('Open (ENA)', allow_label_click: true)
-    expect(page).to have_content('HuMFre approval number')
+    expect(page).to have_text('HuMFre approval number')
     click_button 'Create'
-    expect(page).to have_content('Your study has been created')
+    expect(page).to have_text('Your study has been created')
 
     study = Study.last
     expect(page).to have_current_path("/studies/#{study.id}/information")
