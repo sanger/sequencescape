@@ -203,7 +203,7 @@ RSpec.describe LocationReport do
       shared_examples 'a successful report' do
         it 'generates the expected report rows' do
           expect(location_report.save).to be_truthy
-  
+
           lines = []
           location_report.generate_report_rows { |fields| lines.push(fields.join(',')) }
 
@@ -472,7 +472,9 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
-          let(:plate_3_retention_instruction) { plate_3.update!(retention_instruction: :return_to_customer_after_2_years) }
+          let(:plate_3_retention_instruction) do
+            plate_3.update!(retention_instruction: :return_to_customer_after_2_years)
+          end
           let(:plt_3_line) do
             # rubocop:todo Layout/LineLength
             "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_2},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
