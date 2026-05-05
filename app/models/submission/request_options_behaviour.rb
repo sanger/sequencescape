@@ -7,7 +7,7 @@ module Submission::RequestOptionsBehaviour
     def self.load(hash_yaml)
       return hash_yaml if hash_yaml.nil?
 
-      YAML.safe_load(hash_yaml, permitted_classes: [
+      YAML.safe_load(hash_yaml, aliases: true, permitted_classes: [
                        ActiveSupport::HashWithIndifferentAccess,
                        ActiveSupport::TimeWithZone,
                        ActiveSupport::TimeZone,
