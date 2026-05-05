@@ -270,7 +270,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
             'amp_instrument_name' => 'UG Amp 1',
             'ot_recipe' => 'Free',
             'wafer_size' => '10TB',
-            'requested_sequencer_type' => 'UG200',
+            'requested_sequencer_type' => 'UG 200',
             'samples' => [
               {
                 'tag_sequence' => tags[0].oligo,
