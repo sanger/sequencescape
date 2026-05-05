@@ -21,7 +21,7 @@ describe 'See labware history' do
     login_user(user)
     visit labware_path(tube)
     click_link 'Event history'
-    expect(page).to have_content 'Event History'
+    expect(page).to have_text 'Event History'
 
     table = fetch_table('table#asset_audits')
     expect(table).to eq(
