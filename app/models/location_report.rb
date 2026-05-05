@@ -181,17 +181,7 @@ class LocationReport < ApplicationRecord
     validate_result_size(params)
 
     # Only plates and tubes are currently supported by this report
-    labwares = Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
-
-    filter_labware_by_retention_instructions(labwares)
-  end
-
-  def filter_labware_by_retention_instructions(labwares)
-    return labwares if retention_instructions.blank?
-
-    labwares.select do |lw|
-      retention_instructions.include?(normalize_retention_instruction(lw.retention_instructions))
-    end
+    Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
   end
 
   def validate_result_size(params)
@@ -223,10 +213,6 @@ class LocationReport < ApplicationRecord
     # search recursively in any child locations
     curr_locn_children = LabWhereClient::Location.children(curr_locn_bc)
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
-  end
-
-  def normalize_retention_instruction(value)
-    value.to_s.parameterize(separator: '_')
   end
 end
 # rubocop:enable Metrics/ClassLength
