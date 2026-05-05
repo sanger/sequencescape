@@ -175,21 +175,17 @@ class LocationReport < ApplicationRecord
     cols << (cur_study.study_metadata.faculty_sponsor&.name || 'Unknown')
   end
 
-  def search_for_labware_by_selection
+  def search_for_labware_by_selection # rubocop:todo Metrics/AbcSize
     params = { faculty_sponsor_ids:, study_id:, start_date:, end_date:, plate_purpose_ids:, barcodes:,
                retention_instructions: }
-    validate_result_size(params)
-
-    # Only plates and tubes are currently supported by this report
-    Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
-  end
-
-  def validate_result_size(params)
     count = Labware.search_for_count_of_labware(params)
     if count > configatron.fetch(:location_reports_fetch_count_max, 25000)
       errors.add(:base, I18n.t('location_reports.errors.too_many_labwares_found', count:))
-      []
+      return []
     end
+
+    # Only plates and tubes are currently supported by this report
+    Labware.search_for_labware(params).filter { |labware| labware.is_a?(Plate) || labware.is_a?(Tube) }
   end
 
   def search_for_labware_by_labwhere_locn_bc
