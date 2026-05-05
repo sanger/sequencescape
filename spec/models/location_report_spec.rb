@@ -44,19 +44,10 @@ RSpec.describe LocationReport do
   let(:plt_1_created) { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:plt_1_received_date) { plt_1_asset_audit.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  # add retention instruction metadata to plate 1 custom metadatum collection
-  let(:retention_key) { 'retention_instruction' }
-  let(:retention_value_1) { 'Long term storage' }
-  let(:retention_value_2) { 'Return to customer after 2 years' }
-  let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user: user) }
-  let(:plate_1_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: plate_1_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value_1
-    )
-  end
+  # use the labware retention_instruction enum column directly
+  let(:retention_value_1) { 'long_term_storage' }
+  let(:retention_value_2) { 'return_to_customer_after_2_years' }
+  let(:plate_1_retention_instruction) { plate_1.update!(retention_instruction: :long_term_storage) }
 
   let(:plate_2) do
     create(
@@ -83,16 +74,7 @@ RSpec.describe LocationReport do
   let(:plt_3_created) { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:plt_3_received_date) { 'Unknown' }
 
-  # add retention instruction metadata to plate 3 custom metadatum collection
-  let(:plate_3_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_3, user: user) }
-  let(:plate_3_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: plate_3_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value_1
-    )
-  end
+  let(:plate_3_retention_instruction) { plate_3.update!(retention_instruction: :long_term_storage) }
 
   let(:tube_1) do
     create(
@@ -105,15 +87,7 @@ RSpec.describe LocationReport do
   let(:tube_1_purpose) { tube_1.purpose.name }
   let(:tube_1_created) { tube_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:tube_1_received_date) { 'Unknown' }
-  let(:tube_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: tube_1, user: user) }
-  let(:tube_1_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: tube_1_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value_1
-    )
-  end
+  let(:tube_1_retention_instruction) { tube_1.update!(retention_instruction: :long_term_storage) }
 
   let(:tube_rack) { create(:tube_rack, size: 96) }
 
@@ -229,7 +203,7 @@ RSpec.describe LocationReport do
       shared_examples 'a successful report' do
         it 'generates the expected report rows' do
           expect(location_report.save).to be_truthy
-
+  
           lines = []
           location_report.generate_report_rows { |fields| lines.push(fields.join(',')) }
 
@@ -283,9 +257,9 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
           end
 
-          plate_1_custom_metadatum
-          plate_3_custom_metadatum
-          tube_1_custom_metadatum
+          plate_1_retention_instruction
+          plate_3_retention_instruction
+          tube_1_retention_instruction
         end
 
         context 'dates only' do
@@ -481,7 +455,7 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
-          # Only plate_1, plate_3, and tube_1 have this metadata, and the value is 'Long term storage' for all
+          # Only plate_1, plate_3, and tube_1 have retention instructions set
           let(:expected_lines) do
             [
               headers_line,
@@ -498,14 +472,7 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
-          let(:plate_3_custom_metadatum) do
-            create(
-              :custom_metadatum,
-              custom_metadatum_collection: plate_3_custom_metadatum_collection,
-              key: retention_key,
-              value: retention_value_2
-            )
-          end
+          let(:plate_3_retention_instruction) { plate_3.update!(retention_instruction: :return_to_customer_after_2_years) }
           let(:plt_3_line) do
             # rubocop:todo Layout/LineLength
             "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_2},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
@@ -541,8 +508,8 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [])
 
-            plate_1_custom_metadatum
-            plate_3_custom_metadatum
+            plate_1_retention_instruction
+            plate_3_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -569,7 +536,7 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
 
-            plate_1_custom_metadatum
+            plate_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -645,8 +612,8 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p2)
             stub_lwclient_labware_find_by_bc(t1)
 
-            plate_1_custom_metadatum
-            tube_1_custom_metadatum
+            plate_1_retention_instruction
+            tube_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -713,7 +680,7 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(locn_lvl2_b2[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
 
-            plate_1_custom_metadatum
+            plate_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -793,9 +760,9 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p3)
             stub_lwclient_labware_find_by_bc(t1)
 
-            plate_1_custom_metadatum
-            plate_3_custom_metadatum
-            tube_1_custom_metadatum
+            plate_1_retention_instruction
+            plate_3_retention_instruction
+            tube_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
