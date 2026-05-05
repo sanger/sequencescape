@@ -17,12 +17,12 @@ describe 'stamping of stock', :js do
     login_user(user)
     visit lab_sample_logistics_path
     click_link 'Stamping of stock'
-    expect(page).to have_content('Stamping of stock')
+    expect(page).to have_text('Stamping of stock')
     fill_in('Scan source plate', with: '123')
     fill_in('Scan destination plate', with: plate.human_barcode)
     click_button 'Check the form'
-    expect(page).to have_content('Plates barcodes are not identical')
-    expect(page).to have_content("User barcode can't be blank")
+    expect(page).to have_text('Plates barcodes are not identical')
+    expect(page).to have_text("User barcode can't be blank")
     fill_in('Scan user ID', with: '1234567')
     fill_in('Scan source plate', with: plate.human_barcode)
     fill_in('Scan destination plate', with: plate.human_barcode)
@@ -32,20 +32,20 @@ describe 'stamping of stock', :js do
     expect(
       page
       # rubocop:todo Layout/LineLength
-    ).to have_content 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
+    ).to have_text 'Required volume exceeds the maximum well volume for well(s) A1. Maximum well volume 800.0 will be used in tecan file'
 
     # rubocop:enable Layout/LineLength
-    expect(page).to have_content 'You can generate the TECAN file and print label now.'
-    expect(page).to have_no_content('Plates barcodes are not identical')
+    expect(page).to have_text 'You can generate the TECAN file and print label now.'
+    expect(page).to have_no_text('Plates barcodes are not identical')
     click_button 'Generate TECAN file'
-    expect(page).to have_content('Stamping of stock')
+    expect(page).to have_text('Stamping of stock')
 
     select(barcode_printer.name.to_s, from: 'barcode_printer_list')
     click_button 'Print label'
-    expect(page).to have_content('Printmybarcode service is down')
+    expect(page).to have_text('Printmybarcode service is down')
 
     visit history_labware_path(plate)
-    expect(page).to have_content('Activity Logging')
-    expect(page).to have_content("Process 'Stamping of stock' performed")
+    expect(page).to have_text('Activity Logging')
+    expect(page).to have_text("Process 'Stamping of stock' performed")
   end
 end

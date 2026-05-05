@@ -49,8 +49,8 @@ RSpec.feature 'Cluster formation pipeline batch displays read length and library
     click_on pipeline.name
 
     # Available requests
-    expect(page).to have_content('Read length')
-    expect(page).to have_content('Library type')
-    expect(page).to have_content('Vol.')
+    expect(page).to have_text('Read length')
+    expect(page).to have_text('Library type')
+    expect(page).to have_text('Vol.')
   end
 end
