@@ -44,18 +44,10 @@ RSpec.describe LocationReport do
   let(:plt_1_created) { plate_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:plt_1_received_date) { plt_1_asset_audit.created_at.strftime('%Y-%m-%d %H:%M:%S') }
 
-  # add retention instruction metadata to plate 1 custom metadatum collection
-  let(:retention_key) { 'retention_instruction' }
-  let(:retention_value) { 'Long term storage' }
-  let(:plate_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_1, user: user) }
-  let(:plate_1_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: plate_1_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value
-    )
-  end
+  # use the labware retention_instruction enum column directly
+  let(:retention_value_1) { 'long_term_storage' }
+  let(:retention_value_2) { 'return_to_customer_after_2_years' }
+  let(:plate_1_retention_instruction) { plate_1.update!(retention_instruction: :long_term_storage) }
 
   let(:plate_2) do
     create(
@@ -82,16 +74,7 @@ RSpec.describe LocationReport do
   let(:plt_3_created) { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:plt_3_received_date) { 'Unknown' }
 
-  # add retention instruction metadata to plate 3 custom metadatum collection
-  let(:plate_3_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: plate_3, user: user) }
-  let(:plate_3_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: plate_3_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value
-    )
-  end
+  let(:plate_3_retention_instruction) { plate_3.update!(retention_instruction: :long_term_storage) }
 
   let(:tube_1) do
     create(
@@ -104,15 +87,7 @@ RSpec.describe LocationReport do
   let(:tube_1_purpose) { tube_1.purpose.name }
   let(:tube_1_created) { tube_1.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:tube_1_received_date) { 'Unknown' }
-  let(:tube_1_custom_metadatum_collection) { create(:custom_metadatum_collection, asset: tube_1, user: user) }
-  let(:tube_1_custom_metadatum) do
-    create(
-      :custom_metadatum,
-      custom_metadatum_collection: tube_1_custom_metadatum_collection,
-      key: retention_key,
-      value: retention_value
-    )
-  end
+  let(:tube_1_retention_instruction) { tube_1.update!(retention_instruction: :long_term_storage) }
 
   let(:tube_rack) { create(:tube_rack, size: 96) }
 
@@ -145,7 +120,8 @@ RSpec.describe LocationReport do
         start_date:,
         end_date:,
         plate_purpose_ids:,
-        barcodes:
+        barcodes:,
+        retention_instructions:
       )
     end
     let(:report_type) { nil }
@@ -157,6 +133,7 @@ RSpec.describe LocationReport do
     let(:end_date) { nil }
     let(:plate_purpose_ids) { nil }
     let(:barcodes) { nil }
+    let(:retention_instructions) { nil }
 
     describe 'validations' do
       context 'when no report type is set' do
@@ -244,7 +221,7 @@ RSpec.describe LocationReport do
 
         let(:plt_1_line) do
           # rubocop:todo Layout/LineLength
-          "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
         let(:plt_2_line_1) do
@@ -259,12 +236,12 @@ RSpec.describe LocationReport do
         end
         let(:plt_3_line) do
           # rubocop:todo Layout/LineLength
-          "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+          "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_1},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
         let(:tube_1_line) do
           # rubocop:todo Layout/LineLength
-          "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 4,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+          "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 4,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           # rubocop:enable Layout/LineLength
         end
 
@@ -280,9 +257,9 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
           end
 
-          plate_1_custom_metadatum
-          plate_3_custom_metadatum
-          tube_1_custom_metadatum
+          plate_1_retention_instruction
+          plate_3_retention_instruction
+          tube_1_retention_instruction
         end
 
         context 'dates only' do
@@ -473,6 +450,47 @@ RSpec.describe LocationReport do
 
           it_behaves_like 'a successful report'
         end
+
+        context 'with retention instructions' do
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
+          # Only plate_1, plate_3, and tube_1 have retention instructions set
+          let(:expected_lines) do
+            [
+              headers_line,
+              plt_1_line,
+              plt_3_line,
+              tube_1_line
+            ]
+          end
+
+          it_behaves_like 'a successful report'
+        end
+
+        context 'with multiple retention instruction filters' do
+          let(:start_date) { '2016-01-01 00:00:00' }
+          let(:end_date) { '2016-11-01 00:00:00' }
+          let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
+          let(:plate_3_retention_instruction) do
+            plate_3.update!(retention_instruction: :return_to_customer_after_2_years)
+          end
+          let(:plt_3_line) do
+            # rubocop:todo Layout/LineLength
+            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 3,LabWhere,#{retention_value_2},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            # rubocop:enable Layout/LineLength
+          end
+          let(:expected_lines) do
+            [
+              headers_line,
+              plt_1_line,
+              plt_3_line,
+              tube_1_line
+            ]
+          end
+
+          it_behaves_like 'a successful report'
+        end
       end
 
       context 'by labwhere location' do
@@ -492,8 +510,8 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [])
 
-            plate_1_custom_metadatum
-            plate_3_custom_metadatum
+            plate_1_retention_instruction
+            plate_3_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -503,7 +521,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line] }
@@ -520,7 +538,7 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
 
-            plate_1_custom_metadatum
+            plate_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -530,7 +548,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
@@ -545,7 +563,7 @@ RSpec.describe LocationReport do
           end
           let(:tube_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:expected_lines) { [headers_line, plt_1_line, plt_2_line_1, plt_2_line_2, tube_1_line] }
@@ -596,8 +614,8 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p2)
             stub_lwclient_labware_find_by_bc(t1)
 
-            plate_1_custom_metadatum
-            tube_1_custom_metadatum
+            plate_1_retention_instruction
+            tube_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -607,7 +625,7 @@ RSpec.describe LocationReport do
           let(:location_barcode) { 'locn-1-at-lvl-1' }
           let(:plt_1_line) do
             # rubocop:todo Layout/LineLength
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
             # rubocop:enable Layout/LineLength
           end
           let(:plt_2_line_1) do
@@ -664,7 +682,7 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(locn_lvl2_b2[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
 
-            plate_1_custom_metadatum
+            plate_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
@@ -675,7 +693,7 @@ RSpec.describe LocationReport do
 
           # rubocop:todo Layout/LineLength
           let(:plt_1_line) do
-            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{plate_1.machine_barcode},#{plate_1.human_barcode},#{plt_1_purpose},#{plt_1_created},#{plt_1_received_date},#{locn_prefix} - Shelf 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           end
           let(:plt_2_line_1) do
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{plt_2_received_date},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,Unknown,#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
@@ -684,10 +702,10 @@ RSpec.describe LocationReport do
             "#{plate_2.machine_barcode},#{plate_2.human_barcode},#{plt_2_purpose},#{plt_2_created},#{plt_2_received_date},#{locn_prefix} - Shelf 1 - Tray 1,LabWhere,Unknown,#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
           let(:plt_3_line) do
-            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
+            "#{plate_3.machine_barcode},#{plate_3.human_barcode},#{plt_3_purpose},#{plt_3_created},#{plt_3_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value_1},#{study_2.name},#{study_2.id},#{study_2_sponsor.name}"
           end
           let(:tube_1_line) do
-            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
+            "#{tube_1.machine_barcode},#{tube_1.human_barcode},#{tube_1_purpose},#{tube_1_created},#{tube_1_received_date},#{locn_prefix} - Shelf 1 - Tray 1 - Box 1,LabWhere,#{retention_value_1},#{study_1.name},#{study_1.id},#{study_1_sponsor.name}"
           end
 
           # rubocop:enable Layout/LineLength
@@ -744,9 +762,9 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p3)
             stub_lwclient_labware_find_by_bc(t1)
 
-            plate_1_custom_metadatum
-            plate_3_custom_metadatum
-            tube_1_custom_metadatum
+            plate_1_retention_instruction
+            plate_3_retention_instruction
+            tube_1_retention_instruction
           end
 
           it_behaves_like 'a successful report'
