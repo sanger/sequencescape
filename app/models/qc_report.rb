@@ -128,6 +128,7 @@ class QcReport < ApplicationRecord
   has_many :qc_metrics
 
   serialize :plate_purposes, type: Array, coder: YAML
+  serialize :plate_barcodes, type: Array, coder: YAML
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
