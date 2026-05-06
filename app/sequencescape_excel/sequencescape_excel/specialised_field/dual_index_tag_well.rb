@@ -10,7 +10,7 @@ module SequencescapeExcel
 
       # ValueToUpcase converts the `value` to uppercase
       # For exqmple the `value` used in the well_index method would be 'A1' instead of 'a1'
-      # This is important because the description_to_vertical_plate_position method
+      # This is important because the well_description_to_by_column_map_index method
       # returns a different value for 'A1' vs 'a1', where the upcase version is correct
       include ValueToUpcase
 
@@ -56,13 +56,13 @@ module SequencescapeExcel
 
       # This assumes that the tags within a tag group for dual index tags are listed in 'column' order,
       # i.e. the first tag is the one in the first column, the second tag is the one in the second column, etc.
-      # therefore description_to_vertical_plate_position is used to get the correct map_id
+      # therefore well_description_to_by_column_map_index is used to get the correct map_id
       # A1 --> 1
       # B1 --> 2
       # ...
       # H12 --> 96
       def well_index
-        @well_index = Map::Coordinate.description_to_vertical_plate_position(value, PLATE_SIZE)
+        @well_index = Map::Coordinate.well_description_to_by_column_map_index(value, PLATE_SIZE)
       end
 
       # i7 tag

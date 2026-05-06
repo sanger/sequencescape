@@ -364,4 +364,8 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   def library_name
     nil
   end
+
+  def empty?
+    aliquots.blank?
+  end
 end

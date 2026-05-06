@@ -16,15 +16,15 @@ RSpec.describe 'Sample accession errors', :js do
 
     context 'when accessioning is enabled', :accessioning_enabled do
       it 'shows generate link for accessioning' do
-        expect(page).to have_content('Sample Specification')
+        expect(page).to have_text('Sample Specification')
         expect(page).to have_link('Generate Accession Number')
       end
     end
 
     context 'when accessioning is disabled' do
       it 'shows a disabled link for accessioning' do
-        expect(page).to have_content('Sample Specification')
-        expect(page).to have_content('Generate Accession Number')
+        expect(page).to have_text('Sample Specification')
+        expect(page).to have_text('Generate Accession Number')
         expect(page).to have_no_link('Generate Accession Number')
       end
     end
@@ -35,15 +35,15 @@ RSpec.describe 'Sample accession errors', :js do
 
     context 'when accessioning is enabled', :accessioning_enabled do
       it 'shows update link for accessioning' do
-        expect(page).to have_content('Sample Specification')
+        expect(page).to have_text('Sample Specification')
         expect(page).to have_link('Update Sample Data for Accessioning')
       end
     end
 
     context 'when accessioning is disabled' do
       it 'shows a disabled link for accessioning' do
-        expect(page).to have_content('Sample Specification')
-        expect(page).to have_content('Update Sample Data for Accessioning')
+        expect(page).to have_text('Sample Specification')
+        expect(page).to have_text('Update Sample Data for Accessioning')
         expect(page).to have_no_link('Update Sample Data for Accessioning')
       end
     end

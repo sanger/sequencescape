@@ -20,9 +20,9 @@ describe 'Submission show' do
 
   describe 'has the correct content' do
     it 'shows the submission information' do
-      expect(page).to have_content("Submission #{submission.id} - #{template.name}")
-      expect(page).to have_content("Project #{project.name}")
-      expect(page).to have_content("Study #{study.name}")
+      expect(page).to have_text("Submission #{submission.id} - #{template.name}")
+      expect(page).to have_text("Project #{project.name}")
+      expect(page).to have_text("Study #{study.name}")
     end
 
     it 'shows the correct sidebar links' do
