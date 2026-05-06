@@ -321,7 +321,9 @@ GEM
       benchmark
       logger
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.5)
+      drb (~> 2.0)
+      prism (~> 1.5)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
@@ -704,7 +706,7 @@ DEPENDENCIES
   launchy
   listen
   logger
-  minitest (~> 5.0)
+  minitest (~> 6.0)
   minitest-profiler
   mocha
   multi_json
