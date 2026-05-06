@@ -20,7 +20,7 @@ module SampleManifest::SampleTubeBehaviour
     end
 
     def acceptable_purposes
-      Tube::Purpose.where(target_type: SampleTube)
+      Tube::Purpose.where(target_type: SampleTube, deprecated: false)
     end
 
     def default_purpose
