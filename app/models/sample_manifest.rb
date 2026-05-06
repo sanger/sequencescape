@@ -17,7 +17,6 @@
 # studies over time.
 class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
-  include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::CoreBehaviour
   extend SampleManifest::StateMachine

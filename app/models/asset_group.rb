@@ -3,7 +3,6 @@
 # Primarily used to group together receptacles as part of an {Order order}.
 class AssetGroup < ApplicationRecord
   include Uuid::Uuidable
-  include ModelExtensions::AssetGroup
   include SharedBehaviour::Named
 
   belongs_to :study

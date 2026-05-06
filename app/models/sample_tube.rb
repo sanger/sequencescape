@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 class SampleTube < Tube
   include Api::SampleTubeIo::Extensions
-  include ModelExtensions::SampleTube
   include StandardNamedScopes
 
   self.stock_message_template = 'TubeStockResourceIo'

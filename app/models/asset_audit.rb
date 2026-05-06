@@ -4,7 +4,6 @@
 # @see https://github.com/sanger/asset_audits AssetAudits, also known as process tracker and lab activity
 class AssetAudit < ApplicationRecord
   include Uuid::Uuidable
-  include ::Io::AssetAudit::ApiIoSupport
 
   belongs_to :asset, class_name: 'Labware'
 

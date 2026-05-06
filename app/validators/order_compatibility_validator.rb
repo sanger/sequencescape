@@ -5,8 +5,7 @@
 # - all of the request types are not for mutliplexing or
 # - all of the request types post the multiplexing request are the same
 class OrderCompatibilityValidator < ActiveModel::Validator
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def validate(record) # rubocop:todo Metrics/CyclomaticComplexity
+  def validate(record)
     orders = record.orders
     return if orders.size < 2
 
@@ -15,14 +14,10 @@ class OrderCompatibilityValidator < ActiveModel::Validator
     return if order_request_types.all?(&:not_for_multiplexing?)
 
     record.errors.add(:orders, 'are incompatible') if order_request_types.any?(&:not_for_multiplexing?)
-    unless order_request_types.all? { |request_types| # stree-ignore # rubocop:disable Style/BlockDelimiters
-             request_types.post_for_multiplexing == order_request_types.first.post_for_multiplexing
-           }
-      record.errors.add(:orders, 'are incompatible')
+    record.errors.add(:orders, 'are incompatible') unless order_request_types.all? do |request_types|
+      request_types.post_for_multiplexing == order_request_types.first.post_for_multiplexing
     end
   end
-
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
   def read_lengths_identical?(orders)
     orders.collect { |order| order.request_options['read_length'] }.uniq.length == 1

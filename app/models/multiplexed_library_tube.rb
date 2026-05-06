@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class MultiplexedLibraryTube < Tube
-  include ModelExtensions::MultiplexedLibraryTube
   include Api::MultiplexedLibraryTubeIo::Extensions
   include Asset::SharedLibraryTubeBehaviour
 
