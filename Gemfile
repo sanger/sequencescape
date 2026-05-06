@@ -21,10 +21,6 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
-  # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
-  # see https://stackoverflow.com/a/71192990
-  gem 'psych', '< 4'
-
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
@@ -34,7 +30,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader', branch: 'sh51/psych-5'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'

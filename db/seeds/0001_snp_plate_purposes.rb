@@ -51,7 +51,7 @@ plate_purposes = <<~EOS
 EOS
 
 YAML
-  .load(plate_purposes)
+  .unsafe_load(plate_purposes)
   .each do |plate_purpose|
     attributes =
       plate_purpose.reverse_merge(
