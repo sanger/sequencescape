@@ -295,7 +295,11 @@ module SampleManifestExcel
 
         specialised_fields =
           columns.with_specialised_fields.map do |column|
-            column.specialised_field.new(value: at(column.number), sample_manifest_asset: manifest_asset)
+            column.specialised_field.new(
+              value: at(column.number),
+              sample_manifest_asset: manifest_asset,
+              row: self
+            )
           end
 
         specialised_fields.tap { |fields| link_tag_groups_and_indexes(fields) }

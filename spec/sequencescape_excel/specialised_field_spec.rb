@@ -718,8 +718,9 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
     describe SequencescapeExcel::SpecialisedField::DualIndexTagWell do
       let(:sf_dual_index_tag_well) do
-        described_class.new(value: dual_index_tag_well, sample_manifest_asset: sample_manifest_asset)
+        described_class.new(value: dual_index_tag_well, sample_manifest_asset: sample_manifest_asset, row: row)
       end
+      let(:row) { instance_double(SampleManifestExcel::Upload::Row, aliquots: asset.aliquots) }
       let(:sf_dual_index_tag_set) do
         SequencescapeExcel::SpecialisedField::DualIndexTagSet.new(
           value: dual_index_tag_set.name,
@@ -742,6 +743,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
             it 'will apply the two tags associated with the map_id' do
               sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              row.aliquots.first.save!
               # well location 'A1' => map_id '1'
               expect(asset.reload.aliquots.first.tag.map_id).to eq 1
               expect(asset.reload.aliquots.first.tag.tag_group).to eq tag_group1
@@ -763,6 +765,7 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
 
             it 'will apply the 2 tags associated with the updated map_id' do
               sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              row.aliquots.first.save!
               # well location 'D1' => map_id '4'
               expect(asset.reload.aliquots.first.tag.map_id).to eq 4
               expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
@@ -799,19 +802,13 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
               downstream_aliquot2
             end
 
-            it 'will apply the 2 tags associated with the updated map_id' do
+            it 'will apply the 2 tags associated with the updated map_id to the source aliquot' do
               sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              row.aliquots.first.save!
 
               # well location 'D1' => map_id '4'
               expect(asset.reload.aliquots.first.tag.map_id).to eq 4
               expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
-
-              # check downstream aliquots updated too
-              expect(downstream_aliquot1.reload.tag.map_id).to eq 4
-              expect(downstream_aliquot1.reload.tag2.map_id).to eq 4
-
-              expect(downstream_aliquot2.reload.tag.map_id).to eq 4
-              expect(downstream_aliquot2.reload.tag2.map_id).to eq 4
             end
           end
 

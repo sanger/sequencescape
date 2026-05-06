@@ -107,7 +107,8 @@ module SampleManifestExcel
           true
         end
 
-        # if manifest is reuploaded, only aliquots, that are in 'fake' library tubes will be updated
+        # Comment is re: a multiplexed library tubes scenario, but this method is used for plates too.
+        # if manifest is re-uploaded, only aliquots, that are in 'fake' library tubes will be updated
         # actual aliquots in multiplexed library tube and other aliquots downstream are updated by this method
         # library updates all aliquots in one go, doing it row by row is inefficient and may trigger tag clash
         def update_downstream_aliquots
