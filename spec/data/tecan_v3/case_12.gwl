@@ -1,0 +1,437 @@
+C;
+C; This file created by user on Tue Oct 16 10:10:10 2025
+C;
+A;BUFF Trough;;Trough 100ml;1;;2.0
+D;SQPD-9999-U;;ABgene 0800;1;;2.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;10.0
+D;SQPD-9999-U;;ABgene 0800;9;;10.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;18.0
+D;SQPD-9999-U;;ABgene 0800;17;;18.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;26.0
+D;SQPD-9999-U;;ABgene 0800;25;;26.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;34.0
+D;SQPD-9999-U;;ABgene 0800;33;;34.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;42.0
+D;SQPD-9999-U;;ABgene 0800;41;;42.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;49;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;57;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;65;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;73;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;81;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;1;;120.0
+D;SQPD-9999-U;;ABgene 0800;89;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;2;;3.0
+D;SQPD-9999-U;;ABgene 0800;2;;3.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;11.0
+D;SQPD-9999-U;;ABgene 0800;10;;11.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;19.0
+D;SQPD-9999-U;;ABgene 0800;18;;19.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;27.0
+D;SQPD-9999-U;;ABgene 0800;26;;27.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;35.0
+D;SQPD-9999-U;;ABgene 0800;34;;35.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;43.0
+D;SQPD-9999-U;;ABgene 0800;42;;43.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;50;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;58;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;66;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;74;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;82;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;2;;120.0
+D;SQPD-9999-U;;ABgene 0800;90;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;3;;4.0
+D;SQPD-9999-U;;ABgene 0800;3;;4.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;12.0
+D;SQPD-9999-U;;ABgene 0800;11;;12.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;20.0
+D;SQPD-9999-U;;ABgene 0800;19;;20.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;28.0
+D;SQPD-9999-U;;ABgene 0800;27;;28.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;36.0
+D;SQPD-9999-U;;ABgene 0800;35;;36.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;44.0
+D;SQPD-9999-U;;ABgene 0800;43;;44.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;51;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;59;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;67;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;75;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;83;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;3;;120.0
+D;SQPD-9999-U;;ABgene 0800;91;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;4;;5.0
+D;SQPD-9999-U;;ABgene 0800;4;;5.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;13.0
+D;SQPD-9999-U;;ABgene 0800;12;;13.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;21.0
+D;SQPD-9999-U;;ABgene 0800;20;;21.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;29.0
+D;SQPD-9999-U;;ABgene 0800;28;;29.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;37.0
+D;SQPD-9999-U;;ABgene 0800;36;;37.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;45.0
+D;SQPD-9999-U;;ABgene 0800;44;;45.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;52;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;60;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;68;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;76;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;84;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;4;;120.0
+D;SQPD-9999-U;;ABgene 0800;92;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;5;;6.0
+D;SQPD-9999-U;;ABgene 0800;5;;6.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;14.0
+D;SQPD-9999-U;;ABgene 0800;13;;14.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;22.0
+D;SQPD-9999-U;;ABgene 0800;21;;22.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;30.0
+D;SQPD-9999-U;;ABgene 0800;29;;30.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;38.0
+D;SQPD-9999-U;;ABgene 0800;37;;38.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;46.0
+D;SQPD-9999-U;;ABgene 0800;45;;46.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;53;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;61;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;69;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;77;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;85;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;5;;120.0
+D;SQPD-9999-U;;ABgene 0800;93;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;6;;7.0
+D;SQPD-9999-U;;ABgene 0800;6;;7.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;15.0
+D;SQPD-9999-U;;ABgene 0800;14;;15.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;23.0
+D;SQPD-9999-U;;ABgene 0800;22;;23.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;31.0
+D;SQPD-9999-U;;ABgene 0800;30;;31.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;39.0
+D;SQPD-9999-U;;ABgene 0800;38;;39.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;47.0
+D;SQPD-9999-U;;ABgene 0800;46;;47.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;54;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;62;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;70;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;78;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;86;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;6;;120.0
+D;SQPD-9999-U;;ABgene 0800;94;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;7;;8.0
+D;SQPD-9999-U;;ABgene 0800;7;;8.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;16.0
+D;SQPD-9999-U;;ABgene 0800;15;;16.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;24.0
+D;SQPD-9999-U;;ABgene 0800;23;;24.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;32.0
+D;SQPD-9999-U;;ABgene 0800;31;;32.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;40.0
+D;SQPD-9999-U;;ABgene 0800;39;;40.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;48.0
+D;SQPD-9999-U;;ABgene 0800;47;;48.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;55;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;63;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;71;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;79;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;87;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;7;;120.0
+D;SQPD-9999-U;;ABgene 0800;95;;120.0
+W;
+A;BUFF Trough;;Trough 100ml;8;;9.0
+D;SQPD-9999-U;;ABgene 0800;8;;9.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;17.0
+D;SQPD-9999-U;;ABgene 0800;16;;17.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;25.0
+D;SQPD-9999-U;;ABgene 0800;24;;25.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;33.0
+D;SQPD-9999-U;;ABgene 0800;32;;33.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;41.0
+D;SQPD-9999-U;;ABgene 0800;40;;41.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;49.0
+D;SQPD-9999-U;;ABgene 0800;48;;49.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;120.0
+D;SQPD-9999-U;;ABgene 0800;56;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;120.0
+D;SQPD-9999-U;;ABgene 0800;64;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;120.0
+D;SQPD-9999-U;;ABgene 0800;72;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;120.0
+D;SQPD-9999-U;;ABgene 0800;80;;120.0
+C;
+A;BUFF Trough;;Trough 100ml;8;;120.0
+D;SQPD-9999-U;;ABgene 0800;88;;120.0
+W;
+B;
+A;SQPD-9001-U;;ABgene 0765;1;;178.0
+D;SQPD-9999-U;;ABgene 0800;1;;178.0
+W;
+A;SQPD-9001-U;;ABgene 0765;2;;177.0
+D;SQPD-9999-U;;ABgene 0800;2;;177.0
+W;
+A;SQPD-9001-U;;ABgene 0765;3;;176.0
+D;SQPD-9999-U;;ABgene 0800;3;;176.0
+W;
+A;SQPD-9001-U;;ABgene 0765;4;;175.0
+D;SQPD-9999-U;;ABgene 0800;4;;175.0
+W;
+A;SQPD-9001-U;;ABgene 0765;5;;174.0
+D;SQPD-9999-U;;ABgene 0800;5;;174.0
+W;
+A;SQPD-9001-U;;ABgene 0765;6;;173.0
+D;SQPD-9999-U;;ABgene 0800;6;;173.0
+W;
+A;SQPD-9001-U;;ABgene 0765;7;;172.0
+D;SQPD-9999-U;;ABgene 0800;7;;172.0
+W;
+A;SQPD-9001-U;;ABgene 0765;8;;171.0
+D;SQPD-9999-U;;ABgene 0800;8;;171.0
+W;
+A;SQPD-9001-U;;ABgene 0765;9;;170.0
+D;SQPD-9999-U;;ABgene 0800;9;;170.0
+W;
+A;SQPD-9001-U;;ABgene 0765;10;;169.0
+D;SQPD-9999-U;;ABgene 0800;10;;169.0
+W;
+A;SQPD-9001-U;;ABgene 0765;11;;168.0
+D;SQPD-9999-U;;ABgene 0800;11;;168.0
+W;
+A;SQPD-9001-U;;ABgene 0765;12;;167.0
+D;SQPD-9999-U;;ABgene 0800;12;;167.0
+W;
+A;SQPD-9001-U;;ABgene 0765;13;;166.0
+D;SQPD-9999-U;;ABgene 0800;13;;166.0
+W;
+A;SQPD-9001-U;;ABgene 0765;14;;165.0
+D;SQPD-9999-U;;ABgene 0800;14;;165.0
+W;
+A;SQPD-9001-U;;ABgene 0765;15;;164.0
+D;SQPD-9999-U;;ABgene 0800;15;;164.0
+W;
+A;SQPD-9001-U;;ABgene 0765;16;;163.0
+D;SQPD-9999-U;;ABgene 0800;16;;163.0
+W;
+A;SQPD-9001-U;;ABgene 0765;17;;162.0
+D;SQPD-9999-U;;ABgene 0800;17;;162.0
+W;
+A;SQPD-9001-U;;ABgene 0765;18;;161.0
+D;SQPD-9999-U;;ABgene 0800;18;;161.0
+W;
+A;SQPD-9001-U;;ABgene 0765;19;;160.0
+D;SQPD-9999-U;;ABgene 0800;19;;160.0
+W;
+A;SQPD-9001-U;;ABgene 0765;20;;159.0
+D;SQPD-9999-U;;ABgene 0800;20;;159.0
+W;
+A;SQPD-9001-U;;ABgene 0765;21;;158.0
+D;SQPD-9999-U;;ABgene 0800;21;;158.0
+W;
+A;SQPD-9001-U;;ABgene 0765;22;;157.0
+D;SQPD-9999-U;;ABgene 0800;22;;157.0
+W;
+A;SQPD-9001-U;;ABgene 0765;23;;156.0
+D;SQPD-9999-U;;ABgene 0800;23;;156.0
+W;
+A;SQPD-9001-U;;ABgene 0765;24;;155.0
+D;SQPD-9999-U;;ABgene 0800;24;;155.0
+W;
+A;SQPD-9001-U;;ABgene 0765;25;;154.0
+D;SQPD-9999-U;;ABgene 0800;25;;154.0
+W;
+A;SQPD-9001-U;;ABgene 0765;26;;153.0
+D;SQPD-9999-U;;ABgene 0800;26;;153.0
+W;
+A;SQPD-9001-U;;ABgene 0765;27;;152.0
+D;SQPD-9999-U;;ABgene 0800;27;;152.0
+W;
+A;SQPD-9001-U;;ABgene 0765;28;;151.0
+D;SQPD-9999-U;;ABgene 0800;28;;151.0
+W;
+A;SQPD-9001-U;;ABgene 0765;29;;150.0
+D;SQPD-9999-U;;ABgene 0800;29;;150.0
+W;
+A;SQPD-9001-U;;ABgene 0765;30;;149.0
+D;SQPD-9999-U;;ABgene 0800;30;;149.0
+W;
+A;SQPD-9001-U;;ABgene 0765;31;;148.0
+D;SQPD-9999-U;;ABgene 0800;31;;148.0
+W;
+A;SQPD-9001-U;;ABgene 0765;32;;147.0
+D;SQPD-9999-U;;ABgene 0800;32;;147.0
+W;
+A;SQPD-9001-U;;ABgene 0765;33;;146.0
+D;SQPD-9999-U;;ABgene 0800;33;;146.0
+W;
+A;SQPD-9001-U;;ABgene 0765;34;;145.0
+D;SQPD-9999-U;;ABgene 0800;34;;145.0
+W;
+A;SQPD-9001-U;;ABgene 0765;35;;144.0
+D;SQPD-9999-U;;ABgene 0800;35;;144.0
+W;
+A;SQPD-9001-U;;ABgene 0765;36;;143.0
+D;SQPD-9999-U;;ABgene 0800;36;;143.0
+W;
+A;SQPD-9001-U;;ABgene 0765;37;;142.0
+D;SQPD-9999-U;;ABgene 0800;37;;142.0
+W;
+A;SQPD-9001-U;;ABgene 0765;38;;141.0
+D;SQPD-9999-U;;ABgene 0800;38;;141.0
+W;
+A;SQPD-9001-U;;ABgene 0765;39;;140.0
+D;SQPD-9999-U;;ABgene 0800;39;;140.0
+W;
+A;SQPD-9001-U;;ABgene 0765;40;;139.0
+D;SQPD-9999-U;;ABgene 0800;40;;139.0
+W;
+A;SQPD-9001-U;;ABgene 0765;41;;138.0
+D;SQPD-9999-U;;ABgene 0800;41;;138.0
+W;
+A;SQPD-9001-U;;ABgene 0765;42;;137.0
+D;SQPD-9999-U;;ABgene 0800;42;;137.0
+W;
+A;SQPD-9001-U;;ABgene 0765;43;;136.0
+D;SQPD-9999-U;;ABgene 0800;43;;136.0
+W;
+A;SQPD-9001-U;;ABgene 0765;44;;135.0
+D;SQPD-9999-U;;ABgene 0800;44;;135.0
+W;
+A;SQPD-9001-U;;ABgene 0765;45;;134.0
+D;SQPD-9999-U;;ABgene 0800;45;;134.0
+W;
+A;SQPD-9001-U;;ABgene 0765;46;;133.0
+D;SQPD-9999-U;;ABgene 0800;46;;133.0
+W;
+A;SQPD-9001-U;;ABgene 0765;47;;132.0
+D;SQPD-9999-U;;ABgene 0800;47;;132.0
+W;
+A;SQPD-9001-U;;ABgene 0765;48;;131.0
+D;SQPD-9999-U;;ABgene 0800;48;;131.0
+W;
+C;
+C; SCRC1 = SQPD-9001-U
+C;
+C; DEST1 = SQPD-9999-U

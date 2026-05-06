@@ -277,6 +277,8 @@ These should not be committed to the github repo.
 
 ## Testing
 
+### Rails
+
 Testing is done in one of three ways; using rspec, via rails tests or with cucumber.
 
 1. To run the rspec tests (found in `rspec/` dir.):
@@ -314,6 +316,20 @@ For a single file:
 ```shell
 bundle exec cucumber features/create_plates.feature
 ```
+
+### Javascript
+
+1. To run the Javascript Vite tests (found in `app/frontend/**/*.test.js`):
+
+   ```shell
+   yarn test
+   ```
+
+   For a single file:
+
+   ```shell
+   yarn test app/frontend/entrypoints/cherrypick_strategies.test.js:22
+   ```
 
 ## Linting and formatting
 

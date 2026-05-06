@@ -18,7 +18,7 @@ RSpec.describe 'Sample', :js do
       studies_panel = find('h3', text: 'Studies').find(:xpath, '..')
 
       # Check that the study name is listed in the panel
-      expect(studies_panel).to have_content('Study_PT_7125863')
+      expect(studies_panel).to have_text('Study_PT_7125863')
 
       # The select box for adding to study should not include the already-linked study
       within(studies_panel) do

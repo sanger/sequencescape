@@ -5,6 +5,7 @@ module Cherrypick::Task::PickHelpers
       include Cherrypick::Task::PickByNanoGramsPerMicroLitre
       include Cherrypick::Task::PickByNanoGrams
       include Cherrypick::Task::PickByMicroLitre
+      include Cherrypick::Task::BufferVolumeForEmptyWellsOption
     end
   end
 

@@ -11,7 +11,7 @@ RSpec.describe ElementAvitiSequencingPipeline do
       pipeline.post_release_batch(batch, create(:user))
 
       expect(Messenger).to have_received(:create!).with(
-        hash_including(target: batch, template: 'FlowcellIo', root: 'eseq_flowcell')
+        hash_including(target: batch, template: 'EseqFlowcellIo', root: 'eseq_flowcell')
       )
     end
   end

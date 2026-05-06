@@ -1,0 +1,25 @@
+---
+GbS Tag Set A:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences
+GbS Tag Set B:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set B
+GbS Tag Set C:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set C
+GbS Tag Set D:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set D
+IDT GbS Tag Set A:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences
+IDT GbS Tag Set B:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set B
+IDT GbS Tag Set C:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set C
+IDT GbS Tag Set D:
+  tag_group_name: Sanger_168tags - 10 mer tags
+  tag2_group_name: Dual Index Tag2 sequences set D

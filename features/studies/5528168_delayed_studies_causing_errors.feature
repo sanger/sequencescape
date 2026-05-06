@@ -8,7 +8,7 @@ Feature: Delayed studies causing errors
     Given the study "Testing delayed studies" is delayed for <period> months because "It's not working"
 
     Given I am on the information page for study "Testing delayed studies"
-    When I follow "Study details"
+    When I follow "study details"
     Then I should see "<period> months"
 
     Examples:

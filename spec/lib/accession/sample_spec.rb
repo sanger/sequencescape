@@ -370,10 +370,10 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         end
 
         it 'includes the EBI names of all expected tags' do
-          missing_tags = expected_tags_and_values.keys - xml_sample_attributes.keys
-          expect(missing_tags).to be_empty,
-                                  "Expected XML to include tags: '#{missing_tags.join("', '")}' " \
-                                  "but only tags '#{xml_sample_attributes.keys.join("', '")}' were found"
+          missing_accession_tags = expected_tags_and_values.keys - xml_sample_attributes.keys
+          expect(missing_accession_tags).to be_empty,
+                                            "Expected XML to include tags: '#{missing_accession_tags.join("', '")}' " \
+                                            "but only tags '#{xml_sample_attributes.keys.join("', '")}' were found"
         end
 
         it 'includes the correct values for all expected tags' do

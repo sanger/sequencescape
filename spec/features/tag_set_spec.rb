@@ -16,18 +16,18 @@ describe 'Create a new tag set' do
   it 'view tag sets and create a new valid one' do
     login_user user
     visit tag_sets_path
-    expect(page).to have_content 'Listing Tag Sets'
+    expect(page).to have_text 'Listing Tag Sets'
     click_on 'Create a new Tag Set'
-    expect(page).to have_content 'New Tag Set'
+    expect(page).to have_text 'New Tag Set'
     fill_in('tag_set_name', with: 'Test tag set')
     select(tag_group.name, from: 'Tag Group (i7)')
     select(tag2_group.name, from: 'Tag Group (i5)')
     click_on 'Create tag set'
-    expect(page).to have_content 'Tag Set was successfully created.'
-    expect(page).to have_content 'Test tag set'
-    expect(page).to have_content tag_group.name
-    expect(page).to have_content tag2_group.name
-    expect(page).to have_content 'Create a new tag layout template from this tag set'
+    expect(page).to have_text 'Tag Set was successfully created.'
+    expect(page).to have_text 'Test tag set'
+    expect(page).to have_text tag_group.name
+    expect(page).to have_text tag2_group.name
+    expect(page).to have_text 'Create a new tag layout template from this tag set'
   end
 
   it 'view tag groups and attempt to create a new one with an existing tag set name' do
@@ -35,21 +35,21 @@ describe 'Create a new tag set' do
 
     login_user user
     visit tag_sets_path
-    expect(page).to have_content 'Listing Tag Sets'
+    expect(page).to have_text 'Listing Tag Sets'
     click_on 'Create a new Tag Set'
-    expect(page).to have_content 'New Tag Set'
+    expect(page).to have_text 'New Tag Set'
     fill_in('tag_set_name', with: 'Test tag set')
     select(tag_group.name, from: 'Tag Group (i7)')
     select(tag2_group.name, from: 'Tag Group (i5)')
     click_on 'Create tag set'
-    expect(page).to have_content 'error prohibited this tag set from being saved'
-    expect(page).to have_content 'Name has already been taken'
+    expect(page).to have_text 'error prohibited this tag set from being saved'
+    expect(page).to have_text 'Name has already been taken'
     fill_in('tag_set_name', with: 'Test tag set 1')
     click_on 'Create tag set'
-    expect(page).to have_content 'Tag Set was successfully created.'
-    expect(page).to have_content 'Test tag set 1'
-    expect(page).to have_content tag_group.name
-    expect(page).to have_content tag2_group.name
-    expect(page).to have_content 'Create a new tag layout template from this tag set'
+    expect(page).to have_text 'Tag Set was successfully created.'
+    expect(page).to have_text 'Test tag set 1'
+    expect(page).to have_text tag_group.name
+    expect(page).to have_text tag2_group.name
+    expect(page).to have_text 'Create a new tag layout template from this tag set'
   end
 end

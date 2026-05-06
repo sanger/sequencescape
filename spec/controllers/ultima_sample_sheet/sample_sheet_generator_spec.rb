@@ -252,6 +252,34 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv2[9][3]).to eq(plate2_first_oligo) # Index_Barcode_Sequence
       expect(csv2[9][4]).to eq('2') # Barcode_Plate_Num
     end
+
+    context 'when Flipper :y25_140_support_ultima_ug100_upgrade is enabled' do
+      before { allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(true) }
+
+      it 'generates global section with only Application column and WGS Native value' do
+        expect(csv1[3].compact_blank).to eq(generator.global_title_config)
+        expect(csv1[4].compact_blank).to eq(['Application'])
+        expect(csv1[5].compact_blank).to eq(['WGS Native'])
+      end
+    end
+
+    context 'when Flipper :y25_140_support_ultima_ug100_upgrade is disabled' do
+      before { allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(false) }
+
+      it 'generates global section with Application, sequencing_recipe, analysis_recipe columns and values' do
+        expect(csv1[3].compact_blank).to eq(generator.global_title_config)
+        expect(csv1[4].compact_blank).to eq(%w[Application sequencing_recipe analysis_recipe])
+        # The values here depend on the UltimaGlobal.last record created in the test setup
+        ultima_global = UltimaGlobal.last
+        expect(csv1[5].compact_blank).to eq(
+          [
+            ultima_global.application,
+            ultima_global.sequencing_recipe,
+            ultima_global.analysis_recipe
+          ]
+        )
+      end
+    end
   end
 end
 # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength

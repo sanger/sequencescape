@@ -12,7 +12,7 @@ describe 'Viewing labware' do
     it 'can be viewed on its show page' do
       login_user user
       visit labware_path(labware)
-      expect(find('h1')).to have_content("Labware #{labware.name}")
+      expect(find('h1')).to have_text("Labware #{labware.name}")
     end
   end
 
