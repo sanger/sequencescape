@@ -7,6 +7,7 @@ Quant method used:
   selection:
     Tapestation: Tapestation
     Tapestation & qPCR: Tapestation & qPCR
+    Not applicable: Not applicable
   required: true
   sorter: 0
 Pipette Carousel:
