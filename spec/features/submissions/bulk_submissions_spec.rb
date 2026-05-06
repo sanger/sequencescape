@@ -17,14 +17,14 @@ describe 'Bulk submission', js: false do
     create(:project, name: 'Test project')
     create(:asset_group, name: 'assetgroup123', study: study, asset_count: 2)
     visit bulk_submissions_path
-    expect(page).to have_content('Bulk Submission New')
+    expect(page).to have_text('Bulk Submission New')
     create(:library_type, name: 'Standard')
   end
 
   shared_examples 'bulk submission file upload' do
     it 'allows file upload' do
       process_submission(file_name, encoding)
-      expect(page).to have_content expected_content
+      expect(page).to have_text expected_content
       expect(Submission.count).to eq(submission_count) if submission_count
     end
   end
@@ -98,7 +98,7 @@ describe 'Bulk submission', js: false do
 
       it 'allows file upload' do
         process_submission(file_name)
-        expect(page).to have_content expected_content
+        expect(page).to have_text expected_content
         expect(Order.last.request_options['gigabases_expected']).to eq('1.35')
       end
     end
@@ -171,7 +171,7 @@ describe 'Bulk submission', js: false do
       context 'Leaving the file field blank' do
         it 'produces an error' do
           click_button 'Create Bulk submission'
-          expect(page).to have_content("can't be blank")
+          expect(page).to have_text("can't be blank")
         end
       end
 

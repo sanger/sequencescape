@@ -18,47 +18,47 @@ describe 'Pooling', :js, :poolings do
     it 'user can pool from different tubes to stock and standard mx tubes' do
       login_user user
       visit new_pooling_path
-      expect(page).to have_content 'Scan tube'
+      expect(page).to have_text 'Scan tube'
       click_on 'Transfer'
-      expect(page).to have_content 'Source assets were not scanned or were not found in Sequencescape'
+      expect(page).to have_text 'Source assets were not scanned or were not found in Sequencescape'
       fill_in('asset_scan', with: '1234567890123').send_keys(:return)
-      expect(find('.barcode_list')).to have_content '1234567890123'
+      expect(find('.barcode_list')).to have_text '1234567890123'
       fill_in('asset_scan', with: empty_lb_tube1.ean13_barcode.to_s).send_keys(:return)
       fill_in('asset_scan', with: empty_lb_tube2.ean13_barcode.to_s).send_keys(:return)
       fill_in('asset_scan', with: untagged_lb_tube1.ean13_barcode.to_s).send_keys(:return)
       fill_in('asset_scan', with: untagged_lb_tube2.ean13_barcode.to_s).send_keys(:return)
       click_on 'Transfer'
 
-      expect(page).to have_content 'Source assets with barcode(s) 1234567890123 were not found in Sequencescape'
+      expect(page).to have_text 'Source assets with barcode(s) 1234567890123 were not found in Sequencescape'
       expect(
         page
         # rubocop:todo Layout/LineLength
-      ).to have_content "Source assets with barcode(s) #{empty_lb_tube1.ean13_barcode}, #{empty_lb_tube2.ean13_barcode} do not have any aliquots"
+      ).to have_text "Source assets with barcode(s) #{empty_lb_tube1.ean13_barcode}, #{empty_lb_tube2.ean13_barcode} do not have any aliquots"
 
       # rubocop:enable Layout/LineLength
-      expect(page).to have_content 'i7 - i5 -', normalize_ws: true
+      expect(page).to have_text 'i7 - i5 -', normalize_ws: true
       expect(
         page
         # rubocop:todo Layout/LineLength
-      ).to have_content "Sample #{sample1.friendly_name} Library #{untagged_lb_tube1.external_identifier} Scanned Tube #{untagged_lb_tube1.human_barcode}",
-                        # rubocop:enable Layout/LineLength
-                        normalize_ws: true
+      ).to have_text "Sample #{sample1.friendly_name} Library #{untagged_lb_tube1.external_identifier} Scanned Tube #{untagged_lb_tube1.human_barcode}",
+                     # rubocop:enable Layout/LineLength
+                     normalize_ws: true
       expect(
         page
         # rubocop:todo Layout/LineLength
-      ).to have_content "Sample #{sample2.friendly_name} Library #{untagged_lb_tube2.external_identifier} Scanned Tube #{untagged_lb_tube2.human_barcode}",
-                        # rubocop:enable Layout/LineLength
-                        normalize_ws: true
+      ).to have_text "Sample #{sample2.friendly_name} Library #{untagged_lb_tube2.external_identifier} Scanned Tube #{untagged_lb_tube2.human_barcode}",
+                     # rubocop:enable Layout/LineLength
+                     normalize_ws: true
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
-      expect(page).to have_content 'Scanned: 1'
+      expect(page).to have_text 'Scanned: 1'
       fill_in('asset_scan', with: tagged_lb_tube1.ean13_barcode.to_s).send_keys(:return)
       fill_in('asset_scan', with: tagged_lb_tube2.ean13_barcode.to_s).send_keys(:return)
       check 'Create stock multiplexed tube'
       click_on 'Transfer'
-      expect(page).to have_content 'Samples were transferred successfully'
+      expect(page).to have_text 'Samples were transferred successfully'
     end
   end
 
@@ -75,13 +75,13 @@ describe 'Pooling', :js, :poolings do
       login_user user
       visit sample_manifest_path(sample_manifest.id)
       click_on 'Pool'
-      expect(page).to have_content 'Scan tube'
-      expect(page).to have_content 'Scanned: 5'
+      expect(page).to have_text 'Scan tube'
+      expect(page).to have_text 'Scanned: 5'
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       first('a', text: 'Remove from list').click
       click_on 'Transfer'
-      expect(page).to have_content 'Samples were transferred successfully'
+      expect(page).to have_text 'Samples were transferred successfully'
     end
   end
 end

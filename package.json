@@ -7,7 +7,7 @@
     "bootstrap": "^4.6.2",
     "codemirror": "^5.65.18",
     "css-loader": "^6.0.0",
-    "datatables.net-bs4": "^2.3.6",
+    "datatables.net-bs4": "^2.3.8",
     "datatables.net-buttons-bs4": "^3.2.6",
     "datatables.net-fixedcolumns-bs4": "^5.0.5",
     "datatables.net-fixedheader-bs4": "^4.0.5",
@@ -25,7 +25,7 @@
     "sass": "^1.99.0",
     "select2": "^4.1.0-rc.0",
     "sortablejs": "^1.15.7",
-    "terser": "^5.46.1"
+    "terser": "^5.46.2"
   },
   "devDependencies": {
     "@vitejs/plugin-legacy": "^8.0",
