@@ -140,6 +140,15 @@ class QcReport < ApplicationRecord
 
   validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
 
+  validate :check_valid_plate_barcodes, if: -> { plate_barcodes.present? }
+
+  def check_valid_plate_barcodes
+    invalid_barcodes = plate_barcodes.reject { |barcode| Plate.find_by_barcode(barcode) }
+    return unless invalid_barcodes.any?
+
+    errors.add(:plate_barcodes, "contain invalid barcodes: #{invalid_barcodes.join(', ')}")
+  end
+
   # Reports are handled asynchronously
   def schedule_report
     Delayed::Job.enqueue QcReportJob.new(id)

@@ -11,6 +11,26 @@ RSpec.describe QcReport do
     expect(build(:qc_report, product_criteria: nil)).not_to be_valid
   end
 
+  context 'plate_barcodes' do
+    it 'is not valid if it is present and contains invalid barcodes' do
+      plate = create(:plate)
+      report = build(:qc_report, plate_barcodes: [plate.human_barcode.to_s, 'INVALID1', 'INVALID2'])
+      expect(report).not_to be_valid
+      expect(report.errors[:plate_barcodes]).to include('contain invalid barcodes: INVALID1, INVALID2')
+    end
+
+    it 'is valid if all barcodes are valid' do
+      plates = create_list(:plate, 2)
+      report = build(:qc_report, plate_barcodes: [plates[0].human_barcode.to_s, plates[1].human_barcode.to_s])
+      expect(report).to be_valid
+    end
+
+    it 'is valid if it is nil' do
+      report = build(:qc_report, plate_barcodes: nil)
+      expect(report).to be_valid
+    end
+  end
+
   context 'include existing' do
     attr_reader :study, :other_study, :stock_plate, :qc_report, :qc_metric_count
 
