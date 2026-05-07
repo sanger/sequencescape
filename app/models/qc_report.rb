@@ -136,11 +136,14 @@ class QcReport < ApplicationRecord
 
   scope :for_report_page, ->(conditions) { order(id: :desc).where(conditions).joins(:product_criteria) }
 
-  validates :product_criteria, :study, :state, presence: true
+  validates :product_criteria, :state, presence: true
 
   validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
 
   validate :check_valid_plate_barcodes, if: -> { plate_barcodes.present? }
+
+  # We allow null values for study_id to allow qc_reports to be create without a study (just plate_barcodes)
+  validates :study_id, presence: true, unless: -> { plate_barcodes.present? }
 
   def check_valid_plate_barcodes
     invalid_barcodes = plate_barcodes.reject { |barcode| Plate.find_by_barcode(barcode) }

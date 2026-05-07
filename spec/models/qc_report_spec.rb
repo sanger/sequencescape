@@ -3,8 +3,16 @@
 require 'rails_helper'
 
 RSpec.describe QcReport do
-  it 'is not valid without a study' do
-    expect(build(:qc_report, study: nil)).not_to be_valid
+  context 'study' do
+    it 'is not valid without a study if plate_barcodes are not present' do
+      expect(build(:qc_report, study: nil, plate_barcodes: nil)).not_to be_valid
+    end
+
+    it 'is valid without a study if plate_barcodes are present' do
+      plate = create(:plate)
+      report = build(:qc_report, study: nil, plate_barcodes: [plate.human_barcode.to_s])
+      expect(report).to be_valid
+    end
   end
 
   it 'is not valid without a product criteria' do
@@ -25,8 +33,8 @@ RSpec.describe QcReport do
       expect(report).to be_valid
     end
 
-    it 'is valid if it is nil' do
-      report = build(:qc_report, plate_barcodes: nil)
+    it 'is valid if it is nil and a study is present' do
+      report = build(:qc_report, plate_barcodes: nil, study: create(:study))
       expect(report).to be_valid
     end
   end
@@ -211,6 +219,34 @@ RSpec.describe QcReport do
           exclude_existing: false,
           product_criteria: create(:product_criteria),
           plate_purposes: plate_purpose_names
+        )
+      qc_report.generate!
+    end
+
+    it 'generates qc_metrics per sample which needs them' do
+      expect(qc_report.qc_metrics.count).to eq(3)
+    end
+  end
+
+  context 'limit by plate barcodes' do
+    attr_reader :qc_report
+
+    let!(:study) { create(:study) }
+    let(:plates) { create_list(:plate, 4, plate_purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')) }
+
+    before do
+      create(:well_for_qc_report, study: study, plate: plates[0])
+      create(:well_for_qc_report, study: study, plate: plates[1])
+      create(:well_for_qc_report, study: study, plate: plates[2])
+
+      @qc_report =
+        create(
+          :qc_report,
+          study: study,
+          exclude_existing: false,
+          product_criteria: create(:product_criteria),
+          plate_purposes: [],
+          plate_barcodes: plates.map(&:human_barcode)
         )
       qc_report.generate!
     end

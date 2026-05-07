@@ -1046,7 +1046,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
 
   create_table "qc_reports", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "report_identifier", null: false
-    t.integer "study_id", null: false
+    t.integer "study_id"
     t.integer "product_criteria_id", null: false
     t.boolean "exclude_existing", null: false
     t.string "state"
