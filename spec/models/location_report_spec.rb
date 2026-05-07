@@ -74,7 +74,7 @@ RSpec.describe LocationReport do
   let(:plt_3_created) { plate_3.created_at.strftime('%Y-%m-%d %H:%M:%S') }
   let(:plt_3_received_date) { 'Unknown' }
 
-  let(:plate_3_return_customer) { plate_3.update!(retention_instruction: :return_to_customer_after_2_years) }
+  let(:plate_3_return_after_two_years) { plate_3.update!(retention_instruction: :return_to_customer_after_2_years) }
 
   let(:tube_1) do
     create(
@@ -258,7 +258,7 @@ RSpec.describe LocationReport do
           end
 
           plate_1_set_long_term_storage
-          plate_3_return_customer
+          plate_3_return_after_two_years
           tube_1_set_long_term_storage
         end
 
@@ -472,7 +472,7 @@ RSpec.describe LocationReport do
           let(:start_date) { '2016-01-01 00:00:00' }
           let(:end_date) { '2016-11-01 00:00:00' }
           let(:retention_instructions) { %w[long_term_storage return_to_customer_after_2_years] }
-          let(:plate_3_return_customer) do
+          let(:plate_3_return_after_two_years) do
             plate_3.update!(retention_instruction: :return_to_customer_after_2_years)
           end
           let(:plt_3_line) do
@@ -511,7 +511,7 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(location_barcode, [])
 
             plate_1_set_long_term_storage
-            plate_3_return_customer
+            plate_3_return_after_two_years
           end
 
           it_behaves_like 'a successful report'
@@ -763,7 +763,7 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(t1)
 
             plate_1_set_long_term_storage
-            plate_3_return_customer
+            plate_3_return_after_two_years
             tube_1_set_long_term_storage
           end
 
