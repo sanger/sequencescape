@@ -14,8 +14,8 @@ describe 'Update retention instructions' do
         user,
         asset.retention_instruction
       )
-      expect(page).to have_content 'Retention Instruction was successfully updated.'
-      expect(page).to have_content 'Long term storage'
+      expect(page).to have_text 'Retention Instruction was successfully updated.'
+      expect(page).to have_text 'Long term storage'
     end
   end
 
@@ -26,7 +26,7 @@ describe 'Update retention instructions' do
     before { visit labware_path(asset) }
 
     it 'does not allow the user to edit the retention instruction' do
-      expect(page).to have_no_content 'Edit Retention Instruction'
+      expect(page).to have_no_text 'Edit Retention Instruction'
     end
   end
 
@@ -35,7 +35,7 @@ describe 'Update retention instructions' do
       login_user(user)
       visit labware_path(asset)
       click_link 'Edit Retention Instruction'
-      expect(page).to have_content 'Edit Retention Instruction'
+      expect(page).to have_text 'Edit Retention Instruction'
     end
 
     context 'when retention instruction exists' do
@@ -43,7 +43,7 @@ describe 'Update retention instructions' do
       let(:asset) { create(:plate_with_3_wells, retention_instruction: :destroy_after_2_years) }
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
+        expect(page).to have_no_text 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'
@@ -61,11 +61,11 @@ describe 'Update retention instructions' do
       end
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
+        expect(page).to have_no_text 'This labware does not currently have a retention instruction.'
       end
 
       it 'displays the retention instruction in metadata' do
-        expect(page).to have_content 'Return to customer after 2 years'
+        expect(page).to have_text 'Return to customer after 2 years'
       end
 
       it_behaves_like 'updating retention instruction'
@@ -76,7 +76,7 @@ describe 'Update retention instructions' do
       let(:asset) { create(:plate_with_3_wells, retention_instruction: nil) }
 
       it 'does not have a retention instruction yet' do
-        expect(page).to have_content 'This labware does not currently have a retention instruction.'
+        expect(page).to have_text 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'
@@ -87,7 +87,7 @@ describe 'Update retention instructions' do
       let(:asset) { create(:tube, retention_instruction: :destroy_after_2_years) }
 
       it 'does not display the warning message' do
-        expect(page).to have_no_content 'This labware does not currently have a retention instruction.'
+        expect(page).to have_no_text 'This labware does not currently have a retention instruction.'
       end
 
       it_behaves_like 'updating retention instruction'

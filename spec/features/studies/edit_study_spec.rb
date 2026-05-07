@@ -12,14 +12,14 @@ describe 'Edit a study' do
     login_user(user)
     visit study_path(study)
     click_link 'Edit'
-    expect(page).to have_content('Alignments in BAM')
+    expect(page).to have_text('Alignments in BAM')
     expect(find_by_id('study_study_metadata_attributes_bam')).not_to be_checked
     check 'study_study_metadata_attributes_bam'
     expect(find_by_id('study_study_metadata_attributes_bam')).to be_checked
     click_button 'Save Study'
-    expect(page).to have_content('Your study has been updated')
+    expect(page).to have_text('Your study has been updated')
     click_link 'study details'
-    expect(page).to have_content('Alignments in BAM: true')
+    expect(page).to have_text('Alignments in BAM: true')
   end
 
   it 'add external customer information', :js do
@@ -30,7 +30,7 @@ describe 'Edit a study' do
                              fill_options: { clear: :backspace }
     select('3 months', from: 'Data deletion period')
     click_button 'Save Study'
-    expect(page).to have_content('Your study has been updated')
+    expect(page).to have_text('Your study has been updated')
     study.reload
     expect(study.study_metadata.s3_email_list).to eq('aa1@sanger.ac.uk;aa2@sanger.ac.uk;aa3@sanger.ac.uk')
     expect(study.study_metadata.data_deletion_period).to eq('3 months')
@@ -45,11 +45,11 @@ describe 'Edit a study' do
       login_user(user)
       visit study_path(study)
       click_link 'Edit'
-      expect(page).to have_content('What is the data release strategy for this study?')
-      expect(page).to have_content('Open (ENA)')
+      expect(page).to have_text('What is the data release strategy for this study?')
+      expect(page).to have_text('Open (ENA)')
       choose('Open (ENA)', allow_label_click: true)
       click_button 'Save Study'
-      expect(page).to have_content('Your study has been updated')
+      expect(page).to have_text('Your study has been updated')
     end
   end
 

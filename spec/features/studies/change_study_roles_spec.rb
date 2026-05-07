@@ -14,9 +14,9 @@ describe 'Study roles' do
     login_user(user)
     visit study_path(study)
     click_link 'Contacts'
-    expect(find_by_id('role_list')).to have_content(manager.login)
+    expect(find_by_id('role_list')).to have_text(manager.login)
     click_button 'Remove'
-    expect(find_by_id('role_list')).to have_no_content(manager.login)
+    expect(find_by_id('role_list')).to have_no_text(manager.login)
     expect(study.reload.updated_at).to be > 1.hour.ago
   end
 end

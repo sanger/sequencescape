@@ -22,14 +22,14 @@ describe 'Create printers' do
     login_user user
     visit admin_path
     click_link 'Printer management'
-    expect(page).to have_content('Barcode Printers')
+    expect(page).to have_text('Barcode Printers')
     click_link 'Create Barcode Printer'
     fill_in('Name', with: 'yetanotherprinter')
     check('Active')
     choose('squix')
     click_button('Submit')
-    expect(page).to have_content('Barcode Printer was successfully created.')
-    expect(page).to have_content('yetanotherprinter')
+    expect(page).to have_text('Barcode Printer was successfully created.')
+    expect(page).to have_text('yetanotherprinter')
     configatron.register_printers_automatically = false
   end
 end

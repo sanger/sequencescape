@@ -64,9 +64,6 @@
             > samples have failed to accession for study
             <strong>
               <mj-raw>{{ fields[0]["study_name"] }}</mj-raw></strong
-            > and manifest
-            <strong>
-              <mj-raw>{{ fields[0]["manifest_id"] }}</mj-raw></strong
             >.
             <br />
             Please review and address the warnings below.
@@ -137,7 +134,7 @@
         <mj-column mj-class="bg-light border-1 border-radius-2">
           <mj-text mj-class="text-secondary p-3" font-weight="bold">
             <mj-raw>
-              <a href="{{ item['sample_path'] }}"> {{ item["sample_name"] }} ({{ item["supplier_sample_name"] }}) </a>
+              <a href="{{ item['sample_path'] }}"> {{ item["sample_name"] }}</a>
             </mj-raw>
           </mj-text>
           <mj-divider border-color="#e0e0e0" padding="0" />

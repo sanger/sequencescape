@@ -75,7 +75,7 @@ describe 'Perform a tag substitution', :js do
     login_user user
     visit receptacle_path(lane)
     click_link 'perform tag substitution'
-    expect(page).to have_content(lane.name)
+    expect(page).to have_text(lane.name)
     fill_in('Ticket', with: '12345')
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
@@ -90,8 +90,8 @@ describe 'Perform a tag substitution', :js do
     scroll_to(find_button('Substitute Tags'))
     click_button 'Substitute Tags'
 
-    expect(page).to have_content "Receptacle #{lane.display_name}"
-    expect(page).to have_content 'Your substitution was performed.'
+    expect(page).to have_text "Receptacle #{lane.display_name}"
+    expect(page).to have_text 'Your substitution was performed.'
     find('td', text: sample_a.name).sibling('td', text: "(#{sample_b_orig_tag.oligo})")
     find('td', text: sample_a.name).sibling('td', text: "(#{sample_a_orig_tag2.oligo})")
     find('td', text: sample_b.name).sibling('td', text: "(#{sample_a_orig_tag.oligo})")
@@ -99,7 +99,7 @@ describe 'Perform a tag substitution', :js do
 
     click_link '1 comment'
 
-    expect(page).to have_content(<<~COMMENT)
+    expect(page).to have_text(<<~COMMENT)
       Tag substitution performed.
       Referenced ticket no: 12345
       Sample #{sample_a.id}: Tag changed from #{sample_a_orig_tag.oligo} to #{sample_b_orig_tag.oligo};
@@ -111,7 +111,7 @@ describe 'Perform a tag substitution', :js do
     login_user user
     visit receptacle_path(lane)
     click_link 'perform tag substitution'
-    expect(page).to have_content(lane.name)
+    expect(page).to have_text(lane.name)
     fill_in('Ticket', with: '12345')
     select('Incorrect tags selected in Sequencescape.', from: 'Reason')
     find('td', text: "#{sample_a.id}: #{sample_a.sanger_sample_id}").ancestor('tr').select(
@@ -126,9 +126,9 @@ describe 'Perform a tag substitution', :js do
     scroll_to(find_button('Substitute Tags'))
     click_button 'Substitute Tags'
 
-    expect(page).to have_content(lane.name)
-    expect(page).to have_content 'Your tag substitution could not be performed.'
-    expect(page).to have_content(
+    expect(page).to have_text(lane.name)
+    expect(page).to have_text 'Your tag substitution could not be performed.'
+    expect(page).to have_text(
       "Tag pair #{sample_b_orig_tag.oligo}-#{sample_b_orig_tag2.oligo} features multiple times in the pool."
     )
   end

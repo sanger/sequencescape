@@ -7,7 +7,7 @@ require 'exception_notification'
 # Records the statuses and response from the failed attempts in the accession statuses
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do
+  Struct.new(:accessionable, :event_user) do # rubocop:disable Metrics/ClassLength
     def perform
       submission = Accession::Submission.new(accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
@@ -138,10 +138,16 @@ SampleAccessioningJob =
     end
 
     # Log and email developers of the accessioning error
-    def send_failure_notifications(error, submission)
+    def send_failure_notifications(error, submission) # rubocop:disable Metrics/AbcSize
       sample_name = submission.sample.sample.name
       Rails.logger.warn("SampleAccessioningJob failed for sample '#{sample_name}': #{error.message}")
       Rails.logger.debug(error.backtrace.join("\n")) if error.backtrace # Log backtrace for debugging
+
+      if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures)
+        # Send an email to users when accessioning fails
+        sample = submission.sample.sample
+        Delayed::Job.enqueue(NotificationJob.new(sample, error.message, failure_groups(error)), priority: 300)
+      end
 
       case error
       when Accession::ExternalNumberConflictError
@@ -149,10 +155,7 @@ SampleAccessioningJob =
         # Do not notify developers as it is not expected to be resolved by code changes
       when Accession::ExternalValidationError
         if Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures)
-          send_exception_notification(error, submission)
-        end
-      when Accession::InternalValidationError
-        if Flipper.enabled?(:y25_705_notify_on_internal_accessioning_validation_failures)
+          # Notify developers when there is a failure from the external service
           send_exception_notification(error, submission)
         end
       end
@@ -168,5 +171,24 @@ SampleAccessioningJob =
         user: event_user&.login
       }
       ExceptionNotifier.notify_exception(error, data:)
+    end
+
+    # Group the failure into user-friendly categories for notification purposes.
+    # Allows for multiple groups per failure if relevant
+    def failure_groups(error)
+      failure_groups = []
+      case error
+      when Accession::ExternalNumberConflictError
+        failure_groups << 'Existing accession number conflict'
+      when Accession::ExternalValidationError
+        failure_groups << 'External failure'
+      when Accession::InvalidFieldsError
+        error.invalid_fields.each do |field|
+          failure_groups << "Invalid #{field}"
+        end
+      when Accession::InternalValidationError
+        failure_groups << 'Internal validations'
+      end
+      failure_groups
     end
   end

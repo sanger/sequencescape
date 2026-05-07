@@ -24,7 +24,7 @@ describe 'Creating a quad stamp' do
     click_link 'Create quad-stamped plates and print barcodes'
 
     # We're on the page
-    expect(page).to have_content('Quadrant Stamping')
+    expect(page).to have_text('Quadrant Stamping')
 
     # We fill in the form
     fill_in 'User barcode', with: swipecard
@@ -38,7 +38,7 @@ describe 'Creating a quad stamp' do
 
     # We submit the form to create the plate and print the barcode
     click_on 'Submit'
-    expect(page).to have_content new_barcode.barcode
+    expect(page).to have_text new_barcode.barcode
   end
 
   it 'handles incorrect input' do
@@ -52,7 +52,7 @@ describe 'Creating a quad stamp' do
     click_link 'Create quad-stamped plates and print barcodes'
 
     # We're on the page
-    expect(page).to have_content('Quadrant Stamping')
+    expect(page).to have_text('Quadrant Stamping')
 
     # We fill in the form
     fill_in 'User barcode', with: swipecard
@@ -62,7 +62,7 @@ describe 'Creating a quad stamp' do
 
     # We submit the form and expect to get an error
     click_on 'Submit'
-    expect(page).to have_content 'Parent barcodes Quad 1 (invalid) could not be found'
+    expect(page).to have_text 'Parent barcodes Quad 1 (invalid) could not be found'
   end
 
   it 'links from the tube racks status page' do
@@ -72,6 +72,6 @@ describe 'Creating a quad stamp' do
     click_link 'Create quad-stamped plates and print barcodes'
 
     # We're on the page
-    expect(page).to have_content('Quadrant Stamping')
+    expect(page).to have_text('Quadrant Stamping')
   end
 end
