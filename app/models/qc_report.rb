@@ -145,7 +145,7 @@ class QcReport < ApplicationRecord
   validate :check_valid_plate_barcodes, if: -> { plate_barcodes.present? }
 
   # We allow null values for study_id to allow qc_reports to be created without a study (just plate_barcodes)
-  validates :study_id, presence: true, unless: -> { plate_barcodes.present? }
+  validates :study, presence: true, unless: -> { plate_barcodes.present? }
 
   def check_valid_plate_barcodes
     invalid_barcodes = plate_barcodes.reject { |barcode| Plate.find_by_barcode(barcode) }
