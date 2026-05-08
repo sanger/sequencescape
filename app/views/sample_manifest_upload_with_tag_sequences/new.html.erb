@@ -2,6 +2,8 @@
 
 <%= page_title "Sample Manifests", "New and upload" %>
 
+<p class="lead">This sample manifest upload screen handles tubes with tag sequences, and plates or tubes with foreign barcodes.</p>
+
 <% if @uploader %>
   <%= alert(:danger) do %>
     <% @uploader.errors.full_messages.each do |message| %>
@@ -10,7 +12,7 @@
   <% end %>
 <% end %>
 
-<%= render partial: "upload" %>
+<%= render partial: "sdb/sample_manifests/upload" %>
 
 <%= pagination @sample_manifests %>
 <%= render partial: 'shared/manifests', locals: { manifests: @display_manifests, show_uploaded: true} %>
