@@ -7,11 +7,11 @@
       </div>
       <div class="form-group">
         <div class="form-check">
-          <%= check_box_tag :override, class: 'form-check-input'%>
-          <%= label_tag :override, 'Override previously uploaded samples', class: 'form-check-label' %>
+          <%= check_box_tag :override_samples, class: 'form-check-input'%>
+          <%= label_tag :override_samples, 'Override previously uploaded samples', class: 'form-check-label' %>
         </div>
 
-        <div class="ml-3"><%# Indent the volume and concentration checkboxes, since they depend on override %>
+        <div class="ml-3"><%# Indent the volume and concentration checkboxes, since they depend on override_samples %>
           <div class="form-check">
             <%= check_box_tag :overwrite_volume, class: 'form-check-input', disabled: true %>
             <%= label_tag :overwrite_volume, 'Overwrite volume', class: 'form-check-label' %>
@@ -32,7 +32,7 @@
 <script>
   // Add JavaScript to enable/disable the volume and concentration checkboxes based on the state of the override-samples checkbox
   document.addEventListener('DOMContentLoaded', function() {
-    const overrideSamples = document.getElementById('override');
+    const overrideSamples = document.getElementById('override_samples');
     const overwriteVolume = document.getElementById('overwrite_volume');
     const overwriteConcentration = document.getElementById('overwrite_concentration');
 

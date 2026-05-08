@@ -231,7 +231,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it_behaves_like 'it updates downstream aliquots', [10, 11], insert_size_from: 6, insert_size_to: 7, i7: 2
 
         context 'when override is true' do
-          let(:override) { true }
+          let(:override_samples) { true }
 
           context 'when updating sample data' do
             let(:reupload) do
@@ -262,7 +262,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when override is false' do
-          let(:override) { false }
+          let(:override_samples) { false }
           let(:reupload) do
             SampleManifestExcel::Upload::Base.new(
               file: new_test_file,

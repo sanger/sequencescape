@@ -60,7 +60,7 @@ module SampleManifestExcel
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group, upload.override)
+            row.update_sample(tag_group, upload.override_samples)
             substitutions.concat(row.aliquots.filter_map(&:substitution_hash)) if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?

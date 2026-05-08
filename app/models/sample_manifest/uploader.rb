@@ -9,7 +9,7 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :file, :configuration, :tag_group, :upload, :user, :override
+  attr_reader :file, :configuration, :tag_group, :upload, :user, :override_samples
 
   validates :tag_group, presence: { message: 'is not correctly configured for manifest generation' }
   validates :file, :configuration, :user, presence: true
@@ -18,14 +18,17 @@ class SampleManifest::Uploader
 
   delegate :processed?, :study, to: :upload
 
-  def initialize(file, configuration, user, override)
+  def initialize(file, configuration, user, override_samples)
     @file = file
     @configuration = configuration || SequencescapeExcel::NullObjects::NullConfiguration.new
     @user = user
-    @override = override
+    @override_samples = override_samples
     @tag_group = create_tag_group
-    @upload =
-      SampleManifestExcel::Upload::Base.new(file: file, column_list: self.configuration.columns.all, override: override)
+    @upload = SampleManifestExcel::Upload::Base.new(
+      file: file,
+      column_list: self.configuration.columns.all,
+      override_samples: override_samples
+    )
   end
 
   def run! # rubocop:disable Metrics/MethodLength
