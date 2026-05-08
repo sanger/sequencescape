@@ -867,4 +867,172 @@ describe Well do
       end.to change(Warren.handler.messages, :count).from(0)
     end
   end
+
+  describe '.on_plate_purpose_included' do
+    let(:purpose_1) { create(:plate_purpose) }
+    let(:purpose_2) { create(:plate_purpose) }
+    let(:well_1) { create(:well, plate: create(:plate, plate_purpose: purpose_1)) }
+    let(:well_2) { create(:well, plate: create(:plate, plate_purpose: purpose_2)) }
+
+    it 'returns wells with the included plate purposes' do
+      expect(described_class.on_plate_purpose_included([purpose_1])).to eq([well_1])
+      expect(described_class.on_plate_purpose_included([purpose_2])).to eq([well_2])
+      expect(described_class.on_plate_purpose_included([purpose_1,
+                                                        purpose_2])).to contain_exactly(well_1, well_2)
+    end
+
+    it 'returns an empty array if no wells have the included plate purposes' do
+      expect(described_class.on_plate_purpose_included(['Non-existent Purpose'])).to eq([])
+    end
+  end
+
+  describe '.on_plate_barcode' do
+    let(:plate_1) { create(:plate) }
+    let(:plate_2) { create(:plate) }
+    let(:well_1) { create(:well, plate: plate_1) }
+    let(:well_2) { create(:well, plate: plate_2) }
+
+    it 'returns wells with the included plate barcodes' do
+      expect(described_class.on_plate_barcode([plate_1.human_barcode])).to eq([well_1])
+      expect(described_class.on_plate_barcode([plate_2.human_barcode])).to eq([well_2])
+      expect(described_class.on_plate_barcode([plate_1.human_barcode,
+                                               plate_2.human_barcode])).to contain_exactly(well_1, well_2)
+    end
+
+    it 'returns an empty array if no wells have the included plate barcodes' do
+      expect(described_class.on_plate_barcode(['Non-existent Barcode'])).to eq([])
+    end
+  end
+
+  describe '.for_study_through_aliquot' do
+    let(:study) { create(:study) }
+    let(:aliquot_1) { create(:aliquot, study:) }
+    let(:aliquot_2) { create(:aliquot, study:) }
+    let(:well_1) { create(:well, aliquots: [aliquot_1]) }
+    let(:well_2) { create(:well, aliquots: [aliquot_2]) }
+
+    it 'returns wells for the given study through their aliquots' do
+      expect(described_class.for_study_through_aliquot(study)).to contain_exactly(well_1, well_2)
+    end
+
+    it 'returns an empty array if no wells are associated with the given study through their aliquots' do
+      other_study = create(:study)
+      expect(described_class.for_study_through_aliquot(other_study)).to eq([])
+    end
+  end
+
+  describe '.without_blank_samples' do
+    let(:study) { create(:study) }
+    let(:aliquot_1) { create(:aliquot, study: study, sample: create(:sample, empty_supplier_sample_name: false)) }
+    let(:aliquot_2) { create(:aliquot, study: study, sample: create(:sample, empty_supplier_sample_name: true)) }
+    let(:well_1) { create(:well, aliquots: [aliquot_1]) }
+    let(:well_2) { create(:well, aliquots: [aliquot_2]) }
+
+    it 'returns wells with samples without empty_supplier_sample_names' do
+      expect(described_class.without_blank_samples).to contain_exactly(well_1)
+    end
+
+    it 'returns an empty array if no wells contain samples without empty_supplier_sample_names' do
+      aliquot_2.sample.update(empty_supplier_sample_name: true)
+      expect(described_class.without_blank_samples).to eq([])
+    end
+  end
+
+  describe '#qc_report_in_batches' do
+    let!(:study) { create(:study) }
+    let(:purpose_1) { PlatePurpose.stock_plate_purpose }
+    let(:purpose_2) { create(:plate_purpose) }
+    let(:purpose_3) { create(:plate_purpose) }
+    let(:purpose_4) { create(:plate_purpose) }
+
+    before do
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_1))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_2))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_3))
+      create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_4))
+    end
+
+    it 'limits by stock plate purposes if there are no plate purposes' do
+      wells_count = 0
+      described_class.qc_report_in_batches(study, false, 'Bespoke RNA', nil, nil) do |wells|
+        wells_count += wells.length
+      end
+      expect(wells_count).to eq(1)
+    end
+
+    it 'limits by passed plates purposes' do
+      wells_count = 0
+      described_class.qc_report_in_batches(
+        study,
+        false,
+        'Bespoke RNA',
+        [purpose_2.name, purpose_3.name, purpose_4.name],
+        nil
+      ) { |wells| wells_count += wells.length }
+      expect(wells_count).to eq(3)
+
+      wells_count = 0
+      described_class.qc_report_in_batches(study, false, 'Bespoke RNA', [purpose_2.name, purpose_3.name],
+                                           nil) do |wells|
+        wells_count += wells.length
+      end
+      expect(wells_count).to eq(2)
+    end
+
+    it 'limits by plate barcodes' do
+      plate_1 = create(:plate, plate_purpose: purpose_1)
+      plate_2 = create(:plate, plate_purpose: purpose_1)
+      create(:well_for_qc_report, study: study, plate: plate_1)
+      create(:well_for_qc_report, study: study, plate: plate_2)
+
+      wells_count = 0
+      described_class.qc_report_in_batches(nil, false, 'Bespoke RNA', [purpose_1.name],
+                                           [plate_1.human_barcode]) do |wells|
+        wells_count += wells.length
+      end
+      expect(wells_count).to eq(1)
+    end
+
+    it 'limits by study' do
+      study_2 = create(:study)
+      create(:well_for_qc_report, study: study_2, plate: create(:plate, plate_purpose: purpose_1))
+
+      wells_count = 0
+      described_class.qc_report_in_batches(study, false, 'Bespoke RNA', [purpose_1.name], nil) do |wells|
+        wells_count += wells.length
+      end
+      expect(wells_count).to eq(1)
+    end
+
+    context 'combination of filters' do
+      it 'limits by study and plate purposes' do
+        study_2 = create(:study)
+        create(:well_for_qc_report, study: study_2, plate: create(:plate, plate_purpose: purpose_2))
+
+        wells_count = 0
+        described_class.qc_report_in_batches(study, false, 'Bespoke RNA', [purpose_2.name], nil) do |wells|
+          wells_count += wells.length
+        end
+        expect(wells_count).to eq(1)
+      end
+
+      it 'limits by study, plate purposes and plate barcodes' do
+        study_2 = create(:study)
+        plate_1 = create(:plate, plate_purpose: purpose_2)
+        plate_2 = create(:plate, plate_purpose: purpose_2)
+        create(:well_for_qc_report, study: study_2, plate: plate_1)
+        create(:well_for_qc_report, study: study_2, plate: plate_2)
+
+        wells_count = 0
+        described_class.qc_report_in_batches(
+          study_2,
+          false,
+          'Bespoke RNA',
+          [purpose_2.name],
+          [plate_1.human_barcode]
+        ) { |wells| wells_count += wells.length }
+        expect(wells_count).to eq(1)
+      end
+    end
+  end
 end

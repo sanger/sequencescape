@@ -91,6 +91,14 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   scope :on_plate_purpose, ->(purposes) { joins(:labware).where(labware: { plate_purpose_id: purposes }) }
 
+  scope :on_plate_barcode,
+        lambda { |*barcodes|
+          if barcodes.flatten.any?
+            db_barcodes = Barcode.extract_barcodes(barcodes)
+            joins(labware: :barcodes).where(barcodes: { barcode: db_barcodes }).distinct
+          end
+        }
+
   # added version of scope with includes to avoid multiple calls to LabWhere in qc report when getting storage location
   # for wells in the same plate
   scope :on_plate_purpose_included,
@@ -98,7 +106,9 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
           includes(labware: :barcodes).references(:labware).where(labware: { plate_purpose_id: purposes })
         end
 
-  scope :for_study_through_aliquot, ->(study) { joins(:aliquots).where(aliquots: { study_id: study }) }
+  scope :for_study_through_aliquot, ->(study) {
+    joins(:aliquots).where(aliquots: { study_id: study }) if study.present?
+  }
 
   scope :with_report,
         ->(product_criteria) do
@@ -368,5 +378,19 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
 
   def empty?
     aliquots.blank?
+  end
+
+  def self.qc_report_in_batches(study, exclude_existing, product_criteria, plate_purposes, plate_barcodes, &)
+    # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
+    #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.
+    base_scope =
+      for_study_through_aliquot(study)
+        .on_plate_barcode(plate_barcodes)
+        .on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || Study::STOCK_PLATE_PURPOSES))
+        .without_blank_samples
+        .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
+        .readonly(true)
+    scope = exclude_existing ? base_scope.without_report(product_criteria) : base_scope
+    scope.find_in_batches(&)
   end
 end
