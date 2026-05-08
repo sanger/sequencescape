@@ -19,7 +19,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create_uploader
-    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
+    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override_samples])
   end
 
   def upload_manifest

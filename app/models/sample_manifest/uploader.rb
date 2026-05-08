@@ -9,7 +9,7 @@
 class SampleManifest::Uploader
   include ActiveModel::Validations
 
-  attr_reader :file, :configuration, :tag_group, :upload, :user, :override
+  attr_reader :file, :configuration, :tag_group, :upload, :user, :override_samples
 
   validates :tag_group, presence: { message: 'is not correctly configured for manifest generation' }
   validates :file, :configuration, :user, presence: true
