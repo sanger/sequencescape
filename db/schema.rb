@@ -857,6 +857,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
     t.integer "source_purpose_id"
     t.integer "lifespan"
     t.integer "barcode_prefix_id"
+    t.boolean "deprecated", default: false, null: false
+    t.datetime "deprecated_at"
     t.index ["barcode_prefix_id"], name: "fk_rails_763bed2756"
     t.index ["target_type"], name: "index_plate_purposes_on_target_type"
     t.index ["type"], name: "index_plate_purposes_on_type"

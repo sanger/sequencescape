@@ -38,9 +38,9 @@ class UltimaSequencingRequest < SequencingRequest
     "#{batch.id}_#{source_labware.human_barcode}_#{position}"
   end
 
-  # Returns the sequencer type 'UG100' for UltimaSequencingRequest.
+  # Returns the sequencer type 'UG 100' for UltimaSequencingRequest.
   def requested_sequencer_type
-    'UG100'
+    'UG 100'
   end
 
   # Returns the wafer size for UltimaSequencingRequest as nil, as not tracked in UG100
