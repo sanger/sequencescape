@@ -16,11 +16,10 @@ GIT
 
 GIT
   remote: https://github.com/sanger/record_loader
-  revision: cbd59574d1090a0a81a770478a6b4042fa882f6a
-  branch: sh51/psych-5
+  revision: 238db7fa24fffee5ad413bd9cd4c6b857d1626c9
+  tag: v0.3.0
   specs:
-    record_loader (1.0.0)
-      psych (~> 5.0)
+    record_loader (0.3.0)
 
 GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
@@ -340,7 +339,7 @@ GEM
       bigdecimal
     net-http (0.9.1)
       uri (>= 0.11.1)
-    net-imap (0.6.3)
+    net-imap (0.6.4)
       date
       net-protocol
     net-ldap (0.20.0)
@@ -379,9 +378,7 @@ GEM
       pry (>= 0.13, < 0.17)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
-    psych (5.3.1)
-      date
-      stringio
+    psych (3.3.4)
     public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
@@ -592,7 +589,6 @@ GEM
       rbtree
       set (~> 1.0)
     ssrf_filter (1.2.0)
-    stringio (3.2.0)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
@@ -720,6 +716,7 @@ DEPENDENCIES
   prettier_print
   pry-byebug
   pry-rails
+  psych (< 4)
   puma
   rack-acceptable
   rack-cors
