@@ -181,9 +181,9 @@ class QcReport < ApplicationRecord
   # same product / study abbreviation combo within one second
   # of each other.
   def generate_report_identifier
-    return true if study.nil? || product_criteria.nil?
+    return true if product_criteria.nil?
 
-    rid = [study.abbreviation, product_criteria.product.name, DateTime.now.to_fs(:number)].compact
+    rid = [study&.abbreviation, product_criteria.product.name, DateTime.now.to_fs(:number)].compact
       .join('_')
       .downcase
       .gsub(/[^\w]/, '_')

@@ -1,4 +1,4 @@
-<h2><%= @report_presenter.product_name %> report for <%=  link_to(@report_presenter.study_name,@report_presenter.study) %></h2>
+<h2><%= @report_presenter.product_name %> report for <%=  @report_presenter.study.present? ? link_to(@report_presenter.study_name,@report_presenter.study) : 'N/A' %></h2>
 
 <dl>
 <% @report_presenter.each_header do |attribute,value| %>
