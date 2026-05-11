@@ -884,6 +884,10 @@ describe Well do
     it 'returns an empty array if no wells have the included plate purposes' do
       expect(described_class.on_plate_purpose_included(['Non-existent Purpose'])).to eq([])
     end
+
+    it 'returns an empty array if no purposes are included' do
+      expect(described_class.on_plate_purpose_included([])).to eq([])
+    end
   end
 
   describe '.on_plate_barcode' do
@@ -952,9 +956,20 @@ describe Well do
       create(:well_for_qc_report, study: study, plate: create(:plate, plate_purpose: purpose_4))
     end
 
-    it 'limits by stock plate purposes if there are no plate purposes' do
+    it 'limits by stock plate purposes if there are no plate purposes and no plate barcodes' do
       wells_count = 0
       described_class.qc_report_in_batches(study, false, 'Bespoke RNA', nil, nil) do |wells|
+        wells_count += wells.length
+      end
+      expect(wells_count).to eq(1)
+    end
+
+    it 'does not limit by stock plate purposes if there are no plate purposes but there are plate barcodes' do
+      plate_1 = create(:plate, plate_purpose: purpose_4)
+      create(:well_for_qc_report, study: study, plate: plate_1)
+
+      wells_count = 0
+      described_class.qc_report_in_batches(study, false, 'Bespoke RNA', nil, [plate_1.human_barcode]) do |wells|
         wells_count += wells.length
       end
       expect(wells_count).to eq(1)

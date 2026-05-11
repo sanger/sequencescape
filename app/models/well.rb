@@ -103,7 +103,9 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   # for wells in the same plate
   scope :on_plate_purpose_included,
         ->(purposes) do
-          includes(labware: :barcodes).references(:labware).where(labware: { plate_purpose_id: purposes })
+          if purposes.any?
+            includes(labware: :barcodes).references(:labware).where(labware: { plate_purpose_id: purposes })
+          end
         end
 
   scope :for_study_through_aliquot, ->(study) {
@@ -383,10 +385,13 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   def self.qc_report_in_batches(study, exclude_existing, product_criteria, plate_purposes, plate_barcodes, &)
     # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
     #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.
+    # Plate purposes don't need to be specified if plate_barcodes are provided.
+    # If they are not, then we default to the stock plate purposes if not plate_purposes are provided.
+    default_plate_purposes = plate_barcodes.present? ? nil : Study::STOCK_PLATE_PURPOSES
     base_scope =
       for_study_through_aliquot(study)
         .on_plate_barcode(plate_barcodes)
-        .on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || Study::STOCK_PLATE_PURPOSES))
+        .on_plate_purpose_included(PlatePurpose.where(name: plate_purposes || default_plate_purposes))
         .without_blank_samples
         .includes(:well_attribute, :aliquots, :map, samples: :sample_metadata)
         .readonly(true)
