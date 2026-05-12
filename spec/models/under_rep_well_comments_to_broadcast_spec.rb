@@ -34,7 +34,6 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
     well_a1.requests << poly_metadata_library_request
   end
 
-
   describe '#under_represented_well_comments' do
     context 'when a lane aliquot matches the well aliquot' do
       let(:comments) { batch.under_represented_well_comments }
@@ -58,8 +57,8 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
 
       it 'sets the correct tag_index from the matching lane aliquot' do
         expected_tag_index = lane.aliquots
-                                 .find { |a| a.sample_id == well_a1.aliquots.first.sample_id }
-                               &.aliquot_index_value
+          .find { |a| a.sample_id == well_a1.aliquots.first.sample_id }
+          &.aliquot_index_value
         expect(comment.tag_index).to eq(expected_tag_index)
       end
 
@@ -75,11 +74,11 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
 
     context 'when no lane aliquot matches the well aliquot' do
       before do
-        lane  # force eager creation before deleting indexes
+        lane # force eager creation before deleting indexes
         AliquotIndex.where(lane_id: lane.id).delete_all
         # Reload so lane.aliquots no longer carries aliquot_index_value
         lane.aliquots.each_with_index do |aliquot, i|
-          aliquot.update!(tag_id: 9000+i, tag2_id: 8000+i)
+          aliquot.update!(tag_id: 9000 + i, tag2_id: 8000 + i)
         end
       end
 
@@ -96,7 +95,6 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
         expect(clean_batch.under_represented_well_comments).to eq([])
       end
     end
-
   end
 
   # ─── UnderRepWellComment value object ───────────────────────────────────────
@@ -104,9 +102,9 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
     subject(:comment) do
       described_class.new(
         poly_metadatum: poly_meta_underrep,
-        batch_id:       batch.id,
-        position:       batch_request.position,
-        tag_index:      1
+        batch_id: batch.id,
+        position: batch_request.position,
+        tag_index: 1
       )
     end
 
