@@ -49,7 +49,7 @@ module Transfer::State
                     query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
                   end
 
-                  joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
+                  joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states]).distinct
                 else
                   all
                 end
