@@ -73,7 +73,7 @@ module UnderRepWellCommentsToBroadcast
   # library requests in the lane's ancestor plates, then building a comment for
   # each associated poly_metadatum.
   #
-  # @param lane [Lane] the lane asset associated with the batch request
+  # @param lane [Lane] the lane receptacle associated with the batch request
   # @param batch_request [Request] the sequencing request whose position is used in the comment
   # @return [Array<UnderRepWellComment>] comments built for the given lane
   def build_comments_for_lane(lane, batch_request)
