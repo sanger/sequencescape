@@ -142,8 +142,8 @@ module UnderRepWellCommentsToBroadcast
   #   - `tag2_id`
   #   - `tag_depth`
   #
-  # This comparison is used to associate request aliquots with the
-  # corresponding lane aliquots in order to retrieve the correct tag index for the comment.
+  # This comparison is used to associate aliquots that were marked as 'under-represented' with their
+  # downstream lane aliquots in order to retrieve the correct tag index for the comment.
   #
   # @param lane [Asset] the lane asset derived from the request
   # @param aliquot [Aliquot] the aliquot being compared
