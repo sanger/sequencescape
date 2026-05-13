@@ -27,9 +27,9 @@ module SequencescapeExcel
         return unless valid?
 
         # NB. the asset here is a well, and the well_has_single_aliquot? validation ensures there is only one aliquot
-        # NB. we are fetching via row so this is the same aliquot instance so saved_changes? works to detect
-        # substitutions
-        row.aliquots.first.assign_attributes(tag:, tag2:)
+        # NB. however we do not use first as this triggers a select and gets a new instance of the aliquot, which then
+        # is not same aliquot instance when saved_changes? works to detect substitutions for TagSubstitution
+        aliquots.each { |aliquot| aliquot.assign_attributes(tag:, tag2:) }
       end
 
       def link(other_fields)
@@ -43,16 +43,16 @@ module SequencescapeExcel
       end
 
       def tag_group_id
-        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil, caught by validation
-        # in DualIndexTagSet
+        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil
+        # added because this code was running before the validation in DualIndexTagSet catches the missing value
         return unless dual_index_tag_set
 
         @tag_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag_group_id, visible: true)&.id
       end
 
       def tag2_group_id
-        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil, caught by validation
-        # in DualIndexTagSet
+        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil
+        # added because this code was running before the validation in DualIndexTagSet catches the missing value
         return unless dual_index_tag_set
 
         @tag2_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag2_group_id, visible: true)&.id
@@ -83,9 +83,9 @@ module SequencescapeExcel
 
       # Validation to ensure that the well has a single aliquot
       def well_has_single_aliquot?
-        return true if asset.aliquots.one?
+        return true if aliquots.one?
 
-        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{asset.aliquots.count}"
+        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{aliquots.count}"
         errors.add(:base, msg)
       end
     end
