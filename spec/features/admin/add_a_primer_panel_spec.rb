@@ -18,13 +18,13 @@ describe 'Primer Panel' do
     fill_in 'primer_panel_programs_pcr_2_name', with: 'Pcr 2 Name'
     fill_in 'primer_panel_programs_pcr_2_duration', with: '120'
     click_on 'Create'
-    expect(page).to have_content("Created 'My Primer panel'")
+    expect(page).to have_text("Created 'My Primer panel'")
   end
 
   it 'user can edit a primer panel' do
     login_user user
     visit edit_admin_primer_panel_path(primer_panel)
-    expect(page).to have_content(
+    expect(page).to have_text(
       'Editing a primer panel will affect all experiments where a primer panel has been used.'
     )
     expect(find_field('Name').value).to eq('Primer Panel 1')
@@ -34,6 +34,6 @@ describe 'Primer Panel' do
     expect(find_field('primer_panel_programs_pcr_2_name').value).to eq('pcr2 program')
     expect(find_field('primer_panel_programs_pcr_2_duration').value).to eq('20')
     click_on 'Update'
-    expect(page).to have_content('Primer Panel was successfully updated.')
+    expect(page).to have_text('Primer Panel was successfully updated.')
   end
 end

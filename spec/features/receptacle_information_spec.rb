@@ -12,7 +12,7 @@ describe 'Viewing a receptacle' do
     it 'can be viewed on its show page' do
       login_user user
       visit receptacle_path(receptacle)
-      expect(find('h1')).to have_content("Receptacle #{receptacle.display_name}")
+      expect(find('h1')).to have_text("Receptacle #{receptacle.display_name}")
     end
   end
 

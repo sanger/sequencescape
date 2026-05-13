@@ -17,10 +17,10 @@ RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print
   end
 
   scenario 'convert plates to tubes page' do
-    expect(page).to have_content('Convert Plates To Tubes')
-    expect(page).to have_content('Source plates')
-    expect(page).to have_content('Study')
-    expect(page).to have_content('Barcode printer')
+    expect(page).to have_text('Convert Plates To Tubes')
+    expect(page).to have_text('Source plates')
+    expect(page).to have_text('Study')
+    expect(page).to have_text('Barcode printer')
     expect(page).to have_button('Submit')
   end
 
@@ -31,8 +31,8 @@ RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print
     select study.name, from: 'Study'
     select barcode_printer.name, from: 'Barcode printer'
     click_on 'Submit'
-    expect(page).to have_content('Created tubes and printed barcodes')
-    expect(page).to have_content('Order Template')
+    expect(page).to have_text('Created tubes and printed barcodes')
+    expect(page).to have_text('Order Template')
   end
 
   scenario 'plate ID typed in' do
@@ -42,8 +42,8 @@ RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print
     select study.name, from: 'Study'
     select barcode_printer.name, from: 'Barcode printer'
     click_on 'Submit'
-    expect(page).to have_content('Created tubes and printed barcodes')
-    expect(page).to have_content('Order Template')
+    expect(page).to have_text('Created tubes and printed barcodes')
+    expect(page).to have_text('Order Template')
   end
 
   scenario 'plate barcode scanned and plate exists but has no wells' do
@@ -52,8 +52,8 @@ RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print
     select study.name, from: 'Study'
     select barcode_printer.name, from: 'Barcode printer'
     click_on 'Submit'
-    expect(page).to have_content('Failed to create sample tubes')
-    expect(page).to have_content('Convert Plates To Tubes')
+    expect(page).to have_text('Failed to create sample tubes')
+    expect(page).to have_text('Convert Plates To Tubes')
   end
 
   scenario 'plate barcode scanned and plate does not exist' do
@@ -61,15 +61,15 @@ RSpec.feature 'Creating sample tubes from a plate, add to asset group, and print
     select study.name, from: 'Study'
     select barcode_printer.name, from: 'Barcode printer'
     click_on 'Submit'
-    expect(page).to have_content('Failed to create sample tubes')
-    expect(page).to have_content('Convert Plates To Tubes')
+    expect(page).to have_text('Failed to create sample tubes')
+    expect(page).to have_text('Convert Plates To Tubes')
   end
 
   scenario 'no plates scanned' do
     select study.name, from: 'Study'
     select barcode_printer.name, from: 'Barcode printer'
     click_on 'Submit'
-    expect(page).to have_content('Failed to create sample tubes')
-    expect(page).to have_content('Convert Plates To Tubes')
+    expect(page).to have_text('Failed to create sample tubes')
+    expect(page).to have_text('Convert Plates To Tubes')
   end
 end

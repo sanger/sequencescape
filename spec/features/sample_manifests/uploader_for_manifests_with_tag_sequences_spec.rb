@@ -41,7 +41,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', Rails.root.join(test_file))
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
           click_link 'Completed manifest'
           expect(page.driver.response.headers['Content-Disposition']).to include(
             "attachment; filename=\"#{test_file}\""
@@ -53,7 +53,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
 
           # modify the upload file
           download.worksheet.axlsx_worksheet.rows[10].cells[12].value = 'Female'
@@ -66,8 +66,8 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           click_button('Upload manifest')
           s1 = Sample.find_by(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
           visit("/samples/#{s1.id}")
-          expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
-          expect(page).to have_content('Gender: Unknown')
+          expect(page).to have_text("Sequencescape Sample ID: #{s1.id}")
+          expect(page).to have_text('Gender: Unknown')
 
           # re-upload with override set - should see change to sample
           # login_user(user)
@@ -76,8 +76,8 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           check('Override previously uploaded samples')
           click_button('Upload manifest')
           visit("/samples/#{s1.id}")
-          expect(page).to have_content("Sequencescape Sample ID: #{s1.id}")
-          expect(page).to have_content('Gender: Female')
+          expect(page).to have_text("Sequencescape Sample ID: #{s1.id}")
+          expect(page).to have_text('Gender: Female')
         end
       end
 
@@ -89,7 +89,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
     end
@@ -103,14 +103,14 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
 
         it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
-          expect(page).to have_content('No file attached')
+          expect(page).to have_text('No file attached')
         end
       end
 
@@ -122,7 +122,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -136,7 +136,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -164,7 +164,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
 
           # change file before reuploading
@@ -186,7 +186,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           attach_file('File to upload', test_file)
           check('Override previously uploaded samples')
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
           expect(
@@ -209,7 +209,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
     end
@@ -230,15 +230,15 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
-          expect(page).to have_content('Same tags AA, TT are used on rows 10, 15.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Same tags AA, TT are used on rows 10, 15.')
         end
 
         it 'no file' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
-          expect(page).to have_content('No file attached')
+          expect(page).to have_text('No file attached')
         end
       end
 
@@ -257,7 +257,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -276,7 +276,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -302,7 +302,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 6
 
           # change file before reuploading
@@ -324,7 +324,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           attach_file('File to upload', test_file)
           check('Override previously uploaded samples')
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
           expect(
@@ -341,7 +341,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
     end
@@ -362,7 +362,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
           expect(page.text).to match(/Tags clash Same tags [A-Z]+, [A-Z]+ are used on rows 10, 15./)
         end
 
@@ -370,7 +370,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
-          expect(page).to have_content('No file attached')
+          expect(page).to have_text('No file attached')
         end
       end
 
@@ -389,7 +389,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -408,7 +408,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end
@@ -432,7 +432,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
 
@@ -444,7 +444,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
 
@@ -456,7 +456,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
 
@@ -468,7 +468,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Sample manifest successfully uploaded.')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
         end
       end
     end
@@ -481,7 +481,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           click_button('Upload manifest')
-          expect(page).to have_content('No file attached')
+          expect(page).to have_text('No file attached')
         end
       end
 
@@ -499,7 +499,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
 
@@ -513,7 +513,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
-          expect(page).to have_content('Your sample manifest couldn\'t be uploaded.')
+          expect(page).to have_text('Your sample manifest couldn\'t be uploaded.')
         end
       end
     end

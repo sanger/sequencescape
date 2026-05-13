@@ -32,8 +32,8 @@ class UltimaUG200SequencingRequest < UltimaSequencingRequest
 
   delegate :wafer_size, to: :request_metadata
 
-  # Returns the sequencer type 'UG200' for UltimaUG200SequencingRequest.
+  # Returns the sequencer type 'UG 200' for UltimaUG200SequencingRequest.
   def requested_sequencer_type
-    'UG200'
+    'UG 200'
   end
 end
