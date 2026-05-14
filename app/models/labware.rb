@@ -155,12 +155,21 @@ class Labware < Asset
         }
 
   # Used for location report
+  def self.map_retention_instructions(values)
+    return if values.blank?
+
+    values.filter_map { |v| Labware.retention_instructions[v] }
+  end
+
   def self.search_for_labware(params)
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
       .with_study_id(params[:study_id] || nil)
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_between(params[:start_date], params[:end_date])
       .filter_by_barcode(params[:barcodes] || nil)
+      .with_retention_instructions(
+        map_retention_instructions(params[:retention_instructions])
+      )
       .distinct
   end
 
@@ -185,6 +194,10 @@ class Labware < Asset
 
   scope :with_plate_purpose_ids,
         ->(plate_purpose_ids) { where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present? }
+
+  scope :with_retention_instructions, ->(retention_instructions) {
+    where(retention_instruction: retention_instructions) if retention_instructions.present?
+  }
 
   scope :created_between,
         ->(start_date, end_date) do
