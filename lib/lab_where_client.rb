@@ -91,7 +91,7 @@ module LabWhereClient
   class Labware < Endpoint
     endpoint_name 'labwares'
 
-    attr_reader :barcode, :location
+    attr_reader :barcode, :location, :updated_at
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
@@ -102,7 +102,8 @@ module LabWhereClient
 
     def initialize(params)
       @barcode = params['barcode']
-      @location = Location.new(params['location'])
+      @updated_at = params['updated_at']
+      @location = Location.new(params['location']) if params['location'].present?
     end
   end
 
@@ -155,7 +156,7 @@ module LabWhereClient
   class Location < Endpoint
     endpoint_name 'locations'
 
-    attr_reader :name, :parentage, :barcode
+    attr_reader :name, :parentage, :barcode, :updated_at
 
     def self.find_by_barcode(barcode)
       return nil if barcode.blank?
@@ -168,6 +169,7 @@ module LabWhereClient
       @name = params['name']
       @parentage = params['parentage']
       @barcode = params['barcode']
+      @updated_at = params['updated_at']
     end
 
     def location_info

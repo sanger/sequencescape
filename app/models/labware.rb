@@ -355,8 +355,18 @@ class Labware < Asset
     metadata.symbolize_keys[:retention_instruction]
   end
 
-  def lookup_labwhere_location
-    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+  def lookup_labwhere_location # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity
+    machine_lookup = lookup_labwhere(machine_barcode)
+    human_lookup = lookup_labwhere(human_barcode)
+
+    valid_lookups = [machine_lookup, human_lookup].compact.select { |lookup| lookup[:location].present? }
+    return valid_lookups.max_by { |lookup| lookup[:updated_at] || Time.zone.at(0) }[:location] if valid_lookups.any?
+
+    return 'Not found - There is a problem with Labwhere' if [machine_lookup, human_lookup].any? do |lookup|
+      lookup&.dig(:error)
+    end
+
+    nil
   end
 
   def lookup_labwhere(barcode)
@@ -365,9 +375,23 @@ class Labware < Asset
     rescue StandardError => e
       # rescue LabWhereClient::LabwhereException => e
       Rails.logger.error { e }
-      return 'Not found - There is a problem with Labwhere'
+      return { error: true }
     end
-    info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
+
+    return nil unless info_from_labwhere.present? && info_from_labwhere.location.present?
+
+    {
+      location: info_from_labwhere.location.location_info,
+      updated_at: parse_labwhere_timestamp(info_from_labwhere.updated_at)
+    }
+  end
+
+  def parse_labwhere_timestamp(timestamp)
+    return if timestamp.blank?
+
+    Time.zone.parse(timestamp)
+  rescue ArgumentError
+    nil
   end
 end
 # rubocop:enable Metrics/ClassLength

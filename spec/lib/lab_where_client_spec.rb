@@ -83,4 +83,26 @@ RSpec.describe LabWhereClient do
       end
     end
   end
+
+  describe LabWhereClient::Labware do
+    let(:params) do
+      {
+        'barcode' => '123456',
+        'updated_at' => 'Wednesday May  6 2026 10:46',
+        'location' => {
+          'name' => 'f1',
+          'parentage' => 'Sanger / Ogilvie / AA216',
+          'barcode' => 'lw-f1-26214',
+          'updated_at' => 'Tuesday June  6 2023 16:26'
+        }
+      }
+    end
+
+    it 'captures labware and location updated_at values from the API payload' do
+      labware = described_class.new(params)
+
+      expect(labware.updated_at).to eq('Wednesday May  6 2026 10:46')
+      expect(labware.location.updated_at).to eq('Tuesday June  6 2023 16:26')
+    end
+  end
 end
