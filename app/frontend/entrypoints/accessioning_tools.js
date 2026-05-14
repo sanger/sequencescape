@@ -1,4 +1,4 @@
-const previewUrl = "<%= bulk_accession_preview_admin_accessioning_tools_path %>";
+const previewUrl = "/admin/accessioning_tools/bulk_accession_preview";
 const previewSpan = document.getElementById("bulk-accession-preview");
 
 function updatePreview() {
