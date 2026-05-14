@@ -200,6 +200,10 @@ RSpec.describe LocationReport do
     end
 
     describe 'report generation' do
+      before do
+        allow(LabWhereClient::Labware).to receive(:find_by_barcode).and_return(nil)
+      end
+
       shared_examples 'a successful report' do
         it 'generates the expected report rows' do
           expect(location_report.save).to be_truthy
