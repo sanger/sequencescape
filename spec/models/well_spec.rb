@@ -943,7 +943,7 @@ describe Well do
   end
 
   describe '#qc_report_in_batches' do
-    let!(:study) { create(:study) }
+    let(:study) { create(:study) }
     let(:purpose_1) { PlatePurpose.stock_plate_purpose }
     let(:purpose_2) { create(:plate_purpose) }
     let(:purpose_3) { create(:plate_purpose) }

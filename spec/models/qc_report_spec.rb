@@ -231,7 +231,7 @@ RSpec.describe QcReport do
   context 'limit by plate barcodes' do
     attr_reader :qc_report
 
-    let!(:study) { create(:study) }
+    let(:study) { create(:study) }
     let(:plates) { create_list(:plate, 4, plate_purpose: PlatePurpose.find_or_create_by(name: 'Stock plate')) }
 
     before do

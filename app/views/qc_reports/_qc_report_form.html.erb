@@ -15,6 +15,7 @@
     <%= f.label "plate_barcodes_text", 'Plate barcodes' %>
     <%= text_area_tag 'qc_report[plate_barcodes_text]',
                       params.dig(:qc_report, :plate_barcodes_text),
+                      placeholder: 'SQPP-1234 SQPP-5678 ... ',
                       cols: 40,
                       rows: 4,
                       class: 'form-control' %>
