@@ -1,20 +1,4 @@
-# create tests for
-
-# create 15 samples over 5 studies for dates a year apart
-
-# #bulk_accession_preview
-#
-# bad date input -> bad request
-# invalid date input -> bad request
-# return samples and studies (10 samples 2 studies)
-
-# #bulk_accession
-#
-# bad date input -> flash message failed
-# invalid date input -> flash message failed
-# log generated   "Bulk accessioning #{number_of_samples} samples updated between #{start_datetime} and #{end_datetime}"
-# 10 instances of SampleAccessioningJob created
-# flash message Bulk accessioning complete
+# frozen_string_literal: true
 
 require 'rails_helper'
 
