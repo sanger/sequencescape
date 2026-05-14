@@ -33,7 +33,15 @@
           <%= date_field_tag :end_date, Date.today, class: 'form-control', id: 'end_date' %>
         </div>
       </div>
-      <div class="mb-3 text-muted">Samples to be accessioned: <span id="bulk-accession-preview"></span></div>
+      <div class="mt-2 text-muted">
+        <p>Samples to be accessioned: <span id="bulk-accession-preview"></span></p>
+        <p>There is no limit to the number of samples that can be accessioned -
+        asynchronous progress can be viewed at the <%= link_to 'Delayed Jobs Queue', admin_delayed_jobs_path %>.
+        </p>
+        <% if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures) %>
+        <p>SSRs will receive email notification of any samples that fail to accession.</p>
+        <% end %>
+      </div>
       <%= submit_tag 'Accession all samples in range', class: 'btn btn-primary' %>
     <% end %>
   </div>
