@@ -10,6 +10,7 @@ module UserLogin
     fill_in 'Username', with: user.login
     fill_in 'Password', with: 'password'
     click_button 'Login'
+    expect(page).to have_content('Logged in successfully')
     true
   end
 end

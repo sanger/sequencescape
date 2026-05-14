@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 class Core::Io::List
-  include Core::Benchmarking
-
   def initialize(command, objects)
     @command, @container = command, command.send(:container)
     @objects = objects.map { |o| Core::Io::Registry.instance.lookup(o.class).create!(@container, o) }
