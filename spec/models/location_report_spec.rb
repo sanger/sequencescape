@@ -200,10 +200,6 @@ RSpec.describe LocationReport do
     end
 
     describe 'report generation' do
-      before do
-        allow(LabWhereClient::Labware).to receive(:find_by_barcode).and_return(nil)
-      end
-
       shared_examples 'a successful report' do
         it 'generates the expected report rows' do
           expect(location_report.save).to be_truthy
@@ -251,14 +247,15 @@ RSpec.describe LocationReport do
 
         before do
           [
-            [plate_1.machine_barcode.to_s, 'Shelf 1', locn_prefix],
-            [plate_2.machine_barcode.to_s, 'Shelf 2', locn_prefix],
-            [plate_3.machine_barcode.to_s, 'Shelf 3', locn_prefix],
-            [tube_1.machine_barcode.to_s, 'Shelf 4', locn_prefix],
+            [plate_1.machine_barcode.to_s, plate_1.human_barcode.to_s, 'Shelf 1', locn_prefix],
+            [plate_2.machine_barcode.to_s, plate_2.human_barcode.to_s, 'Shelf 2', locn_prefix],
+            [plate_3.machine_barcode.to_s, plate_3.human_barcode.to_s, 'Shelf 3', locn_prefix],
+            [tube_1.machine_barcode.to_s, tube_1.human_barcode.to_s, 'Shelf 4', locn_prefix],
             # Tube racks are filtered out so this should not show up
-            [tube_rack.machine_barcode.to_s, 'Shelf 5', locn_prefix]
-          ].each do |lw_barcode, lw_locn_name, lw_locn_parentage|
-            stub_lwclient_labware_find_by_bc(lw_barcode:, lw_locn_name:, lw_locn_parentage:)
+            [tube_rack.machine_barcode.to_s, tube_rack.human_barcode.to_s, 'Shelf 5', locn_prefix]
+          ].each do |machine_bc, human_bc, lw_locn_name, lw_locn_parentage|
+            stub_lwclient_labware_find_by_bc(lw_barcode: machine_bc, lw_locn_name:, lw_locn_parentage:)
+            stub_lwclient_labware_find_by_bc(lw_barcode: human_bc, lw_locn_name:, lw_locn_parentage:)
           end
 
           plate_1_set_long_term_storage
@@ -392,6 +389,11 @@ RSpec.describe LocationReport do
           before do
             stub_lwclient_labware_find_by_bc(
               lw_barcode: plate_4.machine_barcode.to_s,
+              lw_locn_name: 'Shelf 1',
+              lw_locn_parentage: locn_prefix
+            )
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_4.human_barcode.to_s,
               lw_locn_name: 'Shelf 1',
               lw_locn_parentage: locn_prefix
             )
@@ -541,6 +543,11 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(location_barcode, [])
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_1.human_barcode,
+              lw_locn_name: 'Shelf 1',
+              lw_locn_parentage: locn_prefix
+            )
 
             plate_1_set_long_term_storage
           end
@@ -617,6 +624,21 @@ RSpec.describe LocationReport do
             stub_lwclient_labware_find_by_bc(p1)
             stub_lwclient_labware_find_by_bc(p2)
             stub_lwclient_labware_find_by_bc(t1)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_1.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_2.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: tube_1.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
 
             plate_1_set_long_term_storage
             tube_1_set_long_term_storage
@@ -674,6 +696,11 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(locn_lvl2_b1[:locn_barcode], [])
             stub_lwclient_locn_labwares(locn_lvl2_b1[:locn_barcode], [p1])
             stub_lwclient_labware_find_by_bc(p1)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_1.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
 
             # set up Shelf 1 - Box 2 with one labware and no sub-locations
             p2 = {
@@ -685,6 +712,11 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(locn_lvl2_b2[:locn_barcode], [])
             stub_lwclient_locn_labwares(locn_lvl2_b2[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_2.human_barcode,
+              lw_locn_name: 'Box 2',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
 
             plate_1_set_long_term_storage
           end
@@ -732,6 +764,11 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(location_barcode, [locn_lvl2_t1])
             stub_lwclient_locn_labwares(location_barcode, [p1])
             stub_lwclient_labware_find_by_bc(p1)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_1.human_barcode,
+              lw_locn_name: 'Shelf 1',
+              lw_locn_parentage: locn_prefix
+            )
 
             # set up Shelf 1 - Tray 1 with 1 labware and 1 sub-location
             locn_lvl3_b1 = {
@@ -748,6 +785,11 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_children(locn_lvl2_t1[:locn_barcode], [locn_lvl3_b1])
             stub_lwclient_locn_labwares(locn_lvl2_t1[:locn_barcode], [p2])
             stub_lwclient_labware_find_by_bc(p2)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_2.human_barcode,
+              lw_locn_name: 'Tray 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1"
+            )
 
             # set up Shelf 1 - Tray 1 - Box 1 with 2 labware and no sub-locations
             p3 = {
@@ -765,6 +807,16 @@ RSpec.describe LocationReport do
             stub_lwclient_locn_labwares(locn_lvl3_b1[:locn_barcode], [p3, t1])
             stub_lwclient_labware_find_by_bc(p3)
             stub_lwclient_labware_find_by_bc(t1)
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: plate_3.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
+            )
+            stub_lwclient_labware_find_by_bc(
+              lw_barcode: tube_1.human_barcode,
+              lw_locn_name: 'Box 1',
+              lw_locn_parentage: "#{locn_prefix} - Shelf 1 - Tray 1"
+            )
 
             plate_1_set_long_term_storage
             plate_3_return_after_two_years
