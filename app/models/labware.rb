@@ -368,18 +368,20 @@ class Labware < Asset
     metadata.symbolize_keys[:retention_instruction]
   end
 
-  def lookup_labwhere_location # rubocop:todo Metrics/AbcSize, Metrics/CyclomaticComplexity
-    machine_lookup = lookup_labwhere(machine_barcode)
-    human_lookup = lookup_labwhere(human_barcode)
+  def lookup_labwhere_location
+    lookups = [lookup_labwhere(machine_barcode), lookup_labwhere(human_barcode)]
 
-    valid_lookups = [machine_lookup, human_lookup].compact.select { |lookup| lookup[:location].present? }
-    return valid_lookups.max_by { |lookup| lookup[:updated_at] || Time.zone.at(0) }[:location] if valid_lookups.any?
-
-    return 'Not found - There is a problem with Labwhere' if [machine_lookup, human_lookup].any? do |lookup|
-      lookup&.dig(:error)
-    end
+    return latest_location(lookups) if lookups.any? { |l| l&.dig(:location).present? }
+    return 'Not found - There is a problem with Labwhere' if lookups.any? { |l| l&.dig(:error) }
 
     nil
+  end
+
+  def latest_location(lookups)
+    lookups.compact
+      .select { |l| l[:location].present? }
+      .max_by { |l| l[:updated_at] || Time.zone.at(0) }
+      .fetch(:location)
   end
 
   def lookup_labwhere(barcode)
@@ -388,7 +390,7 @@ class Labware < Asset
     rescue StandardError => e
       # rescue LabWhereClient::LabwhereException => e
       Rails.logger.error { e }
-      return { error: true }
+      return { error: true, message: e.message }
     end
 
     return nil unless info_from_labwhere.present? && info_from_labwhere.location.present?

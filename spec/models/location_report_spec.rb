@@ -254,8 +254,10 @@ RSpec.describe LocationReport do
             # Tube racks are filtered out so this should not show up
             [tube_rack.machine_barcode.to_s, tube_rack.human_barcode.to_s, 'Shelf 5', locn_prefix]
           ].each do |machine_bc, human_bc, lw_locn_name, lw_locn_parentage|
-            stub_lwclient_labware_find_by_bc(lw_barcode: machine_bc, lw_locn_name:, lw_locn_parentage:)
-            stub_lwclient_labware_find_by_bc(lw_barcode: human_bc, lw_locn_name:, lw_locn_parentage:)
+            stub_lwclient_labware_find_by_bc(lw_barcode: machine_bc, lw_locn_name: lw_locn_name,
+                                             lw_locn_parentage: lw_locn_parentage)
+            stub_lwclient_labware_find_by_bc(lw_barcode: human_bc, lw_locn_name: lw_locn_name,
+                                             lw_locn_parentage: lw_locn_parentage)
           end
 
           plate_1_set_long_term_storage
