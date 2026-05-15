@@ -141,12 +141,12 @@ RSpec.describe Labware do
         LabWhereClient::Labware.new(
           {
             'barcode' => plate.machine_barcode,
-            'updated_at' => 'Wednesday May  6 2026 10:46',
+            'updated_at' => '2026-05-06 10:46:00',
             'location' => {
               'name' => 'f1',
               'parentage' => 'Sanger / Ogilvie / AA216',
               'barcode' => 'lw-f1-26214',
-              'updated_at' => 'Wednesday May  6 2026 10:46'
+              'updated_at' => '2026-05-06 10:46:00'
             }
           }
         )
@@ -155,12 +155,12 @@ RSpec.describe Labware do
         LabWhereClient::Labware.new(
           {
             'barcode' => plate.human_barcode,
-            'updated_at' => 'Wednesday May  7 2026 10:46',
+            'updated_at' => '2026-05-07 10:46:00',
             'location' => {
               'name' => 'f2',
               'parentage' => 'Sanger / Ogilvie / AA216',
               'barcode' => 'lw-f2-26214',
-              'updated_at' => 'Wednesday May  7 2026 10:46'
+              'updated_at' => '2026-05-07 10:46:00'
             }
           }
         )
@@ -180,12 +180,12 @@ RSpec.describe Labware do
         LabWhereClient::Labware.new(
           {
             'barcode' => plate.human_barcode,
-            'updated_at' => 'Wednesday May  7 2026 10:46',
+            'updated_at' => '2026-05-07 10:46:00',
             'location' => {
               'name' => 'f2',
               'parentage' => 'Sanger / Ogilvie / AA216',
               'barcode' => 'lw-f2-26214',
-              'updated_at' => 'Wednesday May  7 2026 10:46'
+              'updated_at' => '2026-05-07 10:46:00'
             }
           }
         )
