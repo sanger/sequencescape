@@ -243,6 +243,10 @@ module SampleManifestExcel
         errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
       end
 
+      # Check that the sample can be updated. If it can't be updated, add the reasons to the errors.
+      #
+      # This confirms that the sample can be updated by attempting to apply the updates
+      # and raising errors if any of the updates are invalid. It does not (seem to!) save any changes to the database.
       def sample_can_be_updated
         return unless errors.empty?
 
