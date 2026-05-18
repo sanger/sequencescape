@@ -6,9 +6,9 @@ module SampleManifestExcel
     # A Row relates to a row in a sample manifest spreadsheet.
     # Each Row relates to a sample
     # Required fields:
-    # *number: Number of the row which is used for error tracking
-    # *data: An array of sample data
-    # *columns: The columns which relate to the data.
+    # - number: Number of the row which is used for error tracking
+    # - data: An array of sample data
+    # - columns: The columns which relate to the data.
     class Row # rubocop:todo Metrics/ClassLength
       include ActiveModel::Model
       include Converters
@@ -99,10 +99,10 @@ module SampleManifestExcel
 
       ##
       # Updating the sample involves:
-      # *Checking it is ok to update row
-      # *Updating all of the specialised fields in the aliquot
-      # *Updating the sample metadata
-      # *Saving the asset, metadata and sample
+      # - Checking it is ok to update row
+      # - Updating all of the specialised fields in the aliquot
+      # - Updating the sample metadata
+      # - Saving the asset, metadata and sample
       # rubocop:todo Metrics/MethodLength
       def update_sample(tag_group, override) # rubocop:todo Metrics/AbcSize
         return unless valid?
