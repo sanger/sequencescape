@@ -3,8 +3,7 @@
 module SampleManifestExcel
   module Upload
     ##
-    # A Row relates to a row in a sample manifest spreadsheet.
-    # Each Row relates to a sample
+    # A Row relates to a row in a sample manifest spreadsheet, which represents a sample.
     # Required fields:
     # - number: Number of the row which is used for error tracking
     # - data: An array of sample data
