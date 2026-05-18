@@ -93,17 +93,12 @@ module SampleManifestExcel
 
         @reuploaded = sample.updated_by_manifest
 
-        if sample.updated_by_manifest && !override
+        if skip_sample_update?(override)
           @sample_skipped = true
-        else
-          update_specialised_fields(tag_group)
-          asset.save!
-          update_metadata_fields
-          metadata.save!
-          sample.updated_by_manifest = true
-          sample.empty_supplier_sample_name = false
-          @sample_updated = sample.save
+          return
         end
+
+        @sample_updated = save_sample(tag_group)
       end
 
       def changed?
@@ -301,6 +296,21 @@ module SampleManifestExcel
       def link_tag_groups_and_indexes(fields)
         indexed_fields = fields.index_by(&:class)
         fields.each { |field| field.link(indexed_fields) }
+      end
+
+      def save_sample(tag_group)
+        update_specialised_fields(tag_group)
+        asset.save!
+        update_metadata_fields
+        metadata.save!
+        sample.updated_by_manifest = true
+        sample.empty_supplier_sample_name = false
+
+        sample.save # returned for @sample_updated
+      end
+
+      def skip_sample_update?(override)
+        sample.updated_by_manifest && !override
       end
     end
   end
