@@ -27,7 +27,7 @@ module SequencescapeExcel
         return unless valid?
 
         # NB. the asset here is a well, and the well_has_single_aliquot? validation ensures there is only one aliquot
-        # NB. however we do not use first as this triggers a select and gets a new instance of the aliquot, which then
+        # NB. however we do not use `aliquots.first` as this triggers a select and gets a new instance of the aliquot, which then
         # is not same aliquot instance when saved_changes? works to detect substitutions for TagSubstitution
         aliquots.each { |aliquot| aliquot.assign_attributes(tag:, tag2:) }
       end
