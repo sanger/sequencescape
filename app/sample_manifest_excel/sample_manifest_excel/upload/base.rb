@@ -6,13 +6,13 @@ module SampleManifestExcel
   module Upload
     ##
     # An upload will
-    # *Find the start row based on the Sanger Sample Id column header cell
-    # *Create a Data object based on the file.
-    # *Extract the columns based on the headings in the spreadsheet
-    # *Find the sanger sample id column
-    # *Create some Rows
-    # *Retrieve the sample manifest
-    # *Create a processor based on the sample manifest
+    # - Find the start row based on the Sanger Sample Id column header cell
+    # - Create a Data object based on the file.
+    # - Extract the columns based on the headings in the spreadsheet
+    # - Find the sanger sample id column
+    # - Create some Rows
+    # - Retrieve the sample manifest
+    # - Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
       require_relative '../../../helpers/accession_helper'
