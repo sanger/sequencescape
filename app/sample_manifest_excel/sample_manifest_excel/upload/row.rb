@@ -8,7 +8,7 @@ module SampleManifestExcel
     # - number: Number of the row which is used for error tracking
     # - data: An array of sample data
     # - columns: The columns which relate to the data.
-    class Row # rubocop:todo Metrics/ClassLength
+    class Row
       include ActiveModel::Model
       include Converters
 
@@ -88,8 +88,7 @@ module SampleManifestExcel
       # - Updating all of the specialised fields in the aliquot
       # - Updating the sample metadata
       # - Saving the asset, metadata and sample
-      # rubocop:todo Metrics/MethodLength
-      def update_sample(tag_group, override) # rubocop:todo Metrics/AbcSize
+      def update_sample(tag_group, override)
         return unless valid?
 
         @reuploaded = sample.updated_by_manifest
@@ -106,8 +105,6 @@ module SampleManifestExcel
           @sample_updated = sample.save
         end
       end
-
-      # rubocop:enable Metrics/MethodLength
 
       def changed?
         (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
