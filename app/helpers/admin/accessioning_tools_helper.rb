@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Admin
   module AccessioningToolsHelper
     def action_checklist_item(condition:, good:, bad:, action: nil)
