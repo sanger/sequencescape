@@ -49,7 +49,7 @@ module SampleManifestExcel
           all_valid = true
 
           upload.rows.each do |row|
-            unless row.validate_sample
+            unless row.validate_sample(upload.overrides)
               upload.errors.add(:base, row.errors.full_messages.join(', ').to_s)
               all_valid = false
             end
@@ -60,7 +60,7 @@ module SampleManifestExcel
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group, upload.override)
+            row.update_sample(tag_group, upload.overrides)
             substitutions.concat(row.aliquots.filter_map(&:substitution_hash)) if row.reuploaded?
           end
           update_downstream_aliquots unless no_substitutions?

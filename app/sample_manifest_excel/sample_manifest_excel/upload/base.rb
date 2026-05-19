@@ -19,7 +19,7 @@ module SampleManifestExcel
       include AccessionHelper
       include ActiveModel::Model
 
-      attr_accessor :file, :column_list, :start_row, :override_samples
+      attr_accessor :file, :column_list, :start_row, :overrides
 
       # rubocop:todo Layout/LineLength
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
@@ -47,7 +47,7 @@ module SampleManifestExcel
         @cache = Cache.new(self)
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
-        @override = override || false
+        @overrides = overrides || { samples: false, exclude_fields: [] }
         @processor = create_processor
       end
 
