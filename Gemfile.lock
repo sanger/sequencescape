@@ -16,10 +16,11 @@ GIT
 
 GIT
   remote: https://github.com/sanger/record_loader
-  revision: 238db7fa24fffee5ad413bd9cd4c6b857d1626c9
-  tag: v0.3.0
+  revision: 9e7f1b67c3eeee1895f1befc6a54682f11c02135
+  tag: v1.1.0
   specs:
-    record_loader (0.3.0)
+    record_loader (1.1.0)
+      psych (~> 5.0)
 
 GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
@@ -378,7 +379,9 @@ GEM
       pry (>= 0.13, < 0.17)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
-    psych (3.3.4)
+    psych (5.3.1)
+      date
+      stringio
     public_suffix (7.0.5)
     puma (7.2.0)
       nio4r (~> 2.0)
@@ -589,6 +592,7 @@ GEM
       rbtree
       set (~> 1.0)
     ssrf_filter (1.2.0)
+    stringio (3.2.0)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
@@ -622,7 +626,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
-    vite_rails (3.10.0)
+    vite_rails (3.11.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
     vite_ruby (3.10.2)
@@ -716,7 +720,6 @@ DEPENDENCIES
   prettier_print
   pry-byebug
   pry-rails
-  psych (< 4)
   puma
   rack-acceptable
   rack-cors

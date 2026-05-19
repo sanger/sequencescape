@@ -62,8 +62,8 @@ Fluidigm192:
   sizes: [192]
 
 StripTubeColumn:
-  horizontal_ratio: 1,
-  vertical_ratio: 8,
+  horizontal_ratio: 1
+  vertical_ratio: 8
   description_strategy: Sequential
   sizes: [8]
 
