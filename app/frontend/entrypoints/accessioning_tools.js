@@ -13,6 +13,16 @@ function updatePreview() {
       return r.json();
     })
     .then((data) => {
+      // Only apply the preview if the dates haven't changed since the request was made
+      // This prevents a slow response from overwriting a more recent preview
+      if (
+        // submitted-date != current input value
+        startDate !== document.getElementById("start_date").value ||
+        endDate !== document.getElementById("end_date").value
+      ) {
+        console.info("Discarding outdated preview response");
+        return;
+      }
       previewSpan.textContent = `${data.samples_count} sample(s) over ${data.studies_count} studies`;
     })
     .catch((err) => {
