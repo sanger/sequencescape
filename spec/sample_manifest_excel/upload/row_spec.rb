@@ -18,6 +18,8 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   let(:columns) { configuration.columns.tube_library_with_tag_sequences.dup }
   let(:sample_manifest) { create(:tube_sample_manifest_with_tubes_and_manifest_assets) }
   let(:tube) { sample_manifest.labware.first }
+  let(:exclude_none) { [] }
+  let(:no_overrides) { { samples: false, exclude_fields: [] } }
   let(:tag_group) { create(:tag_group) }
   let(:data) do
     [
@@ -153,34 +155,34 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
   it 'is not valid without a primary receptacle or sample' do
     data[1] = 2
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
     data[1] = 999_999
     row = described_class.new(number: 1, data: data, columns: columns)
-    expect(row.validate_sample).to be false
+    expect(row.validate_sample(no_overrides)).to be false
     expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
   end
 
   it 'is not valid unless all specialised fields are valid' do
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be true
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
     data[5] = 'Dodgy library type'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
     data[5] = 'My New Library Type'
     data[6] = 'one'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
   end
 
   it 'is not valid unless metadata is valid' do
     described_class.new(number: 1, data: data, columns: columns)
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be true
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
     data[16] = 'Cell-line'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample).to be false
+    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
   end
 
   it 'updates the aliquot with the specialised fields' do
     sample_count = Sample.count
     row = described_class.new(number: 1, data: data, columns: columns)
     row.sample
-    row.update_specialised_fields(tag_group)
+    row.update_specialised_fields(tag_group, exclude_none)
     aliquot = row.aliquots.first
     expect(Sample.count - sample_count).to eq(1)
     expect(aliquot.tag.oligo).to eq('AA')
@@ -191,7 +193,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
   it 'updates the sample metadata' do
     row = described_class.new(number: 1, data: data, columns: columns)
-    row.update_metadata_fields
+    row.update_metadata_fields(exclude_none)
     expect(row.metadata).to have_attributes(
       concentration: '1',
       gender: 'Unknown',
@@ -210,7 +212,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
   it 'updates the sample' do
     row = described_class.new(number: 1, data: data, columns: columns)
-    row.update_sample(tag_group, false)
+    row.update_sample(tag_group, no_overrides)
     row.metadata
     expect(row).to be_sample_updated
   end
@@ -387,7 +389,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     it 'transfers stuff' do
       rows.each do |row|
         expect(row).to be_valid
-        row.update_sample(tag_group, false)
+        row.update_sample(tag_group, no_overrides)
         row.transfer_aliquot
       end
       expect(rows).to be_all(&:aliquot_transferred?)
@@ -430,7 +432,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
 
     it 'transfers stuff' do
       rows.each do |row|
-        row.update_sample(tag_group, false)
+        row.update_sample(tag_group, no_overrides)
         row.transfer_aliquot
       end
       expect(rows).to be_all(&:aliquot_transferred?)

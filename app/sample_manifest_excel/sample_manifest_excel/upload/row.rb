@@ -88,17 +88,18 @@ module SampleManifestExcel
       # - Updating all of the specialised fields in the aliquot
       # - Updating the sample metadata
       # - Saving the asset, metadata and sample
-      def update_sample(tag_group, override)
+      def update_sample(tag_group, overrides)
         return unless valid?
 
         @reuploaded = sample.updated_by_manifest
 
-        if skip_sample_update?(override)
+        if skip_sample_update?(overrides[:samples])
           @sample_skipped = true
           return
         end
 
-        @sample_updated = save_sample(tag_group)
+        exclude_fields = overrides[:exclude_fields]
+        @sample_updated = save_sample(tag_group, exclude_fields)
       end
 
       def changed?
@@ -106,12 +107,18 @@ module SampleManifestExcel
           aliquots.any? { |a| a.previous_changes.present? }
       end
 
-      def update_specialised_fields(tag_group)
-        specialised_fields.each { |specialised_field| specialised_field.update(tag_group:) }
+      def update_specialised_fields(tag_group, exclude_fields)
+        specialised_fields.each do |specialised_field|
+          next if exclude_fields.include?(specialised_field.name.to_sym)
+
+          specialised_field.update(tag_group:)
+        end
       end
 
-      def update_metadata_fields
+      def update_metadata_fields(exclude_fields)
         columns.with_metadata_fields.each do |column|
+          next if exclude_fields.include?(column.name.to_sym)
+
           value = at(column.number)
           column.update_metadata(metadata, value) if value.present?
         end
@@ -172,9 +179,9 @@ module SampleManifestExcel
         sample.primary_receptacle.labware
       end
 
-      def validate_sample
+      def validate_sample(overrides)
         check_sample_present
-        sample_can_be_updated
+        sample_can_be_updated(overrides)
         errors.empty?
       end
 
@@ -247,12 +254,14 @@ module SampleManifestExcel
       #
       # This confirms that the sample can be updated by attempting to apply the updates
       # and raising errors if any of the updates are invalid. It does not (seem to!) save any changes to the database.
-      def sample_can_be_updated
+      def sample_can_be_updated(overrides)
         return unless errors.empty?
 
+        exclude_fields = overrides[:exclude_fields]
+
         check_primary_receptacle
-        check_specialised_fields
-        check_sample_metadata
+        check_specialised_fields(exclude_fields)
+        check_sample_metadata(exclude_fields)
       end
 
       def check_primary_receptacle
@@ -261,19 +270,21 @@ module SampleManifestExcel
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
       end
 
-      def check_specialised_fields
+      def check_specialised_fields(exclude_fields)
         return unless errors.empty?
 
         specialised_fields.each do |specialised_field|
+          next if exclude_fields.include?(specialised_field.name.to_sym)
+
           unless specialised_field.valid?
             errors.add(:base, "#{row_title} #{specialised_field.errors.full_messages.join(', ')}")
           end
         end
       end
 
-      def check_sample_metadata
+      def check_sample_metadata(exclude_fields)
         # it has to be called here, otherwise metadata errors will not appear
-        update_metadata_fields
+        update_metadata_fields(exclude_fields)
         return if metadata.valid?
 
         errors.add(:base, "#{row_title} #{metadata.errors.full_messages.join(', ')}")
@@ -302,10 +313,10 @@ module SampleManifestExcel
         fields.each { |field| field.link(indexed_fields) }
       end
 
-      def save_sample(tag_group)
-        update_specialised_fields(tag_group)
+      def save_sample(tag_group, exclude_fields)
+        update_specialised_fields(tag_group, exclude_fields)
         asset.save!
-        update_metadata_fields
+        update_metadata_fields(exclude_fields)
         metadata.save!
         sample.updated_by_manifest = true
         sample.empty_supplier_sample_name = false
@@ -313,8 +324,8 @@ module SampleManifestExcel
         sample.save # returned for @sample_updated
       end
 
-      def skip_sample_update?(override)
-        sample.updated_by_manifest && !override
+      def skip_sample_update?(override_samples)
+        sample.updated_by_manifest && !override_samples
       end
     end
   end

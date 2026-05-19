@@ -145,6 +145,8 @@ describe 'track SampleManifest updates', :sample_manifest do
 
     # upload with override
     check 'Override previously uploaded samples'
+    check 'Overwrite volume'
+    check 'Overwrite concentration'
     click_button 'Upload manifest'
     Delayed::Worker.new.work_off
 
