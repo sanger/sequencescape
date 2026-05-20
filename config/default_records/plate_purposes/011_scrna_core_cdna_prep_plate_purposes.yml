@@ -23,6 +23,7 @@ LRC GEM-X 5p cDNA Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
+  default_state: passed
 # The 'LRC GEM-X 5p Cherrypick' purpose is included here so it is available for library submissions.
 LRC GEM-X 5p Cherrypick:
   input_plate: false

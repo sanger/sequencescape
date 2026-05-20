@@ -60,6 +60,27 @@ describe PlatePurpose::Input do
       end
     end
 
+    context 'when some wells with aliquots have no customer requests' do
+      before do
+        # Only one of the two wells gets a request, leaving the other with an aliquot but no request
+        create(:request_library_creation, asset: plate.wells.first)
+      end
+
+      context 'when default_state is not set on the purpose' do
+        it 'is pending' do
+          expect(state_of).to eq('pending')
+        end
+      end
+
+      context 'when default_state is set on the purpose' do
+        let(:plate_purpose_input) { create(:input_plate_purpose, default_state: 'passed') }
+
+        it 'returns the default_state' do
+          expect(state_of).to eq('passed')
+        end
+      end
+    end
+
     context 'with one active and one cancelled requests' do
       before do
         plate.wells.each do |well|
