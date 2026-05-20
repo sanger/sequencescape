@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '1.3.6'
+  gem 'concurrent-ruby'
   gem 'configatron'
   gem 'formtastic'
   gem 'rails', '~> 8.0.0'
