@@ -6,7 +6,7 @@ class Event::SampleManifestEvent < Event
       message: 'Created by Sample Manifest',
       content: Date.today.to_s,
       family: 'created_sample_using_sample_manifest',
-      created_by: user ? user.login : nil
+      created_by: user&.login
     )
   end
 
