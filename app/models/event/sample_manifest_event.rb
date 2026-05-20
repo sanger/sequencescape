@@ -1,20 +1,20 @@
 # frozen_string_literal: true
 class Event::SampleManifestEvent < Event
-  def self.created_sample!(sample, user)
+  def self.created_using_sample_manifest!(eventful, sample_manifest, user)
     create!(
-      eventful: sample,
+      eventful: eventful,
       message: 'Created by Sample Manifest',
-      content: Date.today.to_s,
+      content: sample_manifest.name,
       family: 'created_sample_using_sample_manifest',
       created_by: user&.login
     )
   end
 
-  def self.updated_sample!(sample, user)
+  def self.updated_using_sample_manifest!(eventful, sample_manifest, user)
     create!(
-      eventful: sample,
+      eventful: eventful,
       message: 'Updated by Sample Manifest',
-      content: Date.today.to_s,
+      content: sample_manifest.name,
       family: 'updated_sample_using_sample_manifest',
       created_by: user&.login
     )

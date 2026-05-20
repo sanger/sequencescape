@@ -100,7 +100,7 @@ module SampleManifestExcel
         # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
         changed_samples.each { |sample| sample.handle_update_event(user) }
-        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(sample_manifest, user) }
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
