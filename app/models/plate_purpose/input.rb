@@ -18,6 +18,7 @@ class PlatePurpose::Input < PlatePurpose
   READY_STATE = 'passed'
   WELL_STATE_PRIORITY = %w[pending started passed failed cancelled].freeze
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids.uniq
@@ -42,6 +43,8 @@ class PlatePurpose::Input < PlatePurpose
       UNREADY_STATE
     end
   end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
