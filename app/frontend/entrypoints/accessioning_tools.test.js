@@ -1,8 +1,9 @@
 // Tests for accessioning_tools.js live preview behavior
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach, vi, beforeAll } from "vitest";
 
 describe("Accessioning tools preview", () => {
+  const initialDate = "2026-05-14";
   let startDateInput;
   let endDateInput;
   let previewSpan;
@@ -15,10 +16,10 @@ describe("Accessioning tools preview", () => {
     el.dispatchEvent(new Event("change", { bubbles: true }));
   };
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     document.body.innerHTML = `
-      <input id="start_date" type="text" value="2026-05-14" />
-      <input id="end_date" type="text" value="2026-05-14" />
+      <input id="start_date" type="text" value="${initialDate}" />
+      <input id="end_date" type="text" value="${initialDate}" />
       <span id="bulk-accession-preview"></span>
     `;
 
@@ -31,6 +32,13 @@ describe("Accessioning tools preview", () => {
     startDateInput = document.getElementById("start_date");
     endDateInput = document.getElementById("end_date");
     previewSpan = document.getElementById("bulk-accession-preview");
+  });
+
+  beforeEach(() => {
+    fetch.mockClear();
+    startDateInput.value = initialDate;
+    endDateInput.value = initialDate;
+    previewSpan.textContent = "";
   });
 
   afterEach(() => {
@@ -46,6 +54,7 @@ describe("Accessioning tools preview", () => {
       }),
     );
 
+    expect(fetch).not.toHaveBeenCalled();
     dispatchDomReady();
 
     expect(previewSpan.textContent).toBe("loading...");
@@ -71,6 +80,7 @@ describe("Accessioning tools preview", () => {
       }),
     );
 
+    expect(fetch).not.toHaveBeenCalled();
     dispatchDomReady();
 
     startDateInput.value = "2026-05-01";
@@ -87,7 +97,7 @@ describe("Accessioning tools preview", () => {
       expect(previewSpan.textContent).toBe("5 sample(s) over 2 studies");
     });
 
-    expect(fetch).toHaveBeenCalledTimes(4); // initial + reload + 2 changes
+    expect(fetch).toHaveBeenCalledTimes(3); // dom-ready + 2 changes
   });
 
   it("shows error message on fetch failure", async () => {
@@ -99,6 +109,7 @@ describe("Accessioning tools preview", () => {
       }),
     );
 
+    expect(fetch).not.toHaveBeenCalled();
     dispatchDomReady();
 
     expect(previewSpan.textContent).toBe("loading...");
@@ -116,6 +127,7 @@ describe("Accessioning tools preview", () => {
       }),
     );
 
+    expect(fetch).not.toHaveBeenCalled();
     dispatchDomReady();
 
     expect(previewSpan.textContent).toBe("loading...");
