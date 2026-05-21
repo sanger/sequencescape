@@ -63,20 +63,29 @@ module UnderRepWellCommentsToBroadcast
   def under_represented_well_comments
     requests.flat_map do |sequencing_request|
       lane = sequencing_request.target_asset
-      build_comments_for_lane(lane, sequencing_request)
-    end.compact
+      uniq_comments_for_lane(lane, sequencing_request)
+    end
   end
 
   private
 
-  # Coordinates comment building for a single lane by finding all under-represented
-  # library requests in the lane's ancestor plates, then building a comment for
-  # each associated poly_metadatum.
   # Remove duplicates to handle cases where a pool is created from two PCR XP plates derived from each other,
   # and where the same well positions are marked as under-represented in both plates.
   # (Example: Triomics pipeline LCMT DNA PCR XP and LCMT EM PCR XP plates)
   # These do not need to be tracked separately, as the wells in different plates refer to the same samples.
-  #
+  # @param lane [Lane] the lane receptacle associated with the batch request
+  # @param sequencing_request [Request] the sequencing request whose position is used in the comment
+  # @return [Array<UnderRepWellComment>] comments built for the given lane
+  def uniq_comments_for_lane(lane, sequencing_request)
+    build_comments_for_lane(lane, sequencing_request).uniq do |comment|
+      [comment.batch_id, comment.position, comment.tag_index,
+       comment.poly_metadatum.key, comment.poly_metadatum.value]
+    end
+  end
+
+  # Coordinates comment building for a single lane by finding all under-represented
+  # library requests in the lane's ancestor plates, then building a comment for
+  # each associated poly_metadatum.
   # @param lane [Lane] the lane receptacle associated with the batch request
   # @param sequencing_request [Request] the sequencing request whose position is used in the comment
   # @return [Array<UnderRepWellComment>] comments built for the given lane
@@ -85,7 +94,7 @@ module UnderRepWellCommentsToBroadcast
       under_represented_poly_metadata(library_request).flat_map do |poly_meta|
         build_comments(library_request, lane, sequencing_request, poly_meta)
       end
-    end.uniq
+    end
   end
 
   # Traverses the ancestor plates of a lane to find all library requests
