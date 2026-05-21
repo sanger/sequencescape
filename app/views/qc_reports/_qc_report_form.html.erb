@@ -1,7 +1,7 @@
 <%= form_for(qc_report) do |f| %>
   <div class="form-group">
     <%= f.label "study_id", 'Study' %>
-    <%= f.select :study_id, studies, {prompt: 'Select study...', disabled: ['']}, { autocomplete: 'off', required: 'required', class: 'form-control select2' } %>
+    <%= f.select :study_id, studies, {prompt: 'Select study...', disabled: ['']}, { autocomplete: 'off', class: 'form-control select2' } %>
   </div>
   <div class="form-group">
     <%= f.label "product_id", 'Product' %>
@@ -10,6 +10,15 @@
   <div class="form-group">
     <%= f.label "plate_purposes", 'Plate purpose' %>
     <%= f.select :plate_purposes, plate_purposes, { prompt: 'Select plate purpose...', disabled: [''], selected: 'Stock Plate'}, { autocomplete: 'off', class: 'form-control select2', multiple: 'multiple'  } %>
+  </div>
+  <div class="form-group">
+    <%= f.label "plate_barcodes_text", 'Plate barcodes' %>
+    <%= text_area_tag 'qc_report[plate_barcodes_text]',
+                      params.dig(:qc_report, :plate_barcodes_text),
+                      placeholder: 'SQPP-1234 SQPP-5678 ... ',
+                      cols: 40,
+                      rows: 4,
+                      class: 'form-control' %>
   </div>
   <div class="form-group">
     <%= f.label "exclude_existing", 'Exclude samples with existing reports' %>
