@@ -61,9 +61,9 @@ module UnderRepWellCommentsToBroadcast
   # Aggregates comments across  all lanes and their ancestor plates.
   # @return [Array<UnderRepWellComment>] a flat list of comment objects.
   def under_represented_well_comments
-    requests.flat_map do |batch_request|
-      lane = batch_request.target_asset
-      build_comments_for_lane(lane, batch_request)
+    requests.flat_map do |sequencing_request|
+      lane = sequencing_request.target_asset
+      build_comments_for_lane(lane, sequencing_request)
     end.compact
   end
 
@@ -72,16 +72,20 @@ module UnderRepWellCommentsToBroadcast
   # Coordinates comment building for a single lane by finding all under-represented
   # library requests in the lane's ancestor plates, then building a comment for
   # each associated poly_metadatum.
+  # Remove duplicates to handle cases where a pool is created from two PCR XP plates derived from each other,
+  # and where the same well positions are marked as under-represented in both plates.
+  # (Example: Triomics pipeline LCMT DNA PCR XP and LCMT EM PCR XP plates)
+  # These do not need to be tracked separately, as the wells in different plates refer to the same samples.
   #
   # @param lane [Lane] the lane receptacle associated with the batch request
-  # @param batch_request [Request] the sequencing request whose position is used in the comment
+  # @param sequencing_request [Request] the sequencing request whose position is used in the comment
   # @return [Array<UnderRepWellComment>] comments built for the given lane
-  def build_comments_for_lane(lane, batch_request)
+  def build_comments_for_lane(lane, sequencing_request)
     under_rep_requests_for_lane(lane).flat_map do |library_request|
       under_represented_poly_metadata(library_request).flat_map do |poly_meta|
-        build_comments(library_request, lane, batch_request, poly_meta)
+        build_comments(library_request, lane, sequencing_request, poly_meta)
       end
-    end
+    end.uniq
   end
 
   # Traverses the ancestor plates of a lane to find all library requests
@@ -94,7 +98,7 @@ module UnderRepWellCommentsToBroadcast
   def under_rep_requests_for_lane(lane)
     lane.ancestors.grep(Plate)
       .flat_map(&:wells)
-      .flat_map(&:requests)
+      .flat_map(&:requests).compact.uniq
       .select { |r| r.poly_metadata.any? { |pol| pol.key == UNDER_REPRESENTED_KEY } }
   end
 
@@ -117,16 +121,16 @@ module UnderRepWellCommentsToBroadcast
   #
   # @param library_request [Request] the library request whose target_asset well holds the aliquots
   # @param lane [Lane] the lane asset used to find matching aliquots and retrieve the tag index
-  # @param batch_request [Request] the sequencing request providing the lane position
+  # @param sequencing_request [Request] the sequencing request providing the lane position
   # @param poly_meta [PolyMetadatum] the under-represented metadata record to associate with the comment
   # @return [Array<UnderRepWellComment>] comments built for each matching aliquot
-  def build_comments(library_request, lane, batch_request, poly_meta)
+  def build_comments(library_request, lane, sequencing_request, poly_meta)
     library_request.target_asset.aliquots.filter_map do |aliquot|
       matching = find_matching_lane_aliquot(lane, aliquot)
       next unless matching
 
       UnderRepWellComment.new(
-        position: batch_request.position,
+        position: sequencing_request.batch_request.position,
         batch_id: id,
         tag_index: matching.aliquot_index_value,
         poly_metadatum: poly_meta
@@ -150,9 +154,7 @@ module UnderRepWellCommentsToBroadcast
   # @return [Aliquot, nil] the matching lane aliquot, or nil if no match is found
   def find_matching_lane_aliquot(lane, aliquot)
     lane.aliquots.find do |a|
-      a.sample_id == aliquot.sample_id &&
-        a.tag_id == aliquot.tag_id &&
-        a.tag2_id == aliquot.tag2_id && a.tag_depth == aliquot.tag_depth
+      aliquot.equivalent?(a, %w[sample_id tag_id tag2_id tag_depth])
     end
   end
 end
