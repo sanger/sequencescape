@@ -104,7 +104,14 @@ class RequestType::Validator < ApplicationRecord
 
   belongs_to :request_type, optional: false
   validates :request_option, :valid_options, presence: true
-  serialize :valid_options, coder: YAML
+  serialize :valid_options, coder: YAML, yaml: {
+    permitted_classes: [
+      Range,
+      RequestType::Validator::ArrayWithDefault,
+      RequestType::Validator::FlowcellTypeValidator,
+      RequestType::Validator::LibraryTypeValidator
+    ]
+  }
 
   delegate :include?, to: :valid_options
 

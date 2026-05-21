@@ -31,6 +31,13 @@
     <% end %>
   <% end %>
 
+  <% if can? :administer, Sequencescape %>
+    <%= panel do %>
+      <h4 class="card-title"><%= link_to "Accessioning tools", admin_accessioning_tools_path %></h4>
+      Advanced accessioning tools for administrators.
+    <% end %>
+  <% end %>
+
   <% if can? :manage, CustomText %>
     <%= panel do %>
       <h4 class="card-title"><%= link_to "Help text management", admin_custom_texts_url %></h4>

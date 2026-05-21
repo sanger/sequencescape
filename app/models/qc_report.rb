@@ -82,10 +82,12 @@ class QcReport < ApplicationRecord
     # You can trigger a synchronous report manually by calling #generate!
     # rubocop:todo Metrics/MethodLength
     def generate_report # rubocop:todo Metrics/AbcSize
-      study.each_well_for_qc_report_in_batches(
+      Well.qc_report_in_batches(
+        study,
         exclude_existing,
         product_criteria,
-        (plate_purposes.empty? ? nil : plate_purposes)
+        (plate_purposes.empty? ? nil : plate_purposes),
+        (plate_barcodes.empty? ? nil : plate_barcodes)
       ) do |assets|
         # If there are some wells of interest, we get them in a list
         connected_wells = Well.hash_stock_with_targets(assets, product_criteria.target_plate_purposes)
@@ -128,6 +130,7 @@ class QcReport < ApplicationRecord
   has_many :qc_metrics
 
   serialize :plate_purposes, type: Array, coder: YAML
+  serialize :plate_barcodes, type: Array, coder: YAML
 
   before_validation :generate_report_identifier, if: :identifier_required?
 
@@ -135,9 +138,21 @@ class QcReport < ApplicationRecord
 
   scope :for_report_page, ->(conditions) { order(id: :desc).where(conditions).joins(:product_criteria) }
 
-  validates :product_criteria, :study, :state, presence: true
+  validates :product_criteria, :state, presence: true
 
   validates :exclude_existing, inclusion: { in: [true, false], message: 'should be true or false.' }
+
+  validate :check_valid_plate_barcodes, if: -> { plate_barcodes.present? }
+
+  # We allow null values for study_id to allow qc_reports to be created without a study (just plate_barcodes)
+  validates :study, presence: true, unless: -> { plate_barcodes.present? }
+
+  def check_valid_plate_barcodes
+    invalid_barcodes = plate_barcodes.reject { |barcode| Plate.find_by_barcode(barcode) }
+    return unless invalid_barcodes.any?
+
+    errors.add(:plate_barcodes, "contain invalid barcodes: #{invalid_barcodes.join(', ')}")
+  end
 
   # Reports are handled asynchronously
   def schedule_report
@@ -166,9 +181,9 @@ class QcReport < ApplicationRecord
   # same product / study abbreviation combo within one second
   # of each other.
   def generate_report_identifier
-    return true if study.nil? || product_criteria.nil?
+    return true if product_criteria.nil?
 
-    rid = [study.abbreviation, product_criteria.product.name, DateTime.now.to_fs(:number)].compact
+    rid = [study&.abbreviation, product_criteria.product.name, DateTime.now.to_fs(:number)].compact
       .join('_')
       .downcase
       .gsub(/[^\w]/, '_')
