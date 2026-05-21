@@ -18,7 +18,7 @@
     "jsbarcode": "^3.12.3",
     "jszip": "^3.10.1",
     "popper.js": "^1.16.1",
-    "postcss": "^8.5.9",
+    "postcss": "^8.5.14",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^14.1.0",
     "postcss-preset-env": "^7.8.3",
@@ -37,7 +37,7 @@
     "prettier": "^3.3",
     "vite": "^8.0",
     "vite-plugin-ruby": "^5.2.2",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.6"
   },
   "_comment": "Required to address https://github.com/npm/cli/issues/4828",
   "optionalDependencies": {
