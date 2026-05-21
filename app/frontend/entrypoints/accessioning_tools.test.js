@@ -100,6 +100,76 @@ describe("Accessioning tools preview", () => {
     expect(fetch).toHaveBeenCalledTimes(3); // dom-ready + 2 changes
   });
 
+  it("discards a slow response when the date inputs have changed before it resolves", async () => {
+    // Mock console.info to allow us to assert that outdated responses are being discarded
+    const consoleInfoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+
+    const deferred = () => {
+      let resolve;
+      let reject;
+      const promise = new Promise((res, rej) => {
+        resolve = res;
+        reject = rej;
+      });
+      return { promise, resolve, reject };
+    };
+
+    const domReadyFetch = deferred();
+    const slowFetch = deferred();
+    const fastFetch = deferred();
+
+    fetch
+      .mockImplementationOnce(() => domReadyFetch.promise)
+      .mockImplementationOnce(() => slowFetch.promise)
+      .mockImplementationOnce(() => fastFetch.promise);
+
+    expect(fetch).not.toHaveBeenCalled();
+    dispatchDomReady();
+
+    startDateInput.value = "2025-01-01";
+    dispatchChange(startDateInput);
+
+    await vi.waitFor(() => {
+      expect(previewSpan.textContent).toBe("loading...");
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(2); // dom-ready + slow-change
+    expect(fetch.mock.calls[1][0]).toContain("start_date=2025-01-01");
+
+    // The preview should still say "loading..." at this point because the slow fetch hasn't resolved yet
+    expect(previewSpan.textContent).toBe("loading...");
+
+    startDateInput.value = "2026-01-01";
+    dispatchChange(startDateInput);
+
+    expect(fetch).toHaveBeenCalledTimes(3); // dom-ready + slow-change + fast-change
+    expect(fetch.mock.calls[2][0]).toContain("start_date=2026-01-01");
+
+    // Resolve the fast fetch (2026-01-01)
+    fastFetch.resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ samples_count: 2, studies_count: 1 }),
+    });
+
+    await vi.waitFor(() => {
+      expect(previewSpan.textContent).toBe("2 sample(s) over 1 studies");
+    });
+
+    // Resolve the slow fetch (2025-01-01)
+    slowFetch.resolve({
+      ok: true,
+      status: 200,
+      json: () => Promise.resolve({ samples_count: 99, studies_count: 10 }),
+    });
+
+    await vi.waitFor(() => {
+      expect(consoleInfoSpy).toHaveBeenCalledWith("Discarding outdated preview response");
+    });
+
+    expect(previewSpan.textContent).toBe("2 sample(s) over 1 studies");
+  });
+
   it("shows error message on fetch failure", async () => {
     fetch.mockImplementation(() =>
       Promise.resolve({
