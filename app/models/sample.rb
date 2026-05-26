@@ -529,6 +529,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     changes = sample_metadata.saved_changes.except('updated_at')
     return if changes.empty?
 
+    # current_user is available when editing the sample directly, but not when uploading manifests
     events.updated_sample_metadata!(changes, current_user)
   end
 
