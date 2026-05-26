@@ -4,7 +4,7 @@ module I18n
   module Backend
     module Base
       def load_yml(filename)
-        YAML.load(ERB.new(File.read(filename)).result)
+        YAML.unsafe_load(ERB.new(File.read(filename)).result)
       end
     end
   end
