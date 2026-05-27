@@ -7,13 +7,30 @@
   <div class="card-header font-weight-bold">Sequencescape Accessioning Checklist</div>
   <div class="card-body">
     <%= tag.div(class: 'checks p-2') do %>
-      <%= checklist_item(
+      <%= action_checklist_item(
             condition: accessioning_enabled?,
             good: "Accessioning is <strong>Enabled</strong>".html_safe,
             bad: "Accessioning is <strong>Disabled</strong>".html_safe,
-            action: "Please raise a #{fresh_service_link} ticket for more details".html_safe
+            action: "<a href='/flipper/features/y25_706_enable_accessioning'>Change global accessioning</a>".html_safe
           ) %>
-      <a href='/flipper/features/y25_706_enable_accessioning'>Control global accessioning</a>
+      <%= action_checklist_item(
+            condition: !Flipper.enabled?(:y25_714_skip_accessioning_tag_validation),
+            good: "Accessioning tag validation is <strong>Enabled</strong>".html_safe,
+            bad: "Accessioning tag validation is <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y25_714_skip_accessioning_tag_validation'>Change accessioning tag validation</a>".html_safe
+          ) %>
+      <%= action_checklist_item(
+            condition: Flipper.enabled?(:y26_094_email_users_on_accessioning_failures),
+            good: "User emails on sample failures are <strong>Enabled</strong>".html_safe,
+            bad: "User emails on sample failures are <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y26_094_email_users_on_accessioning_failures'>Change user email notifications</a>".html_safe
+          ) %>
+      <%= action_checklist_item(
+            condition: Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures),
+            good: "Developer notifications on external sample failures are <strong>Enabled</strong>".html_safe,
+            bad: "Developer notifications on external sample failures are <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y25_705_notify_on_external_accessioning_validation_failures'>Change developer exception notifications</a>".html_safe
+          ) %>
     <% end %>
   </div>
 </div>

@@ -52,7 +52,7 @@ module StudiesHelper
     "Please contact a #{link_to(text, path)}".html_safe # rubocop:disable Rails/OutputSafety
   end
 
-  def checklist_item(condition:, good:, bad:, action: nil, action_permission: nil, fallback: nil) # rubocop:disable Metrics/ParameterLists
+  def permission_action_checklist_item(condition:, good:, bad:, action: nil, action_permission: nil, fallback: nil) # rubocop:disable Metrics/ParameterLists
     content_tag(:div) do
       if condition
         safe_join([good_icon, ' ', good])
