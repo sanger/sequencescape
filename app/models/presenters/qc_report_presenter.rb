@@ -31,7 +31,7 @@ class Presenters::QcReportPresenter
   end
 
   def study_name
-    qc_report.study.name
+    qc_report.study&.name || 'N/A'
   end
 
   def study_abbreviation

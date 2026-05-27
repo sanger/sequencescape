@@ -16,10 +16,11 @@ GIT
 
 GIT
   remote: https://github.com/sanger/record_loader
-  revision: 238db7fa24fffee5ad413bd9cd4c6b857d1626c9
-  tag: v0.3.0
+  revision: 9e7f1b67c3eeee1895f1befc6a54682f11c02135
+  tag: v1.1.0
   specs:
-    record_loader (0.3.0)
+    record_loader (1.1.0)
+      psych (~> 5.0)
 
 GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
@@ -170,7 +171,7 @@ GEM
     choice (0.2.0)
     chronic (0.10.2)
     coderay (1.1.3)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     configatron (4.5.1)
     connection_pool (2.5.5)
     crack (1.0.1)
@@ -233,7 +234,7 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    faraday (2.14.1)
+    faraday (2.14.2)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
@@ -244,14 +245,14 @@ GEM
     ffi (1.17.3-arm64-darwin)
     ffi (1.17.3-x86_64-darwin)
     ffi (1.17.3-x86_64-linux-gnu)
-    flipper (1.4.1)
+    flipper (1.4.2)
       concurrent-ruby (< 2)
-    flipper-active_record (1.4.1)
+    flipper-active_record (1.4.2)
       activerecord (>= 4.2, < 9)
-      flipper (~> 1.4.1)
-    flipper-ui (1.4.1)
+      flipper (~> 1.4.2)
+    flipper-ui (1.4.2)
       erubi (>= 1.0.0, < 2.0.0)
-      flipper (~> 1.4.1)
+      flipper (~> 1.4.2)
       rack (>= 1.4, < 4)
       rack-protection (>= 1.5.3, < 5.0.0)
       rack-session (>= 1.0.2, < 3.0.0)
@@ -280,16 +281,16 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.4)
+    json (2.19.5)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack_pro (9.2.3)
-      logger
+    knapsack_pro (10.0.0)
       rake
+      thor (~> 1.4)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -378,9 +379,11 @@ GEM
       pry (>= 0.13, < 0.17)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
-    psych (3.3.4)
+    psych (5.3.1)
+      date
+      stringio
     public_suffix (7.0.5)
-    puma (7.2.0)
+    puma (8.0.1)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.23)
@@ -499,8 +502,8 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    ruboclean (0.7.1)
-    rubocop (1.86.1)
+    ruboclean (0.8.0)
+    rubocop (1.86.2)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -552,7 +555,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.2.2)
+    rubyzip (3.3.0)
     sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -562,7 +565,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.43.0)
+    selenium-webdriver (4.44.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -589,6 +592,7 @@ GEM
       rbtree
       set (~> 1.0)
     ssrf_filter (1.2.0)
+    stringio (3.2.0)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
@@ -622,7 +626,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
-    vite_rails (3.10.0)
+    vite_rails (3.11.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
     vite_ruby (3.10.2)
@@ -680,7 +684,7 @@ DEPENDENCIES
   capybara
   carrierwave
   caxlsx
-  concurrent-ruby (= 1.3.5)
+  concurrent-ruby
   configatron
   csv (~> 3.3)
   cucumber-rails
@@ -716,7 +720,6 @@ DEPENDENCIES
   prettier_print
   pry-byebug
   pry-rails
-  psych (< 4)
   puma
   rack-acceptable
   rack-cors
