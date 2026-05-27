@@ -133,6 +133,66 @@ RSpec.describe Labware do
       plate = create(:plate)
       expect(plate.storage_location).to eq('Not found - There is a problem with Labwhere')
     end
+
+    it 'chooses the newer location when both machine and human barcode lookups return values' do
+      plate = create(:plate)
+
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(plate.machine_barcode).and_return(
+        LabWhereClient::Labware.new(
+          {
+            'barcode' => plate.machine_barcode,
+            'updated_at' => '2026-05-06 10:46:00',
+            'location' => {
+              'name' => 'f1',
+              'parentage' => 'Sanger / Ogilvie / AA216',
+              'barcode' => 'lw-f1-26214',
+              'updated_at' => '2026-05-06 10:46:00'
+            }
+          }
+        )
+      )
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(plate.human_barcode).and_return(
+        LabWhereClient::Labware.new(
+          {
+            'barcode' => plate.human_barcode,
+            'updated_at' => '2026-05-07 10:46:00',
+            'location' => {
+              'name' => 'f2',
+              'parentage' => 'Sanger / Ogilvie / AA216',
+              'barcode' => 'lw-f2-26214',
+              'updated_at' => '2026-05-07 10:46:00'
+            }
+          }
+        )
+      )
+
+      expect(plate.labwhere_location).to eq('Sanger / Ogilvie / AA216 - f2')
+    end
+
+    it 'falls back to human barcode location when machine barcode lookup raises an error' do
+      plate = create(:plate)
+
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(plate.machine_barcode).and_raise(
+        StandardError,
+        'Timed out reading data from server'
+      )
+      allow(LabWhereClient::Labware).to receive(:find_by_barcode).with(plate.human_barcode).and_return(
+        LabWhereClient::Labware.new(
+          {
+            'barcode' => plate.human_barcode,
+            'updated_at' => '2026-05-07 10:46:00',
+            'location' => {
+              'name' => 'f2',
+              'parentage' => 'Sanger / Ogilvie / AA216',
+              'barcode' => 'lw-f2-26214',
+              'updated_at' => '2026-05-07 10:46:00'
+            }
+          }
+        )
+      )
+
+      expect(plate.labwhere_location).to eq('Sanger / Ogilvie / AA216 - f2')
+    end
   end
 
   context 'when retrieving retention instructions' do
