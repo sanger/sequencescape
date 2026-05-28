@@ -10,6 +10,9 @@
 #     belong to a single submission (e.g. WGS)
 #   - Pipelines where sequencing and library prep requests belong to
 #     different submissions (e.g. RNA)
+#   - Pipelines where the plate marked with “under-represented” wells is at the bottom of the request chain
+#   - TODO: `Pipelines where the plate marked with “under-represented”
+#     TODO: wells is in the middle of the request chain (e.g ISC ) Y26-167`
 #
 # Responsibilities:
 #   - Retrieve ancestor plates from batch lanes
