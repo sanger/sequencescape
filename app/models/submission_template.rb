@@ -11,7 +11,8 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   serialize :submission_parameters, coder: YAML, yaml: {
     permitted_classes: [
-      FieldInfo
+      FieldInfo,
+      Time
     ]
   }
 
