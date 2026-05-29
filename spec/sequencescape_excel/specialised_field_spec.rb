@@ -143,6 +143,11 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
       my_perfect_class.valid?
       expect(my_perfect_class.errors.full_messages.join).to include('My perfect class can\'t be blank')
     end
+
+    it 'knows its own name' do
+      my_perfect_class = class_with_base_and_value_required.new(value: nil)
+      expect(my_perfect_class.name).to eq('my_perfect_class')
+    end
   end
 
   describe SequencescapeExcel::SpecialisedField::LibraryType do

@@ -8,7 +8,7 @@ SampleManifest::GenerateWellsJob =
 
         RequestFactory.create_assets_requests(plate.wells, sample_manifest.study)
 
-        plate.events.created_using_sample_manifest!(sample_manifest.user)
+        plate.events.created_using_sample_manifest!(sample_manifest, sample_manifest.user)
       end
     end
 
