@@ -50,9 +50,11 @@ class PlatePurpose::Input < PlatePurpose
 
   def calculate_state_of_plate(wells_states)
     unique_states = wells_states.uniq
-    return UNREADY_STATE if unique_states.include?(:unready)
+    # if any of the wells are pending then the plate is pending
+    return UNREADY_STATE if unique_states.include?(UNREADY_STATE)
 
     case unique_states.sort
+    # when either all failed or a mix of failed and cancelled we set failed
     when ['failed'], %w[cancelled failed]
       'failed'
     when ['cancelled']
