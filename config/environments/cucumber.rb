@@ -38,6 +38,13 @@ Rails.application.configure do
   # https://github.com/rails/rails/issues/15089
   config.allow_concurrency = false
 
+  # Disable Active Record’s asynchronous query execution. By setting it to nil,
+  # all database queries will be executed synchronously (in the same thread),
+  # rather than using a background thread or pool. This is added to avoid
+  # Mysql2::Error: This connection is in use by: #<Fiber:0x0123456789abcdef>
+  # errors while running Cucumber tests on CI.
+  config.active_record.async_query_executor = nil
+
   if defined?(ENV_JAVA)
     ENV_JAVA['http.proxyHost'] = nil
     ENV_JAVA['http.proxyPort'] = nil
@@ -48,3 +55,8 @@ Rails.application.configure do
   # load WIP features flag
   config.deploy_wip_pipelines = true
 end
+
+# Configure Capybara to use Puma in single-threaded mode for tests
+# 0 is for min and 1 is for max threads, which effectively makes it single-threaded.
+# Silent is to preserve the rails helper setting, which makes the test output less noisy.
+Capybara.server = :puma, { Threads: "0:1", Silent: true }
