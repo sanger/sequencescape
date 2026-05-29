@@ -30,15 +30,16 @@ class PlatePurpose::Input < PlatePurpose
     wells_states =
       well_requests.group_by(&:asset_id).values.map { |requests| calculate_state_of_well(requests.map(&:state)) }
 
-    # If we have a state for all of the wells with aliquots then we can calculate the state of the plate from those
-    if wells_states.count == ids_of_wells_with_aliquots.count
+    # When we have a state for all of the wells with aliquots then we can calculate the state of the plate from those
+    # Handles full and partial submissions
+    if wells_states.count.positive?
       calculate_state_of_plate(wells_states)
     else
-      # If we cannot determine a state for all wells with aliquots, then we can either take the default_state if one is
-      # set, or we assume it is still pending
+      # If there are no requests, then we can either take the default_state if one is set, or we assume it is still
+      # pending.
       # NB. default_state is a persisted value set in plate purpose configurations, stored in the plate_purposes table.
       # NB. This is not the same as the default_state method defined in Transfer::State, which is nil for input plates.
-      return default_state if default_state.present?
+      return plate.default_state if plate.default_state.present?
 
       UNREADY_STATE
     end
@@ -50,8 +51,6 @@ class PlatePurpose::Input < PlatePurpose
 
   def calculate_state_of_plate(wells_states)
     unique_states = wells_states.uniq
-    # if any of the wells are pending then the plate is pending
-    return UNREADY_STATE if unique_states.include?(UNREADY_STATE)
 
     case unique_states.sort
     # when either all failed or a mix of failed and cancelled we set failed
@@ -60,6 +59,7 @@ class PlatePurpose::Input < PlatePurpose
     when ['cancelled']
       'cancelled'
     else
+      # passed
       READY_STATE
     end
   end
