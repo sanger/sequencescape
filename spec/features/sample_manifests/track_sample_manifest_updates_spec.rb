@@ -41,10 +41,9 @@ describe 'track SampleManifest updates', :sample_manifest do
 
     Delayed::Worker.new.work_off
 
-    samples =
-      sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
-        sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
-      end
+    sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
+      sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
+    end
 
     visit('/sdb/')
     click_on 'View all manifests'
