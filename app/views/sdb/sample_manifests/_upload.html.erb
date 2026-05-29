@@ -6,7 +6,21 @@
         <%= file_field_tag :upload, required: true %>
       </div>
       <div class="form-group">
-        <%= check_box_tag :override %>&nbsp;<%= label_tag :override, 'Override previously uploaded samples' %>
+        <div class="form-check">
+          <%= check_box_tag :override_samples, class: 'form-check-input'%>
+          <%= label_tag :override_samples, 'Override previously uploaded samples', class: 'form-check-label' %>
+        </div>
+
+        <div class="ml-3"><%# Indent the volume and concentration checkboxes, since they depend on override_samples %>
+          <div class="form-check">
+            <%= check_box_tag :overwrite_volume, class: 'form-check-input', disabled: true %>
+            <%= label_tag :overwrite_volume, 'Overwrite volume', class: 'form-check-label' %>
+          </div>
+          <div class="form-check">
+            <%= check_box_tag :overwrite_concentration, class: 'form-check-input', disabled: true %>
+            <%= label_tag :overwrite_concentration, 'Overwrite concentration', class: 'form-check-label' %>
+          </div>
+        </div>
       </div>
       <div class="form-group mb-0">
         <%= submit_tag 'Upload manifest', class: 'btn btn-success' %>
@@ -14,3 +28,21 @@
     </fieldset>
   <% end -%>
 <% end %>
+
+<script>
+  // Add JavaScript to enable/disable the volume and concentration checkboxes based on the state of the override-samples checkbox
+  document.addEventListener('DOMContentLoaded', function() {
+    const overrideSamples = document.getElementById('override_samples');
+    const overwriteVolume = document.getElementById('overwrite_volume');
+    const overwriteConcentration = document.getElementById('overwrite_concentration');
+
+    // Enable the vol and conc checkboxes when override-samples is checked, otherwise disable them
+    function updateCheckboxStates() {
+      overwriteVolume.disabled = !overrideSamples.checked;
+      overwriteConcentration.disabled = !overrideSamples.checked;
+    }
+
+    // Listen for changes
+    overrideSamples.addEventListener('change', updateCheckboxStates);
+  });
+</script>

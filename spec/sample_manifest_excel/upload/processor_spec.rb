@@ -38,6 +38,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     let(:new_test_file_name) { 'new_test_file.xlsx' }
     let(:test_file) { Rack::Test::UploadedFile.new(Rails.root.join(test_file_name), '') }
     let(:tag_group) { create(:tag_group) }
+    let(:overrides) { { samples:, exclude_fields: } }
 
     before do
       allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
@@ -47,7 +48,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     after { FileUtils.rm_f(test_file_name) }
 
     shared_examples 'it updates downstream aliquots' do |rows, columns|
-      it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+      it 'will update the aliquots downstream if aliquots data has changed and override is set to overall all' do
         cell(rows.first, columns[:insert_size_from]).value = '100'
         cell(rows.last, columns[:insert_size_to]).value = '1000'
         download.save(new_test_file_name)
@@ -56,7 +57,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -65,7 +66,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor).to be_downstream_aliquots_updated
       end
 
-      it 'will update the aliquots downstream if tags were swapped and override is set to true' do
+      it 'will update the aliquots downstream if tags were swapped and override is set to overall all' do
         i7_tag1 = cell(rows.first, columns[:i7]).value
         i7_tag2 = cell(rows.last, columns[:i7]).value
         cell(rows.first, columns[:i7]).value = i7_tag2
@@ -76,7 +77,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -95,7 +96,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -110,7 +111,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -120,7 +121,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
     end
 
     shared_examples 'it updates chromium aliquots' do |rows, columns|
-      it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+      it 'will update the aliquots downstream if aliquots data has changed and override is set to overall all' do
         cell(rows.first, columns[:insert_size_from]).value = '100'
         cell(rows.last, columns[:insert_size_to]).value = '1000'
 
@@ -130,7 +131,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -140,7 +141,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor).to be_downstream_aliquots_updated
       end
 
-      it 'will update the aliquots downstream if tags were swapped and override is set to true' do
+      it 'will update the aliquots downstream if tags were swapped and override is set to overall all' do
         chromium_tag1 = cell(rows.first, columns[:chromium_tag_well]).value
         chromium_tag2 = cell(rows.last, columns[:chromium_tag_well]).value
         cell(rows.first, columns[:chromium_tag_well]).value = chromium_tag2
@@ -151,7 +152,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
         processor.update_samples_and_aliquots(tag_group)
@@ -174,7 +175,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             file: new_test_file,
             column_list: column_list,
             start_row: 9,
-            override: true
+            override: overrides
           )
         processor = described_class.new(reupload2)
 
@@ -231,7 +232,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         it_behaves_like 'it updates downstream aliquots', [10, 11], insert_size_from: 6, insert_size_to: 7, i7: 2
 
         context 'when override is true' do
-          let(:override) { true }
+          let(:override_samples) { true }
 
           context 'when updating sample data' do
             let(:reupload) do
@@ -262,7 +263,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
 
         context 'when override is false' do
-          let(:override) { false }
+          let(:override_samples) { false }
           let(:reupload) do
             SampleManifestExcel::Upload::Base.new(
               file: new_test_file,
@@ -511,7 +512,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
           after { FileUtils.rm_f(new_test_file_name) }
 
-          it 'will update the aliquots downstream if aliquots data has changed and override is set to true' do
+          it 'will update the aliquots downstream if aliquots data has changed and override is set to overall all' do
             cell(10, 7).value = '100'
             cell(11, 8).value = '1000'
             download.save(new_test_file_name)
@@ -520,7 +521,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                 file: new_test_file,
                 column_list: column_list,
                 start_row: 9,
-                override: true
+                override: overrides
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
@@ -529,7 +530,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
             expect(processor).to be_downstream_aliquots_updated
           end
 
-          it 'will update the aliquots downstream if tag indexes were swapped and override is set to true' do
+          it 'will update the aliquots downstream if tag indexes were swapped and override is set to overall all' do
             tag_group1 = cell(10, 2).value
             tag_index1 = cell(10, 3).value
             tag_group2 = cell(11, 2).value
@@ -544,7 +545,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                 file: new_test_file,
                 column_list: column_list,
                 start_row: 9,
-                override: true
+                override: overrides
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
@@ -558,7 +559,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                 file: new_test_file,
                 column_list: column_list,
                 start_row: 9,
-                override: true
+                override: overrides
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)
@@ -693,7 +694,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
                 file: new_test_file,
                 column_list: column_list,
                 start_row: 9,
-                override: true
+                override: overrides
               )
             processor = described_class.new(reupload)
             processor.update_samples_and_aliquots(nil)

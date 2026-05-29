@@ -19,7 +19,10 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
   end
 
   def create_uploader
-    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, params[:override])
+    samples = params[:override_samples].present?
+
+    overrides = { samples:, exclude_fields: }
+    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, overrides)
   end
 
   def upload_manifest
@@ -81,5 +84,12 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
         .paginate(page: params[:page])
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
+  end
+
+  def exclude_fields
+    excluded_fields = []
+    excluded_fields << :volume if params[:overwrite_volume].blank?
+    excluded_fields << :concentration if params[:overwrite_concentration].blank?
+    excluded_fields.compact
   end
 end
