@@ -60,7 +60,7 @@ class Api::Messages::EseqFlowcellIo < Api::Base
       with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
       with_association(:project) do
-        # Defined in flowcell_io but included in the project mode via the extensions module
+        # Defined in flowcell_io but included in the project model via the extensions module
         map_attribute_to_json_attribute(:project_cost_code_for_uwh, 'cost_code')
       end
     end
