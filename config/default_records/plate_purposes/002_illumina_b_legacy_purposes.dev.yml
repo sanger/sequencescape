@@ -5,7 +5,6 @@
 ILB_STD_INPUT:
   type: PlatePurpose::Input
   stock_plate: true
-  default_state: passed
   cherrypickable_target: true
 ILB_STD_COVARIS:
   type: PlatePurpose

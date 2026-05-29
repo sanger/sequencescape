@@ -17,7 +17,7 @@ describe PlatePurpose::Input do
       end
     end
 
-    context 'with two pending requests' do
+    context 'with a pending request on each well' do
       before { plate.wells.each { |well| create(:request_library_creation, asset: well) } }
 
       it 'is passed' do
@@ -25,7 +25,7 @@ describe PlatePurpose::Input do
       end
     end
 
-    context 'with two failed requests' do
+    context 'with a failed request on each well' do
       before { plate.wells.each { |well| create(:request_library_creation, asset: well, state: 'failed') } }
 
       it 'is failed' do
@@ -33,7 +33,7 @@ describe PlatePurpose::Input do
       end
     end
 
-    context 'with two cancelled requests' do
+    context 'with a cancelled request on each well' do
       before { plate.wells.each { |well| create(:request_library_creation, asset: well, state: 'cancelled') } }
 
       it 'is cancelled' do
@@ -52,7 +52,7 @@ describe PlatePurpose::Input do
       end
     end
 
-    context 'with two active requests' do
+    context 'with two active requests in each well' do
       before { plate.wells.each { |well| create_list(:request_library_creation, 2, asset: well) } }
 
       it 'is passed' do
@@ -60,7 +60,28 @@ describe PlatePurpose::Input do
       end
     end
 
-    context 'with one active and one cancelled requests' do
+    context 'when some wells with aliquots have no customer requests (partial submission)' do
+      before do
+        # Only one of the two wells gets a request, leaving the other with an aliquot but no request
+        create(:request_library_creation, asset: plate.wells.first)
+      end
+
+      context 'when default_state is not set on the purpose' do
+        it 'is passed' do
+          expect(state_of).to eq('passed')
+        end
+      end
+
+      context 'when default_state is set on the purpose and there are no requests' do
+        let(:plate_purpose_input) { create(:input_plate_purpose, default_state: 'passed') }
+
+        it 'returns the default_state' do
+          expect(state_of).to eq('passed')
+        end
+      end
+    end
+
+    context 'with one pending request and one cancelled request in each well' do
       before do
         plate.wells.each do |well|
           create(:request_library_creation, asset: well)
@@ -70,6 +91,19 @@ describe PlatePurpose::Input do
 
       it 'is passed' do
         expect(state_of).to eq('passed')
+      end
+    end
+
+    context 'with 2 cancelled requests in each well' do
+      before do
+        plate.wells.each do |well|
+          create(:request_library_creation, asset: well, state: 'cancelled')
+          create(:request_library_creation, asset: well, state: 'cancelled')
+        end
+      end
+
+      it 'is cancelled' do
+        expect(state_of).to eq('cancelled')
       end
     end
   end
