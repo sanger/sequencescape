@@ -26,30 +26,36 @@ module SequencescapeExcel
       def update(_attributes = {})
         return unless valid?
 
-        # NB. asset here is a well, and a the well_has_single_aliquot? validation ensures there is only one aliquot
-        stock_aliquot = asset.aliquots.first
-
-        # Update all downstream aliquots as well as current aliquot
-        matching_aliquots = identify_all_matching_aliquots(stock_aliquot)
-        update_all_relevant_aliquots(matching_aliquots, tag, tag2)
+        # NB. the asset here is a well, and the well_has_single_aliquot? validation ensures there is only one aliquot
+        # NB. however we do not use `aliquots.first` as this triggers a select and gets a new instance of the aliquot,
+        # which then is not same aliquot instance when saved_changes? works to detect substitutions for TagSubstitution
+        aliquots.each { |aliquot| aliquot.assign_attributes(tag:, tag2:) }
       end
 
       def link(other_fields)
         self.sf_dual_index_tag_set = other_fields[SequencescapeExcel::SpecialisedField::DualIndexTagSet]
       end
 
-      # From the validation in DualIndexTagSet, we know this tag set is a valid dual index tag set
+      # From the validation in DualIndexTagSet, we will know if this tag set is a valid dual index tag set
       # with a visible tag group and visible tag2 group
       def dual_index_tag_set
         @dual_index_tag_set = TagSet.find(sf_dual_index_tag_set.tag_set_id) if sf_dual_index_tag_set&.tag_set_id
       end
 
       def tag_group_id
-        @tag_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag_group_id, visible: true).id
+        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil
+        # added because this code was running before the validation in DualIndexTagSet catches the missing value
+        return unless dual_index_tag_set
+
+        @tag_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag_group_id, visible: true)&.id
       end
 
       def tag2_group_id
-        @tag2_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag2_group_id, visible: true).id
+        # defensive guard to avoid NoMethodError being thrown when dual_index_tag_set is nil
+        # added because this code was running before the validation in DualIndexTagSet catches the missing value
+        return unless dual_index_tag_set
+
+        @tag2_group_id ||= ::TagGroup.find_by(id: dual_index_tag_set.tag2_group_id, visible: true)&.id
       end
 
       private
@@ -77,32 +83,10 @@ module SequencescapeExcel
 
       # Validation to ensure that the well has a single aliquot
       def well_has_single_aliquot?
-        return true if asset.aliquots.one?
+        return true if aliquots.one?
 
-        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{asset.aliquots.count}"
+        msg = "Expecting well #{asset.map.description} to have a single aliquot, but it has #{aliquots.count}"
         errors.add(:base, msg)
-      end
-
-      # Find all aliquots that need updating
-      # Aliquots must have a matching sample_id, library_id, tag_id and tag2_id to the given stock_aliquot.
-      def identify_all_matching_aliquots(stock_aliquot)
-        attributes = {
-          sample_id: stock_aliquot.sample_id,
-          library_id: stock_aliquot.library_id,
-          tag_id: stock_aliquot.tag_id,
-          tag2_id: stock_aliquot.tag2_id
-        }
-
-        Aliquot.where(attributes).ids
-      end
-
-      # Update the tags in all the matching aliquots
-      # NB. if active record sees that nothing has changed it will update the record
-      def update_all_relevant_aliquots(matching_aliquots, i7_tag, i5_tag)
-        Aliquot.where(id: matching_aliquots).find_each do |aq|
-          aq.update(tag: i7_tag, tag2: i5_tag)
-          aq.save!
-        end
       end
     end
   end
