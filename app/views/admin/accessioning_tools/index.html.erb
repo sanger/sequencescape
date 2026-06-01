@@ -1,0 +1,67 @@
+
+<%- add :about, "Provides advanced accessioning tools for administrators" %>
+
+<%= page_title 'Accessioning', 'Tools' %>
+
+<div class="card my-3">
+  <div class="card-header font-weight-bold">Sequencescape Accessioning Checklist</div>
+  <div class="card-body">
+    <%= tag.div(class: 'checks p-2') do %>
+      <%= action_checklist_item(
+            condition: accessioning_enabled?,
+            good: "Accessioning is <strong>Enabled</strong>".html_safe,
+            bad: "Accessioning is <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y25_706_enable_accessioning'>Change global accessioning</a>".html_safe
+          ) %>
+      <%= action_checklist_item(
+            condition: !Flipper.enabled?(:y25_714_skip_accessioning_tag_validation),
+            good: "Accessioning tag validation is <strong>Enabled</strong>".html_safe,
+            bad: "Accessioning tag validation is <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y25_714_skip_accessioning_tag_validation'>Change accessioning tag validation</a>".html_safe
+          ) %>
+      <%= action_checklist_item(
+            condition: Flipper.enabled?(:y26_094_email_users_on_accessioning_failures),
+            good: "User emails on sample failures are <strong>Enabled</strong>".html_safe,
+            bad: "User emails on sample failures are <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y26_094_email_users_on_accessioning_failures'>Change user email notifications</a>".html_safe
+          ) %>
+      <%= action_checklist_item(
+            condition: Flipper.enabled?(:y25_705_notify_on_external_accessioning_validation_failures),
+            good: "Developer notifications on external sample failures are <strong>Enabled</strong>".html_safe,
+            bad: "Developer notifications on external sample failures are <strong>Disabled</strong>".html_safe,
+            action: "<a href='/flipper/features/y25_705_notify_on_external_accessioning_validation_failures'>Change developer exception notifications</a>".html_safe
+          ) %>
+    <% end %>
+  </div>
+</div>
+
+<div class="card my-3">
+  <div class="card-header font-weight-bold">Bulk accession by updated range</div>
+  <div class="card-body">
+    <p>Designed for bulk accessioning of samples after an external service outage.</p>
+    <%= form_tag bulk_accession_admin_accessioning_tools_path, method: :put do %>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="start_date" class="form-label">Start date</label>
+          <%= date_field_tag :start_date, Date.today, class: 'form-control', id: 'start_date' %>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="end_date" class="form-label">End date</label>
+          <%= date_field_tag :end_date, Date.today, class: 'form-control', id: 'end_date' %>
+        </div>
+      </div>
+      <div class="mt-2 text-muted">
+        <p>Samples to be accessioned: <span id="bulk-accession-preview"></span></p>
+        <p>There is no limit to the number of samples that can be accessioned -
+        asynchronous progress can be viewed at the <%= link_to 'Delayed Jobs Queue', admin_delayed_jobs_path %>.
+        </p>
+        <% if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures) %>
+        <p>SSRs will receive email notification of any samples that fail to accession.</p>
+        <% end %>
+      </div>
+      <%= submit_tag 'Accession all samples in range', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<%= vite_javascript_tag 'accessioning_tools' %>

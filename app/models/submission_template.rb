@@ -9,7 +9,12 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validates :name, presence: true
   validates :submission_class_name, presence: true
 
-  serialize :submission_parameters, coder: YAML
+  serialize :submission_parameters, coder: YAML, yaml: {
+    permitted_classes: [
+      FieldInfo,
+      Time
+    ]
+  }
 
   has_many :orders
   belongs_to :product_line
