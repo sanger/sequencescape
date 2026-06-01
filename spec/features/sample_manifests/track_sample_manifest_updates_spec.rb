@@ -4,8 +4,6 @@ require 'rails_helper'
 require 'timecop'
 
 describe 'track SampleManifest updates', :sample_manifest do
-  include FetchTable
-
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
