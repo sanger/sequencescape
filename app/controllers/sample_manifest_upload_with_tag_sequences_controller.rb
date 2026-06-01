@@ -18,13 +18,21 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end
 
-  def create_uploader
-    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, overrides)
+  def rows_with_warnings
+    @uploader.upload.rows.select do |row|
+      row.respond_to?(:warnings) && row.warnings.any?
+    end
   end
+
+  private
 
   def upload_manifest
     @uploader = create_uploader
     @uploader.run!
+  end
+
+  def create_uploader
+    SampleManifest::Uploader.new(params[:upload], SampleManifestExcel.configuration, current_user, overrides)
   end
 
   def set_upload_flash_message
@@ -32,12 +40,6 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     return success('Sample manifest successfully uploaded.') if warning_rows.empty?
 
     apply_warning_flash(warning_rows)
-  end
-
-  def rows_with_warnings
-    @uploader.upload.rows.select do |row|
-      row.respond_to?(:warnings) && row.warnings.any?
-    end
   end
 
   def apply_warning_flash(rows) # rubocop:disable Metrics/AbcSize
@@ -82,8 +84,6 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     @display_manifests = pending_sample_manifests | completed_sample_manifests
     @sample_manifests = SampleManifest.paginate(page: params[:page])
   end
-
-  private
 
   def overrides
     override_samples = params[:override_samples].present?
