@@ -17,6 +17,14 @@ describe PlatePurpose::Input do
       end
     end
 
+    context 'with no requests and default_state is set on the purpose' do
+      let(:plate_purpose_input) { create(:input_plate_purpose, default_state: 'passed') }
+
+      it 'returns the default_state' do
+        expect(state_of).to eq('passed')
+      end
+    end
+
     context 'with a pending request on each well' do
       before { plate.wells.each { |well| create(:request_library_creation, asset: well) } }
 
@@ -67,12 +75,12 @@ describe PlatePurpose::Input do
       end
 
       context 'when default_state is not set on the purpose' do
-        it 'is passed' do
+        it 'as an input plate a pending request means it is passed and ready for child creation' do
           expect(state_of).to eq('passed')
         end
       end
 
-      context 'when default_state is set on the purpose and there are no requests' do
+      context 'when default_state is set on the purpose' do
         let(:plate_purpose_input) { create(:input_plate_purpose, default_state: 'passed') }
 
         it 'returns the default_state' do
