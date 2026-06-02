@@ -55,6 +55,11 @@ require 'pry'
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
+SuperDiff.configure do |config|
+  config.diff_elision_enabled = true
+  config.diff_elision_maximum = 3
+end
+
 RSpec.configure do |config|
   config.bisect_runner = :shell # Forking doesn't seem to work
 
