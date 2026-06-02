@@ -162,7 +162,7 @@ group :development, :linting do
   gem 'syntax_tree-haml', require: false
   gem 'syntax_tree-rbs', require: false
 
-# Improve diff output during development
+  # Improve diff output during development
   gem 'super_diff', require: false # view differences on rspec expectation failures
 
   # Automatically generate documentation
