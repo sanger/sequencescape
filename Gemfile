@@ -162,6 +162,9 @@ group :development, :linting do
   gem 'syntax_tree-haml', require: false
   gem 'syntax_tree-rbs', require: false
 
+# Improve diff output during development
+  gem 'super_diff', require: false # view differences on rspec expectation failures
+
   # Automatically generate documentation
   gem 'yard', require: false
   gem 'yard-activerecord', '~> 0.0.16', require: false
@@ -219,7 +222,6 @@ group :test, :cucumber do
   gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
-  gem 'super_diff', require: false # view differences on rspec expectation failures
   gem 'timecop', require: false
 
   gem 'cucumber_github_formatter'

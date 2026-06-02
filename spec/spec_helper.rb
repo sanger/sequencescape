@@ -39,7 +39,6 @@ require 'capybara/rspec'
 require 'selenium/webdriver'
 require 'webmock/rspec'
 require 'support/user_login'
-require 'super_diff/rspec-rails'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
@@ -53,12 +52,17 @@ require './features/support/capybara'
 require './lib/plate_map_generation'
 require 'pry'
 
-WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
+if ENV['RAILS_ENV'] != 'test'
+  # disabled in CI since it causes performance issues, see https://github.com/splitwise/super_diff/issues/139
+  require 'super_diff/rspec-rails'
 
-SuperDiff.configure do |config|
-  config.diff_elision_enabled = true
-  config.diff_elision_maximum = 3
+  SuperDiff.configure do |config|
+    config.diff_elision_enabled = true
+    config.diff_elision_maximum = 3
+  end
 end
+
+WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
 RSpec.configure do |config|
   config.bisect_runner = :shell # Forking doesn't seem to work
