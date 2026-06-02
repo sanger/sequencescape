@@ -768,7 +768,7 @@ DEPENDENCIES
   simplecov-lcov
   sinatra
   slack-notifier
-  super_diff (~> 0.19.0)
+  super_diff
   syntax_tree
   syntax_tree-haml
   syntax_tree-rbs
