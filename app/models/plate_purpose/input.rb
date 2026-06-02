@@ -38,8 +38,9 @@ class PlatePurpose::Input < PlatePurpose
       # If there are no requests, then we can either take the default_state if one is set, or we assume it is still
       # pending.
       # NB. default_state is a persisted value set in plate purpose configurations, stored in the plate_purposes table.
-      # NB. This is not the same as the default_state method defined in Transfer::State, which is nil for input plates.
-      return plate.default_state if plate.default_state.present?
+      # NB. This is not the same as the plate.default_state method defined in Transfer::State, which is nil for input
+      # plates.
+      return default_state if default_state.present?
 
       UNREADY_STATE
     end
