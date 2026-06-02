@@ -219,7 +219,7 @@ group :test, :cucumber do
   gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
-  gem 'super_diff', '~> 0.19.0', require: false
+  gem 'super_diff', require: false # view differences on rspec expectation failures
   gem 'timecop', require: false
 
   gem 'cucumber_github_formatter'
