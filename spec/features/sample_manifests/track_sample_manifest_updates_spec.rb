@@ -86,7 +86,6 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
     ]
-
     expect(fetch_table('table#events')).to eq(table)
 
     # A different user logs in and updates the manifest
@@ -237,5 +236,213 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
       ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
     expect(fetch_table('table#events')).to eq(table)
+  end
+
+  describe 'Only update certain fields when override is selected' do
+    it 'updates volume only when overwrite volume is selected' do
+      # similar setup to previous test but only check the volume field gets updated when overwrite volume is selected
+      visit(study_path(study))
+      expect(page).to have_title('Sequencescape | Information (Study 1)')
+
+      click_link('Sample Manifests')
+      expect(page).to have_title('Sequencescape | Studies (Sample Manifests)')
+
+      expect(page).to have_text('Create manifest for plates')
+
+      expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
+      sample_manifest = create(:sample_manifest, study:, supplier:, user:)
+      sample_manifest.generate
+
+      Delayed::Worker.new.work_off
+
+      sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
+        sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
+      end
+
+      visit('/sdb/')
+      expect(page).to have_title('Sequencescape | Home (Index)')
+
+      click_on 'View all manifests'
+      expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
+      attach_file('File to upload', 'test/data/test_blank_wells.csv')
+
+      click_button 'Upload manifest'
+      expect(page).to have_text('Sample manifest successfully uploaded.')
+
+      sample_8 = Sample.find_by!(sanger_sample_id: 'sample_8')
+
+      visit(history_sample_path(sample_8))
+      table = [
+        ['Message', 'Content', 'Created at', 'Created by'],
+        ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Gender: not specified → Male ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Dna source: not specified → Genomic ' \
+         'Volume: not specified → 10 ' \
+         'Sample public name: not specified → Human ' \
+         'Sample common name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
+         'Sample description: not specified → Human ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Concentration: not specified → 20 ' \
+         'Supplier name: not specified → eeee ' \
+         'Donor: not specified → 12345',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
+      ]
+      expect(fetch_table('table#events')).to eq(table)
+
+      # A different user logs in and updates the manifest
+      login_user new_user
+
+      visit('/sdb/')
+      expect(page).to have_title('Sequencescape | Home (Index)')
+
+      click_on 'View all manifests'
+      expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
+      attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
+
+      # upload with volume override
+      check 'Override previously uploaded samples'
+      check 'Overwrite volume'
+      click_button 'Upload manifest'
+      Delayed::Worker.new.work_off
+      expect(page).to have_text('Sample manifest successfully uploaded.')
+
+      visit(history_sample_path(sample_8))
+      table = [
+        ['Message', 'Content', 'Created at', 'Created by'],
+        ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Gender: not specified → Male ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Dna source: not specified → Genomic ' \
+         'Volume: not specified → 10 ' \
+         'Sample public name: not specified → Human ' \
+         'Sample common name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
+         'Sample description: not specified → Human ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Concentration: not specified → 20 ' \
+         'Supplier name: not specified → eeee ' \
+         'Donor: not specified → 12345',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Volume: 10 → 15 ' \
+         'Sample taxon: 9613 → 10013 ' \
+         'Date of sample collection: 2022-12-12 → 2022-12-08 ' \
+         'Supplier name: eeee → eeee_updated',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
+      ]
+      expect(fetch_table('table#events')).to eq(table)
+    end
+
+    it 'updates concentration only when overwrite concentration is selected' do
+      # similar setup to previous test but only check the concentration field gets updated when overwrite concentration is selected
+      visit(study_path(study))
+      expect(page).to have_title('Sequencescape | Information (Study 1)')
+
+      click_link('Sample Manifests')
+      expect(page).to have_title('Sequencescape | Studies (Sample Manifests)')
+
+      expect(page).to have_text('Create manifest for plates')
+
+      expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
+      sample_manifest = create(:sample_manifest, study:, supplier:, user:)
+      sample_manifest.generate
+
+      Delayed::Worker.new.work_off
+
+      sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
+        sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
+      end
+
+      visit('/sdb/')
+      expect(page).to have_title('Sequencescape | Home (Index)')
+
+      click_on 'View all manifests'
+      expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
+      attach_file('File to upload', 'test/data/test_blank_wells.csv')
+
+      click_button 'Upload manifest'
+      expect(page).to have_text('Sample manifest successfully uploaded.')
+
+      sample_8 = Sample.find_by!(sanger_sample_id: 'sample_8')
+
+      visit(history_sample_path(sample_8))
+      table = [
+        ['Message', 'Content', 'Created at', 'Created by'],
+        ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Gender: not specified → Male ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Dna source: not specified → Genomic ' \
+         'Volume: not specified → 10 ' \
+         'Sample public name: not specified → Human ' \
+         'Sample common name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
+         'Sample description: not specified → Human ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Concentration: not specified → 20 ' \
+         'Supplier name: not specified → eeee ' \
+         'Donor: not specified → 12345',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
+      ]
+      expect(fetch_table('table#events')).to eq(table)
+
+      # A different user logs in and updates the manifest
+      login_user new_user
+
+      visit('/sdb/')
+      expect(page).to have_title('Sequencescape | Home (Index)')
+
+      click_on 'View all manifests'
+      expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
+      attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
+
+      # upload with volume override
+      check 'Override previously uploaded samples'
+      check 'Overwrite concentration'
+      click_button 'Upload manifest'
+      Delayed::Worker.new.work_off
+      expect(page).to have_text('Sample manifest successfully uploaded.')
+
+      visit(history_sample_path(sample_8))
+      table = [
+        ['Message', 'Content', 'Created at', 'Created by'],
+        ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Gender: not specified → Male ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Dna source: not specified → Genomic ' \
+         'Volume: not specified → 10 ' \
+         'Sample public name: not specified → Human ' \
+         'Sample common name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
+         'Sample description: not specified → Human ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Concentration: not specified → 20 ' \
+         'Supplier name: not specified → eeee ' \
+         'Donor: not specified → 12345',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+        ['Updated sample metadata',
+         'Sample taxon: 9613 → 10013 ' \
+         'Date of sample collection: 2022-12-12 → 2022-12-08 ' \
+         'Concentration: 20 → 10 ' \
+         'Supplier name: eeee → eeee_updated',
+         'Monday 12 July, 2010 10:25', ''],
+        ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
+      ]
+      expect(fetch_table('table#events')).to eq(table)
+    end
   end
 end
