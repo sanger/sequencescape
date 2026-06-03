@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'timecop'
 
-describe 'track SampleManifest updates', :sample_manifest do
+describe 'Track SampleManifest updates', :js, :sample_manifest do
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -23,11 +23,15 @@ describe 'track SampleManifest updates', :sample_manifest do
     travel_to(Time.zone.local(2010, 7, 12, 10, 25, 0))
     login_user user
     load_manifest_spec
-    visit(study_path(study))
-    click_link('Sample Manifests')
   end
 
   it 'Some samples get updated by a manifest and events get created' do
+    visit(study_path(study))
+    expect(page).to have_title('Sequencescape | Information (Study 1)')
+
+    click_link('Sample Manifests')
+    expect(page).to have_title('Sequencescape | Studies (Sample Manifests)')
+
     broadcast_events_count = BroadcastEvent.count
     expect(page).to have_text('Create manifest for plates')
 
@@ -44,9 +48,15 @@ describe 'track SampleManifest updates', :sample_manifest do
     end
 
     visit('/sdb/')
+    expect(page).to have_title('Sequencescape | Home (Index)')
+
     click_on 'View all manifests'
+    expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
     attach_file('File to upload', 'test/data/test_blank_wells.csv')
+
     click_button 'Upload manifest'
+    expect(page).to have_text('Sample manifest successfully uploaded.')
 
     expect(BroadcastEvent.count).to eq broadcast_events_count + 2
     updated_broadcast_event = BroadcastEvent.last
@@ -61,18 +71,18 @@ describe 'track SampleManifest updates', :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: Not specified → Male' \
-       'Country of origin: Not specified → United Kingdom' \
-       'Dna source: Not specified → Genomic' \
-       'Volume: Not specified → 10' \
-       'Sample public name: Not specified → Human' \
-       'Sample common name: Not specified → Human' \
-       'Sample taxon: Not specified → 9606' \
-       'Sample description: Not specified → Human' \
-       'Date of sample collection: Not specified → 2022-12-12' \
-       'Concentration: Not specified → 20' \
-       'Supplier name: Not specified → aaaa' \
-       'Donor: Not specified → 12345',
+       'Gender: not specified → Male ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Dna source: not specified → Genomic ' \
+       'Volume: not specified → 10 ' \
+       'Sample public name: not specified → Human ' \
+       'Sample common name: not specified → Human ' \
+       'Sample taxon: not specified → 9606 ' \
+       'Sample description: not specified → Human ' \
+       'Date of sample collection: not specified → 2022-12-12 ' \
+       'Concentration: not specified → 20 ' \
+       'Supplier name: not specified → aaaa ' \
+       'Donor: not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john']
     ]
@@ -81,12 +91,18 @@ describe 'track SampleManifest updates', :sample_manifest do
 
     # A different user logs in and updates the manifest
     login_user new_user
+
     visit('/sdb/')
+    expect(page).to have_title('Sequencescape | Home (Index)')
+
     click_on 'View all manifests'
+    expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
     attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks.csv')
 
     # upload without override
     click_button 'Upload manifest'
+    expect(page).to have_text('Sample manifest successfully uploaded.')
 
     expect(BroadcastEvent.count).to eq broadcast_events_count + 3
     updated_broadcast_event = BroadcastEvent.last
@@ -99,18 +115,18 @@ describe 'track SampleManifest updates', :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: Not specified → Male' \
-       'Country of origin: Not specified → United Kingdom' \
-       'Dna source: Not specified → Genomic' \
-       'Volume: Not specified → 10' \
-       'Sample public name: Not specified → Human' \
-       'Sample common name: Not specified → Human' \
-       'Sample taxon: Not specified → 9606' \
-       'Sample description: Not specified → Human' \
-       'Date of sample collection: Not specified → 2022-12-12' \
-       'Concentration: Not specified → 20' \
-       'Supplier name: Not specified → aaaa' \
-       'Donor: Not specified → 12345',
+       'Gender: not specified → Male ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Dna source: not specified → Genomic ' \
+       'Volume: not specified → 10 ' \
+       'Sample public name: not specified → Human ' \
+       'Sample common name: not specified → Human ' \
+       'Sample taxon: not specified → 9606 ' \
+       'Sample description: not specified → Human ' \
+       'Date of sample collection: not specified → 2022-12-12 ' \
+       'Concentration: not specified → 20 ' \
+       'Supplier name: not specified → aaaa ' \
+       'Donor: not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john']
     ]
@@ -123,24 +139,28 @@ describe 'track SampleManifest updates', :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: Not specified → Male' \
-       'Country of origin: Not specified → United Kingdom' \
-       'Dna source: Not specified → Genomic' \
-       'Volume: Not specified → 10' \
-       'Sample public name: Not specified → Human' \
-       'Sample common name: Not specified → Human' \
-       'Sample taxon: Not specified → 10012' \
-       'Sample description: Not specified → Human' \
-       'Date of sample collection: Not specified → 2022-12-07' \
-       'Concentration: Not specified → 20' \
-       'Supplier name: Not specified → xxxx',
+       'Gender: not specified → Male ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Dna source: not specified → Genomic ' \
+       'Volume: not specified → 10 ' \
+       'Sample public name: not specified → Human ' \
+       'Sample common name: not specified → Human ' \
+       'Sample taxon: not specified → 10012 ' \
+       'Sample description: not specified → Human ' \
+       'Date of sample collection: not specified → 2022-12-07 ' \
+       'Concentration: not specified → 20 ' \
+       'Supplier name: not specified → xxxx',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'jane']
     ]
     expect(fetch_table('table#events')).to eq(table)
 
     visit('/sdb/')
+    expect(page).to have_title('Sequencescape | Home (Index)')
+
     click_on 'View all manifests'
+    expect(page).to have_title('Sequencescape | Sample Manifests (Index)')
+
     attach_file('File to upload', 'test/data/test_blank_wells_with_no_blanks_new_data.csv')
 
     # upload with override
@@ -149,6 +169,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     check 'Overwrite concentration'
     click_button 'Upload manifest'
     Delayed::Worker.new.work_off
+    expect(page).to have_text('Sample manifest successfully uploaded.')
 
     expect(BroadcastEvent.count).to eq broadcast_events_count + 4
     updated_broadcast_event = BroadcastEvent.last
@@ -159,23 +180,23 @@ describe 'track SampleManifest updates', :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: Not specified → Male' \
-       'Country of origin: Not specified → United Kingdom' \
-       'Dna source: Not specified → Genomic' \
-       'Volume: Not specified → 10' \
-       'Sample public name: Not specified → Human' \
-       'Sample common name: Not specified → Human' \
-       'Sample taxon: Not specified → 9606' \
-       'Sample description: Not specified → Human' \
-       'Date of sample collection: Not specified → 2022-12-12' \
-       'Concentration: Not specified → 20' \
-       'Supplier name: Not specified → aaaa' \
-       'Donor: Not specified → 12345',
+       'Gender: not specified → Male ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Dna source: not specified → Genomic ' \
+       'Volume: not specified → 10 ' \
+       'Sample public name: not specified → Human ' \
+       'Sample common name: not specified → Human ' \
+       'Sample taxon: not specified → 9606 ' \
+       'Sample description: not specified → Human ' \
+       'Date of sample collection: not specified → 2022-12-12 ' \
+       'Concentration: not specified → 20 ' \
+       'Supplier name: not specified → aaaa ' \
+       'Donor: not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Volume: 10 → 15' \
-       'Date of sample collection: 2022-12-12 → 2022-12-01' \
+       'Volume: 10 → 15 ' \
+       'Date of sample collection: 2022-12-12 → 2022-12-01 ' \
        'Supplier name: aaaa → aaaa_updated',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'jane']
@@ -183,31 +204,31 @@ describe 'track SampleManifest updates', :sample_manifest do
     expect(fetch_table('table#events')).to eq(table)
 
     visit(history_sample_path(sample_7))
-
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: Not specified → Male' \
-       'Country of origin: Not specified → United Kingdom' \
-       'Dna source: Not specified → Genomic' \
-       'Volume: Not specified → 10' \
-       'Sample public name: Not specified → Human' \
-       'Sample common name: Not specified → Human' \
-       'Sample taxon: Not specified → 10012' \
-       'Sample description: Not specified → Human' \
-       'Date of sample collection: Not specified → 2022-12-07' \
-       'Concentration: Not specified → 20' \
-       'Supplier name: Not specified → xxxx',
+       'Gender: not specified → Male ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Dna source: not specified → Genomic ' \
+       'Volume: not specified → 10 ' \
+       'Sample public name: not specified → Human ' \
+       'Sample common name: not specified → Human ' \
+       'Sample taxon: not specified → 10012 ' \
+       'Sample description: not specified → Human ' \
+       'Date of sample collection: not specified → 2022-12-07 ' \
+       'Concentration: not specified → 20 ' \
+       'Supplier name: not specified → xxxx',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'jane'],
       ['Updated sample metadata', 'Volume: 10 → 15', 'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'jane']
     ]
-
     expect(fetch_table('table#events')).to eq(table)
+
     asset = Labware.find_by_barcode('SQPD-1234567')
     visit(history_labware_path(asset))
+
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', 'Manifest_1', 'Monday 12 July, 2010 10:25', 'john'],
