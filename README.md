@@ -311,11 +311,27 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    bundle exec cucumber
    ```
 
-For a single file:
+   For a single file:
 
-```shell
-bundle exec cucumber features/create_plates.feature
+   ```shell
+   bundle exec cucumber features/create_plates.feature
+   ```
+
+#### Rspec feature tests with javascript
+
+Where feature tests require javascript, these must be specifically tagged with `:js` to enable the Capybara javascript driver.
+
+Example:
+
+```rb
+describe 'Test all the things', :js do
+  it 'successfully runs javascript' do
+    # ...
+  end
+end
 ```
+
+This can also affect page loading times as well as the parsing of `.text` results, resulting in changes to capitalisation and whitespace.
 
 ### Javascript
 
