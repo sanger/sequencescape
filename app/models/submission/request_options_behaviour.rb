@@ -13,6 +13,7 @@ module Submission::RequestOptionsBehaviour
                        ActiveSupport::HashWithIndifferentAccess,
                        ActiveSupport::TimeWithZone,
                        ActiveSupport::TimeZone,
+                       Symbol,
                        Time
                      ])
     end
