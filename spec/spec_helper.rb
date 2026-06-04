@@ -52,16 +52,6 @@ require './features/support/capybara'
 require './lib/plate_map_generation'
 require 'pry'
 
-if ENV['RAILS_ENV'] != 'test'
-  # disabled in CI since it causes performance issues, see https://github.com/splitwise/super_diff/issues/139
-  require 'super_diff/rspec-rails'
-
-  SuperDiff.configure do |config|
-    config.diff_elision_enabled = true
-    config.diff_elision_maximum = 3
-  end
-end
-
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
 RSpec.configure do |config|
