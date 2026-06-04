@@ -128,6 +128,7 @@ GEM
       activesupport
     amq-protocol (2.3.3)
     ast (2.4.3)
+    attr_extras (7.1.0)
     avro (1.12.1)
       multi_json (~> 1.0)
     base64 (0.3.0)
@@ -360,11 +361,14 @@ GEM
       racc (~> 1.4)
     nokogiri (1.19.3-x86_64-linux-gnu)
       racc (~> 1.4)
+    optimist (3.2.1)
     ostruct (0.6.3)
     parallel (2.1.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    patience_diff (1.2.0)
+      optimist (~> 3.0)
     pp (0.6.3)
       prettyprint
     prettier_print (1.2.1)
@@ -593,6 +597,10 @@ GEM
       set (~> 1.0)
     ssrf_filter (1.2.0)
     stringio (3.2.0)
+    super_diff (0.19.0)
+      attr_extras (>= 6.2.4, < 8)
+      diff-lcs (~> 1.5)
+      patience_diff (~> 1.2)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
@@ -760,6 +768,7 @@ DEPENDENCIES
   simplecov-lcov
   sinatra
   slack-notifier
+  super_diff
   syntax_tree
   syntax_tree-haml
   syntax_tree-rbs
