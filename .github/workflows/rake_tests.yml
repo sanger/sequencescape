@@ -64,6 +64,7 @@ jobs:
 
       - name: Upload coverage reports to Codecov
         uses: sanger/.github/.github/actions/tests/codecov@master
+        continue-on-error: true
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
