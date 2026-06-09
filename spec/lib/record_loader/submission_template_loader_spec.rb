@@ -37,14 +37,14 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
     it 'sets attributes on the created records' do
       record_loader.create!
 
-      rec1 = SubmissionTemplate.find_by!(name: 'test_submission_template_1')
-      rec2 = SubmissionTemplate.find_by!(name: 'test_submission_template_2')
+      rec1 = SubmissionTemplate.find_by!(name: 'Test Submission Template 1')
+      rec2 = SubmissionTemplate.find_by!(name: 'Test Submission Template 2')
 
       # NB. the project name in the test file is 'my_project', which does not exist, so it defaults to the UAT project
       expect(rec1).to have_attributes(
         submission_class_name: 'LinearSubmission',
         submission_parameters: {
-          request_type_ids_list: [request_type.id, request_type2.id],
+          request_type_ids_list: [[request_type.id], [request_type2.id]],
           order_role_id: order_role.id,
           project_id: project.id
         },
@@ -55,7 +55,7 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
       expect(rec2).to have_attributes(
         submission_class_name: 'LinearSubmission',
         submission_parameters: {
-          request_type_ids_list: [request_type.id, request_type2.id],
+          request_type_ids_list: [[request_type.id], [request_type2.id]],
           project_id: project.id
         },
         product_line_id: product_line.id,
