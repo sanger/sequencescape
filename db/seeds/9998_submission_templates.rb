@@ -95,19 +95,6 @@ LEGACY_CUKES_ONLY = [
   }
 ].freeze
 
-BOTH_DEV_AND_CUKES = [
-  {
-    name: 'Cherrypick',
-    submission_class_name: 'LinearSubmission',
-    product_catalogue: 'Generic',
-    submission_parameters: {
-      info_differential: 6,
-      asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
-      request_types: ['cherrypick']
-    }
-  }
-].freeze
-
 DEV_ONLY = [
   {
     name: 'Illumina-C - Cherrypick Internally',
@@ -131,5 +118,4 @@ DEV_ONLY = [
 ].freeze
 
 LEGACY_CUKES_ONLY.each { |params| SubmissionSerializer.construct!(params) } if Rails.env.cucumber?
-BOTH_DEV_AND_CUKES.each { |params| SubmissionSerializer.construct!(params) }
 DEV_ONLY.each { |params| SubmissionSerializer.construct!(params) } unless Rails.env.cucumber?

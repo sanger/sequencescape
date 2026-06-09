@@ -1,0 +1,33 @@
+---
+Cherrypick:
+  name: "Cherrypick"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: Generic
+    request_type_keys:
+      - cherrypick
+    asset_input_methods:
+      - select an asset group
+      - enter a list of sample names found on plates
+    request_options:
+      initial_state:
+        cherrypick: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        default_value: null
+        display_name: Plate identifier
+        key: order_role
+        kind: Selection
+        required: true
+        parameters:
+          type: Selection
+          selection: &selection_options
+            - ""
+            - ILC
+            - HSqX
+            - ReISC
+            - PWGS
+            - MWGS
+            - ISC
+        selection: *selection_options
