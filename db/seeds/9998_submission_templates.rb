@@ -105,15 +105,6 @@ DEV_ONLY = [
       asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
       request_types: ['illumina_c_cherrypick']
     }
-  },
-  {
-    name: 'Cherrypick for Fluidigm',
-    submission_class_name: 'LinearSubmission',
-    product_catalogue: 'Generic',
-    submission_parameters: {
-      info_differential: 6,
-      request_types: %w[pick_to_sta pick_to_sta2 pick_to_snp_type pick_to_fluidigm]
-    }
   }
 ].freeze
 
