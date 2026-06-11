@@ -43,21 +43,33 @@ RSpec.describe RecordLoader::SubmissionTemplateLoader, :loader, type: :model do
       # NB. the project name in the test file is 'my_project', which does not exist, so it defaults to the UAT project
       expect(rec1).to have_attributes(
         submission_class_name: 'LinearSubmission',
-        submission_parameters: {
+        submission_parameters: include(
           request_type_ids_list: [[request_type.id], [request_type2.id]],
           order_role_id: order_role.id,
-          project_id: project.id
-        },
+          project_id: project.id,
+          info_differential: 1,
+          asset_input_methods: ['select an asset group', 'enter a list of sample names found on plates'],
+          request_options: { initial_state: { request_type.id => :pending } },
+          input_field_infos: contain_exactly(
+            have_attributes(display_name: 'Plate identifier', key: 'order_role', kind: 'Selection', required: true)
+          )
+        ),
         product_line_id: product_line.id,
         product_catalogue_id: product_cat.id
       )
 
       expect(rec2).to have_attributes(
         submission_class_name: 'LinearSubmission',
-        submission_parameters: {
+        submission_parameters: include(
           request_type_ids_list: [[request_type.id], [request_type2.id]],
-          project_id: project.id
-        },
+          project_id: project.id,
+          info_differential: 2,
+          asset_input_methods: ['select an asset group'],
+          request_options: { initial_state: { request_type2.id => :pending } },
+          input_field_infos: contain_exactly(
+            have_attributes(display_name: 'Library type', key: 'library_type', kind: 'Selection', required: false)
+          )
+        ),
         product_line_id: product_line.id,
         product_catalogue_id: product_cat.id
       )
