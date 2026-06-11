@@ -49,7 +49,7 @@ module Transfer::State
                     query_conditions << ' OR (transfer_requests.state IS NULL AND plate_purposes.stock_plate=TRUE)'
                   end
 
-                  joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states])
+                  joins(:transfer_requests_as_target, :plate_purpose).where([query_conditions, states]).distinct
                 else
                   all
                 end
@@ -59,6 +59,7 @@ module Transfer::State
   end
 
   # Tube specific behaviour
+  # TODO: Seems to be broken due to reference to (non-existent) assets table, see Y26-155.
   module TubeState
     def self.included(base) # rubocop:todo Metrics/MethodLength
       base.class_eval do
