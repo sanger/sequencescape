@@ -19,7 +19,7 @@ pick_to_sta:
   order: 1
   request_class_name: CherrypickForPulldownRequest
   target_asset_type: Well
-  initial_state: 'pending'
+  initial_state: "pending"
   acceptable_purposes:
     - Working Dilution
 pick_to_sta2:
@@ -28,7 +28,7 @@ pick_to_sta2:
   order: 2
   request_class_name: CherrypickForPulldownRequest
   target_asset_type: Well
-  initial_state: 'pending'
+  initial_state: "pending"
   acceptable_purposes:
     - STA
 pick_to_fluidigm:
@@ -37,7 +37,7 @@ pick_to_fluidigm:
   order: 3
   request_class_name: CherrypickForFluidigmRequest
   target_asset_type: Well
-  initial_state: 'pending'
+  initial_state: "pending"
   acceptable_purposes:
     - STA2
 pick_to_snp_type:
@@ -46,6 +46,6 @@ pick_to_snp_type:
   order: 3
   request_class_name: CherrypickForPulldownRequest
   target_asset_type: Well
-  initial_state: 'pending'
+  initial_state: "pending"
   acceptable_purposes:
     - SNP Type
