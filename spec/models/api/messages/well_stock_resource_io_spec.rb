@@ -52,8 +52,8 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   context 'when multiple aliquots reference the same sample' do
     before { create(:aliquot, study: study, sample: sample, receptacle: well) }
 
-    it 'includes the sample only once in the payload' do
-      sample_uuids = subject['samples'].map { |sample_payload| sample_payload['sample_uuid'] }
+    it 'includes the sample only once in the payload' do # rubocop:disable RSpec/MultipleExpectations
+      sample_uuids = subject['samples'].map { |sample_payload| sample_payload['sample_uuid'] } # rubocop:disable Rails/Pluck
 
       expect(sample_uuids).to eq(sample_uuids.uniq)
       expect(subject['samples']).to include(
