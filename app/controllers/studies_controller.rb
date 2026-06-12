@@ -72,6 +72,11 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
+    if @study.mastered_in_sapio
+      flash[:error] = 'This study is mastered and controlled in SAPIO and cannot be edited.'
+      redirect_to study_information_path(@study)
+      return
+    end
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end

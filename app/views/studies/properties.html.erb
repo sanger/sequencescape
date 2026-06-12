@@ -1,7 +1,7 @@
 
 <% add :about, I18n.t("studies.about") -%>
 <% add :menu, "Study history" => study_events_path(@study) -%>
-<% if can? :edit, @study %>
+<% if can?(:edit, @study) && !@study.mastered_in_sapio %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
 <% if can? :administer, @study %>

@@ -38,7 +38,7 @@
     (accessioning_enabled? ? url_for(controller: '/studies', action: 'policy_accession', id: @study.id) : 'disabled' ) -%>
 <% end -%>
 
-<% if can? :edit, @study %>
+<% if can?(:edit, @study) && !@study.mastered_in_sapio %>
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
 
@@ -61,12 +61,20 @@
 <% add :legend_option, icon('far', 'times-circle', 'Failed') => "" -%>
 
 <%= page_title @study.name, @study.id, titlecase: false %>
+
+<% if @study.mastered_in_sapio %>
+  <%= alert(:warning, class: 'p-3') do %>
+    <p class="m-0"><strong>⚠️ This study is mastered and controlled in Sapio.</strong></p>
+  <% end %>
+<% end %>
+
 <%= alert(:info, class:'p-3') do %>
   <p class="m-0"><b>Bioinformatician?</b> If you are comfortable in a database, and want programmatic or large scale access to information you may find
   <%= help_link 'these resources', 'Useful+resources+for+bioinformaticians' %> useful.</p>
 <% end %>
 
 <div class="content mt-3">
+  
   <%#
     # This section is supposed to guide the user through generating their first
     # submission on the study. It tries to avoid asking the user to do something
