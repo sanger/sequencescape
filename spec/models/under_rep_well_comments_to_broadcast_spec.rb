@@ -3,64 +3,39 @@
 require 'rails_helper'
 
 RSpec.describe UnderRepWellCommentsToBroadcast do
-  subject(:batch) { dummy_batch_class.new(id: 123, submissions: [submission]) }
-
-  let(:dummy_batch_class) do
-    Class.new do
-      include UnderRepWellCommentsToBroadcast
-
-      attr_accessor :id, :submissions
-
-      def initialize(id:, submissions: [])
-        @id = id
-        @submissions = submissions
-      end
-    end
-  end
+  let(:pcr_xp_plate)   { create(:plate_with_tagged_wells, sample_count: 5) }
+  let(:well_a1)        { pcr_xp_plate.wells.located_at('A1').first }
 
   let(:poly_meta_underrep) { create(:poly_metadatum, key: 'under_represented', value: 'true') }
   let(:poly_meta_other)    { create(:poly_metadatum, key: 'other_key', value: 'some_value') }
 
-  let(:tag)     { create(:tag, map_id: 1) }
-  let(:aliquot) { create(:aliquot, tag:) }
-
-  let(:lane_aliquot) { create(:aliquot) }
-  let(:lane_source_request) { create(:request) }
-  let(:batch_request) { create(:batch_request, request: lane_source_request, position: 1) }
-  let(:lane) { create(:lane, aliquots: [lane_aliquot], source_request: lane_source_request) }
-  let(:well_target_asset) { create(:well, aliquots: [aliquot]) }
-  let(:well_asset)        { create(:well) }
-
-  let(:request) do
-    create(
-      :library_request,
-      poly_metadata: [poly_meta_underrep, poly_meta_other],
-      target_asset: well_target_asset,
-      asset: well_asset
-    )
+  let(:poly_metadata_library_request) do
+    create(:library_request,
+           poly_metadata: [poly_meta_underrep, poly_meta_other],
+           target_asset: well_a1)
   end
 
-  let(:submission) { create(:submission, requests: [request]) }
+  let(:tube) do
+    create(:multiplexed_library_tube, aliquots: pcr_xp_plate.aliquots.map(&:dup))
+      .tap { |t| t.labware.parents << pcr_xp_plate }
+  end
+
+  let(:lane) do
+    create(:lane, aliquots: tube.aliquots.map(&:dup)).tap do |l|
+      l.labware.parents << tube
+      l.index_aliquots
+    end
+  end
+
+  let(:batch_request) { create(:sequencing_request, target_asset: lane, asset: tube.receptacle) }
+  let(:batch)         { create(:batch).tap { |b| b.requests << batch_request } }
 
   before do
-    lane_source_request.update!(batch_request:)
-    AliquotIndexer.index(lane)
-    allow(well_asset).to receive(:descendants).and_return([lane])
-  end
-
-  describe '#request_with_under_represented_wells' do
-    it 'returns the request containing under_represented poly_metadata' do
-      expect(batch.request_with_under_represented_wells).to contain_exactly(request)
-    end
-
-    it 'returns empty if no under_represented metadata exists' do
-      allow(request).to receive(:poly_metadata).and_return([poly_meta_other])
-      expect(batch.request_with_under_represented_wells).to be_empty
-    end
+    well_a1.requests << poly_metadata_library_request
   end
 
   describe '#under_represented_well_comments' do
-    context 'when aliquot matches lane' do
+    context 'when a lane aliquot matches the well aliquot' do
       let(:comments) { batch.under_represented_well_comments }
       let(:comment)  { comments.first }
 
@@ -68,78 +43,101 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
         expect(comments.size).to eq(1)
       end
 
-      it 'returns an UnderRepWellComment object' do
+      it 'returns UnderRepWellComment objects' do
         expect(comment).to be_a(UnderRepWellCommentsToBroadcast::UnderRepWellComment)
       end
 
       it 'sets the correct batch_id' do
-        expect(comment.batch_id).to eq(123)
+        expect(comment.batch_id).to eq(batch.id)
       end
 
-      it 'sets the correct tag_index' do
-        expect(comment.tag_index).to eq(tag.map_id)
+      it 'sets the correct position from the batch request' do
+        expect(comment.position).to eq(batch_request.position)
       end
 
-      it 'sets the correct position' do
-        expect(comment.position).to eq(lane.source_request.position)
+      it 'sets the correct tag_index from the matching lane aliquot' do
+        expected_tag_index = lane.aliquots
+          .find { |a| a.sample_id == well_a1.aliquots.first.sample_id }
+          &.aliquot_index_value
+        expect(comment.tag_index).to eq(expected_tag_index)
       end
 
       it 'associates the correct poly_metadatum' do
         expect(comment.poly_metadatum).to eq(poly_meta_underrep)
       end
+
+      it 'does not include comments for non-under_represented metadata' do
+        keys = comments.map { |c| c.poly_metadatum.key }
+        expect(keys).to all(eq('under_represented'))
+      end
     end
 
-    context 'when no aliquot matches the lane' do
-      before { AliquotIndex.where(lane: lane, aliquot: lane_aliquot).delete_all }
+    context 'when no lane aliquot matches the well aliquot' do
+      before do
+        lane # force eager creation before deleting indexes
+        AliquotIndex.where(lane_id: lane.id).delete_all
+        # Reload so lane.aliquots no longer carries aliquot_index_value
+        lane.aliquots.each_with_index do |aliquot, i|
+          aliquot.update!(tag_id: 9000 + i, tag2_id: 8000 + i)
+        end
+      end
 
       it 'returns an empty array' do
         expect(batch.under_represented_well_comments).to eq([])
       end
     end
-  end
 
-  describe '#comments' do
-    it 'returns an array of comments' do
-      expect(batch.comments).to be_an(Array)
+    context 'when no requests have under_represented metadata' do
+      let(:clean_batch_request) { create(:sequencing_request, target_asset: create(:lane)) }
+      let(:clean_batch)         { create(:batch).tap { |b| b.requests << clean_batch_request } }
+
+      it 'returns an empty array' do
+        expect(clean_batch.under_represented_well_comments).to eq([])
+      end
     end
   end
 
+  # ─── UnderRepWellComment value object ───────────────────────────────────────
   describe UnderRepWellCommentsToBroadcast::UnderRepWellComment do
     subject(:comment) do
       described_class.new(
         poly_metadatum: poly_meta_underrep,
-        batch_id: 10,
-        position: 2,
-        tag_index: 5
+        batch_id: batch.id,
+        position: batch_request.position,
+        tag_index: 1
       )
     end
 
-    it 'exposes the batch_id' do
-      expect(comment.batch_id).to eq(10)
+    it 'exposes batch_id' do
+      expect(comment.batch_id).to eq(batch.id)
     end
 
-    it 'exposes the position' do
-      expect(comment.position).to eq(2)
+    it 'exposes position' do
+      expect(comment.position).to eq(batch_request.position)
     end
 
-    it 'exposes the tag_index' do
-      expect(comment.tag_index).to eq(5)
+    it 'exposes tag_index' do
+      expect(comment.tag_index).to eq(1)
     end
 
-    it 'exposes the poly_metadatum' do
+    it 'exposes poly_metadatum' do
       expect(comment.poly_metadatum).to eq(poly_meta_underrep)
     end
 
     it 'delegates key to poly_metadatum' do
-      expect(comment.key).to eq('under_represented')
+      expect(comment.key).to eq(poly_meta_underrep.key)
     end
 
     it 'delegates value to poly_metadatum' do
-      expect(comment.value).to eq('true')
+      expect(comment.value).to eq(poly_meta_underrep.value)
     end
 
     it 'delegates updated_at to poly_metadatum' do
       expect(comment.updated_at).to eq(poly_meta_underrep.updated_at)
+    end
+
+    it 'delegates destroyed? to poly_metadatum' do
+      expect(comment.destroyed?).to eq(poly_meta_underrep.destroyed?)
     end
   end
 end

@@ -7,6 +7,8 @@ module Aliquot::DataForSubstitution
   def substitution_hash
     return if id_previously_changed?
 
+    # Take care with saved_changes? - the Aliquot object in memory must be the same one that you called save on,
+    # otherwise you can't detect the changes.
     generate_substitution_hash if saved_changes?
   end
 
