@@ -3,7 +3,7 @@
 Working Dilution:
   type: DilutionPlatePurpose
   stock_plate: false
-  default_state: passed
+  default_state: pending
   cherrypickable_target: true
   target_type: WorkingDilutionPlate
   size: 96

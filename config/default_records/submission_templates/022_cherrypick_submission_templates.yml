@@ -19,7 +19,6 @@ Cherrypick:
         display_name: Plate identifier
         key: order_role
         kind: Selection
-        required: true
         parameters:
           type: Selection
           selection: &cherrypick_selection_options
@@ -54,7 +53,6 @@ Cherrypick For Fluidigm:
         display_name: Fluidigm Chip
         key: target_purpose_name
         kind: Selection
-        required: true
         parameters:
           type: Selection
           selection: &cherrypick_fluidigm_selection_options
@@ -78,7 +76,6 @@ Flexible Cherrypick:
         display_name: Plate identifier
         key: order_role
         kind: Selection
-        required: true
         parameters:
           type: Selection
           selection: &flexible_cherrypick_selection_options
