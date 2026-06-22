@@ -959,4 +959,43 @@ RSpec.describe Study do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
+
+  describe '#prevent_updates_when_mastered_in_sapio' do
+    let(:study) { create(:study, mastered_in_sapio: true) }
+
+    after do
+      Current.reset
+    end
+
+    context 'when updated from the UI' do
+      before do
+        Current.api_application = nil
+      end
+
+      it 'prevents updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be false
+        expect(study.errors[:base]).to include(
+          'This study is mastered and controlled in SAPIO and cannot be edited.'
+        )
+      end
+    end
+
+    context 'when updated by Integration Hub' do
+      let(:api_application) do
+        create(:api_application, name: 'Integration Hub')
+      end
+
+      before do
+        Current.api_application = api_application
+      end
+
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+  end
 end
