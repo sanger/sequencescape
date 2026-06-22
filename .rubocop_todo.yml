@@ -923,14 +923,6 @@ RSpec/LetSetup:
     - 'spec/models/transfer_request_collection_spec.rb'
     - 'spec/requests/api/v2/comments_spec.rb'
 
-# Offense count: 9
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/MatchWithSimpleRegex:
-  Exclude:
-    - 'spec/controllers/api/v2/plates_controller_spec.rb'
-    - 'spec/views/labware/retention_instruction_spec.rb'
-    - 'spec/views/labware/show_html_erb_spec.rb'
-
 # Offense count: 38
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: have_received, receive
