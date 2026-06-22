@@ -54,7 +54,7 @@ module UnderRepWellCommentsToBroadcast
   # Entry point used by CommentIO to retrieve the comments to serialize.
   #
   # @return [Array<UnderRepWellComment>] comments representing under-represented wells.
-  def comments
+  def under_rep_comments
     under_represented_well_comments || []
   end
 
