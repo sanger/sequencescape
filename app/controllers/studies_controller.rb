@@ -72,7 +72,7 @@ class StudiesController < ApplicationController
 
   def edit
     @study = Study.find(params[:id])
-    if @study.mastered_in_sapio
+    if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
       flash[:error] = 'This study is mastered and controlled in SAPIO and cannot be edited.'
       redirect_to study_information_path(@study)
       return

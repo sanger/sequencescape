@@ -640,6 +640,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   private
 
   def prevent_updates_when_mastered_in_sapio
+    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
     return unless mastered_in_sapio?
 
     # allow update from Integration Hub

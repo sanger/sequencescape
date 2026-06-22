@@ -967,7 +967,7 @@ RSpec.describe Study do
       Current.reset
     end
 
-    context 'when updated from the UI' do
+    context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
       before do
         Current.api_application = nil
       end
@@ -982,13 +982,25 @@ RSpec.describe Study do
       end
     end
 
-    context 'when updated by Integration Hub' do
+    context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       let(:api_application) do
         create(:api_application, name: 'Integration Hub')
       end
 
       before do
         Current.api_application = api_application
+      end
+
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+
+    context 'when feature flag is disabled', :sapio_restrictions_disabled do
+      before do
+        Current.api_application = nil
       end
 
       it 'allows updates' do

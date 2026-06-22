@@ -82,7 +82,7 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#edit' do
+  describe '#edit', :sapio_restrictions_enabled do
     let(:study) { create(:study, mastered_in_sapio: true) }
 
     before do
