@@ -67,8 +67,7 @@ module Admin
           context 'and study is mastered_in_sapio' do
             setup do
               Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions)
-              Study.where(id: @study.id).update_all(mastered_in_sapio: true)
-              @study.reload
+              @study = FactoryBot.create(:study, mastered_in_sapio: true)
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
             end
 
@@ -79,14 +78,13 @@ module Admin
             should redirect_to('study information page') { study_information_path(@study) }
 
             should 'display error flash' do
-              assert flash[:error] == 'This study is mastered and controlled in SAPIO and cannot be updated.'
+              assert_equal 'This study is mastered and controlled in SAPIO and cannot be updated.', flash[:error]
             end
           end
 
           context 'and study is not mastered_in_sapio' do
             setup do
               Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions)
-              @study.update(mastered_in_sapio: false)
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
             end
 
@@ -95,7 +93,7 @@ module Admin
             end
 
             should 'display success notice' do
-              assert flash.now[:notice] == 'Your study has been updated'
+              assert_equal 'Your study has been updated', flash.now[:notice]
             end
           end
         end
@@ -103,13 +101,12 @@ module Admin
         context '#update when sapio restrictions disabled' do
           setup do
             Flipper.disable(:y26_171_enable_sapio_mastered_study_restrictions)
-            Study.where(id: @study.id).update_all(mastered_in_sapio: true)
-            @study.reload
+            @study = FactoryBot.create(:study, mastered_in_sapio: true)
             put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
           end
 
           should 'allow update even for mastered study' do
-            assert flash.now[:notice] == 'Your study has been updated'
+            assert_equal 'Your study has been updated', flash.now[:notice]
           end
         end
       end
