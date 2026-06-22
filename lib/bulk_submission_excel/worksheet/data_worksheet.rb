@@ -28,7 +28,7 @@ module BulkSubmissionExcel
       #
       # @return [Hash] Defaults where keys are present?
       def present_defaults
-        defaults.select { |_k, v| v.present? }
+        defaults.compact_blank
       end
 
       # Adds title and description (study abbreviation, supplier name, number of assets sent)
