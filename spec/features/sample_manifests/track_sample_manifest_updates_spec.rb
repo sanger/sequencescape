@@ -31,7 +31,7 @@ describe 'track SampleManifest updates', :sample_manifest do
 
   it 'Some samples get updated by a manifest and events get created' do
     broadcast_events_count = BroadcastEvent.count
-    expect(page).to have_content('Create manifest for plates')
+    expect(page).to have_text('Create manifest for plates')
 
     expect(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
     sample_manifest = create(:sample_manifest, study:, supplier:, user:)

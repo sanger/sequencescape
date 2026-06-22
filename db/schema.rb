@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -637,6 +637,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
     t.string "report_filename"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.string "retention_instructions"
     t.index ["study_id"], name: "index_location_reports_on_study_id"
     t.index ["user_id"], name: "index_location_reports_on_user_id"
   end
@@ -857,6 +858,8 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
     t.integer "source_purpose_id"
     t.integer "lifespan"
     t.integer "barcode_prefix_id"
+    t.boolean "deprecated", default: false, null: false
+    t.datetime "deprecated_at"
     t.index ["barcode_prefix_id"], name: "fk_rails_763bed2756"
     t.index ["target_type"], name: "index_plate_purposes_on_target_type"
     t.index ["type"], name: "index_plate_purposes_on_type"
@@ -1046,13 +1049,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_04_10_121704) do
 
   create_table "qc_reports", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "report_identifier", null: false
-    t.integer "study_id", null: false
+    t.integer "study_id"
     t.integer "product_criteria_id", null: false
     t.boolean "exclude_existing", null: false
     t.string "state"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.text "plate_purposes", size: :medium
+    t.text "plate_barcodes", size: :medium
     t.index ["product_criteria_id"], name: "fk_qc_reports_to_product_criteria"
     t.index ["report_identifier"], name: "index_qc_reports_on_report_identifier", unique: true
     t.index ["study_id"], name: "fk_qc_reports_to_studies"

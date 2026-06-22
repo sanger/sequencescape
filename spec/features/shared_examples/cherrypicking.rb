@@ -9,12 +9,12 @@ shared_examples 'a cherrypicking procedure' do
     step 'Setting up the batch' do
       step 'Access the Cherrypicking pipeline' do
         visit pipeline_path(pipeline)
-        expect(page).to have_content("Pipeline #{pipeline.name}")
+        expect(page).to have_text("Pipeline #{pipeline.name}")
       end
 
       step 'Create a batch for cherrypicking' do
         plates.each do |plate|
-          expect(page).to have_content(plate.human_barcode)
+          expect(page).to have_text(plate.human_barcode)
           check("Select #{plate.human_barcode} for batch")
         end
         first(:select, 'action_on_requests').select('Create Batch')
@@ -68,7 +68,7 @@ shared_examples 'a cherrypicking procedure' do
 
       step 'Task 3 - finish task' do
         click_button 'Release this batch'
-        expect(page).to have_content('Batch released!')
+        expect(page).to have_text('Batch released!')
         expected_input_count = plates.count
         expected_input_count += 1 if control_plate
         within('#input_assets table tbody') { expect(page).to have_css('tr', count: expected_input_count) }
@@ -101,10 +101,10 @@ shared_examples 'a cherrypicking procedure' do
             # check for source transfer into the destination
             # assumption that there is a cherrypick into the A1 in the destination
             transfer_request = destination_plate.wells.first.transfer_requests_as_target.first
-            expect(page).to have_content(transfer_request.target_aliquots.first.sample.name)
+            expect(page).to have_text(transfer_request.target_aliquots.first.sample.name)
 
             # check for control sample transfer into the destination if appropriate
-            expect(page).to have_content(control_plate.contained_samples.first.name) if control_plate
+            expect(page).to have_text(control_plate.contained_samples.first.name) if control_plate
           end
 
           step 'check the worksheets' do
@@ -121,22 +121,22 @@ shared_examples 'a cherrypicking procedure' do
                 end
               end
 
-              expect(page).to have_content('This worksheet was generated')
+              expect(page).to have_text('This worksheet was generated')
             end
             (1..expected_plates.size).each do |pick_number_index|
               within("#worksheet_plate_#{destination_barcode}_pick_#{pick_number_index}") do
                 within('#source_plates') do
                   expected_plates[pick_number_index][:sources].each do |plate|
-                    expect(page).to have_content(plate.human_barcode)
+                    expect(page).to have_text(plate.human_barcode)
                   end
                 end
 
                 control_plate = expected_plates[pick_number_index][:control]
-                within('#control_plates') { expect(page).to have_content(control_plate.human_barcode) } if control_plate
-                within('#destination_plate') { expect(page).to have_content(destination_barcode) }
+                within('#control_plates') { expect(page).to have_text(control_plate.human_barcode) } if control_plate
+                within('#destination_plate') { expect(page).to have_text(destination_barcode) }
 
                 # check barcode
-                within('svg.barcode') { expect(page).to have_content("#{batch_barcode}-#{pick_number_index}") }
+                within('svg.barcode') { expect(page).to have_text("#{batch_barcode}-#{pick_number_index}") }
 
                 # check wells
                 within('#plate_layouts') do
@@ -241,7 +241,7 @@ shared_examples 'a cherrypicking procedure' do
             Capybara.using_wait_time(5) do
               # This requires more time to perform the check between runs.
               # Throws a JS error if not waiting enough
-              expect(page).to have_content("Download #{robot.name.capitalize} File Step 3 of 3")
+              expect(page).to have_text("Download #{robot.name.capitalize} File Step 3 of 3")
             end
 
             click_link("Download #{robot.name} File")

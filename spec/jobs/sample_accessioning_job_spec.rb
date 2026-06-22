@@ -14,11 +14,14 @@ RSpec.describe SampleAccessioningJob do
   let(:accessionable) { create(:accession_sample, sample:) }
   let(:job) { described_class.new(accessionable) }
 
+  let(:notification_client) { instance_double(HTTPClients::AccessioningNotificationClient) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
 
   before do
     allow(Rails.logger).to receive(:info).and_call_original
-    allow(Rails.logger).to receive(:error).and_call_original
+    allow(Rails.logger).to receive(:warn).and_call_original
+    allow(HTTPClients::AccessioningNotificationClient).to receive(:new).and_return(notification_client)
+    allow(notification_client).to receive(:create_notification).and_return('notification-id')
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
@@ -27,21 +30,22 @@ RSpec.describe SampleAccessioningJob do
 
     context 'when the submission fails validation' do
       let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
-      let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+      let(:enable_y26_094_email_users_on_accessioning_failures) { false }
 
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
 
-        if enable_y25_705_notify_on_internal_accessioning_validation_failures
-          Flipper.enable(:y25_705_notify_on_internal_accessioning_validation_failures)
+        if enable_y26_094_email_users_on_accessioning_failures
+          Flipper.enable(:y26_094_email_users_on_accessioning_failures)
         else
-          Flipper.disable(:y25_705_notify_on_internal_accessioning_validation_failures)
+          Flipper.disable(:y26_094_email_users_on_accessioning_failures)
         end
 
+        allow(job).to receive(:prevent_retries!)
         expect { job.perform }.to raise_error(Accession::InternalValidationError)
       end
 
-      context 'when accessioning tag validation is enabled' do
+      context 'when accessioning tag validation is enabled', :un_delay_jobs do
         before do
           Flipper.disable(:y25_714_skip_accessioning_tag_validation)
         end
@@ -50,42 +54,39 @@ RSpec.describe SampleAccessioningJob do
           sample_status = Accession::SampleStatus.where(sample:).first
           expect(sample_status).to have_attributes(
             status: 'failed',
-            message: "Sample '#{sample.name}' cannot be accessioned: " \
-                     'Sample does not have the required metadata: sample-taxon-id.'
+            message: 'Cannot be accessioned: ' \
+                     'Sample does not have the required metadata: sample taxon.'
           )
         end
 
-        it 'logs the error' do
-          expect(Rails.logger).to have_received(:error).with(
-            "Sample '#{sample.name}' cannot be accessioned: " \
-            'Sample does not have the required metadata: sample-taxon-id.'
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'Cannot be accessioned: ' \
+            'Sample does not have the required metadata: sample taxon.'
           )
         end
 
-        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is disabled' do
-          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { false }
+        it 'calls prevent_retries!' do
+          expect(job).to have_received(:prevent_retries!)
+        end
 
-          it 'does not send an exception notification' do
-            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
+
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
           end
         end
 
-        context 'when the y25_705_notify_on_internal_accessioning_validation_failures feature flag is enabled' do
-          let(:enable_y25_705_notify_on_internal_accessioning_validation_failures) { true }
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
 
-          it 'notifies ExceptionNotifier' do
-            sample_name = sample.name # 'Sample 1'
-            expect(ExceptionNotifier).to have_received(:notify_exception).with(
-              instance_of(Accession::InternalValidationError),
-              data: {
-                message: "SampleAccessioningJob failed for sample '#{sample_name}': " \
-                         "Sample '#{sample_name}' cannot be accessioned: " \
-                         'Sample does not have the required metadata: sample-taxon-id.',
-                sample_name: sample_name,
-                study_names: "#{first_open_study.name}, #{second_open_study.name}",
-                service_provider: 'ENA',
-                user: nil
-              }
+          it 'sends a notification to the API' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'Cannot be accessioned: Sample does not have the required metadata: sample taxon.',
+              ['Invalid sample taxon']
             )
           end
         end
@@ -125,16 +126,21 @@ RSpec.describe SampleAccessioningJob do
       end
     end
 
-    context 'when an exception is raised during submission' do
+    context 'when an exception is raised during submission', :un_delay_jobs do
+      let(:enable_y26_094_email_users_on_accessioning_failures) { false }
       let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
 
       before do
         create(:accession_sample_status, sample: sample, status: 'processing')
         allow(Accession::Submission).to receive(:client).and_return(
-          stub_accession_client(:submit_and_fetch_accession_number,
-                                raise_error:
-                                Accession::ExternalValidationError.new('Failed to process accessioning response'))
+          stub_accession_client(:submit_and_fetch_accession_number, raise_error: external_error)
         )
+
+        if enable_y26_094_email_users_on_accessioning_failures
+          Flipper.enable(:y26_094_email_users_on_accessioning_failures)
+        else
+          Flipper.disable(:y26_094_email_users_on_accessioning_failures)
+        end
 
         if enable_y25_705_notify_on_external_accessioning_validation_failures
           Flipper.enable(:y25_705_notify_on_external_accessioning_validation_failures)
@@ -142,39 +148,109 @@ RSpec.describe SampleAccessioningJob do
           Flipper.disable(:y25_705_notify_on_external_accessioning_validation_failures)
         end
 
-        expect { job.perform }.to raise_error(Accession::ExternalValidationError)
+        expect { job.perform }.to raise_error(external_error)
       end
 
-      it 'logs the error' do
-        expect(Rails.logger).to have_received(:error).with(
-          "SampleAccessioningJob failed for sample '#{sample.name}': " \
-          'Failed to process accessioning response'
-        )
-      end
+      context 'when a base external validation error is raised' do
+        let(:external_error) { Accession::ExternalValidationError.new('Failed to process accessioning response') }
 
-      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
-        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'Failed to process accessioning response'
+          )
+        end
 
-        it 'does not send an exception notification' do
-          expect(ExceptionNotifier).not_to have_received(:notify_exception)
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
+
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
+
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
+
+          it 'sends a notification to the API with expected arguments' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'Failed to process accessioning response',
+              ['External failure']
+            )
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
+          it 'does not send an exception notification' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+
+          it 'notifies ExceptionNotifier' do
+            expect(ExceptionNotifier).to have_received(:notify_exception).with(
+              instance_of(Accession::ExternalValidationError),
+              data: {
+                message: 'Failed to process accessioning response',
+                sample_name: sample.name, # 'Sample 1',
+                study_names: "#{first_open_study.name}, #{second_open_study.name}",
+                service_provider: 'ENA',
+                user: nil
+              }
+            )
+          end
         end
       end
 
-      context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
-        let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+      context 'when a accession number conflict error is raised' do
+        let(:external_error) { Accession::ExternalNumberConflictError.new('No new objects can be added with MODIFY action.') }
 
-        it 'notifies ExceptionNotifier' do
-          expect(ExceptionNotifier).to have_received(:notify_exception).with(
-            instance_of(Accession::ExternalValidationError),
-            data: {
-              message: "SampleAccessioningJob failed for sample '#{sample.name}': " \
-                       'Failed to process accessioning response',
-              sample_name: sample.name, # 'Sample 1',
-              study_names: "#{first_open_study.name}, #{second_open_study.name}",
-              service_provider: 'ENA',
-              user: nil
-            }
+        it 'logs the warning' do
+          expect(Rails.logger).to have_received(:warn).with(
+            "SampleAccessioningJob failed for sample '#{sample.name}': " \
+            'No new objects can be added with MODIFY action.'
           )
+        end
+
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is disabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { false }
+
+          it 'does not send a notification to the API' do
+            expect(notification_client).not_to have_received(:create_notification)
+          end
+        end
+
+        context 'when the y26_094_email_users_on_accessioning_failures feature flag is enabled' do
+          let(:enable_y26_094_email_users_on_accessioning_failures) { true }
+
+          it 'sends a notification to the API with the "Existing accession number conflict" group' do
+            expect(notification_client).to have_received(:create_notification).with(
+              sample,
+              'No new objects can be added with MODIFY action.',
+              ['Existing accession number conflict']
+            )
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is disabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { false }
+
+          it 'does not send an exception notification' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
+        end
+
+        context 'when the y25_705_notify_on_external_accessioning_validation_failures feature flag is enabled' do
+          let(:enable_y25_705_notify_on_external_accessioning_validation_failures) { true }
+
+          it 'does not send an exception notification for developers' do
+            expect(ExceptionNotifier).not_to have_received(:notify_exception)
+          end
         end
       end
     end
@@ -249,6 +325,23 @@ RSpec.describe SampleAccessioningJob do
         status: 'aborted',
         message: nil
       )
+    end
+  end
+
+  describe '#prevent_retries!' do
+    let(:delayed_job) { instance_double(Delayed::Job, max_attempts: job.max_attempts, attempts: 1) }
+
+    before do
+      job.instance_variable_set(:@delayed_job, delayed_job)
+      allow(delayed_job).to receive(:attempts=)
+      allow(delayed_job).to receive(:save!)
+    end
+
+    it 'sets attempts to max_attempts + 1, to prevent retries' do # rubocop:disable RSpec/MultipleExpectations
+      job.prevent_retries!
+
+      expect(delayed_job).to have_received(:attempts=).with(job.max_attempts + 1)
+      expect(delayed_job).to have_received(:save!)
     end
   end
 end

@@ -7,7 +7,7 @@
 
 <%# Aggregation summary for the top right %>
 <% content_for :aggregation do %>
-    <%= samples_not_accessioned(@study.samples) %>
+  <%= samples_not_accessioned(@page_elements) %>
 <% end %>
 
 <%# Table contents %>
@@ -21,6 +21,7 @@
     </tr>
   </thead>
   <tbody>
+    <% accessioning_on = accessioning_enabled? %>
     <% @page_elements.each do |sample| %>
       <% accession_status = sample.current_accession_status %>
       <tr>
@@ -36,7 +37,7 @@
         <td><%= accession_status&.status&.capitalize %></td>
         <td><%= accession_status&.updated_at&.in_time_zone&.strftime('%Y-%m-%d %H:%M:%S %Z') %></td>
         <td>
-          <% if [accessioning_enabled?, sample.should_be_accessioned?, permitted_to_accession?(sample)].all? %>
+          <% if [accessioning_on, sample.should_be_accessioned?, permitted_to_accession?(sample)].all? %>
             <%# Add link to perform sample accessioning %>
             <% if sample.current_accession_status %>
               <%# If status exists, offer retry %>

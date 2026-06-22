@@ -74,6 +74,10 @@ module Api
         }
       end
 
+      # @!attribute [r] stamp_index
+      #   @return [Integer] the index of this {Qcable} in the {Lot} it is associated with, if any.
+      attribute :stamp_index, readonly: true
+
       # @!attribute [r] state
       #   @return [String] a string representation of the state this {Qcable} is in.
       #     The state is changed by a state machine via events that occur as the {Qcable} is processed.

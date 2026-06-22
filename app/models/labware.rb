@@ -155,12 +155,21 @@ class Labware < Asset
         }
 
   # Used for location report
+  def self.map_retention_instructions(values)
+    return if values.blank?
+
+    values.filter_map { |v| Labware.retention_instructions[v] }
+  end
+
   def self.search_for_labware(params)
     with_faculty_sponsor_ids(params[:faculty_sponsor_ids] || nil)
       .with_study_id(params[:study_id] || nil)
       .with_plate_purpose_ids(params[:plate_purpose_ids] || nil)
       .created_between(params[:start_date], params[:end_date])
       .filter_by_barcode(params[:barcodes] || nil)
+      .with_retention_instructions(
+        map_retention_instructions(params[:retention_instructions])
+      )
       .distinct
   end
 
@@ -185,6 +194,10 @@ class Labware < Asset
 
   scope :with_plate_purpose_ids,
         ->(plate_purpose_ids) { where(plate_purpose_id: plate_purpose_ids) if plate_purpose_ids.present? }
+
+  scope :with_retention_instructions, ->(retention_instructions) {
+    where(retention_instruction: retention_instructions) if retention_instructions.present?
+  }
 
   scope :created_between,
         ->(start_date, end_date) do
@@ -356,7 +369,19 @@ class Labware < Asset
   end
 
   def lookup_labwhere_location
-    lookup_labwhere(machine_barcode) || lookup_labwhere(human_barcode)
+    lookups = [lookup_labwhere(machine_barcode), lookup_labwhere(human_barcode)]
+
+    return latest_location(lookups) if lookups.any? { |l| l&.dig(:location).present? }
+    return 'Not found - There is a problem with Labwhere' if lookups.any? { |l| l&.dig(:error) }
+
+    nil
+  end
+
+  def latest_location(lookups)
+    lookups.compact
+      .select { |l| l[:location].present? }
+      .max_by { |l| l[:updated_at] || Time.zone.at(0) }
+      .fetch(:location)
   end
 
   def lookup_labwhere(barcode)
@@ -365,9 +390,23 @@ class Labware < Asset
     rescue StandardError => e
       # rescue LabWhereClient::LabwhereException => e
       Rails.logger.error { e }
-      return 'Not found - There is a problem with Labwhere'
+      return { error: true, message: e.message }
     end
-    info_from_labwhere.location.location_info if info_from_labwhere.present? && info_from_labwhere.location.present?
+
+    return nil unless info_from_labwhere.present? && info_from_labwhere.location.present?
+
+    {
+      location: info_from_labwhere.location.location_info,
+      updated_at: parse_labwhere_timestamp(info_from_labwhere.updated_at)
+    }
+  end
+
+  def parse_labwhere_timestamp(timestamp)
+    return if timestamp.blank?
+
+    Time.zone.parse(timestamp)
+  rescue ArgumentError
+    nil
   end
 end
 # rubocop:enable Metrics/ClassLength

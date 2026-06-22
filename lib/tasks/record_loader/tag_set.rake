@@ -3,7 +3,7 @@
 # This file was automatically generated via `rails g record_loader`
 namespace :record_loader do
   desc 'Automatically generate TagSet through TagSetLoader'
-  task tag_set: :environment do
+  task tag_set: [:environment, 'record_loader:tag_group'] do
     RecordLoader::TagSetLoader.new.create!
   end
 end

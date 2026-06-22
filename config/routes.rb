@@ -310,7 +310,9 @@ Rails.application.routes.draw do
     resource :information, controller: 'studies/information' do
       member do
         get :summary
+        get :show_items
         get :show_summary
+        get :show_study_summary
       end
 
       resources :assets # Legacy path, redirects to receptacles
@@ -360,6 +362,12 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :abilities, only: :index
+    resources :accessioning_tools, only: :index do
+      collection do
+        get :bulk_accession_preview
+        put :bulk_accession
+      end
+    end
     resources :custom_texts
 
     resources :primer_panels, except: :destroy

@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '1.3.5'
+  gem 'concurrent-ruby'
   gem 'configatron'
   gem 'formtastic'
   gem 'rails', '~> 8.0.0'
@@ -21,10 +21,6 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
-  # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
-  # see https://stackoverflow.com/a/71192990
-  gem 'psych', '< 4'
-
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
@@ -34,7 +30,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader', tag: 'v1.1.0'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
@@ -166,10 +162,13 @@ group :development, :linting do
   gem 'syntax_tree-haml', require: false
   gem 'syntax_tree-rbs', require: false
 
+  # Improve diff output during development
+  gem 'super_diff', require: false # view differences on rspec expectation failures
+
   # Automatically generate documentation
   gem 'yard', require: false
   gem 'yard-activerecord', '~> 0.0.16', require: false
-  gem 'yard-junk', '~> 0.0.9', require: false
+  gem 'yard-junk', '~> 0.1.0', require: false
 end
 
 group :linting, :test do
@@ -220,7 +219,7 @@ group :test, :cucumber do
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', '~> 4.1', require: false
   gem 'shoulda-context', '~> 3.0.0.rc1'
-  gem 'shoulda-matchers', '~> 6.0'
+  gem 'shoulda-matchers', '~> 7.0'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false

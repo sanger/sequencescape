@@ -141,7 +141,7 @@ describe 'Asset submission', :js do
       fill_in 'Fragment size required (to)', with: '200'
       select(selected_read_length, from: 'Read length')
       click_button 'Create'
-      expect(page).to have_content 'Created request'
+      expect(page).to have_text 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
         asset.requests_as_source.where(request_type_id: selected_request_type).count
@@ -159,7 +159,7 @@ describe 'Asset submission', :js do
       fill_in 'Fragment size required (to)', with: '200'
       select(selected_read_length.to_s, from: 'Read length')
       click_button 'Create'
-      expect(page).to have_content 'Created request'
+      expect(page).to have_text 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
         asset.requests_as_source.where(request_type_id: selected_request_type).count
@@ -179,7 +179,7 @@ describe 'Asset submission', :js do
       select(project.name, from: 'Project')
       select(selected_read_length, from: 'Read length')
       click_button 'Create'
-      expect(page).to have_content 'Created request'
+      expect(page).to have_text 'Created request'
       expect(page).to have_current_path(receptacle_path(asset.receptacle))
       expect { Delayed::Worker.new.work_off }.to change {
         asset.requests_as_source.where(request_type_id: selected_request_type).count

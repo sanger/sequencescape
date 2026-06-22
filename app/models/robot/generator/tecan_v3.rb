@@ -14,13 +14,17 @@ class Robot::Generator::TecanV3 < Robot::Generator::TecanV2
   # @see Robot::Generator::Behaviours::TecanDefault#buffers
   # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
   def buffers(data_object)
+    data_object = data_object_for_buffers(data_object)
     groups = Hash.new { |h, k| h[k] = [] } # channel => [steps]
     each_mapping(data_object) do |mapping, dest_plate_barcode, plate_details|
-      next unless total_volume > mapping['volume']
+      # src_well is checked to distinguish between buffer for sample wells
+      # and buffer for empty wells.
+      next if mapping.key?('src_well') && total_volume <= mapping['volume']
 
       dest_name = data_object['destination'][dest_plate_barcode]['name']
       volume = mapping['buffer_volume']
-      vert_map_id = description_to_column_index(mapping['dst_well'], plate_details['plate_size'])
+      vert_map_id = Map::Coordinate.well_description_to_by_column_map_index(mapping['dst_well'],
+                                                                            plate_details['plate_size'])
       channel = channel_number(vert_map_id)
 
       # No Wash after each step, as we are reusing tips for each channel.

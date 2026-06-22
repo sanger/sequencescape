@@ -206,7 +206,7 @@ RSpec.describe SamplesController do
         it 'displays an error message indicating the validation failure' do
           expect(flash[:error]).to eq(<<~MSG.squish)
             Please fill in the required fields:
-            Sample does not have the required metadata: donor-id, gender, and phenotype.
+            Sample does not have the required metadata: donor, gender, and phenotype.
           MSG
         end
       end

@@ -23,7 +23,7 @@ describe 'Viewing an asset' do
     let(:receptacle) { nil }
 
     it 'redirects to the Labware' do
-      expect(find('h1')).to have_content("Labware #{labware.name}")
+      expect(find('h1')).to have_text("Labware #{labware.name}")
     end
   end
 
@@ -32,7 +32,7 @@ describe 'Viewing an asset' do
     let(:receptacle) { labware.receptacle }
 
     it 'redirects to the Receptacle' do
-      expect(find('h1')).to have_content("Receptacle #{labware.name}")
+      expect(find('h1')).to have_text("Receptacle #{labware.name}")
     end
   end
 
@@ -41,7 +41,7 @@ describe 'Viewing an asset' do
     let(:receptacle) { create(:sample_tube).receptacle }
 
     it 'redirects to the Labware' do
-      expect(find('h1')).to have_content('Which Did You Mean?')
+      expect(find('h1')).to have_text('Which Did You Mean?')
     end
   end
 end

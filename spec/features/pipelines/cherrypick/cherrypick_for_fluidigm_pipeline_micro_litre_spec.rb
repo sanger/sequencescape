@@ -65,6 +65,6 @@ describe 'cherrypick for fluidigm pipeline - micro litre', :js do
     click_button 'Next step'
     click_button 'Next step'
     click_button 'Release this batch'
-    expect(page).to have_content('Batch released!')
+    expect(page).to have_text('Batch released!')
   end
 end

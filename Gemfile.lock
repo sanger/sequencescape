@@ -16,9 +16,11 @@ GIT
 
 GIT
   remote: https://github.com/sanger/record_loader
-  revision: 9e7481f4d2342f042ab13465962e5d6689863198
+  revision: 9e7f1b67c3eeee1895f1befc6a54682f11c02135
+  tag: v1.1.0
   specs:
-    record_loader (0.3.0)
+    record_loader (1.1.0)
+      psych (~> 5.0)
 
 GIT
   remote: https://github.com/sanger/sanger_barcode_format.git
@@ -126,16 +128,16 @@ GEM
       activesupport
     amq-protocol (2.3.3)
     ast (2.4.3)
+    attr_extras (7.1.0)
     avro (1.12.1)
       multi_json (~> 1.0)
-    backports (3.25.2)
     base64 (0.3.0)
     benchmark (0.5.0)
-    bigdecimal (4.1.1)
-    bootsnap (1.23.0)
+    bigdecimal (4.1.2)
+    bootsnap (1.24.6)
       msgpack (~> 1.2)
     builder (3.3.0)
-    bullet (8.1.0)
+    bullet (8.1.3)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11)
     bunny (2.24.0)
@@ -153,7 +155,7 @@ GEM
       rack-test (>= 0.6.3)
       regexp_parser (>= 1.5, < 3.0)
       xpath (~> 3.2)
-    carrierwave (3.1.2)
+    carrierwave (3.1.3)
       activemodel (>= 6.0.0)
       activesupport (>= 6.0.0)
       addressable (~> 2.6)
@@ -170,7 +172,7 @@ GEM
     choice (0.2.0)
     chronic (0.10.2)
     coderay (1.1.3)
-    concurrent-ruby (1.3.5)
+    concurrent-ruby (1.3.6)
     configatron (4.5.1)
     connection_pool (2.5.5)
     crack (1.0.1)
@@ -233,25 +235,25 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    faraday (2.14.1)
+    faraday (2.14.3)
       faraday-net_http (>= 2.0, < 3.5)
       json
       logger
     faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
-    faraday-net_http (3.4.2)
+    faraday-net_http (3.4.4)
       net-http (~> 0.5)
-    ffi (1.17.3-arm64-darwin)
-    ffi (1.17.3-x86_64-darwin)
-    ffi (1.17.3-x86_64-linux-gnu)
-    flipper (1.4.1)
+    ffi (1.17.4-arm64-darwin)
+    ffi (1.17.4-x86_64-darwin)
+    ffi (1.17.4-x86_64-linux-gnu)
+    flipper (1.4.2)
       concurrent-ruby (< 2)
-    flipper-active_record (1.4.1)
+    flipper-active_record (1.4.2)
       activerecord (>= 4.2, < 9)
-      flipper (~> 1.4.1)
-    flipper-ui (1.4.1)
+      flipper (~> 1.4.2)
+    flipper-ui (1.4.2)
       erubi (>= 1.0.0, < 2.0.0)
-      flipper (~> 1.4.1)
+      flipper (~> 1.4.2)
       rack (>= 1.4, < 4)
       rack-protection (>= 1.5.3, < 5.0.0)
       rack-session (>= 1.0.2, < 3.0.0)
@@ -260,7 +262,7 @@ GEM
       actionpack (>= 7.2.0)
     globalid (1.3.0)
       activesupport (>= 6.1)
-    haml (6.3.0)
+    haml (7.2.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -275,21 +277,21 @@ GEM
       mini_magick (>= 4.9.5, < 6)
       ruby-vips (>= 2.0.17, < 3)
     io-console (0.8.2)
-    irb (1.17.0)
+    irb (1.18.0)
       pp (>= 0.6.0)
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (2.19.3)
+    json (2.19.9)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack_pro (9.2.3)
-      logger
+    knapsack_pro (10.0.0)
       rake
+      thor (~> 1.4)
     language_server-protocol (3.17.0.5)
     launchy (3.1.1)
       addressable (~> 2.8)
@@ -318,8 +320,7 @@ GEM
       logger
       mime-types-data (~> 3.2025, >= 3.2025.0507)
     mime-types-data (3.2025.0924)
-    mini_magick (5.2.0)
-      benchmark
+    mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
     minitest (5.27.0)
@@ -328,7 +329,7 @@ GEM
       minitest (>= 5.3.3)
     mocha (3.1.0)
       ruby2_keywords (>= 0.0.5)
-    msgpack (1.8.0)
+    msgpack (1.8.3)
     multi_json (1.17.0)
     multi_test (1.1.0)
     multipart-post (2.4.1)
@@ -353,17 +354,20 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.5)
-    nokogiri (1.19.2-arm64-darwin)
+    nokogiri (1.19.4-arm64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.2-x86_64-darwin)
+    nokogiri (1.19.4-x86_64-darwin)
       racc (~> 1.4)
-    nokogiri (1.19.2-x86_64-linux-gnu)
+    nokogiri (1.19.4-x86_64-linux-gnu)
       racc (~> 1.4)
+    optimist (3.2.1)
     ostruct (0.6.3)
-    parallel (2.0.1)
+    parallel (2.1.0)
     parser (3.3.11.1)
       ast (~> 2.4.1)
       racc
+    patience_diff (1.2.0)
+      optimist (~> 3.0)
     pp (0.6.3)
       prettyprint
     prettier_print (1.2.1)
@@ -378,9 +382,11 @@ GEM
       pry (>= 0.13, < 0.17)
     pry-rails (0.3.11)
       pry (>= 0.13.0)
-    psych (3.3.4)
+    psych (5.3.1)
+      date
+      stringio
     public_suffix (7.0.5)
-    puma (7.2.0)
+    puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.23)
@@ -443,12 +449,14 @@ GEM
       tsort (>= 0.2)
       zeitwerk (~> 2.6)
     rainbow (3.1.1)
-    rake (13.3.1)
+    rake (13.4.2)
     rb-fsevent (0.11.2)
     rb-inotify (0.11.1)
       ffi (~> 1.0)
-    rbs (3.9.5)
+    rbs (4.0.2)
       logger
+      prism (>= 1.6.0)
+      tsort
     rbtree (0.4.6)
     rdoc (6.3.4.1)
     regexp_parser (2.12.0)
@@ -497,8 +505,8 @@ GEM
       rspec-mocks (>= 3.13.0, < 5.0.0)
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
-    ruboclean (0.7.1)
-    rubocop (1.86.1)
+    ruboclean (0.8.0)
+    rubocop (1.87.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -512,9 +520,9 @@ GEM
     rubocop-ast (1.49.1)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
-    rubocop-capybara (2.22.1)
+    rubocop-capybara (2.23.0)
       lint_roller (~> 1.1)
-      rubocop (~> 1.72, >= 1.72.1)
+      rubocop (~> 1.81)
     rubocop-factory_bot (2.28.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
@@ -526,7 +534,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.34.3)
+    rubocop-rails (2.35.3)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -546,11 +554,11 @@ GEM
       ostruct
     ruby-progressbar (1.13.0)
     ruby-units (4.1.0)
-    ruby-vips (2.2.3)
+    ruby-vips (2.3.0)
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.2.2)
+    rubyzip (3.3.0)
     sanger-jsonapi-resources (0.1.2)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -560,7 +568,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.43.0)
+    selenium-webdriver (4.44.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -568,8 +576,8 @@ GEM
       websocket (~> 1.0)
     set (1.1.1)
     shoulda-context (3.0.0.rc1)
-    shoulda-matchers (6.5.0)
-      activesupport (>= 5.2.0)
+    shoulda-matchers (7.0.1)
+      activesupport (>= 7.1)
     simplecov (0.22.0)
       docile (~> 1.1)
       simplecov-html (~> 0.11)
@@ -586,7 +594,12 @@ GEM
     sorted_set (1.0.3)
       rbtree
       set (~> 1.0)
-    ssrf_filter (1.2.0)
+    ssrf_filter (1.5.0)
+    stringio (3.2.0)
+    super_diff (0.19.0)
+      attr_extras (>= 6.2.4, < 8)
+      diff-lcs (~> 1.5)
+      patience_diff (~> 1.2)
     syntax_tree (6.3.0)
       prettier_print (>= 1.2.0)
     syntax_tree-haml (4.0.3)
@@ -605,7 +618,7 @@ GEM
     temple (0.10.4)
     test-prof (1.6.1)
     thor (1.5.0)
-    tilt (2.6.1)
+    tilt (2.7.0)
     timecop (0.9.11)
     timeout (0.6.1)
     traceroute (0.8.1)
@@ -620,10 +633,10 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
-    vite_rails (3.10.0)
+    vite_rails (3.11.0)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
-    vite_ruby (3.10.0)
+    vite_ruby (3.10.2)
       dry-cli (>= 0.7, < 2)
       logger (~> 1.6)
       mutex_m
@@ -646,12 +659,12 @@ GEM
       will_paginate (>= 3.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.42)
+    yard (0.9.43)
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)
-    yard-junk (0.0.10)
-      backports (>= 3.18)
+    yard-junk (0.1.0)
+      benchmark
       ostruct
       rainbow
       yard
@@ -678,7 +691,7 @@ DEPENDENCIES
   capybara
   carrierwave
   caxlsx
-  concurrent-ruby (= 1.3.5)
+  concurrent-ruby
   configatron
   csv (~> 3.3)
   cucumber-rails
@@ -714,7 +727,6 @@ DEPENDENCIES
   prettier_print
   pry-byebug
   pry-rails
-  psych (< 4)
   puma
   rack-acceptable
   rack-cors
@@ -750,11 +762,12 @@ DEPENDENCIES
   sanger_warren!
   selenium-webdriver (~> 4.1)
   shoulda-context (~> 3.0.0.rc1)
-  shoulda-matchers (~> 6.0)
+  shoulda-matchers (~> 7.0)
   simplecov
   simplecov-lcov
   sinatra
   slack-notifier
+  super_diff
   syntax_tree
   syntax_tree-haml
   syntax_tree-rbs
@@ -770,7 +783,7 @@ DEPENDENCIES
   will_paginate-bootstrap
   yard
   yard-activerecord (~> 0.0.16)
-  yard-junk (~> 0.0.9)
+  yard-junk (~> 0.1.0)
 
 BUNDLED WITH
-   2.5.9
+  2.7.2
