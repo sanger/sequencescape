@@ -36,7 +36,7 @@
 class Api::Messages::CommentIo < Api::Base
   renders_model(::Batch)
 
-  with_nested_has_many_association(:comments, as: 'comments') do
+  with_nested_has_many_association(:under_rep_comments, as: 'comments') do
     map_attribute_to_json_attribute(:key, 'comment_type')
     map_attribute_to_json_attribute(:value, 'comment_value')
     map_attribute_to_json_attribute(:updated_at, 'last_updated')

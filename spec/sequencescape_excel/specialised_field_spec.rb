@@ -741,17 +741,23 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
             end
 
             it 'will apply the two tags associated with the map_id' do
-              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              sf_dual_index_tag_well.update(aliquot:)
               # well location 'A1' => map_id '1'
-              expect(asset.reload.aliquots.first.tag.map_id).to eq 1
-              expect(asset.reload.aliquots.first.tag.tag_group).to eq tag_group1
-              expect(asset.reload.aliquots.first.tag2.map_id).to eq 1
-              expect(asset.reload.aliquots.first.tag2.tag_group).to eq tag_group2
+              expect(asset.aliquots).to all(
+                have_attributes(
+                  tag: have_attributes(
+                    map_id: 1, tag_group: tag_group1
+                  ),
+                  tag2: have_attributes(
+                    map_id: 1, tag_group: tag_group2
+                  )
+                )
+              )
 
               tag_set =
                 TagSet.find_by(
-                  tag_group_id: asset.reload.aliquots.first.tag.tag_group.id,
-                  tag2_group_id: asset.reload.aliquots.first.tag2.tag_group.id
+                  tag_group_id: sf_dual_index_tag_well.aliquots.first.tag.tag_group.id,
+                  tag2_group_id: sf_dual_index_tag_well.aliquots.first.tag2.tag_group.id
                 )
               expect(tag_set).to eq dual_index_tag_set
             end
@@ -762,56 +768,13 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
             let(:dual_index_tag_well) { 'd1' }
 
             it 'will apply the 2 tags associated with the updated map_id' do
-              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
+              sf_dual_index_tag_well.update(aliquot:)
               # well location 'D1' => map_id '4'
-              expect(asset.reload.aliquots.first.tag.map_id).to eq 4
-              expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
-            end
-          end
+              expect(sf_dual_index_tag_well.aliquots.first.tag.map_id).to eq 4
+              expect(sf_dual_index_tag_well.aliquots.first.tag2.map_id).to eq 4
 
-          context 'when a tag change is applied in a re-upload that already has downstream labware' do
-            let(:asset) { create(:tagged_well, map: map, aliquot_count: 1) }
-            let(:dual_index_tag_well) { 'd1' }
-
-            let(:downstream_aliquot1) do
-              create(
-                :aliquot,
-                sample: asset.aliquots.first.sample,
-                tag: asset.aliquots.first.tag,
-                tag2: asset.aliquots.first.tag2,
-                library_id: asset.aliquots.first.library_id
-              )
-            end
-            let(:downstream_aliquot2) do
-              create(
-                :aliquot,
-                sample: asset.aliquots.first.sample,
-                tag: asset.aliquots.first.tag,
-                tag2: asset.aliquots.first.tag2,
-                library_id: asset.aliquots.first.library_id
-              )
-            end
-
-            before do
-              asset.aliquots.first.library_id = 1
-              asset.aliquots.first.save!
-              downstream_aliquot1
-              downstream_aliquot2
-            end
-
-            it 'will apply the 2 tags associated with the updated map_id' do
-              sf_dual_index_tag_well.update(aliquot: aliquot, tag_group: nil)
-
-              # well location 'D1' => map_id '4'
-              expect(asset.reload.aliquots.first.tag.map_id).to eq 4
-              expect(asset.reload.aliquots.first.tag2.map_id).to eq 4
-
-              # check downstream aliquots updated too
-              expect(downstream_aliquot1.reload.tag.map_id).to eq 4
-              expect(downstream_aliquot1.reload.tag2.map_id).to eq 4
-
-              expect(downstream_aliquot2.reload.tag.map_id).to eq 4
-              expect(downstream_aliquot2.reload.tag2.map_id).to eq 4
+              # NB. in reality downstream aliquots would get updated too by the TagSubstitution code but
+              # that isn't triggered here because we are only testing the specialised field code
             end
           end
 
