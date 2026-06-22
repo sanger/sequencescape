@@ -836,12 +836,6 @@ RSpec/ExampleWording:
     - 'spec/models/study_spec.rb'
     - 'spec/models/transfer_request_spec.rb'
 
-# Offense count: 1
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/ExpectActual:
-  Exclude:
-    - 'spec/controllers/api/v2/qc_assays_controller_spec.rb'
-
 # Offense count: 26
 RSpec/ExpectInHook:
   Exclude:
