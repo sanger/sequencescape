@@ -303,8 +303,8 @@ describe TagSubstitution, :warren do
       end
 
       it 'return false and an error of the details don\'t match' do
-        expect(tube_tag_substitution.save).to be false
-        expect(tube_tag_substitution.errors.full_messages)
+        expect(tag_substitution.save).to be false
+        expect(tag_substitution.errors.full_messages)
           .to include('Substitution ["Matching aliquots could not be found"]')
       end
     end
@@ -340,7 +340,7 @@ describe TagSubstitution, :warren do
       COMMENT
 
       before do
-        assert tube_tag_substitution.save, "TagSubstitution did not save. #{tube_tag_substitution.errors.full_messages}"
+        assert tag_substitution.save, "TagSubstitution did not save. #{tag_substitution.errors.full_messages}"
       end
 
       it 'also update allow update of other attributes' do
@@ -411,7 +411,7 @@ describe TagSubstitution, :warren do
     end
 
     it 'perform the correct substitutions' do
-      assert tube_tag_substitution.save, "TagSubstitution did not save. #{tube_tag_substitution.errors.full_messages}"
+      assert tag_substitution.save, "TagSubstitution did not save. #{tag_substitution.errors.full_messages}"
       expect(library_aliquot_a_a.reload.tag).to eq sample_b_orig_tag_a
       expect(library_aliquot_b_a.reload.tag).to eq sample_a_orig_tag_a
       expect(mx_aliquot_a_a.reload.tag).to eq sample_b_orig_tag_a
