@@ -143,6 +143,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # used to bypass validation when fixing data in study from console by ticket officer.
+  attr_accessor :bypass_sapio_validation
+
   # Associations
   has_many_events do
     event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
@@ -192,6 +195,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'cannot contain spaces or be blank'
             }
   validate :validate_ethically_approved
+  # add validation when update sapio study
+  validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
   before_validation :set_default_ethical_approval
@@ -633,6 +638,21 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  def prevent_updates_when_mastered_in_sapio
+    return unless mastered_in_sapio?
+
+    # allow update from Integration Hub
+    return if Current.api_application&.name == 'Integration Hub'
+
+    # allow bypassing validation for ticket officers fixing data in console
+    return if bypass_sapio_validation
+
+    errors.add(
+      :base,
+      'This study is mastered and controlled in SAPIO and cannot be edited.'
+    )
+  end
 
   def valid_ethically_approved?
     ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
