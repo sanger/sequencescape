@@ -10,11 +10,11 @@ RSpec.describe 'labware/retention_instruction.html.erb' do
 
   shared_examples 'displaying retention instruction' do
     it 'displays the retention instruction' do
-      expect(rendered).to match(/Retention Instruction/)
+      expect(rendered).to include('Retention Instruction')
     end
 
     it 'displays the retention instruction value' do
-      expect(rendered).to match(/Destroy after 2 years/)
+      expect(rendered).to include('Destroy after 2 years')
     end
 
     it 'displays a form to update the retention instruction' do
