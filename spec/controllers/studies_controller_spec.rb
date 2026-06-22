@@ -99,6 +99,23 @@ RSpec.describe StudiesController do
     end
   end
 
+  describe '#edit', :sapio_restrictions_disabled do
+    let(:study) { create(:study, mastered_in_sapio: true) }
+
+    before do
+      # Make current_user a manager of the study so they can access edit
+      role = create(:manager_role, authorizable: study)
+      role.users << current_user
+    end
+
+    it 'allows editing mastered studies when feature flag is disabled', :aggregate_failures do
+      get :edit, session: session, params: { id: study.id }
+
+      expect(response).to render_template(:edit)
+      expect(flash[:error]).to be_nil
+    end
+  end
+
   describe '#grant_role' do
     let(:user) { create(:admin) }
 
