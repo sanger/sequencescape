@@ -695,14 +695,6 @@ RSpec/EmptyExampleGroup:
     - 'spec/models/pulldown/requests_spec.rb'
     - 'spec/models/tag_substitutions_spec.rb'
 
-# Offense count: 3
-# This cop supports safe autocorrection (--autocorrect).
-RSpec/EmptyLineAfterFinalLet:
-  Exclude:
-    - 'spec/models/heron/factories/plate_spec.rb'
-    - 'spec/models/tag_layout_spec.rb'
-    - 'spec/shared_contexts/shared_io_examples.rb'
-
 # Offense count: 380
 # Configuration parameters: Max, CountAsOne.
 RSpec/ExampleLength:
