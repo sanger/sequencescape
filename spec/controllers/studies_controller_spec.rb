@@ -82,6 +82,23 @@ RSpec.describe StudiesController do
     end
   end
 
+  describe '#edit' do
+    let(:study) { create(:study, mastered_in_sapio: true) }
+
+    before do
+      # Make current_user a manager of the study so they can access edit
+      role = create(:manager_role, authorizable: study)
+      role.users << current_user
+    end
+
+    it 'redirects to study information page with error flash', :aggregate_failures do
+      get :edit, session: session, params: { id: study.id }
+
+      expect(response).to redirect_to(study_information_path(study))
+      expect(flash[:error]).to eq('This study is mastered and controlled in SAPIO and cannot be edited.')
+    end
+  end
+
   describe '#grant_role' do
     let(:user) { create(:admin) }
 
