@@ -196,6 +196,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
             }
   validate :validate_ethically_approved
   # add validation when update sapio study
+  validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: :update
   validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
@@ -639,12 +640,20 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  def prevent_mastered_in_sapio_changes_unless_integration_hub
+    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless will_save_change_to_mastered_in_sapio?
+    return if integration_hub_request?
+
+    errors.add(:mastered_in_sapio, 'can only be updated by Integration Hub.')
+  end
+
   def prevent_updates_when_mastered_in_sapio
     return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
     return unless mastered_in_sapio?
 
     # allow update from Integration Hub
-    return if Current.api_application&.name == 'Integration Hub'
+    return if integration_hub_request?
 
     # allow bypassing validation for ticket officers fixing data in console
     return if bypass_sapio_validation
@@ -653,6 +662,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       :base,
       'This study is mastered and controlled in SAPIO and cannot be edited.'
     )
+  end
+
+  def integration_hub_request?
+    Current.api_application&.name == 'Integration Hub'
   end
 
   def valid_ethically_approved?
