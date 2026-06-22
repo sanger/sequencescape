@@ -13,7 +13,7 @@ describe TagSubstitution, :warren do
   # Note: The tag swap scenario used here is important, as a naive approach results in a temporary tag clash. If you
   # make changes to this suite, please ensure this scenario is still tested.
 
-  subject { described_class.new({ substitutions: instructions }.merge(additional_parameters)) }
+  subject(:tag_substitution) { described_class.new({ substitutions: instructions }.merge(additional_parameters)) }
 
   let(:sample_a) { create(:sample) }
   let(:sample_b) { create(:sample) }
@@ -256,11 +256,11 @@ describe TagSubstitution, :warren do
       it_behaves_like 'tag substitution'
 
       describe 'TagSubstitution.new(template_asset: asset)' do
-        subject { described_class.new(template_asset: mx_library_tube) }
+        subject(:tube_tag_substitution) { described_class.new(template_asset: mx_library_tube) }
 
         it 'populates the basics' do
-          expect(subject.substitutions.length).to eq mx_library_tube.aliquots.count
-          indexed = subject.substitutions.index_by(&:sample_id)
+          expect(tube_tag_substitution.substitutions.length).to eq mx_library_tube.aliquots.count
+          indexed = tube_tag_substitution.substitutions.index_by(&:sample_id)
 
           expect(indexed[sample_a.id]).to have_attributes(
             library_id: library_tube_a.receptacle.id,
@@ -303,8 +303,9 @@ describe TagSubstitution, :warren do
       end
 
       it 'return false and an error of the details don\'t match' do
-        expect(subject.save).to be false
-        assert_includes subject.errors.full_messages, 'Substitution ["Matching aliquots could not be found"]'
+        expect(tube_tag_substitution.save).to be false
+        expect(tube_tag_substitution.errors.full_messages)
+          .to include('Substitution ["Matching aliquots could not be found"]')
       end
     end
 
@@ -338,7 +339,9 @@ describe TagSubstitution, :warren do
         Sample #{sample_b.id}: Tag changed from #{sample_b_orig_tag.oligo} to #{sample_b_new_tag.oligo};
       COMMENT
 
-      before { assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}" }
+      before do
+        assert tube_tag_substitution.save, "TagSubstitution did not save. #{tube_tag_substitution.errors.full_messages}"
+      end
 
       it 'also update allow update of other attributes' do
         [library_aliquot_a, library_aliquot_b, mx_aliquot_a, mx_aliquot_b].each do |aliquot|
@@ -408,7 +411,7 @@ describe TagSubstitution, :warren do
     end
 
     it 'perform the correct substitutions' do
-      assert subject.save, "TagSubstitution did not save. #{subject.errors.full_messages}"
+      assert tube_tag_substitution.save, "TagSubstitution did not save. #{tube_tag_substitution.errors.full_messages}"
       expect(library_aliquot_a_a.reload.tag).to eq sample_b_orig_tag_a
       expect(library_aliquot_b_a.reload.tag).to eq sample_a_orig_tag_a
       expect(mx_aliquot_a_a.reload.tag).to eq sample_b_orig_tag_a
