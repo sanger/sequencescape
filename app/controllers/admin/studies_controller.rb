@@ -20,6 +20,7 @@ class Admin::StudiesController < ApplicationController
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def edit
     @request_types = RequestType.order(name: :asc)
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
@@ -50,9 +51,8 @@ class Admin::StudiesController < ApplicationController
     render partial: 'manage_single_study'
   end
 
-  # TODO: remove unneeded code
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def filter # rubocop:todo Metrics/CyclomaticComplexity
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+  def filter
     filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
     if ['not approved', 'all'].include?(params[:filter][:by])
@@ -75,7 +75,7 @@ class Admin::StudiesController < ApplicationController
     render partial: 'filtered_studies'
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 
   def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @study = Study.find(params[:id])
