@@ -33,7 +33,7 @@ describe 'View study properties' do
       initial_study: study
     )
     login_user(user)
-    visit study_path(study)
+    visit_and_wait_for_title(study_path(study), "Information (#{study.name})")
   end
 
   it 'No links to absent requests', :js do
