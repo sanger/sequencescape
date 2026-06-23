@@ -46,8 +46,16 @@ module Api
       # labware
       include Api::V2::SharedBehaviour::Labware
 
-      # TODO: {Y24-213} Possibly this line doesn't actually do anything and could be removed.
-      default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
+      # # TODO: {Y24-213} Possibly this line doesn't actually do anything and could be removed.
+      # default_includes :uuid_object, :barcodes, :plate_purpose, :transfer_requests
+
+      # Return the most recently updated plates first when no explicit `sort`
+      # parameter is supplied by the client. This ensures that paginated
+      # requests surface the latest plates rather
+      # than the oldest ones.
+      def self.default_sort
+        [{ field: 'updated_at', direction: :desc }]
+      end
 
       ###
       # Attributes

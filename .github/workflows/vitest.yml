@@ -39,10 +39,11 @@ jobs:
         run: yarn coverage
 
       - name: Upload coverage reports to Codecov
-        uses: sanger/.github/.github/actions/tests/codecov@master
+        uses: codecov/codecov-action@v7.0.0
         with:
           name: ${{ github.run_id }}_${{ github.job }}_${{ github.event_name }}
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: javascript
-          disable-search: true
+          disable_search: true
           files: ${{ github.workspace }}/app/frontend/coverage/lcov.info
+          fail_ci_if_error: true
