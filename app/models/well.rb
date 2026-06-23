@@ -58,7 +58,7 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
   #
   # @return [ActiveRecord::Relation] a collection of PolyMetadatum records
   def poly_metadata
-    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.name)
+    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.polymorphic_name)
   end
 
   belongs_to :plate, foreign_key: :labware_id

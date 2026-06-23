@@ -106,6 +106,9 @@ class Labware < Asset
   has_one :custom_metadatum_collection, foreign_key: :asset_id, dependent: :destroy, inverse_of: :asset
   belongs_to :labware_type, class_name: 'PlateType', optional: true
 
+  # Can have many key value pairs of metadata
+  has_many :poly_metadata, as: :metadatable, dependent: :destroy
+
   has_many :batches_as_source, -> { distinct }, through: :requests_as_source, source: :batch
 
   scope :with_required_aliquots, ->(aliquots_ids) { joins(:aliquots).where(aliquots: { id: aliquots_ids }) }
@@ -153,6 +156,11 @@ class Labware < Asset
             none
           end
         }
+
+  # @return [ActiveRecord::Relation] a collection of PolyMetadatum records
+  def poly_metadata
+    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.polymorphic_name)
+  end
 
   # Used for location report
   def self.map_retention_instructions(values)
