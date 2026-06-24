@@ -217,6 +217,44 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     expect(row).to be_sample_updated
   end
 
+  context 'when quantitation fields are expected but blank' do
+    let(:volume_col_index) { columns.find_by(:name, 'volume').number - 1 }
+    let(:concentration_col_index) { columns.find_by(:name, 'concentration').number - 1 }
+    let(:overrides_with_all_fields) { { samples: true, exclude_fields: [] } }
+
+    it 'adds an error when volume is expected (not excluded) but blank' do
+      data_with_blank = data.dup
+      data_with_blank[volume_col_index] = ''
+      row = described_class.new(number: 1, data: data_with_blank, columns: columns)
+      row.validate_sample(overrides_with_all_fields)
+      expect(row.errors.full_messages).to include('Row 1 - Volume is expected but blank.')
+    end
+
+    it 'does not add an error when volume is excluded from overwrites' do
+      data_with_blank = data.dup
+      data_with_blank[volume_col_index] = ''
+      row = described_class.new(number: 1, data: data_with_blank, columns: columns)
+      row.validate_sample({ samples: true, exclude_fields: [:volume] })
+      expect(row.errors.full_messages).not_to include('Row 1 - Volume is expected but blank.')
+    end
+
+    it 'adds an error when concentration is expected (not excluded) but blank' do
+      data_with_blank = data.dup
+      data_with_blank[concentration_col_index] = ''
+      row = described_class.new(number: 1, data: data_with_blank, columns: columns)
+      row.validate_sample(overrides_with_all_fields)
+      expect(row.errors.full_messages).to include('Row 1 - Concentration is expected but blank.')
+    end
+
+    it 'does not add an error when concentration is excluded from overwrites' do
+      data_with_blank = data.dup
+      data_with_blank[concentration_col_index] = ''
+      row = described_class.new(number: 1, data: data_with_blank, columns: columns)
+      row.validate_sample({ samples: true, exclude_fields: [:concentration] })
+      expect(row.errors.full_messages).not_to include('Row 1 - Concentration is expected but blank.')
+    end
+  end
+
   it 'knows if it is empty' do
     empty_data = [
       sample_manifest.labware.first.human_barcode,

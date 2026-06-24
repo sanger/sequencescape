@@ -181,6 +181,7 @@ module SampleManifestExcel
 
       def validate_sample(overrides)
         check_sample_present
+        check_required_fields_present(%w[volume concentration], overrides)
         sample_can_be_updated(overrides)
         errors.empty?
       end
@@ -326,6 +327,16 @@ module SampleManifestExcel
 
       def skip_sample_update?(override_samples)
         sample.updated_by_manifest && !override_samples
+      end
+
+      def check_required_fields_present(required_fields, overrides)
+        required_fields.each do |required_field|
+          next if overrides[:exclude_fields].include?(required_field.to_sym)
+          next unless columns.names.include?(required_field)
+          next if value(required_field).present?
+
+          errors.add(:base, "#{row_title} #{required_field.humanize} is expected but blank.")
+        end
       end
     end
   end
