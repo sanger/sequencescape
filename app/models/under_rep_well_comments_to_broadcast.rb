@@ -66,7 +66,7 @@ module UnderRepWellCommentsToBroadcast
   def under_represented_well_comments
     requests.flat_map do |sequencing_request|
       lane = sequencing_request.target_asset
-      uniq_comments_for_lane(lane, sequencing_request)
+      uniq_comments_for_lane(lane, sequencing_request) unless lane.nil?
     end
   end
 
