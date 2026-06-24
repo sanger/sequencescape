@@ -548,6 +548,8 @@ GEM
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
+    ruby-graphviz (1.2.5)
+      rexml
     ruby-prof (2.0.4)
       base64
       ostruct
@@ -754,6 +756,7 @@ DEPENDENCIES
   rubocop-rails
   rubocop-rspec
   rubocop-rspec_rails
+  ruby-graphviz
   ruby-prof
   ruby-units
   sanger-jsonapi-resources (~> 0.1.2)
@@ -785,4 +788,4 @@ DEPENDENCIES
   yard-junk (~> 0.1.0)
 
 BUNDLED WITH
-  2.7.2
+   2.7.2
