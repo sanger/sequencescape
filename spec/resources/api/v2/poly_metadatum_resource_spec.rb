@@ -24,4 +24,5 @@ RSpec.describe Api::V2::PolyMetadatumResource, type: :resource do
   # Filters
   it { is_expected.to filter :key }
   it { is_expected.to filter :metadatable_id }
+  it { is_expected.to filter :metadatable_type }
 end
