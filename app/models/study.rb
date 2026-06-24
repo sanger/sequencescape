@@ -640,6 +640,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  # This validation only runs when the value of mastered_in_sapio is changing
+  # It prevents changes to mastered_in_sapio unless the request is coming from Integration Hub
+  # i.e. only Integration Hub can set/change the value of mastered_in_sapio
   def prevent_mastered_in_sapio_changes_unless_integration_hub
     return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
     return unless will_save_change_to_mastered_in_sapio?
@@ -648,6 +651,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     errors.add(:mastered_in_sapio, 'can only be updated by Integration Hub.')
   end
 
+  # This validation prevents any updates to a study that is mastered in SAPIO 
+  # unless the request is coming from Integration Hub
   def prevent_updates_when_mastered_in_sapio
     return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
     return unless mastered_in_sapio?
