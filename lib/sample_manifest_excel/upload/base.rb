@@ -15,7 +15,6 @@ module SampleManifestExcel
     # *Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
-      require_relative '../../../helpers/accession_helper'
       include AccessionHelper
       include ActiveModel::Model
 

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_excel, type: :model do
+RSpec.describe SampleManifestExcel::Upload::Base, :sample_manifest, :sample_manifest_excel, type: :model do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -32,7 +32,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         manifest_type: 'tube_library_with_tag_sequences'
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload.columns.count).to eq(columns.count)
     expect(upload).to be_valid
   end
@@ -44,7 +44,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.with(:my_dodgy_column)
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload).not_to be_valid
     expect(upload.errors.full_messages.to_s).to include(upload.columns.bad_keys.first)
   end
@@ -56,7 +56,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup.except(:sanger_sample_id)
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload).not_to be_valid
   end
 
@@ -68,7 +68,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         validation_errors: [:sanger_sample_id_invalid]
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload).not_to be_valid
   end
 
@@ -81,7 +81,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       )
     download.save(test_file_name)
 
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload).not_to be_valid
   end
 
@@ -92,7 +92,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
     expect(upload.sample_manifest.state).to eq 'pending'
     upload.sample_manifest.start!
     upload.process(tag_group)
@@ -107,8 +107,8 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
         columns: SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup
       )
     download.save(test_file_name)
-    upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
-    upload.rows.each { |row| expect(row).to receive(:changed?).at_least(:once).and_return(true) }
+    upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
+    expect(upload.rows).to all(receive(:changed?).at_least(:once).and_return(true))
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change(BroadcastEvent, :count).by(1)
 
     # subjects are 1 study, 6 tubes and 6 samples
@@ -124,12 +124,12 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       )
     download.save(test_file_name)
     upload =
-      SampleManifestExcel::Upload::Base.new(
+      described_class.new(
         file: test_file,
         column_list: SampleManifestExcel.configuration.columns.tube_multiplexed_library_with_tag_sequences.dup,
         start_row: 9
       )
-    upload.rows.each { |row| expect(row).to receive(:changed?).at_least(:once).and_return(true) }
+    expect(upload.rows).to all(receive(:changed?).at_least(:once).and_return(true))
     expect { upload.broadcast_sample_manifest_updated_event(user) }.to change(BroadcastEvent, :count).by(1)
 
     # subjects are 1 study, 1 tubes and 6 samples
@@ -140,7 +140,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
     context '1dtube' do
       let!(:columns) { SampleManifestExcel.configuration.columns.tube_full.dup }
       let!(:download) { build(:test_download_tubes, columns:) }
-      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9) }
+      let(:upload) { described_class.new(file: test_file, column_list: columns, start_row: 9) }
 
       before { download.save(test_file_name) }
 
@@ -163,13 +163,13 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       before { download.save(test_file_name) }
 
       it 'has the correct processor' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+        upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
         expect(upload.processor).not_to be_nil
         expect(upload.processor).to be_library_tube
       end
 
       it 'updates all of the data' do
-        upload = SampleManifestExcel::Upload::Base.new(file: test_file, column_list: columns, start_row: 9)
+        upload = described_class.new(file: test_file, column_list: columns, start_row: 9)
         upload.process(tag_group)
         expect(upload).to be_processed
       end
@@ -198,7 +198,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: tube_multiplex_library_with_tag_seq_cols,
             start_row: 9
@@ -216,7 +216,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: tube_multiplex_library_with_tag_seq_cols,
             start_row: 9
@@ -235,7 +235,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: tube_multiplex_library_with_tag_seq_cols,
             start_row: 9
@@ -268,7 +268,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: multiplex_library_with_tag_grp_cols,
             start_row: 9
@@ -286,7 +286,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: multiplex_library_with_tag_grp_cols,
             start_row: 9
@@ -305,7 +305,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
           )
         download.save(test_file_name)
         upload =
-          SampleManifestExcel::Upload::Base.new(
+          described_class.new(
             file: test_file,
             column_list: multiplex_library_with_tag_grp_cols,
             start_row: 9
@@ -319,7 +319,7 @@ RSpec.describe SampleManifestExcel::Upload, :sample_manifest, :sample_manifest_e
       let!(:plate_columns) { SampleManifestExcel.configuration.columns.plate_full.dup }
       let(:download) { build(:test_download_plates, columns: plate_columns, study: study) }
       let(:study) { create(:open_study, accession_number: 'acc') }
-      let(:upload) { SampleManifestExcel::Upload::Base.new(file: test_file, column_list: plate_columns, start_row: 9) }
+      let(:upload) { described_class.new(file: test_file, column_list: plate_columns, start_row: 9) }
 
       before { download.save(test_file_name) }
 
