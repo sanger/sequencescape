@@ -11,7 +11,7 @@ inheritance: true
 markup: true
 mermaid_style: erdiagram
 notation: bachman
-orientation: horizontal
+orientation: vertical
 polymorphism: true
 sort: true
 warn: true
@@ -62,5 +62,5 @@ only:
 - Well
 only_recursion_depth: null
 prepend_primary: false
-cluster: false
+cluster: true
 splines: spline
