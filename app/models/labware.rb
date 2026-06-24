@@ -159,7 +159,7 @@ class Labware < Asset
 
   # @return [ActiveRecord::Relation] a collection of PolyMetadatum records
   def poly_metadata
-    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.polymorphic_name)
+    PolyMetadatum.where(metadatable_id: id, metadatable_type: self.class.name)
   end
 
   # Used for location report

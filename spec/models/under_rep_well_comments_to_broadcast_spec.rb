@@ -8,14 +8,14 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
 
   let(:poly_metadata_key) { 'under_represented' }
 
-  let(:poly_meta_underrep_plate) do
-    create(:poly_metadatum, metadatable: pcr_xp_plate, key: poly_metadata_key, value: 'true')
+  let(:poly_metadatum_underrep_plate) do
+    create(:plate_poly_metadatum, metadatable: pcr_xp_plate, key: poly_metadata_key, value: 'true')
   end
-  let(:poly_meta_underrep_well) do
-    create(:poly_metadatum, metadatable: well_a1, key: poly_metadata_key, value: 'true')
+  let(:poly_metadatum_underrep_well) do
+    create(:well_poly_metadatum, metadatable: well_a1, key: poly_metadata_key, value: 'true')
   end
-  let(:poly_meta_other_well) do
-    create(:poly_metadatum, metadatable: well_a1, key: 'other_key', value: 'some_value')
+  let(:poly_metadatum_other_well) do
+    create(:well_poly_metadatum, metadatable: well_a1, key: 'other_key', value: 'some_value')
   end
 
   let(:tube) do
@@ -35,9 +35,9 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
   let(:batch_request) { create(:sequencing_batch_request, batch: batch, request: sequencing_request) }
 
   before do
-    poly_meta_underrep_plate
-    poly_meta_underrep_well
-    poly_meta_other_well
+    poly_metadatum_underrep_plate
+    poly_metadatum_underrep_well
+    poly_metadatum_other_well
     batch_request
     batch.reload # Reset association cache after adding batch_request
   end
@@ -71,7 +71,7 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
       end
 
       it 'associates the correct poly_metadatum' do
-        expect(comment.poly_metadatum).to eq(poly_meta_underrep_well)
+        expect(comment.poly_metadatum).to eq(poly_metadatum_underrep_well)
       end
 
       it 'does not include comments for non-under_represented metadata' do
@@ -109,7 +109,7 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
   describe UnderRepWellCommentsToBroadcast::UnderRepWellComment do
     subject(:comment) do
       described_class.new(
-        poly_metadatum: poly_meta_underrep_well,
+        poly_metadatum: poly_metadatum_underrep_well,
         batch_id: batch.id,
         position: batch_request.position,
         tag_index: 1
@@ -129,23 +129,23 @@ RSpec.describe UnderRepWellCommentsToBroadcast do
     end
 
     it 'exposes poly_metadatum' do
-      expect(comment.poly_metadatum).to eq(poly_meta_underrep_well)
+      expect(comment.poly_metadatum).to eq(poly_metadatum_underrep_well)
     end
 
     it 'delegates key to poly_metadatum' do
-      expect(comment.key).to eq(poly_meta_underrep_well.key)
+      expect(comment.key).to eq(poly_metadatum_underrep_well.key)
     end
 
     it 'delegates value to poly_metadatum' do
-      expect(comment.value).to eq(poly_meta_underrep_well.value)
+      expect(comment.value).to eq(poly_metadatum_underrep_well.value)
     end
 
     it 'delegates updated_at to poly_metadatum' do
-      expect(comment.updated_at).to eq(poly_meta_underrep_well.updated_at)
+      expect(comment.updated_at).to eq(poly_metadatum_underrep_well.updated_at)
     end
 
     it 'delegates destroyed? to poly_metadatum' do
-      expect(comment.destroyed?).to eq(poly_meta_underrep_well.destroyed?)
+      expect(comment.destroyed?).to eq(poly_metadatum_underrep_well.destroyed?)
     end
   end
 end
