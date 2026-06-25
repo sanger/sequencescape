@@ -1,0 +1,51 @@
+---
+# Fluidigm Cherrypicking plates
+Working Dilution:
+  type: DilutionPlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  target_type: WorkingDilutionPlate
+  size: 96
+  prefix: WD
+  barcode_printer_type: "96 Well Plate"
+STA:
+  type: PlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  cherrypick_direction: column
+  size: 96
+  barcode_printer_type: "96 Well Plate"
+STA2:
+  type: PlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  cherrypick_direction: column
+  size: 96
+  barcode_printer_type: "96 Well Plate"
+SNP Type:
+  type: PlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  cherrypick_direction: column
+  size: 96
+  barcode_printer_type: "96 Well Plate"
+Fluidigm 96-96:
+  type: PlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  cherrypick_direction: interlaced_column
+  size: 96
+  asset_shape: Fluidigm96
+Fluidigm 192-24:
+  type: PlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: true
+  cherrypick_direction: interlaced_column
+  size: 192
+  asset_shape: Fluidigm192

@@ -570,8 +570,7 @@ If you encounter CI failures for cucumber and rspec feature tests it may be caus
 You can create a database entity relationship diagram, by specifying the title and attributes optionally, and view the output:
 
 ```
-bundle exec rake erd title='Sequencescape Entity Relationship Diagram' attributes='primary_keys,foreign_keys,inheritance' orientation=horizontal polymorphism=true notation=bachman indirect=false inheritance=true only='Sample,Study,AliquotIndex,Aliquot,Project,Order,Submission,Labware,Receptacle,Request,Request::Metadata,Batch,BatchRequest,LabEvent,RequestType,Pipeline,SampleManifest,Sample::Metadata,Study::Metadata,Item,BaitLibrary,RequestEvent,Project::Metadata,Barcode,Purpose,QCResult,QCAssay,User,Plate,Tube,Well' exclude='Target,Commentable,Failable,Eventful,Eventable,Resource,Attributable,Owner,Authorizable,Documentable'
-
+bundle exec erd
 open erd.pdf
 ```
 

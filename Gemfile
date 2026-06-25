@@ -129,7 +129,9 @@ group :default do
 end
 
 group :development do
+  # Generate entity relationship diagrams for the database
   gem 'rails-erd'
+  gem 'ruby-graphviz'
 
   # Detect n+1 queries
   gem 'bullet'

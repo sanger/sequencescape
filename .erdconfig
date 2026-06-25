@@ -1,0 +1,66 @@
+attributes:
+  - primary_keys
+  - foreign_keys
+  - inheritance
+disconnected: true
+filename: erd
+filetype: pdf
+generator: graphviz
+indirect: false
+inheritance: true
+markup: true
+mermaid_style: erdiagram
+notation: bachman
+orientation: vertical
+polymorphism: true
+sort: true
+warn: true
+title: Sequencescape Entity Relationship Diagram
+exclude:
+- Target
+- Commentable
+- Failable
+- Eventful
+- Eventable
+- Resource
+- Attributable
+- Owner
+- Authorizable
+- Documentable
+exclude_attributes: null
+only:
+- Sample
+- Study
+- AliquotIndex
+- Aliquot
+- Project
+- Order
+- Submission
+- Labware
+- Receptacle
+- Request
+- Request::Metadata
+- Batch
+- BatchRequest
+- LabEvent
+- RequestType
+- Pipeline
+- SampleManifest
+- Sample::Metadata
+- Study::Metadata
+- Item
+- BaitLibrary
+- RequestEvent
+- Project::Metadata
+- Barcode
+- Purpose
+- QCResult
+- QCAssay
+- User
+- Plate
+- Tube
+- Well
+only_recursion_depth: null
+prepend_primary: false
+cluster: true
+splines: spline
