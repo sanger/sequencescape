@@ -217,7 +217,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     expect(row).to be_sample_updated
   end
 
-  context 'when quantitation fields are expected but blank' do
+  context 'when over-writable fields are expected but blank' do
     let(:volume_col_index) { columns.find_by(:name, 'volume').number - 1 }
     let(:concentration_col_index) { columns.find_by(:name, 'concentration').number - 1 }
     let(:overrides_with_all_fields) { { samples: true, exclude_fields: [] } }
