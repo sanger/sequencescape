@@ -3,11 +3,6 @@
 # is a hash from source to destination well location and destination is the target plate for
 # the transfers.
 class Transfer::BetweenPlates < Transfer
-  extend ::ModelExtensions::Plate::NamedScopeHelpers
-
-  include_plate_named_scope :source
-  include_plate_named_scope :destination
-
   include TransfersBySchema
   include TransfersToKnownDestination
 
