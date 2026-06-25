@@ -61,7 +61,7 @@ RSpec.describe Api::V2::PlatesController, type: :request do
       end
 
       it 'returns an error message' do
-        expect(response.parsed_body['error']).to match(/Stock registration failed/)
+        expect(response.parsed_body['error']).to include('Stock registration failed')
       end
     end
   end

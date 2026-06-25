@@ -45,12 +45,14 @@ class QcReportsController < ApplicationController
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     study = Study.find_by(id: params[:qc_report][:study_id])
     exclude_existing = params[:qc_report][:exclude_existing] == '1'
+    plate_barcodes = format_plate_barcodes(params[:qc_report][:plate_barcodes_text])
     qc_report =
       QcReport.new(
         study: study,
         product_criteria: @product.stock_criteria,
         exclude_existing: exclude_existing,
-        plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?)
+        plate_purposes: params[:qc_report][:plate_purposes].try(:reject, &:blank?),
+        plate_barcodes: plate_barcodes
       )
 
     if qc_report.save
@@ -62,6 +64,13 @@ class QcReportsController < ApplicationController
       flash[:error] = "Failed to create report: #{error_messages}"
       redirect_back_or_to(root_path)
     end
+  end
+
+  def format_plate_barcodes(plate_barcodes)
+    return nil if plate_barcodes.nil?
+
+    # Split the input string into an array of barcodes
+    plate_barcodes.split(/\s+/)
   end
 
   # On form submit of a qc_file. Strictly speaking this should be an update action

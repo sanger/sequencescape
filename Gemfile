@@ -4,7 +4,7 @@ source 'https://rubygems.org'
 
 group :default do
   gem 'bootsnap'
-  gem 'concurrent-ruby', '1.3.5'
+  gem 'concurrent-ruby'
   gem 'configatron'
   gem 'formtastic'
   gem 'rails', '~> 8.0.0'
@@ -21,10 +21,6 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
-  # Fix incompatibility with between Ruby 3.1 and Psych 4 (used for yaml)
-  # see https://stackoverflow.com/a/71192990
-  gem 'psych', '< 4'
-
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
@@ -34,7 +30,7 @@ group :default do
 
   # Provides bulk insert capabilities
   gem 'activerecord-import'
-  gem 'record_loader', git: 'https://github.com/sanger/record_loader'
+  gem 'record_loader', git: 'https://github.com/sanger/record_loader', tag: 'v1.1.0'
 
   gem 'mysql2', platforms: :mri
   gem 'will_paginate'
@@ -133,7 +129,9 @@ group :default do
 end
 
 group :development do
+  # Generate entity relationship diagrams for the database
   gem 'rails-erd'
+  gem 'ruby-graphviz'
 
   # Detect n+1 queries
   gem 'bullet'
@@ -165,6 +163,9 @@ group :development, :linting do
   gem 'syntax_tree', require: false
   gem 'syntax_tree-haml', require: false
   gem 'syntax_tree-rbs', require: false
+
+  # Improve diff output during development
+  gem 'super_diff', require: false # view differences on rspec expectation failures
 
   # Automatically generate documentation
   gem 'yard', require: false

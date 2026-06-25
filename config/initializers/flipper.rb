@@ -2,7 +2,7 @@
 require 'yaml'
 require 'flipper/adapters/active_record'
 
-FLIPPER_FEATURES = YAML.load_file('./config/feature_flags.yml')
+FLIPPER_FEATURES = YAML.safe_load_file('./config/feature_flags.yml')
 
 Rails.application.configure do
   ## Memoization ensures that only one adapter call is made per feature per request.

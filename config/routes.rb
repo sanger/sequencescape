@@ -359,6 +359,12 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :abilities, only: :index
+    resources :accessioning_tools, only: :index do
+      collection do
+        get :bulk_accession_preview
+        put :bulk_accession
+      end
+    end
     resources :custom_texts
 
     resources :primer_panels, except: :destroy

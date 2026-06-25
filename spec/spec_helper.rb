@@ -39,6 +39,7 @@ require 'capybara/rspec'
 require 'selenium/webdriver'
 require 'webmock/rspec'
 require 'support/user_login'
+require 'support/visit_helper'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
@@ -51,6 +52,16 @@ require 'rspec/support/differ'
 require './features/support/capybara'
 require './lib/plate_map_generation'
 require 'pry'
+
+if ENV['RAILS_ENV'] != 'test'
+  # disabled in CI since it causes performance issues, see https://github.com/splitwise/super_diff/issues/139
+  require 'super_diff/rspec-rails'
+
+  SuperDiff.configure do |config|
+    config.diff_elision_enabled = true
+    config.diff_elision_maximum = 3
+  end
+end
 
 WebMock.disable_net_connect!(allow_localhost: true, allow: ['api.knapsackpro.com'])
 
@@ -153,6 +164,7 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
+  config.include VisitHelper, type: :feature
 
   config.around(:each, :warren) do |ex|
     Warren.handler.enable!

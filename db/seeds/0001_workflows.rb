@@ -1060,51 +1060,6 @@ CherrypickPipeline.create!(
 )
 
 ## Fluidigm Stuff
-
-shared_options = { asset_type: 'Well', target_asset_type: 'Well', initial_state: 'pending' }
-
-RequestType
-  .create!(
-    shared_options.merge(
-      key: 'pick_to_sta',
-      name: 'Pick to STA',
-      order: 1,
-      request_class_name: 'CherrypickForPulldownRequest'
-    )
-  )
-  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'Working Dilution') }
-RequestType
-  .create!(
-    shared_options.merge(
-      key: 'pick_to_sta2',
-      name: 'Pick to STA2',
-      order: 2,
-      request_class_name: 'CherrypickForPulldownRequest'
-    )
-  )
-  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'STA') }
-RequestType
-  .create!(
-    shared_options.merge(
-      key: 'pick_to_fluidigm',
-      name: 'Pick to Fluidigm',
-      order: 3,
-      request_class_name: 'CherrypickForFluidigmRequest'
-    )
-  )
-  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'STA2') }
-RequestType
-  .create!(
-    asset_type: 'Well',
-    target_asset_type: 'Well',
-    initial_state: 'pending',
-    key: 'pick_to_snp_type',
-    name: 'Pick to SNP Type',
-    order: 3,
-    request_class_name: 'CherrypickForPulldownRequest'
-  )
-  .tap { |rt| rt.acceptable_purposes << Purpose.find_by!(name: 'SNP Type') }
-
 liw = Workflow.create!(name: 'Cherrypick for Fluidigm')
 
 FluidigmTemplateTask.create!(

@@ -12,7 +12,7 @@
 <tbody>
 <% qc_reports.each do |report| %>
   <tr>
-    <td><%= report.study.name %></td>
+    <td><%= report.study&.name || 'N/A'%></td>
     <td><%= report.product.name %></td>
     <td><%= report.state.humanize %></td>
     <td><%= report.created_at.to_formatted_s(:sortable) %></td>

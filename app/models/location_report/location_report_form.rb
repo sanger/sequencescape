@@ -10,7 +10,8 @@ class LocationReport::LocationReportForm
   include ActiveModel::AttributeMethods
 
   # Attributes
-  attr_accessor :user, :report_type, :faculty_sponsor_ids, :study_id, :start_date, :end_date, :plate_purpose_ids
+  attr_accessor :user, :report_type, :faculty_sponsor_ids, :study_id, :start_date, :end_date, :retention_instructions,
+                :plate_purpose_ids
 
   attr_accessor :barcodes_text
   attr_reader :name, :location_barcode
@@ -44,7 +45,8 @@ class LocationReport::LocationReportForm
           start_date: start_date&.to_datetime,
           end_date: end_date&.to_datetime,
           plate_purpose_ids: plate_purpose_ids,
-          barcodes: barcodes
+          barcodes: barcodes,
+          retention_instructions: retention_instructions
         )
   end
 
