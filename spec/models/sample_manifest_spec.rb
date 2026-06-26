@@ -390,7 +390,7 @@ RSpec.describe SampleManifest, :sample_manifest do
           manifest = build(:sample_manifest, study: mastered_study)
           expect(manifest).not_to be_valid
           expect(manifest.errors[:study]).to include(
-            'is mastered and controlled in SAPIO and cannot have new sample manifests created.'
+            I18n.t('studies.managed_in_sapio.sample_manifest_creation_error')
           )
         end
       end
