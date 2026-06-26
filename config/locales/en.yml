@@ -128,7 +128,8 @@ en:
     managed_in_sapio:
       sapio_mastered_banner: "⚠️ This study is externally managed in SAPIO."
       warning_message_1: "⚠️ This study is managed in SAPIO and cannot be edited."
-      warning_message_2: "⚠️ Mastered in Sapio can only be updated by Integration Hub."
+      warning_message_2: "⚠️ Mastered in SAPIO can only be updated by Integration Hub."
+      sample_manifest_creation_error: "⚠️ This study is mastered in SAPIO and cannot have new sample manifests created."
 
   requests:
     comments:

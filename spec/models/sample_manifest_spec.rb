@@ -379,4 +379,35 @@ RSpec.describe SampleManifest, :sample_manifest do
       end
     end
   end
+
+  describe '#prevent_creation_with_mastered_study' do
+    let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+    let(:normal_study) { create(:study, mastered_in_sapio: false) }
+
+    context 'when sapio restrictions are enabled', :sapio_restrictions_enabled do
+      context 'and study is mastered_in_sapio' do
+        it 'prevents sample manifest creation' do
+          manifest = build(:sample_manifest, study: mastered_study)
+          expect(manifest).not_to be_valid
+          expect(manifest.errors[:study]).to include(
+            'is mastered and controlled in SAPIO and cannot have new sample manifests created.'
+          )
+        end
+      end
+
+      context 'and study is not mastered_in_sapio' do
+        it 'allows sample manifest creation' do
+          manifest = build(:sample_manifest, study: normal_study)
+          expect(manifest).to be_valid
+        end
+      end
+    end
+
+    context 'when sapio restrictions are disabled', :sapio_restrictions_disabled do
+      it 'allows sample manifest creation even for mastered studies' do
+        manifest = build(:sample_manifest, study: mastered_study)
+        expect(manifest).to be_valid
+      end
+    end
+  end
 end
