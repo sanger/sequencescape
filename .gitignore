@@ -39,6 +39,7 @@ doc/*
 .yardoc
 .yardoc/*
 app/sample_manifest_excel/doc/
+erd.pdf
 
 # Ignore generated diagrams from Mermaid
 docs/accessioning/**/*.png
