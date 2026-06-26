@@ -64,7 +64,7 @@
 
 <% if @study.mastered_in_sapio %>
   <%= alert(:warning, class: 'p-3') do %>
-    <p class="m-0"><strong>⚠️ This study is externally managed in Sapio.</strong></p>
+    <p class="m-0"><strong><%= I18n.t('studies.managed_in_sapio.sapio_mastered_banner') %></strong></p>
   <% end %>
 <% end %>
 

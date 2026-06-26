@@ -648,10 +648,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return unless will_save_change_to_mastered_in_sapio?
     return if integration_hub_request?
 
-    errors.add(:mastered_in_sapio, 'can only be updated by Integration Hub.')
+    errors.add(:base, I18n.t('studies.managed_in_sapio.warning_message_2'))
   end
 
-  # This validation prevents any updates to a study that is mastered in SAPIO 
+  # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
   def prevent_updates_when_mastered_in_sapio
     return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
@@ -665,7 +665,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     errors.add(
       :base,
-      'This study is mastered and controlled in SAPIO and cannot be edited.'
+      I18n.t('studies.managed_in_sapio.warning_message_1')
     )
   end
 

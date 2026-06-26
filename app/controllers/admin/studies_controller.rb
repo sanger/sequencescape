@@ -9,10 +9,11 @@ class Admin::StudiesController < ApplicationController
     @studies = Study.alphabetical
   end
 
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def show
     @study = Study.find(params[:id])
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = 'This study is mastered and controlled in SAPIO and cannot be edited.'
+      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
       redirect_to study_information_path(@study)
       return
     end
@@ -20,11 +21,10 @@ class Admin::StudiesController < ApplicationController
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def edit
     @request_types = RequestType.order(name: :asc)
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = 'This study is mastered and controlled in SAPIO and cannot be edited.'
+      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
       redirect_to study_information_path(@study)
       return
     end
@@ -41,7 +41,7 @@ class Admin::StudiesController < ApplicationController
   def update
     @study = Study.find(params[:id])
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = 'This study is mastered and controlled in SAPIO and cannot be updated.'
+      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
       redirect_to study_information_path(@study)
       return
     end

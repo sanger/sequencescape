@@ -125,6 +125,10 @@ en:
         no_items_available: "There are no %{label} registered for this workflow."
       assets:
         no_assets_available: "There are no %{label} registered for this workflow."
+    managed_in_sapio:
+      sapio_mastered_banner: "⚠️ This study is externally managed in SAPIO."
+      warning_message_1: "⚠️ This study is managed in SAPIO and cannot be edited."
+      warning_message_2: "⚠️ Mastered in Sapio can only be updated by Integration Hub."
 
   requests:
     comments:
