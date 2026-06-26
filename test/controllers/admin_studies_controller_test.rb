@@ -78,7 +78,7 @@ module Admin
             should redirect_to('study information page') { study_information_path(@study) }
 
             should 'display error flash' do
-              assert_equal 'This study is mastered and controlled in SAPIO and cannot be updated.', flash[:error]
+              assert_equal I18n.t('studies.managed_in_sapio.warning_message_1'), flash[:error]
             end
           end
 
