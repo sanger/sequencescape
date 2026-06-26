@@ -95,7 +95,7 @@ RSpec.describe StudiesController do
       get :edit, session: session, params: { id: study.id }
 
       expect(response).to redirect_to(study_information_path(study))
-      expect(flash[:error]).to eq('This study is mastered and controlled in SAPIO and cannot be edited.')
+      expect(flash[:error]).to eq(I18n.t('studies.managed_in_sapio.warning_message_1'))
     end
   end
 

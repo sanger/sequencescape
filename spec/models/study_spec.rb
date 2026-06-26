@@ -977,7 +977,7 @@ RSpec.describe Study do
 
         expect(study.save).to be false
         expect(study.errors[:base]).to include(
-          'This study is mastered and controlled in SAPIO and cannot be edited.'
+          I18n.t('studies.managed_in_sapio.warning_message_1')
         )
       end
     end
