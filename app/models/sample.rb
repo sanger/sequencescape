@@ -294,8 +294,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_many :wells, -> { distinct }, through: :aliquots, source: :receptacle, class_name: 'Well'
 
   has_many_events do
-    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_sample!)
-    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_sample!)
+    event_constructor(:created_using_sample_manifest!, Event::SampleManifestEvent, :created_using_sample_manifest!)
+    event_constructor(:updated_using_sample_manifest!, Event::SampleManifestEvent, :updated_using_sample_manifest!)
     event_constructor(:updated_sample_metadata!, Event::SampleMetadataEvent, :updated_sample_metadata!)
     # Add events defined in the included SampleAccessioning module
     SampleAccessioning::EVENTS.each do |model_event_name, event_class, event_class_method|
@@ -468,7 +468,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def handle_update_event(user)
-    events.updated_using_sample_manifest!(user)
+    events.updated_using_sample_manifest!(sample_manifest, user)
   end
 
   def sample_reference_genome
@@ -529,6 +529,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     changes = sample_metadata.saved_changes.except('updated_at')
     return if changes.empty?
 
+    # current_user is available when editing the sample directly, but not when uploading manifests
     events.updated_sample_metadata!(changes, current_user)
   end
 
