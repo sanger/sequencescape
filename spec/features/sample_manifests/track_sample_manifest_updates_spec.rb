@@ -4,8 +4,6 @@ require 'rails_helper'
 require 'timecop'
 
 describe 'track SampleManifest updates', :sample_manifest do
-  include FetchTable
-
   def load_manifest_spec
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -41,10 +39,9 @@ describe 'track SampleManifest updates', :sample_manifest do
 
     Delayed::Worker.new.work_off
 
-    samples =
-      sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
-        sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
-      end
+    sample_manifest.sample_manifest_assets.each_with_index do |sample_manifest_asset, index|
+      sample_manifest_asset.update(sanger_sample_id: "sample_#{index}")
+    end
 
     visit('/sdb/')
     click_on 'View all manifests'
@@ -62,7 +59,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     visit(history_sample_path(sample_1))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Gender: Not specified → Male' \
        'Country of origin: Not specified → United Kingdom' \
@@ -77,7 +74,7 @@ describe 'track SampleManifest updates', :sample_manifest do
        'Supplier name: Not specified → aaaa' \
        'Donor: Not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john']
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
     ]
 
     expect(fetch_table('table#events')).to eq(table)
@@ -100,7 +97,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     visit(history_sample_path(sample_1))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Gender: Not specified → Male' \
        'Country of origin: Not specified → United Kingdom' \
@@ -115,7 +112,7 @@ describe 'track SampleManifest updates', :sample_manifest do
        'Supplier name: Not specified → aaaa' \
        'Donor: Not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john']
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
     ]
     expect(fetch_table('table#events')).to eq(table)
 
@@ -124,7 +121,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     visit(history_sample_path(sample_7))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Gender: Not specified → Male' \
        'Country of origin: Not specified → United Kingdom' \
@@ -138,7 +135,7 @@ describe 'track SampleManifest updates', :sample_manifest do
        'Concentration: Not specified → 20' \
        'Supplier name: Not specified → xxxx',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane']
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
     expect(fetch_table('table#events')).to eq(table)
 
@@ -158,7 +155,7 @@ describe 'track SampleManifest updates', :sample_manifest do
     visit(history_sample_path(sample_1))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Gender: Not specified → Male' \
        'Country of origin: Not specified → United Kingdom' \
@@ -173,13 +170,13 @@ describe 'track SampleManifest updates', :sample_manifest do
        'Supplier name: Not specified → aaaa' \
        'Donor: Not specified → 12345',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Volume: 10 → 15' \
        'Date of sample collection: 2022-12-12 → 2022-12-01' \
        'Supplier name: aaaa → aaaa_updated',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane']
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
     expect(fetch_table('table#events')).to eq(table)
 
@@ -187,7 +184,7 @@ describe 'track SampleManifest updates', :sample_manifest do
 
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
        'Gender: Not specified → Male' \
        'Country of origin: Not specified → United Kingdom' \
@@ -201,9 +198,9 @@ describe 'track SampleManifest updates', :sample_manifest do
        'Concentration: Not specified → 20' \
        'Supplier name: Not specified → xxxx',
        'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane'],
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane'],
       ['Updated sample metadata', 'Volume: 10 → 15', 'Monday 12 July, 2010 10:25', ''],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane']
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
 
     expect(fetch_table('table#events')).to eq(table)
@@ -211,10 +208,10 @@ describe 'track SampleManifest updates', :sample_manifest do
     visit(history_labware_path(asset))
     table = [
       ['Message', 'Content', 'Created at', 'Created by'],
-      ['Created by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'john'],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane'],
-      ['Updated by Sample Manifest', '2010-07-12', 'Monday 12 July, 2010 10:25', 'jane']
+      ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane'],
+      ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
     expect(fetch_table('table#events')).to eq(table)
   end
