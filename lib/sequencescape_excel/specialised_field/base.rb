@@ -26,6 +26,11 @@ module SequencescapeExcel
 
       def link(_other_fields)
       end
+
+      # Returns the class name of the specialised field as an underscored string.
+      def name
+        self.class.name.demodulize.underscore
+      end
     end
   end
 end
