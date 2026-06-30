@@ -91,7 +91,7 @@ describe 'Sapio Studies API', with: :api_v2 do
       before do
         # Create 21 records that match our target search string
         # to trigger the boundary limit (MAX_RESULTS = 20)
-        create_list(:study, 21, name: "#{search_term} Study") # rubocop:disable FactoryBot/ExcessiveCreateList
+        21.times { |n| create(:study, name: "#{search_term} Study #{n}") }
       end
 
       it 'returns a 422 Unprocessable Content status code' do
