@@ -657,11 +657,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
     return unless mastered_in_sapio?
 
-    # allow update from Integration Hub
-    return if integration_hub_request?
-
-    # allow bypassing validation for ticket officers fixing data in console
-    return if bypass_sapio_validation
+    return if allowed_to_bypass_mastered_restriction? 
 
     errors.add(
       :base,
@@ -671,6 +667,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   def integration_hub_request?
     Current.api_application&.name == 'Integration Hub'
+  end
+
+  def allowed_to_bypass_mastered_restriction?
+    # allow update from Integration Hub request OR 
+    # for ticket officers fixing data in console by setting bypass_sapio_validation flag is true
+    integration_hub_request? || bypass_sapio_validation
   end
 
   def valid_ethically_approved?

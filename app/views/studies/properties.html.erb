@@ -4,7 +4,7 @@
 <% if can?(:edit, @study) && !@study.mastered_in_sapio %>
   <% add :menu, "Edit" => edit_study_path(@study) -%>
 <% end %>
-<% if can? :administer, @study %>
+<% if can?(:administer, @study) && !@study.mastered_in_sapio %>
   <% add :menu, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% end %>
 <% add :back_menu, I18n.t("navigation.menu.back_to_study") => study_path(@study) -%>
