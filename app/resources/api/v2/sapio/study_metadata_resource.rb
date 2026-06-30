@@ -303,6 +303,27 @@ module Api
         #     a preprint? (Yes or No)
         attribute :data_share_in_preprint
 
+        # Returns the associated program id.
+        #
+        # @return [String, nil] The program id, or nil if no program is set.
+        def program_id
+          @model.program&.id
+        end
+
+        # Returns the associated program name.
+        #
+        # @return [String, nil] The program name, or nil if no program is set.
+        def program_name
+          @model.program&.name
+        end
+
+        # Returns the associated study type id.
+        #
+        # @return [String, nil] The study type id, or nil if no study type is set.
+        def study_type_id
+          @model.study_type&.id
+        end
+
         # Returns the associated study type name.
         #
         # @return [String, nil] The study type name, or nil if no study type is set.
@@ -310,11 +331,25 @@ module Api
           @model.study_type&.name
         end
 
+        # Returns the associated data release study type id.
+        #
+        # @return [String, nil] The data release study type id, or nil if no data release study type is set.
+        def data_release_study_type_id
+          @model.data_release_study_type&.id
+        end
+
         # Returns the associated data release study type name.
         #
         # @return [String, nil] The data release study type name, or nil if no data release study type is set.
         def data_release_study_type_name
           @model.data_release_study_type&.name
+        end
+
+        # Returns the associated reference genome id.
+        #
+        # @return [String, nil] The reference genome id, or nil if no reference genome is set.
+        def reference_genome_id
+          @model.reference_genome&.id
         end
 
         # Returns the associated reference genome name.
