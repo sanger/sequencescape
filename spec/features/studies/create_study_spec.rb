@@ -6,6 +6,8 @@ describe 'Create a study' do
   let(:user) { create(:admin) }
 
   before do
+    Flipper.enable(:y26_192_prevent_ui_study_creation, false)
+
     create(:faculty_sponsor, name: 'Jack Sponsor')
     create(:data_release_study_type, name: 'genomic sequencing')
     create(:study_type)
