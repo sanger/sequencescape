@@ -43,7 +43,11 @@ a organisation of 900 people.
   - [Vite](#vite)
     - [Delayed job](#delayed-job)
   - [Message broker](#message-broker)
+  - [Credentials](#credentials)
 - [Testing](#testing)
+  - [Rails](#rails)
+    - [Rspec feature tests with javascript](#rspec-feature-tests-with-javascript)
+  - [Javascript](#javascript)
 - [Linting and formatting](#linting-and-formatting)
 - [Rake tasks](#rake-tasks)
 - [Feature flags](#feature-flags)
@@ -59,9 +63,12 @@ a organisation of 900 people.
     - [MySQL errors when installing](#mysql-errors-when-installing)
     - [MySQL errors after system updates](#mysql-errors-after-system-updates)
     - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
+    - [Cucumber / RSpec feature chromedriver issues](#cucumber--rspec-feature-chromedriver-issues)
   - [API V2 Authentication](#api-v2-authentication)
+    - [Documentation](#documentation-1)
   - [Publishing AMQP Messages](#publishing-amqp-messages)
   - [CI](#ci)
+    - [Chromedriver issues](#chromedriver-issues)
   - [ERD](#erd)
   - [Updating the table of contents](#updating-the-table-of-contents)
 
@@ -311,11 +318,27 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
    bundle exec cucumber
    ```
 
-For a single file:
+   For a single file:
 
-```shell
-bundle exec cucumber features/create_plates.feature
+   ```shell
+   bundle exec cucumber features/create_plates.feature
+   ```
+
+#### Rspec feature tests with javascript
+
+Where feature tests require javascript, these must be specifically tagged with `:js` to enable the Capybara javascript driver.
+
+Example:
+
+```rb
+describe 'Test all the things', :js do
+  it 'successfully runs javascript' do
+    # ...
+  end
+end
 ```
+
+This can also affect page loading times as well as the parsing of `.text` results, resulting in changes to capitalisation and whitespace.
 
 ### Javascript
 
