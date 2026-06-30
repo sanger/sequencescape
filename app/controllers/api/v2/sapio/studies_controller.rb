@@ -17,6 +17,7 @@ module Api
         def index
           return render_feature_flag_disabled if feature_flag_disabled?
           return render_missing_search_parameter if search_query_missing?
+          # XXX: Move the following to resource layer
           return render_result_set_too_large(matching_studies_count) if matching_studies_count > MAX_RESULTS
 
           super
@@ -51,14 +52,14 @@ module Api
         #
         # @return [void]
         def render_feature_flag_disabled
-          render_jsonapi_errors(
+          render_errors(
             [
-              {
+              JSONAPI::Error.new(
                 status: :not_found,
-                code: 'FEATURE_DISABLED',
                 title: 'Not Found',
+                code: 'FEATURE_DISABLED',
                 detail: 'This endpoint is not currently available.'
-              }
+              )
             ]
           )
         end
@@ -67,15 +68,15 @@ module Api
         #
         # @return [void]
         def render_missing_search_parameter
-          render_jsonapi_errors(
+          render_errors(
             [
-              {
+              JSONAPI::Error.new(
                 status: :bad_request,
-                code: 'MISSING_SEARCH_PARAMETER',
                 title: 'Missing Search Parameter',
+                code: 'MISSING_SEARCH_PARAMETER',
                 detail: 'Listing all resources is disabled. You must provide a "name" search parameter.',
                 source: { parameter: 'filter[name]' }
-              }
+              )
             ]
           )
         end
@@ -87,68 +88,17 @@ module Api
         def render_result_set_too_large(count)
           detail_message = "Your search matched at least #{count} studies. " \
                            'Please refine your query to return 20 or fewer results.'
-          render_jsonapi_errors(
+
+          render_errors(
             [
-              {
+              JSONAPI::Error.new(
                 status: :unprocessable_entity,
-                code: 'RESULT_SET_TOO_LARGE',
                 title: 'Result set too large',
+                code: 'RESULT_SET_TOO_LARGE',
                 detail: detail_message
-              }
+              )
             ]
           )
-        end
-
-        # Renders multiple JSON:API error payloads in a single document collection.
-        # If a header status is not provided, it infers it from the first error's status.
-        #
-        # @param errors_array [Array<Hash>] collection of error specification hashes
-        # @param status [Symbol, Integer, nil] the HTTP response header status
-        #
-        # @note Each hash in the +errors_array+ accepts the following options:
-        # @option errors_array [Symbol, Integer, String] :status (nil) error-specific status override
-        # @option errors_array [String, Symbol] :code an application-specific code identifier
-        # @option errors_array [String] :title a short summary description of the problem
-        # @option errors_array [String] :detail a contextual human-readable explanation
-        # @option errors_array [Hash] :source (nil) reference parameters or JSON pointers to error origins
-        #
-        # @see https://jsonapi.org/format/#error-objects for JSON:API error object specification
-        # @return [void]
-        def render_jsonapi_errors(errors_array, status: nil)
-          resolved_status = status || errors_array.first&.[](:status) || :unprocessable_entity
-          fallback_code = numeric_status_for(resolved_status)
-
-          formatted_errors = errors_array.map do |error|
-            serialize_jsonapi_error(error, fallback_code)
-          end
-
-          render status: resolved_status, json: { errors: formatted_errors }
-        end
-
-        # Maps an internal error hash into standard JSON:API formatting structures.
-        #
-        # @param error [Hash] individual validation metadata attributes
-        # @param fallback_code [String] status identifier used if error is missing explicit code
-        # @return [Hash]
-        def serialize_jsonapi_error(error, fallback_code)
-          status_code = error[:status] ? numeric_status_for(error[:status]) : fallback_code
-
-          {
-            status: status_code,
-            code: error[:code].to_s.upcase,
-            title: error[:title],
-            detail: error[:detail]
-          }.tap do |hash|
-            hash[:source] = error[:source] if error[:source].present?
-          end
-        end
-
-        # Converts a status symbol into its corresponding numeric string.
-        #
-        # @param status [Symbol, Integer, String] target error code identifier
-        # @return [String]
-        def numeric_status_for(status)
-          Rack::Utils::SYMBOL_TO_STATUS_CODE[status]&.to_s || status.to_s
         end
 
         # Counts matching elements up to safety boundary, i.e. +MAX_RESULTS + 1+.
