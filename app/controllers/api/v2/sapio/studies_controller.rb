@@ -90,7 +90,7 @@ module Api
           render_jsonapi_errors(
             [
               {
-                status: :unprocessable_content,
+                status: :unprocessable_entity,
                 code: 'RESULT_SET_TOO_LARGE',
                 title: 'Result set too large',
                 detail: detail_message
@@ -115,7 +115,7 @@ module Api
         # @see https://jsonapi.org/format/#error-objects for JSON:API error object specification
         # @return [void]
         def render_jsonapi_errors(errors_array, status: nil)
-          resolved_status = status || errors_array.first&.[](:status) || :unprocessable_content
+          resolved_status = status || errors_array.first&.[](:status) || :unprocessable_entity
           fallback_code = numeric_status_for(resolved_status)
 
           formatted_errors = errors_array.map do |error|
