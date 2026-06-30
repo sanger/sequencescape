@@ -5,9 +5,8 @@ module Api
     module Sapio
       # Sapio-specific Study resource for Integration Hub consumers.
       #
-      # @note The reference genome association on the studies are not correct.
-      #   Use the reference_genome_id column in the study_metadata table instead.
-      #
+      # @note The reference_genome relationship on studies is not accurate.
+      #   Use the reference_genome relationship on study_metadata instead.
       class StudyResource < Api::V2::BaseResource
         # @!attribute [r] name
         #   @return [String] The name of the study.
