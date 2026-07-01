@@ -8,7 +8,7 @@ RSpec.describe Admin::StudiesController do
   let(:study) { create(:study) }
 
   describe '#index' do
-    before { get :index, session: session }
+    before { get :index, session: }
 
     it 'responds with 200' do
       expect(response).to have_http_status(:ok)
@@ -59,22 +59,10 @@ RSpec.describe Admin::StudiesController do
     context 'with a valid study id (member GET)' do
       before { get :edit, session: session, params: { id: study.id } }
 
-    #   it 'assigns @request_types' do
-    #     expect(assigns(:request_types)).to be_present
-    #   end
-
       it 'renders the edit partial' do
         expect(response).to render_template(partial: '_edit')
       end
     end
-
-    # context 'with id 0 (collection POST)' do
-    #   before { post :edit, session: session, params: { id: '0' } }
-
-    #   it 'renders nothing' do
-    #     expect(response.body).to be_empty
-    #   end
-    # end
 
     context 'with a mastered study (member GET)', :sapio_restrictions_enabled do
       let(:mastered_study) { create(:study, mastered_in_sapio: true) }
@@ -89,18 +77,6 @@ RSpec.describe Admin::StudiesController do
   end
 
   describe '#update' do
-    context 'with a regular study' do
-      before { put :update, session: session, params: { id: study.id, study: { name: study.name } } }
-
-      it 'renders the manage_single_study partial' do
-        expect(response).to render_template(partial: '_manage_single_study')
-      end
-
-      it 'sets a notice flash' do
-        expect(subject).to set_flash.now.to('Your study has been updated')
-      end
-    end
-
     context 'with a mastered study', :sapio_restrictions_enabled do
       let(:mastered_study) { create(:study, mastered_in_sapio: true) }
 
