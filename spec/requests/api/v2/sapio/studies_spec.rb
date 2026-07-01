@@ -65,9 +65,9 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         expect(error).to include(
           'status' => '400',
-          'code' => 'MISSING_SEARCH_PARAMETER',
+          'code' => 'MISSING_SEARCH_PARAM',
           'title' => 'Missing Search Parameter',
-          'detail' => 'Listing all resources is disabled. You must provide a "name" search parameter.'
+          'detail' => 'The required search parameter is missing or blank.'
         )
         expect(error.dig('source', 'parameter')).to eq('filter[name]')
       end
@@ -112,9 +112,9 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(json['errors'].first).to include(
           'status' => '422',
           'code' => 'RESULT_SET_TOO_LARGE',
-          'title' => 'Result set too large',
-          'detail' => 'Your search matched at least 21 studies. ' \
-                      'Please refine your query to return 20 or fewer results.'
+          'title' => 'Result Set Too Large',
+          'detail' => 'Your search matched too many results. ' \
+                      'Please refine your query to return fewer results.'
         )
       end
 
@@ -124,12 +124,8 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         api_get "#{base_endpoint}?filter[name]=#{search_term}"
 
-        # Confirms that even though 21 matching items exist, the calculation
-        # stops searching after hitting the (MAX_RESULTS + 1) safety boundary
-        #
-        # XXX: We aimed querying once. This needs redesigning and doing it only
-        # in resource.
-        expect(Study).to have_received(:all).twice
+        # Stops processing after hitting the (MAX_RESULTS + 1) safety boundary
+        expect(Study).to have_received(:all).once
       end
     end
   end
