@@ -23,14 +23,14 @@ class Admin::StudiesController < ApplicationController
 
   def edit
     @request_types = RequestType.order(name: :asc)
-    if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
-      redirect_to study_information_path(@study)
-      return
-    end
 
     if params[:id] != '0'
       @study = Study.find(params[:id])
+      if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
+        flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+        redirect_to study_information_path(@study)
+        return
+      end
       flash.now[:warning] = @study.warnings if @study.warnings.present?
       render partial: 'edit', locals: { study: @study }
     else
