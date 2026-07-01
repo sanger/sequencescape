@@ -19,9 +19,10 @@ module Api::V2::Sapio::Errors
       [
         JSONAPI::Error.new(
           status: :bad_request,
-          title: 'Bad Request',
+          title: 'Missing Search Parameter',
           code: 'MISSING_SEARCH_PARAM',
-          detail: 'The required search parameter is missing or blank.'
+          detail: 'The required search parameter is missing or blank.',
+          source: { parameter: 'filter[name]' }
         )
       ]
     end
@@ -30,12 +31,12 @@ module Api::V2::Sapio::Errors
   class ResultSetTooLarge < JSONAPI::Exceptions::Error
     def errors
       detail_message =
-        'Your query matched too many results. ' \
+        'Your search matched too many results. ' \
         'Please refine your query to return fewer results.'
       [
         JSONAPI::Error.new(
-          status: :bad_request,
-          title: 'Bad Request',
+          status: :unprocessable_entity,
+          title: 'Result Set Too Large',
           code: 'RESULT_SET_TOO_LARGE',
           detail: detail_message
         )
