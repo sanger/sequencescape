@@ -7,7 +7,16 @@ module Api
       #
       # @note The reference_genome relationship on studies is not accurate.
       #   Use the reference_genome relationship on study_metadata instead.
+      #
+      # @note It does not subclass Api::V2::StudyResource to decouple it from
+      #   the default Study resource, which is used by other API consumers.
       class StudyResource < Api::V2::BaseResource
+        immutable # Read-only is enough for the Sapio study search story.
+        # If the number of matching studies exceeds +MAX_RESULTS+, the request
+        # should fail and return an appropriate error message indicating that
+        # the result set is too large.
+        MAX_RESULTS = 20
+
         # @!attribute [r] name
         #   @return [String] The name of the study.
         attribute :name
@@ -61,7 +70,10 @@ module Api
             query = normalize_name_filter(value)
             return records.none if query.empty?
 
-            wildcard_query?(query) ? wildcard_name_scope(records, query) : fuzzy_name_scope(records, query)
+            relation = wildcard_query?(query) ? wildcard_name_scope(records, query) : fuzzy_name_scope(records, query)
+            raise Errors::ResultSetTooLarge if relation.limit(MAX_RESULTS + 1).pluck(:id).size > MAX_RESULTS
+
+            relation
           end
 
           def normalize_name_filter(value)
