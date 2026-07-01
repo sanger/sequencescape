@@ -3367,9 +3367,9 @@ saxes@^6.0.0:
     xmlchars "^2.2.0"
 
 select2@^4.1.0-rc.0:
-  version "4.1.0-rc.0"
-  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.0-rc.0.tgz#ba3cd3901dda0155e1c0219ab41b74ba51ea22d8"
-  integrity sha512-Hr9TdhyHCZUtwznEH2CBf7967mEM0idtJ5nMtjvk3Up5tPukOLXbHUNmh10oRfeNIhj+3GD3niu+g6sVK+gK0A==
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/select2/-/select2-4.1.0.tgz#8b037e02a3c025beda07fed7f9ecc7d298036e1a"
+  integrity sha512-i9KalWOP4/LRRGc8+rj2krNm0ZqP14cV+j1TRCEBSsOhCPkKH8rYZ2MCRXcgvqIqN+llqGci0hj9aVkCMvL0+g==
 
 semver@^6.3.1:
   version "6.3.1"
