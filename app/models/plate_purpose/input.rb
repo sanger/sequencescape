@@ -18,34 +18,49 @@ class PlatePurpose::Input < PlatePurpose
   READY_STATE = 'passed'
   WELL_STATE_PRIORITY = %w[pending started passed failed cancelled].freeze
 
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def state_of(plate)
     # If there are no wells with aliquots we're pending
     ids_of_wells_with_aliquots = plate.wells.with_aliquots.ids.uniq
     return UNREADY_STATE if ids_of_wells_with_aliquots.empty?
 
-    # All of the wells with aliquots must have customer requests for us to consider the plate passed
+    # If all of the wells with aliquots have customer requests then we use the requests to determine the state
     well_requests = CustomerRequest.where(asset_id: ids_of_wells_with_aliquots)
 
     wells_states =
       well_requests.group_by(&:asset_id).values.map { |requests| calculate_state_of_well(requests.map(&:state)) }
 
-    return UNREADY_STATE unless wells_states.count == ids_of_wells_with_aliquots.count
+    # When we have a state for all of the wells with aliquots then we can calculate the state of the plate from those
+    # Handles full and partial submissions
+    if wells_states.count.positive?
+      calculate_state_of_plate(wells_states)
+    else
+      # If there are no requests, then we can either take the default_state if one is set, or we assume it is still
+      # pending.
+      # NB. default_state is a persisted value set in plate purpose configurations, stored in the plate_purposes table.
+      # NB. This is not the same as the plate.default_state method defined in Transfer::State, which is nil for input
+      # plates.
+      return default_state if default_state.present?
 
-    calculate_state_of_plate(wells_states)
+      UNREADY_STATE
+    end
   end
+
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   private
 
   def calculate_state_of_plate(wells_states)
     unique_states = wells_states.uniq
-    return UNREADY_STATE if unique_states.include?(:unready)
 
     case unique_states.sort
+    # when either all failed or a mix of failed and cancelled we set failed
     when ['failed'], %w[cancelled failed]
       'failed'
     when ['cancelled']
       'cancelled'
     else
+      # passed
       READY_STATE
     end
   end
