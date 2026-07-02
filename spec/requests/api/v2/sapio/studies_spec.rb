@@ -119,6 +119,15 @@ describe 'Sapio Studies API', with: :api_v2 do
     ]
   end
 
+  let(:user_attrs) do
+    %w[
+      uuid
+      login
+      first_name
+      last_name
+    ]
+  end
+
   before do
     # Enable the Sapio studies endpoint feature flag for tests
     Flipper.enable(:y26_170_sapio_studies_endpoint)
@@ -387,6 +396,14 @@ describe 'Sapio Studies API', with: :api_v2 do
           expect(program['attributes']).to include(*program_attrs)
         end
       end
+
+      it 'returns all attributes for included user', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=user"
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'users' }.each do |user|
+          expect(user['attributes']).to include(*user_attrs)
+        end
+      end
     end
 
     # rubocop:disable RSpec/ExampleLength
@@ -445,6 +462,15 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         json['included'].select { |item| item['type'] == 'programs' }.each do |program|
           expect(program['attributes'].keys).to contain_exactly('name', 'created_at')
+        end
+      end
+
+      it 'returns only the requested fields for included user', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=user" \
+                '&fields[users]=first_name,last_name'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'users' }.each do |user|
+          expect(user['attributes'].keys).to contain_exactly('first_name', 'last_name')
         end
       end
     end
