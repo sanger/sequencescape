@@ -266,4 +266,99 @@ describe 'Sapio Studies API', with: :api_v2 do
   #     # Should not throw an error
   #   end
   # end
+
+  describe 'POST /api/v2/sapio/studies' do
+    let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+    let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+    let(:study_name) { 'My Sapio Study' }
+    let(:payload) { { study: { name: study_name } } }
+
+    context 'when sapio mastered study restrictions feature flag is disabled' do
+      it 'returns a 404 Not Found response' do
+        api_post base_endpoint, payload, headers: integration_hub_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'returns a FEATURE_DISABLED error code' do
+        api_post base_endpoint, payload, headers: integration_hub_headers
+        expect(json['errors'].first['code']).to eq('FEATURE_DISABLED')
+      end
+
+      it 'does not create a study' do
+        expect { api_post base_endpoint, payload, headers: integration_hub_headers }.not_to change(Study, :count)
+      end
+    end
+
+    context 'when sapio mastered study restrictions feature flag is enabled', :sapio_restrictions_enabled do
+      context 'when the request is from Integration Hub' do
+        it 'returns 201 Created' do
+          api_post base_endpoint, payload, headers: integration_hub_headers
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'creates a new study record' do
+          expect { api_post base_endpoint, payload, headers: integration_hub_headers }.to change(Study, :count).by(1)
+        end
+
+        it 'sets mastered_in_sapio to true on the created study' do
+          api_post base_endpoint, payload, headers: integration_hub_headers
+          expect(Study.find_by(name: study_name).mastered_in_sapio).to be true
+        end
+
+        it 'returns the name, uuid and self link of the created study', :aggregate_failures do
+          api_post base_endpoint, payload, headers: integration_hub_headers
+          expect(json.dig('data', 'attributes', 'name')).to eq(study_name)
+          expect(json.dig('data', 'attributes', 'uuid')).to be_present
+          expect(json.dig('data', 'links', 'self')).to be_present
+        end
+
+        context 'when the study name is already taken' do
+          before { create(:study, name: study_name) }
+
+          it 'returns 422 Unprocessable Entity' do
+            api_post base_endpoint, payload, headers: integration_hub_headers
+            expect(response).to have_http_status(:unprocessable_entity)
+          end
+
+          it 'does not create a study' do
+            expect { api_post base_endpoint, payload, headers: integration_hub_headers }.not_to change(Study, :count)
+          end
+
+          it 'returns validation errors' do
+            api_post base_endpoint, payload, headers: integration_hub_headers
+            expect(json['errors']).to be_present
+          end
+        end
+
+        context 'when the study name is blank' do
+          let(:study_name) { '' }
+
+          it 'returns 422 Unprocessable Entity' do
+            api_post base_endpoint, payload, headers: integration_hub_headers
+            expect(response).to have_http_status(:unprocessable_entity)
+          end
+
+          it 'does not create a study' do
+            expect { api_post base_endpoint, payload, headers: integration_hub_headers }.not_to change(Study, :count)
+          end
+        end
+      end
+
+      context 'when the request is not from Integration Hub' do
+        it 'returns 422 Unprocessable Entity' do
+          api_post base_endpoint, payload
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'does not create a study' do
+          expect { api_post base_endpoint, payload }.not_to change(Study, :count)
+        end
+
+        it 'returns the mastered_in_sapio validation error message' do
+          api_post base_endpoint, payload
+          expect(json['errors']).to include(I18n.t('studies.managed_in_sapio.warning_message_2'))
+        end
+      end
+    end
+  end
 end

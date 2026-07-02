@@ -7,6 +7,7 @@ module Api
       # This endpoint is feature-flagged and returns a limited result set (max 20 studies).
       class StudiesController < JSONAPI::ResourceController
         include Concerns::ApiKeyAuthenticatable
+        include Api::V2::Concerns::ApiKeyAuthenticatable
 
         # The maximum allowed results for a single index query.
         MAX_RESULTS = 20
@@ -30,13 +31,48 @@ module Api
           super
         end
 
+        def create
+          return render_feature_flag_disabled if sapio_mastered_study_restrictions_disabled?
+
+          study = Study.new(study_params)
+          study.mastered_in_sapio = true
+          study.lazy_metadata = true
+
+          if study.save
+            render json: {
+              data: {
+                attributes: {
+                  uuid: study.uuid,
+                  name: study.name
+                },
+                links: {
+                  self: api_v2_sapio_study_url(study)
+                }
+              }
+            }, status: :created
+          else
+            render json: { errors: study.errors.full_messages }, status: :unprocessable_entity
+          end
+        end
+
         private
+
+        def study_params
+          params.expect(study: [:name])
+        end
 
         # Checks whether the Sapio studies endpoint feature flag is inactive.
         #
         # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is disabled
         def feature_flag_disabled?
           !Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        end
+
+        # Checks whether the Sapio mastered study restrictions feature flag is inactive.
+        #
+        # @return [Boolean] true if the +:y26_171_enable_sapio_mastered_study_restrictions+ flag is disabled
+        def sapio_mastered_study_restrictions_disabled?
+          !Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is absent or blank.

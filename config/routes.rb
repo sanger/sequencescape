@@ -128,6 +128,7 @@ Rails.application.routes.draw do
 
       namespace :sapio do
         resources :studies, only: %i[index show]
+        resources :studies, only: [:create]
       end
     end
   end
