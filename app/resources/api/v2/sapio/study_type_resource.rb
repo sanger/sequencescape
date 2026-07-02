@@ -5,6 +5,11 @@ module Api
     module Sapio
       class StudyTypeResource < Api::V2::BaseResource
         immutable
+
+        ##
+        # Attributes
+        #
+
         # @!attribute [r] name
         #   @return [String, nil] Study type name.
         attribute :name
