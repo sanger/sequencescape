@@ -4,6 +4,34 @@ module Api
   module V2
     module Sapio
       class StudyMetadataResource < Api::V2::StudyMetadataResource
+        ##
+        # Relationships
+        #
+
+        # @!attribute [r] study_type
+        #   @return [StudyTypeResource, nil] The study type associated with this
+        #     study metadata.
+        has_one :study_type, class_name: 'StudyType', foreign_key_on: :self
+
+        # @!attribute [r] data_release_study_type
+        #   @return [DataReleaseStudyTypeResource, nil] The data release study
+        #     type associated with this study metadata.
+        has_one :data_release_study_type, class_name: 'DataReleaseStudyType', foreign_key_on: :self
+
+        # @!attribute [r] reference_genome
+        #   @return [ReferenceGenomeResource, nil] The reference genome
+        #     associated with this study metadata.
+        has_one :reference_genome, class_name: 'ReferenceGenome', foreign_key_on: :self
+
+        # @!attribute [r] program
+        #   @return [ProgramResource, nil] The program associated with this
+        #     study metadata.
+        has_one :program, class_name: 'Program', foreign_key_on: :self
+
+        ##
+        # Attributes
+        #
+
         # @!attribute [r] old_sac_sponsor
         #   @return [String, nil] Legacy SAC sponsor value.
         #   @example Jane Doe
@@ -127,11 +155,6 @@ module Api
         #   @return [Boolean, nil] Alignments in BAM.
         attribute :bam
 
-        # @!attribute [r] study_type
-        #   @return [StudyTypeResource, nil] The study type associated with this
-        #     study metadata.
-        has_one :study_type, class_name: 'StudyType', foreign_key_on: :self
-
         # @!attribute [r] study_type_id
         #   @return [Integer, nil] Study Type.
         #   @note Exposing it as an attribute is for convenience.
@@ -143,11 +166,6 @@ module Api
         #   @example 'Whole Genome Sequencing'
         attribute :study_type_name
 
-        # @!attribute [r] data_release_study_type
-        #   @return [DataReleaseStudyTypeResource, nil] The data release study
-        #     type associated with this study metadata.
-        has_one :data_release_study_type, class_name: 'DataReleaseStudyType', foreign_key_on: :self
-
         # @!attribute [r] data_release_study_type_id
         #   @return [Integer, nil] What sort of study is this?
         #   @note Exposing it as an attribute is for convenience.
@@ -158,11 +176,6 @@ module Api
         #   @note Exposing it as an attribute is for convenience.
         #   @example 'genotyping or cytogenetics'
         attribute :data_release_study_type_name
-
-        # @!attribute [r] reference_genome
-        #   @return [ReferenceGenomeResource, nil] The reference genome
-        #     associated with this study metadata.
-        has_one :reference_genome, class_name: 'ReferenceGenome', foreign_key_on: :self
 
         # @!attribute [r] reference_genome_id
         #   @return [Integer, nil] Reference genome.
@@ -241,11 +254,6 @@ module Api
         #   @return [String, nil] Prelim ID.
         #   @example 'G1234'
         attribute :prelim_id
-
-        # @!attribute [r] program
-        #   @return [ProgramResource, nil] The program associated with this
-        #     study metadata.
-        has_one :program, class_name: 'Program', foreign_key_on: :self
 
         # @!attribute [r] program_id
         #   @return [Integer, nil] Program.
