@@ -6,6 +6,119 @@ require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 describe 'Sapio Studies API', with: :api_v2 do
   let(:base_endpoint) { '/api/v2/sapio/studies' }
 
+  let(:study_attrs) do
+    %w[
+      name
+      uuid
+      created_at
+      updated_at
+      blocked
+      state
+      ethically_approved
+      enforce_data_release
+      enforce_accessioning
+    ]
+  end
+
+  let(:study_metadata_attrs) do
+    %w[
+      old_sac_sponsor
+      study_description
+      contaminated_human_dna
+      study_project_id
+      study_abstract
+      study_study_title
+      study_ebi_accession_number
+      study_sra_hold
+      contains_human_dna
+      study_name_abbreviation
+      reference_genome_old
+      data_release_strategy
+      data_release_standard_agreement
+      data_release_timing
+      data_release_delay_reason
+      data_release_delay_other_comment
+      data_release_delay_period
+      data_release_delay_approval
+      data_release_delay_reason_comment
+      data_release_prevention_reason
+      data_release_prevention_approval
+      data_release_prevention_reason_comment
+      snp_study_id
+      snp_parent_study_id
+      bam
+      study_type_id
+      study_type_name
+      data_release_study_type_id
+      data_release_study_type_name
+      reference_genome_id
+      reference_genome_name
+      array_express_accession_number
+      dac_policy
+      ega_policy_accession_number
+      ega_dac_accession_number
+      commercially_available
+      number_of_gigabases_per_sample
+      hmdmc_approval_number
+      created_at
+      updated_at
+      remove_x_and_autosomes
+      dac_policy_title
+      separate_y_chromosome_data
+      data_access_group
+      prelim_id
+      program_id
+      program_name
+      s3_email_list
+      data_deletion_period
+      contaminated_human_data_access_group
+      data_release_prevention_other_comment
+      ebi_library_strategy
+      ebi_library_source
+      ebi_library_selection
+      data_release_timing_publication_comment
+      data_share_in_preprint
+    ]
+  end
+
+  let(:study_type_attrs) do
+    %w[
+      name
+      valid_type
+      created_at
+      updated_at
+      valid_for_creation
+    ]
+  end
+
+  let(:data_release_study_type_attrs) do
+    %w[
+      name
+      created_at
+      updated_at
+      for_array_express
+      is_default
+      is_assay_type
+    ]
+  end
+
+  let(:reference_genome_attrs) do
+    %w[
+      name
+      uuid
+      created_at
+      updated_at
+    ]
+  end
+
+  let(:program_attrs) do
+    %w[
+      name
+      created_at
+      updated_at
+    ]
+  end
+
   before do
     # Enable the Sapio studies endpoint feature flag for tests
     Flipper.enable(:y26_170_sapio_studies_endpoint)
@@ -208,6 +321,71 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         names = json['data'].map { |d| d['attributes']['name'] }
         expect(names).not_to include('Non-matching Study')
+      end
+    end
+
+    context 'without sparse fields' do
+      before do
+        create(:study, name: 'Study A')
+      end
+
+      it 'returns all attributes for study', :aggregate_failures do
+        # NOTE: Any `*` or `?` outside quoted tokens activates wildcard search.
+        #       `Study*` means "Study" followed by any characters.
+        api_get "#{base_endpoint}?filter[name]=Study*"
+        expect(response).to have_http_status(:success)
+        json['data'].each do |study|
+          expect(study['attributes']).to include(*study_attrs)
+        end
+      end
+
+      it 'returns all attributes for included study_metadata', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata"
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'study_metadata' }.each do |study_metadata|
+          expect(study_metadata['attributes']).to include(*study_metadata_attrs)
+        end
+      end
+
+      it 'returns all attributes for included study_metadata.study_type', :aggregate_failures do
+        # NOTE: The include dot notation includes all intermediate study_metadata segments as well.
+        # NOTE: The study_type include is singular because it is a has_one relationship.
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.study_type"
+        expect(response).to have_http_status(:success)
+        # NOTE: type is pluralized in the JSON:API response.
+        json['included'].select { |item| item['type'] == 'study_types' }.each do |study_type|
+          expect(study_type['attributes']).to include(*study_type_attrs)
+        end
+      end
+
+      # rubocop:disable RSpec/ExampleLength
+      it 'returns all attributes for included study_metadata.data_release_study_type', :aggregate_failures do
+        # NOTE: More includes can be added, separated by commas.
+        api_get "#{base_endpoint}?filter[name]=Study*" \
+                '&include=study_metadata.data_release_study_type,study_metadata.study_type'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'data_release_study_types' }.each do |data_release_study_type|
+          expect(data_release_study_type['attributes']).to include(*data_release_study_type_attrs)
+        end
+      end
+      # rubocop:enable RSpec/ExampleLength
+
+      it 'returns all attributes for included study_metadata.reference_genome', :aggregate_failures do
+        # NOTE: reference_genome_name attribute is available on study_metadata as well, for convenience.
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.reference_genome"
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'reference_genomes' }.each do |reference_genome|
+          expect(reference_genome['attributes']).to include(*reference_genome_attrs)
+        end
+      end
+
+      it 'returns all attributes for included study_metadata.program', :aggregate_failures do
+        # NOTE: program_name attribute is available on study_metadata as well, for convenience.
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.program"
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'programs' }.each do |program|
+          expect(program['attributes']).to include(*program_attrs)
+        end
       end
     end
   end
