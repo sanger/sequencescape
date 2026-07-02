@@ -92,7 +92,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         21.times { |n| create(:study, name: "#{search_term} Study #{n}") }
       end
 
-      it 'returns a 422 Unprocessable Content status code' do
+      it 'returns a 422 Unprocessable Entity status code' do
         api_get "#{base_endpoint}?filter[name]=#{search_term}"
         expect(response).to have_http_status(:unprocessable_entity)
       end
@@ -126,6 +126,50 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         # Stops processing after hitting the (MAX_RESULTS + 1) safety boundary
         expect(Study).to have_received(:all).once
+      end
+    end
+
+    context 'when maxResults custom query parameter is supplied' do
+      let(:search_term) { 'FuzzyMatch' }
+
+      before do
+        25.times { |n| create(:study, name: "#{search_term} Study #{n}") }
+      end
+
+      it 'overrides the default maximum result limit', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=25"
+
+        expect(response).to have_http_status(:ok)
+        expect(json['data'].size).to eq(25)
+      end
+
+      it 'ignores non-positive maxResults values', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=0"
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
+      end
+
+      it 'ignores negative maxResults values', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=-5"
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
+      end
+
+      it 'ignores non-integer maxResults values', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=abc"
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
+      end
+
+      it 'ignores maxResults values exceeding the upper limit', :aggregate_failures do
+        # See Api::V2::Sapio::StudiesController::RESULTS_RANGE -> 1..1000
+        api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=2000"
+
+        expect(response).to have_http_status(:unprocessable_entity)
+        expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
     end
   end
