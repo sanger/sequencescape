@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
+ActiveRecord::Schema[8.0].define(version: 2026_06_12_120000) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1527,6 +1527,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
     t.boolean "enforce_data_release", default: true
     t.boolean "enforce_accessioning", default: true
     t.integer "reference_genome_id", default: 1
+    t.boolean "mastered_in_sapio", default: false, null: false
     t.index ["ethically_approved"], name: "index_studies_on_ethically_approved"
     t.index ["state"], name: "index_studies_on_state"
     t.index ["updated_at"], name: "index_studies_on_updated_at"
