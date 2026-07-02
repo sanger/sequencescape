@@ -388,6 +388,31 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
     end
+
+    context 'with active and inactive studies' do
+      before do
+        create(:study, state: 'active', name: 'ActiveStudy')
+        create(:study, state: 'inactive', name: 'InactiveStudy')
+      end
+
+      it 'returns both active and inactive studies matching the query', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=*Study"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(2)
+        states = json['data'].map { |d| d['attributes']['state'] }
+        expect(states).to include('active', 'inactive')
+      end
+    end
+
+    context 'with no matches' do
+      before { create(:study, name: 'ExistingStudy') }
+
+      it 'returns empty data array', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=NonexistentStudy"
+        expect(response).to have_http_status(:success)
+        expect(json['data']).to eq([])
+      end
+    end
   end
 
   # context 'with exact name match' do
@@ -445,43 +470,6 @@ describe 'Sapio Studies API', with: :api_v2 do
   #   end
   # end
 
-  # context 'with active and inactive studies' do
-  #   let!(:active_study) { create(:study, state: 'active', name: 'ActiveStudy') }
-  #   let!(:inactive_study) { create(:study, state: 'inactive', name: 'InactiveStudy') }
-  #   let!(:pending_study) { create(:study, state: 'pending', name: 'PendyStudy') }
-
-  #   it 'returns both active and inactive studies matching the query' do
-  #     api_get "#{base_endpoint}?filter[name]=*Study"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(3)
-  #     states = json['data'].map { |d| d['attributes']['state'] }
-  #     expect(states).to contain_exactly('active', 'inactive', 'pending')
-  #   end
-  # end
-
-  # context 'with result set limit' do
-  #   before { create_list(:study, 25) }
-
-  #   it 'returns error when result set exceeds 20 studies' do
-  #     # Query that matches all 25 studies
-  #     api_get "#{base_endpoint}?filter[name]=*"
-  #     expect(response).to have_http_status(:unprocessable_entity)
-  #     expect(json['errors']).to be_present
-  #     expect(json['errors'][0]['title']).to eq('Result set too large')
-  #     expect(json['errors'][0]['detail']).to include('25 studies')
-  #   end
-
-  #   it 'succeeds when result set is exactly 20 studies' do
-  #     # Create exactly 20 studies with a unique prefix
-  #     20.times do |index|
-  #       create(:study, name: "ExactMatch#{index}")
-  #     end
-  #     api_get "#{base_endpoint}?filter[name]=ExactMatch*"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(20)
-  #   end
-  # end
-
   # context 'with sparse fieldsets' do
   #   let!(:study) { create(:study, name: 'FieldsetTest') }
 
@@ -498,16 +486,6 @@ describe 'Sapio Studies API', with: :api_v2 do
   #     expect(response).to have_http_status(:success)
   #     attrs = json['data'][0]['attributes']
   #     expect(attrs).to have_key('study_description')
-  #   end
-  # end
-
-  # context 'with no matches' do
-  #   before { create(:study, name: 'ExistingStudy') }
-
-  #   it 'returns empty data array' do
-  #     api_get "#{base_endpoint}?filter[name]=NonexistentStudy"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data']).to eq([])
   #   end
   # end
 
