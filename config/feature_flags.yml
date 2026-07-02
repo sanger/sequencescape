@@ -7,8 +7,6 @@ dpl_395_2_enable_advanced_search_tab: Shows the Search tab in the top navigation
 # Below is flagged off until some existing data that would violate the rule is fixed. Should be re-enabled in Y24-058.
 y24_052_enable_data_release_timing_validation: Enables server-side validation that enforces a relationship between the values of two study metadata fields
 
-y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
-
 y25_105_validate_descriptor_required_field: Enables validation of batch workflow task descriptor required field
 
 # Support for new sample sheet format for Ultima UG100
@@ -19,3 +17,9 @@ y25_706_enable_accessioning: Enables the accessioning feature in the application
 y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning
 y25_705_notify_on_external_accessioning_validation_failures: Sends exception email to developers for unexpected failures during accessioning
 y26_094_email_users_on_accessioning_failures: Sends notification email to users when accessioning fails
+
+# API
+y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
+
+# Sapio
+y26_192_prevent_ui_study_creation: Prevents users from creating studies in the UI, only allowing study creation via API

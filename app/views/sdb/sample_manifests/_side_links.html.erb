@@ -9,5 +9,7 @@
 <% add :menu, "Create supplier" => new_supplier_path %>
 <% add :menu, "View all suppliers" => suppliers_path %>
 <% add :menu, "&nbsp;" => '' -%>
-<% add :menu, "Create Study" => new_study_path() %>
+<% unless Flipper.enabled?(:y26_192_prevent_ui_study_creation) %>
+  <%= add :menu, 'Create Study' => new_study_path %>
+<% end %>
 <% add :menu, "Create Project" => new_project_path() %>

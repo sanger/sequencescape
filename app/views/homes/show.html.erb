@@ -12,7 +12,9 @@
 <!-- Internal Links -->
 <% add :menu, 'Create Submission'           => new_submission_path %>
 <% add :menu, 'Create Bulk Submission'      => bulk_submissions_path %>
-<% add :menu, 'Create Study'                => new_study_path %>
+<% unless Flipper.enabled?(:y26_192_prevent_ui_study_creation) %>
+  <%= add :menu, 'Create Study' => new_study_path %>
+<% end %>
 <% add :menu, 'Create Project'              => new_project_path %>
 <% add :menu, 'Plate Summaries'             => plate_summaries_path %>
 <% add :menu, 'Create Custom Pools'         => new_pooling_path %>

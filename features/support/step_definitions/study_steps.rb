@@ -284,6 +284,7 @@ Given /^a study named "([^"]+)" exists for array express/ do |study_name|
 end
 
 Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name, faculty_sponsor|
+  Flipper.enable(:y26_192_prevent_ui_study_creation, false)
   step('I am on the homepage')
   step('I follow "Create Study"')
   step("I fill in \"Study name\" with \"#{study_name}\"")
