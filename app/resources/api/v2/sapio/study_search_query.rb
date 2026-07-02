@@ -12,6 +12,18 @@ module Api
         MAX_RESULTS = 20
 
         class_methods do
+          # Applies a name filter to the given records based on the +filter[name]+
+          # parameter in the request context. Supports wildcard patterns using
+          # '*' and '?' characters, as well as quoted phrases for exact matches.
+          # Unquoted wildcards activate the wildcard based search, otherwise
+          # exact/partial/phonetic matching is used.
+          #
+          # @param records [ActiveRecord::Relation] The base study relation to filter.
+          # @param _value [String] Not used because JSONAPI:: Resources strips quotes.
+          #   We use the request context to get the raw filter value instead.
+          # @param options [Hash] The options hash passed to the filter method,
+          #   which contains the request context.
+          # @return [ActiveRecord::Relation] The filtered study relation.
           def apply_name_filter(records, _value, options)
             query = filter_name(options)
             return records.none if query.empty?
