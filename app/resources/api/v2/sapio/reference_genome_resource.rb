@@ -4,6 +4,11 @@ module Api
     module Sapio
       class ReferenceGenomeResource < Api::V2::BaseResource
         immutable
+
+        ##
+        # Attributes
+        #
+
         # @!attribute [r] name
         #   @return [String] The name of the reference genome.
         attribute :name
