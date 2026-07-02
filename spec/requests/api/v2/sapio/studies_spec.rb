@@ -172,6 +172,20 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
     end
+
+    context 'when study name contains UTF-8 characters' do
+      before { create(:study, name: 'Müller Café Study') }
+
+      let(:query) { Rack::Utils.build_nested_query(filter: { name: 'Café' }) }
+
+      it 'returns the matching study', :aggregate_failures do
+        api_get "#{base_endpoint}?#{query}"
+
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('Müller Café Study')
+      end
+    end
   end
 
   # context 'with exact name match' do
