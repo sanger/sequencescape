@@ -389,6 +389,67 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
 
+    # rubocop:disable RSpec/ExampleLength
+    context 'with sparse fields' do
+      before do
+        create(:study, name: 'Study A')
+      end
+
+      it 'returns only the requested fields for study', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&fields[studies]=name,uuid"
+        expect(response).to have_http_status(:success)
+        json['data'].each do |study|
+          expect(study['attributes'].keys).to contain_exactly('name', 'uuid')
+        end
+      end
+
+      it 'returns only the requested fields for included study_metadata', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata" \
+                '&fields[study_metadata]=study_description,study_abstract'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'study_metadata' }.each do |study_metadata|
+          expect(study_metadata['attributes'].keys).to contain_exactly('study_description', 'study_abstract')
+        end
+      end
+
+      it 'returns only the requested fields for included study_metadata.study_type', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.study_type" \
+                '&fields[study_types]=name,valid_type'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'study_types' }.each do |study_type|
+          expect(study_type['attributes'].keys).to contain_exactly('name', 'valid_type')
+        end
+      end
+
+      it 'returns only the requested fields for included study_metadata.data_release_study_type', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.data_release_study_type" \
+                '&fields[data_release_study_types]=name,for_array_express'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'data_release_study_types' }.each do |data_release_study_type|
+          expect(data_release_study_type['attributes'].keys).to contain_exactly('name', 'for_array_express')
+        end
+      end
+
+      it 'returns only the requested fields for included study_metadata.reference_genome', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.reference_genome" \
+                '&fields[reference_genomes]=name,uuid'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'reference_genomes' }.each do |reference_genome|
+          expect(reference_genome['attributes'].keys).to contain_exactly('name', 'uuid')
+        end
+      end
+
+      it 'returns only the requested fields for included study_metadata.program', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*&include=study_metadata.program" \
+                '&fields[programs]=name,created_at'
+        expect(response).to have_http_status(:success)
+        json['included'].select { |item| item['type'] == 'programs' }.each do |program|
+          expect(program['attributes'].keys).to contain_exactly('name', 'created_at')
+        end
+      end
+    end
+    # rubocop:enable RSpec/ExampleLength
+
     context 'with active and inactive studies' do
       before do
         create(:study, state: 'active', name: 'ActiveStudy')
