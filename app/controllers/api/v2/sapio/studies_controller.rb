@@ -42,6 +42,7 @@ module Api
             render json: {
               data: {
                 attributes: {
+                  id: study.id,
                   uuid: study.uuid,
                   name: study.name
                 },
