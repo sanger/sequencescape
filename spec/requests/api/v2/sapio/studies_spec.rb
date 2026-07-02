@@ -502,6 +502,24 @@ describe 'Sapio Studies API', with: :api_v2 do
     end
   end
 
+  describe 'GET /api/v2/sapio/studies/:id' do
+    before do
+      Flipper.enable(:y26_170_sapio_studies_endpoint)
+    end
+
+    after do
+      Flipper.disable(:y26_170_sapio_studies_endpoint)
+    end
+
+    context 'when sapio studies endpoint feature flag is disabled' do
+      before { Flipper.disable(:y26_170_sapio_studies_endpoint) }
+
+      it 'returns a 404 Not Found response' do
+        api_get base_endpoint
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
   # context 'with exact name match' do
   #   let!(:study) { create(:study, name: 'ExactStudy') }
 
