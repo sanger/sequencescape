@@ -4,6 +4,11 @@ module Api
     module Sapio
       class DataReleaseStudyTypeResource < Api::V2::BaseResource
         immutable
+
+        ##
+        # Attributes
+        #
+
         # @!attribute [r] name
         #   @return [String, nil] Name of the data release study type.
         attribute :name
