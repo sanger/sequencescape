@@ -186,6 +186,30 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(json['data'][0]['attributes']['name']).to eq('Müller Café Study')
       end
     end
+
+    context 'when there are multiple matches' do
+      before do
+        create(:study, name: 'Study One')
+        create(:study, name: 'Study Two')
+        create(:study, name: 'Study Three')
+        create(:study, name: 'Non-matching Study') # by wildcard matching
+      end
+
+      it 'returns all matching studies', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(3)
+        names = json['data'].map { |d| d['attributes']['name'] }
+        expect(names).to contain_exactly('Study One', 'Study Two', 'Study Three')
+      end
+
+      it 'does not return non-matching studies', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study*"
+        expect(response).to have_http_status(:success)
+        names = json['data'].map { |d| d['attributes']['name'] }
+        expect(names).not_to include('Non-matching Study')
+      end
+    end
   end
 
   # context 'with exact name match' do
