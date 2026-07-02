@@ -15,17 +15,30 @@ module Api
 
         include Api::V2::Sapio::StudySearchQuery
 
-        ###
+        ##
         # Filters
-        ###
+        #
 
         # Override the name filter from parent to support wildcard patterns
         # Accepts patterns like "my_study*" or "my_study?"
         filter :name, apply: method(:apply_name_filter)
 
-        ###
+        ##
+        # Relationships
+        #
+
+        # @!attribute [r] study_metadata
+        #   @return [StudyMetadataResource] The metadata associated with this
+        #     study, containing additional details like faculty sponsor
+        has_one :study_metadata, class_name: 'StudyMetadata', foreign_key_on: :related
+
+        # @!attribute [r] user
+        #   @return [UserResource, nil] The user associated with this study.
+        has_one :user, class_name: 'User', foreign_key_on: :self
+
+        ##
         # Attributes
-        ###
+        #
 
         # @!attribute [r] name
         #   @return [String] The name of the study.
@@ -65,15 +78,6 @@ module Api
         # @!attribute [r] enforce_accessioning
         #   @return [Boolean] Whether accessioning enforcement is enabled.
         attribute :enforce_accessioning
-
-        # @!attribute [r] study_metadata
-        #   @return [StudyMetadataResource] The metadata associated with this
-        #     study, containing additional details like faculty sponsor
-        has_one :study_metadata, class_name: 'StudyMetadata', foreign_key_on: :related
-
-        # @!attribute [r] user
-        #   @return [UserResource, nil] The user associated with this study.
-        has_one :user, class_name: 'User', foreign_key_on: :self
       end
     end
   end
