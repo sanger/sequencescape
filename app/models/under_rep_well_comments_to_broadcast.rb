@@ -60,13 +60,13 @@ module UnderRepWellCommentsToBroadcast
 
   ##
   # Builds all `UnderRepWellComment` objects for the batch by iterating over
-  # each sequencing request and its associated lane.
+  # each batch request and its associated lane.
   # Aggregates comments across  all lanes and their ancestor plates.
   # @return [Array<UnderRepWellComment>] a flat list of comment objects.
   def under_represented_well_comments
-    requests.flat_map do |sequencing_request|
-      lane = sequencing_request.target_asset
-      uniq_comments_for_lane(lane, sequencing_request)
+    batch_requests.flat_map do |batch_request|
+      lane = batch_request.request.target_asset
+      uniq_comments_for_lane(lane, batch_request)
     end
   end
 
@@ -77,72 +77,90 @@ module UnderRepWellCommentsToBroadcast
   # (Example: Triomics pipeline LCMT DNA PCR XP and LCMT EM PCR XP plates)
   # These do not need to be tracked separately, as the wells in different plates refer to the same samples.
   # @param lane [Lane] the lane receptacle associated with the batch request
-  # @param sequencing_request [Request] the sequencing request whose position is used in the comment
+  # @param batch_request [BatchRequest] the batch request providing the position
   # @return [Array<UnderRepWellComment>] comments built for the given lane
-  def uniq_comments_for_lane(lane, sequencing_request)
-    build_comments_for_lane(lane, sequencing_request).uniq do |comment|
+  def uniq_comments_for_lane(lane, batch_request)
+    build_comments_for_lane(lane, batch_request)&.uniq do |comment|
       [comment.batch_id, comment.position, comment.tag_index,
        comment.poly_metadatum.key, comment.poly_metadatum.value]
     end
   end
 
   # Coordinates comment building for a single lane by finding all under-represented
-  # library requests in the lane's ancestor plates, then building a comment for
+  # wells in the lane's ancestor plates, then building a comment for
   # each associated poly_metadatum.
   # @param lane [Lane] the lane receptacle associated with the batch request
-  # @param sequencing_request [Request] the sequencing request whose position is used in the comment
+  # @param batch_request [BatchRequest] the batch request providing the position
   # @return [Array<UnderRepWellComment>] comments built for the given lane
-  def build_comments_for_lane(lane, sequencing_request)
-    under_rep_requests_for_lane(lane).flat_map do |library_request|
-      under_represented_poly_metadata(library_request).flat_map do |poly_meta|
-        build_comments(library_request, lane, sequencing_request, poly_meta)
+  def build_comments_for_lane(lane, batch_request)
+    under_rep_wells_for_lane(lane).flat_map do |well|
+      under_represented_poly_metadata(well).flat_map do |poly_meta|
+        build_comments(well, lane, batch_request, poly_meta)
       end
     end
   end
 
-  # Traverses the ancestor plates of a lane to find all library requests
-  # containing an `under_represented` poly_metadata entry. Covers both
-  # single-submission pipelines (e.g. WGS) and multi-submission pipelines
-  # (e.g. RNA) where sequencing and library prep belong to different submissions.
+  # Finds ancestor plates with under-represented metadata, then returns the wells
+  # in those plates that also have under-represented metadata.
+  # Should cover any case where the under-represented wells are in ancestor plates.
   #
   # @param lane [Lane] the lane whose ancestor plates are traversed
-  # @return [Array<Request>] requests containing under-represented metadata
-  def under_rep_requests_for_lane(lane)
-    lane.ancestors.grep(Plate)
-      .flat_map(&:wells)
-      .flat_map(&:requests).compact.uniq
-      .select { |r| r.poly_metadata.any? { |pol| pol.key == UNDER_REPRESENTED_KEY } }
+  # @return [Array<Well>] wells with under-represented metadata from ancestor plates
+  def under_rep_wells_for_lane(lane)
+    ancestors = lane.ancestors
+
+    # First, identify ancestor plates marked with under-represented metadata
+    under_rep_plates = ancestors.grep(Plate)
+      .select { |plate| plate.poly_metadata.any? { |pol| pol.key == UNDER_REPRESENTED_KEY } }
+
+    # If no marked plates, return empty array
+    return [] if under_rep_plates.empty?
+
+    filter_under_rep_wells_by_ancestry(under_rep_plates)
+  end
+
+  ##
+  # Filters wells from under-represented plates to include only those that
+  # have under-represented metadata.
+  #
+  # @param under_rep_plates [Array<Plate>] plates marked with under-represented metadata
+  # @return [Array<Well>] wells that are on ancestor plates and have under-represented metadata
+  def filter_under_rep_wells_by_ancestry(under_rep_plates)
+    under_rep_plates.flat_map(&:wells)
+      .select do |well|
+        well.poly_metadata.any? { |pol| pol.key == UNDER_REPRESENTED_KEY }
+      end
   end
 
   ##
   # Returns only those `PolyMetadatum` records whose key matches
   # the `UNDER_REPRESENTED_KEY` constant.
   #
-  # @param request [Request] the request whose poly_metadata to inspect
+  # @param well [Well] the well whose poly_metadata to inspect
   # @return [Array<PolyMetadatum>] filtered poly_metadata records
   #
-  def under_represented_poly_metadata(request)
-    request.poly_metadata.select { |meta| meta.key == UNDER_REPRESENTED_KEY }
+  def under_represented_poly_metadata(well)
+    well.poly_metadata.select { |meta| meta.key == UNDER_REPRESENTED_KEY }
   end
 
   ##
-  # Constructs `UnderRepWellComment` objects for a single request,
+  # Constructs `UnderRepWellComment` objects for a single well,
   # filtering only poly_metadata that correspond to under-represented wells.
   # Iterates over the well's aliquots and matches each against the lane aliquots to retrieve the correct
   # tag index and position.
   #
-  # @param library_request [Request] the library request whose target_asset well holds the aliquots
+  # @param well [Well] the well containing the aliquots
   # @param lane [Lane] the lane asset used to find matching aliquots and retrieve the tag index
-  # @param sequencing_request [Request] the sequencing request providing the lane position
+  # @param batch_request [BatchRequest] the batch request providing the position
   # @param poly_meta [PolyMetadatum] the under-represented metadata record to associate with the comment
   # @return [Array<UnderRepWellComment>] comments built for each matching aliquot
-  def build_comments(library_request, lane, sequencing_request, poly_meta)
-    library_request.target_asset.aliquots.filter_map do |aliquot|
+  def build_comments(well, lane, batch_request, poly_meta)
+    well.aliquots.filter_map do |aliquot|
       matching = find_matching_lane_aliquot(lane, aliquot)
       next unless matching
 
       UnderRepWellComment.new(
-        position: sequencing_request.batch_request.position,
+        position: batch_request.position,
         batch_id: id,
         tag_index: matching.aliquot_index_value,
         poly_metadatum: poly_meta

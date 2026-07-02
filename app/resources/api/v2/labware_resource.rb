@@ -22,10 +22,27 @@ module Api
     #       "attributes": {
     #       },
     #       "relationships": {
+    #         "poly_metadata": {
+    #           "data": [{ "type": "poly_metadata", "id": 10 }]
+    #         }
     #       }
     #     }
     #   }
     #
+    #
+    # @example PATCH request to update metadata for a Labware
+    #   PATCH /api/v2/labware/123/
+    #   {
+    #     "data": {
+    #       "type": "labware",
+    #       "id": "123",
+    #       "relationships": {
+    #         "poly_metadata": {
+    #           "data": [{ "type": "poly_metadata", "id": "456" }]
+    #         }
+    #       }
+    #     }
+    #   }
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or check out [JSONAPI::Resources](http://jsonapi-resources.com/) for Sequencescape's implementation.
@@ -36,6 +53,13 @@ module Api
       include Api::V2::SharedBehaviour::Labware
 
       default_includes :uuid_object, :barcodes
+
+      # @!attribute [r] poly_metadata
+      #   @return [PolyMetadatumResource] The associated metadata for the Labware.
+      #   @note This is a one-to-many relationship, where a Labware can have multiple pieces of metadata.
+      #   @note The `poly_metadata` must already exist in the database before it can be associated with a Labware.
+      #   @see PolyMetadatumResource
+      has_many :poly_metadata, as: :metadatable, class_name: 'PolyMetadatum'
 
       ###
       # Custom Methods
