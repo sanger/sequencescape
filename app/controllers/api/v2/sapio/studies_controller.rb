@@ -6,9 +6,6 @@ module Api
       # Provides a JSON:API endpoint for Sapio to query Studies by name pattern.
       # This endpoint is feature-flagged and returns a limited result set (max 20 studies).
       class StudiesController < JSONAPI::ResourceController
-        include Concerns::ApiKeyAuthenticatable
-
-        skip_before_action :verify_authenticity_token
         include Api::V2::Concerns::ApiKeyAuthenticatable
 
         # The maximum allowed results for a single index query.
