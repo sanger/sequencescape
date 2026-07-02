@@ -595,7 +595,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         api_get "#{base_endpoint}?filter[name]=\"Genome\" * for \"Haemophilus\" * strain?"
         expect(response).to have_http_status(:success)
         expect(json['data'].length).to eq(1)
-        expect(json['data'][0]['attributes']['name']).to eq('My Test Study')
+        expect(json['data'][0]['attributes']['name']).to eq('Genome assembly for Haemophilus influenzae strains')
       end
     end
   end
