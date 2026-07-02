@@ -201,7 +201,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
-  before_validation :set_default_ethical_approval
+  before_validation :set_default_ethical_approval, unless: :mastered_in_sapio?
   after_touch :rebroadcast
 
   aasm column: :state, whiny_persistence: true do

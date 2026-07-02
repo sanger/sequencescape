@@ -36,6 +36,7 @@ module Api
 
           study = Study.new(study_params)
           study.mastered_in_sapio = true
+          study.lazy_metadata = true
 
           if study.save
             render json: {
