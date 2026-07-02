@@ -5,11 +5,38 @@ module Api
     module Sapio
       # Sapio-specific Study resource for Integration Hub consumers.
       #
-      # @note The reference_genome relationship on studies is not accurate.
-      #   Use the reference_genome relationship on study_metadata instead.
+      # @note Access this resource via the `/api/v2/sapio/studies/` endpoint.
+      # @note For index requests, this resource supports only filtering by name,
+      # and it does not allow listing studies without a filter.
+      #
+      # @note The reference_genome relationship on studies is not accurate and
+      #  not exposed in this resource. Use the reference_genome relationship on
+      #  study_metadata instead.
       #
       # @note It does not subclass Api::V2::StudyResource to decouple it from
       #   the default Study resource, which is used by other API consumers.
+      #
+      # @example search studies by name
+      #  GET /api/v2/sapio/studies?filter[name]=Test Study
+      #
+      # @example search studies by name with wildcards or exact phrases
+      #  GET /api/v2/sapio/studies?filter[name]=*My "test and experiment" ?tudy*"Genomics"
+      #
+      # @example search studies by name and include study_metadata and study_metadata.reference_genome
+      #  GET /api/v2/sapio/studies?filter[name]=My Study&include=study_metadata.reference_genome
+      #
+      # @example search studies, include study_metadata, and specify fields
+      #  GET /api/v2/sapio/studies?filter[name]=My Study \
+      #    &include=study_metadata.reference_genome
+      #    &fields[studies]=name,uuid \
+      #    &fields[study_metadata]=study_description,study_abstract
+      #
+      # @example GET request for a specific study by ID
+      #  GET /api/v2/sapio/studies/123/
+      #
+      # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
+      # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
+      # of the JSON:API standard.
       class StudyResource < Api::V2::BaseResource
         immutable # Read-only is enough for the Sapio study search story.
 
