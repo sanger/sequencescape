@@ -322,7 +322,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(response).to have_http_status(:success)
         expect(json['data'].length).to eq(3)
         names = json['data'].map { |d| d['attributes']['name'] }
-        expect(names).to contain_exactly('Study One', 'Study Two', 'Study Three')
+        expect(names).to include('Study One', 'Study Two', 'Study Three')
       end
 
       it 'does not return non-matching studies', :aggregate_failures do
@@ -500,6 +500,91 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(json['data']).to eq([])
       end
     end
+
+    context 'with exact name match' do
+      before { create(:study, name: 'ExactStudy') }
+
+      it 'returns the matching study', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=ExactStudy"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('ExactStudy')
+      end
+
+      it 'includes uuid in the response', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=ExactStudy"
+        expect(response).to have_http_status(:success)
+
+        study = Study.find_by(name: 'ExactStudy')
+        expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
+      end
+
+      it 'includes state in the response', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=ExactStudy"
+        expect(response).to have_http_status(:success)
+
+        study = Study.find_by(name: 'ExactStudy')
+        expect(json['data'][0]['attributes']['state']).to eq(study.state)
+      end
+    end
+
+    context 'with quoted wilcard patterns' do
+      # NOTE: There are studies with * and ? in their names.
+      before { create(:study, name: 'CAS1*2*3 PER') }
+
+      it 'returns the matching study when query is quoted', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=\"CAS1*2*3 PER\""
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('CAS1*2*3 PER')
+      end
+
+      it 'returns the matching study when query is not quoted', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=CAS1*2*3 PER"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('CAS1*2*3 PER')
+      end
+    end
+
+    context 'with SQL wildcard patterns' do
+      before do
+        create(:study, name: 'MyStudy_Genomics')
+        create(:study, name: 'MyStudy_Proteomics')
+        create(:study, name: 'OtherStudy')
+      end
+
+      it 'returns matching studies with * wildcard', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=MyStudy*"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].map { |d| d['attributes']['name'] }).to include(
+          'MyStudy_Genomics', 'MyStudy_Proteomics'
+        )
+      end
+
+      it 'returns matching studies with leading SQL wildcard matched by search wildcard', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=*Genomics"
+        expect(response).to have_http_status(:success)
+
+        expect(json['data'].map { |d| d['attributes']['name'] }).to include('MyStudy_Genomics')
+      end
+    end
+
+    context 'with SQL wildcard characters in query' do
+      before { create(:study, name: 'Study_With_Underscores') }
+
+      it 'handles underscore in query', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study_With_Underscores"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+      end
+
+      it 'escapes SQL wildcards properly', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=Study?With*"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+      end
+    end
   end
 
   describe 'GET /api/v2/sapio/studies/:id' do
@@ -520,93 +605,4 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
   end
-  # context 'with exact name match' do
-  #   let!(:study) { create(:study, name: 'ExactStudy') }
-
-  #   before { create_list(:study, 3) }
-
-  #   it 'returns the matching study' do
-  #     api_get "#{base_endpoint}?filter[name]=ExactStudy"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(1)
-  #     expect(json['data'][0]['attributes']['name']).to eq('ExactStudy')
-  #   end
-
-  #   it 'includes uuid in the response' do
-  #     api_get "#{base_endpoint}?filter[name]=ExactStudy"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
-  #   end
-
-  #   it 'includes state in the response' do
-  #     api_get "#{base_endpoint}?filter[name]=ExactStudy"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'][0]['attributes']['state']).to eq('pending')
-  #   end
-
-  #   it 'flattens study_metadata attributes' do
-  #     study.study_metadata.update(study_description: 'Test Description')
-  #     api_get "#{base_endpoint}?filter[name]=ExactStudy"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'][0]['attributes']['study_description']).to eq('Test Description')
-  #   end
-  # end
-
-  # context 'with wildcard patterns' do
-  #   let!(:study_one) { create(:study, name: 'MyStudy_Genomics') }
-  #   let!(:study_two) { create(:study, name: 'MyStudy_Proteomics') }
-  #   let!(:study_three) { create(:study, name: 'OtherStudy') }
-
-  #   it 'returns matching studies with * wildcard' do
-  #     api_get "#{base_endpoint}?filter[name]=MyStudy*"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(2)
-  #     expect(json['data'].map { |d| d['attributes']['name'] }).to contain_exactly(
-  #       'MyStudy_Genomics',
-  #       'MyStudy_Proteomics'
-  #     )
-  #   end
-
-  #   it 'returns matching studies with leading wildcard by default' do
-  #     api_get "#{base_endpoint}?filter[name]=*Genomics"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(1)
-  #     expect(json['data'][0]['attributes']['name']).to eq('MyStudy_Genomics')
-  #   end
-  # end
-
-  # context 'with sparse fieldsets' do
-  #   let!(:study) { create(:study, name: 'FieldsetTest') }
-
-  #   before { study.study_metadata.update(study_description: 'Description') }
-
-  #   it 'returns only requested fields' do
-  #     api_get "#{base_endpoint}?filter[name]=FieldsetTest&fields[studies]=name,uuid"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'][0]['attributes'].keys).to contain_exactly('name', 'uuid')
-  #   end
-
-  #   it 'always includes uuid when requested' do
-  #     api_get "#{base_endpoint}?filter[name]=FieldsetTest&fields[studies]=study_description"
-  #     expect(response).to have_http_status(:success)
-  #     attrs = json['data'][0]['attributes']
-  #     expect(attrs).to have_key('study_description')
-  #   end
-  # end
-
-  # context 'with special characters in query' do
-  #   let!(:study) { create(:study, name: 'Study_With_Underscores') }
-
-  #   it 'handles underscore in query' do
-  #     api_get "#{base_endpoint}?filter[name]=Study_With_Underscores"
-  #     expect(response).to have_http_status(:success)
-  #     expect(json['data'].length).to eq(1)
-  #   end
-
-  #   it 'escapes SQL wildcards properly' do
-  #     api_get "#{base_endpoint}?filter[name]=Study?With*"
-  #     expect(response).to have_http_status(:success)
-  #     # Should not throw an error
-  #   end
-  # end
 end
