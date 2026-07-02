@@ -195,8 +195,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'cannot contain spaces or be blank'
             }
   validate :validate_ethically_approved
-  # add validation when update sapio study
-  validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: :update
+  # add validation when create or update sapio study
+  validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: %i[create update]
   validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
