@@ -12,10 +12,23 @@ module Api
       #   the default Study resource, which is used by other API consumers.
       class StudyResource < Api::V2::BaseResource
         immutable # Read-only is enough for the Sapio study search story.
-        # If the number of matching studies exceeds +MAX_RESULTS+, the request
-        # should fail and return an appropriate error message indicating that
-        # the result set is too large.
+
+        # The default maximum number of search results allowed to be returned.
+        # This can be overridden by passing a custom +maxResults+ parameter in
+        # the request context.
         MAX_RESULTS = 20
+
+        ###
+        # Filters
+        ###
+
+        # Override the name filter from parent to support wildcard patterns
+        # Accepts patterns like "my_study*" or "my_study?"
+        filter :name, apply: method(:apply_name_filter)
+
+        ###
+        # Attributes
+        ###
 
         # @!attribute [r] name
         #   @return [String] The name of the study.
@@ -66,51 +79,113 @@ module Api
         has_one :user, class_name: 'User', foreign_key_on: :self
 
         class << self
-          def apply_name_filter(records, value, _options)
-            query = normalize_name_filter(value)
+          # Applies the `name` filter to studies, using either wildcard matching or
+          # exact/partial/phonetic matching depending on the query contents.
+          #
+          # The raw query is read from the request context because JSONAPI strips quotes
+          # from the filter value array.
+          #
+          # @param records [ActiveRecord::Relation] The base study relation to filter.
+          # @param _value [Object] Unused JSONAPI filter value.
+          # @param options [Hash] The filter options hash, including request context.
+          # @return [ActiveRecord::Relation] A filtered relation, or `records.none` when
+          #   the query is blank.
+          def apply_name_filter(records, _value, options)
+            query = filter_name(options)
             return records.none if query.empty?
 
-            relation = wildcard_query?(query) ? wildcard_name_scope(records, query) : fuzzy_name_scope(records, query)
-            raise Errors::ResultSetTooLarge if relation.limit(MAX_RESULTS + 1).pluck(:id).size > MAX_RESULTS
+            max_results = (options.dig(:context, :max_results).presence || MAX_RESULTS).to_i
+            relation = if wildcard_query?(query)
+              wildcard_name_scope(records, query)
+            else
+              contains_name_scope(records, query)
+            end
+
+            raise Errors::ResultSetTooLarge if relation.limit(max_results + 1).pluck(:id).size > max_results
 
             relation
           end
 
-          def normalize_name_filter(value)
-            query = (value.is_a?(Array) ? value.first : value).to_s.strip
-            query.delete_prefix('"').delete_suffix('"')
+          # Returns the value of the +filter[name]+ parameter from the request context.
+          #
+          # @param options [Hash] The options hash passed to the filter method.
+          # @return [String] The value of the +filter[name]+ parameter, or an empty string if not present.
+          def filter_name(options)
+            options.dig(:context, :filter_name).to_s.squish
           end
 
+          # Returns true if the query contains wildcard characters outside of
+          # "quoted phrases" (literal strings). The wildcard characters are '*'
+          # and '?'. If the query contains unbalanced quotes, wildcard
+          # characters outside any balanced quoted phrase are still treated as
+          # wildcards.
+          #
+          # @example abc* def "ghi*" "jkl?" -> true
+          # @example abc "def" "ghi*" "jkl?" -> false
+          #
+          # @param query [String] The search query to check for wildcards.
+          # @return [Boolean] True if the query contains wildcards, false otherwise.
           def wildcard_query?(query)
-            query.include?('*') || query.include?('?')
+            query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|([*?])/).flatten.compact.any?
           end
 
+          # Builds a SQL LIKE pattern from the query, supporting:
+          # - quoted phrases as literal text
+          # - unquoted `*` as `%`
+          # - unquoted `?` as `_`
+          #
+          # Any `%`, `_`, or `\` characters inside literal text are escaped so they
+          # are treated as data, not LIKE metacharacters.
+          #
+          # @param records [ActiveRecord::Relation] The base study relation to filter.
+          # @param query [String] The search string, potentially containing quoted
+          #   phrases and wildcard characters.
+          # @return [ActiveRecord::Relation] A relation filtered by the translated
+          #   LIKE pattern.
           def wildcard_name_scope(records, query)
-            pattern = query
-              .gsub('\\', '\\\\')
-              .gsub('%', '\\%')
-              .gsub('_', '\\_')
-              .tr('*', '%')
-              .tr('?', '_')
-            records.where("studies.name LIKE :pattern ESCAPE '\\\\'", pattern:)
+            # "[^"\\]*(?:\\.[^"\\]*)*" : Quoted token
+            # |                        : OR
+            # [^"]+                    : Unquoted chunk
+            tokens = query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
+
+            translated_pattern = tokens.map do |token|
+              if token.start_with?('"') && token.end_with?('"')
+                # Inside quotes: strip delimiters, treat content as literal
+                sql_escape(token[1..-2])
+              else
+                # Outside quotes: escape SQL characters, then map * to % and ? to _
+                sql_escape(token).tr('*', '%').tr('?', '_')
+              end
+            end.join
+
+            records.where("studies.name LIKE :pattern ESCAPE '\\\\'", pattern: translated_pattern)
           end
 
-          def fuzzy_name_scope(records, query)
-            escaped_query = query.gsub(/[%_\\]/) { |char| "\\#{char}" }
+          # Escapes SQL LIKE wildcard and escape characters in a literal string.
+          #
+          # @param str [String] The string to escape for use in a LIKE pattern.
+          # @return [String] The escaped string.
+          def sql_escape(str)
+            str.gsub(/[%_\\]/) { |char| "\\#{char}" }
+          end
+
+          # Filters studies by name using exact match, partial match, and phonetic match.
+          # If the query is quoted, the quotes are stripped before matching and the
+          # search term is treated as literal text.
+          #
+          # @param records [ActiveRecord::Relation] The base study relation to filter.
+          # @param query [String] The search string to match against study names.
+          # @return [ActiveRecord::Relation] A relation filtered by exact, partial, or
+          #   phonetic name matching.
+          def contains_name_scope(records, query)
+            query = query[1..-2].squish if query.start_with?('"') && query.end_with?('"')
+            escaped_query = sql_escape(query)
             condition = 'studies.name = :exact OR ' \
                         "studies.name LIKE :partial ESCAPE '\\\\' OR " \
                         'SOUNDEX(studies.name) = SOUNDEX(:query)'
             records.where(condition, exact: query, partial: "%#{escaped_query}%", query: query)
           end
         end
-
-        ###
-        # Filters
-        ###
-
-        # Override the name filter from parent to support wildcard patterns
-        # Accepts patterns like "my_study*" or "my_study?"
-        filter :name, apply: method(:apply_name_filter)
       end
     end
   end
