@@ -22,3 +22,5 @@ y26_094_email_users_on_accessioning_failures: Sends notification email to users 
 
 # Study update restrictions
 y26_171_enable_sapio_mastered_study_restrictions: Blocks UI/API updates to Sapio-mastered studies except Integration Hub and explicit console bypass
+# Sapio studies
+y26_170_sapio_studies_endpoint: Enables the Sapio studies endpoint
