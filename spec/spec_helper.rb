@@ -215,6 +215,26 @@ RSpec.configure do |config|
     Flipper.enable(:y25_706_enable_accessioning, accessioning_enabled)
   end
 
+  # Add sapio_restrictions_enabled to a spec to automatically:
+  # - Set y26_171_enable_sapio_mastered_study_restrictions to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_restrictions_enabled) do |example|
+    sapio_restrictions_enabled = Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions)
+    example.run
+    Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions, sapio_restrictions_enabled)
+  end
+
+  # Add sapio_restrictions_disabled to a spec to automatically:
+  # - Set y26_171_enable_sapio_mastered_study_restrictions to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_restrictions_disabled) do |example|
+    sapio_restrictions_enabled = Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    Flipper.disable(:y26_171_enable_sapio_mastered_study_restrictions)
+    example.run
+    Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions, sapio_restrictions_enabled)
+  end
+
   # Temporarily disables Delayed::Job backgrounding for the duration of the example.
   # When :un_delay_jobs is set, jobs will be executed immediately instead of being enqueued.
   # This is useful for specs that need to test job side effects synchronously

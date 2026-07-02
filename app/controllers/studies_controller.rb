@@ -70,15 +70,21 @@ class StudiesController < ApplicationController
     respond_to { |format| format.html }
   end
 
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def edit
     @study = Study.find(params[:id])
+    if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
+      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+      redirect_to study_information_path(@study)
+      return
+    end
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end
 
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+  def create
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
@@ -101,7 +107,6 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
@@ -381,7 +386,7 @@ class StudiesController < ApplicationController
 
   private
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
     studies =
       case scope

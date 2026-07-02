@@ -62,6 +62,53 @@ module Admin
             assert @study.ethically_approved
           end
         end
+
+        context '#update when sapio restrictions enabled' do
+          context 'and study is mastered_in_sapio' do
+            setup do
+              Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions)
+              @study = FactoryBot.create(:study, mastered_in_sapio: true)
+              put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+            end
+
+            teardown do
+              Flipper.disable(:y26_171_enable_sapio_mastered_study_restrictions)
+            end
+
+            should redirect_to('study information page') { study_information_path(@study) }
+
+            should 'display error flash' do
+              assert_equal I18n.t('studies.managed_in_sapio.warning_message_1'), flash[:error]
+            end
+          end
+
+          context 'and study is not mastered_in_sapio' do
+            setup do
+              Flipper.enable(:y26_171_enable_sapio_mastered_study_restrictions)
+              put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+            end
+
+            teardown do
+              Flipper.disable(:y26_171_enable_sapio_mastered_study_restrictions)
+            end
+
+            should 'display success notice' do
+              assert_equal 'Your study has been updated', flash.now[:notice]
+            end
+          end
+        end
+
+        context '#update when sapio restrictions disabled' do
+          setup do
+            Flipper.disable(:y26_171_enable_sapio_mastered_study_restrictions)
+            @study = FactoryBot.create(:study, mastered_in_sapio: true)
+            put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+          end
+
+          should 'allow update even for mastered study' do
+            assert_equal 'Your study has been updated', flash.now[:notice]
+          end
+        end
       end
     end
   end

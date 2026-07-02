@@ -143,6 +143,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # used to bypass validation when fixing data in study from console by ticket officer.
+  attr_accessor :bypass_sapio_validation
+
   # Associations
   has_many_events do
     event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
@@ -192,6 +195,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'cannot contain spaces or be blank'
             }
   validate :validate_ethically_approved
+  # add validation when update sapio study
+  validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: :update
+  validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
   before_validation :set_default_ethical_approval
@@ -633,6 +639,41 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  # This validation only runs when the value of mastered_in_sapio is changing
+  # It prevents changes to mastered_in_sapio unless the request is coming from Integration Hub
+  # i.e. only Integration Hub can set/change the value of mastered_in_sapio
+  def prevent_mastered_in_sapio_changes_unless_integration_hub
+    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless will_save_change_to_mastered_in_sapio?
+    return if integration_hub_request?
+
+    errors.add(:base, I18n.t('studies.managed_in_sapio.warning_message_2'))
+  end
+
+  # This validation prevents any updates to a study that is managed in SAPIO
+  # unless the request is coming from Integration Hub
+  def prevent_updates_when_mastered_in_sapio
+    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless mastered_in_sapio?
+
+    return if allowed_to_bypass_mastered_restriction?
+
+    errors.add(
+      :base,
+      I18n.t('studies.managed_in_sapio.warning_message_1')
+    )
+  end
+
+  def integration_hub_request?
+    Current.api_application&.name == 'Integration Hub'
+  end
+
+  def allowed_to_bypass_mastered_restriction?
+    # allow update from Integration Hub request OR
+    # for ticket officers fixing data in console by setting bypass_sapio_validation flag is true
+    integration_hub_request? || bypass_sapio_validation
+  end
 
   def valid_ethically_approved?
     ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
