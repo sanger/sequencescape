@@ -79,6 +79,66 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           expect(page).to have_text("Sequencescape Sample ID: #{s1.id}")
           expect(page).to have_text('Gender: Female')
         end
+
+        it 'fails and makes no changes when overwrite volume is enabled but volume cell is blank', :js do
+          login_user(user)
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
+
+          sample = Sample.find_by!(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+          original_volume = sample.sample_metadata.volume
+          original_concentration = sample.sample_metadata.concentration
+
+          # Blank out the volume column for the first data row in the spreadsheet
+          volume_col_index = download.worksheet.columns.find_by(:name, :volume).number - 1
+          download.worksheet.axlsx_worksheet.rows[10].cells[volume_col_index].value = nil
+          download.save(test_file)
+
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          check('Override previously uploaded samples')
+          check('Overwrite volume')
+          click_button('Upload manifest')
+
+          expect(page).to have_text("Your sample manifest couldn't be uploaded.")
+          expect(page).to have_text('Volume is expected but blank')
+
+          sample.reload
+          expect(sample.sample_metadata.volume).to eq(original_volume)
+          expect(sample.sample_metadata.concentration).to eq(original_concentration)
+        end
+
+        it 'fails and makes no changes when overwrite concentration is enabled but concentration cell is blank', :js do
+          login_user(user)
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+          expect(page).to have_text('Sample manifest successfully uploaded.')
+
+          sample = Sample.find_by!(sanger_sample_id: download.worksheet.axlsx_worksheet.rows[10].cells[1].value)
+          original_volume = sample.sample_metadata.volume
+          original_concentration = sample.sample_metadata.concentration
+
+          # Blank out the concentration column for the first data row in the spreadsheet
+          concentration_col_index = download.worksheet.columns.find_by(:name, :concentration).number - 1
+          download.worksheet.axlsx_worksheet.rows[10].cells[concentration_col_index].value = nil
+          download.save(test_file)
+
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          check('Override previously uploaded samples')
+          check('Overwrite concentration')
+          click_button('Upload manifest')
+
+          expect(page).to have_text("Your sample manifest couldn't be uploaded.")
+          expect(page).to have_text('Concentration is expected but blank')
+
+          sample.reload
+          expect(sample.sample_metadata.volume).to eq(original_volume)
+          expect(sample.sample_metadata.concentration).to eq(original_concentration)
+        end
       end
 
       context 'cgap foreign barcodes' do
