@@ -585,6 +585,19 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(json['data'].length).to eq(1)
       end
     end
+
+    context 'with multiple wildcards and exact phrases in query' do
+      before do
+        create(:study, name: 'Genome assembly for Haemophilus influenzae strains')
+      end
+
+      it 'returns studies matching the wildcards and exact phrases', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=\"Genome\" * for \"Haemophilus\" * strain?"
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('My Test Study')
+      end
+    end
   end
 
   describe 'GET /api/v2/sapio/studies/:id' do
@@ -602,6 +615,16 @@ describe 'Sapio Studies API', with: :api_v2 do
       it 'returns a 404 Not Found response' do
         api_get base_endpoint
         expect(response).to have_http_status(:not_found)
+      end
+    end
+
+    context 'when study exists' do
+      let(:study) { create(:study, name: 'Study A') }
+
+      it 'returns the study', :aggregate_failures do
+        api_get "#{base_endpoint}/#{study.id}"
+        expect(response).to have_http_status(:success)
+        expect(json['data']['attributes']['name']).to eq('Study A')
       end
     end
   end
