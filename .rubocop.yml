@@ -39,8 +39,6 @@ Rails:
   Enabled: true
 
 # Capybara
-Capybara/ClickLinkOrButtonStyle:
-  Enabled: false
 
 # Factory Bot
 FactoryBot/FactoryAssociationWithStrategy:

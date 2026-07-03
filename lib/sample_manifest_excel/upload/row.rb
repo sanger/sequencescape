@@ -3,13 +3,12 @@
 module SampleManifestExcel
   module Upload
     ##
-    # A Row relates to a row in a sample manifest spreadsheet.
-    # Each Row relates to a sample
+    # A Row relates to a row in a sample manifest spreadsheet, which represents a sample.
     # Required fields:
-    # *number: Number of the row which is used for error tracking
-    # *data: An array of sample data
-    # *columns: The columns which relate to the data.
-    class Row # rubocop:todo Metrics/ClassLength
+    # - number: Number of the row which is used for error tracking
+    # - data: An array of sample data
+    # - columns: The columns which relate to the data.
+    class Row
       include ActiveModel::Model
       include Converters
 
@@ -25,22 +24,8 @@ module SampleManifestExcel
       validates_presence_of :data, :columns
       validate :country_of_origin_has_correct_case,
                if: -> { data.present? && columns.present? && columns.names.include?('country_of_origin') }
-
       validate :i7_present
-      # Ensure i7 column is not blank if it exists in the manifest
-      def i7_present
-        return unless columns.present? && data.present? && columns.names.include?('i7') && value('i7').blank?
-
-        warnings.add(:base, "#{row_title} i7 is blank! ")
-      end
-
       validate :i5_present
-      # Ensure i5 column is not blank if it exists in the manifest
-      def i5_present
-        return unless columns.present? && data.present? && columns.names.include?('i5') && value('i5').blank?
-
-        warnings.add(:base, "#{row_title} i5 is blank! ")
-      end
 
       delegate :present?, to: :sample, prefix: true
       delegate :aliquots, :asset, to: :manifest_asset
@@ -99,30 +84,22 @@ module SampleManifestExcel
 
       ##
       # Updating the sample involves:
-      # *Checking it is ok to update row
-      # *Updating all of the specialised fields in the aliquot
-      # *Updating the sample metadata
-      # *Saving the asset, metadata and sample
-      # rubocop:todo Metrics/MethodLength
-      def update_sample(tag_group, override) # rubocop:todo Metrics/AbcSize
+      # - Checking it is ok to update row
+      # - Updating all of the specialised fields in the aliquot
+      # - Updating the sample metadata
+      # - Saving the asset, metadata and sample
+      def update_sample(tag_group, override)
         return unless valid?
 
         @reuploaded = sample.updated_by_manifest
 
-        if sample.updated_by_manifest && !override
+        if skip_sample_update?(override)
           @sample_skipped = true
-        else
-          update_specialised_fields(tag_group)
-          asset.save!
-          update_metadata_fields
-          metadata.save!
-          sample.updated_by_manifest = true
-          sample.empty_supplier_sample_name = false
-          @sample_updated = sample.save
+          return
         end
-      end
 
-      # rubocop:enable Metrics/MethodLength
+        @sample_updated = save_sample(tag_group)
+      end
 
       def changed?
         (@sample_updated && sample.previous_changes.present?) || metadata.previous_changes.present? ||
@@ -240,6 +217,20 @@ module SampleManifestExcel
         errors.add(:base, message)
       end
 
+      # Ensure i7 column is not blank if it exists in the manifest
+      def i7_present
+        return unless columns.present? && data.present? && columns.names.include?('i7') && value('i7').blank?
+
+        warnings.add(:base, "#{row_title} i7 is blank! ")
+      end
+
+      # Ensure i5 column is not blank if it exists in the manifest
+      def i5_present
+        return unless columns.present? && data.present? && columns.names.include?('i5') && value('i5').blank?
+
+        warnings.add(:base, "#{row_title} i5 is blank! ")
+      end
+
       def manifest_asset
         return @manifest_asset if defined?(@manifest_asset)
 
@@ -252,6 +243,10 @@ module SampleManifestExcel
         errors.add(:base, "#{row_title} Cannot find sample manifest for Sanger ID: #{sanger_sample_id}")
       end
 
+      # Check that the sample can be updated. If it can't be updated, add the reasons to the errors.
+      #
+      # This confirms that the sample can be updated by attempting to apply the updates
+      # and raising errors if any of the updates are invalid. It does not (seem to!) save any changes to the database.
       def sample_can_be_updated
         return unless errors.empty?
 
@@ -305,6 +300,21 @@ module SampleManifestExcel
       def link_tag_groups_and_indexes(fields)
         indexed_fields = fields.index_by(&:class)
         fields.each { |field| field.link(indexed_fields) }
+      end
+
+      def save_sample(tag_group)
+        update_specialised_fields(tag_group)
+        asset.save!
+        update_metadata_fields
+        metadata.save!
+        sample.updated_by_manifest = true
+        sample.empty_supplier_sample_name = false
+
+        sample.save # returned for @sample_updated
+      end
+
+      def skip_sample_update?(override)
+        sample.updated_by_manifest && !override
       end
     end
   end

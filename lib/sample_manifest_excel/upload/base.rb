@@ -6,13 +6,13 @@ module SampleManifestExcel
   module Upload
     ##
     # An upload will
-    # *Find the start row based on the Sanger Sample Id column header cell
-    # *Create a Data object based on the file.
-    # *Extract the columns based on the headings in the spreadsheet
-    # *Find the sanger sample id column
-    # *Create some Rows
-    # *Retrieve the sample manifest
-    # *Create a processor based on the sample manifest
+    # - Find the start row based on the Sanger Sample Id column header cell
+    # - Create a Data object based on the file.
+    # - Extract the columns based on the headings in the spreadsheet
+    # - Find the sanger sample id column
+    # - Create some Rows
+    # - Retrieve the sample manifest
+    # - Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
       include AccessionHelper
@@ -99,7 +99,7 @@ module SampleManifestExcel
         # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
         changed_samples.each { |sample| sample.handle_update_event(user) }
-        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(sample_manifest, user) }
       end
 
       # Accession each sample individually, logging and skipping any that fail validation
