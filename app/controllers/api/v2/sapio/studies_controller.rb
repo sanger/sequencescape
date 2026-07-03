@@ -8,8 +8,10 @@ module Api
       class StudiesController < JSONAPI::ResourceController
         include Concerns::ApiKeyAuthenticatable
 
-        # The maximum allowed results for a single index query.
-        MAX_RESULTS = 20
+        # The range of valid values for the custom +maxResults+ query parameter
+        # to override the default maximum number of search results returned by
+        # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
+        RESULTS_RANGE = 1..1000
 
         # Enforces a name search constraint on resource index listing.
         #
@@ -58,6 +60,31 @@ module Api
         # @return [void]
         def render_missing_search_param
           render_errors(Errors::MissingSearchParam.new.errors)
+        end
+
+        # Returns request context for JSONAPI::Resources, which is available
+        # to the filter method in options[:context].
+        #
+        # For the +index+ action,
+        #   - adds the optional +maxresults
+        #  - adds the optional +maxResults+ parameter if given, which is used
+        #    to override the default maximum number of search results returned.
+        #  - adds the untouched +filter[name]+ parameter, because JSONAPI
+        #    strips the quotes by calling CSV.parse_line on it. We need the
+        #    quotes if user is searching exact phrase.
+        #
+        # @note The +maxResults+ parameter uses the JSON:API naming for custom
+        #   parameters.
+        #
+        # @return [Hash] Context passed to JSONAPI::Resources.
+        def context
+          context = super
+          if action_name == 'index'
+            max_results = params[:maxResults].to_i
+            context[:max_results] = max_results if RESULTS_RANGE.cover?(max_results)
+            context[:filter_name] = params.dig(:filter, :name)
+          end
+          context
         end
       end
     end
