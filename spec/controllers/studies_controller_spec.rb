@@ -84,14 +84,14 @@ RSpec.describe StudiesController do
 
   describe '#edit', :sapio_restrictions_enabled do
     let!(:integration_hub) { create(:api_application, name: 'Integration Hub') }
-   
+    let!(:study) { create(:study, mastered_in_sapio: true) }
+
     before do
       # Make current_user a manager of the study so they can access edit
       role = create(:manager_role, authorizable: study)
       role.users << current_user
       Current.api_application = integration_hub
     end
-    let!(:study) { create(:study, mastered_in_sapio: true) }
 
     after do
       Current.reset
