@@ -21,6 +21,9 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
+  # Models
+  gem 'uuidtools'
+
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
