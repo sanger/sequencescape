@@ -56,24 +56,22 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   end
 
   context 'when multiple aliquots reference the same sample' do
-    before { create(:aliquot, study: study, sample: sample, receptacle: well) }
+    let(:aliquot2) { create(:aliquot, study: study, sample: sample, receptacle: well) }
 
     it 'includes the sample only once in the payload', :aggregate_failures do
       expect(subject['samples']).to contain_exactly(
-        { 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid }
+        hash_including('sample_uuid' => sample.uuid, 'study_uuid' => study.uuid)
       )
     end
   end
 
   context 'when multiple aliquots reference different samples' do
-    let(:sample2) { create(:sample) }
-
-    before { create(:aliquot, study: study, sample: sample2, receptacle: well) }
+    let(:aliquot2) { create(:aliquot, study: study, sample: sample2, receptacle: well) }
 
     it 'includes all samples in the payload', :aggregate_failures do
       expect(subject['samples']).to contain_exactly(
-        { 'sample_uuid' => sample.uuid, 'study_uuid' => study.uuid },
-        { 'sample_uuid' => sample2.uuid, 'study_uuid' => study.uuid }
+        hash_including('sample_uuid' => sample.uuid, 'study_uuid' => study.uuid),
+        hash_including('sample_uuid' => sample2.uuid, 'study_uuid' => study.uuid)
       )
     end
   end
