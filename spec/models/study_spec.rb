@@ -977,7 +977,7 @@ RSpec.describe Study do
 
         expect(study.save).to be false
         expect(study.errors[:base]).to include(
-          I18n.t('studies.managed_in_sapio.warning_message_1')
+          I18n.t('studies.mastered_in_sapio.not_editable')
         )
       end
     end
@@ -1026,7 +1026,7 @@ RSpec.describe Study do
       it 'prevents changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be false
         expect(study.errors[:base]).to include(
-          I18n.t('studies.managed_in_sapio.warning_message_2')
+          I18n.t('studies.mastered_in_sapio.integration_hub_update_only')
         )
       end
     end

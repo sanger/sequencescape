@@ -648,7 +648,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return unless will_save_change_to_mastered_in_sapio?
     return if integration_hub_request?
 
-    errors.add(:base, I18n.t('studies.managed_in_sapio.warning_message_2'))
+    errors.add(:base, I18n.t('studies.mastered_in_sapio.integration_hub_update_only'))
   end
 
   # This validation prevents any updates to a study that is managed in SAPIO
@@ -661,7 +661,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     errors.add(
       :base,
-      I18n.t('studies.managed_in_sapio.warning_message_1')
+      I18n.t('studies.mastered_in_sapio.not_editable')
     )
   end
 

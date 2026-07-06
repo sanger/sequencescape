@@ -268,7 +268,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     errors.add(
       :study,
-      I18n.t('studies.managed_in_sapio.sample_manifest_creation_error')
+      I18n.t('studies.mastered_in_sapio.sample_manifest_creation_error')
     )
   end
 end

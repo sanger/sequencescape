@@ -13,7 +13,7 @@ class Admin::StudiesController < ApplicationController
   def show
     @study = Study.find(params[:id])
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+      flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
       redirect_to study_information_path(@study)
       return
     end
@@ -27,7 +27,7 @@ class Admin::StudiesController < ApplicationController
     if params[:id] != '0'
       @study = Study.find(params[:id])
       if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-        flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+        flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
         redirect_to study_information_path(@study)
         return
       end
@@ -41,7 +41,7 @@ class Admin::StudiesController < ApplicationController
   def update
     @study = Study.find(params[:id])
     if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+      flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
       redirect_to study_information_path(@study)
       return
     end
