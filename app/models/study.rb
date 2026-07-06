@@ -438,6 +438,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Class Methods
 
   # Instance methods
+  def sapio_restrictions_enabled?
+    Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+  end
+
+  # Returns true if the study is mastered in Sapio and the feature flag is enabled
+  def ui_locked?
+    sapio_restrictions_enabled? && mastered_in_sapio?
+  end
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
@@ -644,7 +652,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # It prevents changes to mastered_in_sapio unless the request is coming from Integration Hub
   # i.e. only Integration Hub can set/change the value of mastered_in_sapio
   def prevent_mastered_in_sapio_changes_unless_integration_hub
-    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless sapio_restrictions_enabled?
     return unless will_save_change_to_mastered_in_sapio?
     return if integration_hub_request?
 
@@ -654,7 +662,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
   def prevent_updates_when_mastered_in_sapio
-    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless sapio_restrictions_enabled?
     return unless mastered_in_sapio?
 
     return if allowed_to_bypass_mastered_restriction?

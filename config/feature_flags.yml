@@ -21,4 +21,4 @@ y25_705_notify_on_external_accessioning_validation_failures: Sends exception ema
 y26_094_email_users_on_accessioning_failures: Sends notification email to users when accessioning fails
 
 # Study update restrictions
-y26_171_enable_sapio_mastered_study_restrictions: Blocks UI/API updates to Sapio-mastered studies except Integration Hub and explicit console bypass
+y26_172_enable_sapio_mastered_study_restrictions: Blocks UI/API updates to mastered-in-Sapio studies except Integration Hub and explicit console bypass
