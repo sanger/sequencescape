@@ -12,7 +12,8 @@ class Admin::StudiesController < ApplicationController
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def show
     @study = Study.find(params[:id])
-    redirect_if_ui_locked(@study)
+    return if redirect_if_ui_locked(@study)
+
     @page_name = @study.name
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
@@ -22,7 +23,7 @@ class Admin::StudiesController < ApplicationController
 
     if params[:id] != '0'
       @study = Study.find(params[:id])
-      redirect_if_ui_locked(@study)
+      return if redirect_if_ui_locked(@study)
 
       flash.now[:warning] = @study.warnings if @study.warnings.present?
       render partial: 'edit', locals: { study: @study }
@@ -33,7 +34,7 @@ class Admin::StudiesController < ApplicationController
 
   def update
     @study = Study.find(params[:id])
-    redirect_if_ui_locked(@study)
+    return if redirect_if_ui_locked(@study)
 
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     flash.now[:notice] = 'Your study has been updated'
@@ -68,7 +69,8 @@ class Admin::StudiesController < ApplicationController
 
   def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @study = Study.find(params[:id])
-    redirect_if_ui_locked(@study)
+    return if redirect_if_ui_locked(@study)
+
     if params[:study][:uploaded_data].present?
       Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data])
     end
@@ -102,9 +104,10 @@ class Admin::StudiesController < ApplicationController
 
   def redirect_if_ui_locked(study)
     @study = study
-    return unless @study.ui_locked?
+    return false unless @study.ui_locked?
 
     flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
     redirect_to study_information_path(@study)
+    true
   end
 end
