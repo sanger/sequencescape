@@ -979,7 +979,7 @@ RSpec.describe Study do
     # updates are allowed when the feature flag is enabled and the update is from Integration Hub
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       # set the current user to be Integration Hub for this test
-      include_context 'as Integration Hub'
+      include_context 'when request from Integration Hub'
 
       it 'allows updates' do
         sapio_study.name = 'New Name'
@@ -1012,7 +1012,7 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
-      include_context 'as Integration Hub'
+      include_context 'when request from Integration Hub'
 
       it 'allows changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be true

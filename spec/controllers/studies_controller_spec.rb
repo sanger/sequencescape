@@ -83,7 +83,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#edit', :sapio_restrictions_enabled do
-    include_context 'as Integration Hub'
+    include_context 'when request from Integration Hub'
 
     before do
       # Make current_user a manager of the study so they can access edit
