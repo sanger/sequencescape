@@ -59,7 +59,8 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
                 'study_uuid' => aliquots[0].study.uuid,
                 'primer_panel' => aliquots[0].primer_panel.name,
                 'id_library_lims' => aliquots[0].library.human_barcode,
-                'entity_type' => 'library_indexed'
+                'entity_type' => 'library_indexed',
+                'cost_code' => 'Some Cost Code'
               }
             ],
             'controls' => [
@@ -141,7 +142,8 @@ RSpec.describe Api::Messages::EseqFlowcellIo do
                   'study_uuid' => aliquots[0].study.uuid,
                   'primer_panel' => aliquots[0].primer_panel.name,
                   'id_library_lims' => aliquots[0].library.human_barcode,
-                  'entity_type' => 'library_indexed'
+                  'entity_type' => 'library_indexed',
+                  'cost_code' => 'Some Cost Code'
                 }
               ]
             }

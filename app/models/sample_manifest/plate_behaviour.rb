@@ -52,7 +52,7 @@ module SampleManifest::PlateBehaviour
     def updated_by!(user, samples)
       # It's more efficient to look for the wells with the samples than to look for the assets from the samples
       # themselves as the former can use named_scopes where as the latter is an array that needs iterating over.
-      Plate.with_sample(samples).each { |plate| plate.events.updated_using_sample_manifest!(user) }
+      Plate.with_sample(samples).each { |plate| plate.events.updated_using_sample_manifest!(@manifest, user) }
     end
 
     def details_array

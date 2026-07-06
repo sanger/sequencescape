@@ -12,10 +12,6 @@ RSpec.describe Api::V2::QcAssaysController, :qc_result, type: :request, with: :a
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  it 'is true' do
-    expect(true).to be_truthy
-  end
-
   it 'creates a new qc assay' do
     params = { data: { attributes: { qc_results: [asset_1, asset_2, asset_3], lot_number: 'LN1234567' } } }
     api_post base_endpoint, params

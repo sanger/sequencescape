@@ -163,6 +163,7 @@ class Api::Messages::FlowcellIo < Api::Base
   end
 
   # Included in Project model
+  # This is also used in the eseq flowcell message
   module ProjectExtensions
     def project_cost_code_for_uwh
       project_cost_code.length > 20 ? 'Custom' : project_cost_code
