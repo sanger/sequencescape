@@ -381,17 +381,9 @@ RSpec.describe SampleManifest, :sample_manifest do
   end
 
   describe '#prevent_creation_with_mastered_study' do
-    let!(:integration_hub) { create(:api_application, name: 'Integration Hub') }
+    include_context 'as Integration Hub'
     let(:mastered_study) { create(:study, mastered_in_sapio: true) }
     let(:normal_study) { create(:study, mastered_in_sapio: false) }
-
-    before do
-      Current.api_application = integration_hub
-    end
-
-    after do
-      Current.api_application = nil
-    end
 
     context 'when sapio restrictions are enabled', :sapio_restrictions_enabled do
       context 'and study is mastered_in_sapio' do

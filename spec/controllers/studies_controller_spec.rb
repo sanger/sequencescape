@@ -83,18 +83,13 @@ RSpec.describe StudiesController do
   end
 
   describe '#edit', :sapio_restrictions_enabled do
-    let!(:integration_hub) { create(:api_application, name: 'Integration Hub') }
+    include_context 'as Integration Hub'
 
     before do
       # Make current_user a manager of the study so they can access edit
       role = create(:manager_role, authorizable: study)
       role.users << current_user
-      Current.api_application = integration_hub
       @study = create(:study, mastered_in_sapio: true)
-    end
-
-    after do
-      Current.reset
     end
 
     it 'redirects to study information page with error flash', :aggregate_failures do

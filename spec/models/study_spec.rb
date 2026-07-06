@@ -961,68 +961,48 @@ RSpec.describe Study do
   end
 
   describe '#prevent_updates_when_mastered_in_sapio' do
-    let(:study) { create(:study, mastered_in_sapio: true) }
+    # create a study that is mastered in Sapio
+    let(:sapio_study) { create_sapio_study }
 
-    after do
-      Current.reset
-    end
-
+    # test that updates are prevented when the feature flag is enabled and the update is from the UI
     context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'prevents updates' do
-        study.name = 'New Name'
+        sapio_study.name = 'New Name'
 
-        expect(study.save).to be false
-        expect(study.errors[:base]).to include(
+        expect(sapio_study.save).to be false
+        expect(sapio_study.errors[:base]).to include(
           I18n.t('studies.managed_in_sapio.warning_message_1')
         )
       end
     end
 
+    # updates are allowed when the feature flag is enabled and the update is from Integration Hub
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
-      let(:api_application) do
-        create(:api_application, name: 'Integration Hub')
-      end
-
-      before do
-        Current.api_application = api_application
-      end
+      # set the current user to be Integration Hub for this test
+      include_context 'as Integration Hub'
 
       it 'allows updates' do
-        study.name = 'New Name'
+        sapio_study.name = 'New Name'
 
-        expect(study.save).to be true
+        expect(sapio_study.save).to be true
       end
     end
 
+    # test that updates are allowed when the feature flag is disabled
     context 'when feature flag is disabled', :sapio_restrictions_disabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'allows updates' do
-        study.name = 'New Name'
-
-        expect(study.save).to be true
+        sapio_study.name = 'New Name'
+        expect(sapio_study.save).to be true
       end
     end
   end
 
   describe '#prevent_mastered_in_sapio_changes_unless_integration_hub' do
-    let(:study) { create(:study, mastered_in_sapio: false) }
+    # create a normal study that has not been mastered in Sapio
+    let(:study) { create(:study) }
 
-    after do
-      Current.reset
-    end
-
-    context 'when feature flag is enabled and updated from SS', :sapio_restrictions_enabled do
-      before do
-        Current.api_application = nil
-      end
-
+    # updates on mastered_in_sapio is not allowed when the feature flag is enabled and the update is from the SS UI
+    context 'when feature flag is enabled and updated from SS UI', :sapio_restrictions_enabled do
       it 'prevents changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be false
         expect(study.errors[:base]).to include(
@@ -1032,13 +1012,7 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
-      let(:api_application) do
-        create(:api_application, name: 'Integration Hub')
-      end
-
-      before do
-        Current.api_application = api_application
-      end
+      include_context 'as Integration Hub'
 
       it 'allows changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be true
@@ -1046,10 +1020,6 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is disabled', :sapio_restrictions_disabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'allows changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be true
       end

@@ -32,21 +32,21 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+    context 'with a sapio study', :sapio_restrictions_enabled do
+      let(:sapio_study) { create_sapio_study }
 
-      before { get :show, session: session, params: { id: mastered_study.id } }
+      before { get :show, session: session, params: { id: sapio_study.id } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.managed_in_sapio.warning_message_1'))
       end
     end
 
-    context 'with a mastered study when sapio restrictions are disabled', :sapio_restrictions_disabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+    context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+      let(:sapio_study) { create_sapio_study }
 
-      before { get :show, session: session, params: { id: mastered_study.id } }
+      before { get :show, session: session, params: { id: sapio_study.id } }
 
       it 'responds with 200 and does not set an error flash', :aggregate_failures do
         expect(response).to have_http_status(:ok)
@@ -64,27 +64,49 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a mastered study (member GET)', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+    context 'with a sapio study (member GET)', :sapio_restrictions_enabled do
+      let(:sapio_study) { create_sapio_study }
 
-      before { get :edit, session: session, params: { id: mastered_study.id } }
+      before { get :edit, session: session, params: { id: sapio_study.id } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.managed_in_sapio.warning_message_1'))
+      end
+    end
+
+    context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+      let(:sapio_study) { create_sapio_study }
+
+      before { get :edit, session: session, params: { id: sapio_study.id } }
+
+      it 'renders the edit partial and does not set an error flash', :aggregate_failures do
+        expect(response).to render_template(partial: '_edit')
+        expect(flash[:error]).to be_nil
       end
     end
   end
 
   describe '#update' do
-    context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+    context 'with a sapio study', :sapio_restrictions_enabled do
+      let(:sapio_study) { create_sapio_study }
 
-      before { put :update, session: session, params: { id: mastered_study.id, study: {} } }
+      before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.managed_in_sapio.warning_message_1'))
+      end
+    end
+
+    context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+      let(:sapio_study) { create_sapio_study }
+
+      before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
+
+      it 'allows the update and does not set an error flash', :aggregate_failures do
+        expect(response).to render_template(partial: '_manage_single_study')
+        expect(flash[:error]).to be_nil
       end
     end
   end

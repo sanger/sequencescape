@@ -16,6 +16,7 @@ require 'support/api_helper'
 
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
+require 'shared_contexts/integration_hub_context'
 require 'shoulda/matchers'
 require 'rspec/longrun'
 
@@ -73,6 +74,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include ApiHelper
   config.include TableHelper
+  config.include SapioHelper
 
   # In a few places we have models that receive a file from an uploader
   # fixture_file_upload() ensures that the tests mimic the live behaviour.
