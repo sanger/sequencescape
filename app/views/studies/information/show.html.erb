@@ -62,7 +62,7 @@
 
 <%= page_title @study.name, @study.id, titlecase: false %>
 
-<% if @study.mastered_in_sapio %>
+<% if @study.ui_locked? %>
   <%= alert(:warning, class: 'p-3') do %>
     <p class="m-0"><strong><%= I18n.t('studies.mastered_in_sapio.banner') %></strong></p>
   <% end %>
