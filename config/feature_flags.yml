@@ -21,5 +21,6 @@ y26_094_email_users_on_accessioning_failures: Sends notification email to users 
 # API
 y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
 
-# Sapio
+# Sapio studies
+y26_170_sapio_studies_endpoint: Enables the Sapio studies endpoint
 y26_192_prevent_ui_study_creation: Prevents users from creating studies in the UI, only allowing study creation via API
