@@ -60,7 +60,10 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   end
 
   context 'when multiple aliquots reference different samples' do
+    let(:sample2) { create(:sample) }
     let(:aliquot2) { create(:aliquot, study: study, sample: sample2, receptacle: well) }
+
+    before { aliquot2 }
 
     it 'includes all samples in the payload', :aggregate_failures do
       expect(subject['samples']).to contain_exactly(
