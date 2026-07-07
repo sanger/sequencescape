@@ -48,4 +48,25 @@ RSpec.describe Api::Messages::WellStockResourceIo do
   it 'generates valid json' do
     expect(subject.as_json).to eq(expected_json)
   end
+
+  context 'when multiple aliquots reference the same sample' do
+    let(:aliquot2) { create(:aliquot, study: study, sample: sample, receptacle: well) }
+
+    it 'includes the sample only once in the payload', :aggregate_failures do
+      expect(subject['samples']).to contain_exactly(
+        hash_including('sample_uuid' => sample.uuid, 'study_uuid' => study.uuid)
+      )
+    end
+  end
+
+  context 'when multiple aliquots reference different samples' do
+    let(:aliquot2) { create(:aliquot, study: study, sample: sample2, receptacle: well) }
+
+    it 'includes all samples in the payload', :aggregate_failures do
+      expect(subject['samples']).to contain_exactly(
+        hash_including('sample_uuid' => sample.uuid, 'study_uuid' => study.uuid),
+        hash_including('sample_uuid' => sample2.uuid, 'study_uuid' => study.uuid)
+      )
+    end
+  end
 end
