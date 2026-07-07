@@ -1,6 +1,8 @@
 
 <%- add :about, I18n.t("studies.about") %>
-<%- add :menu, "Create Study" => new_study_path if can?(:create, Study) %>
+<% unless Flipper.enabled?(:y26_192_prevent_ui_study_creation) %>
+  <%- add :menu, 'Create Study' => new_study_path if can?(:create, Study) %>
+<% end %>
 <%- add :menu, "Create Project" => new_project_path if can?(:create, Project) %>
 <% if can?(:create, Submission) %>
   <%- add :menu, "Start a Bulk Submission" => new_bulk_submission_path %>
