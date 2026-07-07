@@ -130,6 +130,7 @@ en:
       not_editable: "⚠️ This study is managed in SAPIO and cannot be edited."
       integration_hub_update_only: "⚠️ Mastered in SAPIO can only be updated by Integration Hub."
       sample_manifest_creation_error: "⚠️ This study is mastered in SAPIO and cannot have new sample manifests created."
+      accession_not_allowed: "⚠️ This study is managed in SAPIO and cannot be accessioned."
 
   requests:
     comments:

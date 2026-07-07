@@ -604,6 +604,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_study_for_accessioning!
+    if ui_locked?
+      errors.add(:base, I18n.t('studies.mastered_in_sapio.accession_not_allowed'))
+      raise ActiveRecord::RecordInvalid, self
+    end
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
