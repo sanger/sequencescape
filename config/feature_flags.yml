@@ -19,3 +19,6 @@ y25_706_enable_accessioning: Enables the accessioning feature in the application
 y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning
 y25_705_notify_on_external_accessioning_validation_failures: Sends exception email to developers for unexpected failures during accessioning
 y26_094_email_users_on_accessioning_failures: Sends notification email to users when accessioning fails
+
+# Sapio studies
+y26_170_sapio_studies_endpoint: Enables the Sapio studies endpoint
