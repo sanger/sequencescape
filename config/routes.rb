@@ -125,6 +125,10 @@ Rails.application.routes.draw do
       namespace :bioscan do
         resources :export_pool_xp_to_traction, only: [:create]
       end
+
+      namespace :sapio do
+        resources :studies, only: %i[index show]
+      end
     end
   end
 
