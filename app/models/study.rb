@@ -576,6 +576,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
     [
       active?,
+      !ui_locked?,
       !study_metadata.strategy_not_applicable?,
       !study_metadata.never_release?,
       accession_required?,
@@ -653,6 +654,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # i.e. only Integration Hub can set/change the value of mastered_in_sapio
   def prevent_mastered_in_sapio_changes_unless_integration_hub
     return unless sapio_restrictions_enabled?
+    
+    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
     return unless will_save_change_to_mastered_in_sapio?
     return if integration_hub_request?
 
