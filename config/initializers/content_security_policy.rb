@@ -6,19 +6,23 @@
 
 Rails.application.configure do
   config.content_security_policy do |policy|
-#     policy.default_src :self, :https
-#     policy.font_src    :self, :https, :data
-#     policy.img_src     :self, :https, :data
-#     policy.object_src  :none
-#     policy.script_src  :self, :https
-#     policy.style_src   :self, :https
-#     # Specify URI for violation reports
-#     # policy.report_uri "/csp-violation-report-endpoint"
+    policy.default_src :self, :https
+    policy.font_src    :self, :https, :data
+    policy.img_src     :self, :https, :data
+    policy.object_src  :none
+    policy.script_src  :self, :https, :data
+    policy.style_src   :self, :https
+
+   # Specify URI for violation reports
+    policy.report_uri "/csp-reports"
   end
 
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
+   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
   config.content_security_policy_nonce_directives = %w(script-src style-src)
+
+  # Nonces are also required for Vite resources tags:
+  # See ViteRailsNoncePatch at config/initializers/vite_rails_nonce_patch.rb for more information.
 
   # Report CSP violations to a specified URI
   # For further information see the following documentation:
