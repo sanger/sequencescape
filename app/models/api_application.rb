@@ -18,7 +18,7 @@ class ApiApplication < ApplicationRecord
   def integration_hub?
     name == INTEGRATION_HUB_NAME
   end
-  
+
   def generate_new_api_key
     self.key = SecureRandom.base64(configatron.fetch('api_key_length') || 20)
   end

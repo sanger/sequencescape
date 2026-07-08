@@ -27,6 +27,7 @@ module Api
         end
 
         private
+
         attr_reader :api_application
 
         def validate_api_key(api_key)
