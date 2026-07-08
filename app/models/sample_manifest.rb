@@ -263,12 +263,11 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:enable Naming/MemoizedInstanceVariableName
 
   def prevent_creation_with_mastered_study
-    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
-    return unless study&.mastered_in_sapio?
+    return unless study&.ui_locked?
 
     errors.add(
       :study,
-      I18n.t('studies.managed_in_sapio.sample_manifest_creation_error')
+      I18n.t('studies.mastered_in_sapio.sample_manifest_creation_error')
     )
   end
 end

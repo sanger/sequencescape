@@ -73,6 +73,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
   config.include ApiHelper
   config.include TableHelper
+  config.include SapioHelper
 
   # In a few places we have models that receive a file from an uploader
   # fixture_file_upload() ensures that the tests mimic the live behaviour.

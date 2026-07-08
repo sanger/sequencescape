@@ -115,7 +115,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#edit', :sapio_restrictions_enabled do
-    let(:study) { create(:study, mastered_in_sapio: true) }
+    let(:study) { create_sapio_study }
 
     before do
       # Make current_user a manager of the study so they can access edit
@@ -127,12 +127,12 @@ RSpec.describe StudiesController do
       get :edit, session: session, params: { id: study.id }
 
       expect(response).to redirect_to(study_information_path(study))
-      expect(flash[:error]).to eq(I18n.t('studies.managed_in_sapio.warning_message_1'))
+      expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
     end
   end
 
   describe '#edit', :sapio_restrictions_disabled do
-    let(:study) { create(:study, mastered_in_sapio: true) }
+    let(:study) { create_sapio_study }
 
     before do
       # Make current_user a manager of the study so they can access edit
