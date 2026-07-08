@@ -28,7 +28,7 @@
             <%= check_box(:request_group, line.group_id, id: line.request_group_id, class: 'grouped_checkbox', :'data-count' => line.well_count) %>
             <%= hidden_field_tag("#{line.request_group_id}_size", "",  value: line.well_count)  %>
           </td>
-          <td  style='text-align: center'>
+          <td  class="text-center">
             <!-- TODO: Restore priority toggle for grouped submissions -->
             <%= vite_image_tag "images/icon_#{line.priority}_flag.png", 'alt' => line.priority, size: '16x16', class: "flag_image", "data-priority" => line.priority %>
           </td>
