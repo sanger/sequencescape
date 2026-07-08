@@ -11,32 +11,11 @@ Rails.application.configure do
 #     policy.img_src     :self, :https, :data
 #     policy.object_src  :none
 #     policy.script_src  :self, :https
-
-  # Allow @vite/client to hot reload style changes
-  if Rails.env.development? || Rails.env.test?
-    asset_hosts = [
-      "http://#{ViteRuby.config.host_with_port}",
-      'http://localhost:3000',
-      'http://127.0.0.1:3000'
-    ].uniq
-
-    policy.script_src(*policy.script_src, :unsafe_eval, :data, *asset_hosts)
-    policy.script_src_elem(*policy.script_src_elem, :unsafe_eval, :data, :blob, *asset_hosts)
-    policy.style_src(*policy.style_src, :unsafe_inline, *asset_hosts)
-    policy.style_src_elem(*policy.style_src_elem, :unsafe_inline, *asset_hosts)
-  end
-
-  # You may need to enable this in production as well depending on your setup.
-  policy.script_src *policy.script_src, :blob
-
 #     policy.style_src   :self, :https
-  # Allow @vite/client to hot reload style changes in development
-  policy.style_src *policy.style_src, :unsafe_inline if Rails.env.development?
-
 #     # Specify URI for violation reports
 #     # policy.report_uri "/csp-violation-report-endpoint"
   end
-#
+
 #   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
   config.content_security_policy_nonce_directives = %w(script-src style-src)
