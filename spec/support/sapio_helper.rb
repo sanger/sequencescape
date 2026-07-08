@@ -2,7 +2,7 @@
 
 # This file contains helper methods for working with the Integration Hub (Sapio) in RSpec tests.
 module SapioHelper
-  # Creates a study that is mastered in Sapio, bypassing the validation 
+  # Creates a study that is mastered in Sapio, bypassing the validation
   #
   # @param attributes [Hash] Additional attributes to set on the study.
   # @return [Study] The created study.
