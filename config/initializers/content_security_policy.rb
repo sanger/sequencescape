@@ -12,6 +12,7 @@ Rails.application.configure do
     policy.object_src  :none
     policy.script_src  :self, :https, :data
     policy.style_src   :self, :https
+    policy.style_src_attr :unsafe_inline # WARNING: this is not good practice and undoes the benefits of using a CSP
     policy.connect_src :self, :https
 
    # Specify URI for violation reports
