@@ -661,7 +661,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
     return unless will_save_change_to_mastered_in_sapio?
-    return if integration_hub_request?
+    return if allowed_to_bypass_mastered_restriction?
 
     errors.add(:base, I18n.t('studies.mastered_in_sapio.integration_hub_update_only'))
   end
@@ -680,14 +680,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     )
   end
 
-  def integration_hub_request?
-    Current.api_application&.name == 'Integration Hub'
-  end
-
   def allowed_to_bypass_mastered_restriction?
-    # allow update from Integration Hub request OR
-    # for ticket officers fixing data in console by setting bypass_sapio_validation flag is true
-    integration_hub_request? || bypass_sapio_validation
+    # allow update by setting bypass_sapio_validation flag is true
+    bypass_sapio_validation
   end
 
   def valid_ethically_approved?

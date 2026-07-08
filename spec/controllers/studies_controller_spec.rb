@@ -115,7 +115,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#edit', :sapio_restrictions_enabled do
-    let(:study) { create(:study, mastered_in_sapio: true) }
+    let(:study) { create_sapio_study }
 
     before do
       # Make current_user a manager of the study so they can access edit
@@ -132,7 +132,7 @@ RSpec.describe StudiesController do
   end
 
   describe '#edit', :sapio_restrictions_disabled do
-    let(:study) { create(:study, mastered_in_sapio: true) }
+    let(:study) { create_sapio_study }
 
     before do
       # Make current_user a manager of the study so they can access edit

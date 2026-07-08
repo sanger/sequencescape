@@ -33,7 +33,7 @@ RSpec.describe Admin::StudiesController do
     end
 
     context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+      let(:mastered_study) { create_sapio_study }
 
       before { get :show, session: session, params: { id: mastered_study.id } }
 
@@ -44,7 +44,7 @@ RSpec.describe Admin::StudiesController do
     end
 
     context 'with a mastered study when sapio restrictions are disabled', :sapio_restrictions_disabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+      let(:mastered_study) { create_sapio_study }
 
       before { get :show, session: session, params: { id: mastered_study.id } }
 
@@ -65,7 +65,7 @@ RSpec.describe Admin::StudiesController do
     end
 
     context 'with a mastered study (member GET)', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+      let(:mastered_study) { create_sapio_study }
 
       before { get :edit, session: session, params: { id: mastered_study.id } }
 
@@ -78,7 +78,7 @@ RSpec.describe Admin::StudiesController do
 
   describe '#update' do
     context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create(:study, mastered_in_sapio: true) }
+      let(:mastered_study) { create_sapio_study }
 
       before { put :update, session: session, params: { id: mastered_study.id, study: {} } }
 

@@ -27,10 +27,10 @@ module Api
         end
 
         private
+        attr_reader :api_application
 
         def validate_api_key(api_key)
-          api_application = ApiApplication.find_by!(key: api_key)
-          Current.api_application = api_application
+          @api_application = ApiApplication.find_by!(key: api_key)
         rescue ActiveRecord::RecordNotFound
           log_invalid_api_key api_key
           render_unauthorized

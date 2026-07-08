@@ -993,17 +993,9 @@ RSpec.describe Study do
   end
 
   describe '#prevent_updates_when_mastered_in_sapio' do
-    let(:study) { create(:study, mastered_in_sapio: true) }
-
-    after do
-      Current.reset
-    end
+    let(:study) { create_sapio_study }
 
     context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'prevents updates' do
         study.name = 'New Name'
 
@@ -1015,12 +1007,8 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
-      let(:api_application) do
-        create(:api_application, name: 'Integration Hub')
-      end
-
       before do
-        Current.api_application = api_application
+        study.bypass_sapio_validation = true
       end
 
       it 'allows updates' do
@@ -1031,10 +1019,6 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is disabled', :sapio_restrictions_disabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'allows updates' do
         study.name = 'New Name'
 
@@ -1046,15 +1030,7 @@ RSpec.describe Study do
   describe '#prevent_mastered_in_sapio_changes_unless_integration_hub' do
     let(:study) { create(:study, mastered_in_sapio: false) }
 
-    after do
-      Current.reset
-    end
-
     context 'when feature flag is enabled and updated from SS', :sapio_restrictions_enabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'prevents changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be false
         expect(study.errors[:base]).to include(
@@ -1064,12 +1040,9 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
-      let(:api_application) do
-        create(:api_application, name: 'Integration Hub')
-      end
-
+      #  bypass the validation to simulate an update from Integration Hub
       before do
-        Current.api_application = api_application
+        study.bypass_sapio_validation = true
       end
 
       it 'allows changing mastered_in_sapio' do
@@ -1078,10 +1051,6 @@ RSpec.describe Study do
     end
 
     context 'when feature flag is disabled', :sapio_restrictions_disabled do
-      before do
-        Current.api_application = nil
-      end
-
       it 'allows changing mastered_in_sapio' do
         expect(study.update(mastered_in_sapio: true)).to be true
       end
