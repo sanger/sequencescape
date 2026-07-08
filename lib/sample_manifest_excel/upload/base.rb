@@ -6,19 +6,19 @@ module SampleManifestExcel
   module Upload
     ##
     # An upload will
-    # *Find the start row based on the Sanger Sample Id column header cell
-    # *Create a Data object based on the file.
-    # *Extract the columns based on the headings in the spreadsheet
-    # *Find the sanger sample id column
-    # *Create some Rows
-    # *Retrieve the sample manifest
-    # *Create a processor based on the sample manifest
+    # - Find the start row based on the Sanger Sample Id column header cell
+    # - Create a Data object based on the file.
+    # - Extract the columns based on the headings in the spreadsheet
+    # - Find the sanger sample id column
+    # - Create some Rows
+    # - Retrieve the sample manifest
+    # - Create a processor based on the sample manifest
     # The Upload is only valid if the file, columns, sample manifest and processor are valid.
     class Base # rubocop:todo Metrics/ClassLength
       include AccessionHelper
       include ActiveModel::Model
 
-      attr_accessor :file, :column_list, :start_row, :override
+      attr_accessor :file, :column_list, :start_row, :overrides
 
       # rubocop:todo Layout/LineLength
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
@@ -46,7 +46,7 @@ module SampleManifestExcel
         @cache = Cache.new(self)
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
-        @override = override || false
+        @overrides = overrides || { samples: false, exclude_fields: [] } # default to not overriding samples
         @processor = create_processor
       end
 
@@ -99,7 +99,7 @@ module SampleManifestExcel
         # - History page is updated with event warehouse viewer
         # - We've confirmed that no external reports use these events
         changed_samples.each { |sample| sample.handle_update_event(user) }
-        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(user) }
+        changed_labware.each { |labware| labware.events.updated_using_sample_manifest!(sample_manifest, user) }
       end
 
       # Accession each sample individually, logging and skipping any that fail validation

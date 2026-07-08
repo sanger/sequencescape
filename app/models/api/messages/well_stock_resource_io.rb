@@ -32,9 +32,15 @@ class Api::Messages::WellStockResourceIo < Api::Base
 
   with_nested_has_many_association(:aliquots, as: 'samples') do
     with_association(:sample) do
-      map_attribute_to_json_attribute(:id, 'id_sample_tmp')
       map_attribute_to_json_attribute(:uuid, 'sample_uuid')
     end
     with_association(:study) { map_attribute_to_json_attribute(:uuid, 'study_uuid') }
+  end
+
+  # A well can legitimately contain repeated aliquots for the same sample.
+  # Keep one payload entry per sample UUID to avoid duplicate stock_resource rows.
+  extra_json_attributes do |_object, json_attributes|
+    samples = json_attributes['samples']
+    json_attributes['samples'] = samples.uniq { |sample| sample['sample_uuid'] } if samples.present?
   end
 end

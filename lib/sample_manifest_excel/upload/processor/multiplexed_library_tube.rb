@@ -5,9 +5,9 @@ module SampleManifestExcel
     module Processor
       ##
       # Processed slightly differently from Base
-      # *Checks that the tags are unique
-      # *If valid transfers aliquots from library tubes to multiplexed library tubes.
-      # *If manifest was reuploaded, updates downstream aliquots (instead of transfer)
+      # - Checks that the tags are unique
+      # - If valid transfers aliquots from library tubes to multiplexed library tubes.
+      # - If manifest was reuploaded, updates downstream aliquots (instead of transfer)
       # TODO: had to explicitly specify the namespace for Base here otherwise it picks up Upload::Base
       class MultiplexedLibraryTube < SampleManifestExcel::Upload::Processor::Base
         include Tags::Validator::Uniqueness
@@ -24,7 +24,7 @@ module SampleManifestExcel
 
         def update_samples_and_aliquots(tag_group)
           upload.rows.each do |row|
-            row.update_sample(tag_group, upload.override)
+            row.update_sample(tag_group, upload.overrides)
             row.transfer_aliquot # Requests are smart enough to only transfer once
             substitutions.concat(row.aliquots.filter_map(&:substitution_hash)) if row.reuploaded?
           end

@@ -6,14 +6,14 @@ class Event::PlateCreationEvent < Event
       message: "Created child #{plate_purpose.name} plate",
       content: Date.today.to_s,
       family: "create_#{plate_purpose.class.name.underscore}",
-      created_by: user ? user.login : nil
+      created_by: user&.login
     )
     create!(
       eventful: child_plate,
       message: "Created #{plate_purpose.name} plate",
       content: Date.today.to_s,
       family: "create_#{plate_purpose.class.name.underscore}",
-      created_by: user ? user.login : nil
+      created_by: user&.login
     )
   end
 
