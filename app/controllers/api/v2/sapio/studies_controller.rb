@@ -18,8 +18,8 @@ module Api
         #
         # @return [void]
         def index
-          return render_feature_flag_disabled if feature_flag_disabled?
-          return render_missing_search_param if search_param_missing?
+          return render_feature_flag_disabled unless feature_flag_enabled?
+          return render_missing_search_param unless search_param_present?
 
           super
         end
@@ -28,7 +28,7 @@ module Api
         #
         # @return [void]
         def show
-          return render_feature_flag_disabled if feature_flag_disabled?
+          return render_feature_flag_disabled unless feature_flag_enabled?
 
           super
         end
@@ -64,25 +64,26 @@ module Api
           params.expect(study: [:name])
         end
 
-        # Checks whether the Sapio studies endpoint feature flag is inactive.
+        # Checks whether the Sapio studies endpoint feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is disabled
-        def feature_flag_disabled?
-          !Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is enabled
+        def feature_flag_enabled?
+          Flipper.enabled?(:y26_170_sapio_studies_endpoint)
         end
 
         # Checks whether the Sapio mastered study restrictions feature flag is inactive.
         #
-        # @return [Boolean] true if the +:y26_171_enable_sapio_mastered_study_restrictions+ flag is disabled
+        # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is disabled
         def sapio_mastered_study_restrictions_disabled?
-          !Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+          !Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is absent or blank.
+        # Checks whether the required JSON:API search filter parameter is present?
         #
-        # @return [Boolean] true if the filter[name] parameter is missing
-        def search_param_missing?
-          params.dig(:filter, :name).blank?
+        # @return [Boolean] true if the filter[name] parameter is present
+        def search_param_present?
+          params.dig(:filter, :name).present?
         end
 
         # Renders a standardized JSON:API error for a disabled feature flag configuration.
@@ -103,7 +104,6 @@ module Api
         # to the filter method in options[:context].
         #
         # For the +index+ action,
-        #   - adds the optional +maxresults
         #  - adds the optional +maxResults+ parameter if given, which is used
         #    to override the default maximum number of search results returned.
         #  - adds the untouched +filter[name]+ parameter, because JSONAPI

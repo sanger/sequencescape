@@ -439,6 +439,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Class Methods
 
   # Instance methods
+  def sapio_restrictions_enabled?
+    Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+  end
+
+  # Returns true if the study is mastered in Sapio and the feature flag is enabled
+  def ui_locked?
+    sapio_restrictions_enabled? && mastered_in_sapio?
+  end
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
@@ -569,6 +577,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
     [
       active?,
+      !ui_locked?,
       !study_metadata.strategy_not_applicable?,
       !study_metadata.never_release?,
       accession_required?,
@@ -596,6 +605,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_study_for_accessioning!
+    if ui_locked?
+      errors.add(:base, I18n.t('studies.mastered_in_sapio.accession_not_allowed'))
+      raise ActiveRecord::RecordInvalid, self
+    end
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
@@ -645,35 +658,32 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # It prevents changes to mastered_in_sapio unless the request is coming from Integration Hub
   # i.e. only Integration Hub can set/change the value of mastered_in_sapio
   def prevent_mastered_in_sapio_changes_unless_integration_hub
-    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
-    return unless will_save_change_to_mastered_in_sapio?
-    return if integration_hub_request?
+    return unless sapio_restrictions_enabled?
 
-    errors.add(:base, I18n.t('studies.managed_in_sapio.warning_message_2'))
+    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
+    return unless will_save_change_to_mastered_in_sapio?
+    return if allowed_to_bypass_mastered_restriction?
+
+    errors.add(:base, I18n.t('studies.mastered_in_sapio.integration_hub_update_only'))
   end
 
   # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
   def prevent_updates_when_mastered_in_sapio
-    return unless Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions)
+    return unless sapio_restrictions_enabled?
     return unless mastered_in_sapio?
 
     return if allowed_to_bypass_mastered_restriction?
 
     errors.add(
       :base,
-      I18n.t('studies.managed_in_sapio.warning_message_1')
+      I18n.t('studies.mastered_in_sapio.not_editable')
     )
   end
 
-  def integration_hub_request?
-    Current.api_application&.name == 'Integration Hub'
-  end
-
   def allowed_to_bypass_mastered_restriction?
-    # allow update from Integration Hub request OR
-    # for ticket officers fixing data in console by setting bypass_sapio_validation flag is true
-    integration_hub_request? || bypass_sapio_validation
+    # allow update by setting bypass_sapio_validation flag is true
+    bypass_sapio_validation
   end
 
   def valid_ethically_approved?

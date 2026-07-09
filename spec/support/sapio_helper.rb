@@ -2,12 +2,15 @@
 
 # This file contains helper methods for working with the Integration Hub (Sapio) in RSpec tests.
 module SapioHelper
+  # Creates a study that is mastered in Sapio, bypassing the validation
+  #
+  # @param attributes [Hash] Additional attributes to set on the study.
+  # @return [Study] The created study.
   def create_sapio_study(**attributes)
-    previous_api_application = Current.api_application
-    Current.api_application ||= create(:api_application, name: 'Integration Hub')
-
-    create(:study, mastered_in_sapio: true, **attributes)
-  ensure
-    Current.api_application = previous_api_application
+    study = build(:study, mastered_in_sapio: true, **attributes)
+    study.bypass_sapio_validation = true
+    study.save!
+    study.bypass_sapio_validation = nil
+    study
   end
 end

@@ -66,6 +66,9 @@ class StudiesController < ApplicationController
   end
 
   def new
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     @study = Study.new
     respond_to { |format| format.html }
   end
@@ -73,8 +76,8 @@ class StudiesController < ApplicationController
   # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def edit
     @study = Study.find(params[:id])
-    if Flipper.enabled?(:y26_171_enable_sapio_mastered_study_restrictions) && @study.mastered_in_sapio
-      flash[:error] = I18n.t('studies.managed_in_sapio.warning_message_1')
+    if @study.ui_locked?
+      flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
       redirect_to study_information_path(@study)
       return
     end
@@ -84,7 +87,10 @@ class StudiesController < ApplicationController
 
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
-  def create
+  def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
