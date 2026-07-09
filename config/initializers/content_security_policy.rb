@@ -16,9 +16,13 @@ Rails.application.configure do
     policy.img_src     :self, :https, :data
     policy.object_src  :none
     policy.script_src  :self, :https, :data
-    policy.style_src   :unsafe_inline # WARNING: this is not good practice and undoes the benefits of using a CSP
-    policy.style_src_elem :self, :https
-    policy.style_src_attr :unsafe_inline # WARNING: this is not good practice and undoes the benefits of using a CSP
+    # Make styles maximally permissive to allow for inline styles and style attributes
+    # This is not good practice and effectively undoes the benefits of using a CSP
+    # Next step, reduce the scopes to :self, :https and tackle the warning messages in the console
+    policy.style_src   "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_elem "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_attr "*", :unsafe_inline
+
     policy.connect_src :self, :https
 
    # Specify URI for violation reports
@@ -27,8 +31,7 @@ Rails.application.configure do
 
    # Generate session nonces for permitted importmap, inline scripts, and inline styles.
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
-  # add 'style-src' to the array below to generate nonces for styles
-  config.content_security_policy_nonce_directives = %w(script-src style_src_elem)
+  config.content_security_policy_nonce_directives = %w(script-src style-src)
 
   # Nonces are also required for Vite resources tags:
   # See ViteRailsNoncePatch at config/initializers/vite_rails_nonce_patch.rb for more information.
