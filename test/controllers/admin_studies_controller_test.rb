@@ -67,7 +67,8 @@ module Admin
           context 'and study is mastered_in_sapio' do
             setup do
               Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
-              @study = FactoryBot.create(:study, mastered_in_sapio: true)
+              @study = create(:sapio_study)
+
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
             end
 
@@ -101,7 +102,7 @@ module Admin
         context '#update when sapio restrictions disabled' do
           setup do
             Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
-            @study = FactoryBot.create(:study, mastered_in_sapio: true)
+            @study = create(:sapio_study)
             put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
           end
 

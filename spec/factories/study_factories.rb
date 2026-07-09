@@ -37,6 +37,18 @@ FactoryBot.define do
     factory(:study_with_manager) { after(:build) { |study| create(:manager, authorizable: study) } }
   end
 
+  factory :sapio_study, parent: :study do
+    mastered_in_sapio { true }
+
+    after(:build) do |study|
+      study.bypass_sapio_validation = true
+    end
+
+    after(:create) do |study|
+      study.bypass_sapio_validation = nil
+    end
+  end
+
   factory(:managed_study, parent: :study) do
     transient { accession_number { nil } }
 

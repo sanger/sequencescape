@@ -33,18 +33,18 @@ RSpec.describe Admin::StudiesController do
     end
 
     context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { get :show, session: session, params: { id: sapio_study.id } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
       end
     end
 
     context 'with a mastered study when sapio restrictions are disabled', :sapio_restrictions_disabled do
-      let(:mastered_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { get :show, session: session, params: { id: sapio_study.id } }
 
@@ -65,18 +65,18 @@ RSpec.describe Admin::StudiesController do
     end
 
     context 'with a mastered study (member GET)', :sapio_restrictions_enabled do
-      let(:mastered_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { get :edit, session: session, params: { id: sapio_study.id } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
       end
     end
 
     context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
-      let(:sapio_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { get :edit, session: session, params: { id: sapio_study.id } }
 
@@ -89,18 +89,18 @@ RSpec.describe Admin::StudiesController do
 
   describe '#update' do
     context 'with a mastered study', :sapio_restrictions_enabled do
-      let(:mastered_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
-        expect(response).to redirect_to(study_information_path(mastered_study))
+        expect(response).to redirect_to(study_information_path(sapio_study))
         expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
       end
     end
 
     context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
-      let(:sapio_study) { create_sapio_study }
+      let(:sapio_study) { create(:sapio_study) }
 
       before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
 
