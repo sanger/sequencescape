@@ -50,7 +50,7 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
       end
     end
 
-    context 'when the record does not support Sapio' do
+    context 'when the record does not define mastered_in_sapio?' do
       let(:record) { BasicRecord.new(1) }
 
       it 'forwards the message' do
