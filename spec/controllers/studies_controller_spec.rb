@@ -121,11 +121,10 @@ RSpec.describe StudiesController do
       # Make current_user a manager of the study so they can access edit
       role = create(:manager_role, authorizable: study)
       role.users << current_user
-      @study = create(:study, mastered_in_sapio: true)
     end
 
     it 'redirects to study information page with error flash', :aggregate_failures do
-      get :edit, session: session, params: { id: @study.id }
+      get :edit, session: session, params: { id: study.id }
 
       expect(response).to redirect_to(study_information_path(study))
       expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
