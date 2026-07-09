@@ -993,7 +993,7 @@ RSpec.describe Study do
   end
 
   describe '#prevent_updates_when_mastered_in_sapio' do
-    let(:study) { create_sapio_study }
+    let(:study) { create(:sapio_study) }
 
     # test that updates are prevented when the feature flag is enabled and the update is from the UI
     context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
