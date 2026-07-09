@@ -7,5 +7,5 @@
     throbber: "#loader_for_request_#{request.id}"
   } %><%= content_tag :a, '-', class: 'hide-comment badge badge-danger', data: { :'comment-field' => "#comment_for_#{request.id}" } %>
   <%= loading_bar("loader_for_request_#{request.id}") %>
-  <div id="comment_for_<%= request.id %>" class="d-none"></div>
+  <div id="comment_for_<%= request.id %>" style="display:none;"></div>
 </td>

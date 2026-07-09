@@ -58,7 +58,7 @@
               <% else -%>
                 <% request_actions.each do |action| -%>
                   <td>
-                    <label for="requested_<%= action.to_s %>_<%= request.id %>" class="d-none"><%= action.to_s.capitalize %> request <%= index+1 %></label>
+                    <label for="requested_<%= action.to_s %>_<%= request.id %>" style="display:none;"><%= action.to_s.capitalize %> request <%= index+1 %></label>
                     <input name='requested_<%= action.to_s %>[<%= request.id %>]' id="requested_<%= action.to_s %>_<%= request.id %>" type='checkbox' class='select_<%= action.to_s %> select_all_target' data-action='<%= action.to_s %>'>
                   </td>
                 <% end %>
