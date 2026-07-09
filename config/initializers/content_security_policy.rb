@@ -6,13 +6,23 @@
 
 Rails.application.configure do
   config.content_security_policy do |policy|
+    # CSP policy declarations
+    # NOTE:
+    # style_src      - fallback
+    # style_src_elem - linked stylesheets and inline style, eg: <link rel="stylesheet" href="..."> and <style>...</style>
+    # style_src_attr - inline style attributes, eg: <div style="color: red;">...</div>
     policy.default_src :none
     policy.font_src    :self, :https, :data
     policy.img_src     :self, :https, :data
     policy.object_src  :none
     policy.script_src  :self, :https, :data
-    policy.style_src   :self, :https, :unsafe_inline # WARNING: this is not good practice and undoes the benefits of using a CSP
-    policy.style_src_attr :unsafe_inline # WARNING: this is not good practice and undoes the benefits of using a CSP
+    # Make styles maximally permissive to allow for inline styles and style attributes
+    # This is not good practice and effectively undoes the benefits of using a CSP
+    # Next step, reduce the scopes to :self, :https and tackle the warning messages in the console
+    policy.style_src   "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_elem "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_attr "*", :unsafe_inline
+
     policy.connect_src :self, :https
 
    # Specify URI for violation reports
