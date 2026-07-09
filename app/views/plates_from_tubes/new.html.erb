@@ -15,7 +15,7 @@
         <%= form.input :source_tubes, as: :text, input_html: { class: 'form-control' }, required: false %>
         <%# source_tubes_map is a hidden, indexed by well position hash of source_tubes. It is dynamically built on submission in plates_from_tubes.js %>
         <%= form.input :source_tubes_map, as: :hidden, input_html: { class: 'form-control' } %>
-        <div class="alert alert-danger d-none" id="duplicate_warning" style="width: 72%">
+        <div class="alert alert-danger" id="duplicate_warning" style="display: none; width: 72%">
           <p>Duplicate tube barcodes are highlighted in red.</p>
         </div>
       <% end %>
