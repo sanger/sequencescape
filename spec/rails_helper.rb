@@ -16,7 +16,6 @@ require 'support/api_helper'
 
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
-require 'shared_contexts/integration_hub_context'
 require 'shoulda/matchers'
 require 'rspec/longrun'
 
