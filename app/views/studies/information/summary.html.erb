@@ -17,7 +17,7 @@
 <% unless @summary.size > 0  -%>
   No events registered for this study.
 <% else -%>
-  <div style="text-align:center">
+  <div class="text-center">
     <%= pagination @summary %>
   </div>
   <table width='100%' cellspacing="0" cellpadding="4" class="sortable">
@@ -45,7 +45,7 @@
     </tbody>
   </table>
   <br />
-  <div style="text-align:center">
+  <div class="text-center">
     <%= pagination @summary %>
   </div>
 <% end -%>

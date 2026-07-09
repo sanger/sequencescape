@@ -18,7 +18,7 @@ Project <%= @project.id %> &middot; Created on <%= @project.created_at.to_format
 <% if can? :create, Role -%>
   <hr>
   <!-- renders all available roles with all users form -->
-  <div style="text-align:center">
+  <div class="text-center">
     <h3 id="add_new_role">Assign roles to users</h3>
     <%= render partial: "role" -%>
   </div>

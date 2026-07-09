@@ -10,7 +10,7 @@
 </head>
 <body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
   <% if @batch.workflow_name.present? -%>
-    <div style="font-size:40px;text-align:right;padding-right:20px"><%= @batch.workflow_name %></div>
+    <div class="h1 text-right pr-3"><%= @batch.workflow_name %></div>
   <% end -%>
   <div class="page-header"><h1>Batch <%= @batch.id %></h1></div>
   <table width="100%" cellpadding="4" cellspacing="0" border="1">
@@ -62,7 +62,7 @@
     <br />
   <% end %>
 
-  <div style="border-top: 1px solid black; border-left: none; border-right: none; border-bottom: none">
+  <div class="border-top border-dark">
   Printed at <%= Time.now.strftime("%I:%M %p on %A %d %B, %Y") %> for <%= current_user.login %>
   </div>
 </body>
