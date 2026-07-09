@@ -3,9 +3,9 @@
   <tr>
     <td>
       <% if event["status"] == "pass" %>
-        <span style="color: green; font-weight: bold;">
+        <span class="text-success font-weight-bold">
       <% elsif event["status"] == "fail" %>
-        <span style="color: red; font-weight: bold;">
+        <span class="text-danger font-weight-bold">
       <% end %>
       <%= event["message"] %></span>
     </td>
