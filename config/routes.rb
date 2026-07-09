@@ -23,6 +23,9 @@ Rails.application.routes.draw do
   get 'authentication/open'
   get 'authentication/restricted'
 
+  # Content Security Policy report endpoint
+  post '/csp-reports' => 'content_security_policy_reports#create', :as => :csp_reports
+
   # Feature flags
   user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
