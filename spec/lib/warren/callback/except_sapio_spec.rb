@@ -6,28 +6,25 @@ class WarrenExceptSapioTestRecord < ApplicationRecord
   self.table_name = 'studies'
 end
 
-class SapioRecord
-  include Warren::Callback::ExceptSapio
-
-  attr_reader :id
-
-  def initialize(id:, mastered_in_sapio:)
-    @id = id
-    @mastered_in_sapio = mastered_in_sapio
-  end
-
-  def mastered_in_sapio?
-    @mastered_in_sapio
-  end
-end
-
 class BasicRecord
+  include Warren::Callback
   include Warren::Callback::ExceptSapio
 
   attr_reader :id
 
   def initialize(id:)
     @id = id
+  end
+end
+
+class SapioRecord < BasicRecord
+  def initialize(id:, mastered_in_sapio:)
+    super(id:)
+    @mastered_in_sapio = mastered_in_sapio
+  end
+
+  def mastered_in_sapio?
+    @mastered_in_sapio
   end
 end
 
