@@ -14,7 +14,7 @@ module Api
         # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
         RESULTS_RANGE = 1..1000
 
-        before_action :require_integration_hub!, only: [:create]
+        before_action :authorize_integration_hub!, only: [:create]
 
         # Enforces a name search constraint on resource index listing.
         #
@@ -62,7 +62,7 @@ module Api
 
         private
 
-        def require_integration_hub!
+        def authorize_integration_hub!
           return if @api_application&.integration_hub?
 
           render status: :forbidden,
