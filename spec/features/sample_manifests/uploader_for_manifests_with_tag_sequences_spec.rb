@@ -302,7 +302,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         end
       end
 
-      context 'with cgap barcodes' do
+      context 'with CGAP barcodes and validation errors' do
         let(:download) do
           build(
             :test_download_tubes_cgap,
@@ -312,7 +312,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           )
         end
 
-        it 'validation errors' do
+        it 'fails to upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -321,7 +321,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         end
       end
 
-      context 'with cgap barcodes' do
+      context 'with CGAP barcodes and duplication errors' do
         let(:download) do
           build(
             :test_download_tubes_cgap,
@@ -331,7 +331,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           )
         end
 
-        it 'duplicates' do
+        it 'fails to upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -434,7 +434,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         end
       end
 
-      context 'with cgap barcodes' do
+      context 'with CGAP barcodes and validation errors' do
         let(:download) do
           build(
             :test_download_tubes_cgap,
@@ -444,7 +444,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           )
         end
 
-        it 'validation errors' do
+        it 'fails to upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
@@ -453,7 +453,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
         end
       end
 
-      context 'with cgap barcodes' do
+      context 'with CGAP barcodes and duplication errors' do
         let(:download) do
           build(
             :test_download_tubes_cgap,
@@ -463,7 +463,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           )
         end
 
-        it 'duplicates' do
+        it 'fails to upload' do
           login_user(user)
           visit('sample_manifest_upload_with_tag_sequences/new')
           attach_file('File to upload', test_file)
