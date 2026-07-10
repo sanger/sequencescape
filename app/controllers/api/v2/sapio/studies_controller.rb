@@ -36,7 +36,7 @@ module Api
         end
 
         def create
-          return render_feature_flag_disabled if sapio_mastered_study_restrictions_disabled?
+          return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
 
           study = Study.new(study_params)
           study.mastered_in_sapio = true
@@ -87,11 +87,11 @@ module Api
           Flipper.enabled?(:y26_170_sapio_studies_endpoint)
         end
 
-        # Checks whether the Sapio mastered study restrictions feature flag is inactive.
+        # Checks whether the Sapio mastered study restrictions feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is disabled
-        def sapio_mastered_study_restrictions_disabled?
-          !Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+        # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is enabled
+        def sapio_mastered_study_restrictions_enabled?
+          Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is absent or blank.
