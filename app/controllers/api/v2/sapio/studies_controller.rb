@@ -76,6 +76,9 @@ module Api
                  }
         end
 
+        # Current minimal payload.
+        # Additional attributes and nested associations will be agreed with
+        # the Integration Hub team before this endpoint is used in production.
         def study_params
           params.expect(study: [:name])
         end
