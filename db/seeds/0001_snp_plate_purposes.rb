@@ -2,12 +2,6 @@
 
 # Initially copied from SNP
 plate_purposes = <<~EOS
-  - name: Working Dilution
-    type: DilutionPlatePurpose
-    target_type: WorkingDilutionPlate
-    cherrypickable_target: true
-    stock_plate: false
-    prefix: WD
   - name: 40ng
   - name: Whole Genome Amplification
     cherrypickable_target: true
@@ -74,47 +68,6 @@ ActiveRecord::Base.transaction do
 
   # Superceded by Pulldown SC/ISC below (here for transition period)
   PlatePurpose.create!(name: 'SEQCAP SC', cherrypickable_target: false)
-
-  PlatePurpose.create!(
-    name: 'STA',
-    default_state: 'pending',
-    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-    cherrypickable_target: true,
-    cherrypick_direction: 'column',
-    asset_shape_id: AssetShape.default_id
-  )
-  PlatePurpose.create!(
-    name: 'STA2',
-    default_state: 'pending',
-    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-    cherrypickable_target: true,
-    cherrypick_direction: 'column',
-    asset_shape_id: AssetShape.default_id
-  )
-  PlatePurpose.create!(
-    name: 'SNP Type',
-    default_state: 'pending',
-    barcode_printer_type: BarcodePrinterType.find_by(name: '96 Well Plate'),
-    cherrypickable_target: true,
-    cherrypick_direction: 'column',
-    asset_shape_id: AssetShape.default_id
-  )
-  PlatePurpose.create!(
-    name: 'Fluidigm 96-96',
-    default_state: 'pending',
-    cherrypickable_target: true,
-    cherrypick_direction: 'interlaced_column',
-    size: 96,
-    asset_shape: AssetShape.find_by(name: 'Fluidigm96')
-  )
-  PlatePurpose.create!(
-    name: 'Fluidigm 192-24',
-    default_state: 'pending',
-    cherrypickable_target: true,
-    cherrypick_direction: 'interlaced_column',
-    size: 192,
-    asset_shape: AssetShape.find_by(name: 'Fluidigm192')
-  )
 end
 PlatePurpose.create!(
   name: 'PacBio Sheared',

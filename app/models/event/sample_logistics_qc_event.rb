@@ -15,7 +15,7 @@ class Event::SampleLogisticsQcEvent < Event
       message: message,
       content: Date.today.to_s,
       family: family,
-      created_by: user ? user.login : nil
+      created_by: user&.login
     )
   end
 end

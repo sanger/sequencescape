@@ -10,12 +10,12 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
   shared_examples 'retention instruction' do
     it 'displays retention key instruction in asset summary' do
       render
-      expect(rendered).to match(/Retention Instruction/)
+      expect(rendered).to include('Retention Instruction')
     end
 
     it 'displays retention instruction value in asset summary' do
       render
-      expect(rendered).to match(/Destroy after 2 years/)
+      expect(rendered).to include('Destroy after 2 years')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
 
     it 'does not display the barcode for the wells' do
       render
-      expect(rendered).not_to match(/Tube Barcode/)
+      expect(rendered).not_to include('Tube Barcode')
     end
 
     context 'when retention instructions are coming from custom_metadata (for old submissions)' do
@@ -122,7 +122,7 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
 
       it 'renders a tube description label' do
         render
-        expect(rendered).to match(/Tube/)
+        expect(rendered).to include('Tube')
       end
 
       it 'renders the associated tube rack barcode' do
@@ -144,12 +144,12 @@ RSpec.describe 'labware/show.html.erb' do # rubocop:todo RSpec/DescribeClass
     context 'when the tube is not in a rack' do
       it 'renders a tube description label' do
         render
-        expect(rendered).to match(/Tube/)
+        expect(rendered).to include('Tube')
       end
 
       it 'does not render the position label' do
         render
-        expect(rendered).not_to match(/Position/)
+        expect(rendered).not_to include('Position')
       end
     end
   end

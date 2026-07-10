@@ -103,6 +103,12 @@ module Api
       #   @example GET request to retrieve metadata associated with a specific resource
       #     GET /api/v2/poly_metadata?filter[metadatable_id]=123
       filter :metadatable_id
+
+      # @!method filter_by_metadatable_type
+      #   Filters metadata records based on the associated resource's type.
+      #   @example GET request to retrieve metadata associated with a specific resource
+      #     GET /api/v2/poly_metadata?filter[metadatable_type]=Request
+      filter :metadatable_type
     end
   end
 end

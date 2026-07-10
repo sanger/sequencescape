@@ -39,6 +39,7 @@ require 'capybara/rspec'
 require 'selenium/webdriver'
 require 'webmock/rspec'
 require 'support/user_login'
+require 'support/visit_helper'
 require 'jsonapi/resources/matchers'
 require 'aasm/rspec'
 require 'rspec/collection_matchers'
@@ -163,6 +164,7 @@ RSpec.configure do |config|
   config.order = :random
 
   config.include UserLogin
+  config.include VisitHelper, type: :feature
 
   config.around(:each, :warren) do |ex|
     Warren.handler.enable!

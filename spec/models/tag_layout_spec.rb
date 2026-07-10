@@ -23,6 +23,7 @@ describe TagLayout do
         map_ids.map { |id| tag_group.tags.detect { |tag| tag.map_id == id } }
       end
     end
+
     it 'applies the expected layout' do
       expect(generate_tag_layout(plate)).to eq expected_tags
     end

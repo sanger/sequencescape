@@ -8,6 +8,23 @@ test_submission_template_1:
     project_name: "my_project"
     product_line_name: "my_product_line"
     product_catalogue_name: "my_product_cat"
+    info_differential: 1
+    asset_input_methods:
+      - select an asset group
+      - enter a list of sample names found on plates
+    request_options:
+      initial_state:
+        my_request_type: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        display_name: Plate identifier
+        key: order_role
+        kind: Selection
+        required: true
+        default_value:
+        selection:
+          - ""
+          - ILC
 test_submission_template_2:
   name: "Test Submission Template 2"
   submission_class_name: "LinearSubmission"
@@ -16,3 +33,18 @@ test_submission_template_2:
     project_name: "my_project"
     product_line_name: "my_product_line"
     product_catalogue_name: "my_product_cat"
+    info_differential: 2
+    asset_input_methods:
+      - select an asset group
+    request_options:
+      initial_state:
+        my_request_type2: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        display_name: Library type
+        key: library_type
+        kind: Selection
+        required: false
+        default_value:
+        selection:
+          - Standard
