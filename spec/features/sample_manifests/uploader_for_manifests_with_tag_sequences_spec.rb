@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Sample manifest with tag sequences', :sample_manifest do
+describe 'Sample manifest with tag sequences', :js, :sample_manifest do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -78,6 +78,23 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           visit("/samples/#{s1.id}")
           expect(page).to have_text("Sequencescape Sample ID: #{s1.id}")
           expect(page).to have_text('Gender: Female')
+        end
+
+        it 'succeeds on initial upload when volume and concentration is blank and all boxes are left unticked' do
+          login_user(user)
+
+          # Blank out the volume and concentration columns for the first data row in the spreadsheet
+          volume_col_index = download.worksheet.columns.find_by(:name, :volume).number - 1
+          concentration_col_index = download.worksheet.columns.find_by(:name, :concentration).number - 1
+          download.worksheet.axlsx_worksheet.rows[10].cells[volume_col_index].value = nil
+          download.worksheet.axlsx_worksheet.rows[10].cells[concentration_col_index].value = nil
+          download.save(test_file)
+
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+
+          expect(page).to have_css('.alert', text: 'Sample manifest successfully uploaded.')
         end
 
         it 'fails and makes no changes when overwrite volume is enabled but volume cell is blank', :js do
@@ -217,6 +234,23 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library_with_tag_sequences')
         end
 
+        it 'succeeds on initial upload when volume and concentration is blank and all boxes are left unticked' do
+          login_user(user)
+
+          # Blank out the volume and concentration columns for the first data row in the spreadsheet
+          volume_col_index = download.worksheet.columns.find_by(:name, :volume).number - 1
+          concentration_col_index = download.worksheet.columns.find_by(:name, :concentration).number - 1
+          download.worksheet.axlsx_worksheet.rows[10].cells[volume_col_index].value = nil
+          download.worksheet.axlsx_worksheet.rows[10].cells[concentration_col_index].value = nil
+          download.save(test_file)
+
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+
+          expect(page).to have_css('.alert', text: 'Sample manifest successfully uploaded.')
+        end
+
         it 'with override' do
           # upload
           expect(download.worksheet.multiplexed_library_tube.aliquots.count).to eq 0
@@ -246,7 +280,7 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           attach_file('File to upload', test_file)
           check('Override previously uploaded samples')
           click_button('Upload manifest')
-          expect(page).to have_text('Sample manifest successfully uploaded.')
+          expect(page).to have_css('.alert', text: 'Sample manifest successfully uploaded.')
 
           expect(download.worksheet.multiplexed_library_tube.aliquots.reload.count).to eq 6
           expect(
@@ -352,6 +386,33 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
     end
 
     context 'valid' do
+      context 'when performing an initial upload without concentration values' do
+        let(:download) do
+          build(
+            :test_download_tubes,
+            columns: columns,
+            manifest_type: 'tube_multiplexed_library',
+            data: attributes_for(:test_download_tubes)[:data].merge(concentration: nil)
+          )
+        end
+
+        it 'does not have concentration values defined' do
+          concentration_col_index = download.worksheet.columns.find_by(:name, :concentration).number - 1
+
+          download.worksheet.axlsx_worksheet.rows[10, 5].each do |row|
+            expect(row.cells[concentration_col_index].value).to be_nil
+          end
+        end
+
+        it 'uploads successfully' do
+          login_user(user)
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+          expect(page).to have_css('.alert', text: 'Sample manifest successfully uploaded.')
+        end
+      end
+
       context 'upload and reupload' do
         let(:download) { build(:test_download_tubes, columns: columns, manifest_type: 'tube_multiplexed_library') }
 
@@ -493,6 +554,23 @@ describe 'Sample manifest with tag sequences', :sample_manifest do
           attach_file('File to upload', test_file)
           click_button('Upload manifest')
           expect(page).to have_text('Sample manifest successfully uploaded.')
+        end
+
+        it 'succeeds on initial upload when volume and concentration is blank and all boxes are left unticked' do
+          login_user(user)
+
+          # Blank out the volume and concentration columns for the first data row in the spreadsheet
+          volume_col_index = download.worksheet.columns.find_by(:name, :volume).number - 1
+          concentration_col_index = download.worksheet.columns.find_by(:name, :concentration).number - 1
+          download.worksheet.axlsx_worksheet.rows[10].cells[volume_col_index].value = nil
+          download.worksheet.axlsx_worksheet.rows[10].cells[concentration_col_index].value = nil
+          download.save(test_file)
+
+          visit('sample_manifest_upload_with_tag_sequences/new')
+          attach_file('File to upload', test_file)
+          click_button('Upload manifest')
+
+          expect(page).to have_css('.alert', text: 'Sample manifest successfully uploaded.')
         end
       end
 
