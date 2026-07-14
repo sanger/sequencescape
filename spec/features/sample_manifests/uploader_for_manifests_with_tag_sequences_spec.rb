@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-describe 'Sample manifest with tag sequences', :js, :sample_manifest do
+describe 'Sample manifest with tag sequences', :sample_manifest do
   before(:all) do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
