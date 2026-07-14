@@ -767,9 +767,9 @@ DEPENDENCIES
   sanger-jsonapi-resources (~> 0.1.2)
   sanger_barcode_format!
   sanger_warren!
-  selenium-webdriver (~> 4.1)
-  shoulda-context (~> 3.0.0.rc1)
-  shoulda-matchers (~> 8.0)
+  selenium-webdriver
+  shoulda-context
+  shoulda-matchers
   simplecov
   simplecov-lcov
   sinatra
