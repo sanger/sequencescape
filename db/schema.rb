@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_14_133919) do
+ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1771,7 +1771,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_14_133919) do
   end
 
   create_table "tags", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.string "oligo", limit: 60
+    t.string "oligo"
     t.integer "map_id"
     t.integer "tag_group_id"
     t.datetime "created_at", precision: nil
