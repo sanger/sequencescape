@@ -400,7 +400,7 @@ GEM
     rack-protection (3.2.0)
       base64 (>= 0.1.0)
       rack (~> 2.2, >= 2.2.4)
-    rack-proxy (0.7.7)
+    rack-proxy (0.8.3)
       rack
     rack-session (1.0.2)
       rack (< 3)
@@ -639,7 +639,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
-    vite_rails (3.11.0)
+    vite_rails (3.11.1)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
     vite_ruby (3.10.2)
