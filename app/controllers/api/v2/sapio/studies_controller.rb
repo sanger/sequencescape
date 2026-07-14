@@ -43,6 +43,7 @@ module Api
           study.lazy_metadata = true
 
           if study.save
+            grant_study_owner(study)
             render json: {
               data: {
                 attributes: {
@@ -76,11 +77,51 @@ module Api
                  }
         end
 
-        # Current minimal payload.
-        # Additional attributes and nested associations will be agreed with
-        # the Integration Hub team before this endpoint is used in production.
+        # Builds the attributes hash for Study.new from the incoming Sapio payload.
+        # Looks up FacultySponsor, Program and StudyType records by name.
         def study_params
-          params.expect(study: [:name])
+          payload = sapio_study_payload
+          {
+            name: payload[:name],
+            study_metadata_attributes: {
+              faculty_sponsor_id: FacultySponsor.find_by(name: payload[:faculty_sponsor])&.id,
+              program_id: Program.find_by(name: payload[:program])&.id,
+              study_study_title: payload[:title],
+              study_type_id: StudyType.find_by(name: payload[:study_type])&.id,
+              study_description: payload[:study_description],
+              study_abstract: payload[:abstract],
+              data_release_strategy: payload[:data_release_strategy],
+              hmdmc_approval_number: payload[:hmdmc_approval_number]
+            }
+          }
+        end
+
+        # Permits and memoizes the Sapio study payload parameters.
+        def sapio_study_payload
+          @sapio_study_payload ||= params.expect(
+            study: %i[
+              name
+              study_owner_name
+              faculty_sponsor
+              program
+              title
+              study_type
+              study_description
+              abstract
+              data_release_strategy
+              hmdmc_approval_number
+            ]
+          )
+        end
+
+        # Grants the owner role to the user identified by +study_owner_name+ (login).
+        # Silently skips if the field is absent or no matching user is found.
+        def grant_study_owner(study)
+          owner_name = sapio_study_payload[:study_owner_name]
+          return if owner_name.blank?
+
+          owner = User.find_by(login: owner_name)
+          owner&.grant_owner(study)
         end
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
