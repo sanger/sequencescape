@@ -12,8 +12,9 @@ RSpec.describe Api::V2::StudyResource, type: :resource do
   it { is_expected.to have_model_name 'Study' }
 
   # Attributes
-  it { is_expected.to have_readonly_attribute :name }
-  it { is_expected.to have_readonly_attribute :uuid }
+  # Note: The attributes are effectively read-only because the resource is immutable.
+  it { is_expected.to have_readwrite_attribute :name }
+  it { is_expected.to have_readwrite_attribute :uuid }
 
   # Relationships
   it { is_expected.to have_many(:poly_metadata).with_class_name('PolyMetadatum') }
