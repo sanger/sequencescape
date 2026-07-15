@@ -13,3 +13,39 @@ flexible_cherrypick:
   asset_type: Well
   order: 1
   request_class_name: PooledCherrypickRequest
+pick_to_sta:
+  name: Pick to STA
+  asset_type: Well
+  order: 1
+  request_class_name: CherrypickForPulldownRequest
+  target_asset_type: Well
+  initial_state: "pending"
+  acceptable_purposes:
+    - Working Dilution
+pick_to_sta2:
+  name: Pick to STA2
+  asset_type: Well
+  order: 2
+  request_class_name: CherrypickForPulldownRequest
+  target_asset_type: Well
+  initial_state: "pending"
+  acceptable_purposes:
+    - STA
+pick_to_fluidigm:
+  name: Pick to Fluidigm
+  asset_type: Well
+  order: 3
+  request_class_name: CherrypickForFluidigmRequest
+  target_asset_type: Well
+  initial_state: "pending"
+  acceptable_purposes:
+    - STA2
+pick_to_snp_type:
+  name: Pick to SNP Type
+  asset_type: Well
+  order: 3
+  request_class_name: CherrypickForPulldownRequest
+  target_asset_type: Well
+  initial_state: "pending"
+  acceptable_purposes:
+    - SNP Type

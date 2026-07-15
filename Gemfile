@@ -129,7 +129,9 @@ group :default do
 end
 
 group :development do
+  # Generate entity relationship diagrams for the database
   gem 'rails-erd'
+  gem 'ruby-graphviz'
 
   # Detect n+1 queries
   gem 'bullet'
@@ -217,9 +219,9 @@ group :test, :cucumber do
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
   gem 'rspec-rails', '~> 8.0.0', require: false
-  gem 'selenium-webdriver', '~> 4.1', require: false
-  gem 'shoulda-context', '~> 3.0.0.rc1'
-  gem 'shoulda-matchers', '~> 7.0'
+  gem 'selenium-webdriver', require: false
+  gem 'shoulda-context'
+  gem 'shoulda-matchers'
   gem 'simplecov', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false

@@ -1,0 +1,89 @@
+---
+Cherrypick:
+  name: "Cherrypick"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: Generic
+    request_type_keys:
+      - cherrypick
+    asset_input_methods:
+      - select an asset group
+      - enter a list of sample names found on plates
+    request_options:
+      initial_state:
+        cherrypick: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        default_value: null
+        display_name: Plate identifier
+        key: order_role
+        kind: Selection
+        parameters:
+          type: Selection
+          selection: &cherrypick_selection_options
+            - ""
+            - ILC
+            - HSqX
+            - ReISC
+            - PWGS
+            - MWGS
+            - ISC
+        selection: *cherrypick_selection_options
+Cherrypick For Fluidigm:
+  name: "Cherrypick For Fluidigm"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: Generic
+    request_type_keys:
+      - pick_to_sta
+      - pick_to_sta2
+      - pick_to_snp_type
+      - pick_to_fluidigm
+    request_options:
+      initial_state:
+        pick_to_sta: pending
+        pick_to_sta2: pending
+        pick_to_snp_type: pending
+        pick_to_fluidigm: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        default_value: Fluidigm 96-96
+        display_name: Fluidigm Chip
+        key: target_purpose_name
+        kind: Selection
+        parameters:
+          type: Selection
+          selection: &cherrypick_fluidigm_selection_options
+            - Fluidigm 96-96
+            - Fluidigm 192-24
+        selection: *cherrypick_fluidigm_selection_options
+Flexible Cherrypick:
+  name: "Flexible Cherrypick"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Short Read
+    product_catalogue_name: Generic
+    request_type_keys:
+      - flexible_cherrypick
+    request_options:
+      initial_state:
+        flexible_cherrypick: pending
+    input_field_infos:
+      - !ruby/object:FieldInfo
+        default_value: null
+        display_name: Plate identifier
+        key: order_role
+        kind: Selection
+        parameters:
+          type: Selection
+          selection: &flexible_cherrypick_selection_options
+            - ""
+            - ILC
+            - HSqX
+            - ReISC
+            - PWGS
+            - MWGS
+            - ISC
+        selection: *flexible_cherrypick_selection_options

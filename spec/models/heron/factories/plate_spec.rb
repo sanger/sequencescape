@@ -23,6 +23,7 @@ RSpec.describe Heron::Factories::Plate, :heron, :heron_events, :lighthouse do
   context 'with invalid params' do
     shared_examples_for 'an invalid parameter' do
       let(:factory) { described_class.new(params) }
+
       it 'is not valid' do
         expect(factory).not_to be_valid
       end

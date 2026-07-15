@@ -46,9 +46,9 @@ RSpec.describe CherrypickTask::ControlLocator do
       # As we seed the randomization from the batch id, these tests are deterministic,
       # but it is possible that future Ruby versions may change the behaviour of the prng
       # and this test may begin failing. If it does, we could:
-      # * Just update this to ignore the problem batch
-      # * Adjust the tested batch ranges
-      # * Refactor this test to explicitly allow x% of tested batches to fail.
+      # - Just update this to ignore the problem batch
+      # - Adjust the tested batch ranges
+      # - Refactor this test to explicitly allow x% of tested batches to fail.
       expect(instance.control_positions(0)).not_to eq instance.control_positions(valid_range.size)
     end
 

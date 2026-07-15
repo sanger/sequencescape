@@ -14,6 +14,7 @@ Capybara.register_driver :headless_chrome do |app|
 
   options.add_argument('--window-size=1600,3200')
   options.add_preference('download.default_directory', DownloadHelpers::PATH.to_s)
+  options.add_preference('profile.password_manager_leak_detection', false)
   options.add_argument('--headless')
   options.add_argument('--disable-gpu')
   options.add_argument('--no-sandbox')

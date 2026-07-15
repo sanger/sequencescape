@@ -1,0 +1,276 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe SampleManifestExcel::Download, :sample_manifest, :sample_manifest_excel, type: :model do
+  attr_reader :download, :spreadsheet
+
+  let(:test_file) { 'test.xlsx' }
+
+  def save_file
+    download.save(test_file)
+    @spreadsheet = Roo::Spreadsheet.open(test_file)
+  end
+
+  before(:all) do
+    SampleManifestExcel.configure do |config|
+      config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+      config.load!
+    end
+  end
+
+  before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
+
+  after(:all) { SampleManifestExcel.reset! }
+
+  after { FileUtils.rm_f(test_file) }
+
+  it 'is not valid without a sample manifest' do
+    download =
+      described_class.new(
+        nil,
+        SampleManifestExcel.configuration.columns.plate_full.dup,
+        SampleManifestExcel.configuration.ranges.dup
+      )
+    expect(download).not_to be_valid
+  end
+
+  it 'is not valid without some columns' do
+    download = described_class.new(create(:sample_manifest), nil, SampleManifestExcel.configuration.ranges.dup)
+    expect(download).not_to be_valid
+  end
+
+  it 'is not valid without some ranges' do
+    download =
+      described_class.new(create(:sample_manifest), SampleManifestExcel.configuration.columns.plate_full.dup, nil)
+    expect(download).not_to be_valid
+  end
+
+  context 'Plate download' do
+    before do
+      sample_manifest = create(:sample_manifest)
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.plate_full.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'creates an excel file' do
+      expect(File).to be_file(test_file)
+    end
+
+    it 'creates the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.plate_full.count)
+    end
+  end
+
+  context 'Heron Plate download' do
+    before do
+      sample_manifest = create(:sample_manifest)
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.heron.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'creates an excel file' do
+      expect(File).to be_file(test_file)
+    end
+
+    it 'creates the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.heron.count)
+    end
+  end
+
+  context 'Tube download' do
+    before do
+      sample_manifest = create(:tube_sample_manifest)
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.tube_full.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'creates an excel file' do
+      expect(File.file?(test_file))
+    end
+
+    it 'creates the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_full.count)
+    end
+  end
+
+  context 'Multiplexed library tube download' do
+    before do
+      sample_manifest = create(:tube_sample_manifest, asset_type: 'multiplexed_library')
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.tube_multiplexed_library.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'create an excel file' do
+      expect(File).to be_file('test.xlsx')
+    end
+
+    it 'create the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_multiplexed_library.count)
+    end
+  end
+
+  context 'Library tube with tag sequences download' do
+    before do
+      # asset_type might be changed, based on how upload would work
+      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: 'library')
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'create an excel file' do
+      expect(File).to be_file('test.xlsx')
+    end
+
+    it 'create the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(
+        SampleManifestExcel.configuration.columns.tube_library_with_tag_sequences.count
+      )
+    end
+  end
+
+  context 'Long read tube' do
+    before do
+      create(:long_read_tube_purpose)
+
+      # asset_type might be changed, based on how upload would work
+      sample_manifest = create(:tube_sample_manifest_with_samples, asset_type: '1dtube')
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.long_read.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'create an excel file' do
+      expect(File).to be_file('test.xlsx')
+    end
+
+    it 'create the two different types of worksheet' do
+      expect(spreadsheet.sheets.first).to eq('DNA Collections Form')
+      expect(spreadsheet.sheets.last).to eq('Ranges')
+    end
+
+    it 'have the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.long_read.count)
+    end
+  end
+
+  context 'Extraction tube' do
+    before do
+      sample_manifest = create(:tube_sample_manifest, asset_type: '1dtube')
+      sample_manifest.generate
+      @download =
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.tube_extraction.dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      save_file
+    end
+
+    it 'creates an excel file' do
+      expect(File.file?(test_file))
+    end
+
+    it 'has the correct number of columns' do
+      expect(download.column_list.count).to eq(SampleManifestExcel.configuration.columns.tube_extraction.count)
+    end
+  end
+
+  context 'Verification of retention instructions' do
+    shared_examples 'manifest with retention instruction' do |template_name, config_column|
+      let(:sample_manifest) { create(:tube_sample_manifest) }
+      let(:download) do
+        described_class.new(
+          sample_manifest,
+          SampleManifestExcel.configuration.columns.public_send(config_column).dup,
+          SampleManifestExcel.configuration.ranges.dup
+        )
+      end
+
+      let(:spreadsheet) do
+        download.save(test_file)
+        Roo::Spreadsheet.open(test_file)
+      end
+
+      let(:headers) do
+        header_row = spreadsheet.sheet(0).each_row_streaming(pad_cells: true).find do |row|
+          row.map { |cell| cell&.value }.include?('SANGER SAMPLE ID')
+        end
+
+        header_row.map { |cell| cell&.value }
+      end
+
+      it "includes the Retention Instruction column for #{template_name}" do
+        expect(headers).to include('RETENTION INSTRUCTION')
+      end
+    end
+
+    context 'with Default Tube template' do
+      it_behaves_like 'manifest with retention instruction', 'Default Tube', :tube_default
+    end
+
+    context 'with Long Read template' do
+      it_behaves_like 'manifest with retention instruction', 'Long Read', :long_read
+    end
+  end
+end
