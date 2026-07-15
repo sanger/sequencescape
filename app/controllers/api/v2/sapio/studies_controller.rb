@@ -38,24 +38,10 @@ module Api
         def create
           return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
 
-          study = Study.new(study_params)
-          study.mastered_in_sapio = true
-          study.lazy_metadata = true
-
+          study = build_sapio_study
           if study.save
             grant_study_owner(study)
-            render json: {
-              data: {
-                attributes: {
-                  id: study.id,
-                  uuid: study.uuid,
-                  name: study.name
-                },
-                links: {
-                  self: api_v2_sapio_study_url(study)
-                }
-              }
-            }, status: :created
+            render_study_created(study)
           else
             render json: { errors: study.errors.full_messages }, status: :unprocessable_entity
           end
@@ -77,22 +63,61 @@ module Api
                  }
         end
 
-        # Builds the attributes hash for Study.new from the incoming Sapio payload.
-        # Looks up FacultySponsor, Program and StudyType records by name.
+        # Builds and configures a new +Study+ instance from the Sapio payload.
+        def build_sapio_study
+          Study.new(study_params).tap do |study|
+            study.mastered_in_sapio = true
+            study.bypass_sapio_validation = true
+            study.lazy_metadata = true
+          end
+        end
+
+        # Renders the 201 Created response for a successfully saved study.
+        def render_study_created(study)
+          render json: {
+            data: {
+              attributes: { id: study.id, uuid: study.uuid, name: study.name },
+              links: { self: api_v2_sapio_study_url(study) }
+            }
+          }, status: :created
+        end
+
+        # Builds the top-level attributes hash passed to +Study.new+.
         def study_params
+          { name: sapio_study_payload[:name], study_metadata_attributes: study_metadata_params }
+        end
+
+        # Merges direct scalar metadata fields with association ID lookups.
+        def study_metadata_params
+          study_metadata_direct_params.merge(study_metadata_association_ids)
+        end
+
+        # Scalar metadata fields that are passed through from the Sapio payload without lookup.
+        def study_metadata_direct_params
           payload = sapio_study_payload
           {
-            name: payload[:name],
-            study_metadata_attributes: {
-              faculty_sponsor_id: FacultySponsor.find_by(name: payload[:faculty_sponsor])&.id,
-              program_id: Program.find_by(name: payload[:program])&.id,
-              study_study_title: payload[:title],
-              study_type_id: StudyType.find_by(name: payload[:study_type])&.id,
-              study_description: payload[:study_description],
-              study_abstract: payload[:abstract],
-              data_release_strategy: payload[:data_release_strategy],
-              hmdmc_approval_number: payload[:hmdmc_approval_number]
-            }
+            study_study_title: payload[:title],
+            study_description: payload[:study_description],
+            study_abstract: payload[:abstract],
+            data_release_strategy: payload[:data_release_strategy],
+            hmdmc_approval_number: payload[:hmdmc_approval_number],
+            contaminated_human_dna: payload[:contaminated_human_dna],
+            contains_human_dna: payload[:contains_human_dna],
+            commercially_available: payload[:commercially_available],
+            ebi_library_strategy: payload[:ebi_library_strategy],
+            ebi_library_source: payload[:ebi_library_source],
+            ebi_library_selection: payload[:ebi_library_selection]
+          }
+        end
+
+        # Resolves Sapio name fields to Sequencescape association IDs.
+        def study_metadata_association_ids
+          payload = sapio_study_payload
+          {
+            faculty_sponsor_id: FacultySponsor.find_by(name: payload[:faculty_sponsor])&.id,
+            program_id: Program.find_by(name: payload[:program])&.id,
+            study_type_id: StudyType.find_by(name: payload[:study_type])&.id,
+            data_release_study_type_id: DataReleaseStudyType.find_by(name: payload[:data_release_study_type])&.id
           }
         end
 
@@ -106,10 +131,17 @@ module Api
               program
               title
               study_type
+              data_release_study_type
               study_description
               abstract
               data_release_strategy
               hmdmc_approval_number
+              contaminated_human_dna
+              contains_human_dna
+              commercially_available
+              ebi_library_strategy
+              ebi_library_source
+              ebi_library_selection
             ]
           )
         end

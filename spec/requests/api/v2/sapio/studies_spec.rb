@@ -628,4 +628,234 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
   end
+
+  describe 'POST /api/v2/sapio/studies' do
+    let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+    let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+    let(:regular_app) { create(:api_application) }
+
+    let(:faculty_sponsor) { create(:faculty_sponsor) }
+    let(:program) { create(:program) }
+    let(:study_type) { create(:study_type) }
+    let(:data_release_study_type) { create(:data_release_study_type) }
+    let(:owner_user) { create(:user, login: 'study_owner') }
+
+    let(:valid_payload) do
+      {
+        study: {
+          name: 'Sapio Created Study',
+          study_owner_name: owner_user.login,
+          faculty_sponsor: faculty_sponsor.name,
+          program: program.name,
+          title: 'Sapio Study Title',
+          study_type: study_type.name,
+          data_release_study_type: data_release_study_type.name,
+          study_description: 'A study created via Sapio',
+          abstract: 'Sapio study abstract',
+          data_release_strategy: 'open',
+          hmdmc_approval_number: 'HMDMC12/345',
+          contaminated_human_dna: 'No',
+          contains_human_dna: 'No',
+          commercially_available: 'No',
+          ebi_library_strategy: 'WGS',
+          ebi_library_source: 'GENOMIC',
+          ebi_library_selection: 'PCR'
+        }
+      }
+    end
+
+    context 'when the sapio mastered study restrictions feature flag is disabled' do
+      before { Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions) }
+
+      it 'returns a 404 Not Found response' do
+        api_post base_endpoint, valid_payload, headers: integration_hub_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not create a study' do
+        expect { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+          .not_to change(Study, :count)
+      end
+    end
+
+    context 'when the sapio mastered study restrictions feature flag is enabled', :sapio_restrictions_enabled do
+      context 'without an API key' do
+        it 'returns 403 Forbidden' do
+          api_post base_endpoint, valid_payload
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it 'returns an Integration Hub API key required error message' do
+          api_post base_endpoint, valid_payload
+          expect(json.dig('errors', 0, 'detail')).to eq('Integration Hub API key required.')
+        end
+      end
+
+      context 'with a non-integration-hub API key' do
+        it 'returns 403 Forbidden' do
+          api_post base_endpoint, valid_payload, headers: { 'X-Sequencescape-Client-Id': regular_app.key }
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it 'returns an Integration Hub API key required error message' do
+          api_post base_endpoint, valid_payload, headers: { 'X-Sequencescape-Client-Id': regular_app.key }
+          expect(json.dig('errors', 0, 'detail')).to eq('Integration Hub API key required.')
+        end
+      end
+
+      context 'with an integration hub API key and a valid payload' do
+        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'creates a study in the database' do
+          expect(Study.find_by(name: 'Sapio Created Study')).not_to be_nil
+        end
+
+        it 'returns the study id' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'id')).to eq(study.id)
+        end
+
+        it 'returns the study uuid' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
+        end
+
+        it 'returns the study name' do
+          expect(json.dig('data', 'attributes', 'name')).to eq('Sapio Created Study')
+        end
+
+        it 'returns a self link referencing the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'links', 'self')).to include(study.id.to_s)
+        end
+
+        it 'sets mastered_in_sapio to true on the created study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.mastered_in_sapio).to be(true)
+        end
+
+        it 'maps the faculty_sponsor by name' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.faculty_sponsor).to eq(faculty_sponsor)
+        end
+
+        it 'maps the program by name' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.program).to eq(program)
+        end
+
+        it 'maps the study_type by name' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.study_type).to eq(study_type)
+        end
+
+        it 'maps the data_release_study_type by name' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.data_release_study_type).to eq(data_release_study_type)
+        end
+
+        it 'sets the study_description' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.study_description).to eq('A study created via Sapio')
+        end
+
+        it 'maps title to study_study_title' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.study_study_title).to eq('Sapio Study Title')
+        end
+
+        it 'maps abstract to study_abstract' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.study_abstract).to eq('Sapio study abstract')
+        end
+
+        it 'sets the data_release_strategy' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.data_release_strategy).to eq('open')
+        end
+
+        it 'sets the hmdmc_approval_number' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.hmdmc_approval_number).to eq('HMDMC12/345')
+        end
+
+        it 'grants the owner role to the user matching study_owner_name' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(owner_user.owner_of?(study)).to be(true)
+        end
+      end
+
+      context 'with an integration hub API key and an unknown study_owner_name' do
+        let(:unknown_owner_payload) { { study: valid_payload[:study].merge(study_owner_name: 'non_existent_user') } }
+
+        before { api_post base_endpoint, unknown_owner_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'creates the study without an owner' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.owners).to be_empty
+        end
+      end
+
+      context 'with an integration hub API key and no study_owner_name' do
+        let(:no_owner_payload) { { study: valid_payload[:study].except(:study_owner_name) } }
+
+        before { api_post base_endpoint, no_owner_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'creates the study without an owner' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.owners).to be_empty
+        end
+      end
+
+      context 'with an integration hub API key and a missing study name' do
+        let(:no_name_payload) { { study: valid_payload[:study].except(:name) } }
+
+        it 'returns 422 Unprocessable Entity' do
+          api_post base_endpoint, no_name_payload, headers: integration_hub_headers
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns validation error messages' do
+          api_post base_endpoint, no_name_payload, headers: integration_hub_headers
+          expect(json['errors']).not_to be_empty
+        end
+
+        it 'does not create a study' do
+          expect { api_post base_endpoint, no_name_payload, headers: integration_hub_headers }
+            .not_to change(Study, :count)
+        end
+      end
+
+      context 'with an integration hub API key and an unknown faculty_sponsor name' do
+        let(:unknown_sponsor_payload) { { study: valid_payload[:study].merge(faculty_sponsor: 'Unknown Sponsor') } }
+
+        it 'returns 422 Unprocessable Entity' do
+          api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers
+          expect(response).to have_http_status(:unprocessable_entity)
+        end
+
+        it 'returns validation error messages' do
+          api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers
+          expect(json['errors']).not_to be_empty
+        end
+
+        it 'does not create a study' do
+          expect { api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers }
+            .not_to change(Study, :count)
+        end
+      end
+    end
+  end
 end
