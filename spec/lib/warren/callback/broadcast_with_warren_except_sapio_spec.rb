@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'warren/callback/broadcast_with_warren_except_sapio'
 
-class BasicRecord
+class BasicRecordWithWarren
   attr_reader :id
 
   def initialize(id)
@@ -11,7 +11,7 @@ class BasicRecord
   end
 end
 
-class SapioRecord < BasicRecord
+class SapioRecordWithWarren < BasicRecordWithWarren
   def initialize(id, mastered_in_sapio)
     super(id)
     @mastered_in_sapio = mastered_in_sapio
@@ -31,7 +31,7 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
 
   describe '#after_commit' do
     context 'when the record is mastered in Sapio' do
-      let(:record) { SapioRecord.new(1, true) }
+      let(:record) { SapioRecordWithWarren.new(1, true) }
 
       it 'drops the message' do
         callback.after_commit(record)
@@ -41,7 +41,7 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
     end
 
     context 'when the record is not mastered in Sapio' do
-      let(:record) { SapioRecord.new(1, false) }
+      let(:record) { SapioRecordWithWarren.new(1, false) }
 
       it 'forwards the message' do
         callback.after_commit(record)
@@ -51,7 +51,7 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
     end
 
     context 'when the record does not define mastered_in_sapio?' do
-      let(:record) { BasicRecord.new(1) }
+      let(:record) { BasicRecordWithWarren.new(1) }
 
       it 'forwards the message' do
         callback.after_commit(record)
