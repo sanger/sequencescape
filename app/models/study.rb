@@ -193,15 +193,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               with: /\A[\w_-]+\z/i,
               allow_blank: false,
               message: 'cannot contain spaces or be blank'
-            },
-            unless: :mastered_in_sapio?
+            }
   validate :validate_ethically_approved, unless: :mastered_in_sapio?
   # add validation when create or update sapio study
   validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: %i[create update]
   validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
-  before_validation :set_default_ethical_approval, unless: :mastered_in_sapio?
+  before_validation :set_default_ethical_approval
   after_touch :rebroadcast
 
   aasm column: :state, whiny_persistence: true do
