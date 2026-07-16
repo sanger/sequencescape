@@ -99,14 +99,7 @@ module Api
             study_study_title: payload[:title],
             study_description: payload[:study_description],
             study_abstract: payload[:abstract],
-            data_release_strategy: payload[:data_release_strategy],
-            hmdmc_approval_number: payload[:hmdmc_approval_number],
-            contaminated_human_dna: payload[:contaminated_human_dna],
-            contains_human_dna: payload[:contains_human_dna],
-            commercially_available: payload[:commercially_available],
-            ebi_library_strategy: payload[:ebi_library_strategy],
-            ebi_library_source: payload[:ebi_library_source],
-            ebi_library_selection: payload[:ebi_library_selection]
+            data_release_strategy: payload[:data_release_strategy]
           }
         end
 
@@ -131,17 +124,9 @@ module Api
               program
               title
               study_type
-              data_release_study_type
               study_description
               abstract
               data_release_strategy
-              hmdmc_approval_number
-              contaminated_human_dna
-              contains_human_dna
-              commercially_available
-              ebi_library_strategy
-              ebi_library_source
-              ebi_library_selection
             ]
           )
         end

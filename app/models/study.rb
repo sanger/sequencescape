@@ -143,7 +143,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
-  # used to bypass validation when fixing data in study from console by ticket officer.
+  # used to bypass validation
   attr_accessor :bypass_sapio_validation
 
   # Associations
