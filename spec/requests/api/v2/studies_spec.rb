@@ -8,7 +8,7 @@ describe 'Studies API', with: :api_v2 do
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
-  context 'with multiple studies' do
+  context 'when requesting studies' do
     let!(:study) { create(:study) }
 
     before do
@@ -16,39 +16,70 @@ describe 'Studies API', with: :api_v2 do
       create(:study)
     end
 
-    it 'sends a list of studies' do
-      api_get base_endpoint
+    context 'when retrieving all studies' do
+      before do
+        api_get base_endpoint
+      end
 
-      # test for the 200 status-code
-      expect(response).to have_http_status(:success)
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:success)
+      end
 
-      # check to make sure the right amount of messages are returned
-      expect(json['data'].length).to eq(Study.count)
+      it 'returns the correct number of studies' do
+        expect(json['data'].length).to eq(Study.count)
+      end
+    end
+
+    context 'when retrieving a specific study by ID' do
+      before do
+        api_get "#{base_endpoint}/#{study.id}"
+      end
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns the correct study' do
+        expect(json['data']['id']).to eq(study.id.to_s)
+      end
     end
 
     # Check filters, ESPECIALLY if they aren't simple attribute filters
-    it 'filters studies by name' do
-      api_get "#{base_endpoint}?filter[name]=\"#{study.name}\""
-      expect(response).to have_http_status(:success)
-      expect(json['data'].length).to eq(1)
-      expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
+
+    context 'when retrieving a specific study by UUID' do
+      before do
+        api_get "#{base_endpoint}?filter[uuid]=\"#{study.uuid}\""
+      end
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:success)
+      end
+
+      it 'returns a single study' do
+        expect(json['data'].length).to eq(1)
+      end
+
+      it 'returns the correct study' do
+        expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
+      end
     end
 
-    it 'filters studies by uuid' do
-      api_get "#{base_endpoint}?filter[uuid]=\"#{study.uuid}\""
-      expect(response).to have_http_status(:success)
-      expect(json['data'].length).to eq(1)
-      expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
-    end
-  end
+    context 'when retrieving a specific study by name' do
+      before do
+        api_get "#{base_endpoint}?filter[name]=\"#{study.name}\""
+      end
 
-  context 'with a study' do
-    let(:resource_model) { create(:study) }
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:success)
+      end
 
-    it 'sends an individual study' do
-      api_get "#{base_endpoint}/#{resource_model.id}"
-      expect(response).to have_http_status(:success)
-      expect(json.dig('data', 'type')).to eq('studies')
+      it 'returns a single study' do
+        expect(json['data'].length).to eq(1)
+      end
+
+      it 'returns the correct study' do
+        expect(json['data'][0]['attributes']['uuid']).to eq(study.uuid)
+      end
     end
   end
 end
