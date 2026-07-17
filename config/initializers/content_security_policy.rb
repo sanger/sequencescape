@@ -6,40 +6,35 @@
 
 Rails.application.configure do
   config.content_security_policy do |policy|
-#     policy.default_src :self, :https
-#     policy.font_src    :self, :https, :data
-#     policy.img_src     :self, :https, :data
-#     policy.object_src  :none
-#     policy.script_src  :self, :https
+    # CSP policy declarations
+    # NOTE:
+    # style_src      - fallback
+    # style_src_elem - linked stylesheets and inline style, eg: <link rel="stylesheet" href="..."> and <style>...</style>
+    # style_src_attr - inline style attributes, eg: <div style="color: red;">...</div>
+    policy.default_src :none
+    policy.font_src    :self, :https, :data
+    policy.img_src     :self, :https, :data
+    policy.object_src  :none
+    policy.script_src  :self, :https, :data
+    # Make styles maximally permissive to allow for inline styles and style attributes
+    # This is not good practice and effectively undoes the benefits of using a CSP
+    # Next step, reduce the scopes to :self, :https and tackle the warning messages in the console
+    policy.style_src   "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_elem "*", :self, :http, :https, :data, :blob, :unsafe_inline, :unsafe_hashes
+    policy.style_src_attr "*", :unsafe_inline
 
-  # Allow @vite/client to hot reload style changes
-  if Rails.env.development? || Rails.env.test?
-    asset_hosts = [
-      "http://#{ViteRuby.config.host_with_port}",
-      'http://localhost:3000',
-      'http://127.0.0.1:3000'
-    ].uniq
+    policy.connect_src :self, :https
 
-    policy.script_src(*policy.script_src, :unsafe_eval, :data, *asset_hosts)
-    policy.script_src_elem(*policy.script_src_elem, :unsafe_eval, :data, :blob, *asset_hosts)
-    policy.style_src(*policy.style_src, :unsafe_inline, *asset_hosts)
-    policy.style_src_elem(*policy.style_src_elem, :unsafe_inline, *asset_hosts)
+   # Specify URI for violation reports
+    policy.report_uri "/csp-reports"
   end
 
-  # You may need to enable this in production as well depending on your setup.
-  policy.script_src *policy.script_src, :blob
-
-#     policy.style_src   :self, :https
-  # Allow @vite/client to hot reload style changes in development
-  policy.style_src *policy.style_src, :unsafe_inline if Rails.env.development?
-
-#     # Specify URI for violation reports
-#     # policy.report_uri "/csp-violation-report-endpoint"
-  end
-#
-#   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
+   # Generate session nonces for permitted importmap, inline scripts, and inline styles.
   config.content_security_policy_nonce_generator = ->(request) { request.session.id.to_s }
   config.content_security_policy_nonce_directives = %w(script-src style-src)
+
+  # Nonces are also required for Vite resources tags:
+  # See ViteRailsNoncePatch at config/initializers/vite_rails_nonce_patch.rb for more information.
 
   # Report CSP violations to a specified URI
   # For further information see the following documentation:
