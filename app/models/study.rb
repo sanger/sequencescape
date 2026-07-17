@@ -242,7 +242,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # we have invoked map_attribute_to_json_attribute for them in app/models/api/study_io.rb
     custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
     custom_attribute(:study_description, required: true)
-  #  custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO, if: -> { !mastered_in_sapio? })
+    custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
     custom_attribute(:remove_x_and_autosomes, required: true, default: 'No', in: YES_OR_NO)
     custom_attribute(:separate_y_chromosome_data, required: true, default: false, boolean: true)
     custom_attribute(:study_project_id)
@@ -250,8 +250,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:study_study_title)
     custom_attribute(:study_ebi_accession_number)
     custom_attribute(:study_sra_hold, required: true, default: 'Hold', in: STUDY_SRA_HOLDS)
-    #custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
-    # custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
+    custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
+    custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
     # add ebi library strategy, ebi library source, ebi library selection
@@ -797,6 +797,16 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     def study_type_valid?
       errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
+    end
+
+    # Fields that are required for regular study creation but are not sent by Sapio.
+    # Their validation errors are cleared after validation when the study is mastered in Sapio.
+    SAPIO_OPTIONAL_FIELDS = %i[contains_human_dna contaminated_human_dna commercially_available].freeze
+
+    after_validation :clear_sapio_optional_errors, if: -> { mastered_in_sapio? }
+
+    def clear_sapio_optional_errors
+      SAPIO_OPTIONAL_FIELDS.each { |field| errors.delete(field) }
     end
 
     # rubocop:todo Metrics/MethodLength
