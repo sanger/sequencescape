@@ -373,6 +373,7 @@ Rails.application.routes.draw do
       collection do
         get :bulk_accession_preview
         put :bulk_accession
+        put :view_sample_accessions
       end
     end
     resources :custom_texts

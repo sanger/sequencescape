@@ -171,4 +171,65 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       end
     end
   end
+
+  describe '#view_sample_accessions' do
+    before do
+      put :view_sample_accessions, params:
+    end
+
+    context 'with valid sample names' do
+      let(:samples) { create_list(:sample, 5) }
+      let(:params) { { sample_names: samples.map(&:name) } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns the accession numbers for the provided sample names' do
+        expected_accession_numbers = samples.map(&:ebi_accession_number)
+        expect(response.parsed_body).to eq('accession_numbers' => expected_accession_numbers)
+      end
+    end
+
+    context 'with invalid sample names' do
+      let(:params) { { sample_names: ['', 'nonexistent_sample_1', '', 'nonexistent_sample_2', ''] } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns an array of nils for the invalid sample names' do
+        expect(response.parsed_body).to eq('accession_numbers' => [nil, nil, nil, nil, nil])
+      end
+    end
+
+    context 'with poorly formatted sample names' do
+      let(:samples) do
+        [create(:sample, name: 'sample_1', ebi_accession_number: 'accession_1'),
+         create(:sample, name: 'sample_2', ebi_accession_number: 'accession_2')]
+      end
+      let(:params) { { sample_names: ['  ', '   ', '  sample_2', '  ', '  sample_1 '] } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns the accession numbers for the valid sample names, ignoring whitespace' do
+        expect(response.parsed_body).to eq('accession_numbers' =>
+          [nil, nil, 'accession_2', nil, 'accession_1'])
+      end
+    end
+  end
 end

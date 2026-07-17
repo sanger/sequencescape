@@ -39,6 +39,9 @@ class Admin::AccessioningToolsController < ApplicationController
     redirect_to admin_accessioning_tools_path
   end
 
+  def view_sample_accessions
+  end
+
   private
 
   def perform_bulk_accession
