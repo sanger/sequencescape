@@ -126,8 +126,8 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     context 'with bad date parameters' do
       let(:params) { { end_date: 'apples' } }
 
-      it 'sets a failure flash message' do
-        expect(flash[:failure]).to eq('An error occurred, please check that date inputs are correct.')
+      it 'sets a error flash message' do
+        expect(flash[:error]).to eq('An error occurred, please check that date inputs are correct.')
       end
 
       it 'redirects to the accessioning tools page' do
@@ -138,8 +138,8 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     context 'with invalid date parameters' do
       let(:params) { { start_date: '2026-02-31', end_date: '2026-12-32' } }
 
-      it 'sets a failure flash message' do
-        expect(flash[:failure]).to eq('An error occurred, please check that date inputs are correct.')
+      it 'sets a error flash message' do
+        expect(flash[:error]).to eq('An error occurred, please check that date inputs are correct.')
       end
 
       it 'redirects to the accessioning tools page' do
@@ -164,6 +164,163 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
       it 'sets a success flash message' do
         expect(flash[:success]).to eq('Bulk accessioning complete: 10 samples have been sent for accessioning.')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+  end
+
+  describe '#bulk_accession_by_name' do
+    let(:study) { create(:open_study, accession_number: 'ENA123') }
+    let(:samples) { create_list(:sample, 10, studies: [study]) }
+    let(:disable_accessioning) { false }
+
+    before do
+      Flipper.disable(:y25_706_enable_accessioning) if disable_accessioning
+
+      allow(SampleAccessioningJob).to receive(:new).and_call_original
+      allow(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:warn)
+
+      put :bulk_accession_by_name, params:
+    end
+
+    context 'when accessioning is disabled' do
+      let(:disable_accessioning) { true }
+      let(:params) { { sample_names: samples.map(&:name).join("\n") } }
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'sets a notice flash message' do
+        expect(flash[:notice]).to eq('Accessioning is currently disabled. Please enable accessioning to use this tool.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with valid sample names' do
+      let(:params) { { sample_names: samples.map(&:name).join("\n") } }
+
+      it 'creates a SampleAccessioningJob for each sample with the provided name' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(10).times
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 10 samples have been sent for accessioning.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'logs the accessioning action' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 10 samples by name')
+      end
+
+      it 'does not log any warnings' do
+        expect(Rails.logger).not_to have_received(:warn)
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with a mix of valid and invalid sample names' do
+      let(:params) { { sample_names: (samples.map(&:name) + ['nonexistent_sample']).join("\n") } }
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message' do
+        expect(flash[:error])
+          .to eq('The were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
+      end
+
+      it 'logs a warning for the unaccessionable sample names' do
+        expect(Rails.logger).to have_received(:warn)
+          .with('1 samples not found or not eligible for accessioning: nonexistent_sample')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with no matching samples' do
+      let(:params) do
+        { sample_names: %w[
+          nonexistent_sample_1
+          nonexistent_sample_2
+          nonexistent_sample_3
+          nonexistent_sample_4
+          nonexistent_sample_5
+          nonexistent_sample_6
+        ].join("\n") }
+      end
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message for the unaccessionable sample names' do
+        expect(flash[:error])
+          .to eq('The were 6 samples not found or not eligible for accessioning including: ' \
+                 'nonexistent_sample_1, nonexistent_sample_2, ' \
+                 'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5')
+      end
+
+      it 'receives a warning log' do
+        expect(Rails.logger).to have_received(:warn)
+          .with('6 samples not found or not eligible for accessioning: nonexistent_sample_1, nonexistent_sample_2, ' \
+                'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5, nonexistent_sample_6')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with poorly formatted sample names' do
+      let(:params) { { sample_names: ["  #{samples[0].name} , ", "  #{samples[1].name}  ", ','].join("\n") } }
+
+      it 'trims whitespace and accessions the samples' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(2).times
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 2 samples have been sent for accessioning.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'logs the accessioning action' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 2 samples by name')
+      end
+
+      it 'does not log any warnings' do
+        expect(Rails.logger).not_to have_received(:warn)
       end
 
       it 'redirects to the accessioning tools page' do
