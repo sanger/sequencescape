@@ -191,7 +191,10 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
       it 'returns the accession numbers for the provided sample names' do
         expected_accession_numbers = samples.map(&:ebi_accession_number)
-        expect(response.parsed_body).to eq('accession_numbers' => expected_accession_numbers)
+        expect(response.parsed_body).to eq(
+          'sample_names' => samples.map(&:name),
+          'accession_numbers' => expected_accession_numbers
+        )
       end
     end
 
@@ -207,7 +210,10 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       end
 
       it 'returns an array of nils for the invalid sample names' do
-        expect(response.parsed_body).to eq('accession_numbers' => [nil, nil, nil, nil, nil])
+        expect(response.parsed_body).to eq(
+          'sample_names' => ['', 'nonexistent_sample_1', '', 'nonexistent_sample_2', ''],
+          'accession_numbers' => [nil, nil, nil, nil, nil]
+        )
       end
     end
 
@@ -231,8 +237,10 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       end
 
       it 'returns the accession numbers for the valid sample names, ignoring whitespace' do
-        expect(response.parsed_body).to eq('accession_numbers' =>
-          [nil, nil, 'accession_2', nil, 'accession_1'])
+        expect(response.parsed_body).to eq(
+          'sample_names' => ['', '', sample2.name, '', sample1.name],
+          'accession_numbers' => [nil, nil, 'accession_2', nil, 'accession_1']
+        )
       end
     end
   end
