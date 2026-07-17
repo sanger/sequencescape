@@ -64,4 +64,24 @@
   </div>
 </div>
 
+<div class="card my-3">
+  <div class="card-header font-weight-bold">View sample accession numbers</div>
+  <div class="card-body">
+    <p>Designed for confirming the accession numbers of provided samples.</p>
+    <form>
+      <div class="form-row">
+        <div class="form-group col-md-6">
+          <label for="view_sample_names" class="form-label">Sample names</label>
+          <%= text_area_tag 'view_sample_names', nil, class: 'form-control', id: 'view_sample_names', rows:12 %>
+        </div>
+        <div class="form-group col-md-6">
+          <label for="view_accession_numbers" class="form-label">Accession numbers</label>
+          <%= text_area_tag 'view_accession_numbers', nil, class: 'form-control', id: 'view_accession_numbers', rows:12, readonly:true %>
+        </div>
+      </div>
+      <%= button_tag 'View accession numbers for samples', type: :button, class: 'btn btn-primary', id: 'view_sample_accession_numbers_button' %>
+    </form>
+  </div>
+</div>
+
 <%= vite_javascript_tag 'accessioning_tools' %>
