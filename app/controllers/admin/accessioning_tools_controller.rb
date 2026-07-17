@@ -24,13 +24,13 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   # Accession all samples which have been modified within the date window
-  def bulk_accession
+  def bulk_accession_by_date
     unless accessioning_enabled?
       flash[:notice] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
       return accessioning_not_enabled_redirect
     end
 
-    number_of_samples = perform_bulk_accession
+    number_of_samples = perform_bulk_accession_by_date
 
     flash[:success] = "Bulk accessioning complete: #{number_of_samples} samples have been sent for accessioning."
     redirect_to admin_accessioning_tools_path
@@ -48,7 +48,7 @@ class Admin::AccessioningToolsController < ApplicationController
 
   private
 
-  def perform_bulk_accession
+  def perform_bulk_accession_by_date
     start_datetime, end_datetime = date_range_from_params
 
     samples_to_accession = updated_accessionable_samples(start_datetime, end_datetime)

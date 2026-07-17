@@ -115,12 +115,12 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     end
   end
 
-  describe '#bulk_accession' do
+  describe '#bulk_accession_by_date' do
     before do
       allow(SampleAccessioningJob).to receive(:new).and_call_original
       allow(Rails.logger).to receive(:info)
 
-      get :bulk_accession, params:
+      get :bulk_accession_by_date, params:
     end
 
     context 'with bad date parameters' do
