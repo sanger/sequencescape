@@ -43,7 +43,7 @@ class Admin::AccessioningToolsController < ApplicationController
     sample_names = params[:sample_names].map(&:strip)
     accession_numbers = sample_accession_numbers_for_names(sample_names)
 
-    render json: { accession_numbers: }, content_type: 'application/json'
+    render json: { sample_names:, accession_numbers: }, content_type: 'application/json'
   end
 
   private
