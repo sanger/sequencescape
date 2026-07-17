@@ -40,6 +40,10 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   def view_sample_accessions
+    sample_names = params[:sample_names].map(&:strip)
+    accession_numbers = sample_accession_numbers_for_names(sample_names)
+
+    render json: { accession_numbers: }, content_type: 'application/json'
   end
 
   private
@@ -73,5 +77,10 @@ class Admin::AccessioningToolsController < ApplicationController
       .includes(:sample_metadata, studies: :study_metadata)
       .where(updated_at: start_datetime..end_datetime)
       .select(&:should_be_accessioned?)
+  end
+
+  def sample_accession_numbers_for_names(sample_names)
+    samples = Sample.where(name: sample_names).includes(:sample_metadata).index_by(&:name)
+    sample_names.map { |name| samples[name]&.ebi_accession_number }
   end
 end
