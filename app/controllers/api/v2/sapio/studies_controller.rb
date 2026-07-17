@@ -124,6 +124,7 @@ module Api
               program
               title
               study_type
+              data_release_study_type
               study_description
               abstract
               data_release_strategy

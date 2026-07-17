@@ -242,7 +242,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # we have invoked map_attribute_to_json_attribute for them in app/models/api/study_io.rb
     custom_attribute(:prelim_id, with: /\A[a-zA-Z]\d{4}\z/, required: false)
     custom_attribute(:study_description, required: true)
-    custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO)
+  #  custom_attribute(:contaminated_human_dna, required: true, in: YES_OR_NO, if: -> { !mastered_in_sapio? })
     custom_attribute(:remove_x_and_autosomes, required: true, default: 'No', in: YES_OR_NO)
     custom_attribute(:separate_y_chromosome_data, required: true, default: false, boolean: true)
     custom_attribute(:study_project_id)
@@ -250,8 +250,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:study_study_title)
     custom_attribute(:study_ebi_accession_number)
     custom_attribute(:study_sra_hold, required: true, default: 'Hold', in: STUDY_SRA_HOLDS)
-    custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
-    custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
+    #custom_attribute(:contains_human_dna, required: true, in: YES_OR_NO)
+    # custom_attribute(:commercially_available, required: true, in: YES_OR_NO)
     custom_attribute(:study_name_abbreviation)
 
     # add ebi library strategy, ebi library source, ebi library selection
@@ -349,9 +349,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 allow_blank: true
               }
 
-    validates :ebi_library_strategy, presence: true, on: :create
-    validates :ebi_library_source, presence: true, on: :create
-    validates :ebi_library_selection, presence: true, on: :create
+    validates :ebi_library_strategy, presence: true, on: :create, unless: -> { mastered_in_sapio? }
+    validates :ebi_library_source, presence: true, on: :create, unless: -> { mastered_in_sapio? }
+    validates :ebi_library_selection, presence: true, on: :create, unless: -> { mastered_in_sapio? }
 
     validates :ebi_library_strategy,
               inclusion: {
@@ -696,6 +696,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
+    delegate :mastered_in_sapio?, to: :owner, allow_nil: true
 
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES

@@ -652,14 +652,7 @@ describe 'Sapio Studies API', with: :api_v2 do
           data_release_study_type: data_release_study_type.name,
           study_description: 'A study created via Sapio',
           abstract: 'Sapio study abstract',
-          data_release_strategy: 'open',
-          hmdmc_approval_number: 'HMDMC12/345',
-          contaminated_human_dna: 'No',
-          contains_human_dna: 'No',
-          commercially_available: 'No',
-          ebi_library_strategy: 'WGS',
-          ebi_library_source: 'GENOMIC',
-          ebi_library_selection: 'PCR'
+          data_release_strategy: 'open'
         }
       }
     end
@@ -776,11 +769,6 @@ describe 'Sapio Studies API', with: :api_v2 do
         it 'sets the data_release_strategy' do
           study = Study.find_by(name: 'Sapio Created Study')
           expect(study.study_metadata.data_release_strategy).to eq('open')
-        end
-
-        it 'sets the hmdmc_approval_number' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.hmdmc_approval_number).to eq('HMDMC12/345')
         end
 
         it 'grants the owner role to the user matching study_owner_name' do
