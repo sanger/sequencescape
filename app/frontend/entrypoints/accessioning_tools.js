@@ -1,7 +1,9 @@
 const startDateInput = document.getElementById("start_date");
 const endDateInput = document.getElementById("end_date");
 const viewSampleNamesInput = document.getElementById("view_sample_names");
-const viewAccessionNumbersInput = document.getElementById("view_accession_numbers");
+const viewAccessionNumbersTableBody = document
+  .getElementById("sample_accession_numbers_table")
+  .getElementsByTagName("tbody")[0];
 const viewSampleAccessionNumbersButton = document.getElementById("view_sample_accession_numbers_button");
 
 const previewUrl = "/admin/accessioning_tools/bulk_accession_preview";
@@ -34,15 +36,32 @@ function updatePreview() {
     });
 }
 
+function clearTable(tableBodyElement) {
+  while (tableBodyElement.firstChild) {
+    tableBodyElement.removeChild(tableBodyElement.firstChild);
+  }
+}
+
+function insertRow(tableBodyElement, contents) {
+  const row = tableBodyElement.insertRow();
+  contents.forEach((content) => {
+    const cell = row.insertCell();
+    cell.textContent = content || "\u00A0"; // Use nbsp; for empty cells to maintain table spacing
+  });
+}
+
 /*
 Get the list of accession numbers for the given samples names.
 - Get the list of sample names from the textarea
 - Clean them up, maintaining the line order and breaks
 - Send to the server via a PUT request (due to get length limits)
-- Display the returned accession numbers in the other textarea
+- Display the returned sample names and accession numbers in the table, maintaining the line order
 */
 function view_sample_accessions() {
-  const sampleNames = viewSampleNamesInput.value.split("\n").map((name) => name.trim());
+  const sampleNames = viewSampleNamesInput.value
+    .replaceAll(",", "")
+    .split("\n")
+    .map((name) => name.trim());
   const url = "/admin/accessioning_tools/view_sample_accessions";
   const data = { sample_names: sampleNames };
 
@@ -59,11 +78,21 @@ function view_sample_accessions() {
       return r.json();
     })
     .then((data) => {
-      viewAccessionNumbersInput.value = data.accession_numbers.join("\n");
+      // Clear the table body before populating it with new data
+      clearTable(viewAccessionNumbersTableBody);
+
+      // Populate the table with the returned sample names and accession numbers
+      data.sample_names.forEach((sampleName, index) => {
+        const accessionNumber = data.accession_numbers[index];
+        insertRow(viewAccessionNumbersTableBody, [sampleName, accessionNumber]);
+      });
     })
     .catch((err) => {
       const code = err.message.startsWith("HTTP ") ? err.message.replace("HTTP ", "") : "unknown";
-      viewAccessionNumbersInput.value = `error occurred (${code})`;
+
+      // Clear the table body and display an error message in a single row
+      clearTable(viewAccessionNumbersTableBody);
+      insertRow(viewAccessionNumbersTableBody, [`Error occurred (${code})`, ""]);
     });
 }
 

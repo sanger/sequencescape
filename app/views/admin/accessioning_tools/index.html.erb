@@ -70,17 +70,29 @@
     <p>Designed for confirming the accession numbers of provided samples.</p>
     <form>
       <div class="form-row">
-        <div class="form-group col-md-6">
-          <label for="view_sample_names" class="form-label">Sample names</label>
+        <div class="form-group col-md-12">
+          <label for="view_sample_names" class="form-label">Sample names (one per line)</label>
           <%= text_area_tag 'view_sample_names', nil, class: 'form-control', id: 'view_sample_names', rows:12 %>
-        </div>
-        <div class="form-group col-md-6">
-          <label for="view_accession_numbers" class="form-label">Accession numbers</label>
-          <%= text_area_tag 'view_accession_numbers', nil, class: 'form-control', id: 'view_accession_numbers', rows:12, readonly:true %>
         </div>
       </div>
       <%= button_tag 'View accession numbers for samples', type: :button, class: 'btn btn-primary', id: 'view_sample_accession_numbers_button' %>
     </form>
+    <div class="row mt-3">
+      <div class="col">
+        <table class="table table-sm table-striped" id="sample_accession_numbers_table">
+          <thead>
+            <tr>
+              <th scope="col">Sample name</th>
+              <th scope="col">Accession number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2" class="text-center text-muted">Please enter sample names</td>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
