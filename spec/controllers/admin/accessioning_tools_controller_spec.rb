@@ -178,7 +178,7 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     end
 
     context 'with valid sample names' do
-      let(:samples) { create_list(:sample, 5) }
+      let(:samples) { create_list(:sample_with_accession_number, 5) }
       let(:params) { { sample_names: samples.map(&:name) } }
 
       it 'returns a successful response' do
@@ -212,11 +212,15 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     end
 
     context 'with poorly formatted sample names' do
-      let(:samples) do
-        [create(:sample, name: 'sample_1', ebi_accession_number: 'accession_1'),
-         create(:sample, name: 'sample_2', ebi_accession_number: 'accession_2')]
+      let(:sample1) do
+        create(:sample, name: 'sample_1',
+                        sample_metadata: create(:sample_metadata, sample_ebi_accession_number: 'accession_1'))
       end
-      let(:params) { { sample_names: ['  ', '   ', '  sample_2', '  ', '  sample_1 '] } }
+      let(:sample2) do
+        create(:sample, name: 'sample_2',
+                        sample_metadata: create(:sample_metadata, sample_ebi_accession_number: 'accession_2'))
+      end
+      let(:params) { { sample_names: ['  ', '   ', "  #{sample2.name}", '  ', "  #{sample1.name} "] } }
 
       it 'returns a successful response' do
         expect(response).to have_http_status(:ok)
