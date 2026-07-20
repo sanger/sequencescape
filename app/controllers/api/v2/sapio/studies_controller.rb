@@ -14,6 +14,7 @@ module Api
         # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
         RESULTS_RANGE = 1..1000
 
+        # Before create study, authorize requests from Integration Hub API keys only.
         before_action :authorize_integration_hub!, only: [:create]
 
         # Enforces a name search constraint on resource index listing.
@@ -35,6 +36,10 @@ module Api
           super
         end
 
+        # Creates a new mastered_in_sapio Study from the payload and
+        # grants ownership to the requesting user.
+        #
+        # @return [void]
         def create
           return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
 
@@ -49,6 +54,7 @@ module Api
 
         private
 
+        # Ensures that the request is authorized with an Integration Hub API key.
         def authorize_integration_hub!
           return if @api_application&.integration_hub?
 
@@ -63,7 +69,7 @@ module Api
                  }
         end
 
-        # Builds and configures a new +Study+ instance from the Sapio payload.
+        # Builds and configures a new Study instance from the Sapio payload.
         def build_sapio_study
           Study.new(study_params).tap do |study|
             study.mastered_in_sapio = true
