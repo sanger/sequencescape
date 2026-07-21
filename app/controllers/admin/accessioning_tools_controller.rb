@@ -139,7 +139,7 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   def accessioning_not_enabled_redirect
-    flash[:notice] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
+    flash[:warning] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
     redirect_to admin_accessioning_tools_path
   end
 end
