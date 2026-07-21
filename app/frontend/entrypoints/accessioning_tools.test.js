@@ -7,6 +7,9 @@ describe("Accessioning tools preview", () => {
   let startDateInput;
   let endDateInput;
   let previewSpan;
+  let viewSampleNamesInput;
+  let viewSampleAccessionNumbersButton;
+  let viewAccessionNumbersTableBody;
 
   const dispatchDomReady = () => {
     document.dispatchEvent(new Event("DOMContentLoaded"));
@@ -16,11 +19,25 @@ describe("Accessioning tools preview", () => {
     el.dispatchEvent(new Event("change", { bubbles: true }));
   };
 
+  const dispatchClick = (el) => {
+    el.dispatchEvent(new Event("click", { bubbles: true }));
+  };
+
   beforeAll(async () => {
     document.body.innerHTML = `
       <input id="start_date" type="text" value="${initialDate}" />
       <input id="end_date" type="text" value="${initialDate}" />
       <span id="bulk-accession-preview"></span>
+      <textarea id="view_sample_names"></textarea>
+      <button id="view_sample_accession_numbers_button" type="button">View</button>
+      <table id="sample_accession_numbers_table">
+        <tbody>
+          <tr>
+            <td>placeholder</td>
+            <td>placeholder</td>
+          </tr>
+        </tbody>
+      </table>
     `;
 
     global.fetch = vi.fn();
@@ -32,6 +49,11 @@ describe("Accessioning tools preview", () => {
     startDateInput = document.getElementById("start_date");
     endDateInput = document.getElementById("end_date");
     previewSpan = document.getElementById("bulk-accession-preview");
+    viewSampleNamesInput = document.getElementById("view_sample_names");
+    viewSampleAccessionNumbersButton = document.getElementById("view_sample_accession_numbers_button");
+    viewAccessionNumbersTableBody = document
+      .getElementById("sample_accession_numbers_table")
+      .getElementsByTagName("tbody")[0];
   });
 
   beforeEach(() => {
@@ -39,6 +61,8 @@ describe("Accessioning tools preview", () => {
     startDateInput.value = initialDate;
     endDateInput.value = initialDate;
     previewSpan.textContent = "";
+    viewSampleNamesInput.value = "";
+    viewAccessionNumbersTableBody.innerHTML = "";
   });
 
   afterEach(() => {
@@ -205,5 +229,63 @@ describe("Accessioning tools preview", () => {
     await vi.waitFor(() => {
       expect(previewSpan.textContent).toBe("error occurred (500)");
     });
+  });
+
+  it("sends sample names for view accession request and updates table", async () => {
+    fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: true,
+        status: 200,
+        json: () =>
+          Promise.resolve({
+            sample_names: ["sample_1", "", "sample_2"],
+            accession_numbers: ["ENA11", null, "ENA22"],
+          }),
+      }),
+    );
+
+    viewSampleNamesInput.value = " sample_1,\n\n sample_2 ";
+    dispatchClick(viewSampleAccessionNumbersButton);
+
+    await vi.waitFor(() => {
+      expect(viewAccessionNumbersTableBody.rows).toHaveLength(3);
+    });
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    expect(fetch.mock.calls[0][0]).toBe("/admin/accessioning_tools/view_sample_accessions");
+    expect(fetch.mock.calls[0][1]).toEqual({
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ sample_names: ["sample_1", "", "sample_2"] }),
+    });
+
+    expect(viewAccessionNumbersTableBody.rows[0].cells[0].textContent).toBe("sample_1");
+    expect(viewAccessionNumbersTableBody.rows[0].cells[1].textContent).toBe("ENA11");
+    expect(viewAccessionNumbersTableBody.rows[1].cells[0].textContent).toBe("\u00A0");
+    expect(viewAccessionNumbersTableBody.rows[1].cells[1].textContent).toBe("\u00A0");
+    expect(viewAccessionNumbersTableBody.rows[2].cells[0].textContent).toBe("sample_2");
+    expect(viewAccessionNumbersTableBody.rows[2].cells[1].textContent).toBe("ENA22");
+  });
+
+  it("shows error row when view accession request fails", async () => {
+    fetch.mockImplementationOnce(() =>
+      Promise.resolve({
+        ok: false,
+        status: 422,
+      }),
+    );
+
+    viewSampleNamesInput.value = "sample_1";
+    dispatchClick(viewSampleAccessionNumbersButton);
+
+    await vi.waitFor(() => {
+      expect(viewAccessionNumbersTableBody.rows).toHaveLength(1);
+    });
+
+    expect(viewAccessionNumbersTableBody.rows[0].cells[0].textContent).toBe("Error occurred (422)");
+    expect(viewAccessionNumbersTableBody.rows[0].cells[1].textContent).toBe("\u00A0");
   });
 });
