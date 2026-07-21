@@ -196,7 +196,8 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       end
 
       it 'sets a notice flash message' do
-        expect(flash[:warning]).to eq('Accessioning is currently disabled. Please enable accessioning to use this tool.')
+        expect(flash[:warning])
+          .to eq('Accessioning is currently disabled. Please enable accessioning to use this tool.')
       end
 
       it 'does not set a error flash message' do
