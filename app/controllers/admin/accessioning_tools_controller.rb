@@ -46,7 +46,7 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   # Accession all samples in the given list of sample names
-  def bulk_accession_by_name
+  def bulk_accession_by_name # rubocop:disable Metrics/AbcSize
     return accessioning_not_enabled_redirect unless accessioning_enabled?
 
     number_of_samples = perform_bulk_accession_by_name
@@ -54,10 +54,10 @@ class Admin::AccessioningToolsController < ApplicationController
     flash[:success] = "Bulk accessioning complete: #{number_of_samples} samples have been sent for accessioning."
     redirect_to admin_accessioning_tools_path
   rescue SamplesNotFoundError => e
-    Rails.logger.warn("#{e.sample_names.count} samples not found or not eligible for accessioning: " \
-                      "#{e.sample_names.join(', ')}")
-    flash[:error] = "The were #{e.sample_names.count} samples not found or not eligible for accessioning " \
-                    "including: #{e.sample_names.take(5).join(', ')}"
+    message = "There were #{e.sample_names.count} samples not found or not eligible for accessioning including: " \
+              "#{e.sample_names.join(', ')}"
+    Rails.logger.warn(message)
+    flash[:error] = message.truncate_words(20)
     redirect_to admin_accessioning_tools_path
   end
 
@@ -95,19 +95,11 @@ class Admin::AccessioningToolsController < ApplicationController
   def perform_bulk_accession_by_name
     sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
     samples_to_accession = accessionable_samples_by_name(sample_names)
-
-    unaccessionable_sample_names = sample_names - samples_to_accession.map(&:name)
-    if unaccessionable_sample_names.any?
-      raise SamplesNotFoundError.new(
-        'Samples not found or are not eligible for accessioning',
-        sample_names: unaccessionable_sample_names
-      )
-    end
-
     number_of_samples = samples_to_accession.count
 
-    Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
+    check_for_missing_samples(sample_names, samples_to_accession)
 
+    Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
     samples_to_accession.each { |sample| Accession.accession_sample(sample, current_user) }
 
     number_of_samples
@@ -134,6 +126,16 @@ class Admin::AccessioningToolsController < ApplicationController
   def sample_accession_numbers_for_names(sample_names)
     samples = Sample.where(name: sample_names).includes(:sample_metadata).index_by(&:name)
     sample_names.map { |name| samples[name]&.ebi_accession_number }
+  end
+
+  def check_for_missing_samples(sample_names, samples_to_accession)
+    missing_names = sample_names - samples_to_accession.map(&:name)
+    return unless missing_names.any?
+
+    raise SamplesNotFoundError.new(
+      'Samples not found or are not eligible for accessioning',
+      sample_names: missing_names
+    )
   end
 
   def accessioning_not_enabled_redirect

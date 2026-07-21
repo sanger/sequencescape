@@ -249,12 +249,12 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
       it 'sets a error flash message' do
         expect(flash[:error])
-          .to eq('The were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
+          .to eq('There were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
       end
 
       it 'logs a warning for the unaccessionable sample names' do
         expect(Rails.logger).to have_received(:warn)
-          .with('1 samples not found or not eligible for accessioning: nonexistent_sample')
+          .with('There were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
       end
 
       it 'redirects to the accessioning tools page' do
@@ -284,14 +284,15 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
       it 'sets a error flash message for the unaccessionable sample names' do
         expect(flash[:error])
-          .to eq('The were 6 samples not found or not eligible for accessioning including: ' \
+          .to eq('There were 6 samples not found or not eligible for accessioning including: ' \
                  'nonexistent_sample_1, nonexistent_sample_2, ' \
-                 'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5')
+                 'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5, nonexistent_sample_6')
       end
 
       it 'receives a warning log' do
         expect(Rails.logger).to have_received(:warn)
-          .with('6 samples not found or not eligible for accessioning: nonexistent_sample_1, nonexistent_sample_2, ' \
+          .with('There were 6 samples not found or not eligible for accessioning including: ' \
+                'nonexistent_sample_1, nonexistent_sample_2, ' \
                 'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5, nonexistent_sample_6')
       end
 
@@ -325,6 +326,22 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
       it 'redirects to the accessioning tools page' do
         expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with comma-separated sample names and duplicates' do
+      let(:params) { { sample_names: "#{samples[0].name}, #{samples[1].name},#{samples[0].name}" } }
+
+      it 'splits on commas and deduplicates names before accessioning' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(2).times
+      end
+
+      it 'logs the accessioning action with the deduplicated count' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 2 samples by name')
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 2 samples have been sent for accessioning.')
       end
     end
   end
