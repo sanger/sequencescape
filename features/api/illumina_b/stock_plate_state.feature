@@ -54,7 +54,7 @@ And I have a "full" authorised user with the key "cucumber"
       }
       """
 
-  Scenario: When the stock plate has full wells that do not have submissions it should be pending
+  Scenario: When the stock plate has full wells that do not all have submissions it should be treated as a partial and be passed
     Given all wells on the plate "Testing the API" have unique samples
       And "A1-H6" of the plate with UUID "00000000-1111-2222-3333-000000000001" have been submitted to "Illumina-B - Multiplexed WGS - HiSeq Paired end sequencing"
 
@@ -65,7 +65,7 @@ And I have a "full" authorised user with the key "cucumber"
       {
         "plate": {
           "uuid": "00000000-1111-2222-3333-000000000001",
-          "state": "pending"
+          "state": "passed"
         }
       }
       """
