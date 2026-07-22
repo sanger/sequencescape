@@ -42,11 +42,19 @@ function clearTable(tableBodyElement) {
   }
 }
 
-function insertRow(tableBodyElement, contents) {
+function insertLinkRow(tableBodyElement, contents, urls) {
   const row = tableBodyElement.insertRow();
-  contents.forEach((content) => {
+  // Insert cells with links for each content and corresponding URL
+  contents.forEach((content, index) => {
     const cell = row.insertCell();
-    cell.textContent = content || "\u00A0"; // Use nbsp; for empty cells to maintain table spacing
+    if (urls[index]) {
+      const link = document.createElement("a");
+      link.href = urls[index];
+      link.textContent = content || "\u00A0"; // Use nbsp; for empty cells to maintain table spacing
+      cell.appendChild(link);
+    } else {
+      cell.textContent = content || "\u00A0"; // Use nbsp; for empty cells to maintain table spacing
+    }
   });
 }
 
@@ -83,8 +91,9 @@ function view_sample_accessions() {
 
       // Populate the table with the returned sample names and accession numbers
       data.sample_names.forEach((sampleName, index) => {
+        const samplePath = data.sample_paths[index];
         const accessionNumber = data.accession_numbers[index];
-        insertRow(viewAccessionNumbersTableBody, [sampleName, accessionNumber]);
+        insertLinkRow(viewAccessionNumbersTableBody, [sampleName, accessionNumber], [samplePath, null]);
       });
     })
     .catch((err) => {
