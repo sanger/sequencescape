@@ -154,9 +154,11 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # @note This is particularly important when transferring out of the initial
   # {Receptacle} when there may be multiple active {Receptacle#requests_as_source}
   # @param request [Request] The request which is being processed
+  # NB. in rare circumstances we transfer out of input plates without submissions for
+  # aggregation, in which cases outer request is nil, so we also cannot get submission_id
   def outer_request=(request)
     @outer_request = request
-    self.submission_id = request.submission_id
+    self.submission_id = request&.submission_id
   end
 
   # Sets the {#outer_request} from just a request_id
