@@ -364,10 +364,11 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
         expect(response.content_type).to include('application/json')
       end
 
-      it 'returns the accession numbers for the provided sample names' do
+      it 'returns the paths and accession numbers for the provided sample names' do
         expected_accession_numbers = samples.map(&:ebi_accession_number)
         expect(response.parsed_body).to eq(
           'sample_names' => samples.map(&:name),
+          'sample_paths' => samples.map { |s| sample_path(s) },
           'accession_numbers' => expected_accession_numbers
         )
       end
@@ -387,6 +388,7 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       it 'returns an array of nils for the invalid sample names' do
         expect(response.parsed_body).to eq(
           'sample_names' => ['', 'nonexistent_sample_1', '', 'nonexistent_sample_2', ''],
+          'sample_paths' => [nil, nil, nil, nil, nil],
           'accession_numbers' => [nil, nil, nil, nil, nil]
         )
       end
@@ -411,9 +413,10 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
         expect(response.content_type).to include('application/json')
       end
 
-      it 'returns the accession numbers for the valid sample names, ignoring whitespace' do
+      it 'returns the paths and accession numbers for the valid sample names, ignoring whitespace' do
         expect(response.parsed_body).to eq(
           'sample_names' => ['', '', sample2.name, '', sample1.name],
+          'sample_paths' => [nil, nil, "/samples/#{sample2.id}", nil, "/samples/#{sample1.id}"],
           'accession_numbers' => [nil, nil, 'accession_2', nil, 'accession_1']
         )
       end
