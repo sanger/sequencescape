@@ -238,17 +238,18 @@ describe("Accessioning tools preview", () => {
         status: 200,
         json: () =>
           Promise.resolve({
-            sample_names: ["sample_1", "", "sample_2"],
-            accession_numbers: ["ENA11", null, "ENA22"],
+            sample_names: ["sample_1", "", "sample_2", "sample_3"],
+            sample_paths: ["/samples/1", null, "/samples/2", "/samples/3"],
+            accession_numbers: ["ENA11", null, "ENA22", null],
           }),
       }),
     );
 
-    viewSampleNamesInput.value = " sample_1,\n\n sample_2 ";
+    viewSampleNamesInput.value = " sample_1,\n\n sample_2 \n sample_3 ";
     dispatchClick(viewSampleAccessionNumbersButton);
 
     await vi.waitFor(() => {
-      expect(viewAccessionNumbersTableBody.rows).toHaveLength(3);
+      expect(viewAccessionNumbersTableBody.rows).toHaveLength(4);
     });
 
     expect(fetch).toHaveBeenCalledTimes(1);
@@ -259,15 +260,23 @@ describe("Accessioning tools preview", () => {
         "Content-Type": "application/json",
         Accept: "application/json",
       },
-      body: JSON.stringify({ sample_names: ["sample_1", "", "sample_2"] }),
+      body: JSON.stringify({ sample_names: ["sample_1", "", "sample_2", "sample_3"] }),
     });
 
+    expect(viewAccessionNumbersTableBody.rows[0].cells[0].querySelector("a").getAttribute("href")).toBe("/samples/1");
     expect(viewAccessionNumbersTableBody.rows[0].cells[0].textContent).toBe("sample_1");
     expect(viewAccessionNumbersTableBody.rows[0].cells[1].textContent).toBe("ENA11");
+
     expect(viewAccessionNumbersTableBody.rows[1].cells[0].textContent).toBe("\u00A0");
     expect(viewAccessionNumbersTableBody.rows[1].cells[1].textContent).toBe("\u00A0");
+
+    expect(viewAccessionNumbersTableBody.rows[2].cells[0].querySelector("a").getAttribute("href")).toBe("/samples/2");
     expect(viewAccessionNumbersTableBody.rows[2].cells[0].textContent).toBe("sample_2");
     expect(viewAccessionNumbersTableBody.rows[2].cells[1].textContent).toBe("ENA22");
+
+    expect(viewAccessionNumbersTableBody.rows[3].cells[0].querySelector("a").getAttribute("href")).toBe("/samples/3");
+    expect(viewAccessionNumbersTableBody.rows[3].cells[0].textContent).toBe("sample_3");
+    expect(viewAccessionNumbersTableBody.rows[3].cells[1].textContent).toBe("\u00A0");
   });
 
   it("shows error row when view accession request fails", async () => {

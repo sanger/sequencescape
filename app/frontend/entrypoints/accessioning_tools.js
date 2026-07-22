@@ -101,7 +101,7 @@ function view_sample_accessions() {
 
       // Clear the table body and display an error message in a single row
       clearTable(viewAccessionNumbersTableBody);
-      insertRow(viewAccessionNumbersTableBody, [`Error occurred (${code})`, ""]);
+      insertLinkRow(viewAccessionNumbersTableBody, [`Error occurred (${code})`, ""], [null, null]);
     });
 }
 
