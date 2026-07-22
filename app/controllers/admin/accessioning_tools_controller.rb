@@ -63,9 +63,9 @@ class Admin::AccessioningToolsController < ApplicationController
 
   def view_sample_accessions
     sample_names = params[:sample_names].map(&:strip)
-    accession_numbers = sample_accession_numbers_for_names(sample_names)
+    sample_paths, accession_numbers = sample_accession_paths_and_numbers_for_names(sample_names).transpose
 
-    render json: { sample_names:, accession_numbers: }, content_type: 'application/json'
+    render json: { sample_names:, sample_paths:, accession_numbers: }, content_type: 'application/json'
   end
 
   private
@@ -123,9 +123,13 @@ class Admin::AccessioningToolsController < ApplicationController
       .select(&:should_be_accessioned?)
   end
 
-  def sample_accession_numbers_for_names(sample_names)
+  # Returns an array of paths and accession numbers for the given sample names as an array of arrays.
+  # ie: [['/samples/1', 'EGA00001000240'], ['/samples/2', 'EGA00001000241']]
+  def sample_accession_paths_and_numbers_for_names(sample_names)
     samples = Sample.where(name: sample_names).includes(:sample_metadata).index_by(&:name)
-    sample_names.map { |name| samples[name]&.ebi_accession_number }
+    sample_names.map do |name|
+      [(samples[name] ? sample_path(samples[name]) : nil), samples[name]&.ebi_accession_number]
+    end
   end
 
   def check_for_missing_samples(sample_names, samples_to_accession)
