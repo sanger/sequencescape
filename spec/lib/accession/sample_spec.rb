@@ -70,6 +70,26 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         sample.sample_metadata.sample_common_name = nil
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
+
+      it 'is not required to define gender' do
+        sample.sample_metadata.gender = nil
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Female' do
+        sample.sample_metadata.gender = 'Female'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Male' do
+        sample.sample_metadata.gender = 'Male'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Not Applicable' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
     end
 
     context 'with a managed study' do
