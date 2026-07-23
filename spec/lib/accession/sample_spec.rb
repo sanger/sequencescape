@@ -135,7 +135,7 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         accession_sample = described_class.new(tag_list, sample)
         accession_sample.validate
         expect(accession_sample.errors[:sample]).to include(
-          'Sample gender must be Female, Male or Unknown'
+          'gender must be female, male, or unknown'
         )
       end
 

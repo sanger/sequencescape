@@ -50,7 +50,7 @@ module Accession
       return if valid?
 
       # Add errors from the accession sample to the underlying sample for user feedback
-      @sample.errors.add(:base, errors.full_messages.join(', '))
+      @sample.errors.merge!(sample.errors)
 
       error_message = "cannot be accessioned: #{errors.full_messages.join(', ')}"
 
@@ -122,7 +122,7 @@ module Accession
 
       unless missing_accession_tags.empty?
         errors.add(:sample,
-                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
+                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}")
       end
 
       check_sample_for_service
@@ -144,7 +144,8 @@ module Accession
       service_context = service.ena? ? :ENA : :EGA
       unless sample.valid?(service_context)
         sample.sample_metadata.errors.each do |error|
-          errors.add(:sample, "Sample #{error.attribute} #{error.message}")
+          # ignore the presence errors as they are already handled by missing_accession_tags
+          errors.add(:sample, "#{error.attribute} #{error.message}") unless error.type == :blank
         end
       end
     end
