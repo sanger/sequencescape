@@ -14,12 +14,13 @@ To run a single use rake task, you can use the following command:
 
 ```
 bundle exec rake single_use:<task_name>
-``` 
+```
 
 ### Testing
+
 - Spec files for single use rake tasks should be placed in the same directory as the task file and should have the same name as the task file with `_spec.rb` appended to the end.
 - These are useful to verify that the task is working as expected at the time of creation, but do not need to be maintained over time as the codebase changes.
-- These will *not* be run as part of the normal test suite, but can be run manually using the following command:
+- These will _not_ be run as part of the normal test suite, but can be run manually using the following command:
 
 ```
 bundle exec rspec lib/tasks/single_use/<task_name>_spec.rb
