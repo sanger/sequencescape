@@ -125,12 +125,7 @@ module Accession
                    "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
       end
 
-      service_context = service.ena? ? :ENA : :EGA
-      unless sample.valid?(service_context)
-        sample.sample_metadata.errors.each do |error|
-          errors.add(:sample, "Sample #{error.attribute} #{error.message}")
-        end
-      end
+      check_sample_for_service
     end
 
     def missing_accession_tags
@@ -142,6 +137,15 @@ module Accession
 
       if accessionable_study.nil?
         errors.add(:sample, 'can only be accessioned if linked to a releasable, accessioned study.')
+      end
+    end
+
+    def check_sample_for_service
+      service_context = service.ena? ? :ENA : :EGA
+      unless sample.valid?(service_context)
+        sample.sample_metadata.errors.each do |error|
+          errors.add(:sample, "Sample #{error.attribute} #{error.message}")
+        end
       end
     end
   end
