@@ -7,7 +7,7 @@
 
 namespace :single_use do
   desc 'Remove redundant UG200 descriptors'
-  task remove_redundant_ug200_descriptors: :environment do
+  task remove_redundant_ug200_descriptors: [:environment] do
     redundant_descriptor_names = [
       'OTR carrier Lot #',
       'OTR carrier expiry',
