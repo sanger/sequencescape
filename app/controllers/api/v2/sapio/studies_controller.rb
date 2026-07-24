@@ -7,7 +7,6 @@ module Api
       # This endpoint is feature-flagged and returns a limited result set (max 20 studies).
       class StudiesController < JSONAPI::ResourceController
         include Concerns::ApiKeyAuthenticatable
-        include Api::V2::Concerns::ApiKeyAuthenticatable
 
         # The range of valid values for the custom +maxResults+ query parameter
         # to override the default maximum number of search results returned by
@@ -73,7 +72,7 @@ module Api
         def build_sapio_study
           Study.new(study_params).tap do |study|
             study.mastered_in_sapio = true
-            study.bypass_sapio_validation = true
+            study.skip_mastered_in_sapio_restriction = true
             study.lazy_metadata = true
           end
         end

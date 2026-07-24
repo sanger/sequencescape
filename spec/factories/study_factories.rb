@@ -41,11 +41,11 @@ FactoryBot.define do
     mastered_in_sapio { true }
 
     after(:build) do |study|
-      study.bypass_sapio_validation = true
+      study.skip_mastered_in_sapio_restriction = true
     end
 
     after(:create) do |study|
-      study.bypass_sapio_validation = nil
+      study.skip_mastered_in_sapio_restriction = nil
     end
   end
 
