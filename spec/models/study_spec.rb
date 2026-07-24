@@ -1010,7 +1010,7 @@ RSpec.describe Study do
     # updates are allowed when the feature flag is enabled and the update is from Integration Hub
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       before do
-        study.bypass_sapio_validation = true
+        study.skip_mastered_in_sapio_restriction = true
       end
 
       it 'allows updates' do
@@ -1044,7 +1044,7 @@ RSpec.describe Study do
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       #  bypass the validation to simulate an update from Integration Hub
       before do
-        study.bypass_sapio_validation = true
+        study.skip_mastered_in_sapio_restriction = true
       end
 
       it 'allows changing mastered_in_sapio' do

@@ -72,7 +72,7 @@ module Api
         def build_sapio_study
           Study.new(study_params).tap do |study|
             study.mastered_in_sapio = true
-            study.bypass_sapio_validation = true
+            study.skip_mastered_in_sapio_restriction = true
             study.lazy_metadata = true
           end
         end

@@ -143,8 +143,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
-  # used to bypass validation
-  attr_accessor :bypass_sapio_validation
+  # Flag set by Integration Hub requests to lift the mastered-in-Sapio edit lock.
+  attr_accessor :skip_mastered_in_sapio_restriction
 
   # Associations
   has_many_events do
@@ -682,8 +682,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def allowed_to_bypass_mastered_restriction?
-    # allow update by setting bypass_sapio_validation flag is true
-    bypass_sapio_validation
+    skip_mastered_in_sapio_restriction
   end
 
   def valid_ethically_approved?
