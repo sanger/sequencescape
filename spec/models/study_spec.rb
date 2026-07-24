@@ -3,6 +3,38 @@
 require 'rails_helper'
 
 RSpec.describe Study do
+  describe 'programmatic creation (rails console)' do
+    context 'when the y26_192_prevent_ui_study_creation feature flag is enabled' do
+      before { Flipper.enable(:y26_192_prevent_ui_study_creation) }
+
+      after { Flipper.disable(:y26_192_prevent_ui_study_creation) }
+
+      it 'allows study creation via factory (simulates console/API)' do
+        initial_count = described_class.count
+
+        study = create(:study, name: 'API Created Study')
+
+        expect(study).to be_persisted
+        expect(described_class.count).to eq(initial_count + 1)
+        expect(study.name).to eq('API Created Study')
+      end
+    end
+
+    context 'when the y26_192_prevent_ui_study_creation feature flag is disabled' do
+      before { Flipper.disable(:y26_192_prevent_ui_study_creation) }
+
+      it 'allows study creation via factory (simulates console)' do
+        initial_count = described_class.count
+
+        study = create(:study, name: 'Console Created Study')
+
+        expect(study).to be_persisted
+        expect(described_class.count).to eq(initial_count + 1)
+        expect(study.name).to eq('Console Created Study')
+      end
+    end
+  end
+
   it 'request calculates correctly and is valid' do
     study = create(:study)
     request_type = create(:request_type)

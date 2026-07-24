@@ -66,6 +66,9 @@ class StudiesController < ApplicationController
   end
 
   def new
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     @study = Study.new
     respond_to { |format| format.html }
   end
@@ -79,6 +82,9 @@ class StudiesController < ApplicationController
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
