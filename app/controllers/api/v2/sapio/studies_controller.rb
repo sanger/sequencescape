@@ -7,7 +7,6 @@ module Api
       # This endpoint is feature-flagged and returns a limited result set (max 20 studies).
       class StudiesController < JSONAPI::ResourceController
         include Concerns::ApiKeyAuthenticatable
-        include Api::V2::Concerns::ApiKeyAuthenticatable
 
         # The range of valid values for the custom +maxResults+ query parameter
         # to override the default maximum number of search results returned by
