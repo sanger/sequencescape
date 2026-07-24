@@ -10,7 +10,7 @@
     <link rel="icon" href="/<%= favicon %>" type="image/x-icon" />
     <link rel="apple-touch-icon-precomposed" href="/<%= apple_icon %>" type="image/png" />
 
-    <style>
+    <style nonce="<%= content_security_policy_nonce %>">
       .sessions {
         background-image:
           url('<%= vite_asset_url "images/sanger-pattern-corner.svg" %>'),

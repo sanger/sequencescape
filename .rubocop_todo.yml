@@ -1185,7 +1185,6 @@ RSpec/RepeatedExampleGroupBody:
 # Offense count: 6
 RSpec/RepeatedExampleGroupDescription:
   Exclude:
-    - 'spec/features/sample_manifests/uploader_for_manifests_with_tag_sequences_spec.rb'
     - 'spec/features/submissions/bulk_submissions_spec.rb'
 
 # Offense count: 17

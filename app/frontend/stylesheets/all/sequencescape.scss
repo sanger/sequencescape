@@ -203,6 +203,11 @@ h3.card-header-custom {
   }
 }
 
+// Custom background for assets
+.bg-red {
+  background-color: red;
+}
+
 div.quota {
   @extend .card;
   @extend .bg-info;

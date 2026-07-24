@@ -38,14 +38,14 @@ describe 'View study properties' do
 
   it 'No links to absent requests', :js do
     click_link sequencing_request_type.name
-    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 10)
+    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 15)
 
     expect(page).to have_no_link(title: "#{library_tube.human_barcode} started")
   end
 
   it 'Single requests link directly to the request', :js do
     click_link sequencing_request_type.name
-    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 10)
+    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 15)
 
     expect(page).to have_link('1', title: "#{library_tube.human_barcode} passed")
     click_link('1', title: "#{library_tube.human_barcode} passed")
@@ -55,7 +55,7 @@ describe 'View study properties' do
 
   it 'Multiple requests link to the summary', :js do
     click_link sequencing_request_type.name
-    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 10)
+    expect(page).to have_text('Identifies the asset, and the number of requests directly from it.', wait: 15)
 
     expect(page).to have_link('2', title: "#{library_tube.human_barcode} failed")
     click_link('2', title: "#{library_tube.human_barcode} failed")

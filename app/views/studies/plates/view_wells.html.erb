@@ -7,13 +7,13 @@
 </div>
 
 <%= form_tag asset_group_study_plates_path(@study) do %>
-  <div class="help" style="text-align:center">
+  <div class="help" class="text-center">
     Enter a new asset group name: <%= text_field_tag 'asset_group_name', nil -%> <%= submit_tag "Create asset group using selected wells" %>
   </div>
   <table width="100%" cellspacing="0" cellpadding="5">
   <% for plate in @plates %>
     <tr class="<%= cycle('rowodd', 'roweven') %>">
-      <td colspan="3" style="text-align:center;"><strong>Wells from <%= plate.name %></strong></td>
+      <td colspan="3" class="text-center"><strong>Wells from <%= plate.name %></strong></td>
     </tr>
     <% for well in plate.wells %>
       <tr class="<%= cycle('rowodd', 'roweven') %>">

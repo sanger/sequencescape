@@ -9,11 +9,14 @@
     <%= metadata_fields.plain_value(:geographical_region) %>
     <%= metadata_fields.plain_value(:ethnicity) %>
     <%= metadata_fields.plain_value(:dna_source) %>
-    <%= metadata_fields.plain_value(:volume) %>
     <%= metadata_fields.plain_value(:mother) %>
     <%= metadata_fields.plain_value(:father) %>
     <%= metadata_fields.plain_value(:replicate) %>
     <%= metadata_fields.plain_value(:collected_by) %>
+
+    <!-- Physical properties -->
+    <%= metadata_fields.plain_value(:volume) %>
+    <%= metadata_fields.plain_value(:concentration) %>
 
     <%# Fields for 'Next-gen sequencing' %>
     <%= metadata_fields.plain_value(:organism) %>
