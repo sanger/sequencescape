@@ -168,7 +168,7 @@ class SamplesController < ApplicationController
 
     # Handle errors for both synchronous and asynchronous accessioning
   rescue Accession::InternalValidationError
-    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
+    flash[:error] = @sample.errors.map(&:full_message).join(', ')
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue Accession::ExternalValidationError => e
     flash[:warning] = "No accession number was generated: #{e.message}"
