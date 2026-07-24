@@ -142,4 +142,12 @@ describe 'Studies API', with: :api_v2 do
       end
     end
   end
+
+  context 'when deleting a study' do
+    let(:target_study) { create(:study) }
+
+    it 'does not allow delete' do
+      expect { api_delete "#{base_endpoint}/#{target_study.id}" }.to raise_error(ActionController::RoutingError)
+    end
+  end
 end
