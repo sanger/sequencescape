@@ -177,9 +177,9 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         sample.sample_metadata.gender = nil
         accession_sample = described_class.new(tag_list, sample)
 
-        expect { accession_sample.validate! }.to raise_error(Accession::InvalidFieldsError,
-          /Cannot be accessioned: Sample does not have the required metadata: gender/i
-        )
+        expect { accession_sample.validate! }
+          .to raise_error(Accession::InvalidFieldsError,
+                          /Cannot be accessioned: Sample does not have the required metadata: gender/i)
       end
     end
 
@@ -190,9 +190,9 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         sample.sample_metadata.gender = 'Not Applicable'
         accession_sample = described_class.new(tag_list, sample)
 
-        expect { accession_sample.validate! }.to raise_error(Accession::InternalValidationError,
-          /Cannot be accessioned: sample gender must be female, male, or unknown/i
-        )
+        expect { accession_sample.validate! }
+          .to raise_error(Accession::InternalValidationError,
+                          /Cannot be accessioned: sample gender must be female, male, or unknown/i)
       end
     end
   end
