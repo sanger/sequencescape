@@ -1,0 +1,37 @@
+
+# Request types for the HiC Illumina to Ultima library conversion pipeline.
+#
+# limber_ultima_hic_conv:
+#   Intermediate library request (order 2) that handles the Ultima conversion step.
+#   Starts from LBB Lib PCR-XP (produced by the standard HiC limber_hic request) and
+#   ends at Ultima PCR XP, where Ultima primer/tag plates are applied per sample.
+#   No library_types are declared: this request converts an existing Illumina Hi-C library
+#   into an Ultima-compatible one — it does not produce a new Illumina library type.
+#   The acceptable_purposes constraint (LBB Lib PCR-XP) is the guard instead.
+#   TODO: validate this combination at the Ultima PCR XP step when the Ultima primer/tag
+#   plate is scanned (pending mapping table from lab).
+#   The application_type for the Ultima sample sheet is derived from the library_type
+#   (e.g. Hi-C -> converted-truseq).
+#
+# limber_multiplexing_ultima_hic_conv:
+#   Multiplexing request (order 3) that routes Ultima PCR XP through normalisation
+#   and pooling to LB Lib Pool Norm, where an Ultima Sequencing request takes over.
+---
+limber_ultima_hic_conv:
+  name: Limber Ultima HiC Conversion
+  asset_type: Well
+  order: 2
+  request_class_name: IlluminaHtp::Requests::StdLibraryRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Ultima
+  acceptable_purposes:
+    - LBB Lib PCR-XP
+limber_multiplexing_ultima_hic_conv:
+  name: Limber Multiplexing Ultima HiC Conv
+  asset_type: Well
+  order: 3
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Ultima
+  target_purpose_name: LB Lib Pool Norm
