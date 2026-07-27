@@ -48,7 +48,7 @@ RSpec.describe Accession do
             expect(error.message).to eq(
               'Cannot be accessioned: ' \
               'Sample does not have the required metadata: sample taxon, ' \
-              'Sample gender must be female, male, or unknown'
+              'Sample gender must be Female, Male, or Unknown'
             )
           end
         end

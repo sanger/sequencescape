@@ -326,7 +326,7 @@ RSpec.describe StudiesController do
             message: 'Cannot be accessioned: ' \
                      'Sample does not have the required metadata: ' \
                      'donor, gender, phenotype, sample common name, and sample taxon, ' \
-                     'Sample gender must be female, male, or unknown'
+                     'Sample gender must be Female, Male, or Unknown'
           )
         end
       end

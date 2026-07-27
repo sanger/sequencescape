@@ -194,7 +194,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
 
     with_options(on: :EGA) do
-      one_of_ega_genders = EGA_GENDERS.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ').downcase
+      one_of_ega_genders = EGA_GENDERS.to_sentence(last_word_connector: ', or ', two_words_connector: ' or ')
       validates :gender, inclusion: { in: EGA_GENDERS, message: "must be #{one_of_ega_genders}" }
       validates :phenotype, presence: { message: 'is required' }
       validates :donor_id, presence: { message: 'is required' }

@@ -206,7 +206,7 @@ RSpec.describe SamplesController do
         it 'displays an error message indicating the validation failure' do
           expect(flash[:error]).to eq(<<~MSG.squish)
             Sample metadata is invalid,
-            Sample metadata gender must be female, male, or unknown,
+            Sample metadata gender must be Female, Male, or Unknown,
             Sample metadata phenotype is required,
             Sample metadata donor is required
           MSG
