@@ -9,7 +9,7 @@
     Batch <%= @batch.id %> has completed the '<%= @pipeline.name %>' pipeline.
   </div>
   <div class="info">
-    <div style="text-align: center;">
+    <div class="text-center">
       <p>
       <%= form_tag release_batch_url(@batch), method: :get do -%>
         <%= submit_tag "Release this batch", class: 'release-batch' %>

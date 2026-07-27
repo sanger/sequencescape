@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
-if ARGV.any? { |arg| %w[--drb -X --generate-options -G --help -h --version -v].include?(arg) }
+if ARGV.intersect?(%w[--drb -X --generate-options -G --help -h --version -v])
   require 'rubygems' unless ENV['NO_RUBYGEMS']
 else
   gem 'test-unit', '1.2.3' if RUBY_VERSION.to_f >= 1.9

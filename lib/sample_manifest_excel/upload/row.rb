@@ -165,7 +165,7 @@ module SampleManifestExcel
 
         # check the columns exist, are valid, and at least one of the primary column options are present
         unless columns.present? && columns.valid? &&
-            primary_column_names.any? { |column_name| columns.names.include? column_name }
+            primary_column_names.intersect?(columns.names)
           return true
         end
 
@@ -331,6 +331,7 @@ module SampleManifestExcel
 
       def check_required_fields_present(required_fields, overrides)
         required_fields.each do |required_field|
+          next if overrides[:samples] == false
           next if overrides[:exclude_fields].include?(required_field.to_sym)
           next unless columns.names.include?(required_field)
           next if value(required_field).present?

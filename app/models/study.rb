@@ -215,7 +215,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  broadcast_with_warren
+  # Replace broadcast_with_warren to drop Sapio messages.
+  broadcast_with_warren_except_sapio
 
   squishify :name
 
@@ -602,7 +603,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def rebroadcast
-    broadcast
+    broadcast_except_sapio
   end
 
   # Helper method for edit dropdowns to support backwards compatibility with old options.
