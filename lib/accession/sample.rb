@@ -61,7 +61,7 @@ module Accession
       invalid_fields = missing_accession_tags
       raise Accession::InvalidFieldsError.new(error_message.upcase_first, invalid_fields) if invalid_fields.present?
 
-      raise Accession::InternalValidationError error_message.upcase_first
+      raise Accession::InternalValidationError, error_message.upcase_first
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
