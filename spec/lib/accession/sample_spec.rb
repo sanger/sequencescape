@@ -169,6 +169,32 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
     end
+
+    context 'when sample has missing required fields' do
+      let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
+
+      it 'raises Accession::InvalidFieldsError with missing fields message' do
+        sample.sample_metadata.gender = nil
+        accession_sample = described_class.new(tag_list, sample)
+
+        expect { accession_sample.validate! }.to raise_error(Accession::InvalidFieldsError,
+          /Cannot be accessioned: Sample does not have the required metadata: gender/i
+        )
+      end
+    end
+
+    context 'when sample has validation errors unrelated to missing tags' do
+      let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
+
+      it 'raises Accession::InternalValidationError with validation error message' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        accession_sample = described_class.new(tag_list, sample)
+
+        expect { accession_sample.validate! }.to raise_error(Accession::InternalValidationError,
+          /Cannot be accessioned: sample gender must be female, male, or unknown/i
+        )
+      end
+    end
   end
 
   describe '#service' do
