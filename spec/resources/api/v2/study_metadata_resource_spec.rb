@@ -4,9 +4,13 @@ require 'rails_helper'
 require './app/resources/api/v2/study_metadata_resource'
 
 RSpec.describe Api::V2::StudyMetadataResource, type: :resource do
-  subject(:resource) { described_class.new(study_metadata, {}) }
+  subject { described_class.new(resource_model, {}) }
 
-  let(:study_metadata) { create(:study_metadata) }
+  let(:resource_model) { create(:study_metadata) }
 
+  # Model Name
+  it { is_expected.to have_model_name 'Study::Metadata' }
+
+  # Relationships
   it { is_expected.to have_a_readonly_has_one(:faculty_sponsor).with_class_name('FacultySponsor') }
 end
