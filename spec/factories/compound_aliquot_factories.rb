@@ -12,6 +12,6 @@ FactoryBot.define do
       )
     end
 
-    to_create { |instance| }
+    skip_create
   end
 end
