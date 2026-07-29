@@ -50,7 +50,7 @@ module Accession
       return if valid?
 
       # Add errors from the accession sample to the underlying sample for user feedback
-      @sample.errors.add(:base, errors.full_messages.join(', '))
+      @sample.errors.merge!(sample.errors)
 
       error_message = "cannot be accessioned: #{errors.full_messages.join(', ')}"
 
@@ -61,7 +61,7 @@ module Accession
       invalid_fields = missing_accession_tags
       raise Accession::InvalidFieldsError.new(error_message.upcase_first, invalid_fields) if invalid_fields.present?
 
-      raise Accession::InternalValidationError error_message.upcase_first
+      raise Accession::InternalValidationError, error_message.upcase_first
     end
 
     def build_xml(xml) # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -122,8 +122,10 @@ module Accession
 
       unless missing_accession_tags.empty?
         errors.add(:sample,
-                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}.")
+                   "does not have the required metadata: #{missing_accession_tags.sort.to_sentence.dasherize}")
       end
+
+      check_sample_for_service
     end
 
     def missing_accession_tags
@@ -135,6 +137,16 @@ module Accession
 
       if accessionable_study.nil?
         errors.add(:sample, 'can only be accessioned if linked to a releasable, accessioned study.')
+      end
+    end
+
+    def check_sample_for_service
+      service_context = service.ena? ? :ENA : :EGA
+      unless sample.valid?(service_context)
+        sample.sample_metadata.errors.each do |error|
+          # ignore the presence errors as they are already handled by missing_accession_tags
+          errors.add(:sample, "#{error.attribute} #{error.message}") unless error.type == :blank
+        end
       end
     end
   end
