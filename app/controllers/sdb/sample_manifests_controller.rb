@@ -44,7 +44,7 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metric
     @study = Study.find_by(id: params[:study_id])
 
     if @study&.ui_locked?
-      flash[:error] = I18n.t('studies.mastered_in_sapio.sample_manifest_creation_error')
+      flash[:error] = I18n.t('studies.externally_managed.sample_manifest_creation_error')
       redirect_to study_information_path(@study)
       return
     end

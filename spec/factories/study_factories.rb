@@ -38,14 +38,14 @@ FactoryBot.define do
   end
 
   factory :sapio_study, parent: :study do
-    mastered_in_sapio { true }
+    externally_managed { true }
 
     after(:build) do |study|
-      study.skip_mastered_in_sapio_restriction = true
+      study.skip_externally_managed_restriction = true
     end
 
     after(:create) do |study|
-      study.skip_mastered_in_sapio_restriction = nil
+      study.skip_externally_managed_restriction = nil
     end
   end
 

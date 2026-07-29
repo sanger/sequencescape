@@ -35,7 +35,7 @@ module Api
           super
         end
 
-        # Creates a new mastered_in_sapio Study from the payload and
+        # Creates a new externally_managed Study from the payload and
         # grants ownership to the requesting user.
         #
         # @return [void]
@@ -71,8 +71,8 @@ module Api
         # Builds and configures a new Study instance from the Sapio payload.
         def build_sapio_study
           Study.new(study_params).tap do |study|
-            study.mastered_in_sapio = true
-            study.skip_mastered_in_sapio_restriction = true
+            study.externally_managed = true
+            study.skip_externally_managed_restriction = true
             study.lazy_metadata = true
           end
         end

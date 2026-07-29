@@ -127,7 +127,7 @@ RSpec.describe StudiesController do
       get :edit, session: session, params: { id: study.id }
 
       expect(response).to redirect_to(study_information_path(study))
-      expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
+      expect(flash[:error]).to eq(I18n.t('studies.externally_managed.not_editable'))
     end
   end
 

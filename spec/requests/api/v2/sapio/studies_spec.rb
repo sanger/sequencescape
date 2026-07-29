@@ -726,9 +726,9 @@ describe 'Sapio Studies API', with: :api_v2 do
           expect(json.dig('data', 'links', 'self')).to include(study.id.to_s)
         end
 
-        it 'sets mastered_in_sapio to true on the created study' do
+        it 'sets externally_managed to true on the created study' do
           study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.mastered_in_sapio).to be(true)
+          expect(study.externally_managed).to be(true)
         end
 
         it 'maps the faculty_sponsor by name' do

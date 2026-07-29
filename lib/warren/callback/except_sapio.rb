@@ -12,7 +12,7 @@ module Warren
     #   the Sapio filter.
     #
     # Records are considered mastered in Sapio when they respond to
-    # `mastered_in_sapio?` and the predicate returns `true`.
+    # `externally_managed?` and the predicate returns `true`.
     module ExceptSapio
       # Class methods added to models including {ExceptSapio}.
       module ClassMethods
@@ -40,12 +40,12 @@ module Warren
       # Broadcasts the record as a Warren full message unless it is mastered
       # in Sapio.
       #
-      # Records that implement `mastered_in_sapio?` and return `true` are
+      # Records that implement `externally_managed?` and return `true` are
       # ignored.
       #
       # @return [void]
       def broadcast_except_sapio
-        return if respond_to?(:mastered_in_sapio?) && mastered_in_sapio?
+        return if respond_to?(:externally_managed?) && externally_managed?
 
         broadcast
       end

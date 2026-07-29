@@ -77,7 +77,7 @@ class StudiesController < ApplicationController
   def edit
     @study = Study.find(params[:id])
     if @study.ui_locked?
-      flash[:error] = I18n.t('studies.mastered_in_sapio.not_editable')
+      flash[:error] = I18n.t('studies.externally_managed.not_editable')
       redirect_to study_information_path(@study)
       return
     end

@@ -992,7 +992,7 @@ RSpec.describe Study do
     end
   end
 
-  describe '#prevent_updates_when_mastered_in_sapio' do
+  describe '#prevent_updates_when_externally_managed' do
     let(:study) { create(:sapio_study) }
 
     # test that updates are prevented when the feature flag is enabled and the update is from the UI
@@ -1002,7 +1002,7 @@ RSpec.describe Study do
 
         expect(study.save).to be false
         expect(study.errors[:base]).to include(
-          I18n.t('studies.mastered_in_sapio.not_editable')
+          I18n.t('studies.externally_managed.not_editable')
         )
       end
     end
@@ -1010,7 +1010,7 @@ RSpec.describe Study do
     # updates are allowed when the feature flag is enabled and the update is from Integration Hub
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       before do
-        study.skip_mastered_in_sapio_restriction = true
+        study.skip_externally_managed_restriction = true
       end
 
       it 'allows updates' do
@@ -1029,14 +1029,14 @@ RSpec.describe Study do
     end
   end
 
-  describe '#prevent_mastered_in_sapio_changes_unless_integration_hub' do
-    let(:study) { create(:study, mastered_in_sapio: false) }
+  describe '#prevent_externally_managed_changes_unless_integration_hub' do
+    let(:study) { create(:study, externally_managed: false) }
 
     context 'when feature flag is enabled and updated from SS', :sapio_restrictions_enabled do
-      it 'prevents changing mastered_in_sapio' do
-        expect(study.update(mastered_in_sapio: true)).to be false
+      it 'prevents changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be false
         expect(study.errors[:base]).to include(
-          I18n.t('studies.mastered_in_sapio.integration_hub_update_only')
+          I18n.t('studies.externally_managed.integration_hub_update_only')
         )
       end
     end
@@ -1044,17 +1044,17 @@ RSpec.describe Study do
     context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
       #  bypass the validation to simulate an update from Integration Hub
       before do
-        study.skip_mastered_in_sapio_restriction = true
+        study.skip_externally_managed_restriction = true
       end
 
-      it 'allows changing mastered_in_sapio' do
-        expect(study.update(mastered_in_sapio: true)).to be true
+      it 'allows changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be true
       end
     end
 
     context 'when feature flag is disabled', :sapio_restrictions_disabled do
-      it 'allows changing mastered_in_sapio' do
-        expect(study.update(mastered_in_sapio: true)).to be true
+      it 'allows changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be true
       end
     end
   end

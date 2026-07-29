@@ -12,13 +12,13 @@ class BasicRecordWithWarren
 end
 
 class SapioRecordWithWarren < BasicRecordWithWarren
-  def initialize(id, mastered_in_sapio)
+  def initialize(id, externally_managed)
     super(id)
-    @mastered_in_sapio = mastered_in_sapio
+    @externally_managed = externally_managed
   end
 
-  def mastered_in_sapio?
-    @mastered_in_sapio
+  def externally_managed?
+    @externally_managed
   end
 end
 
@@ -50,7 +50,7 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
       end
     end
 
-    context 'when the record does not define mastered_in_sapio?' do
+    context 'when the record does not define externally_managed?' do
       let(:record) { BasicRecordWithWarren.new(1) }
 
       it 'forwards the message' do

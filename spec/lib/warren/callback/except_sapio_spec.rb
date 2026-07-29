@@ -18,13 +18,13 @@ class BasicRecord
 end
 
 class SapioRecord < BasicRecord
-  def initialize(id:, mastered_in_sapio:)
+  def initialize(id:, externally_managed:)
     super(id:)
-    @mastered_in_sapio = mastered_in_sapio
+    @externally_managed = externally_managed
   end
 
-  def mastered_in_sapio?
-    @mastered_in_sapio
+  def externally_managed?
+    @externally_managed
   end
 end
 
@@ -35,7 +35,7 @@ RSpec.describe Warren::Callback::ExceptSapio do
     end
 
     context 'when the record is mastered in Sapio' do
-      let(:record) { SapioRecord.new(id: 1, mastered_in_sapio: true) }
+      let(:record) { SapioRecord.new(id: 1, externally_managed: true) }
 
       it 'does not broadcast the record' do
         record.broadcast_except_sapio
@@ -45,7 +45,7 @@ RSpec.describe Warren::Callback::ExceptSapio do
     end
 
     context 'when the record is not mastered in Sapio' do
-      let(:record) { SapioRecord.new(id: 1, mastered_in_sapio: false) }
+      let(:record) { SapioRecord.new(id: 1, externally_managed: false) }
 
       it 'broadcasts the record' do
         record.broadcast_except_sapio
@@ -55,7 +55,7 @@ RSpec.describe Warren::Callback::ExceptSapio do
       end
     end
 
-    context 'when the record does not define mastered_in_sapio?' do
+    context 'when the record does not define externally_managed?' do
       let(:record) { BasicRecord.new(id: 1) }
 
       it 'broadcasts the record' do

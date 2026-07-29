@@ -64,7 +64,7 @@ module Admin
         end
 
         context '#update when sapio restrictions enabled' do
-          context 'and study is mastered_in_sapio' do
+          context 'and study is externally_managed' do
             setup do
               Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
               @study = create(:sapio_study)
@@ -79,11 +79,11 @@ module Admin
             should redirect_to('study information page') { study_information_path(@study) }
 
             should 'display error flash' do
-              assert_equal I18n.t('studies.mastered_in_sapio.not_editable'), flash[:error]
+              assert_equal I18n.t('studies.externally_managed.not_editable'), flash[:error]
             end
           end
 
-          context 'and study is not mastered_in_sapio' do
+          context 'and study is not externally_managed' do
             setup do
               Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }

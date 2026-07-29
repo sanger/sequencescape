@@ -39,7 +39,7 @@ RSpec.describe Admin::StudiesController do
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
         expect(response).to redirect_to(study_information_path(sapio_study))
-        expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
+        expect(flash[:error]).to eq(I18n.t('studies.externally_managed.not_editable'))
       end
     end
 
@@ -71,7 +71,7 @@ RSpec.describe Admin::StudiesController do
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
         expect(response).to redirect_to(study_information_path(sapio_study))
-        expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
+        expect(flash[:error]).to eq(I18n.t('studies.externally_managed.not_editable'))
       end
     end
 
@@ -95,7 +95,7 @@ RSpec.describe Admin::StudiesController do
 
       it 'redirects to study_information_path with an error flash', :aggregate_failures do
         expect(response).to redirect_to(study_information_path(sapio_study))
-        expect(flash[:error]).to eq(I18n.t('studies.mastered_in_sapio.not_editable'))
+        expect(flash[:error]).to eq(I18n.t('studies.externally_managed.not_editable'))
       end
     end
 
