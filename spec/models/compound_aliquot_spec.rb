@@ -303,7 +303,7 @@ RSpec.describe CompoundAliquot do
       let(:compound_aliquot) { build(:compound_aliquot, request: request, source_aliquots: [aliquot1, aliquot2]) }
 
       it 'returns the library_id' do
-        expect(compound_aliquot.default_library_id).to eq(library1.id)
+        expect(compound_aliquot.default_library_id).to eq(library1.receptacle.id)
       end
     end
 
