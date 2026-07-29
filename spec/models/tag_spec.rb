@@ -18,16 +18,6 @@ RSpec.describe Tag do
       tag = build(:tag, oligo: nil)
       expect(tag).to be_valid
     end
-
-    it 'is valid when oligo is less than or equal to 60 characters' do
-      tag = build(:tag, oligo: 'A' * 60)
-      expect(tag).to be_valid
-    end
-
-    it 'is not valid when oligo is longer than 60 characters' do
-      tag = build(:tag, oligo: 'A' * 61)
-      expect(tag).not_to be_valid
-    end
   end
 
   describe 'scopes' do

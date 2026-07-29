@@ -25,15 +25,6 @@ class Tag < ApplicationRecord
 
   broadcast_with_warren
 
-  # Length enforcement is not a DB constraint because it was added after the fact
-  # and we don't want to break existing tags. However, at the time of writing
-  # the warehouse has a constaint of 30 characters for oligos for some flowcell tables
-  # so we don't want to allow tags longer than that to be created as they will
-  # dead letter on entrance to the warehouse.
-  # That being said we are starting to get valid tags longer than 30 characters
-  # e.g. iso-seq-cdna-amp-primer, so we are increasing the limit to 60 characters to allow for these new tags.
-  validates :oligo, length: { maximum: 60 }, allow_blank: true
-
   scope :sorted, -> { order(:map_id) }
 
   def name
