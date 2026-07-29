@@ -161,7 +161,6 @@ module Api
           Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
         end
 
-        # Checks whether the required JSON:API search filter parameter is absent or blank.
         # Checks whether the required JSON:API search filter parameter is present?
         #
         # @return [Boolean] true if the filter[name] parameter is present
