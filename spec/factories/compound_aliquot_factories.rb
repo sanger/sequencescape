@@ -11,5 +11,7 @@ FactoryBot.define do
         request:
       )
     end
+
+    to_create { |instance| }
   end
 end
