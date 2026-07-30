@@ -36,11 +36,6 @@
       <h4 class="card-title"><%= link_to "Accessioning tools", admin_accessioning_tools_path %></h4>
       Advanced accessioning tools for administrators.
     <% end %>
-
-    <%= panel do %>
-      <h4 class="card-title"><%= link_to "Development tools", admin_development_tools_path %></h4>
-      Useful links for developers.
-    <% end %>
   <% end %>
 
   <% if can? :manage, CustomText %>
