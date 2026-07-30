@@ -1,6 +1,6 @@
 ---
-limber_ultima_hic_conv:
-  name: Limber Ultima HiC Conversion
+limber_ultima_conv:
+  name: Limber Ultima Conversion
   asset_type: Well
   order: 2
   request_class_name: IlluminaHtp::Requests::StdLibraryRequest
@@ -10,7 +10,7 @@ limber_ultima_hic_conv:
   acceptable_purposes:
     - LBB Lib PCR-XP
 limber_multiplexing_ultima_hic_conv:
-  name: Limber Multiplexing Ultima HiC Conv
+  name: Limber Multiplexing Ultima Conv
   asset_type: Well
   order: 3
   request_class_name: Request::Multiplexing
