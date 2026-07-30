@@ -1,8 +1,25 @@
-# @title API V2
+# @title Sequencescape API V2
 
-# APIv2
+# Sequencescape API V2
 
-The V2 api is a [JSON API](https://jsonapi.org/) based api using [JSONAPI::Resource](http://jsonapi-resources.com/).
+The V2 API is a [JSON API](https://jsonapi.org/) based API implemented using [JSONAPI::Resource](http://jsonapi-resources.com/).
+
+## Authentication
+
+Key-based authentication is required for access to all endpoints, details of which can be found at [API V2 Authentication](https://github.com/sanger/sequencescape/blob/develop/README.md#api-v2-authentication).
+
+## Resources and endpoints
+
+The following JSON:API resources are exposed under `/api/v2`:
+
+<iframe
+	src="/doc/Api/v2"
+	title="YARD Module: Api::V2"
+	style="width:100%;min-height:720px;border:1px solid #ddd;border-radius:4px;"
+></iframe>
+
+If the embedded view does not render, open the module page directly:
+[Module: Api::V2](/doc/Api/v2)
 
 ## Extending the API
 
@@ -12,7 +29,7 @@ For more information run the command above for details of how to use it, and wha
 
 ## Resources
 
-Describe the attributes and relationships exposed on each resource, as well as specifying filters.
+Describes the attributes and relationships exposed on each resource, as well as specifying filters.
 
 ## Controllers
 
