@@ -10,7 +10,7 @@ module Warren
     # {Warren::Callback::BroadcastWithWarren}.
     #
     # @see Warren::Callback::BroadcastWithWarren
-    class BroadcastWithWarrenExceptSapio < Warren::Callback::BroadcastWithWarren
+    class BroadcastWithWarrenExceptExternallyManaged < Warren::Callback::BroadcastWithWarren
       # Broadcasts a record unless it is externally managed.
       #
       # Records that implement `externally_managed?` and return `true` are

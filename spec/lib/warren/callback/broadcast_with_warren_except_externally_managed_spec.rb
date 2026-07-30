@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'warren/callback/broadcast_with_warren_except_sapio'
+require 'warren/callback/broadcast_with_warren_except_externally_managed'
 
 class BasicRecordWithWarren
   attr_reader :id
