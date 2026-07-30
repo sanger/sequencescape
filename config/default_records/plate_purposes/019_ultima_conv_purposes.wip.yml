@@ -1,0 +1,5 @@
+---
+LBB Lib PCR-XP:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false
