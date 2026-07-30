@@ -379,6 +379,7 @@ Rails.application.routes.draw do
       end
     end
     resources :custom_texts
+    resources :development_tools, only: :index
 
     resources :primer_panels, except: :destroy
 
