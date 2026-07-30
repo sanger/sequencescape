@@ -8,8 +8,8 @@ class ApplicationRecord < ActiveRecord::Base
   # include Warren::BroadcastMessages
   include Warren::Callback
 
-  # For broadcast_with_warren_except_sapio and broadcast_except_sapio
-  include Warren::Callback::ExceptSapio
+  # For broadcast_with_warren_except_externally_managed and broadcast_except_externally_managed
+  include Warren::Callback::ExceptExternallyManaged
 
   # Provides {Squishify} which allows attributes to automatically have their whitespace compressed before validation
   # @example Squishifying a study title

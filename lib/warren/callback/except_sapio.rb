@@ -2,29 +2,29 @@
 
 module Warren
   module Callback
-    # Provides Warren broadcasting helpers that exclude records mastered in Sapio.
+    # Provides Warren broadcasting helpers that exclude records that are externally managed.
     #
     # Including this module adds:
     #
-    # - {ClassMethods#broadcast_with_warren_except_sapio} for configuring
+    # - {ClassMethods#broadcast_with_warren_except_externally_managed} for configuring
     #   automatic broadcasts after commit.
-    # - #broadcast_except_sapio for manually broadcasting records while applying
-    #   the Sapio filter.
+    # - #broadcast_except_externally_managed for manually broadcasting records while applying
+    #   the externally managed filter.
     #
-    # Records are considered mastered in Sapio when they respond to
-    # `mastered_in_sapio?` and the predicate returns `true`.
-    module ExceptSapio
-      # Class methods added to models including {ExceptSapio}.
+    # Records are considered externally managed when they respond to
+    # `externally_managed?` and the predicate returns `true`.
+    module ExceptExternallyManaged
+      # Class methods added to models including {ExceptExternallyManaged}.
       module ClassMethods
         # Configures the model to broadcast Warren messages after commit,
-        # excluding records mastered in Sapio.
+        # excluding records that are externally managed.
         #
         # @param handler [Warren::Handler] The Warren handler that receives
         #   broadcast messages.
         #
         # @return [void]
-        def broadcast_with_warren_except_sapio(handler: Warren.handler)
-          after_commit BroadcastWithWarrenExceptSapio.new(handler:)
+        def broadcast_with_warren_except_externally_managed(handler: Warren.handler)
+          after_commit BroadcastWithWarrenExceptExternallyManaged.new(handler:)
         end
       end
 
@@ -37,15 +37,14 @@ module Warren
         base.extend(ClassMethods)
       end
 
-      # Broadcasts the record as a Warren full message unless it is mastered
-      # in Sapio.
+      # Broadcasts the record as a Warren full message unless it is externally managed.
       #
-      # Records that implement `mastered_in_sapio?` and return `true` are
+      # Records that implement `externally_managed?` and return `true` are
       # ignored.
       #
       # @return [void]
-      def broadcast_except_sapio
-        return if respond_to?(:mastered_in_sapio?) && mastered_in_sapio?
+      def broadcast_except_externally_managed
+        return if respond_to?(:externally_managed?) && externally_managed?
 
         broadcast
       end
