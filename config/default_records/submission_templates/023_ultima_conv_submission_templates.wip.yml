@@ -1,15 +1,32 @@
 ---
-Limber-Htp - Ultima HiC Conv - Ultima UG100 sequencing:
-  name: "Limber-Htp - Ultima HiC Conv - Ultima UG100 sequencing"
+Limber-Htp - HiC - Ultima Conv - Ultima UG100 sequencing:
+  name: "Limber-Htp - HiC - Ultima Conv - Ultima UG100 sequencing"
   submission_class_name: "LinearSubmission"
   related_records:
     product_line_name: Ultima
     product_catalogue_name: HiC
-    request_type_keys: ["limber_hic", "limber_ultima_hic_conv", "limber_multiplexing_ultima_hic_conv", "ultima_sequencing"]
-Limber-Htp - Ultima HiC Conv - Ultima UG200 sequencing:
-  name: "Limber-Htp - Ultima HiC Conv - Ultima UG200 sequencing"
+    request_type_keys: ["limber_hic", "limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_sequencing"]
+
+Limber-Htp - HiC - Ultima Conv - Ultima UG200 sequencing:
+  name: "Limber-Htp - HiC - Ultima Conv - Ultima UG200 sequencing"
   submission_class_name: "LinearSubmission"
   related_records:
     product_line_name: Ultima
     product_catalogue_name: HiC
-    request_type_keys: ["limber_hic", "limber_ultima_hic_conv", "limber_multiplexing_ultima_hic_conv", "ultima_ug200_sequencing"]
+    request_type_keys: ["limber_hic", "limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_ug200_sequencing"]
+
+Limber-Htp - Ultima Conv - Ultima UG100 sequencing:
+  name: "Limber-Htp - Ultima Conv - Ultima UG100 sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Ultima
+    product_catalogue_name: GenericPCR
+    request_type_keys: ["limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_sequencing"]
+
+Limber-Htp - Ultima Conv - Ultima UG200 sequencing:
+  name: "Limber-Htp - Ultima Conv - Ultima UG200 sequencing"
+  submission_class_name: "LinearSubmission"
+  related_records:
+    product_line_name: Ultima
+    product_catalogue_name: GenericPCR
+    request_type_keys: ["limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_ug200_sequencing"]
