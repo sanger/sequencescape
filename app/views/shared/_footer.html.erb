@@ -1,12 +1,15 @@
 <ul class="text-left">
-  <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
-  <li>A tool from <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
+  <li><%= link_to "Documentation", configatron.fetch(:documentation_url, 'https://sanger.github.io/sequencescape/') %></li>
+  <li><%= link_to "Sequencescape API v2", '/doc/' %></li>
 </ul>
 <ul class="text-center">
-  <li title='version'><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %></li>
-  <li title='release'><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
+  <li title='release'><%= icon('fas', 'code-branch') %> <%= link_to Deployed::VERSION_STRING, Deployed::REPO_URL%></li>
+  <li id="institute">
+    A tool from <%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %>
+     - <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'https://sanger.ac.uk/science/groups/production-software-development') %>
+  </li>
 </ul>
 <ul class="text-right">
-  <li title='deployed at'><%= icon('far', 'calendar', Deployed::RELEASE_TIMESTAMP) %></li>
   <li title='host'><%= icon('fas','server', Deployed::HOSTNAME) %></li>
+  <li title='deployed at'><%= icon('far', 'calendar', Deployed::RELEASE_TIMESTAMP) %></li>
 </ul>
