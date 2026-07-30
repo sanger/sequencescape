@@ -1,11 +1,3 @@
-# Submission templates for the HiC Illumina to Ultima library conversion pipeline.
-# The first request type (limber_hic) is shared with the standard HiC Illumina pipeline
-# (see 015_novaseqx_hic_sequencing.yml). The limber_ultima_hic_conv request handles the
-# conversion step (LBB Lib PCR-XP -> Ultima PCR XP) before Ultima sequencing.
-# The library prep steps (limber_hic, limber_hic_ultima_conv) are shared between both instruments;
-# only the final sequencing request type differs:
-#   ultima_sequencing        -> Ultima UG100
-#   ultima_ug200_sequencing  -> Ultima UG200
 ---
 Limber-Htp - Ultima HiC Conv - Ultima UG100 sequencing:
   name: "Limber-Htp - Ultima HiC Conv - Ultima UG100 sequencing"
