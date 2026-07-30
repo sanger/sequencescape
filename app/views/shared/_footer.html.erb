@@ -1,12 +1,12 @@
-<ul id="contact-info">
+<ul class="text-left">
   <li id="institute"><%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %></li>
   <li>A tool from <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'http://www.sanger.ac.uk/science/groups/production-software-development') %></li>
 </ul>
-<ul id="version-info">
+<ul class="text-center">
   <li title='version'><%= icon('fas', 'code-branch', Deployed::VERSION_STRING) %></li>
   <li title='release'><%= link_to Deployed::VERSION_COMMIT, Deployed::REPO_URL%></li>
 </ul>
-<ul id="deployment-info">
+<ul class="text-right">
   <li title='deployed at'><%= icon('far', 'calendar', Deployed::RELEASE_TIMESTAMP) %></li>
   <li title='host'><%= icon('fas','server', Deployed::HOSTNAME) %></li>
 </ul>
