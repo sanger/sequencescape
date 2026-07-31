@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_30_224628) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_31_013208) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1196,6 +1196,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_30_224628) do
     t.integer "percent_phix_requested"
     t.integer "ot_recipe"
     t.string "wafer_size"
+    t.string "application_type", comment: "Ultima application type (e.g., converted-truseq)"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
