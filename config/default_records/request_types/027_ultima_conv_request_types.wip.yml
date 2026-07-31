@@ -9,7 +9,7 @@ limber_ultima_conv:
   product_line_name: Ultima
   acceptable_purposes:
     - LBB Lib PCR-XP
-limber_multiplexing_ultima_hic_conv:
+limber_multiplexing_ultima_conv:
   name: Limber Multiplexing Ultima Conv
   asset_type: Well
   order: 3
