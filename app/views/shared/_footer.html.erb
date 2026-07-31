@@ -1,8 +1,8 @@
-<ul class="text-left">
+<ul class="col-sm-3 text-left">
   <li><%= link_to "Documentation", configatron.fetch(:documentation_url, 'https://sanger.github.io/sequencescape/') %></li>
   <li><%= link_to "Sequencescape API v2", '/doc/index.html' %></li>
 </ul>
-<ul class="text-center">
+<ul class="col-sm-6 text-center">
   <li title='release'><%= icon('fas', 'code-branch') %> <%= link_to Deployed::VERSION_STRING, Deployed::REPO_URL%></li>
   <li id="version-info" class="d-none"><%= Deployed::VERSION_COMMIT %></li><%# intentionally hidden - used by Integration Suite %>
   <li>
@@ -10,7 +10,7 @@
      - <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'https://sanger.ac.uk/science/groups/production-software-development') %>
   </li>
 </ul>
-<ul class="text-right">
+<ul class="col-sm-3 text-right">
   <li title='host'><%= icon('fas','server', Deployed::HOSTNAME) %></li>
   <li title='deployed at'><%= icon('far', 'calendar', Deployed::RELEASE_TIMESTAMP) %></li>
 </ul>

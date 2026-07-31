@@ -8,7 +8,6 @@ footer {
   font-size: small;
 
   ul {
-    @extend .col-sm-4;
     @extend .mb-0;
     @extend .list-unstyled;
   }
