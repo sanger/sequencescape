@@ -8,6 +8,15 @@ describe 'Studies API', with: :api_v2 do
 
   it_behaves_like 'ApiKeyAuthenticatable'
 
+  context 'when creating a study' do
+    let(:target_study) { create(:study, name: 'Original name') }
+    let(:payload) { { data: { attributes: { uuid: 'new-uuid' } } } }
+
+    it 'does not allow the POST method' do
+      expect { api_post base_endpoint.to_s, payload }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
   context 'when requesting studies' do
     let!(:study) { create(:study) }
 
@@ -85,68 +94,17 @@ describe 'Studies API', with: :api_v2 do
 
   context 'when updating a study' do
     let(:target_study) { create(:study, name: 'Original name') }
+    let(:payload) { { data: { attributes: { uuid: 'new-uuid' } } } }
 
-    context 'when updating the UUID' do
-      before do
-        payload = { data: { attributes: { uuid: 'new-uuid' } } }
-        api_patch "#{base_endpoint}?filter[uuid]=\"#{target_study.uuid}\"", payload
-      end
-
-      it 'does not update the UUID' do
-        expect(target_study.reload.uuid).to eq(target_study.uuid)
-      end
-
-      it 'returns an unsuccessful status code' do
-        expect(response).to have_http_status(:unprocessable_entity)
-      end
-
-      it 'returns an error message' do
-        expect(json['errors'].first['detail']).to include('uuid is a read-only attribute')
-      end
-    end
-
-    context 'when updating the name' do
-      let(:existing_study) { create(:study, name: 'Existing name') }
-
-      before do
-        payload = { data: { attributes: { name: new_name } } }
-        api_patch "#{base_endpoint}?filter[uuid]=\"#{target_study.uuid}\"", payload
-      end
-
-      context 'when the name is unique and valid' do
-        let(:new_name) { 'Updated name' }
-
-        it 'returns a successful status code' do
-          expect(response).to have_http_status(:success)
-        end
-
-        it 'updates the name' do
-          expect(target_study.reload.name).to eq('Updated name')
-        end
-      end
-
-      context 'when the name is not unique' do
-        let(:new_name) { existing_study.name }
-
-        it 'returns an unsuccessful status code' do
-          expect(response).to have_http_status(:unprocessable_entity)
-        end
-
-        it 'does not update the name' do
-          expect(target_study.reload.name).to eq('Original name')
-        end
-
-        it 'returns an error message' do
-          expect(json['errors'].first['detail']).to include('Name has already been taken')
-        end
-      end
+    it 'does not allow the PATCH method' do
+      expect { api_patch "#{base_endpoint}?filter[uuid]=\"#{target_study.uuid}\"", payload }.to raise_error(ActionController::RoutingError)
     end
   end
 
   context 'when deleting a study' do
     let(:target_study) { create(:study) }
 
-    it 'does not allow delete' do
+    it 'does not allow the DELETE method' do
       expect { api_delete "#{base_endpoint}/#{target_study.id}" }.to raise_error(ActionController::RoutingError)
     end
   end
