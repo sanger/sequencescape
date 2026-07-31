@@ -13,13 +13,13 @@ Key-based authentication is required for access to all endpoints, details of whi
 The following JSON:API resources are exposed under `/api/v2`:
 
 <iframe
-	src="/doc/Api/v2"
+	src="/doc/Api/V2"
 	title="YARD Module: Api::V2"
 	style="width:100%;min-height:720px;border:1px solid #ddd;border-radius:4px;"
 ></iframe>
 
 If the embedded view does not render, open the module page directly:
-[Module: Api::V2](/doc/Api/v2)
+[Module: Api::V2](/doc/Api/V2)
 
 ## Extending the API
 
