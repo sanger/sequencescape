@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_30_224628) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1861,6 +1861,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_05_06_135637) do
     t.integer "labware_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "ultima_applications", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Ultima application configurations for sample sheets", force: :cascade do |t|
+    t.string "application_preset", null: false, comment: "Global Application, e.g. Converted TruSeq"
+    t.string "application_type", null: false, comment: "Sample application_type, e.g. converted-truseq"
+    t.string "sequencing_recipe", null: false, comment: "Sequencing cycles, e.g. 116cycles"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ultima_globals", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
