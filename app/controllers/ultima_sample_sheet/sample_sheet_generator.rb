@@ -35,6 +35,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       ['[Samples]'].freeze
     end
 
+    # TODO: (Y26-036): This mapping is illustrative only.
     # Example mapping of Illumina library types to Ultima application_type values.
     # This is illustrative only — library_type alone is not sufficient to determine
     # application_type, because the same library type can be sequenced natively or
@@ -52,6 +53,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       }.freeze
     end
 
+    # TODO: (Y26-036): This mapping is illustrative only.
     # Maps per-sample application_type values to their Ultima global Application presets.
     # Used to derive the [Global] Application from the wafer's application_type.
     # See Ultima sample sheet reference guide Table 5 for the full mapping.
@@ -266,8 +268,7 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Returns the Ultima application_type for the given aliquot, derived from its library_type.
     # Falls back to 'native' for library types not listed in library_type_to_application_type_config.
-    # TODO: We assume application_type per sample can be accessed
-    # using the passed aliquot.
+    # TODO (Y26-036): We assume application_type per sample can be accessed using the passed aliquot.
     # @param aliquot [Aliquot] the aliquot whose application type is needed
     # @return [String] the application type
     def application_type_for(aliquot)
@@ -280,6 +281,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # application_type_to_global_application_config). The per-sample
     # application_type (in [Samples]) defines the per-sample analysis recipe and
     # may differ across samples on a mixed-application wafer.
+    # TODO (Y26-036): We assume global Application preset can be accessed using the passed sequencing request.
     # @param request [UltimaSequencingRequest] the request whose global application is needed
     # @return [String] the global Application preset
     def global_application_for(request)
