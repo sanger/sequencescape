@@ -3,15 +3,15 @@
 module Warren
   module Callback
     # ActiveRecord callback which broadcasts Warren messages after a successful
-    # transaction commit, except for records that are mastered in Sapio.
+    # transaction commit, except for records that are externally managed.
     #
     # Records that implement `externally_managed?` and return `true` are ignored.
     # All other records are broadcast using the behaviour inherited from
     # {Warren::Callback::BroadcastWithWarren}.
     #
     # @see Warren::Callback::BroadcastWithWarren
-    class BroadcastWithWarrenExceptSapio < Warren::Callback::BroadcastWithWarren
-      # Broadcasts a record unless it is mastered in Sapio.
+    class BroadcastWithWarrenExceptExternallyManaged < Warren::Callback::BroadcastWithWarren
+      # Broadcasts a record unless it is externally managed.
       #
       # Records that implement `externally_managed?` and return `true` are
       # dropped. All other records are handled by the parent callback.

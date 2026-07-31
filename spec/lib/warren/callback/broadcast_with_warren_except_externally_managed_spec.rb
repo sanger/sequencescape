@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require 'warren/callback/broadcast_with_warren_except_sapio'
+require 'warren/callback/broadcast_with_warren_except_externally_managed'
 
 class BasicRecordWithWarren
   attr_reader :id
@@ -11,7 +11,7 @@ class BasicRecordWithWarren
   end
 end
 
-class SapioRecordWithWarren < BasicRecordWithWarren
+class ExternallyManagedRecordWithWarren < BasicRecordWithWarren
   def initialize(id, externally_managed)
     super(id)
     @externally_managed = externally_managed
@@ -22,7 +22,7 @@ class SapioRecordWithWarren < BasicRecordWithWarren
   end
 end
 
-RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
+RSpec.describe Warren::Callback::BroadcastWithWarrenExceptExternallyManaged do
   let(:callback) { described_class.new(handler: Warren.handler) }
 
   before do
@@ -30,8 +30,8 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
   end
 
   describe '#after_commit' do
-    context 'when the record is mastered in Sapio' do
-      let(:record) { SapioRecordWithWarren.new(1, true) }
+    context 'when the record is externally managed' do
+      let(:record) { ExternallyManagedRecordWithWarren.new(1, true) }
 
       it 'drops the message' do
         callback.after_commit(record)
@@ -40,8 +40,8 @@ RSpec.describe Warren::Callback::BroadcastWithWarrenExceptSapio do
       end
     end
 
-    context 'when the record is not mastered in Sapio' do
-      let(:record) { SapioRecordWithWarren.new(1, false) }
+    context 'when the record is not externally managed' do
+      let(:record) { ExternallyManagedRecordWithWarren.new(1, false) }
 
       it 'forwards the message' do
         callback.after_commit(record)
