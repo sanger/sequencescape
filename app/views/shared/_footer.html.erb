@@ -3,8 +3,9 @@
   <li><%= link_to "Sequencescape API v2", '/doc/index.html' %></li>
 </ul>
 <ul class="text-center">
-  <li id="version-info" title='release'><%= icon('fas', 'code-branch') %> <%= link_to Deployed::VERSION_STRING, Deployed::REPO_URL%></li>
-  <li id="institute">
+  <li title='release'><%= icon('fas', 'code-branch') %> <%= link_to Deployed::VERSION_STRING, Deployed::REPO_URL%></li>
+  <li id="version-info" class="d-none"><%= Deployed::VERSION_COMMIT %></li><%# intentionally hidden - used by Integration Suite %>
+  <li>
     A tool from <%= link_to I18n.t('application.institute'), I18n.t('application.institute_link') %>
      - <%= link_to configatron.fetch(:team_name, 'Production Software Development'), configatron.fetch(:team_url,'https://sanger.ac.uk/science/groups/production-software-development') %>
   </li>
