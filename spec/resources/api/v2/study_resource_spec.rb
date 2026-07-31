@@ -8,6 +8,9 @@ RSpec.describe Api::V2::StudyResource, type: :resource do
 
   let(:resource_model) { build_stubbed(:study) }
 
+  # Mutability
+  it { expect(described_class.mutable?).to be(false) }
+
   # Model Name
   it { is_expected.to have_model_name 'Study' }
 
