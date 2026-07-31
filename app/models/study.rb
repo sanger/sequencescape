@@ -215,7 +215,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Replace broadcast_with_warren.
   broadcast_with_warren_except_externally_managed
 
   squishify :name
@@ -603,7 +602,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def rebroadcast
-    # Replace broadcast.
     broadcast_except_externally_managed
   end
 
