@@ -8,6 +8,9 @@ RSpec.describe Api::V2::StudyMetadataResource, type: :resource do
 
   let(:resource_model) { create(:study_metadata) }
 
+  # Mutability
+  it { expect(described_class.mutable?).to be(false) }
+
   # Model Name
   it { is_expected.to have_model_name 'Study::Metadata' }
 
