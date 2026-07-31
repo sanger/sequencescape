@@ -4,4 +4,3 @@ UltimaApplicationType:
   request_option: application_type
   valid_options: !ruby/object:RequestType::Validator::UltimaApplicationTypeValidator
     request_type_key: limber_ultima_conv
-

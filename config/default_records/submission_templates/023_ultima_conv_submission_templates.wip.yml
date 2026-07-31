@@ -13,7 +13,8 @@ Limber-Htp - HiC - Ultima Conv - Ultima UG200 sequencing:
   related_records:
     product_line_name: Ultima
     product_catalogue_name: HiC
-    request_type_keys: ["limber_hic", "limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_ug200_sequencing"]
+    request_type_keys:
+      ["limber_hic", "limber_ultima_conv", "limber_multiplexing_ultima_conv", "ultima_ug200_sequencing"]
 
 Limber-Htp - Ultima Conv - Ultima UG100 sequencing:
   name: "Limber-Htp - Ultima Conv - Ultima UG100 sequencing"
