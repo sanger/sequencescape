@@ -30,6 +30,8 @@ class ReportContractTest < ActiveSupport::TestCase
       context "View #{view}" do
         should 'exist in the database' do
           assert ActiveRecord::Base.connection.execute("SELECT * FROM #{view};")
+        rescue ActiveRecord::StatementInvalid => e
+          flunk "View #{view} does not exist in the database: #{e.message}"
         end
       end
     end
