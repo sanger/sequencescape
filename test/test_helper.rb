@@ -24,6 +24,9 @@ rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
 
+require 'minitest/reporters'
+Minitest::Reporters.use!
+
 Dir
   .glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb]))) # rubocop:disable Rails/RootPathnameMethods
   .each { |factory_filename| require factory_filename }

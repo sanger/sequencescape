@@ -127,6 +127,7 @@ GEM
       activerecord (>= 4.2)
       activesupport
     amq-protocol (2.3.3)
+    ansi (1.6.0)
     ast (2.4.3)
     attr_extras (7.1.0)
     avro (1.12.1)
@@ -327,6 +328,11 @@ GEM
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
+    minitest-reporters (1.8.0)
+      ansi
+      builder
+      minitest (>= 5.0, < 7)
+      ruby-progressbar
     mocha (3.1.0)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.3)
@@ -718,6 +724,7 @@ DEPENDENCIES
   logger
   minitest (~> 5.0)
   minitest-profiler
+  minitest-reporters
   mocha
   multi_json
   mutex_m
