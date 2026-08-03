@@ -18,6 +18,11 @@ module ApiV2Helper
     post(path, params: payload.to_json, headers: headers)
   end
 
+  def api_delete(path, headers: {})
+    headers.merge!(DEFAULT_HEADERS)
+    delete(path, headers:)
+  end
+
   def json
     JSON.parse(response.body)
   end
