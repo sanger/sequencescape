@@ -223,6 +223,7 @@ group :test, :cucumber do
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'simplecov_json_formatter', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
 
