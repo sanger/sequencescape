@@ -57,7 +57,7 @@ namespace :test do
           puts 'Linted'
         end
       else
-        system("bundle exec rake factory_bot:lint RAILS_ENV='test'")
+        system("bundle exec rake test:factory_bot:lint RAILS_ENV='test'")
       end
     end
   end
