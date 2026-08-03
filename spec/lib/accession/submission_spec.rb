@@ -55,7 +55,7 @@ RSpec.describe Accession::Submission, :accession, type: :model do
       allow(described_class).to receive(:client).and_return(mock_client)
     end
 
-    context 'when th sample has not yet been accessioned' do
+    context 'when the sample has not yet been accessioned' do
       context 'when the submission is successful' do
         let(:accession_number) { 'EGA00001000240' }
         let(:mock_client) do
