@@ -350,6 +350,14 @@ end
 
 This can also affect page loading times as well as the parsing of `.text` results, resulting in changes to capitalisation and whitespace.
 
+#### Coverage
+
+Local coverage results can be viewed for the last test run by executing:
+
+```sh
+bundle exec simplecov open
+```
+
 ### Javascript
 
 1. To run the Javascript Vite tests (found in `app/frontend/**/*.test.js`):
