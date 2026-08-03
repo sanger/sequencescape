@@ -96,7 +96,6 @@ class ActionController::TestCase
 end
 
 require 'mocha'
-require 'minitest/unit'
 require 'mocha/minitest'
 
 Shoulda::Matchers.configure do |config|
