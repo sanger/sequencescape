@@ -628,4 +628,21 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
   end
+
+  describe 'PATCH /api/v2/sapio/studies/:id' do
+    let(:resource_model) { create(:study) }
+    let(:payload) { { data: { id: resource_model.id, type: 'studies', attributes: { name: 'Updated Study' } } } }
+
+    it 'finds no route for the method' do
+      expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(ActionController::RoutingError)
+    end
+  end
+
+  describe 'DELETE /api/v2/sapio/studies/:id' do
+    let(:resource_model) { create(:study) }
+
+    it 'finds no route for the method' do
+      expect { api_delete "#{base_endpoint}/#{resource_model.id}" }.to raise_error(ActionController::RoutingError)
+    end
+  end
 end
