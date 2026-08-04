@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 require 'simplecov'
+SimpleCov.start
+
+# Previous content of test helper now starts here
 
 ENV['RAILS_ENV'] = 'test'
 require File.expand_path("#{File.dirname(__FILE__)}/../config/environment")
@@ -20,6 +23,9 @@ begin
 rescue LoadError
   # No pry? That's okay, we're probably on the CI server
 end
+
+require 'minitest/reporters'
+Minitest::Reporters.use!
 
 Dir
   .glob(File.expand_path(File.join(Rails.root, %w[spec factories ** *.rb]))) # rubocop:disable Rails/RootPathnameMethods
