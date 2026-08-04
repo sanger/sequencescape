@@ -44,6 +44,7 @@ module Api
 
           study = build_sapio_study
           if study.save
+            assign_supplied_uuid(study)
             grant_study_owner(study)
             render_study_created(study)
           else
@@ -74,7 +75,17 @@ module Api
             study.externally_managed = true
             study.skip_externally_managed_restriction = true
             study.lazy_metadata = true
+            study.lazy_uuid_generation = true if sapio_study_payload[:uuid].present?
           end
+        end
+
+        # Assigns the UUID supplied by Integration Hub, skipping auto-generation.
+        # Only runs if a UUID was included in the payload.
+        def assign_supplied_uuid(study)
+          supplied_uuid = sapio_study_payload[:uuid]
+          return if supplied_uuid.blank?
+          puts "------- supplied_uuid: #{supplied_uuid}"
+          study.create_uuid_object!(external_id: supplied_uuid)
         end
 
         # Renders the 201 Created response for a successfully saved study.
@@ -124,6 +135,7 @@ module Api
           @sapio_study_payload ||= params.expect(
             study: %i[
               name
+              uuid
               study_owner_name
               faculty_sponsor
               program
