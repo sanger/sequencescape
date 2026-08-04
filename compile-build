@@ -5,6 +5,8 @@ export RAILS_ENV=production
 export BUILDING_APP=true
 echo 'Compiling assets'
 bundle exec rake vite:build
+echo 'Compiling yard documentation'
+bundle exec yard doc --output-dir public/doc --readme docs/api_v2.md --main "Sequencescape API V2" --no-stats --no-cache --no-progress
 echo 'Generating sha'
 echo ${1:-$(git rev-parse HEAD)} > REVISION
 echo ${2:-$(git tag -l --points-at HEAD --sort -version:refname | head -1)} > TAG

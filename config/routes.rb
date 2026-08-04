@@ -30,6 +30,9 @@ Rails.application.routes.draw do
   user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
 
+  # Yard documentation
+  # YARD docs are served from public/doc/
+
   # Search
   resources :searches
   resources :lab_searches

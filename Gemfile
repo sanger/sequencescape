@@ -198,10 +198,11 @@ group :test do
   gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
-  # It is needed to use #assigns(attribute) in controllers tests
-  gem 'minitest', '~> 5.0' # TODO: remove constraint when we upgrade to Rails 8, see https://github.com/minitest/minitest/issues/1040
+  gem 'minitest'
+  gem 'minitest-mock'
   gem 'minitest-profiler'
-  gem 'rails-controller-testing'
+  gem 'minitest-reporters'
+  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
 end
 
 group :test, :cucumber do
@@ -219,6 +220,7 @@ group :test, :cucumber do
   gem 'shoulda-context'
   gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'simplecov_json_formatter', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
 
