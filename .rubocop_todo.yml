@@ -1085,7 +1085,6 @@ RSpec/MultipleExpectations:
     - 'spec/requests/api/v2/shared_examples/api_key_authenticatable.rb'
     - 'spec/requests/api/v2/specific_tube_creations_spec.rb'
     - 'spec/requests/api/v2/state_changes_spec.rb'
-    - 'spec/requests/api/v2/studies_spec.rb'
     - 'spec/requests/api/v2/submission_templates_spec.rb'
     - 'spec/requests/api/v2/tag_groups_spec.rb'
     - 'spec/requests/api/v2/tag_layout_templates_spec.rb'
