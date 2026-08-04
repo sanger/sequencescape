@@ -4,17 +4,28 @@ require 'rails_helper'
 require './app/resources/api/v2/study_resource'
 
 RSpec.describe Api::V2::StudyResource, type: :resource do
-  subject(:resource) { described_class.new(study, {}) }
+  subject { described_class.new(resource_model, {}) }
 
-  let(:study) { create(:study) }
+  let(:resource_model) { build_stubbed(:study) }
 
-  it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-    expect(resource).to have_attribute :name
-    expect(resource).to have_attribute :uuid
-  end
+  # Mutability
+  it { expect(described_class.mutable?).to be(false) }
 
-  it { is_expected.to filter :uuid }
-  it { is_expected.to filter :state }
-  it { is_expected.to filter :name }
-  it { is_expected.to filter :user }
+  # Model Name
+  it { is_expected.to have_model_name 'Study' }
+
+  # Attributes
+  # Note: The attributes are effectively read-only because the resource is immutable.
+  it { is_expected.to have_readwrite_attribute :name }
+  it { is_expected.to have_readwrite_attribute :uuid }
+
+  # Relationships
+  it { is_expected.to have_many(:poly_metadata).with_class_name('PolyMetadatum') }
+  it { is_expected.to have_a_writable_has_one(:study_metadata).with_class_name('StudyMetadata') }
+
+  # Filters
+  it { is_expected.to filter(:name) }
+  it { is_expected.to filter(:state) }
+  it { is_expected.to filter(:user) }
+  it { is_expected.to filter(:uuid) }
 end
