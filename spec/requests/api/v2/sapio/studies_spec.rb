@@ -827,21 +827,55 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
 
       context 'with an integration hub API key and an unknown faculty_sponsor name' do
-        let(:unknown_sponsor_payload) { { study: valid_payload[:study].merge(faculty_sponsor: 'Unknown Sponsor') } }
+        let(:unknown_sponsor_payload) { { study: valid_payload[:study].merge(faculty_sponsor: 'Brand New Sponsor') } }
 
-        it 'returns 422 Unprocessable Entity' do
-          api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers
-          expect(response).to have_http_status(:unprocessable_entity)
+        before { api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
         end
 
-        it 'returns validation error messages' do
-          api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers
-          expect(json['errors']).not_to be_empty
+        it 'creates the new faculty_sponsor in the database' do
+          expect(FacultySponsor.find_by(name: 'Brand New Sponsor')).not_to be_nil
         end
 
-        it 'does not create a study' do
-          expect { api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers }
-            .not_to change(Study, :count)
+        it 'associates the new faculty_sponsor with the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.study_metadata.faculty_sponsor.name).to eq('Brand New Sponsor')
+        end
+      end
+
+      context 'with an integration hub API key and a supplied uuid' do
+        let(:supplied_uuid) { '12345678-1234-5678-9abc-123456789012' }
+        let(:uuid_payload) { { study: valid_payload[:study].merge(uuid: supplied_uuid) } }
+
+        before { api_post base_endpoint, uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'uses the supplied UUID in the response' do
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(supplied_uuid)
+        end
+
+        it 'stores the supplied UUID on the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.uuid).to eq(supplied_uuid)
+        end
+      end
+
+      context 'with an integration hub API key and no uuid in payload' do
+        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+
+        it 'auto-generates a UUID for the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.uuid).to be_present
+        end
+
+        it 'returns the auto-generated UUID in the response' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
         end
       end
     end
