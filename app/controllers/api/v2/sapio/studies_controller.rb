@@ -84,7 +84,7 @@ module Api
         def assign_supplied_uuid(study)
           supplied_uuid = sapio_study_payload[:uuid]
           return if supplied_uuid.blank?
-          puts "------- supplied_uuid: #{supplied_uuid}"
+
           study.create_uuid_object!(external_id: supplied_uuid)
         end
 
@@ -120,14 +120,20 @@ module Api
         end
 
         # Resolves Sapio name fields to Sequencescape association IDs.
+        # Creates the record if it does not already exist.
         def study_metadata_association_ids
           payload = sapio_study_payload
           {
-            faculty_sponsor_id: FacultySponsor.find_by(name: payload[:faculty_sponsor])&.id,
-            program_id: Program.find_by(name: payload[:program])&.id,
-            study_type_id: StudyType.find_by(name: payload[:study_type])&.id,
-            data_release_study_type_id: DataReleaseStudyType.find_by(name: payload[:data_release_study_type])&.id
+            faculty_sponsor_id: find_or_create_id(FacultySponsor, payload[:faculty_sponsor]),
+            program_id: find_or_create_id(Program, payload[:program]),
+            study_type_id: find_or_create_id(StudyType, payload[:study_type]),
+            data_release_study_type_id: find_or_create_id(DataReleaseStudyType, payload[:data_release_study_type])
           }
+        end
+
+        # Finds or creates a record by name and returns its ID.
+        def find_or_create_id(klass, name)
+          klass.find_or_create_by(name:)&.id
         end
 
         # Permits and memoizes the Sapio study payload parameters.
