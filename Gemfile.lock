@@ -127,6 +127,7 @@ GEM
       activerecord (>= 4.2)
       activesupport
     amq-protocol (2.3.3)
+    ansi (1.6.0)
     ast (2.4.3)
     attr_extras (7.1.0)
     avro (1.12.1)
@@ -222,7 +223,6 @@ GEM
       activerecord (>= 3.0, < 9.0)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.6.2)
-    docile (1.4.0)
     domain_name (0.6.20240107)
     drb (2.2.3)
     dry-cli (1.4.1)
@@ -324,10 +324,18 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.5)
+      drb (~> 2.0)
+      prism (~> 1.5)
+    minitest-mock (5.27.0)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
+    minitest-reporters (1.8.0)
+      ansi
+      builder
+      minitest (>= 5.0, < 7)
+      ruby-progressbar
     mocha (3.1.0)
       ruby2_keywords (>= 0.0.5)
     msgpack (1.8.3)
@@ -584,11 +592,7 @@ GEM
     shoulda-context (3.0.0.rc1)
     shoulda-matchers (8.0.1)
       activesupport (>= 7.2)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
+    simplecov (1.0.2)
     simplecov-lcov (0.9.0)
     simplecov_json_formatter (0.1.4)
     sinatra (3.2.0)
@@ -723,8 +727,10 @@ DEPENDENCIES
   launchy
   listen
   logger
-  minitest (~> 5.0)
+  minitest
+  minitest-mock
   minitest-profiler
+  minitest-reporters
   mocha
   multi_json
   mutex_m
@@ -773,6 +779,7 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   simplecov-lcov
+  simplecov_json_formatter
   sinatra
   slack-notifier
   super_diff

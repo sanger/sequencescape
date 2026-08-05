@@ -19,6 +19,7 @@ namespace :test do
   # regardless of subsequent processing.
   task load_cov: :environment do
     require 'simplecov'
+    SimpleCov.start
   end
 
   namespace :factory_bot do
@@ -36,7 +37,7 @@ namespace :test do
           puts 'Linted'
         end
       else
-        system("bundle exec rake factory_bot:lint RAILS_ENV='test'")
+        system("bundle exec rake test:factory_bot:lint RAILS_ENV='test'")
       end
     end
   end
