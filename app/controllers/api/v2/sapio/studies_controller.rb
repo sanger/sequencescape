@@ -49,6 +49,37 @@ module Api
         # @note Requires the +:y26_172_enable_sapio_mastered_study_restrictions+
         #   feature flag to be enabled. Returns 404 otherwise.
         #
+        # == Expected Payload
+        #
+        # The request body must be a JSON object with a top-level +study+ key:
+        #
+        #   POST /api/v2/sapio/studies
+        #   Content-Type: application/json
+        #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+        #
+        #   {
+        #     "study": {
+        #       "name":                    "Unique study name",
+        #       "uuid":                    "UUID to assign; auto-generated if omitted",
+        #       "study_owner_name":        "Login of the user to grant owner role",
+        #       "title":                   "Maps to study_study_title",
+        #       "study_description":       "Free-text study description",
+        #       "abstract":                "Maps to study_abstract",
+        #       "data_release_strategy":   "One of: open | managed | not applicable",
+        #       "faculty_sponsor":         "Name of faculty sponsor; created if not found",
+        #       "program":                 "Name of program; created if not found",
+        #       "study_type":              "Name of study type; created if not found",
+        #       "data_release_study_type": "Name of data release study type; created if not found"
+        #     }
+        #   }
+        #
+        # == Responses
+        #
+        # [201 Created]     Study created successfully. Body contains +id+, +uuid+, +name+, and a +self+ link.
+        # [403 Forbidden]   Missing or non-Integration Hub API key.
+        # [404 Not Found]   Feature flag disabled.
+        # [422 Unprocessable Entity] Validation failed (e.g. missing +name+). Body contains +errors+ array.
+        #
         # @return [void]
         def create
           return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
