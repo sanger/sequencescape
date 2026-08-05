@@ -35,8 +35,19 @@ module Api
           super
         end
 
-        # Creates a new externally_managed Study from the payload and
-        # grants ownership to the requesting user.
+        # Creates a new Study that is mastered in Sapio (externally_managed: true)
+        # from the Integration Hub payload and grants ownership to the requesting user.
+        #
+        # @note This endpoint is intended exclusively for creating *new* studies that
+        #   originate in Sapio. It should NOT be used to transfer an existing
+        #   Sequencescape study to Sapio — use the update (PATCH) endpoint
+        #   for that purpose, which sets +externally_managed+ on an existing record.
+        #
+        # @note Requires an Integration Hub API key. All other callers will receive
+        #   a 403 Forbidden response.
+        #
+        # @note Requires the +:y26_172_enable_sapio_mastered_study_restrictions+
+        #   feature flag to be enabled. Returns 404 otherwise.
         #
         # @return [void]
         def create
