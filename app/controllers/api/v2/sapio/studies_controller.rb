@@ -59,17 +59,17 @@ module Api
         #
         #   {
         #     "study": {
-        #       "name":                    "Unique study name",
-        #       "uuid":                    "UUID to assign; auto-generated if omitted",
-        #       "study_owner_name":        "Login of the user to grant owner role",
-        #       "title":                   "Maps to study_study_title",
-        #       "study_description":       "Free-text study description",
-        #       "abstract":                "Maps to study_abstract",
-        #       "data_release_strategy":   "One of: open | managed | not applicable",
-        #       "faculty_sponsor":         "Name of faculty sponsor; created if not found",
-        #       "program":                 "Name of program; created if not found",
-        #       "study_type":              "Name of study type; created if not found",
-        #       "data_release_study_type": "Name of data release study type; created if not found"
+        #       "name":                    "(required), max 255 chars, Unique study name",
+        #       "uuid":                    "(optional) UUID to assign; auto-generated if omitted",
+        #       "study_owner_name":        "(optional) Login of the user to grant owner role",
+        #       "title":                   "(optional), max 255 chars, Maps to study_study_title",
+        #       "study_description":       "(required) Medium text study description",
+        #       "abstract":                "(optional) Medium text, Maps to study_abstract",
+        #       "data_release_strategy":   "(required) One of: open | managed | not applicable",
+        #       "faculty_sponsor":         "(required), max 255 chars, Name of faculty sponsor; created if not found",
+        #       "program":                 "(required), max 255 chars, Name of program; created if not found",
+        #       "study_type":              "(required), max 255 chars, Name of study type; created if not found",
+        #       "data_release_study_type": "(required), max 255 chars, Name of data release study type; created if not found"
         #     }
         #   }
         #
