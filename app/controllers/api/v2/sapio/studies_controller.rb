@@ -57,19 +57,19 @@ module Api
         #   Content-Type: application/json
         #   X-Sequencescape-Client-Id: <integration_hub_api_key>
         #
-        #   {
-        #     "study": {
-        #       "name":                    "(required), max 255 chars, Unique study name",
-        #       "uuid":                    "(optional) UUID to assign; auto-generated if omitted",
-        #       "study_owner_name":        "(optional) Login of the user to grant owner role",
-        #       "title":                   "(optional), max 255 chars, Maps to study_study_title",
-        #       "study_description":       "(required) Medium text study description",
-        #       "abstract":                "(optional) Medium text, Maps to study_abstract",
-        #       "data_release_strategy":   "(required) One of: open | managed | not applicable",
-        #       "faculty_sponsor":         "(required), max 255 chars, Name of faculty sponsor; created if not found",
-        #       "program":                 "(required), max 255 chars, Name of program; created if not found",
-        #       "study_type":              "(required), max 255 chars, Name of study type; created if not found",
-        #       "data_release_study_type": "(required), max 255 chars, Name of data release study type; created if not found"
+        # {
+        #   "study": {
+        #     "name":                    "(required), max 255 chars, Unique study name",
+        #     "uuid":                    "(optional) UUID to assign; auto-generated if omitted",
+        #     "study_owner_name":        "(optional) Login of the user to grant owner role",
+        #     "title":                   "(optional), max 255 chars, Maps to study_study_title",
+        #     "study_description":       "(required) Medium text study description",
+        #     "abstract":                "(optional) Medium text, Maps to study_abstract",
+        #     "data_release_strategy":   "(required) One of: open | managed | not applicable",
+        #     "faculty_sponsor":         "(required), max 255 chars, Name of faculty sponsor; created if not found",
+        #     "program":                 "(required), max 255 chars, Name of program; created if not found",
+        #     "study_type":              "(required), max 255 chars, Name of study type; created if not found",
+        #     "data_release_study_type": "(required),max 255 chars,Name of data release study type;created if not found"
         #     }
         #   }
         #
