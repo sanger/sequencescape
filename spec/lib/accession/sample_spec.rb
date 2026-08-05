@@ -70,6 +70,26 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         sample.sample_metadata.sample_common_name = nil
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
+
+      it 'is not required to define gender' do
+        sample.sample_metadata.gender = nil
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Female' do
+        sample.sample_metadata.gender = 'Female'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Male' do
+        sample.sample_metadata.gender = 'Male'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Not Applicable' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
     end
 
     context 'with a managed study' do
@@ -90,6 +110,55 @@ RSpec.describe Accession::Sample, :accession, type: :model do
         expect(described_class.new(tag_list, sample)).not_to be_valid
       end
 
+      it 'can have a gender of Female' do
+        sample.sample_metadata.gender = 'Female'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'cannot have a leading space in gender' do
+        sample.sample_metadata.gender = ' Female'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a trailing space in gender' do
+        sample.sample_metadata.gender = 'Female '
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'can have a gender of Male' do
+        sample.sample_metadata.gender = 'Male'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'can have a gender of Unknown' do
+        sample.sample_metadata.gender = 'Unknown'
+        expect(described_class.new(tag_list, sample)).to be_valid
+      end
+
+      it 'cannot have a gender of Mixed' do
+        sample.sample_metadata.gender = 'Mixed'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a gender of Hermaphrodite' do
+        sample.sample_metadata.gender = 'Hermaphrodite'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'cannot have a gender of Not Applicable' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+
+      it 'provides a clear error message about valid gender options' do
+        sample.sample_metadata.gender = 'Invalid Gender'
+        accession_sample = described_class.new(tag_list, sample)
+        accession_sample.validate
+        expect(accession_sample.errors[:sample]).to include(
+          'gender must be Female, Male, or Unknown'
+        )
+      end
+
       it 'is required to define phenotype' do
         sample.sample_metadata.phenotype = nil
         expect(described_class.new(tag_list, sample)).not_to be_valid
@@ -98,6 +167,32 @@ RSpec.describe Accession::Sample, :accession, type: :model do
       it 'is required to define donor_id' do
         sample.sample_metadata.donor_id = nil
         expect(described_class.new(tag_list, sample)).not_to be_valid
+      end
+    end
+
+    context 'when sample has missing required fields' do
+      let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
+
+      it 'raises Accession::InvalidFieldsError with missing fields message' do
+        sample.sample_metadata.gender = nil
+        accession_sample = described_class.new(tag_list, sample)
+
+        expect { accession_sample.validate! }
+          .to raise_error(Accession::InvalidFieldsError,
+                          /Cannot be accessioned: Sample does not have the required metadata: gender/i)
+      end
+    end
+
+    context 'when sample has validation errors unrelated to missing tags' do
+      let(:sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
+
+      it 'raises Accession::InternalValidationError with validation error message' do
+        sample.sample_metadata.gender = 'Not Applicable'
+        accession_sample = described_class.new(tag_list, sample)
+
+        expect { accession_sample.validate! }
+          .to raise_error(Accession::InternalValidationError,
+                          /Cannot be accessioned: sample gender must be Female, Male, or Unknown/i)
       end
     end
   end
