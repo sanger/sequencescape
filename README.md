@@ -123,7 +123,7 @@ The following tools are required for development:
 - node (`brew install node@<version>` version defined in the `.nvmrc`, ensure node is in your PATH)
 - mysql client libraries - if you do not want to install mysql server on your machine, consider
   using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
-  Sequencescape (currently 8.0)
+  Sequencescape (currently 8.4)
 
 ## Getting started (using Docker)
 
