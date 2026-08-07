@@ -342,8 +342,6 @@ GEM
     multi_json (1.17.0)
     multi_test (1.1.0)
     multipart-post (2.4.1)
-    mustermann (3.0.0)
-      ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
     mysql2 (0.5.7)
       bigdecimal
@@ -399,8 +397,6 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (2.2.23)
-    rack-acceptable (0.1.0)
-      rack (>= 1.1.0)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-mini-profiler (4.0.1)
@@ -595,11 +591,6 @@ GEM
     simplecov (1.0.2)
     simplecov-lcov (0.9.0)
     simplecov_json_formatter (0.1.4)
-    sinatra (3.2.0)
-      mustermann (~> 3.0)
-      rack (~> 2.2, >= 2.2.4)
-      rack-protection (= 3.2.0)
-      tilt (~> 2.0)
     slack-notifier (2.4.0)
     sorted_set (1.0.3)
       rbtree
@@ -721,7 +712,6 @@ DEPENDENCIES
   flipper-ui (~> 1.0)
   formtastic
   hashdiff
-  json
   jsonapi-resources-matchers
   knapsack_pro
   launchy
@@ -732,7 +722,6 @@ DEPENDENCIES
   minitest-profiler
   minitest-reporters
   mocha
-  multi_json
   mutex_m
   mysql2
   net-ldap
@@ -741,7 +730,6 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma
-  rack-acceptable
   rack-cors
   rack-mini-profiler
   rails (~> 8.0.0)
@@ -780,7 +768,6 @@ DEPENDENCIES
   simplecov
   simplecov-lcov
   simplecov_json_formatter
-  sinatra
   slack-notifier
   super_diff
   syntax_tree
