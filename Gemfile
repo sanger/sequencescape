@@ -21,6 +21,9 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
+  # Models
+  gem 'uuidtools'
+
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
@@ -58,13 +61,6 @@ group :default do
   # For background processing
   # Locked for ruby version
   gem 'delayed_job_active_record'
-
-  # For the API level
-  gem 'json'
-  gem 'multi_json'
-  gem 'rack-acceptable', require: 'rack/acceptable'
-  gem 'sinatra', require: false
-  gem 'uuidtools'
 
   # Forked and stabilized version of [jsonapi-resources](https://github.com/sanger/jsonapi-resources)
   # for Sanger/PSD projects.

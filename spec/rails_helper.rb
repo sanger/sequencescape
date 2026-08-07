@@ -11,8 +11,6 @@ require 'rspec/rails'
 
 require 'rspec/json_expectations'
 
-require 'support/api_helper'
-
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
 require 'shoulda/matchers'
