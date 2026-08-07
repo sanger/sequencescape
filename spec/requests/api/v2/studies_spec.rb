@@ -93,19 +93,28 @@ describe 'Studies API', with: :api_v2 do
   end
 
   context 'when updating a study' do
-    let(:target_study) { create(:study, name: 'Original name') }
-    let(:payload) { { data: { attributes: { uuid: 'new-uuid' } } } }
+    let(:resource_type) { 'studies' }
+    let(:resource) { create(:study, name: 'Original name') }
+    let(:payload) do
+      {
+        data: {
+          id: resource.id,
+          type: resource_type,
+          attributes: { uuid: 'new-uuid' }
+        }
+      }
+    end
 
     it 'does not allow the PATCH method' do
-      expect { api_patch "#{base_endpoint}?filter[uuid]=\"#{target_study.uuid}\"", payload }.to raise_error(ActionController::RoutingError)
+      expect { api_patch "#{base_endpoint}/#{resource.id}", payload }.to raise_error(ActionController::RoutingError)
     end
   end
 
   context 'when deleting a study' do
-    let(:target_study) { create(:study) }
+    let(:resource) { create(:study) }
 
     it 'does not allow the DELETE method' do
-      expect { api_delete "#{base_endpoint}/#{target_study.id}" }.to raise_error(ActionController::RoutingError)
+      expect { api_delete "#{base_endpoint}/#{resource.id}" }.to raise_error(ActionController::RoutingError)
     end
   end
 end

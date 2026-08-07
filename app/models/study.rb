@@ -142,6 +142,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # External management
+  attribute :externally_managed, :boolean, default: false
+
   # Associations
   has_many_events do
     event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)

@@ -34,12 +34,12 @@ module Api
       # @example GET request for a specific study by ID
       #  GET /api/v2/sapio/studies/123/
       #
+      # TODO: Add update example(s)
+      #
       # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class StudyResource < Api::V2::BaseResource
-        immutable # Read-only is enough for the Sapio study search story.
-
         include Api::V2::Sapio::StudySearchQuery
 
         ##
@@ -69,42 +69,46 @@ module Api
 
         # @!attribute [r] name
         #   @return [String] The name of the study.
-        attribute :name
+        attribute :name, readonly: true
 
         # @!attribute [r] uuid
         #   @return [String] The UUID of the study.
-        attribute :uuid
+        attribute :uuid, readonly: true
 
         # @!attribute [r] created_at
         #   @return [String] Timestamp when the study was created.
-        attribute :created_at
+        attribute :created_at, readonly: true
 
         # @!attribute [r] updated_at
         #   @return [String] Timestamp when the study was last updated.
         #   @note study_metadata association specifies touch: true, so updated_at
         #     will reflect changes to the study_metadata as well.
-        attribute :updated_at
+        attribute :updated_at, readonly: true
 
         # @!attribute [r] blocked
         #   @return [Boolean] Whether the study is blocked.
         #   @note All rows in production have this column set to false.
-        attribute :blocked
+        attribute :blocked, readonly: true
 
-        # @!attribute [r] state
+        # @!attribute [rw] state
         #   @return [String] The state of the study (pending, active, or inactive).
         attribute :state
 
+        # @!attribute [rw] externally_managed
+        #  @return [Boolean] Whether the study is managed by an external LIMS.
+        attribute :externally_managed
+
         # @!attribute [r] ethically_approved
         #   @return [Boolean] Whether ethical approval is set.
-        attribute :ethically_approved
+        attribute :ethically_approved, readonly: true
 
         # @!attribute [r] enforce_data_release
         #   @return [Boolean] Whether data release enforcement is enabled.
-        attribute :enforce_data_release
+        attribute :enforce_data_release, readonly: true
 
         # @!attribute [r] enforce_accessioning
         #   @return [Boolean] Whether accessioning enforcement is enabled.
-        attribute :enforce_accessioning
+        attribute :enforce_accessioning, readonly: true
       end
     end
   end
