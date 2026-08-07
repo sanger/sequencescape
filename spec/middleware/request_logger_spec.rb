@@ -2,6 +2,9 @@
 
 require 'rails_helper'
 
+# NOTE: middleware is automatically filtered from backtraces in spec/rails_helper.rb,
+# commenting out the `app/middleware/` lines would aid debugging.
+
 RSpec.describe RequestLogger do
   let(:env) do
     Rack::MockRequest.env_for(
