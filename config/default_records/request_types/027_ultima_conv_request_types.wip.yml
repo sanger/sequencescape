@@ -1,0 +1,19 @@
+---
+limber_ultima_conv:
+  name: Limber Ultima Conversion
+  asset_type: Well
+  order: 2
+  request_class_name: UltimaConvRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Ultima
+  acceptable_purposes:
+    - LBB Lib PCR-XP
+limber_multiplexing_ultima_conv:
+  name: Limber Multiplexing Ultima Conv
+  asset_type: Well
+  order: 3
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Ultima
+  target_purpose_name: LB Lib Pool Norm
