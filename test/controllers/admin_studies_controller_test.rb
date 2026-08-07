@@ -62,6 +62,54 @@ module Admin
             assert @study.ethically_approved
           end
         end
+
+        context '#update when sapio restrictions enabled' do
+          context 'and study is externally_managed' do
+            setup do
+              Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
+              @study = create(:sapio_study)
+
+              put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+            end
+
+            teardown do
+              Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+            end
+
+            should redirect_to('study information page') { study_information_path(@study) }
+
+            should 'display error flash' do
+              assert_equal I18n.t('studies.externally_managed.not_editable'), flash[:error]
+            end
+          end
+
+          context 'and study is not externally_managed' do
+            setup do
+              Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
+              put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+            end
+
+            teardown do
+              Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+            end
+
+            should 'display success notice' do
+              assert_equal 'Your study has been updated', flash.now[:notice]
+            end
+          end
+        end
+
+        context '#update when sapio restrictions disabled' do
+          setup do
+            Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+            @study = create(:sapio_study)
+            put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
+          end
+
+          should 'allow update even for mastered study' do
+            assert_equal 'Your study has been updated', flash.now[:notice]
+          end
+        end
       end
     end
   end

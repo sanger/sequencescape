@@ -13,6 +13,12 @@ class ApiApplication < ApplicationRecord
 
   before_validation :generate_new_api_key, unless: :key?
 
+  INTEGRATION_HUB_NAME = 'Integration Hub'
+
+  def integration_hub?
+    name == INTEGRATION_HUB_NAME
+  end
+
   def generate_new_api_key
     self.key = SecureRandom.base64(configatron.fetch('api_key_length') || 20)
   end

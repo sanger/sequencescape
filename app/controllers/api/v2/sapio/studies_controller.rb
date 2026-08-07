@@ -13,6 +13,9 @@ module Api
         # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
         RESULTS_RANGE = 1..1000
 
+        # Before create study, authorize requests from Integration Hub API keys only.
+        before_action :authorize_integration_hub!, only: [:create]
+
         # Enforces a name search constraint on resource index listing.
         #
         # @return [void]
@@ -32,13 +35,190 @@ module Api
           super
         end
 
+        # Creates a new Study that is mastered in Sapio (externally_managed: true)
+        # from the Integration Hub payload and grants ownership to the requesting user.
+        #
+        # @note This endpoint is intended exclusively for creating *new* studies that
+        #   originate in Sapio. It should NOT be used to transfer an existing
+        #   Sequencescape study to Sapio — use the update (PATCH) endpoint
+        #   for that purpose, which sets +externally_managed+ on an existing record.
+        #
+        # @note Requires an Integration Hub API key. All other callers will receive
+        #   a 403 Forbidden response.
+        #
+        # @note Requires the +:y26_172_enable_sapio_mastered_study_restrictions+
+        #   feature flag to be enabled. Returns 404 otherwise.
+        #
+        # == Expected Payload
+        #
+        # The request body must be a JSON object with a top-level +study+ key:
+        #
+        #   POST /api/v2/sapio/studies
+        #   Content-Type: application/json
+        #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+        #
+        # {
+        #   "study": {
+        #     "name":                    "(required), max 255 chars, Unique study name",
+        #     "uuid":                    "(optional) UUID to assign; auto-generated if omitted",
+        #     "study_owner_name":        "(optional) Login of the user to grant owner role",
+        #     "title":                   "(optional), max 255 chars, Maps to study_study_title",
+        #     "study_description":       "(required) Medium text study description",
+        #     "abstract":                "(optional) Medium text, Maps to study_abstract",
+        #     "data_release_strategy":   "(required) One of: open | managed | not applicable",
+        #     "faculty_sponsor":         "(required), max 255 chars, Name of faculty sponsor; created if not found",
+        #     "program":                 "(required), max 255 chars, Name of program; created if not found",
+        #     "study_type":              "(required), max 255 chars, Name of study type; created if not found",
+        #     "data_release_study_type": "(required),max 255 chars,Name of data release study type;created if not found"
+        #     }
+        #   }
+        #
+        # == Responses
+        #
+        # [201 Created]     Study created successfully. Body contains +id+, +uuid+, +name+, and a +self+ link.
+        # [403 Forbidden]   Missing or non-Integration Hub API key.
+        # [404 Not Found]   Feature flag disabled.
+        # [422 Unprocessable Entity] Validation failed (e.g. missing +name+). Body contains +errors+ array.
+        #
+        # @return [void]
+        def create
+          return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
+
+          study = build_sapio_study
+          if study.save
+            assign_supplied_uuid(study)
+            grant_study_owner(study)
+            render_study_created(study)
+          else
+            render json: { errors: study.errors.full_messages }, status: :unprocessable_entity
+          end
+        end
+
         private
+
+        # Ensures that the request is authorized with an Integration Hub API key.
+        def authorize_integration_hub!
+          return if @api_application&.integration_hub?
+
+          render status: :forbidden,
+                 json: {
+                   errors: [
+                     {
+                       title: 'Forbidden',
+                       detail: 'Integration Hub API key required.'
+                     }
+                   ]
+                 }
+        end
+
+        # Builds and configures a new Study instance from the Sapio payload.
+        def build_sapio_study
+          Study.new(study_params).tap do |study|
+            study.externally_managed = true
+            study.skip_externally_managed_restriction = true
+            study.lazy_metadata = true
+            study.lazy_uuid_generation = true if sapio_study_payload[:uuid].present?
+          end
+        end
+
+        # Assigns the UUID supplied by Integration Hub, skipping auto-generation.
+        # Only runs if a UUID was included in the payload.
+        def assign_supplied_uuid(study)
+          supplied_uuid = sapio_study_payload[:uuid]
+          return if supplied_uuid.blank?
+
+          study.create_uuid_object!(external_id: supplied_uuid)
+        end
+
+        # Renders the 201 Created response for a successfully saved study.
+        def render_study_created(study)
+          render json: {
+            data: {
+              attributes: { id: study.id, uuid: study.uuid, name: study.name },
+              links: { self: api_v2_sapio_study_url(study) }
+            }
+          }, status: :created
+        end
+
+        # Builds the top-level attributes hash passed to +Study.new+.
+        def study_params
+          { name: sapio_study_payload[:name], study_metadata_attributes: study_metadata_params }
+        end
+
+        # Merges direct scalar metadata fields with association ID lookups.
+        def study_metadata_params
+          study_metadata_direct_params.merge(study_metadata_association_ids)
+        end
+
+        # Scalar metadata fields that are passed through from the Sapio payload without lookup.
+        def study_metadata_direct_params
+          payload = sapio_study_payload
+          {
+            study_study_title: payload[:title],
+            study_description: payload[:study_description],
+            study_abstract: payload[:abstract],
+            data_release_strategy: payload[:data_release_strategy]
+          }
+        end
+
+        # Resolves Sapio name fields to Sequencescape association IDs.
+        # Creates the record if it does not already exist.
+        def study_metadata_association_ids
+          payload = sapio_study_payload
+          {
+            faculty_sponsor_id: find_or_create_id(FacultySponsor, payload[:faculty_sponsor]),
+            program_id: find_or_create_id(Program, payload[:program]),
+            study_type_id: find_or_create_id(StudyType, payload[:study_type]),
+            data_release_study_type_id: find_or_create_id(DataReleaseStudyType, payload[:data_release_study_type])
+          }
+        end
+
+        # Finds or creates a record by name and returns its ID.
+        def find_or_create_id(klass, name)
+          klass.find_or_create_by(name:)&.id
+        end
+
+        # Permits and memoizes the Sapio study payload parameters.
+        def sapio_study_payload
+          @sapio_study_payload ||= params.expect(
+            study: %i[
+              name
+              uuid
+              study_owner_name
+              faculty_sponsor
+              program
+              title
+              study_type
+              data_release_study_type
+              study_description
+              abstract
+              data_release_strategy
+            ]
+          )
+        end
+
+        # Grants the owner role to the user identified by +study_owner_name+ (login).
+        # Silently skips if the field is absent or no matching user is found.
+        def grant_study_owner(study)
+          owner_name = sapio_study_payload[:study_owner_name]
+          return if owner_name.blank?
+
+          owner = User.find_by(login: owner_name)
+          owner&.grant_owner(study)
+        end
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
         #
         # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is enabled
         def feature_flag_enabled?
           Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        end
+
+        # Checks whether the Sapio mastered study restrictions feature flag is enabled.
+        #
+        # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is enabled
+        def sapio_mastered_study_restrictions_enabled?
+          Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is present?

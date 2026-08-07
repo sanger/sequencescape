@@ -9,16 +9,22 @@ class Admin::StudiesController < ApplicationController
     @studies = Study.alphabetical
   end
 
+  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def show
     @study = Study.find(params[:id])
+    return if redirect_if_ui_locked(@study)
+
     @page_name = @study.name
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
 
   def edit
     @request_types = RequestType.order(name: :asc)
+
     if params[:id] != '0'
       @study = Study.find(params[:id])
+      return if redirect_if_ui_locked(@study)
+
       flash.now[:warning] = @study.warnings if @study.warnings.present?
       render partial: 'edit', locals: { study: @study }
     else
@@ -28,14 +34,15 @@ class Admin::StudiesController < ApplicationController
 
   def update
     @study = Study.find(params[:id])
+    return if redirect_if_ui_locked(@study)
+
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     flash.now[:notice] = 'Your study has been updated'
     render partial: 'manage_single_study'
   end
 
-  # TODO: remove unneeded code
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
-  def filter # rubocop:todo Metrics/CyclomaticComplexity
+  # rubocop:todo Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+  def filter
     filter_conditions = { approved: false } if params[:filter][:by] == 'not approved' unless params[:filter].nil?
 
     if ['not approved', 'all'].include?(params[:filter][:by])
@@ -58,10 +65,11 @@ class Admin::StudiesController < ApplicationController
     render partial: 'filtered_studies'
   end
 
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 
   def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     @study = Study.find(params[:id])
+    return if redirect_if_ui_locked(@study)
 
     if params[:study][:uploaded_data].present?
       Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data])
@@ -90,5 +98,16 @@ class Admin::StudiesController < ApplicationController
       @studies = @studies.sort_by(&:user_id)
     end
     render partial: 'studies'
+  end
+
+  private
+
+  def redirect_if_ui_locked(study)
+    @study = study
+    return false unless @study.ui_locked?
+
+    flash[:error] = I18n.t('studies.externally_managed.not_editable')
+    redirect_to study_information_path(@study)
+    true
   end
 end
