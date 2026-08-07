@@ -631,69 +631,170 @@ describe 'Sapio Studies API', with: :api_v2 do
   end
 
   describe 'PATCH /api/v2/sapio/studies/:id' do
-    let(:study) { create(:study) }
+    let(:resource_type) { 'studies' }
+    let(:resource_id) { study.id }
+    let(:payload) do
+      { data: {
+        id: resource_id,
+        type: resource_type,
+        attributes: attributes
+      } }
+    end
+    let(:attributes) { {} }
+
+    let(:study) do
+      # set all enums and booleans to a known state
+      create(:study,
+             state: 'pending',
+             externally_managed: false,
+             blocked: false,
+             ethically_approved: false,
+             enforce_data_release: false,
+             enforce_accessioning: false)
+    end
+
+    before do
+      api_patch "#{base_endpoint}/#{study.id}", payload
+    end
 
     context 'when updating the study resource' do
-      it 'is unable to update the name' do
-        api_patch "#{base_endpoint}/#{study.id}", { name: 'Updated Study' }
+      context 'when the update succeeds' do
+        let(:attributes) { { state: 'active' } }
 
-        expect(study.reload.name).not_to eq('Updated Study')
+        it 'returns a 200 OK status code' do
+          expect(response).to have_http_status(:ok)
+        end
       end
 
-      it 'is unable to update the UUID' do
-        api_patch "#{base_endpoint}/#{study.id}", { uuid: 'new-uuid-value' }
+      context 'when a read-only attribute is attempted to be updated' do
+        let(:attributes) { { name: 'Updated Study' } }
 
-        expect(study.reload.uuid).not_to eq('new-uuid-value')
+        it 'returns a 400 Bad Request status code' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+          expect(json).to have_key('errors')
+          expect(json).not_to have_key('data')
+          expect(json['errors']).to be_an(Array)
+          expect(json['errors'].size).to eq(1)
+        end
+
+        it 'serializes the exact error keys with correct details', :aggregate_failures do
+          error = json['errors'].first
+          expect(error).to include(
+            'title' => 'Param not allowed',
+            'detail' => 'name is not allowed.',
+            'code' => JSONAPI::PARAM_NOT_ALLOWED,
+            'status' => '400'
+          )
+        end
       end
 
-      it 'updates state' do
-        api_patch "#{base_endpoint}/#{study.id}", { state: 'inactive' }
+      context 'when updating the name' do
+        let(:attributes) { { name: 'Updated Study' } }
 
-        expect(study.reload.state).not_to eq('inactive')
+        it 'fails to update' do
+          expect(study.reload.name).not_to eq('Updated Study')
+        end
       end
 
-      it 'updates externally_managed' do
-        api_patch "#{base_endpoint}/#{study.id}", { externally_managed: true }
+      context 'when updating the UUID' do
+        let(:attributes) { { uuid: 'new-uuid-value' } }
 
-        expect(study.reload.externally_managed).to be true
+        it 'fails to update' do
+          expect(study.reload.uuid).not_to eq('new-uuid-value')
+        end
       end
 
-      it 'is unable to update the blocked status' do
-        api_patch "#{base_endpoint}/#{study.id}", { blocked: true }
+      context 'when updating the state' do
+        let(:attributes) { { state: 'active' } }
 
-        expect(study.reload.blocked).not_to be true
+        it 'successfully updates' do
+          expect(study.reload.state).to eq('active')
+        end
+
+        context 'when an invalid state is provided' do
+          let(:attributes) { { state: 'invalid_state' } }
+
+          it 'returns a 422 Unprocessable Entity status code' do
+            expect(response).to have_http_status(:unprocessable_entity)
+          end
+
+          it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+            expect(json).to have_key('errors')
+            expect(json).not_to have_key('data')
+            expect(json['errors']).to be_an(Array)
+            expect(json['errors'].size).to eq(1)
+          end
+
+          it 'serializes the exact error keys with correct details', :aggregate_failures do
+            error = json['errors'].first
+            expect(error).to include(
+              'title' => 'is invalid',
+              'detail' => 'state - is invalid',
+              'code' => JSONAPI::VALIDATION_ERROR,
+              'status' => '422'
+            )
+            expect(error.dig('source', 'pointer')).to eq('/data/attributes/state')
+          end
+        end
       end
 
-      it 'is unable to update the ethically_approved status' do
-        api_patch "#{base_endpoint}/#{study.id}", { ethically_approved: true }
+      context 'when updating externally_managed' do
+        let(:attributes) { { externally_managed: true } }
 
-        expect(study.reload.ethically_approved).not_to be true
+        it 'successfully updates' do
+          expect(study.reload.externally_managed).to be true
+        end
       end
 
-      it 'is unable to update the enforce_data_release status' do
-        api_patch "#{base_endpoint}/#{study.id}", { enforce_data_release: true }
+      context 'when updating blocked' do
+        let(:attributes) { { blocked: true } }
 
-        expect(study.reload.enforce_data_release).not_to be true
+        it 'fails to update' do
+          expect(study.reload.blocked).to be false
+        end
       end
 
-      it 'is unable to update the enforce_accessioning status' do
-        api_patch "#{base_endpoint}/#{study.id}", { enforce_accessioning: true }
+      context 'when updating ethically_approved' do
+        let(:attributes) { { ethically_approved: true } }
 
-        expect(study.reload.enforce_accessioning).not_to be true
+        it 'fails to update' do
+          expect(study.reload.ethically_approved).to be_nil
+        end
       end
 
-      it 'is unable to update the created_at timestamp' do
-        new_timestamp = 1.day.ago
-        api_patch "#{base_endpoint}/#{study.id}", { created_at: new_timestamp }
+      context 'when updating enforce_data_release' do
+        let(:attributes) { { enforce_data_release: true } }
 
-        expect(study.reload.created_at).not_to eq(new_timestamp)
+        it 'fails to update' do
+          expect(study.reload.enforce_data_release).to be false
+        end
       end
 
-      it 'is unable to update the updated_at timestamp' do
-        new_timestamp = 1.day.ago
-        api_patch "#{base_endpoint}/#{study.id}", { updated_at: new_timestamp }
+      context 'when updating enforce_accessioning' do
+        let(:attributes) { { enforce_accessioning: true } }
 
-        expect(study.reload.updated_at).not_to eq(new_timestamp)
+        it 'fails to update' do
+          expect(study.reload.enforce_accessioning).to be false
+        end
+      end
+
+      context 'when updating the created_at timestamp' do
+        let(:attributes) { { created_at: 1.day.ago } }
+
+        it 'fails to update' do
+          expect(study.reload.created_at).not_to eq(1.day.ago)
+        end
+      end
+
+      context 'when updating the updated_at timestamp' do
+        let(:attributes) { { updated_at: 1.day.ago } }
+
+        it 'fails to update' do
+          expect(study.reload.updated_at).not_to eq(1.day.ago)
+        end
       end
     end
   end
