@@ -34,6 +34,8 @@ module Api
       # @example GET request for a specific study by ID
       #  GET /api/v2/sapio/studies/123/
       #
+      # TODO: Add update example(s)
+      #
       # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
@@ -88,9 +90,9 @@ module Api
         #   @note All rows in production have this column set to false.
         attribute :blocked, readonly: true
 
-        # @!attribute [r] state
+        # @!attribute [rw] state
         #   @return [String] The state of the study (pending, active, or inactive).
-        attribute :state, readonly: true
+        attribute :state
 
         # @!attribute [r] ethically_approved
         #   @return [Boolean] Whether ethical approval is set.

@@ -645,7 +645,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         expect(study.reload.uuid).not_to eq('new-uuid-value')
       end
 
-      it 'is unable to update the state' do
+      it 'updates state' do
         api_patch "#{base_endpoint}/#{study.id}", { state: 'inactive' }
 
         expect(study.reload.state).not_to eq('inactive')
