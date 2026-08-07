@@ -630,19 +630,72 @@ describe 'Sapio Studies API', with: :api_v2 do
   end
 
   describe 'PATCH /api/v2/sapio/studies/:id' do
-    let(:resource_model) { create(:study) }
-    let(:payload) { { data: { id: resource_model.id, type: 'studies', attributes: { name: 'Updated Study' } } } }
+    let(:study) { create(:study) }
 
-    it 'finds no route for the method' do
-      expect { api_patch "#{base_endpoint}/#{resource_model.id}", payload }.to raise_error(ActionController::RoutingError)
+    context 'when updating the study resource' do
+      it 'is unable to update the name' do
+        api_patch "#{base_endpoint}/#{study.id}", { name: 'Updated Study' }
+
+        expect(study.reload.name).not_to eq('Updated Study')
+      end
+
+      it 'is unable to update the UUID' do
+        api_patch "#{base_endpoint}/#{study.id}", { uuid: 'new-uuid-value' }
+
+        expect(study.reload.uuid).not_to eq('new-uuid-value')
+      end
+
+      it 'is unable to update the state' do
+        api_patch "#{base_endpoint}/#{study.id}", { state: 'inactive' }
+
+        expect(study.reload.state).not_to eq('inactive')
+      end
+
+      it 'is unable to update the blocked status' do
+        api_patch "#{base_endpoint}/#{study.id}", { blocked: true }
+
+        expect(study.reload.blocked).not_to be true
+      end
+
+      it 'is unable to update the ethically_approved status' do
+        api_patch "#{base_endpoint}/#{study.id}", { ethically_approved: true }
+
+        expect(study.reload.ethically_approved).not_to be true
+      end
+
+      it 'is unable to update the enforce_data_release status' do
+        api_patch "#{base_endpoint}/#{study.id}", { enforce_data_release: true }
+
+        expect(study.reload.enforce_data_release).not_to be true
+      end
+
+      it 'is unable to update the enforce_accessioning status' do
+        api_patch "#{base_endpoint}/#{study.id}", { enforce_accessioning: true }
+
+        expect(study.reload.enforce_accessioning).not_to be true
+      end
+
+      it 'is unable to update the created_at timestamp' do
+        new_timestamp = 1.day.ago
+        api_patch "#{base_endpoint}/#{study.id}", { created_at: new_timestamp }
+
+        expect(study.reload.created_at).not_to eq(new_timestamp)
+      end
+
+      it 'is unable to update the updated_at timestamp' do
+        new_timestamp = 1.day.ago
+        api_patch "#{base_endpoint}/#{study.id}", { updated_at: new_timestamp }
+
+        expect(study.reload.updated_at).not_to eq(new_timestamp)
+      end
     end
   end
 
   describe 'DELETE /api/v2/sapio/studies/:id' do
-    let(:resource_model) { create(:study) }
+    let(:resource) { create(:study) }
 
     it 'finds no route for the method' do
-      expect { api_delete "#{base_endpoint}/#{resource_model.id}" }.to raise_error(ActionController::RoutingError)
+      expect { api_delete "#{base_endpoint}/#{resource.id}" }.to raise_error(ActionController::RoutingError)
     end
   end
 end
