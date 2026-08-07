@@ -39,7 +39,7 @@
   <div class="card-header font-weight-bold">Bulk accession by updated range</div>
   <div class="card-body">
     <p>Designed for bulk accessioning of samples after an external service outage.</p>
-    <%= form_tag bulk_accession_admin_accessioning_tools_path, method: :put do %>
+    <%= form_tag bulk_accession_by_date_admin_accessioning_tools_path, method: :put do %>
       <div class="form-row">
         <div class="form-group col-md-6">
           <label for="start_date" class="form-label">Start date</label>
@@ -61,6 +61,54 @@
       </div>
       <%= submit_tag 'Accession all samples in range', class: 'btn btn-primary' %>
     <% end %>
+  </div>
+</div>
+
+<div class="card my-3">
+  <div class="card-header font-weight-bold">Bulk accession samples by name</div>
+  <div class="card-body">
+    <p>Designed for accessioning a list of selected sample names.</p>
+    <%= form_tag bulk_accession_by_name_admin_accessioning_tools_path, method: :put do %>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="accession_sample_names" class="form-label">Sample names only (one per line)</label>
+          <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'accession_sample_names', rows:12 %>
+        </div>
+      </div>
+      <%= button_tag 'Accession samples in list', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="card my-3">
+  <div class="card-header font-weight-bold">View sample accession numbers</div>
+  <div class="card-body">
+    <p>Designed for confirming the accession numbers of provided samples.</p>
+    <form>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="view_sample_names" class="form-label">Sample names only (one per line)</label>
+          <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'view_sample_names', rows:12 %>
+        </div>
+      </div>
+      <%= button_tag 'View accession numbers for samples', type: :button, class: 'btn btn-primary', id: 'view_sample_accession_numbers_button' %>
+    </form>
+    <div class="row mt-3">
+      <div class="col">
+        <table class="table table-sm table-striped" id="sample_accession_numbers_table">
+          <thead>
+            <tr>
+              <th scope="col">Sample name</th>
+              <th scope="col">Accession number</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2" class="text-center text-muted">Please enter sample names</td>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 

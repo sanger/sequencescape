@@ -22,7 +22,7 @@ FactoryBot.define do
       sanger_sample_id { generate(:sanger_sample_id) }
     end
 
-    factory :accessioned_sample do
+    factory :sample_with_accession_number do
       sample_metadata factory: %i[sample_metadata_with_accession_number]
     end
   end

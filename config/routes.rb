@@ -375,7 +375,9 @@ Rails.application.routes.draw do
     resources :accessioning_tools, only: :index do
       collection do
         get :bulk_accession_preview
-        put :bulk_accession
+        put :bulk_accession_by_date
+        put :bulk_accession_by_name
+        put :view_sample_accessions
       end
     end
     resources :custom_texts

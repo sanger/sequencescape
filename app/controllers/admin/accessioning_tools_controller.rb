@@ -4,6 +4,15 @@
 class Admin::AccessioningToolsController < ApplicationController
   include ::AccessionHelper
 
+  class SamplesNotFoundError < RuntimeError
+    attr_reader :sample_names
+
+    def initialize(message, sample_names: [])
+      super(message)
+      @sample_names = sample_names
+    end
+  end
+
   def index
   end
 
@@ -24,24 +33,44 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   # Accession all samples which have been modified within the date window
-  def bulk_accession
-    unless accessioning_enabled?
-      flash[:notice] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
-      return accessioning_not_enabled_redirect
-    end
+  def bulk_accession_by_date
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
 
-    number_of_samples = perform_bulk_accession
+    number_of_samples = perform_bulk_accession_by_date
 
     flash[:success] = "Bulk accessioning complete: #{number_of_samples} samples have been sent for accessioning."
     redirect_to admin_accessioning_tools_path
   rescue Date::Error, NoMethodError
-    flash[:failure] = 'An error occurred, please check that date inputs are correct.'
+    flash[:error] = 'An error occurred, please check that date inputs are correct.'
     redirect_to admin_accessioning_tools_path
+  end
+
+  # Accession all samples in the given list of sample names
+  def bulk_accession_by_name # rubocop:disable Metrics/AbcSize
+    return accessioning_not_enabled_redirect unless accessioning_enabled?
+
+    number_of_samples = perform_bulk_accession_by_name
+
+    flash[:success] = "Bulk accessioning complete: #{number_of_samples} samples have been sent for accessioning."
+    redirect_to admin_accessioning_tools_path
+  rescue SamplesNotFoundError => e
+    message = "There were #{e.sample_names.count} samples not found or not eligible for accessioning including: " \
+              "#{e.sample_names.join(', ')}"
+    Rails.logger.warn(message)
+    flash[:error] = message.truncate_words(20)
+    redirect_to admin_accessioning_tools_path
+  end
+
+  def view_sample_accessions
+    sample_names = params[:sample_names].map(&:strip)
+    sample_paths, accession_numbers = sample_accession_paths_and_numbers_for_names(sample_names).transpose
+
+    render json: { sample_names:, sample_paths:, accession_numbers: }, content_type: 'application/json'
   end
 
   private
 
-  def perform_bulk_accession
+  def perform_bulk_accession_by_date
     start_datetime, end_datetime = date_range_from_params
 
     samples_to_accession = updated_accessionable_samples(start_datetime, end_datetime)
@@ -63,6 +92,19 @@ class Admin::AccessioningToolsController < ApplicationController
     [start_datetime, end_datetime]
   end
 
+  def perform_bulk_accession_by_name
+    sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
+    samples_to_accession = accessionable_samples_by_name(sample_names)
+    number_of_samples = samples_to_accession.count
+
+    check_for_missing_samples(sample_names, samples_to_accession)
+
+    Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
+    samples_to_accession.each { |sample| Accession.accession_sample(sample, current_user) }
+
+    number_of_samples
+  end
+
   def updated_accessionable_samples(start_datetime, end_datetime)
     Sample
       .strict_loading
@@ -70,5 +112,38 @@ class Admin::AccessioningToolsController < ApplicationController
       .includes(:sample_metadata, studies: :study_metadata)
       .where(updated_at: start_datetime..end_datetime)
       .select(&:should_be_accessioned?)
+  end
+
+  def accessionable_samples_by_name(sample_names)
+    Sample
+      .strict_loading
+      # eager load to avoid N+1 queries when checking accessioning criteria
+      .includes(:sample_metadata, studies: :study_metadata)
+      .where(name: sample_names)
+      .select(&:should_be_accessioned?)
+  end
+
+  # Returns an array of paths and accession numbers for the given sample names as an array of arrays.
+  # ie: [['/samples/1', 'EGA00001000240'], ['/samples/2', 'EGA00001000241']]
+  def sample_accession_paths_and_numbers_for_names(sample_names)
+    samples = Sample.where(name: sample_names).includes(:sample_metadata).index_by(&:name)
+    sample_names.map do |name|
+      [(samples[name] ? sample_path(samples[name]) : nil), samples[name]&.ebi_accession_number]
+    end
+  end
+
+  def check_for_missing_samples(sample_names, samples_to_accession)
+    missing_names = sample_names - samples_to_accession.map(&:name)
+    return unless missing_names.any?
+
+    raise SamplesNotFoundError.new(
+      'Samples not found or are not eligible for accessioning',
+      sample_names: missing_names
+    )
+  end
+
+  def accessioning_not_enabled_redirect
+    flash[:warning] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
+    redirect_to admin_accessioning_tools_path
   end
 end

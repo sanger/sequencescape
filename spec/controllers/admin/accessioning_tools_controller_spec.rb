@@ -113,61 +113,312 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
         end
       end
     end
+  end
 
-    describe '#bulk_accession' do
-      before do
-        allow(SampleAccessioningJob).to receive(:new).and_call_original
-        allow(Rails.logger).to receive(:info)
+  describe '#bulk_accession_by_date' do
+    before do
+      allow(SampleAccessioningJob).to receive(:new).and_call_original
+      allow(Rails.logger).to receive(:info)
 
-        get :bulk_accession, params:
+      get :bulk_accession_by_date, params:
+    end
+
+    context 'with bad date parameters' do
+      let(:params) { { end_date: 'apples' } }
+
+      it 'sets a error flash message' do
+        expect(flash[:error]).to eq('An error occurred, please check that date inputs are correct.')
       end
 
-      context 'with bad date parameters' do
-        let(:params) { { end_date: 'apples' } }
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
 
-        it 'sets a failure flash message' do
-          expect(flash[:failure]).to eq('An error occurred, please check that date inputs are correct.')
-        end
+    context 'with invalid date parameters' do
+      let(:params) { { start_date: '2026-02-31', end_date: '2026-12-32' } }
 
-        it 'redirects to the accessioning tools page' do
-          expect(response).to redirect_to(admin_accessioning_tools_path)
-        end
+      it 'sets a error flash message' do
+        expect(flash[:error]).to eq('An error occurred, please check that date inputs are correct.')
       end
 
-      context 'with invalid date parameters' do
-        let(:params) { { start_date: '2026-02-31', end_date: '2026-12-32' } }
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
 
-        it 'sets a failure flash message' do
-          expect(flash[:failure]).to eq('An error occurred, please check that date inputs are correct.')
-        end
+    context 'with valid date parameters' do
+      let(:start_date) { 1.week.ago.to_date }
+      let(:end_date) { Date.current }
+      let(:params) { { start_date: start_date.to_s, end_date: end_date.to_s } }
 
-        it 'redirects to the accessioning tools page' do
-          expect(response).to redirect_to(admin_accessioning_tools_path)
-        end
+      it 'logs the accessioning action' do
+        expect(Rails.logger).to have_received(:info).with(
+          "Bulk accessioning 10 samples updated between #{start_date.beginning_of_day} and #{end_date.end_of_day}"
+        )
       end
 
-      context 'with valid date parameters' do
-        let(:start_date) { 1.week.ago.to_date }
-        let(:end_date) { Date.current }
-        let(:params) { { start_date: start_date.to_s, end_date: end_date.to_s } }
+      it 'creates a SampleAccessioningJob for each sample within the date range' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(10).times
+      end
 
-        it 'logs the accessioning action' do
-          expect(Rails.logger).to have_received(:info).with(
-            "Bulk accessioning 10 samples updated between #{start_date.beginning_of_day} and #{end_date.end_of_day}"
-          )
-        end
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 10 samples have been sent for accessioning.')
+      end
 
-        it 'creates a SampleAccessioningJob for each sample within the date range' do
-          expect(SampleAccessioningJob).to have_received(:new).exactly(10).times
-        end
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+  end
 
-        it 'sets a success flash message' do
-          expect(flash[:success]).to eq('Bulk accessioning complete: 10 samples have been sent for accessioning.')
-        end
+  describe '#bulk_accession_by_name' do
+    let(:study) { create(:open_study, accession_number: 'ENA123') }
+    let(:samples) { create_list(:sample, 10, studies: [study]) }
+    let(:disable_accessioning) { false }
 
-        it 'redirects to the accessioning tools page' do
-          expect(response).to redirect_to(admin_accessioning_tools_path)
-        end
+    before do
+      Flipper.disable(:y25_706_enable_accessioning) if disable_accessioning
+
+      allow(SampleAccessioningJob).to receive(:new).and_call_original
+      allow(Rails.logger).to receive(:info)
+      allow(Rails.logger).to receive(:warn)
+
+      put :bulk_accession_by_name, params:
+    end
+
+    context 'when accessioning is disabled' do
+      let(:disable_accessioning) { true }
+      let(:params) { { sample_names: samples.map(&:name).join("\n") } }
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'sets a notice flash message' do
+        expect(flash[:warning])
+          .to eq('Accessioning is currently disabled. Please enable accessioning to use this tool.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with valid sample names' do
+      let(:params) { { sample_names: samples.map(&:name).join("\n") } }
+
+      it 'creates a SampleAccessioningJob for each sample with the provided name' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(10).times
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 10 samples have been sent for accessioning.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'logs the accessioning action' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 10 samples by name')
+      end
+
+      it 'does not log any warnings' do
+        expect(Rails.logger).not_to have_received(:warn)
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with a mix of valid and invalid sample names' do
+      let(:params) { { sample_names: (samples.map(&:name) + ['nonexistent_sample']).join("\n") } }
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message' do
+        expect(flash[:error])
+          .to eq('There were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
+      end
+
+      it 'logs a warning for the unaccessionable sample names' do
+        expect(Rails.logger).to have_received(:warn)
+          .with('There were 1 samples not found or not eligible for accessioning including: nonexistent_sample')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with no matching samples' do
+      let(:params) do
+        { sample_names: %w[
+          nonexistent_sample_1
+          nonexistent_sample_2
+          nonexistent_sample_3
+          nonexistent_sample_4
+          nonexistent_sample_5
+          nonexistent_sample_6
+        ].join("\n") }
+      end
+
+      it 'does not accession any samples' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message for the unaccessionable sample names' do
+        expect(flash[:error])
+          .to eq('There were 6 samples not found or not eligible for accessioning including: ' \
+                 'nonexistent_sample_1, nonexistent_sample_2, ' \
+                 'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5, nonexistent_sample_6')
+      end
+
+      it 'receives a warning log' do
+        expect(Rails.logger).to have_received(:warn)
+          .with('There were 6 samples not found or not eligible for accessioning including: ' \
+                'nonexistent_sample_1, nonexistent_sample_2, ' \
+                'nonexistent_sample_3, nonexistent_sample_4, nonexistent_sample_5, nonexistent_sample_6')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with poorly formatted sample names' do
+      let(:params) { { sample_names: ["  #{samples[0].name} , ", "  #{samples[1].name}  ", ','].join("\n") } }
+
+      it 'trims whitespace and accessions the samples' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(2).times
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 2 samples have been sent for accessioning.')
+      end
+
+      it 'does not set a error flash message' do
+        expect(flash[:error]).to be_nil
+      end
+
+      it 'logs the accessioning action' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 2 samples by name')
+      end
+
+      it 'does not log any warnings' do
+        expect(Rails.logger).not_to have_received(:warn)
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with comma-separated sample names and duplicates' do
+      let(:params) { { sample_names: "#{samples[0].name}, #{samples[1].name},#{samples[0].name}" } }
+
+      it 'splits on commas and deduplicates names before accessioning' do
+        expect(SampleAccessioningJob).to have_received(:new).exactly(2).times
+      end
+
+      it 'logs the accessioning action with the deduplicated count' do
+        expect(Rails.logger).to have_received(:info).with('Bulk accessioning 2 samples by name')
+      end
+
+      it 'sets a success flash message' do
+        expect(flash[:success]).to eq('Bulk accessioning complete: 2 samples have been sent for accessioning.')
+      end
+    end
+  end
+
+  describe '#view_sample_accessions' do
+    before do
+      put :view_sample_accessions, params:
+    end
+
+    context 'with valid sample names' do
+      let(:samples) { create_list(:sample_with_accession_number, 5) }
+      let(:params) { { sample_names: samples.map(&:name) } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns the paths and accession numbers for the provided sample names' do
+        expected_accession_numbers = samples.map(&:ebi_accession_number)
+        expect(response.parsed_body).to eq(
+          'sample_names' => samples.map(&:name),
+          'sample_paths' => samples.map { |s| sample_path(s) },
+          'accession_numbers' => expected_accession_numbers
+        )
+      end
+    end
+
+    context 'with invalid sample names' do
+      let(:params) { { sample_names: ['', 'nonexistent_sample_1', '', 'nonexistent_sample_2', ''] } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns an array of nils for the invalid sample names' do
+        expect(response.parsed_body).to eq(
+          'sample_names' => ['', 'nonexistent_sample_1', '', 'nonexistent_sample_2', ''],
+          'sample_paths' => [nil, nil, nil, nil, nil],
+          'accession_numbers' => [nil, nil, nil, nil, nil]
+        )
+      end
+    end
+
+    context 'with poorly formatted sample names' do
+      let(:sample1) do
+        create(:sample, name: 'sample_1',
+                        sample_metadata: create(:sample_metadata, sample_ebi_accession_number: 'accession_1'))
+      end
+      let(:sample2) do
+        create(:sample, name: 'sample_2',
+                        sample_metadata: create(:sample_metadata, sample_ebi_accession_number: 'accession_2'))
+      end
+      let(:params) { { sample_names: ['  ', '   ', "  #{sample2.name}", '  ', "  #{sample1.name} "] } }
+
+      it 'returns a successful response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns a json content type' do
+        expect(response.content_type).to include('application/json')
+      end
+
+      it 'returns the paths and accession numbers for the valid sample names, ignoring whitespace' do
+        expect(response.parsed_body).to eq(
+          'sample_names' => ['', '', sample2.name, '', sample1.name],
+          'sample_paths' => [nil, nil, "/samples/#{sample2.id}", nil, "/samples/#{sample1.id}"],
+          'accession_numbers' => [nil, nil, 'accession_2', nil, 'accession_1']
+        )
       end
     end
   end
