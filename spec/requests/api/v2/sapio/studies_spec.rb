@@ -14,6 +14,7 @@ describe 'Sapio Studies API', with: :api_v2 do
       updated_at
       blocked
       state
+      externally_managed
       ethically_approved
       enforce_data_release
       enforce_accessioning
@@ -649,6 +650,12 @@ describe 'Sapio Studies API', with: :api_v2 do
         api_patch "#{base_endpoint}/#{study.id}", { state: 'inactive' }
 
         expect(study.reload.state).not_to eq('inactive')
+      end
+
+      it 'updates externally_managed' do
+        api_patch "#{base_endpoint}/#{study.id}", { externally_managed: true }
+
+        expect(study.reload.externally_managed).to be true
       end
 
       it 'is unable to update the blocked status' do

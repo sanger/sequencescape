@@ -94,6 +94,10 @@ module Api
         #   @return [String] The state of the study (pending, active, or inactive).
         attribute :state
 
+        # @!attribute [rw] externally_managed
+        #  @return [Boolean] Whether the study is managed by an external LIMS.
+        attribute :externally_managed
+
         # @!attribute [r] ethically_approved
         #   @return [Boolean] Whether ethical approval is set.
         attribute :ethically_approved, readonly: true
