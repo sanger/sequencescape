@@ -22,5 +22,6 @@ limber_lcm_triomics_wgs:
   product_line_name: Short Read
   acceptable_purposes:
     - LCMT DNA Adp Lig
+    - LCMT Lysate
   library_types:
     - LCMB
