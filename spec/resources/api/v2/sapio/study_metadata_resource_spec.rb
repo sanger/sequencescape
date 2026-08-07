@@ -73,9 +73,9 @@ RSpec.describe Api::V2::Sapio::StudyMetadataResource, type: :resource do
   it { is_expected.to have_readonly_attribute :data_share_in_preprint }
 
   # Relationships
-  it { is_expected.to have_a_readonly_has_one(:faculty_sponsor).with_class_name('FacultySponsor') }
   it { is_expected.to have_a_readonly_has_one(:study_type).with_class_name('StudyType') }
   it { is_expected.to have_a_readonly_has_one(:data_release_study_type).with_class_name('DataReleaseStudyType') }
   it { is_expected.to have_a_readonly_has_one(:reference_genome).with_class_name('ReferenceGenome') }
+  it { is_expected.to have_a_readonly_has_one(:faculty_sponsor).with_class_name('FacultySponsor') }
   it { is_expected.to have_a_readonly_has_one(:program).with_class_name('Program') }
 end
