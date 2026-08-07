@@ -143,6 +143,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # used to bypass validation when fixing data in study from console by ticket officer.
+  attr_accessor :bypass_sapio_validation
+
   # Associations
   has_many_events do
     event_constructor(:assigned_accession_number!, Event::AccessioningEvent, :assigned_accession_number!)
@@ -192,6 +195,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'cannot contain spaces or be blank'
             }
   validate :validate_ethically_approved
+  # add validation when update sapio study
+  validate :prevent_mastered_in_sapio_changes_unless_integration_hub, on: :update
+  validate :prevent_updates_when_mastered_in_sapio, on: :update
 
   # Callbacks
   before_validation :set_default_ethical_approval
@@ -432,6 +438,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Class Methods
 
   # Instance methods
+  def sapio_restrictions_enabled?
+    Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+  end
+
+  # Returns true if the study is mastered in Sapio and the feature flag is enabled
+  def ui_locked?
+    sapio_restrictions_enabled? && mastered_in_sapio?
+  end
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
@@ -562,6 +576,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
     [
       active?,
+      !ui_locked?,
       !study_metadata.strategy_not_applicable?,
       !study_metadata.never_release?,
       accession_required?,
@@ -589,6 +604,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_study_for_accessioning!
+    if ui_locked?
+      errors.add(:base, I18n.t('studies.mastered_in_sapio.accession_not_allowed'))
+      raise ActiveRecord::RecordInvalid, self
+    end
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
@@ -633,6 +652,38 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  # This validation only runs when the value of mastered_in_sapio is changing
+  # It prevents changes to mastered_in_sapio unless the request is coming from Integration Hub
+  # i.e. only Integration Hub can set/change the value of mastered_in_sapio
+  def prevent_mastered_in_sapio_changes_unless_integration_hub
+    return unless sapio_restrictions_enabled?
+
+    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
+    return unless will_save_change_to_mastered_in_sapio?
+    return if allowed_to_bypass_mastered_restriction?
+
+    errors.add(:base, I18n.t('studies.mastered_in_sapio.integration_hub_update_only'))
+  end
+
+  # This validation prevents any updates to a study that is managed in SAPIO
+  # unless the request is coming from Integration Hub
+  def prevent_updates_when_mastered_in_sapio
+    return unless sapio_restrictions_enabled?
+    return unless mastered_in_sapio?
+
+    return if allowed_to_bypass_mastered_restriction?
+
+    errors.add(
+      :base,
+      I18n.t('studies.mastered_in_sapio.not_editable')
+    )
+  end
+
+  def allowed_to_bypass_mastered_restriction?
+    # allow update by setting bypass_sapio_validation flag is true
+    bypass_sapio_validation
+  end
 
   def valid_ethically_approved?
     ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
