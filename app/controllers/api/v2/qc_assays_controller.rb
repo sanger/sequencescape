@@ -14,7 +14,7 @@ module Api
                    ),
                  status: :created
         else
-          render json: { errors: @qc_result_factory.errors }, status: :unprocessable_entity
+          render json: { errors: @qc_result_factory.errors }, status: :unprocessable_content
         end
       end
 

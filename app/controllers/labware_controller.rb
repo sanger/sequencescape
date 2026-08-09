@@ -74,7 +74,7 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
         end
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @asset.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset.errors, status: :unprocessable_content }
       end
     end
   end

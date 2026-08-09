@@ -33,7 +33,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
     let(:requested_barcode) { 'DOES-NOT-EXIST' }
 
     it 'responds with an unprocessable entity status' do
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns an error message' do
@@ -45,7 +45,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
     let(:tube_purpose_name) { 'WRONG-PURPOSE' }
 
     it 'responds with an unprocessable entity status' do
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns an error message' do
@@ -57,7 +57,7 @@ RSpec.describe Api::V2::Bioscan::ExportPoolXpToTractionController, :bioscan, typ
     let(:tube_state) { 'failed' }
 
     it 'responds with an unprocessable entity status' do
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
 
     it 'returns an error message' do
