@@ -32,7 +32,7 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a mastered study', :sapio_restrictions_enabled do
+    context 'with a mastered study', :externally_managed_restrictions_enabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { get :show, session: session, params: { id: sapio_study.id } }
@@ -43,7 +43,7 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a mastered study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+    context 'with a mastered study when externally managed restrictions are disabled', :externally_managed_restrictions_disabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { get :show, session: session, params: { id: sapio_study.id } }
@@ -64,7 +64,7 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a mastered study (member GET)', :sapio_restrictions_enabled do
+    context 'with a mastered study (member GET)', :externally_managed_restrictions_enabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { get :edit, session: session, params: { id: sapio_study.id } }
@@ -75,7 +75,7 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+    context 'with a sapio study when externally managed restrictions are disabled', :externally_managed_restrictions_disabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { get :edit, session: session, params: { id: sapio_study.id } }
@@ -88,7 +88,7 @@ RSpec.describe Admin::StudiesController do
   end
 
   describe '#update' do
-    context 'with a mastered study', :sapio_restrictions_enabled do
+    context 'with a mastered study', :externally_managed_restrictions_enabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
@@ -99,7 +99,7 @@ RSpec.describe Admin::StudiesController do
       end
     end
 
-    context 'with a sapio study when sapio restrictions are disabled', :sapio_restrictions_disabled do
+    context 'with a sapio study when externally managed restrictions are disabled', :externally_managed_restrictions_disabled do
       let(:sapio_study) { create(:sapio_study) }
 
       before { put :update, session: session, params: { id: sapio_study.id, study: {} } }
