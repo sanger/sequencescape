@@ -384,7 +384,7 @@ RSpec.describe SampleManifest, :sample_manifest do
     let(:mastered_study) { create(:sapio_study) }
     let(:normal_study) { create(:study, externally_managed: false) }
 
-    context 'when sapio restrictions are enabled', :sapio_restrictions_enabled do
+    context 'when sapio restrictions are enabled', :externally_managed_restrictions_enabled do
       context 'and study is externally_managed' do
         it 'prevents sample manifest creation' do
           manifest = build(:sample_manifest, study: mastered_study)
