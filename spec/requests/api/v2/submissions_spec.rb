@@ -106,6 +106,22 @@ describe 'Submissions API', with: :api_v2 do
           expect(json['included']).not_to be_present
         end
       end
+
+      context 'with included relationships' do
+        before { api_get "#{base_endpoint}/#{resource.id}?include=orders,user" }
+
+        it 'includes the orders relationship' do
+          expect(json.dig('data', 'relationships', 'orders', 'data')).to be_present
+        end
+
+        it 'includes the user relationship' do
+          expect(json.dig('data', 'relationships', 'user', 'data')).to be_present
+        end
+
+        it 'includes attributes for related resources' do
+          expect(json['included']).to be_present
+        end
+      end
     end
 
     describe '#GET resource by ID with specific fields' do
