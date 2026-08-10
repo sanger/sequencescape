@@ -59,19 +59,10 @@ module Api
         #
         # {
         #   "study": {
-        #     "name":                    "(required), max 255 chars, Unique study name",
-        #     "uuid":                    "(optional) UUID to assign; auto-generated if omitted",
-        #     "study_owner_name":        "(optional) Login of the user to grant owner role",
-        #     "title":                   "(optional), max 255 chars, Maps to study_study_title",
-        #     "study_description":       "(required) Medium text study description",
-        #     "abstract":                "(optional) Medium text, Maps to study_abstract",
-        #     "data_release_strategy":   "(required) One of: open | managed | not applicable",
-        #     "faculty_sponsor":         "(required), max 255 chars, Name of faculty sponsor; created if not found",
-        #     "program":                 "(required), max 255 chars, Name of program; created if not found",
-        #     "study_type":              "(required), max 255 chars, Name of study type; created if not found",
-        #     "data_release_study_type": "(required),max 255 chars,Name of data release study type;created if not found"
-        #     }
+        #     "name": "(required) Unique study name, max 200 chars",
+        #     "uuid": "(optional) UUID to assign; auto-generated if omitted"
         #   }
+        # }
         #
         # == Responses
         #
@@ -82,12 +73,11 @@ module Api
         #
         # @return [void]
         def create
-          return render_feature_flag_disabled unless sapio_mastered_study_restrictions_enabled?
+          return render_feature_flag_disabled unless externally_managed_study_restrictions_enabled?
 
           study = build_sapio_study
           if study.save
             assign_supplied_uuid(study)
-            grant_study_owner(study)
             render_study_created(study)
           else
             render json: { errors: study.errors.full_messages }, status: :unprocessable_entity
@@ -142,69 +132,12 @@ module Api
 
         # Builds the top-level attributes hash passed to +Study.new+.
         def study_params
-          { name: sapio_study_payload[:name], study_metadata_attributes: study_metadata_params }
-        end
-
-        # Merges direct scalar metadata fields with association ID lookups.
-        def study_metadata_params
-          study_metadata_direct_params.merge(study_metadata_association_ids)
-        end
-
-        # Scalar metadata fields that are passed through from the Sapio payload without lookup.
-        def study_metadata_direct_params
-          payload = sapio_study_payload
-          {
-            study_study_title: payload[:title],
-            study_description: payload[:study_description],
-            study_abstract: payload[:abstract],
-            data_release_strategy: payload[:data_release_strategy]
-          }
-        end
-
-        # Resolves Sapio name fields to Sequencescape association IDs.
-        # Creates the record if it does not already exist.
-        def study_metadata_association_ids
-          payload = sapio_study_payload
-          {
-            faculty_sponsor_id: find_or_create_id(FacultySponsor, payload[:faculty_sponsor]),
-            program_id: find_or_create_id(Program, payload[:program]),
-            study_type_id: find_or_create_id(StudyType, payload[:study_type]),
-            data_release_study_type_id: find_or_create_id(DataReleaseStudyType, payload[:data_release_study_type])
-          }
-        end
-
-        # Finds or creates a record by name and returns its ID.
-        def find_or_create_id(klass, name)
-          klass.find_or_create_by(name:)&.id
+          { name: sapio_study_payload[:name] }
         end
 
         # Permits and memoizes the Sapio study payload parameters.
         def sapio_study_payload
-          @sapio_study_payload ||= params.expect(
-            study: %i[
-              name
-              uuid
-              study_owner_name
-              faculty_sponsor
-              program
-              title
-              study_type
-              data_release_study_type
-              study_description
-              abstract
-              data_release_strategy
-            ]
-          )
-        end
-
-        # Grants the owner role to the user identified by +study_owner_name+ (login).
-        # Silently skips if the field is absent or no matching user is found.
-        def grant_study_owner(study)
-          owner_name = sapio_study_payload[:study_owner_name]
-          return if owner_name.blank?
-
-          owner = User.find_by(login: owner_name)
-          owner&.grant_owner(study)
+          @sapio_study_payload ||= params.expect(study: %i[name uuid])
         end
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
@@ -214,10 +147,10 @@ module Api
           Flipper.enabled?(:y26_170_sapio_studies_endpoint)
         end
 
-        # Checks whether the Sapio mastered study restrictions feature flag is enabled.
+        # Checks whether the Sapio managed study restrictions feature flag is enabled.
         #
         # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is enabled
-        def sapio_mastered_study_restrictions_enabled?
+        def externally_managed_study_restrictions_enabled?
           Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
         end
 

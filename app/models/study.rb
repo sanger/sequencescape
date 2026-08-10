@@ -438,13 +438,13 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Class Methods
 
   # Instance methods
-  def sapio_restrictions_enabled?
-    Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+  def externally_managed_restrictions_enabled?
+    Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
   end
 
-  # Returns true if the study is mastered in Sapio and the feature flag is enabled
+  # Returns true if the study is externally_managed and the feature flag is enabled
   def ui_locked?
-    sapio_restrictions_enabled? && externally_managed?
+    externally_managed_restrictions_enabled? && externally_managed?
   end
 
   def validate_ethically_approved
@@ -657,7 +657,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # It prevents changes to externally_managed unless the request is coming from Integration Hub
   # i.e. only Integration Hub can set/change the value of externally_managed
   def prevent_externally_managed_changes_unless_integration_hub
-    return unless sapio_restrictions_enabled?
+    return unless externally_managed_restrictions_enabled?
 
     # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
     return unless will_save_change_to_externally_managed?
@@ -669,7 +669,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
   def prevent_updates_when_externally_managed
-    return unless sapio_restrictions_enabled?
+    return unless externally_managed_restrictions_enabled?
     return unless externally_managed?
 
     return if allowed_to_bypass_mastered_restriction?
@@ -798,14 +798,13 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
     end
 
-    # Fields that are required for regular study creation but are not sent by Sapio.
-    # Their validation errors are cleared after validation when the study is mastered in Sapio.
-    SAPIO_OPTIONAL_FIELDS = %i[contains_human_dna contaminated_human_dna commercially_available].freeze
+    # When a study is mastered in Sapio (externally_managed), all required-field
+    # validation errors are suppressed after validation. Sapio is the source of
+    # truth for these studies and will provide field values over time via updates.
+    after_validation :clear_externally_managed_errors, if: -> { externally_managed? }
 
-    after_validation :clear_sapio_optional_errors, if: -> { externally_managed? }
-
-    def clear_sapio_optional_errors
-      SAPIO_OPTIONAL_FIELDS.each { |field| errors.delete(field) }
+    def clear_externally_managed_errors
+      errors.clear
     end
 
     # rubocop:todo Metrics/MethodLength

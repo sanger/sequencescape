@@ -634,25 +634,10 @@ describe 'Sapio Studies API', with: :api_v2 do
     let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
     let(:regular_app) { create(:api_application) }
 
-    let(:faculty_sponsor) { create(:faculty_sponsor) }
-    let(:program) { create(:program) }
-    let(:study_type) { create(:study_type) }
-    let(:data_release_study_type) { create(:data_release_study_type) }
-    let(:owner_user) { create(:user, login: 'study_owner') }
-
     let(:valid_payload) do
       {
         study: {
-          name: 'Sapio Created Study',
-          study_owner_name: owner_user.login,
-          faculty_sponsor: faculty_sponsor.name,
-          program: program.name,
-          title: 'Sapio Study Title',
-          study_type: study_type.name,
-          data_release_study_type: data_release_study_type.name,
-          study_description: 'A study created via Sapio',
-          abstract: 'Sapio study abstract',
-          data_release_strategy: 'open'
+          name: 'Sapio Created Study'
         }
       }
     end
@@ -730,85 +715,10 @@ describe 'Sapio Studies API', with: :api_v2 do
           study = Study.find_by(name: 'Sapio Created Study')
           expect(study.externally_managed).to be(true)
         end
-
-        it 'maps the faculty_sponsor by name' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.faculty_sponsor).to eq(faculty_sponsor)
-        end
-
-        it 'maps the program by name' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.program).to eq(program)
-        end
-
-        it 'maps the study_type by name' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.study_type).to eq(study_type)
-        end
-
-        it 'maps the data_release_study_type by name' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.data_release_study_type).to eq(data_release_study_type)
-        end
-
-        it 'sets the study_description' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.study_description).to eq('A study created via Sapio')
-        end
-
-        it 'maps title to study_study_title' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.study_study_title).to eq('Sapio Study Title')
-        end
-
-        it 'maps abstract to study_abstract' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.study_abstract).to eq('Sapio study abstract')
-        end
-
-        it 'sets the data_release_strategy' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.data_release_strategy).to eq('open')
-        end
-
-        it 'grants the owner role to the user matching study_owner_name' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(owner_user.owner_of?(study)).to be(true)
-        end
-      end
-
-      context 'with an integration hub API key and an unknown study_owner_name' do
-        let(:unknown_owner_payload) { { study: valid_payload[:study].merge(study_owner_name: 'non_existent_user') } }
-
-        before { api_post base_endpoint, unknown_owner_payload, headers: integration_hub_headers }
-
-        it 'returns 201 Created' do
-          expect(response).to have_http_status(:created)
-        end
-
-        it 'creates the study without an owner' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.owners).to be_empty
-        end
-      end
-
-      context 'with an integration hub API key and no study_owner_name' do
-        let(:no_owner_payload) { { study: valid_payload[:study].except(:study_owner_name) } }
-
-        before { api_post base_endpoint, no_owner_payload, headers: integration_hub_headers }
-
-        it 'returns 201 Created' do
-          expect(response).to have_http_status(:created)
-        end
-
-        it 'creates the study without an owner' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.owners).to be_empty
-        end
       end
 
       context 'with an integration hub API key and a missing study name' do
-        let(:no_name_payload) { { study: valid_payload[:study].except(:name) } }
+        let(:no_name_payload) { { study: { uuid: '12345678-1234-5678-9abc-123456789012' } } }
 
         it 'returns 422 Unprocessable Entity' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
@@ -823,25 +733,6 @@ describe 'Sapio Studies API', with: :api_v2 do
         it 'does not create a study' do
           expect { api_post base_endpoint, no_name_payload, headers: integration_hub_headers }
             .not_to change(Study, :count)
-        end
-      end
-
-      context 'with an integration hub API key and an unknown faculty_sponsor name' do
-        let(:unknown_sponsor_payload) { { study: valid_payload[:study].merge(faculty_sponsor: 'Brand New Sponsor') } }
-
-        before { api_post base_endpoint, unknown_sponsor_payload, headers: integration_hub_headers }
-
-        it 'returns 201 Created' do
-          expect(response).to have_http_status(:created)
-        end
-
-        it 'creates the new faculty_sponsor in the database' do
-          expect(FacultySponsor.find_by(name: 'Brand New Sponsor')).not_to be_nil
-        end
-
-        it 'associates the new faculty_sponsor with the study' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.study_metadata.faculty_sponsor.name).to eq('Brand New Sponsor')
         end
       end
 
