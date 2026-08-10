@@ -149,9 +149,9 @@ module Api
 
         # Checks whether the Sapio managed study restrictions feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_172_enable_sapio_mastered_study_restrictions+ flag is enabled
+        # @return [Boolean] true if the +:y26_172_enable_externally_managed_study_restrictions+ flag is enabled
         def externally_managed_study_restrictions_enabled?
-          Flipper.enabled?(:y26_172_enable_sapio_mastered_study_restrictions)
+          Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is present?
