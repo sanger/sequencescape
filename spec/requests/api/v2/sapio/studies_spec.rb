@@ -656,7 +656,8 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
 
-    context 'when the externally_managed study restrictions feature flag is enabled', :externally_managed_restrictions_enabled do
+    context 'when the externally_managed study restrictions feature flag is enabled',
+            :externally_managed_restrictions_enabled do
       context 'without an API key' do
         it 'returns 403 Forbidden' do
           api_post base_endpoint, valid_payload
