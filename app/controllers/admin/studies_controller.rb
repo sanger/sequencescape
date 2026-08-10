@@ -3,6 +3,7 @@ class Admin::StudiesController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
   before_action :evil_parameter_hack!
+  before_action :externally_managed_study_check!, only: %i[show update managed_update]
   authorize_resource :study, parent: true, parent_action: :administer
 
   def index
@@ -11,9 +12,6 @@ class Admin::StudiesController < ApplicationController
 
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
   def show
-    @study = Study.find(params[:id])
-    return if redirect_if_ui_locked(@study)
-
     @page_name = @study.name
     flash.now[:warning] = @study.warnings if @study.warnings.present?
   end
@@ -33,9 +31,6 @@ class Admin::StudiesController < ApplicationController
   end
 
   def update
-    @study = Study.find(params[:id])
-    return if redirect_if_ui_locked(@study)
-
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     flash.now[:notice] = 'Your study has been updated'
     render partial: 'manage_single_study'
@@ -68,9 +63,6 @@ class Admin::StudiesController < ApplicationController
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity,Metrics/CyclomaticComplexity
 
   def managed_update # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
-    @study = Study.find(params[:id])
-    return if redirect_if_ui_locked(@study)
-
     if params[:study][:uploaded_data].present?
       Document.create!(documentable: @study, uploaded_data: params[:study][:uploaded_data])
     end
@@ -101,6 +93,11 @@ class Admin::StudiesController < ApplicationController
   end
 
   private
+
+  def externally_managed_study_check!
+    @study = Study.find(params[:id])
+    redirect_if_ui_locked(@study)
+  end
 
   def redirect_if_ui_locked(study)
     @study = study
