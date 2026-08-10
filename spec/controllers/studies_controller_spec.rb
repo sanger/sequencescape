@@ -114,7 +114,7 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#edit', :sapio_restrictions_enabled do
+  describe '#edit', :externally_managed_restrictions_enabled do
     let(:study) { create(:sapio_study) }
 
     before do
@@ -131,7 +131,7 @@ RSpec.describe StudiesController do
     end
   end
 
-  describe '#edit', :sapio_restrictions_disabled do
+  describe '#edit', :externally_managed_restrictions_disabled do
     let(:study) { create(:sapio_study) }
 
     before do
