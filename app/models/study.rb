@@ -694,7 +694,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
-    delegate :externally_managed?, to: :owner, allow_nil: true
+    delegate :externally_managed?, to: :study, allow_nil: true
 
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
