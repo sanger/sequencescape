@@ -642,8 +642,8 @@ describe 'Sapio Studies API', with: :api_v2 do
       }
     end
 
-    context 'when the sapio mastered study restrictions feature flag is disabled' do
-      before { Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions) }
+    context 'when the externally_managed study restrictions feature flag is disabled' do
+      before { Flipper.disable(:y26_172_enable_externally_managed_study_restrictions) }
 
       it 'returns a 404 Not Found response' do
         api_post base_endpoint, valid_payload, headers: integration_hub_headers
@@ -656,7 +656,7 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
 
-    context 'when the sapio mastered study restrictions feature flag is enabled', :sapio_restrictions_enabled do
+    context 'when the externally_managed study restrictions feature flag is enabled', :externally_managed_restrictions_enabled do
       context 'without an API key' do
         it 'returns 403 Forbidden' do
           api_post base_endpoint, valid_payload

@@ -63,17 +63,17 @@ module Admin
           end
         end
 
-        context '#update when sapio restrictions enabled' do
+        context '#update when externally_managed restrictions enabled' do
           context 'and study is externally_managed' do
             setup do
-              Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
+              Flipper.enable(:y26_172_enable_externally_managed_study_restrictions)
               @study = create(:sapio_study)
 
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
             end
 
             teardown do
-              Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+              Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
             end
 
             should redirect_to('study information page') { study_information_path(@study) }
@@ -85,12 +85,12 @@ module Admin
 
           context 'and study is not externally_managed' do
             setup do
-              Flipper.enable(:y26_172_enable_sapio_mastered_study_restrictions)
+              Flipper.enable(:y26_172_enable_externally_managed_study_restrictions)
               put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
             end
 
             teardown do
-              Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+              Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
             end
 
             should 'display success notice' do
@@ -101,7 +101,7 @@ module Admin
 
         context '#update when sapio restrictions disabled' do
           setup do
-            Flipper.disable(:y26_172_enable_sapio_mastered_study_restrictions)
+            Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
             @study = create(:sapio_study)
             put :update, params: { id: @study.id, study: { name: 'Updated Name' } }
           end
