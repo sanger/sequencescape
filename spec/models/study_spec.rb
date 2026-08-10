@@ -996,7 +996,7 @@ RSpec.describe Study do
     let(:study) { create(:sapio_study) }
 
     # test that updates are prevented when the feature flag is enabled and the update is from the UI
-    context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
+    context 'when feature flag is enabled and updated from the UI', :externally_managed_restrictions_enabled do
       it 'prevents updates' do
         study.name = 'New Name'
 
@@ -1008,7 +1008,7 @@ RSpec.describe Study do
     end
 
     # updates are allowed when the feature flag is enabled and the update is from Integration Hub
-    context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
+    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
       before do
         study.skip_externally_managed_restriction = true
       end
@@ -1021,7 +1021,7 @@ RSpec.describe Study do
     end
 
     # test that updates are allowed when the feature flag is disabled
-    context 'when feature flag is disabled', :sapio_restrictions_disabled do
+    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
       it 'allows updates' do
         study.name = 'New Name'
         expect(study.save).to be true
@@ -1032,7 +1032,7 @@ RSpec.describe Study do
   describe '#prevent_externally_managed_changes_unless_integration_hub' do
     let(:study) { create(:study, externally_managed: false) }
 
-    context 'when feature flag is enabled and updated from SS', :sapio_restrictions_enabled do
+    context 'when feature flag is enabled and updated from SS', :externally_managed_restrictions_enabled do
       it 'prevents changing externally_managed' do
         expect(study.update(externally_managed: true)).to be false
         expect(study.errors[:base]).to include(
@@ -1041,7 +1041,7 @@ RSpec.describe Study do
       end
     end
 
-    context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
+    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
       #  bypass the validation to simulate an update from Integration Hub
       before do
         study.skip_externally_managed_restriction = true
@@ -1052,7 +1052,7 @@ RSpec.describe Study do
       end
     end
 
-    context 'when feature flag is disabled', :sapio_restrictions_disabled do
+    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
       it 'allows changing externally_managed' do
         expect(study.update(externally_managed: true)).to be true
       end
