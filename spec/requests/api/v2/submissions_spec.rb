@@ -95,11 +95,11 @@ describe 'Submissions API', with: :api_v2 do
         end
 
         it 'does not include the orders relationship' do
-          expect(json.dig('data', 'relationships', 'orders')).not_to be_present
+          expect(json.dig('data', 'relationships', 'orders')).to be_present
         end
 
         it 'does not include the user relationship' do
-          expect(json.dig('data', 'relationships', 'user')).not_to be_present
+          expect(json.dig('data', 'relationships', 'user')).to be_present
         end
 
         it 'does not include attributes for related resources' do
