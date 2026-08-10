@@ -23,7 +23,7 @@ module Api
           plate.wells.with_contents.each(&:register_stock!)
           render json: { message: 'Stock successfully registered for plate wells' }, status: :ok
         rescue StandardError => e
-          render json: { error: "Stock registration failed: #{e.message}" }, status: :unprocessable_entity
+          render json: { error: "Stock registration failed: #{e.message}" }, status: :unprocessable_content
         end
       end
     end

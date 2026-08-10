@@ -216,7 +216,7 @@ describe 'Sapio Studies API', with: :api_v2 do
 
       it 'returns a 422 Unprocessable Entity status code' do
         api_get "#{base_endpoint}?filter[name]=#{search_term}"
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
@@ -268,21 +268,21 @@ describe 'Sapio Studies API', with: :api_v2 do
       it 'ignores non-positive maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=0"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
       it 'ignores negative maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=-5"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
       it 'ignores non-integer maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=abc"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
@@ -290,7 +290,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         # See Api::V2::Sapio::StudiesController::RESULTS_RANGE -> 1..1000
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=2000"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
     end

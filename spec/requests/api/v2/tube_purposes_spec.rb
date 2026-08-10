@@ -172,7 +172,7 @@ describe 'Tube Purposes API', with: :api_v2 do
 
       it 'responds with 422 unprocessable entity' do
         api_post base_endpoint, payload
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
 

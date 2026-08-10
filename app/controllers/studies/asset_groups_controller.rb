@@ -53,8 +53,8 @@ class Studies::AssetGroupsController < ApplicationController
         format.json { render json: @asset_group, status: :created, location: @asset_group }
       else
         format.html { render action: 'new' }
-        format.xml { render xml: @asset_group.errors, status: :unprocessable_entity }
-        format.json { render json: @asset_group.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset_group.errors, status: :unprocessable_content }
+        format.json { render json: @asset_group.errors, status: :unprocessable_content }
       end
     end
   end
@@ -70,7 +70,7 @@ class Studies::AssetGroupsController < ApplicationController
         format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @asset_group.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset_group.errors, status: :unprocessable_content }
       end
     end
   end
