@@ -38,7 +38,6 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class StudyResource < Api::V2::BaseResource
-        immutable # Read-only is enough for the Sapio study search story.
 
         include Api::V2::Sapio::StudySearchQuery
 
