@@ -11,8 +11,6 @@ require 'rspec/rails'
 
 require 'rspec/json_expectations'
 
-require 'support/api_helper'
-
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
 require 'shoulda/matchers'
@@ -67,6 +65,9 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
+  # Filter middleware from backtraces.
+  config.backtrace_exclusion_patterns << %r{app/middleware/}
 
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")
