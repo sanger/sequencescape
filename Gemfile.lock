@@ -16,7 +16,7 @@ GIT
 
 GIT
   remote: https://github.com/sanger/jsonapi-resources.git
-  revision: f043d674d1a813ef60b5c494c51427251cda156e
+  revision: 564c9d80a2bf14c7cbe85d7263466e1a27b4c704
   branch: sh51/rack-3-fix
   specs:
     sanger-jsonapi-resources (0.1.3)
