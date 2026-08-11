@@ -21,6 +21,7 @@
 
 require 'knapsack_pro'
 require 'simplecov'
+SimpleCov.start
 
 # https://knapsackpro.com/faq/question/how-to-use-simplecov-in-queue-mode
 KnapsackPro::Hooks::Queue.before_queue do |_queue_id|

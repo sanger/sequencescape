@@ -39,7 +39,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # Includes / Extendes
   include StudyReport::StudyDetails
-  include ModelExtensions::Study
   include Api::StudyIo::Extensions
   include Uuid::Uuidable
   include EventfulRecord
@@ -215,8 +214,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     end
   end
 
-  # Replace broadcast_with_warren to drop Sapio messages.
-  broadcast_with_warren_except_sapio
+  broadcast_with_warren_except_externally_managed
 
   squishify :name
 
@@ -603,7 +601,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def rebroadcast
-    broadcast_except_sapio
+    broadcast_except_externally_managed
   end
 
   # Helper method for edit dropdowns to support backwards compatibility with old options.

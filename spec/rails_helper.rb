@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'simplecov'
 require 'spec_helper'
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
@@ -11,8 +10,6 @@ require 'rspec/rails'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 require 'rspec/json_expectations'
-
-require 'support/api_helper'
 
 require 'shared_contexts/it_requires_login'
 require 'shared_contexts/shared_io_examples'
@@ -68,6 +65,9 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
+
+  # Filter middleware from backtraces.
+  config.backtrace_exclusion_patterns << %r{app/middleware/}
 
   # arbitrary gems may also be filtered via:
   # config.filter_gems_from_backtrace("gem name")

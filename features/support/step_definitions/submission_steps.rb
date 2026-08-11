@@ -160,8 +160,8 @@ Given /^I have a "([^"]*)" submission with the following setup:$/ do |template_n
     case k
     when /^multiplier#(\d+)/
       multiplier_hash = request_options[:multiplier]
-      multiplier_hash = request_options[:multiplier] = {} unless multiplier_hash
-      index = $1.to_i - 1
+      multiplier_hash ||= request_options[:multiplier] = {}
+      index = Regexp.last_match(1).to_i - 1
       multiplier_hash[request_type_ids[index].to_s] = v.to_i
     else
       key = k.underscore.gsub(/\W+/, '_')

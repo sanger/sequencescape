@@ -30,15 +30,15 @@ Rails.application.routes.draw do
   user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
 
+  # Yard documentation
+  # YARD docs are served from public/doc/
+
   # Search
   resources :searches
   resources :lab_searches
 
   get 'advanced_search' => 'advanced_search#index'
   post 'advanced_search/search' => 'advanced_search#search'
-
-  # API v1
-  mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
   #   and more. Include all actions in the except block for immutable resources.

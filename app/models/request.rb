@@ -6,7 +6,6 @@ require 'aasm'
 # The progress of a request is tracked through its {Request::Statemachine state machine}.
 class Request < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Include
-  include ModelExtensions::Request
   include Aliquot::DeprecatedBehaviours::Request
   include Api::RequestIo::Extensions
   include Uuid::Uuidable
