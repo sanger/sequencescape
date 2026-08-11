@@ -61,6 +61,23 @@ class Admin::AccessioningToolsController < ApplicationController
     redirect_to admin_accessioning_tools_path
   end
 
+  # Clear the accession number for all samples in the given list of sample names
+  def clear_accessions_by_name
+    sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
+    samples = Sample.where(name: sample_names).includes(:sample_metadata)
+
+    samples.each do |sample|
+      sample.sample_metadata&.update(sample_ebi_accession_number: nil)
+      sample.sample_metadata.save # calling sample.save would trigger after_save callbackss and perform an accession
+    end
+
+    number_of_samples = samples.count
+
+    flash[:success] =
+      "Accession number clearing complete: #{number_of_samples} samples had their accession numbers cleared."
+    redirect_to admin_accessioning_tools_path
+  end
+
   def view_sample_accessions
     sample_names = params[:sample_names].map(&:strip)
     sample_paths, accession_numbers = sample_accession_paths_and_numbers_for_names(sample_names).transpose

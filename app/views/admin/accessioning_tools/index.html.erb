@@ -81,6 +81,22 @@
 </div>
 
 <div class="card my-3">
+  <div class="card-header font-weight-bold">Clear accession numbers by samples name</div>
+  <div class="card-body">
+    <p>The accession number is only removed from Sequencescape, the previously accessioned data remains on EBI's servers.</p>
+    <%= form_tag clear_accessions_by_name_admin_accessioning_tools_path, method: :put do %>
+      <div class="form-row">
+        <div class="form-group col-md-12">
+          <label for="clear_accession_sample_names" class="form-label">Sample names only (one per line)</label>
+          <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'clear_accession_sample_names', rows:12 %>
+        </div>
+      </div>
+      <%= button_tag 'Clear accession numbers from samples in list', class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+</div>
+
+<div class="card my-3">
   <div class="card-header font-weight-bold">View sample accession numbers</div>
   <div class="card-body">
     <p>Designed for confirming the accession numbers of provided samples.</p>
