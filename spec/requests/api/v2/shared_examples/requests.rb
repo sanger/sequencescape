@@ -41,7 +41,7 @@ shared_examples 'an unprocessable POST request with a specific error' do
     expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
   end
 
-  it 'responds with unprocessable_entity' do
+  it 'responds with unprocessable_content' do
     expect(response).to have_http_status(:unprocessable_content)
   end
 
@@ -57,7 +57,7 @@ shared_examples 'a bad POST request with a specific error' do
     expect { api_post base_endpoint, payload }.not_to change(model_class, :count)
   end
 
-  it 'responds with unprocessable_entity' do
+  it 'responds with bad_request' do
     expect(response).to have_http_status(:bad_request)
   end
 

@@ -214,7 +214,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         21.times { |n| create(:study, name: "#{search_term} Study #{n}") }
       end
 
-      it 'returns a 422 Unprocessable Entity status code' do
+      it 'returns a 422 Unprocessable Content status code' do
         api_get "#{base_endpoint}?filter[name]=#{search_term}"
         expect(response).to have_http_status(:unprocessable_content)
       end

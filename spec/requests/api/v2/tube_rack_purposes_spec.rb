@@ -180,7 +180,7 @@ describe 'Tube Rack Purposes API', with: :api_v2 do
         }
       end
 
-      it 'responds with 422 unprocessable entity' do
+      it 'responds with 422 unprocessable content' do
         api_post base_endpoint, payload
         expect(response).to have_http_status(:unprocessable_content)
       end
