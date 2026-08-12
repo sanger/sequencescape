@@ -74,7 +74,7 @@
             <p>SSRs will receive email notification of any samples that fail to accession.</p>
             <% end %>
           </div>
-          <%= submit_tag 'Accession all samples in range', class: 'btn btn-primary' %>
+          <%= submit_tag 'Accession samples in range', class: 'btn btn-primary' %>
         <% end %>
       </div>
       <div class="tab-pane" id="accession-by-name" role="tabpanel" aria-labelledby="accession-by-name-tab">
@@ -98,7 +98,7 @@
               <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'clear_accession_sample_names', rows: 12 %>
             </div>
           </div>
-          <%= button_tag 'Clear accession numbers from samples in list', class: 'btn btn-primary' %>
+          <%= button_tag 'Clear accession numbers', class: 'btn btn-warning' %>
         <% end %>
       </div>
     </div>
@@ -116,7 +116,7 @@
           <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'view_sample_names', rows:12 %>
         </div>
       </div>
-      <%= button_tag 'View accession numbers for samples', type: :button, class: 'btn btn-primary', id: 'view_sample_accession_numbers_button' %>
+      <%= button_tag 'View accession numbers', type: :button, class: 'btn btn-info', id: 'view_sample_accession_numbers_button' %>
     </form>
     <div class="row mt-3">
       <div class="col">
