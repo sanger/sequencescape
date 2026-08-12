@@ -8,18 +8,7 @@ footer {
   font-size: small;
 
   ul {
-    @extend .col-sm-4;
     @extend .mb-0;
     @extend .list-unstyled;
-  }
-
-  #contact-info {
-    @extend .text-left;
-  }
-  #version-info {
-    @extend .text-center;
-  }
-  #deployment-info {
-    @extend .text-right;
   }
 }

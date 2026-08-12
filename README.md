@@ -76,6 +76,8 @@ a organisation of 900 people.
 
 ## Documentation
 
+### GitHub Pages
+
 The Yard documentation is also hosted at [GitHub Pages](https://pages.github.com/) under [https://sanger.github.io/sequencescape/](https://sanger.github.io/sequencescape/).
 The documentation is automatically updated via a CI workflow when a merge to master occurs, but you can also trigger it manually against any branch (the branch can be selected using the "Run Workflow" button in the [corresponding action](https://github.com/sanger/sequencescape/actions/workflows/generate_pages.yml)).
 
@@ -96,6 +98,14 @@ yard doc
 
 This will pre-fill the cache and allow the server command above to display the documentation without complaining about stack depths.
 
+### Sequencescape builds
+
+The documentation is also available within Sequencescape itself, by navigating to the `/doc/` route (note the trailing slash). This is automatically included in the CI builds, but can be manually generated for local development with:
+
+```shell
+bundle exec yard doc --output-dir public/doc
+```
+
 ### Linting
 
 Yard-Junk is used to check for missing or incorrect documentation. To run the checks:
@@ -113,7 +123,7 @@ The following tools are required for development:
 - node (`brew install node@<version>` version defined in the `.nvmrc`, ensure node is in your PATH)
 - mysql client libraries - if you do not want to install mysql server on your machine, consider
   using mysql-client: `brew install mysql-client`. Alternatively, to install the MySQL required by
-  Sequencescape (currently 8.0)
+  Sequencescape (currently 8.4)
 
 ## Getting started (using Docker)
 
@@ -339,6 +349,14 @@ end
 ```
 
 This can also affect page loading times as well as the parsing of `.text` results, resulting in changes to capitalisation and whitespace.
+
+#### Coverage
+
+Local coverage results can be viewed for the last test run by executing:
+
+```sh
+bundle exec simplecov open
+```
 
 ### Javascript
 
