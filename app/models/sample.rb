@@ -20,7 +20,7 @@
 class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # See https://api.rubyonrails.org/classes/ActiveSupport/CurrentAttributes.html
   class Current < ActiveSupport::CurrentAttributes
-    attribute :processing_manifest
+    attribute :temporary_accessioning_pause
   end
 
   GC_CONTENTS = ['Neutral', 'High AT', 'High GC'].freeze

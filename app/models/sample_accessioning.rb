@@ -43,10 +43,10 @@ module SampleAccessioning
     }
     validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
-    # Processing_manifest is true if we're currently processing a manifest. We
+    # Temporary_accessioning_pause is true if we're currently processing a manifest. We
     # disable accessioning, as we'll perform it explicitly later. This avoids
     # accidental calls to save triggering duplicate accessions.
-    after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
+    after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.temporary_accessioning_pause }
 
     scope :without_accession,
           lambda {
