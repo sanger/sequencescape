@@ -65,7 +65,7 @@
               <%= date_field_tag :end_date, Date.today, class: 'form-control', id: 'end_date' %>
             </div>
           </div>
-          <div class="mt-2 text-muted">
+          <div class="text-muted">
             <p>Samples to be accessioned: <span id="bulk-accession-preview"></span></p>
             <p>There is no limit to the number of samples that can be accessioned -
             asynchronous progress can be viewed at the <%= link_to 'Delayed Jobs Queue', admin_delayed_jobs_path %>.
@@ -78,25 +78,35 @@
         <% end %>
       </div>
       <div class="tab-pane" id="accession-by-name" role="tabpanel" aria-labelledby="accession-by-name-tab">
-        <p>Designed for accessioning a list of selected sample names.</p>
         <%= form_tag bulk_accession_by_name_admin_accessioning_tools_path, method: :put do %>
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label for="accession_sample_names" class="form-label">Sample names only (one per line)</label>
+              <label for="accession_sample_names" class="form-label">Sample names (one per line)</label>
               <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'accession_sample_names', rows: 12 %>
             </div>
+          </div>
+          <div class="text-muted">
+            <p>There is no limit to the number of samples that can be accessioned -
+            asynchronous progress can be viewed at the <%= link_to 'Delayed Jobs Queue', admin_delayed_jobs_path %>.
+            </p>
+            <% if Flipper.enabled?(:y26_094_email_users_on_accessioning_failures) %>
+            <p>SSRs will receive email notification of any samples that fail to accession.</p>
+            <% end %>
           </div>
           <%= button_tag 'Accession samples in list', class: 'btn btn-primary' %>
         <% end %>
       </div>
       <div class="tab-pane" id="clear-accessions" role="tabpanel" aria-labelledby="clear-accessions-tab">
-        <p>The accession number is only removed from Sequencescape, the previously accessioned data remains on EBI's servers.</p>
         <%= form_tag clear_accessions_by_name_admin_accessioning_tools_path, method: :put do %>
           <div class="form-row">
             <div class="form-group col-md-12">
-              <label for="clear_accession_sample_names" class="form-label">Sample names only (one per line)</label>
+              <label for="clear_accession_sample_names" class="form-label">Sample names (one per line)</label>
               <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'clear_accession_sample_names', rows: 12 %>
             </div>
+          </div>
+          <div class="text-muted">
+            <p>The accession number is only removed from Sequencescape, the previously accessioned data remains on EBI's servers.</p>
+            <p>There is no limit to the number of samples that can be entered, but clearing more than 500 at a time is not recommended.</p>
           </div>
           <%= button_tag 'Clear accession numbers', class: 'btn btn-warning' %>
         <% end %>
@@ -108,11 +118,10 @@
 <div class="card my-3">
   <div class="card-header font-weight-bold">View sample accession numbers</div>
   <div class="card-body">
-    <p>Designed for confirming the accession numbers of provided samples.</p>
     <form>
       <div class="form-row">
         <div class="form-group col-md-12">
-          <label for="view_sample_names" class="form-label">Sample names only (one per line)</label>
+          <label for="view_sample_names" class="form-label">Sample names (one per line)</label>
           <%= text_area_tag 'sample_names', nil, class: 'form-control', id: 'view_sample_names', rows:12 %>
         </div>
       </div>
