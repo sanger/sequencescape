@@ -23,6 +23,15 @@ FactoryBot.define do
     factory(:transfer_from_plate_to_tube_with_transfers) { transfers { %w[A1 B1] } }
   end
 
+  # Factory for Transfer::FromPlateToTubeBySubmission.
+  # Creates a source plate with one well that has a library_completion request (for_multiplexing: true)
+  # pointing to an MX library tube, plus a stock Well::Link so plate.stock_wells returns the well.
+  # Call build_library_completion_for_well and link_stock_well helpers in specs to customise further.
+  factory(:transfer_from_plate_to_tube_by_submission, class: 'Transfer::FromPlateToTubeBySubmission') do
+    user
+    source factory: %i[transfer_plate], well_count: 1
+  end
+
   factory(:transfer_template) do
     sequence(:name) { |n| "Transfer Template #{n}" }
     transfer_class_name { 'Transfer::BetweenPlates' }

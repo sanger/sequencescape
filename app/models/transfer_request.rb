@@ -29,6 +29,9 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
+  # States considered to be transferable
+  TRANSFERABLE_STATES = %w[pending started].freeze
+
   # target_asset and asset are both Receptacle objects, and are the source and target of the transfer request.
   # That is, when a transfer is made, the asset is moved from the source to the target, which are both receptacles.
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.
@@ -172,13 +175,14 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # A sibling request is a customer request out of the same asset and in the same submission
-  def sibling_requests # rubocop:todo Metrics/AbcSize
+  def sibling_requests
+    eff_subm_id = effective_submission_id
     if associated_requests.loaded?
-      associated_requests.select { |r| r.submission_id == submission_id }
+      associated_requests.select { |r| r.submission_id == eff_subm_id }
     elsif asset.requests.loaded?
-      asset.requests.select { |r| r.submission_id == submission_id }
+      asset.requests.select { |r| r.submission_id == eff_subm_id }
     else
-      associated_requests.where(submission: submission_id)
+      associated_requests.where(submission: eff_subm_id)
     end
   end
 
@@ -231,6 +235,14 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
+
+  # Returns the submission_id of an active request on the source asset if one exists,
+  # falling back to self.submission_id. This handles the case where a new submission has
+  # been created on the asset and the outer_request still carries the old submission_id.
+  def effective_submission_id
+    active_request = asset.requests_as_source.find { |r| TRANSFERABLE_STATES.include?(r.state) }
+    active_request&.submission_id || submission_id
+  end
 
   def next_request_index
     @next_request_index ||=

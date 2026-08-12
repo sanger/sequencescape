@@ -402,6 +402,63 @@ RSpec.describe TransferRequest do
     end
   end
 
+  describe '#effective_submission_id' do
+    subject(:transfer_request) { build(:transfer_request, asset: source, target_asset: destination) }
+
+    context 'when the source asset has no active requests' do
+      let(:old_submission) { create(:submission) }
+
+      before { transfer_request.submission_id = old_submission.id }
+
+      it 'falls back to self.submission_id' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(old_submission.id)
+      end
+    end
+
+    context 'when the source asset has an active request from a new submission' do
+      let(:old_submission) { create(:submission) }
+      let(:new_submission) { create(:submission) }
+      let(:active_request) { create(:library_request, asset: source, submission: new_submission, state: 'pending') }
+
+      before do
+        active_request
+        transfer_request.submission_id = old_submission.id
+      end
+
+      it 'returns the submission_id from the active request on the asset' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(new_submission.id)
+      end
+    end
+  end
+
+  describe '#sibling_requests' do
+    context 'when a new submission has been created on the source asset' do
+      # Scenario: outer_request was set from the old submission, recording a stale submission_id
+      # on the transfer request. A new submission now has active requests on the same asset.
+      # sibling_requests should resolve via the new active submission, not the stale one.
+      subject(:transfer_request) do
+        build(:transfer_request, asset: source, target_asset: destination, submission: old_submission)
+      end
+
+      let(:old_submission) { create(:submission) }
+      let(:new_submission) { create(:submission) }
+      let!(:old_library_request) do
+        create(:library_request, asset: source, submission: old_submission, state: 'failed')
+      end
+      let!(:new_library_request) do
+        create(:library_request, asset: source, submission: new_submission, state: 'pending')
+      end
+
+      it 'returns requests from the new active submission' do
+        expect(transfer_request.sibling_requests).to include(new_library_request)
+      end
+
+      it 'does not return requests from the stale old submission' do
+        expect(transfer_request.sibling_requests).not_to include(old_library_request)
+      end
+    end
+  end
+
   context 'when failing a transfer request with downstream assets' do
     # Labware
     let(:original_plate) { create(:plate_with_untagged_wells, well_count: 1) }
