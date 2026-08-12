@@ -60,6 +60,11 @@ module SampleAccessioning
     sample_metadata.sample_ebi_accession_number
   end
 
+  # Convenience method for accessioning tools to set the accession number using sample.update
+  def ebi_accession_number=(accession_number)
+    sample_metadata.sample_ebi_accession_number = accession_number
+  end
+
   def accession_number?
     ebi_accession_number.present?
   end
