@@ -26,10 +26,28 @@ FactoryBot.define do
   # Factory for Transfer::FromPlateToTubeBySubmission.
   # Creates a source plate with one well that has a library_completion request (for_multiplexing: true)
   # pointing to an MX library tube, plus a stock Well::Link so plate.stock_wells returns the well.
-  # Call build_library_completion_for_well and link_stock_well helpers in specs to customise further.
   factory(:transfer_from_plate_to_tube_by_submission, class: 'Transfer::FromPlateToTubeBySubmission') do
     user
     source factory: %i[transfer_plate], well_count: 1
+
+    transient do
+      submission { association(:submission) }
+      mx_tube { association(:multiplexed_library_tube) }
+      state { 'pending' }
+    end
+
+    after(:build) do |transfer, evaluator|
+      well = transfer.source.wells.first
+      Well::Link.find_or_create_by!(type: 'stock', source_well: well, target_well: well)
+
+      create(
+        :library_completion,
+        asset: well,
+        target_asset: evaluator.mx_tube.receptacle,
+        submission: evaluator.submission,
+        state: evaluator.state
+      )
+    end
   end
 
   factory(:transfer_template) do
