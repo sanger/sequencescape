@@ -347,6 +347,78 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     end
   end
 
+  describe '#clear_accessions_by_name' do
+    let(:samples) { create_list(:sample_with_accession_number, 3) }
+
+    before do
+      allow(SampleAccessioningJob).to receive(:new).and_call_original
+
+      put :clear_accessions_by_name, params:
+    end
+
+    context 'with valid sample names' do
+      let(:params) { { sample_names: samples.map(&:name).join("\n") } }
+
+      it 'clears the accession numbers for each sample' do
+        samples.each { |sample| expect(sample.reload.ebi_accession_number).to be_nil }
+      end
+
+      it 'does not attempt to re-accession samples that have just been cleared' do
+        expect(SampleAccessioningJob).not_to have_received(:new)
+      end
+
+      it 'sets a success flash message with the correct count' do
+        expect(flash[:success]).to eq('Accession number clearing complete: 3 samples had their accession numbers cleared.')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with no matching samples' do
+      let(:params) { { sample_names: "nonexistent_sample_1\nnonexistent_sample_2" } }
+
+      it 'sets a success flash message with zero count' do
+        expect(flash[:success]).to eq('Accession number clearing complete: 0 samples had their accession numbers cleared.')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with poorly formatted sample names (whitespace and blank lines)' do
+      let(:params) { { sample_names: ["  #{samples[0].name}  ", "  #{samples[1].name}", '', '   '].join("\n") } }
+
+      it 'strips whitespace and clears the matched samples' do
+        expect(samples[0].reload.ebi_accession_number).to be_nil
+        expect(samples[1].reload.ebi_accession_number).to be_nil
+      end
+
+      it 'does not clear unmatched samples' do
+        expect(samples[2].reload.ebi_accession_number).to eq('EBI1234')
+      end
+
+      it 'sets a success flash message with the correct count' do
+        expect(flash[:success]).to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
+      end
+    end
+
+    context 'with comma-separated sample names and duplicates' do
+      let(:params) { { sample_names: "#{samples[0].name}, #{samples[1].name}, #{samples[0].name}" } }
+
+      it 'deduplicates names and only clears each sample once' do
+        expect(samples[0].reload.ebi_accession_number).to be_nil
+        expect(samples[1].reload.ebi_accession_number).to be_nil
+      end
+
+      it 'sets a success flash message with the deduplicated count' do
+        expect(flash[:success]).to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
+      end
+    end
+  end
+
   describe '#view_sample_accessions' do
     before do
       put :view_sample_accessions, params:
