@@ -82,7 +82,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
-  validate :prevent_creation_with_mastered_study, on: :create
+  validate :prevent_creation_with_externally_managed_study, on: :create
 
   before_save :default_asset_type
 
@@ -261,7 +261,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
   # rubocop:enable Naming/MemoizedInstanceVariableName
 
-  def prevent_creation_with_mastered_study
+  def prevent_creation_with_externally_managed_study
     return unless study&.ui_locked?
 
     errors.add(

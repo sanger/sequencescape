@@ -46,7 +46,7 @@ module Api
         # @note Requires an Integration Hub API key. All other callers will receive
         #   a 403 Forbidden response.
         #
-        # @note Requires the +:y26_172_enable_sapio_mastered_study_restrictions+
+        # @note Requires the +:y26_172_enable_externally_managed_study_restrictions+
         #   feature flag to be enabled. Returns 404 otherwise.
         #
         # == Expected Payload
@@ -60,7 +60,7 @@ module Api
         # {
         #   "study": {
         #     "name": "(required) Unique study name, max 200 chars",
-        #     "uuid": "(optional) UUID to assign; auto-generated if omitted"
+        #     "uuid": "(required) UUID to assign to the study, must be a valid UUID string"
         #   }
         # }
         #

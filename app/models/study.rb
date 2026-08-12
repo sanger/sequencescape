@@ -142,7 +142,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
-  # Flag set by Integration Hub requests to lift the mastered-in-Sapio edit lock.
+  # Flag set by Integration Hub requests to lift the externally managed study edit lock.
   attr_accessor :skip_externally_managed_restriction
 
   # Associations
@@ -660,7 +660,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
     return unless will_save_change_to_externally_managed?
-    return if allowed_to_bypass_mastered_restriction?
+    return if skip_externally_managed_restriction
 
     errors.add(:base, I18n.t('studies.externally_managed.integration_hub_update_only'))
   end
@@ -671,16 +671,12 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     return unless externally_managed_restrictions_enabled?
     return unless externally_managed?
 
-    return if allowed_to_bypass_mastered_restriction?
+    return if skip_externally_managed_restriction
 
     errors.add(
       :base,
       I18n.t('studies.externally_managed.not_editable')
     )
-  end
-
-  def allowed_to_bypass_mastered_restriction?
-    skip_externally_managed_restriction
   end
 
   def valid_ethically_approved?
