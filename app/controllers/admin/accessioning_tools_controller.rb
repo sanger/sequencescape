@@ -66,10 +66,7 @@ class Admin::AccessioningToolsController < ApplicationController
     sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
     samples = Sample.where(name: sample_names).includes(:sample_metadata)
 
-    samples.each do |sample|
-      sample.sample_metadata&.update(sample_ebi_accession_number: nil)
-      sample.sample_metadata.save # calling sample.save would trigger after_save callbackss and perform an accession
-    end
+    samples.each { |sample| clear_accession_for_sample(sample) }
 
     number_of_samples = samples.count
 
@@ -157,6 +154,16 @@ class Admin::AccessioningToolsController < ApplicationController
       'Samples not found or are not eligible for accessioning',
       sample_names: missing_names
     )
+  end
+
+  def clear_accession_for_sample(sample)
+    authorize! :update, sample
+
+    Sample::Current.temporary_accessioning_pause = true # prevent accessioning from being triggered on sample saving
+    sample.current_user = current_user # for event logging history
+    sample.update(ebi_accession_number: nil) # also triggers event logging and warehouse broadcast
+  ensure
+    Sample::Current.temporary_accessioning_pause = false
   end
 
   def accessioning_not_enabled_redirect
