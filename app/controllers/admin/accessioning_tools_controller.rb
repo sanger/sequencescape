@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Provides advanced accessioning tools for administrators
-class Admin::AccessioningToolsController < ApplicationController
+class Admin::AccessioningToolsController < ApplicationController # rubocop:disable Metrics/ClassLength
   include ::AccessionHelper
 
   class SamplesNotFoundError < RuntimeError
@@ -63,14 +63,7 @@ class Admin::AccessioningToolsController < ApplicationController
 
   # Clear the accession number for all samples in the given list of sample names
   def clear_accessions_by_name
-    sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
-    samples = Sample.where(name: sample_names).includes(:sample_metadata)
-
-    check_for_missing_samples(sample_names, samples)
-
-    samples.each { |sample| clear_accession_for_sample(sample) }
-
-    number_of_samples = samples.count
+    number_of_samples = perform_bulk_clearing_by_name
 
     flash[:success] =
       "Accession number clearing complete: #{number_of_samples} samples had their accession numbers cleared."
@@ -83,7 +76,6 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   def view_sample_accessions
-    sample_names = params[:sample_names].map(&:strip)
     sample_paths, accession_numbers = sample_accession_paths_and_numbers_for_names(sample_names).transpose
 
     render json: { sample_names:, sample_paths:, accession_numbers: }, content_type: 'application/json'
@@ -114,14 +106,30 @@ class Admin::AccessioningToolsController < ApplicationController
   end
 
   def perform_bulk_accession_by_name
-    sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
     samples_to_accession = accessionable_samples_by_name(sample_names)
     number_of_samples = samples_to_accession.count
 
-    check_for_missing_samples_to_accession(sample_names, samples_to_accession)
+    check_for_missing_samples(sample_names, samples_to_accession, msg_extra: 'or are not eligible for accessioning')
 
     Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
     samples_to_accession.each { |sample| Accession.accession_sample(sample, current_user) }
+
+    number_of_samples
+  end
+
+  def perform_bulk_clearing_by_name
+    samples = Sample.where(name: sample_names).includes(:sample_metadata)
+    number_of_samples = samples.count
+
+    check_for_missing_samples(sample_names, samples)
+
+    Rails.logger.info("Clearing accession numbers for #{number_of_samples} samples by name")
+    samples.each do |sample|
+      authorize! :update, sample
+
+      sample.current_user = current_user # for event logging history
+      sample.clear_accession_number
+    end
 
     number_of_samples
   end
@@ -153,35 +161,19 @@ class Admin::AccessioningToolsController < ApplicationController
     end
   end
 
-  def check_for_missing_samples_to_accession(sample_names, samples_to_accession)
-    missing_names = sample_names - samples_to_accession.map(&:name)
+  def check_for_missing_samples(sample_names, found_samples, msg_extra: '')
+    missing_names = sample_names - found_samples.map(&:name)
     return unless missing_names.any?
 
-    raise SamplesNotFoundError.new(
-      'Samples not found or are not eligible for accessioning',
-      sample_names: missing_names
-    )
-  end
-
-  def check_for_missing_samples(sample_names, samples_to_accession)
-    missing_names = sample_names - samples_to_accession.map(&:name)
-    return unless missing_names.any?
-
-    raise SamplesNotFoundError.new('Samples not found', sample_names: missing_names)
-  end
-
-  def clear_accession_for_sample(sample)
-    authorize! :update, sample
-
-    Sample::Current.temporary_accessioning_pause = true # prevent accessioning from being triggered on sample saving
-    sample.current_user = current_user # for event logging history
-    sample.update(ebi_accession_number: nil) # also triggers event logging and warehouse broadcast
-  ensure
-    Sample::Current.temporary_accessioning_pause = false
+    raise SamplesNotFoundError.new(['Samples not found', msg_extra].compact.join(' '), sample_names: missing_names)
   end
 
   def accessioning_not_enabled_redirect
     flash[:warning] = 'Accessioning is currently disabled. Please enable accessioning to use this tool.'
     redirect_to admin_accessioning_tools_path
+  end
+
+  def sample_names
+    @sample_names ||= params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
   end
 end
