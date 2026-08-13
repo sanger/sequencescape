@@ -352,6 +352,7 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
 
     before do
       allow(SampleAccessioningJob).to receive(:new).and_call_original
+      allow(Rails.logger).to receive(:warn)
 
       put :clear_accessions_by_name, params:
     end
@@ -367,8 +368,47 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
         expect(SampleAccessioningJob).not_to have_received(:new)
       end
 
+      it 'records a history event for the current user for each sample' do
+        samples.each do |sample|
+          event = sample.events.last
+          expect(event).to have_attributes(
+            family: 'sample_metadata',
+            message: 'Updated sample metadata',
+            created_by: admin.login,
+            content: '{"sample_ebi_accession_number":["EBI1234",null]}'
+          )
+        end
+      end
+
       it 'sets a success flash message with the correct count' do
-        expect(flash[:success]).to eq('Accession number clearing complete: 3 samples had their accession numbers cleared.')
+        expect(flash[:success])
+          .to eq('Accession number clearing complete: 3 samples had their accession numbers cleared.')
+      end
+
+      it 'redirects to the accessioning tools page' do
+        expect(response).to redirect_to(admin_accessioning_tools_path)
+      end
+    end
+
+    context 'with a mix of known and unknown sample names' do
+      let(:params) { { sample_names: (samples.map(&:name) + ['nonexistent_sample']).join("\n") } }
+
+      it 'does not clear accession numbers for any samples' do
+        samples.each { |sample| expect(sample.reload.ebi_accession_number).not_to be_nil }
+      end
+
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message' do
+        expect(flash[:error])
+          .to eq('There were 1 samples not found including: nonexistent_sample')
+      end
+
+      it 'logs a warning for the unknown sample names' do
+        expect(Rails.logger).to have_received(:warn)
+          .with('There were 1 samples not found including: nonexistent_sample')
       end
 
       it 'redirects to the accessioning tools page' do
@@ -379,8 +419,18 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     context 'with no matching samples' do
       let(:params) { { sample_names: "nonexistent_sample_1\nnonexistent_sample_2" } }
 
-      it 'sets a success flash message with zero count' do
-        expect(flash[:success]).to eq('Accession number clearing complete: 0 samples had their accession numbers cleared.')
+      it 'does not set a success flash message' do
+        expect(flash[:success]).to be_nil
+      end
+
+      it 'sets a error flash message' do
+        expect(flash[:error])
+          .to eq(
+            <<~MESSAGE.squish
+              There were 2 samples not found including:
+               nonexistent_sample_1, nonexistent_sample_2
+            MESSAGE
+          )
       end
 
       it 'redirects to the accessioning tools page' do
@@ -391,9 +441,9 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
     context 'with poorly formatted sample names (whitespace and blank lines)' do
       let(:params) { { sample_names: ["  #{samples[0].name}  ", "  #{samples[1].name}", '', '   '].join("\n") } }
 
-      it 'strips whitespace and clears the matched samples' do
-        expect(samples[0].reload.ebi_accession_number).to be_nil
-        expect(samples[1].reload.ebi_accession_number).to be_nil
+      it 'clears the accession numbers for each provided sample' do
+        provided_samples = [samples[0], samples[1]]
+        provided_samples.each { |sample| expect(sample.reload.ebi_accession_number).to be_nil }
       end
 
       it 'does not clear unmatched samples' do
@@ -401,7 +451,8 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       end
 
       it 'sets a success flash message with the correct count' do
-        expect(flash[:success]).to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
+        expect(flash[:success])
+          .to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
       end
     end
 
@@ -409,12 +460,16 @@ describe Admin::AccessioningToolsController, :accessioning_enabled do
       let(:params) { { sample_names: "#{samples[0].name}, #{samples[1].name}, #{samples[0].name}" } }
 
       it 'deduplicates names and only clears each sample once' do
-        expect(samples[0].reload.ebi_accession_number).to be_nil
-        expect(samples[1].reload.ebi_accession_number).to be_nil
+        # Verified by checking the history events for each sample
+        provided_samples = [samples[0], samples[1]]
+        provided_samples.each do |sample|
+          expect(sample.events.where(family: 'sample_metadata').count).to eq(1)
+        end
       end
 
       it 'sets a success flash message with the deduplicated count' do
-        expect(flash[:success]).to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
+        expect(flash[:success])
+          .to eq('Accession number clearing complete: 2 samples had their accession numbers cleared.')
       end
     end
   end

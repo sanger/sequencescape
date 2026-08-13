@@ -66,12 +66,19 @@ class Admin::AccessioningToolsController < ApplicationController
     sample_names = params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
     samples = Sample.where(name: sample_names).includes(:sample_metadata)
 
+    check_for_missing_samples(sample_names, samples)
+
     samples.each { |sample| clear_accession_for_sample(sample) }
 
     number_of_samples = samples.count
 
     flash[:success] =
       "Accession number clearing complete: #{number_of_samples} samples had their accession numbers cleared."
+    redirect_to admin_accessioning_tools_path
+  rescue SamplesNotFoundError => e
+    message = "There were #{e.sample_names.count} samples not found including: #{e.sample_names.join(', ')}"
+    Rails.logger.warn(message)
+    flash[:error] = message.truncate_words(20)
     redirect_to admin_accessioning_tools_path
   end
 
@@ -111,7 +118,7 @@ class Admin::AccessioningToolsController < ApplicationController
     samples_to_accession = accessionable_samples_by_name(sample_names)
     number_of_samples = samples_to_accession.count
 
-    check_for_missing_samples(sample_names, samples_to_accession)
+    check_for_missing_samples_to_accession(sample_names, samples_to_accession)
 
     Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
     samples_to_accession.each { |sample| Accession.accession_sample(sample, current_user) }
@@ -146,7 +153,7 @@ class Admin::AccessioningToolsController < ApplicationController
     end
   end
 
-  def check_for_missing_samples(sample_names, samples_to_accession)
+  def check_for_missing_samples_to_accession(sample_names, samples_to_accession)
     missing_names = sample_names - samples_to_accession.map(&:name)
     return unless missing_names.any?
 
@@ -154,6 +161,13 @@ class Admin::AccessioningToolsController < ApplicationController
       'Samples not found or are not eligible for accessioning',
       sample_names: missing_names
     )
+  end
+
+  def check_for_missing_samples(sample_names, samples_to_accession)
+    missing_names = sample_names - samples_to_accession.map(&:name)
+    return unless missing_names.any?
+
+    raise SamplesNotFoundError.new('Samples not found', sample_names: missing_names)
   end
 
   def clear_accession_for_sample(sample)
