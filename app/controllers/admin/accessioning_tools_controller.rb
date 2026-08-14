@@ -76,6 +76,7 @@ class Admin::AccessioningToolsController < ApplicationController # rubocop:disab
   end
 
   def view_sample_accessions
+    sample_names = params[:sample_names].map(&:strip)
     sample_paths, accession_numbers = sample_accession_paths_and_numbers_for_names(sample_names).transpose
 
     render json: { sample_names:, sample_paths:, accession_numbers: }, content_type: 'application/json'
@@ -106,10 +107,11 @@ class Admin::AccessioningToolsController < ApplicationController # rubocop:disab
   end
 
   def perform_bulk_accession_by_name
-    samples_to_accession = accessionable_samples_by_name(sample_names)
+    samples_to_accession = accessionable_samples_by_name(parsed_sample_names)
     number_of_samples = samples_to_accession.count
 
-    check_for_missing_samples(sample_names, samples_to_accession, msg_extra: 'or are not eligible for accessioning')
+    check_for_missing_samples(parsed_sample_names, samples_to_accession,
+                              msg_extra: 'or are not eligible for accessioning')
 
     Rails.logger.info("Bulk accessioning #{number_of_samples} samples by name")
     samples_to_accession.each { |sample| Accession.accession_sample(sample, current_user) }
@@ -118,10 +120,10 @@ class Admin::AccessioningToolsController < ApplicationController # rubocop:disab
   end
 
   def perform_bulk_clearing_by_name
-    samples = Sample.where(name: sample_names).includes(:sample_metadata)
+    samples = Sample.where(name: parsed_sample_names).includes(:sample_metadata)
     number_of_samples = samples.count
 
-    check_for_missing_samples(sample_names, samples)
+    check_for_missing_samples(parsed_sample_names, samples)
 
     Rails.logger.info("Clearing accession numbers for #{number_of_samples} samples by name")
     samples.each do |sample|
@@ -173,7 +175,7 @@ class Admin::AccessioningToolsController < ApplicationController # rubocop:disab
     redirect_to admin_accessioning_tools_path
   end
 
-  def sample_names
-    @sample_names ||= params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
+  def parsed_sample_names
+    @parsed_sample_names ||= params[:sample_names].split(/[\n,]+/).map(&:strip).compact_blank.uniq
   end
 end
