@@ -147,7 +147,7 @@ module SampleAccessioning
   # Clears the accession number for this sample, handling event logging and data propagation.
   def clear_accession_number
     Sample::Current.temporary_accessioning_pause = true # prevent accessioning from being triggered on sample saving
-    sample.update(ebi_accession_number: nil) # also triggers event logging and warehouse broadcast
+    update(ebi_accession_number: nil) # also triggers event logging and warehouse broadcast
   ensure
     Sample::Current.temporary_accessioning_pause = false
   end
