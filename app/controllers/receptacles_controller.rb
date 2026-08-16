@@ -64,7 +64,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
         end
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @asset.errors, status: :unprocessable_entity }
+        format.xml { render xml: @asset.errors, status: :unprocessable_content }
       end
     end
   end
@@ -174,7 +174,7 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
       # See: https://guides.rubyonrails.org/action_controller_overview.html#the-flash
       flash[:error] = e.message.truncate(2000, separator: ' ')
       format.html { redirect_to new_request_for_current_asset }
-      format.json { render json: e.message, status: :unprocessable_entity }
+      format.json { render json: e.message, status: :unprocessable_content }
     end
   end
 

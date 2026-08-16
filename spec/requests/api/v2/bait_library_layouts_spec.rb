@@ -395,7 +395,7 @@ describe 'Bait Library Layouts API', with: :api_v2 do
         end
 
         it 'responds with unprocessable_entity' do
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it 'returns all errors' do

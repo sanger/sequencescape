@@ -71,8 +71,8 @@ class SamplesController < ApplicationController
       else
         flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
-        format.xml { render xml: @sample.errors, status: :unprocessable_entity }
-        format.json { render json: @sample.errors, status: :unprocessable_entity }
+        format.xml { render xml: @sample.errors, status: :unprocessable_content }
+        format.json { render json: @sample.errors, status: :unprocessable_content }
       end
     end
   end
