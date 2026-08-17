@@ -30,7 +30,7 @@ module Api
         begin
           preview = BaitLibraryLayout.preview!(user: records[:user], plate: records[:plate])
         rescue ActiveRecord::RecordInvalid => e
-          respond_with_errors('Validation failed', e.record.errors.full_messages, :unprocessable_entity) and return
+          respond_with_errors('Validation failed', e.record.errors.full_messages, :unprocessable_content) and return
         end
 
         json = { data: { type: 'bait_library_layouts', attributes: { well_layout: preview.well_layout } } }

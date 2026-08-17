@@ -24,7 +24,7 @@ class UatActionsController < ApplicationController
         format.json { render json: @uat_action.report, status: :created }
       else
         format.html { render :show }
-        format.json { render json: @uat_action.errors, status: :unprocessable_entity }
+        format.json { render json: @uat_action.errors, status: :unprocessable_content }
       end
     end
   end

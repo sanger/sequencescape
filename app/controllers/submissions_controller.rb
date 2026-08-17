@@ -61,7 +61,7 @@ class SubmissionsController < ApplicationController
              },
              layout: false
     else
-      render partial: 'order_errors', layout: false, status: :unprocessable_entity
+      render partial: 'order_errors', layout: false, status: :unprocessable_content
     end
   end
 
