@@ -41,7 +41,8 @@ describe 'support:rebroadcast_with_data_release_prevention_reason', type: :task 
 
     it 'does not rebroadcast any study', :warren do
       Warren.handler.clear_messages
-      expect { task.invoke }.not_to change(Warren.handler.messages, :count)
+      task.invoke
+      expect(Warren.handler.messages).to be_empty
     end
   end
 
@@ -68,7 +69,8 @@ describe 'support:rebroadcast_with_data_release_prevention_reason', type: :task 
 
     it 'calls rebroadcast on the study', :warren do
       Warren.handler.clear_messages
-      expect { task.invoke }.to change(Warren.handler.messages, :count).by(1)
+      task.invoke
+      expect(Warren.handler.messages_matching("queue_broadcast.study.#{study.id}")).to eq(1)
     end
 
     it 'outputs Done at the end' do
@@ -91,7 +93,10 @@ describe 'support:rebroadcast_with_data_release_prevention_reason', type: :task 
 
     it 'calls rebroadcast exactly once per matching study', :warren do
       Warren.handler.clear_messages
-      expect { task.invoke }.to change(Warren.handler.messages, :count).by(2)
+      task.invoke
+      studies_with_reason.each do |s|
+        expect(Warren.handler.messages_matching("queue_broadcast.study.#{s.id}")).to eq(1)
+      end
     end
   end
 
@@ -105,7 +110,8 @@ describe 'support:rebroadcast_with_data_release_prevention_reason', type: :task 
 
     it 'does not call rebroadcast', :warren do
       Warren.handler.clear_messages
-      expect { task.invoke }.not_to change(Warren.handler.messages, :count)
+      task.invoke
+      expect(Warren.handler.messages_matching("queue_broadcast.study.#{study.id}")).to eq(0)
     end
 
     it 'outputs (dry run) for each matching study' do

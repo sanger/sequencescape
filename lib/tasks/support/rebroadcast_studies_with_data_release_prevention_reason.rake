@@ -20,6 +20,7 @@ namespace :support do
       if ENV['DRY_RUN'] == 'true'
         puts '  (dry run)'
       else
+        # calling touch to trigger the rebroadcast of the study to MLWH
         study.touch # rubocop:disable Rails/SkipsModelValidations
       end
     end
