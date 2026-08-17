@@ -35,7 +35,7 @@ RSpec.describe Api::V2::QcAssaysController, :qc_result, type: :request, with: :a
                  }
                }
     end.not_to change(QcAssay, :count)
-    expect(response).to have_http_status(:unprocessable_entity)
+    expect(response).to have_http_status(:unprocessable_content)
     json = ActiveSupport::JSON.decode(response.body)
     expect(json['errors'].length).to eq(1)
   end
