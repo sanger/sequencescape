@@ -20,7 +20,7 @@ namespace :support do
       if ENV['DRY_RUN'] == 'true'
         puts '  (dry run)'
       else
-        study.touch
+        study.touch # rubocop:disable Rails/SkipsModelValidations
       end
     end
 
