@@ -64,8 +64,9 @@ group :default do
 
   # Forked and stabilized version of [jsonapi-resources](https://github.com/sanger/jsonapi-resources)
   # for Sanger/PSD projects.
-  # Temporarily branch based off v0.1 for testing if the rack 3 changes work as intended.
-  gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'sh51/rack-3-fix'
+  # Version 0.1.x was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
+  # published, and pinned for Sequencescape compatibility.
+  gem 'sanger-jsonapi-resources', '~> 0.1.3'
 
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
