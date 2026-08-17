@@ -102,6 +102,33 @@ class RequestType::Validator < ApplicationRecord
     end
   end
 
+  class UltimaApplicationTypeValidator < FlowcellTypeValidator
+    # Returns the request class for the request type associated with this validator
+    # @return [Class] the request class
+    def request_class
+      @request_class ||= request_type.request_class_name.constantize
+    end
+
+    # Returns true if the provided option is a valid application type for the request type
+    # @param option [String] the application type to check
+    # @return [Boolean] true if the option is valid, false otherwise
+    def include?(option)
+      request_class.application_types.include?(option)
+    end
+
+    # Returns the default application type for the request type
+    # @return [String] the default application type
+    def default
+      request_class.default_application_type
+    end
+
+    # Returns an array of valid application types for the request type
+    # @return [Array<String>] the valid application types
+    def to_a
+      request_class.application_types.sort
+    end
+  end
+
   belongs_to :request_type, optional: false
   validates :request_option, :valid_options, presence: true
   serialize :valid_options, coder: YAML, yaml: {
@@ -109,7 +136,8 @@ class RequestType::Validator < ApplicationRecord
       Range,
       RequestType::Validator::ArrayWithDefault,
       RequestType::Validator::FlowcellTypeValidator,
-      RequestType::Validator::LibraryTypeValidator
+      RequestType::Validator::LibraryTypeValidator,
+      RequestType::Validator::UltimaApplicationTypeValidator
     ]
   }
 

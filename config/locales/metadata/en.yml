@@ -82,6 +82,9 @@ en:
         wafer_size:
           label: Wafer Size
 
+        application_type:
+          label: Application Type
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -111,6 +114,9 @@ en:
       <<: *REQUEST
 
     ultima_ug200_sequencing_request:
+      <<: *REQUEST
+
+    ultima_conv_request:
       <<: *REQUEST
 
     pulldown:

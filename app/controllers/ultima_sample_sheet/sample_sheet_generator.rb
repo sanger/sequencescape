@@ -35,6 +35,36 @@ module UltimaSampleSheet::SampleSheetGenerator
       ['[Samples]'].freeze
     end
 
+    # TODO: (Y26-036): This mapping is illustrative only.
+    # Example mapping of Illumina library types to Ultima application_type values.
+    # This is illustrative only — library_type alone is not sufficient to determine
+    # application_type, because the same library type can be sequenced natively or
+    # after conversion depending on the submission. The correct mechanism for
+    # deriving application_type for converted libraries is TBD.
+    # Library types absent from this map default to 'native'.
+    def library_type_to_application_type_config
+      {
+        'Hi-C' => 'converted-truseq',
+        'Hi-C - Arima v1' => 'converted-truseq',
+        'Hi-C - Arima v2' => 'converted-truseq',
+        'Hi-C - Dovetail' => 'converted-truseq',
+        'Hi-C - OmniC' => 'converted-truseq',
+        'Hi-C - Qiagen' => 'converted-truseq'
+      }.freeze
+    end
+
+    # TODO: (Y26-036): This mapping is illustrative only.
+    # Maps per-sample application_type values to their Ultima global Application presets.
+    # Used to derive the [Global] Application from the wafer's application_type.
+    # See Ultima sample sheet reference guide Table 5 for the full mapping.
+    # application_types absent from this map default to 'WGS Native'.
+    def application_type_to_global_application_config
+      {
+        'native' => 'WGS Native',
+        'converted-truseq' => 'Converted TruSeq'
+      }.freeze
+    end
+
     def samples_headers_config
       %w[
         Sample_ID Library_name Index_Barcode_Num Index_Barcode_Sequence
@@ -137,14 +167,16 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Adds the new global section format to be used when the feature flag
     # :y25_140_support_ultima_ug100_upgrade is enabled:
-    #   - Sets WGS Native as the application value.
+    #   - Sets the application value derived from the request's aliquots.
     #   - Removes sequencing_recipe and analysis_recipe columns.
+    # TODO: We assume Application header in [Global] section can be accessed
+    # using the passed sequencing request.
     # @param csv [CSV] the CSV object to append rows to
-    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_support_global_section(csv, _request)
+    # @param request [UltimaSequencingRequest] the request whose global data is to be added
+    def add_support_global_section(csv, request)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
-      data = ['WGS Native'] # Application
+      data = [global_application_for(request)]
       csv << pad(data)
     end
 
@@ -171,7 +203,7 @@ module UltimaSampleSheet::SampleSheetGenerator
         index_barcode_sequence_for(aliquot),
         barcode_plate_num_for(aliquot),
         barcode_plate_well_for(aliquot),
-        'native', # application_type
+        application_type_for(aliquot),
         study_id_for(aliquot)
       ]
     end
@@ -232,6 +264,29 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [String] the study ID
     def study_id_for(aliquot)
       aliquot.study_id.to_s
+    end
+
+    # Returns the Ultima application_type for the given aliquot, derived from its library_type.
+    # Falls back to 'native' for library types not listed in library_type_to_application_type_config.
+    # TODO (Y26-036): We assume application_type per sample can be accessed using the passed aliquot.
+    # @param aliquot [Aliquot] the aliquot whose application type is needed
+    # @return [String] the application type
+    def application_type_for(aliquot)
+      library_type_to_application_type_config.fetch(aliquot.library_type, 'native')
+    end
+
+    # Returns the Ultima global Application preset for the given request.
+    # The [Global] Application preset defines the sequencing recipe for the
+    # whole wafer and must be a single preset per sample sheet (see
+    # application_type_to_global_application_config). The per-sample
+    # application_type (in [Samples]) defines the per-sample analysis recipe and
+    # may differ across samples on a mixed-application wafer.
+    # TODO (Y26-036): We assume global Application preset can be accessed using the passed sequencing request.
+    # @param request [UltimaSequencingRequest] the request whose global application is needed
+    # @return [String] the global Application preset
+    def global_application_for(request)
+      application_type = application_type_for(request.asset.aliquots.first)
+      application_type_to_global_application_config.fetch(application_type, 'WGS Native')
     end
 
     # Returns a mapping of all Ultima tags to their respective 1-based index
