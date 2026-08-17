@@ -75,14 +75,14 @@ module SampleManifestExcel
         # Temporarily disable accessioning until we invoke it explicitly
         # If we don't do this, then any accidental triggering of sample
         # saves will result in duplicate accessions
-        Sample::Current.processing_manifest = true
+        Sample::Current.temporary_accessioning_pause = true
         sample_manifest.last_errors = nil
         @cache.populate!
         processor.run(tag_group)
 
         processed?
       ensure
-        Sample::Current.processing_manifest = false
+        Sample::Current.temporary_accessioning_pause = false
       end
 
       def data_at(column_name) # rubocop:todo Lint/DuplicateMethods
