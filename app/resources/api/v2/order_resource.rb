@@ -80,6 +80,9 @@ module Api
       attribute :project_uuid, writeonly: true
       attr_writer :project_uuid # Not stored, consumed by OrderProcessor.
 
+      # @!attribute [r] template_name
+      attribute :template_name, readonly: true
+
       ###
       # Relationships
       ###
@@ -98,6 +101,10 @@ module Api
       #   @return [UserResource] The user who created this {Order}.
       #   @note This can only be set once upon creation.
       has_one :user, readonly: true
+
+      # @!attribute [r] submission
+      #  @return [SubmissionResource] The submission associated with this {Order}.
+      has_one :submission, readonly: true
 
       ###
       # Templated Creation

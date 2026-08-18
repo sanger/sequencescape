@@ -59,7 +59,7 @@ RSpec.describe 'TubeRacks Heron API', :heron, :lighthouse, with: :api_v2 do
 
       it 'returns a 422 status code' do
         request
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'contains errors in the response' do
