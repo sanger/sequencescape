@@ -44,7 +44,7 @@ class Admin::RobotsController < ApplicationController
         format.xml { render xml: @robot, status: :created, location: @robot }
       else
         format.html { render action: 'new' }
-        format.xml { render xml: @robot.errors, status: :unprocessable_entity }
+        format.xml { render xml: @robot.errors, status: :unprocessable_content }
       end
     end
   end
@@ -57,7 +57,7 @@ class Admin::RobotsController < ApplicationController
         format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @robot.errors, status: :unprocessable_entity }
+        format.xml { render xml: @robot.errors, status: :unprocessable_content }
       end
     end
   end

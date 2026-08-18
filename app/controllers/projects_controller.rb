@@ -65,8 +65,8 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
     flash.now[:error] = 'Problems creating your new project'
     respond_to do |format|
       format.html { render action: 'new' }
-      format.xml { render xml: @project.errors, status: :unprocessable_entity }
-      format.json { render json: @project.errors, status: :unprocessable_entity }
+      format.xml { render xml: @project.errors, status: :unprocessable_content }
+      format.json { render json: @project.errors, status: :unprocessable_content }
     end
   end
 
@@ -78,7 +78,7 @@ class ProjectsController < ApplicationController # rubocop:todo Metrics/ClassLen
         format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @project.errors, status: :unprocessable_entity }
+        format.xml { render xml: @project.errors, status: :unprocessable_content }
       end
     end
   end

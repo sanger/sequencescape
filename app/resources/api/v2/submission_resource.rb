@@ -137,6 +137,8 @@ module Api
 
       ###
       # Relationships
+      # Note: You need to include the relationhips explicitly in the controller
+      # if you want them to be included by default, see app/controllers/api/v2/submissions_controller.rb
       ###
 
       # @!attribute [rw] user

@@ -40,8 +40,8 @@ class StudyReportsController < ApplicationController
       else
         flash[:error] = 'Error: report not being generated'
         format.html { redirect_to(study_reports_path) }
-        format.xml { render xml: flash[:error], status: :unprocessable_entity }
-        format.json { render json: flash[:error], status: :unprocessable_entity }
+        format.xml { render xml: flash[:error], status: :unprocessable_content }
+        format.json { render json: flash[:error], status: :unprocessable_content }
       end
     end
   end

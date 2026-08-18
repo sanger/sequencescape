@@ -234,9 +234,9 @@ describe 'QcFiles API', tags: :lighthouse, with: :api_v2 do
         { data: { type: resource_type, attributes: base_attributes, relationships: base_relationships } }
       end
 
-      it 'fails with an unprocessable entity status' do
+      it 'fails with an unprocessable content status' do
         api_post base_endpoint, payload
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'does not create a new resource' do

@@ -25,7 +25,7 @@ module Api
                    },
                    status: :created
           else
-            render json: { errors: factory.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: factory.errors.full_messages }, status: :unprocessable_content
           end
         end
 
