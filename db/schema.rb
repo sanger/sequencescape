@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_29_161532) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_13_145512) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1900,7 +1900,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_29_161532) do
     t.string "resource_type", limit: 128, null: false
     t.integer "resource_id", null: false
     t.string "external_id", limit: 36, null: false
-    t.index ["external_id"], name: "index_uuids_on_external_id"
+    t.index ["external_id"], name: "index_uuids_on_external_id", unique: true
     t.index ["resource_type", "resource_id"], name: "index_uuids_on_resource_type_and_resource_id"
   end
 
