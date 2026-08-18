@@ -175,7 +175,8 @@ module Accession
 
     def log_job_status(job)
       if job
-        Rails.logger.info("Accessioning job enqueued successfully: #{job.inspect}")
+        Rails.logger.info('Accessioning job enqueued successfully: ' \
+                          "ID=#{job.id}, Priority=#{job.priority}, Queue=#{job.queue}")
       else
         Rails.logger.warn('Accessioning job enqueue failed')
       end

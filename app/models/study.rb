@@ -144,6 +144,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # External management
   attribute :externally_managed, :boolean, default: false
+  # Flag set by Integration Hub requests to lift the externally managed study edit lock.
+  attr_accessor :skip_externally_managed_restriction
 
   # Associations
   has_many_events do
@@ -193,7 +195,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               allow_blank: false,
               message: 'cannot contain spaces or be blank'
             }
-  validate :validate_ethically_approved
+  validate :validate_ethically_approved, unless: :externally_managed?
+  # add validation when create or update sapio study
+  validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
+  validate :prevent_updates_when_externally_managed, on: :update
 
   # Callbacks
   before_validation :set_default_ethical_approval
@@ -345,9 +350,9 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 allow_blank: true
               }
 
-    validates :ebi_library_strategy, presence: true, on: :create
-    validates :ebi_library_source, presence: true, on: :create
-    validates :ebi_library_selection, presence: true, on: :create
+    validates :ebi_library_strategy, presence: true, on: :create, unless: -> { externally_managed? }
+    validates :ebi_library_source, presence: true, on: :create, unless: -> { externally_managed? }
+    validates :ebi_library_selection, presence: true, on: :create, unless: -> { externally_managed? }
 
     validates :ebi_library_strategy,
               inclusion: {
@@ -434,6 +439,14 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Class Methods
 
   # Instance methods
+  def externally_managed_restrictions_enabled?
+    Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
+  end
+
+  # Returns true if the study is externally_managed and the feature flag is enabled
+  def ui_locked?
+    externally_managed_restrictions_enabled? && externally_managed?
+  end
 
   def validate_ethically_approved
     return true if valid_ethically_approved?
@@ -564,6 +577,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     # If updating this method, please also update app/views/studies/information/_study_accession_status.html.erb
     [
       active?,
+      !ui_locked?,
       !study_metadata.strategy_not_applicable?,
       !study_metadata.never_release?,
       accession_required?,
@@ -591,6 +605,10 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   def validate_study_for_accessioning!
+    if ui_locked?
+      errors.add(:base, I18n.t('studies.externally_managed.accession_not_allowed'))
+      raise ActiveRecord::RecordInvalid, self
+    end
     valid?(:accession) or raise ActiveRecord::RecordInvalid, self
   end
 
@@ -636,6 +654,33 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
+  # This validation only runs when the value of externally_managed is changing
+  # It prevents changes to externally_managed unless the request is coming from Integration Hub
+  # i.e. only Integration Hub can set/change the value of externally_managed
+  def prevent_externally_managed_changes_unless_integration_hub
+    return unless externally_managed_restrictions_enabled?
+
+    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
+    return unless will_save_change_to_externally_managed?
+    return if skip_externally_managed_restriction
+
+    errors.add(:base, I18n.t('studies.externally_managed.integration_hub_update_only'))
+  end
+
+  # This validation prevents any updates to a study that is managed in SAPIO
+  # unless the request is coming from Integration Hub
+  def prevent_updates_when_externally_managed
+    return unless externally_managed_restrictions_enabled?
+    return unless externally_managed?
+
+    return if skip_externally_managed_restriction
+
+    errors.add(
+      :base,
+      I18n.t('studies.externally_managed.not_editable')
+    )
+  end
+
   def valid_ethically_approved?
     ethical_approval_required? ? !ethically_approved.nil? : ethically_approved != false
   end
@@ -647,6 +692,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # rubocop:disable Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
+    delegate :externally_managed?, to: :owner, allow_nil: true
 
     def remove_x_and_autosomes?
       remove_x_and_autosomes == YES
@@ -747,6 +793,15 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
     def study_type_valid?
       errors.add(:study_type, 'is not specified') if study_type.name == 'Not specified'
+    end
+
+    # When a study is mastered in Sapio (externally_managed), all required-field
+    # validation errors are suppressed after validation. Sapio is the source of
+    # truth for these studies and will provide field values over time via updates.
+    after_validation :clear_externally_managed_errors, if: -> { externally_managed? }
+
+    def clear_externally_managed_errors
+      errors.clear
     end
 
     # rubocop:todo Metrics/MethodLength

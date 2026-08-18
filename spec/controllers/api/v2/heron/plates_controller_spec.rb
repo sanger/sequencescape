@@ -57,7 +57,7 @@ RSpec.describe Api::V2::Heron::PlatesController, :heron, type: :request do
 
     it 'fails if barcode is not unique with the barcode information' do
       post(api_v2_heron_plates_path, params:)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = ActiveSupport::JSON.decode(response.body)
       expect(json['errors']).to eq(["The barcode '#{barcode}' is already in use."])
     end
