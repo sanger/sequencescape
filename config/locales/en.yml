@@ -125,6 +125,12 @@ en:
         no_items_available: "There are no %{label} registered for this workflow."
       assets:
         no_assets_available: "There are no %{label} registered for this workflow."
+    externally_managed:
+      banner: "⚠️ This study is externally managed in SAPIO."
+      not_editable: "⚠️ This study is managed in SAPIO and cannot be edited."
+      integration_hub_update_only: "⚠️ Mastered in SAPIO can only be updated by Integration Hub."
+      sample_manifest_creation_error: "⚠️ This study is mastered in SAPIO and cannot have new sample manifests created."
+      accession_not_allowed: "⚠️ This study is managed in SAPIO and cannot be accessioned."
 
   requests:
     comments:
