@@ -43,10 +43,10 @@ module SampleAccessioning
     }
     validates_associated :sample_metadata, on: %i[accession EGA ENA]
 
-    # Processing_manifest is true if we're currently processing a manifest. We
+    # Temporary_accessioning_pause is true if we're currently processing a manifest. We
     # disable accessioning, as we'll perform it explicitly later. This avoids
     # accidental calls to save triggering duplicate accessions.
-    after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.processing_manifest }
+    after_save :accession_and_handle_validation_errors, unless: -> { Sample::Current.temporary_accessioning_pause }
 
     scope :without_accession,
           lambda {
@@ -58,6 +58,11 @@ module SampleAccessioning
 
   def ebi_accession_number
     sample_metadata.sample_ebi_accession_number
+  end
+
+  # Convenience method for accessioning tools to set the accession number using sample.update
+  def ebi_accession_number=(accession_number)
+    sample_metadata.sample_ebi_accession_number = accession_number
   end
 
   def accession_number?
@@ -137,5 +142,13 @@ module SampleAccessioning
   # @return [Boolean]
   def all_accessionable_studies_open?
     studies_for_accessioning.all? { |study| study.study_metadata.open? }
+  end
+
+  # Clears the accession number for this sample, handling event logging and data propagation.
+  def clear_accession_number
+    Sample::Current.temporary_accessioning_pause = true # prevent accessioning from being triggered on sample saving
+    update(ebi_accession_number: nil) # also triggers event logging and warehouse broadcast
+  ensure
+    Sample::Current.temporary_accessioning_pause = false
   end
 end

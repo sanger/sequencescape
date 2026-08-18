@@ -35,7 +35,7 @@ module Api::V2::Sapio::Errors
         'Please refine your query to return fewer results.'
       [
         JSONAPI::Error.new(
-          status: :unprocessable_entity,
+          status: :unprocessable_content,
           title: 'Result Set Too Large',
           code: 'RESULT_SET_TOO_LARGE',
           detail: detail_message

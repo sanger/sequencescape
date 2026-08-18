@@ -13,7 +13,7 @@ module Api
           render json: JSONAPI::ResourceSerializer.new(QcResultResource).serialize_to_hash(@qc_result_resources),
                  status: :created
         else
-          render json: @qc_result_factory.errors, status: :unprocessable_entity
+          render json: @qc_result_factory.errors, status: :unprocessable_content
         end
       end
 

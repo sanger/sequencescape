@@ -51,7 +51,7 @@ class ReferenceGenomesController < ApplicationController
         format.xml { render xml: @reference_genome, status: :created, location: @reference_genome }
       else
         format.html { render action: 'new' }
-        format.xml { render xml: @reference_genome.errors, status: :unprocessable_entity }
+        format.xml { render xml: @reference_genome.errors, status: :unprocessable_content }
       end
     end
   end
@@ -67,7 +67,7 @@ class ReferenceGenomesController < ApplicationController
         format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @reference_genome.errors, status: :unprocessable_entity }
+        format.xml { render xml: @reference_genome.errors, status: :unprocessable_content }
       end
     end
   end

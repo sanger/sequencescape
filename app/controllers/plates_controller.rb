@@ -106,8 +106,8 @@ class PlatesController < ApplicationController
       else
         flash[:error] = 'Failed to create sample tubes'
         format.html { redirect_to(to_sample_tubes_plates_path) }
-        format.xml { render xml: flash.to_xml, status: :unprocessable_entity }
-        format.json { render json: flash.to_json, status: :unprocessable_entity }
+        format.xml { render xml: flash.to_xml, status: :unprocessable_content }
+        format.json { render json: flash.to_json, status: :unprocessable_content }
       end
     end
   end
