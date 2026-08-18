@@ -80,7 +80,7 @@ module Api
             assign_supplied_uuid(study)
             render_study_created(study)
           else
-            render json: { errors: study.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: study.errors.full_messages }, status: :unprocessable_content
           end
         end
 

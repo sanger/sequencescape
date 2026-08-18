@@ -723,7 +723,7 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         it 'returns 422 Unprocessable Entity' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:unprocessable_content)
         end
 
         it 'returns validation error messages' do
