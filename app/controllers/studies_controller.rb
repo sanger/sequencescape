@@ -73,8 +73,14 @@ class StudiesController < ApplicationController
     respond_to { |format| format.html }
   end
 
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def edit
     @study = Study.find(params[:id])
+    if @study.ui_locked?
+      flash[:error] = I18n.t('studies.externally_managed.not_editable')
+      redirect_to study_information_path(@study)
+      return
+    end
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end
@@ -107,7 +113,6 @@ class StudiesController < ApplicationController
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
@@ -387,7 +392,7 @@ class StudiesController < ApplicationController
 
   private
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
     studies =
       case scope
