@@ -330,7 +330,7 @@ RSpec.describe SampleAccessioningJob do
     end
   end
 
-  describe '#success' do
+  describe '#success', :accessioning_enabled do
     before do
       create(:accession_sample_status, sample: sample, status: 'failed')
       create(:accession_sample_status, sample: sample, status: 'failed')
