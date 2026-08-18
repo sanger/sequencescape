@@ -254,6 +254,35 @@ RSpec.describe SampleAccessioningJob do
         end
       end
     end
+
+    context 'when a job is retried' do
+      let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_common_name: nil, sample_taxon_id: nil) }
+
+      before do
+        create(:accession_sample_status, sample: sample, status: 'processing')
+        create(:accession_sample_status, sample: sample, status: 'processing')
+      end
+
+      def perform_and_expect_validation_error(job_instance)
+        expect { job_instance.perform }.to raise_error(Accession::InternalValidationError)
+      end
+
+      it 'uses the latest sample metadata' do # rubocop:disable RSpec/MultipleExpectations,RSpec/ExampleLength
+        # Run job the first time, which fails due to 2 missing fields
+        perform_and_expect_validation_error(job)
+        expect(Rails.logger).to have_received(:warn)
+          .with(/Sample does not have the required metadata: sample common name and sample taxon/)
+
+        # Populate one of the missing fields
+        sample.sample_metadata.update(sample_common_name: 'Updated common name')
+
+        # Run the job for a second time, which fails due to only one missing field - the metadata was updated
+        job = described_class.new(accessionable) # Create a new job instance to simulate a retry
+        perform_and_expect_validation_error(job)
+        expect(Rails.logger).to have_received(:warn)
+          .with(/Sample does not have the required metadata: sample taxon/)
+      end
+    end
   end
 
   describe '#reschedule_at' do
