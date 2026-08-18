@@ -1527,6 +1527,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_13_145512) do
     t.boolean "enforce_data_release", default: true
     t.boolean "enforce_accessioning", default: true
     t.integer "reference_genome_id", default: 1
+    t.boolean "externally_managed", default: false, null: false, comment: "Indicates whether the study is managed externally (e.g., by Sapio)."
     t.index ["ethically_approved"], name: "index_studies_on_ethically_approved"
     t.index ["state"], name: "index_studies_on_state"
     t.index ["updated_at"], name: "index_studies_on_updated_at"
