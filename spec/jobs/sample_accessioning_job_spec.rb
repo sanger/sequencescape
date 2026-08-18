@@ -11,8 +11,8 @@ RSpec.describe SampleAccessioningJob do
   let(:studies) { [first_open_study, second_open_study] }
   let(:sample_metadata) { create(:sample_metadata_for_accessioning) }
   let(:sample) { create(:sample_for_accessioning, sample_metadata:, studies:) }
-  let(:accessionable) { create(:accession_sample, sample:) }
-  let(:job) { described_class.new(accessionable) }
+  let(:event_user) { create(:user) }
+  let(:job) { described_class.new(sample.id, event_user.id) }
 
   let(:notification_client) { instance_double(HTTPClients::AccessioningNotificationClient) }
   let(:exception_notifier) { class_double(ExceptionNotifier) }
@@ -25,7 +25,7 @@ RSpec.describe SampleAccessioningJob do
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
-  describe '#perform' do
+  describe '#perform', :accessioning_enabled do
     # An accession sample status is created when the job is queued
 
     context 'when the submission fails validation' do
@@ -200,7 +200,7 @@ RSpec.describe SampleAccessioningJob do
                 sample_name: sample.name, # 'Sample 1',
                 study_names: "#{first_open_study.name}, #{second_open_study.name}",
                 service_provider: 'ENA',
-                user: nil
+                user: event_user.login
               }
             )
           end
@@ -277,7 +277,7 @@ RSpec.describe SampleAccessioningJob do
         sample.sample_metadata.update(sample_common_name: 'Updated common name')
 
         # Run the job for a second time, which fails due to only one missing field - the metadata was updated
-        job = described_class.new(accessionable) # Create a new job instance to simulate a retry
+        job = described_class.new(sample.id, event_user.id) # Create a new job instance to simulate a retry
         perform_and_expect_validation_error(job)
         expect(Rails.logger).to have_received(:warn)
           .with(/Sample does not have the required metadata: sample taxon/)

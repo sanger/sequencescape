@@ -121,6 +121,7 @@ module Accession
 
   # Wrapper for sample accessioning with error handling and job management.
   # Allows accessioning to be triggered from anywhere in the application.
+  # Sample and user data are passed by ID to ensure the latest data is used when the job run is performed.
   # Encapsulates logic for validation, synchronous or asynchronous job execution,
   # and supports private helper methods for internal workflow.
   #
@@ -138,18 +139,16 @@ module Accession
       return unless accessioning_enabled?
       return unless sample.should_be_accessioned?
 
-      accessionable = build_accessionable(sample)
-      job = SampleAccessioningJob.new(accessionable, event_user)
+      sample_id = sample.id
+      user_id = event_user.id
+
+      job = SampleAccessioningJob.new(sample_id, user_id)
 
       if perform_now
         inline_accession_job!(job)
       else
         enqueue_accessioning_job!(job)
       end
-    end
-
-    def build_accessionable(sample)
-      Accession::Sample.new(Accession.configuration.tags, sample)
     end
 
     private
