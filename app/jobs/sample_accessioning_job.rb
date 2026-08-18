@@ -197,16 +197,11 @@ SampleAccessioningJob =
 
     # Lazily load and cache the accessionable sample for the job
     def accessionable
-      @accessionable ||= build_accessionable(Sample.find(sample_id))
+      @accessionable ||= Accession.build_accessionable(Sample.find(sample_id))
     end
 
     # Lazily load and cache the event user for the job
     def event_user
       @event_user ||= User.find(event_user_id)
-    end
-
-    def build_accessionable(sample)
-      tags = Accession.configuration.tags
-      Accession::Sample.new(tags, sample)
     end
   end

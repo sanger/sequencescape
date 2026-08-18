@@ -105,6 +105,11 @@ module Accession
     @configuration = Configuration.new
   end
 
+  def self.build_accessionable(sample)
+    tags = Accession.configuration.tags
+    Accession::Sample.new(tags, sample)
+  end
+
   # Returns a user-friendly error message based on the error type
   def self.user_error_message(error)
     case error
