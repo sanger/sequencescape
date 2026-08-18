@@ -946,8 +946,14 @@ describe 'Sapio Studies API', with: :api_v2 do
   describe 'DELETE /api/v2/sapio/studies/:id' do
     let(:resource) { create(:study) }
 
-    it 'finds no route for the method' do
-      expect { api_delete "#{base_endpoint}/#{resource.id}" }.to raise_error(ActionController::RoutingError)
+    it 'returns a 405 Method Not Allowed status code' do
+      api_delete "#{base_endpoint}/#{resource.id}"
+      expect(response).to have_http_status(:method_not_allowed)
+    end
+
+    it 'does not delete the study' do
+      api_delete "#{base_endpoint}/#{resource.id}"
+      expect(Study.exists?(resource.id)).to be true
     end
   end
 end
