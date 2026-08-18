@@ -991,4 +991,69 @@ RSpec.describe Study do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
+
+  describe '#prevent_updates_when_mastered_in_sapio' do
+    let(:study) { create_sapio_study }
+
+    context 'when feature flag is enabled and updated from the UI', :sapio_restrictions_enabled do
+      it 'prevents updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be false
+        expect(study.errors[:base]).to include(
+          I18n.t('studies.mastered_in_sapio.not_editable')
+        )
+      end
+    end
+
+    context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
+      before do
+        study.bypass_sapio_validation = true
+      end
+
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+
+    context 'when feature flag is disabled', :sapio_restrictions_disabled do
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+  end
+
+  describe '#prevent_mastered_in_sapio_changes_unless_integration_hub' do
+    let(:study) { create(:study, mastered_in_sapio: false) }
+
+    context 'when feature flag is enabled and updated from SS', :sapio_restrictions_enabled do
+      it 'prevents changing mastered_in_sapio' do
+        expect(study.update(mastered_in_sapio: true)).to be false
+        expect(study.errors[:base]).to include(
+          I18n.t('studies.mastered_in_sapio.integration_hub_update_only')
+        )
+      end
+    end
+
+    context 'when feature flag is enabled and updated by Integration Hub', :sapio_restrictions_enabled do
+      #  bypass the validation to simulate an update from Integration Hub
+      before do
+        study.bypass_sapio_validation = true
+      end
+
+      it 'allows changing mastered_in_sapio' do
+        expect(study.update(mastered_in_sapio: true)).to be true
+      end
+    end
+
+    context 'when feature flag is disabled', :sapio_restrictions_disabled do
+      it 'allows changing mastered_in_sapio' do
+        expect(study.update(mastered_in_sapio: true)).to be true
+      end
+    end
+  end
 end

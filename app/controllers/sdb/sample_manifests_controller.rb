@@ -41,6 +41,14 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metric
   end
 
   def new
+    @study = Study.find_by(id: params[:study_id])
+
+    if @study&.ui_locked?
+      flash[:error] = I18n.t('studies.mastered_in_sapio.sample_manifest_creation_error')
+      redirect_to study_information_path(@study)
+      return
+    end
+
     set_default_params
     @sample_manifest = SampleManifest.new(new_manifest_params)
     set_instance_variables

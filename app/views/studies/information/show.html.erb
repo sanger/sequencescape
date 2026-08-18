@@ -17,7 +17,7 @@
 <% add :menu, "Contacts" => collaborators_study_path(@study) -%>
 <% add :menu, "History" => summary_study_information_path(@study) -%>
 <% add :menu, "&nbsp;" => '' -%>
-<% if can? :activate, @study %>
+<% if can?(:activate, @study) && !@study.ui_locked? %>
   <% if @study.active? -%>
     <% add :menu, { 'Deactivate Study' => state_study_path(@study) }   -%>
   <% else -%>
@@ -28,7 +28,7 @@
 <% add :menu, display_follow(@study, current_user, "Study") => follow_study_path(@study) -%>
 <% add :menu, pluralize(@study.comments.size, "comment") => study_comments_path(@study) -%>
 
-<% if permitted_to_accession?(@study) %>
+<% if permitted_to_accession?(@study) && !@study.ui_locked? %>
   <% add :menu,
     @study.accession_number? ? "Update Study Data for Accessioning" : "Generate Accession Number" =>
       (accessioning_enabled? ? url_for(controller: '/studies', action: 'accession', id: @study.id) : 'disabled' ) -%>
@@ -38,11 +38,11 @@
     (accessioning_enabled? ? url_for(controller: '/studies', action: 'policy_accession', id: @study.id) : 'disabled' ) -%>
 <% end -%>
 
-<% if can? :edit, @study %>
+<% if can?(:edit, @study) && !@study.ui_locked? %>
   <% add :menu, "Edit" => edit_study_url(@study) -%>
 <% end %>
 
-<% if can? :administer, @study %>
+<% if can?(:administer, @study) && !@study.ui_locked? %>
   <% add :menu, "Manage" => url_for(controller: "admin/studies", action: "show", id: @study.id) -%>
 <% end %>
 
@@ -61,12 +61,20 @@
 <% add :legend_option, icon('far', 'times-circle', 'Failed') => "" -%>
 
 <%= page_title @study.name, @study.id, titlecase: false %>
+
+<% if @study.ui_locked? %>
+  <%= alert(:warning, class: 'p-3') do %>
+    <p class="m-0"><strong><%= I18n.t('studies.mastered_in_sapio.banner') %></strong></p>
+  <% end %>
+<% end %>
+
 <%= alert(:info, class:'p-3') do %>
   <p class="m-0"><b>Bioinformatician?</b> If you are comfortable in a database, and want programmatic or large scale access to information you may find
   <%= help_link 'these resources', 'Useful+resources+for+bioinformaticians' %> useful.</p>
 <% end %>
 
 <div class="content mt-3">
+  
   <%#
     # This section is supposed to guide the user through generating their first
     # submission on the study. It tries to avoid asking the user to do something
