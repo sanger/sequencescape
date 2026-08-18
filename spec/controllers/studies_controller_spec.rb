@@ -314,7 +314,9 @@ RSpec.describe StudiesController do
 
     context 'when a sample already has an accession number' do
       # add a 6th already accessioned sample to the study
-      let(:samples) { create_list(:sample_for_accessioning, number_of_samples) + create_list(:accessioned_sample, 1) }
+      let(:samples) do
+        create_list(:sample_for_accessioning, number_of_samples) + create_list(:sample_with_accession_number, 1)
+      end
       let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
 
       it 'does not attempt to accession accessioned samples' do

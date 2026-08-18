@@ -108,8 +108,8 @@ class StudiesController < ApplicationController
     flash.now[:error] = 'Problems creating your new study'
     respond_to do |format|
       format.html { render action: 'new' }
-      format.xml { render xml: @study.errors, status: :unprocessable_entity }
-      format.json { render json: @study.errors, status: :unprocessable_entity }
+      format.xml { render xml: @study.errors, status: :unprocessable_content }
+      format.json { render json: @study.errors, status: :unprocessable_content }
     end
   end
 

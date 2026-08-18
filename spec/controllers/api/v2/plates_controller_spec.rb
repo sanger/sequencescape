@@ -56,8 +56,8 @@ RSpec.describe Api::V2::PlatesController, type: :request do
         post '/api/v2/plates/123/register_stock_for_plate'
       end
 
-      it 'returns a 422 Unprocessable Entity status' do
-        expect(response).to have_http_status(:unprocessable_entity)
+      it 'returns a 422 Unprocessable Content status' do
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'returns an error message' do

@@ -23,7 +23,7 @@ class ErrorsController < ApplicationController
 
   # TODO: Implement the `unacceptable` method to handle 406 Not Acceptable errors
 
-  # TODO: Implement the `unprocessable` method to handle 422 Unprocessable Entity errors
+  # TODO: Implement the `unprocessable` method to handle 422 Unprocessable Content errors
 
   # 500 Internal Server Error
   def internal_server_error

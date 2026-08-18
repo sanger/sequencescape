@@ -34,7 +34,7 @@ RSpec.describe Api::V2::QcResultsController, :qc_result, type: :request, with: :
       expect do
         api_post base_endpoint, { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
       end.not_to change(QcResult, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = ActiveSupport::JSON.decode(response.body)
       expect(json.keys.length).to eq(1)
     end
@@ -65,7 +65,7 @@ RSpec.describe Api::V2::QcResultsController, :qc_result, type: :request, with: :
       expect do
         api_post base_endpoint, { data: { attributes: [asset_1, asset_2, asset_3, asset_invalid] } }
       end.not_to change(QcResult, :count)
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
       json = ActiveSupport::JSON.decode(response.body)
       expect(json.keys.length).to eq(1)
     end
