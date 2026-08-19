@@ -884,3 +884,26 @@ tube_extraction:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+kinnex_compound_sample_plate:
+  heading: "Kinnex Compound Sample Plate"
+  asset_type: "plate"
+  rows_per_well: 12 # At time of writing this is the number of tags in the Iso-Seq cDNA Amp primer
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :i7
+    - :library_type_required
+    - :donor_id
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_common_name
+    - :sample_description
+
