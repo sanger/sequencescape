@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 module SampleManifest::CoreBehaviour
-  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
+  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack compound_plate compound_tube].freeze
 
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
@@ -110,6 +110,10 @@ module SampleManifest::CoreBehaviour
       'LibraryTubeBehaviour'
     when 'library_plate'
       'LibraryPlateBehaviour'
+    when 'compound_plate'
+      'CompoundPlateBehaviour'
+    when 'compound_tube'
+      'CompoundTubeBehaviour'
     when nil
       'UnspecifiedBehaviour'
     else

@@ -6,7 +6,9 @@ module Sdb::SampleManifestsHelper
       'plate' => 'Plates required',
       'library' => 'Tubes required',
       'multiplexed_library' => 'Number of samples in library',
-      'tube_rack' => 'Tube racks required'
+      'tube_rack' => 'Tube racks required',
+      'compound_plate' => 'Max number of samples per well',
+      'compound_tube' => 'Number of samples in tube'
     }
   end
 

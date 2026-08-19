@@ -136,13 +136,13 @@ module SampleManifestExcel
 
       def create_processor # rubocop:todo Metrics/MethodLength
         case sample_manifest&.asset_type
-        when '1dtube'
+        when '1dtube', 'compound_tube'
           Upload::Processor::OneDTube.new(self)
         when 'library'
           Upload::Processor::LibraryTube.new(self)
         when 'multiplexed_library'
           Upload::Processor::MultiplexedLibraryTube.new(self)
-        when 'plate', 'library_plate'
+        when 'plate', 'library_plate', 'compound_plate'
           Upload::Processor::Plate.new(self)
         when 'tube_rack'
           Upload::Processor::TubeRack.new(self)
