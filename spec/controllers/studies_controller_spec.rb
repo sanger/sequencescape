@@ -47,15 +47,20 @@ RSpec.describe StudiesController do
   end
 
   describe '#create' do
-    before do
-      @study_count = Study.count
-      post :create, session:, params:
-    end
+    subject(:perform_request) { post :create, session:, params: }
+
+    after { Flipper.disable(:y26_192_prevent_ui_study_creation) }
 
     context 'with valid options' do
+      before do
+        Flipper.disable(:y26_192_prevent_ui_study_creation)
+        @study_count = Study.count
+        perform_request
+      end
+
       it 'works', :aggregate_failures do # rubocop:todo RSpec/ExampleWording
-        expect(subject).to set_flash.to('Your study has been created')
-        expect(subject).to redirect_to('study path') { study_path(Study.last) }
+        expect(flash[:notice]).to eq('Your study has been created')
+        expect(response).to redirect_to(study_path(Study.last))
       end
 
       it 'changes Study.count by 1' do
@@ -65,20 +70,81 @@ RSpec.describe StudiesController do
 
     context 'with invalid options' do
       before do
+        Flipper.disable(:y26_192_prevent_ui_study_creation)
         @initial_study_count = Study.count
-        post :create, session: session, params: { 'study' => { 'name' => 'hello 2' } }
+        perform_request
       end
 
       let(:params) { { 'study' => { 'name' => 'hello 2' } } }
 
       specify(:aggregate_failures) do
-        expect(subject).to render_template :new
-        expect(subject).to set_flash.now.to('Problems creating your new study')
+        expect(response).to render_template(:new)
+        expect(flash.now[:error]).to eq('Problems creating your new study')
       end
 
       it 'not change Study.count' do
         expect(Study.count).to eq(@initial_study_count)
       end
+    end
+
+    context 'when the y26_192_prevent_ui_study_creation feature flag is enabled' do
+      before { Flipper.enable(:y26_192_prevent_ui_study_creation) }
+
+      it 'does not create a study when study creation is attempted' do
+        begin
+          perform_request
+        rescue ActionController::RoutingError
+          # Allow routing error to pass
+        end
+
+        expect(Study.count).to eq(0)
+      end
+
+      it 'raises a routing error' do
+        expect { perform_request }.to raise_error(ActionController::RoutingError, 'Not Found')
+      end
+    end
+
+    context 'when the y26_192_prevent_ui_study_creation feature flag is disabled' do
+      before { Flipper.disable(:y26_192_prevent_ui_study_creation) }
+
+      it 'creates a study when study creation is attempted' do
+        expect { perform_request }.to change(Study, :count).by(1)
+      end
+    end
+  end
+
+  describe '#edit', :externally_managed_restrictions_enabled do
+    let(:study) { create(:sapio_study) }
+
+    before do
+      # Make current_user a manager of the study so they can access edit
+      role = create(:manager_role, authorizable: study)
+      role.users << current_user
+    end
+
+    it 'redirects to study information page with error flash', :aggregate_failures do
+      get :edit, session: session, params: { id: study.id }
+
+      expect(response).to redirect_to(study_information_path(study))
+      expect(flash[:error]).to eq(I18n.t('studies.externally_managed.not_editable'))
+    end
+  end
+
+  describe '#edit', :externally_managed_restrictions_disabled do
+    let(:study) { create(:sapio_study) }
+
+    before do
+      # Make current_user a manager of the study so they can access edit
+      role = create(:manager_role, authorizable: study)
+      role.users << current_user
+    end
+
+    it 'allows editing mastered studies when feature flag is disabled', :aggregate_failures do
+      get :edit, session: session, params: { id: study.id }
+
+      expect(response).to render_template(:edit)
+      expect(flash[:error]).to be_nil
     end
   end
 
@@ -248,7 +314,9 @@ RSpec.describe StudiesController do
 
     context 'when a sample already has an accession number' do
       # add a 6th already accessioned sample to the study
-      let(:samples) { create_list(:sample_for_accessioning, number_of_samples) + create_list(:accessioned_sample, 1) }
+      let(:samples) do
+        create_list(:sample_for_accessioning, number_of_samples) + create_list(:sample_with_accession_number, 1)
+      end
       let(:study) { create(:open_study, accession_number: 'ENA123', samples: samples) }
 
       it 'does not attempt to accession accessioned samples' do
@@ -293,7 +361,8 @@ RSpec.describe StudiesController do
             status: 'failed',
             message: 'Cannot be accessioned: ' \
                      'Sample does not have the required metadata: ' \
-                     'donor, gender, phenotype, sample common name, and sample taxon.'
+                     'donor, gender, phenotype, sample common name, and sample taxon, ' \
+                     'Sample gender must be Female, Male, or Unknown'
           )
         end
       end

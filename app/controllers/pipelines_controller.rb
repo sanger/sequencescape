@@ -132,7 +132,7 @@ class PipelinesController < ApplicationController
       render plain: '', layout: false
     end
   rescue ActiveRecord::RecordInvalid => e
-    render plain: '', layout: false, status: :unprocessable_entity
+    render plain: '', layout: false, status: :unprocessable_content
   end
 
   private

@@ -3,6 +3,38 @@
 require 'rails_helper'
 
 RSpec.describe Study do
+  describe 'programmatic creation (rails console)' do
+    context 'when the y26_192_prevent_ui_study_creation feature flag is enabled' do
+      before { Flipper.enable(:y26_192_prevent_ui_study_creation) }
+
+      after { Flipper.disable(:y26_192_prevent_ui_study_creation) }
+
+      it 'allows study creation via factory (simulates console/API)' do
+        initial_count = described_class.count
+
+        study = create(:study, name: 'API Created Study')
+
+        expect(study).to be_persisted
+        expect(described_class.count).to eq(initial_count + 1)
+        expect(study.name).to eq('API Created Study')
+      end
+    end
+
+    context 'when the y26_192_prevent_ui_study_creation feature flag is disabled' do
+      before { Flipper.disable(:y26_192_prevent_ui_study_creation) }
+
+      it 'allows study creation via factory (simulates console)' do
+        initial_count = described_class.count
+
+        study = create(:study, name: 'Console Created Study')
+
+        expect(study).to be_persisted
+        expect(described_class.count).to eq(initial_count + 1)
+        expect(study.name).to eq('Console Created Study')
+      end
+    end
+  end
+
   it 'request calculates correctly and is valid' do
     study = create(:study)
     request_type = create(:request_type)
@@ -957,6 +989,73 @@ RSpec.describe Study do
 
     it 'triggers warehouse update', :warren do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
+    end
+  end
+
+  describe '#prevent_updates_when_externally_managed' do
+    let(:study) { create(:sapio_study) }
+
+    # test that updates are prevented when the feature flag is enabled and the update is from the UI
+    context 'when feature flag is enabled and updated from the UI', :externally_managed_restrictions_enabled do
+      it 'prevents updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be false
+        expect(study.errors[:base]).to include(
+          I18n.t('studies.externally_managed.not_editable')
+        )
+      end
+    end
+
+    # updates are allowed when the feature flag is enabled and the update is from Integration Hub
+    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
+      before do
+        study.skip_externally_managed_restriction = true
+      end
+
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+
+    # test that updates are allowed when the feature flag is disabled
+    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
+      it 'allows updates' do
+        study.name = 'New Name'
+        expect(study.save).to be true
+      end
+    end
+  end
+
+  describe '#prevent_externally_managed_changes_unless_integration_hub' do
+    let(:study) { create(:study, externally_managed: false) }
+
+    context 'when feature flag is enabled and updated from SS', :externally_managed_restrictions_enabled do
+      it 'prevents changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be false
+        expect(study.errors[:base]).to include(
+          I18n.t('studies.externally_managed.integration_hub_update_only')
+        )
+      end
+    end
+
+    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
+      #  bypass the validation to simulate an update from Integration Hub
+      before do
+        study.skip_externally_managed_restriction = true
+      end
+
+      it 'allows changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be true
+      end
+    end
+
+    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
+      it 'allows changing externally_managed' do
+        expect(study.update(externally_managed: true)).to be true
+      end
     end
   end
 end

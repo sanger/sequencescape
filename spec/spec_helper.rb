@@ -21,6 +21,7 @@
 
 require 'knapsack_pro'
 require 'simplecov'
+SimpleCov.start
 
 # https://knapsackpro.com/faq/question/how-to-use-simplecov-in-queue-mode
 KnapsackPro::Hooks::Queue.before_queue do |_queue_id|
@@ -213,6 +214,26 @@ RSpec.configure do |config|
     example.run
     Accession.configuration = original_config
     Flipper.enable(:y25_706_enable_accessioning, accessioning_enabled)
+  end
+
+  # Add externally_managed_restrictions_enabled to a spec to automatically:
+  # - Set y26_172_enable_externally_managed_study_restrictions to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :externally_managed_restrictions_enabled) do |example|
+    externally_managed_restrictions_enabled = Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions)
+    example.run
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
+  end
+
+  # Add externally_managed_restrictions_disabled to a spec to automatically:
+  # - Set y26_172_enable_externally_managed_study_restrictions to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :externally_managed_restrictions_disabled) do |example|
+    externally_managed_restrictions_enabled = Flipper.enabled?(:y26_171_enable_externally_managed_study_restrictions)
+    Flipper.disable(:y26_172_enable_externally_managed_mastered_study_restrictions)
+    example.run
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
   end
 
   # Temporarily disables Delayed::Job backgrounding for the duration of the example.

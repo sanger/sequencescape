@@ -142,6 +142,7 @@ GEM
       activerecord (>= 4.2)
       activesupport
     amq-protocol (2.3.3)
+    ansi (1.6.0)
     ast (2.4.3)
     attr_extras (7.1.0)
     avro (1.12.1)
@@ -149,8 +150,8 @@ GEM
     base64 (0.3.0)
     benchmark (0.5.0)
     bigdecimal (4.1.2)
-    bootsnap (1.24.6)
-      msgpack (~> 1.2)
+    bootsnap (1.25.0)
+      msgpack (~> 1.5)
     builder (3.3.0)
     bullet (8.1.3)
       activesupport (>= 3.0.0)
@@ -194,34 +195,34 @@ GEM
       bigdecimal
       rexml
     crass (1.0.7)
-    csv (3.3.5)
-    cucumber (10.2.0)
+    csv (3.3.6)
+    cucumber (11.1.1)
       base64 (~> 0.2)
       builder (~> 3.2)
       cucumber-ci-environment (> 9, < 12)
-      cucumber-core (> 15, < 17)
+      cucumber-core (>= 16.2.0, < 17)
       cucumber-cucumber-expressions (> 17, < 20)
-      cucumber-html-formatter (> 21, < 23)
+      cucumber-html-formatter (> 21, < 24)
       diff-lcs (~> 1.5)
       logger (~> 1.6)
       mini_mime (~> 1.1)
       multi_test (~> 1.1)
-      sys-uname (~> 1.3)
+      sys-uname (~> 1.5)
     cucumber-ci-environment (11.0.0)
     cucumber-core (16.2.0)
       cucumber-gherkin (> 36, < 40)
       cucumber-messages (> 31, < 33)
       cucumber-tag-expressions (> 6, < 9)
-    cucumber-cucumber-expressions (19.0.0)
+    cucumber-cucumber-expressions (19.0.1)
       bigdecimal
-    cucumber-gherkin (39.0.0)
+    cucumber-gherkin (39.1.0)
       cucumber-messages (>= 31, < 33)
-    cucumber-html-formatter (22.3.0)
+    cucumber-html-formatter (23.1.0)
       cucumber-messages (> 23, < 33)
-    cucumber-messages (32.2.0)
-    cucumber-rails (4.0.1)
+    cucumber-messages (32.3.1)
+    cucumber-rails (4.1.0)
       capybara (>= 3.25, < 4)
-      cucumber (>= 7, < 11)
+      cucumber (>= 7, < 12)
       railties (>= 6.1, < 9)
     cucumber-tag-expressions (8.1.0)
     cucumber_github_formatter (0.1.0)
@@ -237,7 +238,6 @@ GEM
       activerecord (>= 3.0, < 9.0)
       delayed_job (>= 3.0, < 5)
     diff-lcs (1.6.2)
-    docile (1.4.0)
     domain_name (0.6.20240107)
     drb (2.2.3)
     dry-cli (1.4.1)
@@ -308,7 +308,7 @@ GEM
     knapsack_pro (10.0.1)
       rake
       thor (~> 1.4)
-    language_server-protocol (3.17.0.5)
+    language_server-protocol (3.17.0.6)
     launchy (3.1.1)
       addressable (~> 2.8)
       childprocess (~> 5.0)
@@ -339,18 +339,24 @@ GEM
     mini_magick (5.3.1)
       logger
     mini_mime (1.1.5)
-    minitest (5.27.0)
+    minitest (6.0.6)
+      drb (~> 2.0)
+      prism (~> 1.5)
+    minitest-mock (5.27.0)
     minitest-profiler (0.0.2)
       activesupport (>= 4.1.0)
       minitest (>= 5.3.3)
+    minitest-reporters (1.8.0)
+      ansi
+      builder
+      minitest (>= 5.0, < 7)
+      ruby-progressbar
     mocha (3.1.0)
       ruby2_keywords (>= 0.0.5)
-    msgpack (1.8.3)
+    msgpack (1.8.4)
     multi_json (1.17.0)
     multi_test (1.1.0)
     multipart-post (2.4.1)
-    mustermann (3.0.0)
-      ruby2_keywords (~> 0.0.1)
     mutex_m (0.3.0)
     mysql2 (0.5.7)
       bigdecimal
@@ -379,7 +385,7 @@ GEM
     optimist (3.2.1)
     ostruct (0.6.3)
     parallel (2.1.0)
-    parser (3.3.11.1)
+    parser (3.3.12.0)
       ast (~> 2.4.1)
       racc
     patience_diff (1.2.0)
@@ -406,17 +412,16 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.7)
-    rack-acceptable (0.1.0)
-      rack (>= 1.1.0)
-    rack-cors (2.0.2)
-      rack (>= 2.0.0)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-mini-profiler (4.0.1)
       rack (>= 1.2.0)
     rack-protection (4.2.1)
       base64 (>= 0.1.0)
       logger (>= 1.6.0)
       rack (>= 3.0.0, < 4)
-    rack-proxy (0.7.7)
+    rack-proxy (0.8.3)
       rack
     rack-session (2.1.2)
       base64 (>= 0.1.0)
@@ -447,7 +452,7 @@ GEM
       activesupport (>= 5.0.0)
       minitest
       nokogiri (>= 1.6)
-    rails-erd (2.0.2)
+    rails-erd (2.1.0)
       activerecord (>= 7.0)
       activesupport (>= 7.0)
       choice (~> 0.2.0)
@@ -527,7 +532,7 @@ GEM
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
     ruboclean (0.8.0)
-    rubocop (1.88.0)
+    rubocop (1.89.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -538,7 +543,7 @@ GEM
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.49.1)
+    rubocop-ast (1.50.0)
       parser (>= 3.3.7.2)
       prism (~> 1.7)
     rubocop-capybara (3.0.0)
@@ -547,7 +552,7 @@ GEM
     rubocop-factory_bot (2.28.0)
       lint_roller (~> 1.1)
       rubocop (~> 1.72, >= 1.72.1)
-    rubocop-minitest (0.39.1)
+    rubocop-minitest (0.40.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.38.0, < 2.0)
@@ -555,7 +560,7 @@ GEM
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
       rubocop-ast (>= 1.47.1, < 2.0)
-    rubocop-rails (2.35.5)
+    rubocop-rails (2.36.0)
       activesupport (>= 4.2.0)
       lint_roller (~> 1.1)
       rack (>= 1.1)
@@ -580,12 +585,12 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.4.0)
+    rubyzip (3.4.1)
     sanitize (7.0.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.45.0)
+    selenium-webdriver (4.46.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -593,22 +598,11 @@ GEM
       websocket (~> 1.0)
     set (1.1.1)
     shoulda-context (3.0.0.rc1)
-    shoulda-matchers (7.0.1)
-      activesupport (>= 7.1)
-    simplecov (0.22.0)
-      docile (~> 1.1)
-      simplecov-html (~> 0.11)
-      simplecov_json_formatter (~> 0.1)
-    simplecov-html (0.12.3)
+    shoulda-matchers (8.0.1)
+      activesupport (>= 7.2)
+    simplecov (1.0.2)
     simplecov-lcov (0.9.0)
     simplecov_json_formatter (0.1.4)
-    sinatra (4.2.1)
-      logger (>= 1.6.0)
-      mustermann (~> 3.0)
-      rack (>= 3.0.0, < 4)
-      rack-protection (= 4.2.1)
-      rack-session (>= 2.0.0, < 3)
-      tilt (~> 2.0)
     slack-notifier (2.4.0)
     sorted_set (1.0.3)
       rbtree
@@ -635,7 +629,8 @@ GEM
     syslog (0.4.0)
       logger
     temple (0.10.4)
-    test-prof (1.6.1)
+    test-prof (1.6.3)
+      logger
     thor (1.5.0)
     tilt (2.7.0)
     timecop (0.9.11)
@@ -652,7 +647,7 @@ GEM
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
-    vite_rails (3.11.0)
+    vite_rails (3.11.1)
       railties (>= 5.1, < 9)
       vite_ruby (~> 3.0, >= 3.2.2)
     vite_ruby (3.10.2)
@@ -677,7 +672,7 @@ GEM
       will_paginate (>= 3.0.3)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    yard (0.9.44)
+    yard (0.9.45)
     yard-activerecord (0.0.17)
       activesupport
       yard (>= 0.8.3)
@@ -728,16 +723,16 @@ DEPENDENCIES
   flipper-ui (~> 1.0)
   formtastic
   hashdiff
-  json
   jsonapi-resources-matchers
   knapsack_pro
   launchy
   listen
   logger
-  minitest (~> 5.0)
+  minitest
+  minitest-mock
   minitest-profiler
+  minitest-reporters
   mocha
-  multi_json
   mutex_m
   mysql2
   net-ldap
@@ -746,7 +741,6 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   puma
-  rack-acceptable
   rack-cors
   rack-mini-profiler
   rails
@@ -779,12 +773,12 @@ DEPENDENCIES
   sanger-jsonapi-resources!
   sanger_barcode_format!
   sanger_warren!
-  selenium-webdriver (~> 4.1)
-  shoulda-context (~> 3.0.0.rc1)
-  shoulda-matchers (~> 7.0)
+  selenium-webdriver
+  shoulda-context
+  shoulda-matchers
   simplecov
   simplecov-lcov
-  sinatra
+  simplecov_json_formatter
   slack-notifier
   super_diff
   syntax_tree

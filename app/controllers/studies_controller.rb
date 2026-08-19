@@ -66,12 +66,21 @@ class StudiesController < ApplicationController
   end
 
   def new
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     @study = Study.new
     respond_to { |format| format.html }
   end
 
+  # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
   def edit
     @study = Study.find(params[:id])
+    if @study.ui_locked?
+      flash[:error] = I18n.t('studies.externally_managed.not_editable')
+      redirect_to study_information_path(@study)
+      return
+    end
     flash.now[:warning] = @study.warnings if @study.warnings.present?
     @users = User.all
   end
@@ -79,6 +88,9 @@ class StudiesController < ApplicationController
   ## Create the Study from new with the details from its form.
   ## Redirect to the index page with a notice.
   def create # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
+    # return a 404 if the feature flag is set
+    raise ActionController::RoutingError, 'Not Found' if Flipper.enabled?(:y26_192_prevent_ui_study_creation)
+
     ActiveRecord::Base.transaction do
       @study = Study.new(params['study'].merge(user: current_user))
       @study.save!
@@ -96,12 +108,11 @@ class StudiesController < ApplicationController
     flash.now[:error] = 'Problems creating your new study'
     respond_to do |format|
       format.html { render action: 'new' }
-      format.xml { render xml: @study.errors, status: :unprocessable_entity }
-      format.json { render json: @study.errors, status: :unprocessable_entity }
+      format.xml { render xml: @study.errors, status: :unprocessable_content }
+      format.json { render json: @study.errors, status: :unprocessable_content }
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
   def update # rubocop:todo Metrics/AbcSize
     @study = Study.find(params[:id])
 
@@ -381,7 +392,7 @@ class StudiesController < ApplicationController
 
   private
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo Metrics/MethodLength
   def studies_from_scope(scope) # rubocop:todo Metrics/CyclomaticComplexity
     studies =
       case scope

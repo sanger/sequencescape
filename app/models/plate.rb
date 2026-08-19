@@ -15,7 +15,6 @@ require 'lab_where_client'
 #
 class Plate < Labware # rubocop:todo Metrics/ClassLength
   include Api::PlateIo::Extensions
-  include ModelExtensions::Plate
   include Transfer::Associations
   include Transfer::State::PlateState
   include Asset::Ownership::Owned
@@ -200,6 +199,25 @@ class Plate < Labware # rubocop:todo Metrics/ClassLength
 
   def comments
     @comments ||= CommentsProxy::Plate.new(self)
+  end
+
+  # Adds pre-capture pooling information, we need to delegate this to the stock plate, as we need all the wells
+  # Currently used in {Transfer::BetweenPlates} to set submission id, we should switch to doing this
+  # directly via Limber with transfer request collections
+  def pre_cap_groups # rubocop:todo Metrics/AbcSize
+    Request
+      .include_request_metadata
+      .for_pre_cap_grouping_of(self)
+      .each_with_object({}) do |request, groups|
+      next if request.group_id.nil?
+
+      groups[request.group_id] = { wells: request.group_into.split(',') }.tap do |pool_information|
+        pool_information[:pre_capture_plex_level] ||= request.request_metadata.pre_capture_plex_level
+
+        # We supply the submission id to assist with correctly tagging transfer requests later
+        pool_information[:submission_id] ||= request.submission_id
+      end
+    end
   end
 
   def priority

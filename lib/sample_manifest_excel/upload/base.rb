@@ -18,7 +18,7 @@ module SampleManifestExcel
       include AccessionHelper
       include ActiveModel::Model
 
-      attr_accessor :file, :column_list, :start_row, :override
+      attr_accessor :file, :column_list, :start_row, :overrides
 
       # rubocop:todo Layout/LineLength
       attr_reader :spreadsheet, :columns, :sanger_sample_id_column, :rows, :sample_manifest, :data, :processor, :cache # TODO: probably shouldn't add the cache here, do it another way
@@ -46,7 +46,7 @@ module SampleManifestExcel
         @cache = Cache.new(self)
         @rows = Upload::Rows.new(data, columns, @cache)
         @sample_manifest = derive_sample_manifest
-        @override = override || false
+        @overrides = overrides || { samples: false, exclude_fields: [] } # default to not overriding samples
         @processor = create_processor
       end
 
@@ -75,14 +75,14 @@ module SampleManifestExcel
         # Temporarily disable accessioning until we invoke it explicitly
         # If we don't do this, then any accidental triggering of sample
         # saves will result in duplicate accessions
-        Sample::Current.processing_manifest = true
+        Sample::Current.temporary_accessioning_pause = true
         sample_manifest.last_errors = nil
         @cache.populate!
         processor.run(tag_group)
 
         processed?
       ensure
-        Sample::Current.processing_manifest = false
+        Sample::Current.temporary_accessioning_pause = false
       end
 
       def data_at(column_name) # rubocop:todo Lint/DuplicateMethods

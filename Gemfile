@@ -21,6 +21,9 @@ group :default do
   gem 'faraday-multipart'
   gem 'rest-client' # Deprecated, but still used in some places, replace with Faraday where possible
 
+  # Models
+  gem 'uuidtools'
+
   # State machine
   gem 'aasm'
   gem 'after_commit_everywhere', '~> 1.0' # Required by AASM
@@ -59,16 +62,9 @@ group :default do
   # Locked for ruby version
   gem 'delayed_job_active_record'
 
-  # For the API level
-  gem 'json'
-  gem 'multi_json'
-  gem 'rack-acceptable', require: 'rack/acceptable'
-  gem 'sinatra', require: false
-  gem 'uuidtools'
-
   # Forked and stabilized version of [jsonapi-resources](https://github.com/sanger/jsonapi-resources)
   # for Sanger/PSD projects.
-  # Version 0.1.1 was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
+  # Version 0.1.x was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
   gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'sh51/rails-8-1-fix'
 
@@ -201,10 +197,11 @@ group :test do
   gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
-  # It is needed to use #assigns(attribute) in controllers tests
-  gem 'minitest', '~> 5.0' # TODO: remove constraint when we upgrade to Rails 8, see https://github.com/minitest/minitest/issues/1040
+  gem 'minitest'
+  gem 'minitest-mock'
   gem 'minitest-profiler'
-  gem 'rails-controller-testing'
+  gem 'minitest-reporters'
+  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
 end
 
 group :test, :cucumber do
@@ -218,10 +215,11 @@ group :test, :cucumber do
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
   gem 'rspec-rails', '~> 8.0.0', require: false
-  gem 'selenium-webdriver', '~> 4.1', require: false
-  gem 'shoulda-context', '~> 3.0.0.rc1'
-  gem 'shoulda-matchers', '~> 7.0'
+  gem 'selenium-webdriver', require: false
+  gem 'shoulda-context'
+  gem 'shoulda-matchers'
   gem 'simplecov', require: false
+  gem 'simplecov_json_formatter', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
 

@@ -20,16 +20,35 @@ RSpec.describe Accession do
     context 'when accessioning is enabled', :accessioning_enabled, :un_delay_jobs do
       let(:event_user) { create(:user) }
 
-      context 'when sample fails fields validation' do
-        let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id: nil) }
+      context 'when sample fails internal validation for a single reason' do
+        let(:sample_taxon_id) { nil }
+        let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id:) }
         let(:invalid_sample) { create(:sample_for_accessioning_with_open_study, sample_metadata:) }
 
         it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
           expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
-          expect_accession.to raise_error(Accession::InvalidFieldsError) do |error|
+          expect_accession.to raise_error(Accession::InternalValidationError) do |error|
             expect(error.message).to eq(
               'Cannot be accessioned: ' \
-              'Sample does not have the required metadata: sample taxon.'
+              'Sample does not have the required metadata: sample taxon'
+            )
+          end
+        end
+      end
+
+      context 'when sample fails internal validation for multiple reasons' do
+        let(:sample_taxon_id) { nil }
+        let(:gender) { 'Not Applicable' }
+        let(:sample_metadata) { create(:sample_metadata_for_accessioning, sample_taxon_id:, gender:) }
+        let(:invalid_sample) { create(:sample_for_accessioning_with_managed_study, sample_metadata:) }
+
+        it 'raises an error with debug information' do # rubocop:disable RSpec/MultipleExpectations
+          expect_accession = expect { described_class.accession_sample(invalid_sample, event_user) }
+          expect_accession.to raise_error(Accession::InternalValidationError) do |error|
+            expect(error.message).to eq(
+              'Cannot be accessioned: ' \
+              'Sample does not have the required metadata: sample taxon, ' \
+              'Sample gender must be Female, Male, or Unknown'
             )
           end
         end

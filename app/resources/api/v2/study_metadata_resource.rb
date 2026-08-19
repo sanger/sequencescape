@@ -21,7 +21,7 @@ module Api
       model_name 'Study::Metadata', add_model_hint: true
 
       ###
-      # Attributes
+      # Relationships
       ###
 
       # @!attribute [r] faculty_sponsor

@@ -17,7 +17,6 @@
 # studies over time.
 class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
-  include ModelExtensions::SampleManifest
   include SampleManifest::BarcodePrinterBehaviour
   include SampleManifest::CoreBehaviour
   extend SampleManifest::StateMachine
@@ -51,7 +50,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_uploaded_document :uploaded, differentiator: 'uploaded'
   has_uploaded_document :generated, differentiator: 'generated'
 
-  attr_accessor :override, :only_first_label, :barcode_type
+  attr_accessor :overrides, :only_first_label, :barcode_type
   attr_writer :rows_per_well, :invalid_wells
 
   class_attribute :spreadsheet_offset
@@ -83,6 +82,7 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   validates :count, numericality: { only_integer: true, greater_than: 0, allow_blank: false }
   validates :asset_type, presence: true, inclusion: { in: SampleManifest::CoreBehaviour::BEHAVIOURS }
+  validate :prevent_creation_with_externally_managed_study, on: :create
 
   before_save :default_asset_type
 
@@ -260,4 +260,13 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     @qc_assay ||= QcAssay.find_or_create_by!(lot_number: "sample_manifest_id:#{id}")
   end
   # rubocop:enable Naming/MemoizedInstanceVariableName
+
+  def prevent_creation_with_externally_managed_study
+    return unless study&.ui_locked?
+
+    errors.add(
+      :study,
+      I18n.t('studies.externally_managed.sample_manifest_creation_error')
+    )
+  end
 end

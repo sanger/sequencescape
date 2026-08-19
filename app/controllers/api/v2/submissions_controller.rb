@@ -5,6 +5,9 @@ module Api
     # Provides a JSON API controller for submission
     # See: http://jsonapi-resources.com/ for JSONAPI::Resource documentation
     class SubmissionsController < JSONAPI::ResourceController
+      DEFAULT_SUBMISSION_FIELDS = %w[uuid name state created_at updated_at].freeze
+      SUBMISSION_RELATIONSHIP_FIELDS = %w[orders user].freeze
+
       # By default JSONAPI::ResourceController provides most the standard
       # behaviour, and in many cases this file may be left empty.
 
@@ -17,7 +20,8 @@ module Api
         return default if default.dig('fields', 'submissions')
 
         default['fields'] ||= {}
-        default['fields']['submissions'] = 'uuid,name,state,created_at,updated_at'
+        default['fields']['submissions'] = [DEFAULT_SUBMISSION_FIELDS + SUBMISSION_RELATIONSHIP_FIELDS].join(',')
+
         default
       end
     end

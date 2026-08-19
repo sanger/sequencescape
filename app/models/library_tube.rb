@@ -2,7 +2,6 @@
 
 class LibraryTube < Tube
   include Api::LibraryTubeIo::Extensions
-  include ModelExtensions::LibraryTube
   include Asset::SharedLibraryTubeBehaviour
 
   def self.stock_asset_type

@@ -13,7 +13,7 @@ module Api
           if tube_rack_status_factory.save
             render json: {}, status: :created
           else
-            render json: { errors: tube_rack_status_factory.errors.full_messages }, status: :unprocessable_entity
+            render json: { errors: tube_rack_status_factory.errors.full_messages }, status: :unprocessable_content
           end
         end
 

@@ -6,9 +6,3 @@ Opentrons UG200:
   sorted: 0
   lab_activity: true
   sti_type: SetDescriptorsTask
-Amp UG200:
-  name: Amp
-  workflow: Ultima UG200
-  sorted: 1
-  lab_activity: true
-  sti_type: SetDescriptorsTask

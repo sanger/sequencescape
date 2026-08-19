@@ -31,7 +31,7 @@ RSpec.describe 'Sample accession errors', :js do
   end
 
   context 'when the sample has been accessioned' do
-    let(:sample) { create(:accessioned_sample, studies: [study]) }
+    let(:sample) { create(:sample_with_accession_number, studies: [study]) }
 
     context 'when accessioning is enabled', :accessioning_enabled do
       it 'shows update link for accessioning' do

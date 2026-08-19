@@ -71,8 +71,8 @@ class SamplesController < ApplicationController
       else
         flash[:error] = 'Problems creating your new sample'
         format.html { render action: :new }
-        format.xml { render xml: @sample.errors, status: :unprocessable_entity }
-        format.json { render json: @sample.errors, status: :unprocessable_entity }
+        format.xml { render xml: @sample.errors, status: :unprocessable_content }
+        format.json { render json: @sample.errors, status: :unprocessable_content }
       end
     end
   end
@@ -142,17 +142,10 @@ class SamplesController < ApplicationController
     # @sample needs to be set before initially for use in the ensure block
     @sample = Sample.find(params[:id])
 
-    unless accessioning_enabled?
-      flash[:error] = 'Accessioning is not enabled in this environment'
-      redirect_to sample_path(@sample)
-      return
-    end
+    return accession_not_enabled unless accessioning_enabled?
+
     # TODO: Y26-026 - Enforce accessioning permissions
-    # unless permitted_to_accession?(@sample)
-    #   flash[:error] = 'Permission required to accession this sample'
-    #   redirect_to sample_path(@sample)
-    #   return
-    # end
+    # return not_permitted_to_accession unless permitted_to_accession?(@sample)
 
     # Must check if an accession number is assigned _before_ performing the accession
     accession_action = @sample.accession_number? ? :update : :create
@@ -160,18 +153,18 @@ class SamplesController < ApplicationController
     # Synchronously perform accessioning job
     Accession.accession_sample(@sample, current_user, perform_now: true)
 
-    if accession_action == :create
-      flash[:notice] = "Accession number generated: #{@sample.sample_metadata.sample_ebi_accession_number}"
-    elsif accession_action == :update
-      flash[:notice] = 'Accessioned metadata updated'
-    end
+    messages = {
+      create: "Accession number generated: #{@sample.ebi_accession_number}",
+      update: 'Accessioned metadata updated'
+    }
+    flash[:notice] = messages[accession_action]
 
     # Handle errors for both synchronous and asynchronous accessioning
   rescue Accession::InternalValidationError
-    flash[:error] = "Please fill in the required fields: #{@sample.errors.full_messages.join(', ')}"
+    flash[:error] = @sample.errors.map(&:full_message).join(', ')
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue Accession::ExternalValidationError => e
-    flash[:warning] = "No accession number was generated: #{e.message}"
+    flash[:error] = "No accession number was generated: #{e.message}"
   rescue Accession::Error => e
     flash[:error] = "Accessioning Service Failed: #{e.message}"
   rescue Faraday::Error => e
@@ -182,6 +175,17 @@ class SamplesController < ApplicationController
   end
 
   private
+
+  def accession_not_enabled
+    flash[:error] = 'Accessioning is not enabled in this environment'
+    redirect_to sample_path(@sample)
+  end
+
+  # TODO: Y26-026 - Enforce accessioning permissions
+  # def not_permitted_to_accession
+  #   flash[:error] = 'Permission required to accession this sample'
+  #   redirect_to sample_path(@sample)
+  # end
 
   # Redirect back to the referer with an anchor, or to a fallback location
   # Based closely on redirect_back_or_to

@@ -242,9 +242,7 @@ RSpec.describe TransferRequest do
         let(:merge) { false }
 
         it 'will throw a TagClash exception' do
-          expect { transfer_request.save }.to raise_error(Aliquot::TagClash) do |error|
-            expect(error.api_error_code).to eq(422)
-          end
+          expect { transfer_request.save }.to raise_error(Aliquot::TagClash)
         end
       end
     end
@@ -380,6 +378,26 @@ RSpec.describe TransferRequest do
         end
 
         it { is_expected.to eq library_request }
+      end
+    end
+  end
+
+  describe '#outer_request=' do
+    subject(:transfer_request) { build(:transfer_request, asset: source, target_asset: destination) }
+
+    context 'when request is nil' do
+      it 'sets submission_id to nil' do
+        transfer_request.outer_request = nil
+        expect(transfer_request.submission_id).to be_nil
+      end
+    end
+
+    context 'when request is present' do
+      let(:library_request) { create(:library_request, asset: source) }
+
+      it 'sets submission_id to the request submission_id' do
+        transfer_request.outer_request = library_request
+        expect(transfer_request.submission_id).to eq(library_request.submission_id)
       end
     end
   end

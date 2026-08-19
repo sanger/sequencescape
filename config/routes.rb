@@ -23,9 +23,15 @@ Rails.application.routes.draw do
   get 'authentication/open'
   get 'authentication/restricted'
 
+  # Content Security Policy report endpoint
+  post '/csp-reports' => 'content_security_policy_reports#create', :as => :csp_reports
+
   # Feature flags
   user_is_admin = ->(req) { User.find_by(id: req.session[:user])&.administrator? }
   mount Flipper::UI.app => '/flipper', :constraints => user_is_admin
+
+  # Yard documentation
+  # YARD docs are served from public/doc/
 
   # Search
   resources :searches
@@ -33,9 +39,6 @@ Rails.application.routes.draw do
 
   get 'advanced_search' => 'advanced_search#index'
   post 'advanced_search/search' => 'advanced_search#search'
-
-  # API v1
-  mount Api::RootService.new => '/api/1' unless ENV['DISABLE_V1_API']
 
   # @todo Update v2 resources exceptions to reflect resources (e.g., `, except: %i[update]` for `lot`),
   #   and more. Include all actions in the except block for immutable resources.
@@ -124,6 +127,10 @@ Rails.application.routes.draw do
 
       namespace :bioscan do
         resources :export_pool_xp_to_traction, only: [:create]
+      end
+
+      namespace :sapio do
+        resources :studies, only: %i[index show create]
       end
     end
   end
@@ -365,7 +372,10 @@ Rails.application.routes.draw do
     resources :accessioning_tools, only: :index do
       collection do
         get :bulk_accession_preview
-        put :bulk_accession
+        put :bulk_accession_by_date
+        put :bulk_accession_by_name
+        put :clear_accessions_by_name
+        put :view_sample_accessions
       end
     end
     resources :custom_texts

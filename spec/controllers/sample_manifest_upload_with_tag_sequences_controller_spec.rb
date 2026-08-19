@@ -141,4 +141,52 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
       end
     end
   end
+
+  describe '#overrides' do
+    subject(:overrides) { controller.overrides }
+
+    before do
+      allow(controller).to receive(:params).and_return(ActionController::Parameters.new(request_params))
+    end
+
+    context 'when sample overrides are not enabled' do
+      let(:request_params) { {} }
+
+      it 'returns samples as false with no excluded fields' do
+        expect(overrides).to eq({ samples: false, exclude_fields: [] })
+      end
+    end
+
+    context 'when both field overwrites are selected' do
+      let(:request_params) { { override_samples: '1', overwrite_volume: '1', overwrite_concentration: '1' } }
+
+      it 'excludes no fields' do
+        expect(overrides).to eq({ samples: true, exclude_fields: [] })
+      end
+    end
+
+    context 'when only volume overwrite is selected' do
+      let(:request_params) { { override_samples: '1', overwrite_volume: '1' } }
+
+      it 'excludes concentration only' do
+        expect(overrides).to eq({ samples: true, exclude_fields: [:concentration] })
+      end
+    end
+
+    context 'when only concentration overwrite is selected' do
+      let(:request_params) { { override_samples: '1', overwrite_concentration: '1' } }
+
+      it 'excludes volume only' do
+        expect(overrides).to eq({ samples: true, exclude_fields: [:volume] })
+      end
+    end
+
+    context 'when sample overrides are enabled and no field overwrites are selected' do
+      let(:request_params) { { override_samples: '1' } }
+
+      it 'excludes volume and concentration' do
+        expect(overrides).to eq({ samples: true, exclude_fields: %i[volume concentration] })
+      end
+    end
+  end
 end
