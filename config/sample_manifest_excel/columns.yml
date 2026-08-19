@@ -45,6 +45,29 @@ i7:
       error: "i7 cannot be blank and cannot exceed 30 characters"
   conditional_formattings:
     empty_warning_cell:
+# This is only used for the Kinnex manifest as Kinnex primer oligos may be up to 60 characters long
+# The i7 30 length validation is mainly there to stop copy paste errors and because the warehouse limits flowcell tags to 30
+# But this doesnt apply to kinnex tags/primers which won't reach the flowcell tables
+kinnex_i7:
+  heading: i7 TAG SEQUENCE
+  updates: i7
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :between
+      formula1: "1"
+      formula2: "255"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      promptTitle: "i7"
+      prompt: "Input i7."
+      errorStyle: :warning
+      errorTitle: "i7"
+      error: "i7 cannot be blank and cannot exceed 255 characters"
+  conditional_formattings:
+    empty_warning_cell:
 i5:
   heading: i5 TAG SEQUENCE
   unlocked: true

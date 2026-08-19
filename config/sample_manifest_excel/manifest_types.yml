@@ -894,7 +894,7 @@ kinnex_compound_sample_plate:
     - :sanger_sample_id
     - :supplier_name
     - :retention_instruction
-    - :i7
+    - :kinnex_i7
     - :library_type_required
     - :donor_id
     - :date_of_sample_collection
@@ -906,4 +906,3 @@ kinnex_compound_sample_plate:
     - :sample_taxon_id
     - :sample_common_name
     - :sample_description
-
