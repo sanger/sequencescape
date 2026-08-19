@@ -45,7 +45,7 @@ class Admin::PlatePurposesController < ApplicationController
         format.xml { render xml: @plate_purpose, status: :created, location: @plate_purpose }
       else
         format.html { render action: 'new' }
-        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_entity }
+        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_content }
       end
     end
   end
@@ -58,7 +58,7 @@ class Admin::PlatePurposesController < ApplicationController
         format.xml { head :ok }
       else
         format.html { render action: 'edit' }
-        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_entity }
+        format.xml { render xml: @plate_purpose.errors, status: :unprocessable_content }
       end
     end
   end

@@ -4,8 +4,8 @@ FactoryBot.define do
   factory :sample do
     name { generate(:sample_name) }
 
-    # Accessioning is triggered on sample saving, unless processing_manifest is true
-    before(:create) { Sample::Current.processing_manifest = true }
+    # Accessioning is triggered on sample saving, unless temporary_accessioning_pause is true
+    before(:create) { Sample::Current.temporary_accessioning_pause = true }
 
     factory :sample_with_well do
       sanger_sample_id { generate(:sanger_sample_id) }
@@ -22,7 +22,7 @@ FactoryBot.define do
       sanger_sample_id { generate(:sanger_sample_id) }
     end
 
-    factory :accessioned_sample do
+    factory :sample_with_accession_number do
       sample_metadata factory: %i[sample_metadata_with_accession_number]
     end
   end

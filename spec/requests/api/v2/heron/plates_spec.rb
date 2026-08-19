@@ -37,7 +37,7 @@ describe 'Plates Heron API', :heron, :heron_events, :lighthouse, with: :api_v2 d
     shared_examples_for 'a failed plate creation' do
       it 'returns 422' do
         request
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'does not create a plate' do

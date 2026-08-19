@@ -45,7 +45,7 @@ RSpec.describe SamplesHelper do
     subject { helper.samples_not_accessioned(samples) }
 
     context 'when all samples are accessioned' do
-      let(:samples) { build_list(:accessioned_sample, 3) }
+      let(:samples) { build_list(:sample_with_accession_number, 3) }
 
       it { is_expected.to eq('All samples accessioned') }
     end
@@ -53,7 +53,7 @@ RSpec.describe SamplesHelper do
     context 'when some samples are not accessioned' do
       let(:samples) do
         [
-          build(:accessioned_sample),
+          build(:sample_with_accession_number),
           build(:sample),
           build(:sample)
         ]
@@ -64,8 +64,8 @@ RSpec.describe SamplesHelper do
       context 'when only one sample is not accessioned' do
         let(:samples) do
           [
-            build(:accessioned_sample),
-            build(:accessioned_sample),
+            build(:sample_with_accession_number),
+            build(:sample_with_accession_number),
             build(:sample)
           ]
         end

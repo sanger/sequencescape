@@ -214,9 +214,9 @@ describe 'Sapio Studies API', with: :api_v2 do
         21.times { |n| create(:study, name: "#{search_term} Study #{n}") }
       end
 
-      it 'returns a 422 Unprocessable Entity status code' do
+      it 'returns a 422 Unprocessable Content status code' do
         api_get "#{base_endpoint}?filter[name]=#{search_term}"
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
@@ -268,21 +268,21 @@ describe 'Sapio Studies API', with: :api_v2 do
       it 'ignores non-positive maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=0"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
       it 'ignores negative maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=-5"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
       it 'ignores non-integer maxResults values', :aggregate_failures do
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=abc"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
 
@@ -290,7 +290,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         # See Api::V2::Sapio::StudiesController::RESULTS_RANGE -> 1..1000
         api_get "#{base_endpoint}?filter[name]=#{search_term}&maxResults=2000"
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
         expect(json['errors'].first['code']).to eq('RESULT_SET_TOO_LARGE')
       end
     end
@@ -625,6 +625,150 @@ describe 'Sapio Studies API', with: :api_v2 do
         api_get "#{base_endpoint}/#{study.id}"
         expect(response).to have_http_status(:success)
         expect(json['data']['attributes']['name']).to eq('Study A')
+      end
+    end
+  end
+
+  describe 'POST /api/v2/sapio/studies' do
+    let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+    let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+    let(:regular_app) { create(:api_application) }
+
+    let(:valid_payload) do
+      {
+        study: {
+          name: 'Sapio Created Study'
+        }
+      }
+    end
+
+    context 'when the externally_managed study restrictions feature flag is disabled' do
+      before { Flipper.disable(:y26_172_enable_externally_managed_study_restrictions) }
+
+      it 'returns a 404 Not Found response' do
+        api_post base_endpoint, valid_payload, headers: integration_hub_headers
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not create a study' do
+        expect { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+          .not_to change(Study, :count)
+      end
+    end
+
+    context 'when the externally_managed study restrictions feature flag is enabled',
+            :externally_managed_restrictions_enabled do
+      context 'without an API key' do
+        it 'returns 403 Forbidden' do
+          api_post base_endpoint, valid_payload
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it 'returns an Integration Hub API key required error message' do
+          api_post base_endpoint, valid_payload
+          expect(json.dig('errors', 0, 'detail')).to eq('Integration Hub API key required.')
+        end
+      end
+
+      context 'with a non-integration-hub API key' do
+        it 'returns 403 Forbidden' do
+          api_post base_endpoint, valid_payload, headers: { 'X-Sequencescape-Client-Id': regular_app.key }
+          expect(response).to have_http_status(:forbidden)
+        end
+
+        it 'returns an Integration Hub API key required error message' do
+          api_post base_endpoint, valid_payload, headers: { 'X-Sequencescape-Client-Id': regular_app.key }
+          expect(json.dig('errors', 0, 'detail')).to eq('Integration Hub API key required.')
+        end
+      end
+
+      context 'with an integration hub API key and a valid payload' do
+        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'creates a study in the database' do
+          expect(Study.find_by(name: 'Sapio Created Study')).not_to be_nil
+        end
+
+        it 'returns the study id' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'id')).to eq(study.id)
+        end
+
+        it 'returns the study uuid' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
+        end
+
+        it 'returns the study name' do
+          expect(json.dig('data', 'attributes', 'name')).to eq('Sapio Created Study')
+        end
+
+        it 'returns a self link referencing the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'links', 'self')).to include(study.id.to_s)
+        end
+
+        it 'sets externally_managed to true on the created study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.externally_managed).to be(true)
+        end
+      end
+
+      context 'with an integration hub API key and a missing study name' do
+        let(:no_name_payload) { { study: { uuid: '12345678-1234-5678-9abc-123456789012' } } }
+
+        it 'returns 422 Unprocessable Entity' do
+          api_post base_endpoint, no_name_payload, headers: integration_hub_headers
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'returns validation error messages' do
+          api_post base_endpoint, no_name_payload, headers: integration_hub_headers
+          expect(json['errors']).not_to be_empty
+        end
+
+        it 'does not create a study' do
+          expect { api_post base_endpoint, no_name_payload, headers: integration_hub_headers }
+            .not_to change(Study, :count)
+        end
+      end
+
+      context 'with an integration hub API key and a supplied uuid' do
+        let(:supplied_uuid) { '12345678-1234-5678-9abc-123456789012' }
+        let(:uuid_payload) { { study: valid_payload[:study].merge(uuid: supplied_uuid) } }
+
+        before { api_post base_endpoint, uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 201 Created' do
+          expect(response).to have_http_status(:created)
+        end
+
+        it 'uses the supplied UUID in the response' do
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(supplied_uuid)
+        end
+
+        it 'stores the supplied UUID on the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.uuid).to eq(supplied_uuid)
+        end
+      end
+
+      context 'with an integration hub API key and no uuid in payload' do
+        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+
+        it 'auto-generates a UUID for the study' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(study.uuid).to be_present
+        end
+
+        it 'returns the auto-generated UUID in the response' do
+          study = Study.find_by(name: 'Sapio Created Study')
+          expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
+        end
       end
     end
   end
