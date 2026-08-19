@@ -644,6 +644,9 @@ GEM
       unicode-emoji (~> 4.1)
     unicode-emoji (4.2.0)
     uniform_notifier (1.18.0)
+    unsort_db_schema_columns (0.1.0)
+      activerecord (>= 8.0, < 9.0)
+      railties (>= 8.0, < 9.0)
     uri (1.1.1)
     useragent (0.16.11)
     uuidtools (3.0.0)
@@ -788,6 +791,7 @@ DEPENDENCIES
   test-prof
   timecop
   traceroute
+  unsort_db_schema_columns
   uuidtools
   vite_rails
   webmock

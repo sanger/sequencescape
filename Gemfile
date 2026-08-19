@@ -36,6 +36,7 @@ group :default do
   gem 'record_loader', git: 'https://github.com/sanger/record_loader', tag: 'v1.1.0'
 
   gem 'mysql2', platforms: :mri
+  gem 'unsort_db_schema_columns' # revert Rails 8.1 behaviour of sorting columns in the db/schema.rb file
   gem 'will_paginate'
 
   gem 'carrierwave'
