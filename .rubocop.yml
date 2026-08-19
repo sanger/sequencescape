@@ -27,6 +27,7 @@ AllCops:
   NewCops: enable
   Exclude:
   - bin/*
+  - config/ci.rb
   - config/initializers/content_security_policy.rb
   - db/schema.rb
   - db/views_schema.rb
