@@ -7,7 +7,7 @@ group :default do
   gem 'concurrent-ruby'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rails', '~> 8.1.3'
+  gem 'rails'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
@@ -70,8 +70,7 @@ group :default do
   # for Sanger/PSD projects.
   # Version 0.1.1 was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
-  # This version is tested and compatible with Rails 7.1/7.2 and Ruby 3.2/3.3.
-  gem 'sanger-jsonapi-resources', '~> 0.1.2'
+  gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'sh51/rails-8-1-fix'
 
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby
