@@ -355,12 +355,12 @@ RSpec.describe CompoundAliquot do
     let(:tag2) { create(:tag) }
     let(:request) { instance_double(Request, initial_study: nil, initial_project: nil, initial_project_id: nil) }
     let(:aliquot1) do
-      build(:tagged_aliquot, tag: tag, tag2: tag2, study: study, project: project, library_type: 'Standard',
-                             tag_depth: 1)
+      create(:tagged_aliquot, tag: tag, tag2: tag2, study: study, project: project, library_type: 'Standard',
+                              tag_depth: 1)
     end
     let(:aliquot2) do
-      build(:tagged_aliquot, tag: tag, tag2: tag2, study: study, project: project, library_type: 'Standard',
-                             tag_depth: 2)
+      create(:tagged_aliquot, tag: tag, tag2: tag2, study: study, project: project, library_type: 'Standard',
+                              tag_depth: 2)
     end
     let(:compound_aliquot) { build(:compound_aliquot, request: request, source_aliquots: [aliquot1, aliquot2]) }
 
