@@ -16,10 +16,10 @@ GIT
 
 GIT
   remote: https://github.com/sanger/jsonapi-resources.git
-  revision: fe2a6cbe458ccb5a78073e0edf4ed45563f9143e
+  revision: 8efa5642a835fc9d6f1fb18ad3f7fd956d2f423c
   branch: sh51/rails-8-1-fix
   specs:
-    sanger-jsonapi-resources (0.1.3)
+    sanger-jsonapi-resources (0.1.4)
       activerecord (>= 7.2, < 9.0)
       concurrent-ruby
       csv
