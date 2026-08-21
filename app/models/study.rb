@@ -188,21 +188,23 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Validations
   validates :name, uniqueness: { case_sensitive: false }, presence: true, latin1: true
   validates :name, length: { maximum: 200 }
-  validates :abbreviation,
-            format: {
-              with: /\A[\w_-]+\z/i,
-              allow_blank: false,
-              message: 'cannot contain spaces or be blank'
-            }
-  validate :validate_ethically_approved, unless: :externally_managed?
-  # add validation when create or update sapio study
-  validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
-  validate :prevent_updates_when_externally_managed, on: :update
 
-  validates :reference_genome_id, presence: { unless: -> { externally_managed? } }
-  validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }, unless: -> {
-    externally_managed?
-  }
+  with_options(unless: -> { externally_managed? }) do
+    validates :abbreviation,
+              format: {
+                with: /\A[\w_-]+\z/i,
+                allow_blank: false,
+                message: 'cannot contain spaces or be blank'
+              }
+    validate :validate_ethically_approved
+
+    validates :reference_genome_id, presence: true
+    validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }
+  end
+
+  # add validation when create or update sapio study
+  validate :prevent_updates_when_externally_managed, on: :update
+  validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
 
   # Callbacks
   before_validation :set_default_ethical_approval
@@ -238,16 +240,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     belongs_to :program
     # TODO: This is stored at study and study_metadata level, we should remove it from one of them
     belongs_to :reference_genome
-
-    # Only enforce presence of these associations if the study is not externally managed
-    validates :study_type_id, presence: { unless: -> { externally_managed? } }
-    validates :data_release_study_type_id, presence: { unless: -> { externally_managed? } }
-    validates :faculty_sponsor, presence: { unless: -> { externally_managed? } }
-    validates :program_id, presence: { unless: -> { externally_managed? } }
-    validates :reference_genome_id, presence: { unless: -> { externally_managed? } }
-    validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }, unless: -> {
-      externally_managed?
-    }
 
     association(:study_type, :name, required: true)
     association(:data_release_study_type, :name, required: true)
@@ -354,44 +346,52 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     custom_attribute(:data_deletion_period)
     custom_attribute(:contaminated_human_data_access_group)
 
-    # These fields are warehoused, so need to match the encoding restrictions there
-    # This excludes supplementary characters, which include emoji and rare kanji
-    validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true, unless: -> {
-      externally_managed?
-    }
+    # Only enforce validations when the study is not externally managed.
+    with_options(unless: -> { externally_managed? }) do
+      # Association validations
+      validates :study_type_id, presence: true
+      validates :data_release_study_type_id, presence: true
+      validates :faculty_sponsor, presence: true
+      validates :program_id, presence: true
+      validates :reference_genome_id, presence: true
+      validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }
 
-    validates :data_release_delay_other_comment, length: { maximum: 255 }, unless: -> { externally_managed? }
+      # These fields are warehoused, so need to match the encoding restrictions there
+      # This excludes supplementary characters, which include emoji and rare kanji
+      validates :study_abstract, :study_study_title, :study_description, :s3_email_list, utf8mb3: true
 
-    # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
-    validates :study_project_id,
-              :ega_dac_accession_number,
-              :ega_policy_accession_number,
-              :study_ebi_accession_number,
-              :array_express_accession_number,
-              :hmdmc_approval_number,
-              format: {
-                with: /\A[[:ascii:]]+\z/,
-                message: 'only allows ASCII',
-                allow_blank: true
-              }, unless: -> { externally_managed? }
+      validates :data_release_delay_other_comment, length: { maximum: 255 }
 
-    validates :ebi_library_strategy, presence: true, on: :create, unless: -> { externally_managed? }
-    validates :ebi_library_source, presence: true, on: :create, unless: -> { externally_managed? }
-    validates :ebi_library_selection, presence: true, on: :create, unless: -> { externally_managed? }
+      # These fields are restricted further as they aren't expected to ever contain anything more than ASCII
+      validates :study_project_id,
+                :ega_dac_accession_number,
+                :ega_policy_accession_number,
+                :study_ebi_accession_number,
+                :array_express_accession_number,
+                :hmdmc_approval_number,
+                format: {
+                  with: /\A[[:ascii:]]+\z/,
+                  message: 'only allows ASCII',
+                  allow_blank: true
+                }
 
-    validates :ebi_library_strategy,
-              inclusion: {
-                in: EBI_LIBRARY_STRATEGY_OPTIONS
-              },
-              if: -> { ebi_library_strategy_changed? && !externally_managed? }
-    validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }, if: -> {
-      ebi_library_source_changed? && !externally_managed?
-    }
-    validates :ebi_library_selection,
-              inclusion: {
-                in: EBI_LIBRARY_SELECTION_OPTIONS
-              },
-              if: -> { ebi_library_selection_changed? && !externally_managed? }
+      validates :ebi_library_strategy, presence: true, on: :create
+      validates :ebi_library_source, presence: true, on: :create
+      validates :ebi_library_selection, presence: true, on: :create
+      validates :ebi_library_strategy,
+                inclusion: {
+                  in: EBI_LIBRARY_STRATEGY_OPTIONS
+                },
+                if: -> { ebi_library_strategy_changed? }
+      validates :ebi_library_source, inclusion: { in: EBI_LIBRARY_SOURCE_OPTIONS }, if: -> {
+        ebi_library_source_changed?
+      }
+      validates :ebi_library_selection,
+                inclusion: {
+                  in: EBI_LIBRARY_SELECTION_OPTIONS
+                },
+                if: -> { ebi_library_selection_changed? }
+    end
 
     before_validation do |record|
       record.reference_genome_id = 1 if record.reference_genome_id.blank?
@@ -698,7 +698,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # unless the request is coming from Integration Hub
   def prevent_updates_when_externally_managed
     return unless externally_managed_restrictions_enabled?
-    return unless externally_managed?
 
     return if skip_externally_managed_restriction
 
