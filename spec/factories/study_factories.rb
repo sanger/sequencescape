@@ -37,6 +37,18 @@ FactoryBot.define do
     factory(:study_with_manager) { after(:build) { |study| create(:manager, authorizable: study) } }
   end
 
+  factory :sapio_study, parent: :study do
+    externally_managed { true }
+
+    after(:build) do |study|
+      study.skip_externally_managed_restriction = true
+    end
+
+    after(:create) do |study|
+      study.skip_externally_managed_restriction = nil
+    end
+  end
+
   factory(:managed_study, parent: :study) do
     transient { accession_number { nil } }
 

@@ -13,6 +13,44 @@ RSpec.describe SampleCompoundComponent, :cardinal do
       component_sample.reload
     end
 
+    context 'when bulk_validate_component_samples' do
+      subject(:errors) { described_class.bulk_validate_component_samples(component_samples) }
+
+      context 'when none of the component samples are already compound samples' do
+        let(:component_samples) { create_list(:sample, 3) }
+
+        it 'returns no errors' do
+          expect(errors).to be_empty
+        end
+      end
+
+      context 'when one or more component samples are already compound samples' do
+        let(:component_sample1) { create(:sample) }
+        let(:component_sample2) { create(:sample) }
+        let(:component_samples) { [component_sample1, component_sample2] }
+
+        before do
+          create(:sample_compound_component, compound_sample: component_sample1,
+                                             component_sample: create(:sample))
+          create(:sample_compound_component, compound_sample: component_sample2,
+                                             component_sample: create(:sample))
+        end
+
+        it 'returns a single error listing all invalid sample ids' do
+          expect(errors.first).to include("Component samples #{component_sample1.id}, " \
+                                          "#{component_sample2.id} cannot have further component samples.")
+        end
+      end
+
+      context 'when component_samples is empty' do
+        let(:component_samples) { [] }
+
+        it 'returns no errors' do
+          expect(errors).to be_empty
+        end
+      end
+    end
+
     context 'when another sample becomes a compound sample of our compound sample' do
       it 'fails to validate when the new sample adopts our compound sample as a component' do
         expect { another_sample.component_samples << compound_sample }.to raise_error(

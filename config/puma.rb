@@ -7,7 +7,8 @@
 #
 # You can control the number of workers using ENV["WEB_CONCURRENCY"]. You
 # should only set this value when you want to run 2 or more workers. The
-# default is already 1.
+# default is already 1. You can set it to `auto` to automatically start a worker
+# for each available processor.
 #
 # The ideal number of threads per worker depends both on how much time the
 # application spends waiting for IO operations and on how much you wish to
@@ -30,9 +31,6 @@ threads threads_count, threads_count
 # Specifies the `port` that Puma will listen on to receive requests; default is 3000.
 port ENV.fetch("PORT", 3000)
 
-# Specifies the `environment` that Puma will run in.
-environment ENV.fetch('RAILS_ENV', 'development')
-
 # The `before_fork` and `before_worker_boot` blocks have been disabled as
 # are only used when using clustered mode (i.e. workers > 1) and we are
 # currently only using a single worker.
@@ -47,7 +45,7 @@ environment ENV.fetch('RAILS_ENV', 'development')
 # Allow puma to be restarted by `bin/rails restart` command.
 plugin :tmp_restart
 
-# Run the Solid Queue supervisor inside of Puma for single-server deployments
+# Run the Solid Queue supervisor inside of Puma for single-server deployments.
 plugin :solid_queue if ENV["SOLID_QUEUE_IN_PUMA"]
 
 # Specify the PID file. Defaults to tmp/pids/server.pid in development.
