@@ -993,10 +993,16 @@ RSpec.describe Study do
   end
 
   context 'when a study is externally managed' do
-    describe '#create' do
-      it 'is only requires the study name' do
+    describe '#validation' do
+      it 'is valid with only the study name' do
         study = described_class.new(name: 'Externally Managed Study', externally_managed: true)
         expect(study.save).to be true
+      end
+
+      it 'is invalid with only the externally managed flag' do
+        study = described_class.new(externally_managed: true)
+        expect(study.save).to be false
+        expect(study.errors[:name]).to include("can't be blank")
       end
     end
 
