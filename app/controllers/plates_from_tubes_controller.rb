@@ -34,14 +34,13 @@ class PlatesFromTubesController < ApplicationController
 
   def create
     barcode_printer = BarcodePrinter.find(params[:plates_from_tubes][:barcode_printer])
-    scanned_user = User.find_with_barcode_or_swipecard_code(params[:plates_from_tubes][:user_barcode])
-    if scanned_user.nil?
-      respond_to do |format|
-        handle_invalid_user
-        format.html { render(VIEW_PATH) }
-      end
-      return
-    end
+
+    user_barcode = params[:plates_from_tubes][:user_barcode].to_s.strip
+    return handle_invalid_user if user_barcode.blank?
+
+    scanned_user = User.find_with_barcode_or_swipecard_code(user_barcode)
+    return handle_invalid_user if scanned_user.nil?
+
     transfer_tubes_to_plate(scanned_user, barcode_printer)
   end
 
@@ -149,7 +148,7 @@ class PlatesFromTubesController < ApplicationController
     duplicate_tubes = find_duplicate_tubes(source_tube_barcodes)
     if duplicate_tubes.present?
       respond_to do |format|
-        handle_duplicate_tubes(duplicate_tubes)
+        duplicate_tubes_error_flash(duplicate_tubes)
         format.html { render(VIEW_PATH) }
       end
       return false
@@ -196,10 +195,14 @@ class PlatesFromTubesController < ApplicationController
   end
 
   def handle_invalid_user
-    flash[:error] = 'Please enter a valid user barcode'
+    respond_to do |format|
+      flash[:error] = 'Please enter a valid user barcode'
+      format.html { render(VIEW_PATH) }
+    end
+    nil
   end
 
-  def handle_duplicate_tubes(duplicate_tubes)
+  def duplicate_tubes_error_flash(duplicate_tubes)
     flash[:error] = "Duplicate tubes found: #{duplicate_tubes.join(', ')}"
   end
   # rubocop: enable Rails/ActionControllerFlashBeforeRender
