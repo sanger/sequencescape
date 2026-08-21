@@ -152,6 +152,7 @@ class SamplesController < ApplicationController
 
     # Synchronously perform accessioning job
     Accession.accession_sample(@sample, current_user, perform_now: true)
+    @sample.reload
 
     messages = {
       create: "Accession number generated: #{@sample.ebi_accession_number}",
@@ -160,8 +161,8 @@ class SamplesController < ApplicationController
     flash[:notice] = messages[accession_action]
 
     # Handle errors for both synchronous and asynchronous accessioning
-  rescue Accession::InternalValidationError
-    flash[:error] = @sample.errors.map(&:full_message).join(', ')
+  rescue Accession::InternalValidationError => e
+    flash[:error] = e.message.to_s
     redirect_to(edit_sample_path(@sample)) # send the user to edit the sample
   rescue Accession::ExternalValidationError => e
     flash[:error] = "No accession number was generated: #{e.message}"
