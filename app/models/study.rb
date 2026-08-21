@@ -46,7 +46,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include DataRelease
   include Commentable
   include SharedBehaviour::Named
-  include ReferenceGenome::Associations
   include SampleManifest::Associations
   include Role::Authorized
 
@@ -156,6 +155,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   role_relation(:collaborated_with, 'collaborator')
 
   belongs_to :user
+  # TODO: This is stored at study and study_metadata level, we should remove it from one of them
+  belongs_to :reference_genome
 
   has_many :data_access_contacts, -> { where(roles: { name: 'Data Access Contact' }) }, through: :roles, source: :users
   has_many :followers, -> { where(roles: { name: 'follower' }) }, through: :roles, source: :users
@@ -198,6 +199,11 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
   validate :prevent_updates_when_externally_managed, on: :update
 
+  validates :reference_genome_id, presence: { unless: -> { externally_managed? } }
+  validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }, unless: -> {
+    externally_managed?
+  }
+
   # Callbacks
   before_validation :set_default_ethical_approval
   after_touch :rebroadcast
@@ -225,11 +231,23 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   squishify :name
 
   has_metadata do
-    include StudyType::Associations
-    include DataReleaseStudyType::Associations
-    include ReferenceGenome::Associations
-    include FacultySponsor::Associations
-    include Program::Associations
+    # Associations
+    belongs_to :study_type
+    belongs_to :data_release_study_type
+    belongs_to :faculty_sponsor
+    belongs_to :program
+    # TODO: This is stored at study and study_metadata level, we should remove it from one of them
+    belongs_to :reference_genome
+
+    # Only enforce presence of these associations if the study is not externally managed
+    validates :study_type_id, presence: { unless: -> { externally_managed? } }
+    validates :data_release_study_type_id, presence: { unless: -> { externally_managed? } }
+    validates :faculty_sponsor, presence: { unless: -> { externally_managed? } }
+    validates :program_id, presence: { unless: -> { externally_managed? } }
+    validates :reference_genome_id, presence: { unless: -> { externally_managed? } }
+    validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }, unless: -> {
+      externally_managed?
+    }
 
     association(:study_type, :name, required: true)
     association(:data_release_study_type, :name, required: true)

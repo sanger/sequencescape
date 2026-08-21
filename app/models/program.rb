@@ -13,11 +13,4 @@ class Program < ApplicationRecord
 
   has_many :study_metadata, class_name: 'Study::Metadata'
   has_many :studies, through: :study_metadata
-
-  module Associations
-    def self.included(base)
-      base.validates_presence_of :program_id, unless: -> { externally_managed? }
-      base.belongs_to :program
-    end
-  end
 end
