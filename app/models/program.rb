@@ -16,7 +16,7 @@ class Program < ApplicationRecord
 
   module Associations
     def self.included(base)
-      base.validates_presence_of :program_id
+      base.validates_presence_of :program_id, unless: -> { externally_managed? }
       base.belongs_to :program
     end
   end

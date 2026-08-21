@@ -21,7 +21,7 @@ class FacultySponsor < ApplicationRecord
 
   module Associations
     def self.included(base)
-      base.validates_presence_of :faculty_sponsor
+      base.validates_presence_of :faculty_sponsor, unless: -> { externally_managed? }
       base.belongs_to :faculty_sponsor
     end
   end

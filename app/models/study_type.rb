@@ -45,7 +45,7 @@ class StudyType < ApplicationRecord
 
   module Associations
     def self.included(base)
-      base.validates_presence_of :study_type_id
+      base.validates_presence_of :study_type_id, unless: -> { externally_managed? }
       base.belongs_to :study_type
     end
   end

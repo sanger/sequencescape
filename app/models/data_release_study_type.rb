@@ -51,7 +51,7 @@ class DataReleaseStudyType < ApplicationRecord
 
   module Associations
     def self.included(base)
-      base.validates_presence_of :data_release_study_type_id
+      base.validates_presence_of :data_release_study_type_id, unless: -> { externally_managed? }
       base.belongs_to :data_release_study_type
     end
   end
