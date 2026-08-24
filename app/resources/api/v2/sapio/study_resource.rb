@@ -40,6 +40,9 @@ module Api
       class StudyResource < Api::V2::BaseResource
         include Api::V2::Sapio::StudySearchQuery
 
+        before_save :set_externally_managed_flags
+        around_create :set_external_uuid
+
         ##
         # Filters
         #
@@ -103,6 +106,36 @@ module Api
         # @!attribute [r] enforce_accessioning
         #   @return [Boolean] Whether accessioning enforcement is enabled.
         attribute :enforce_accessioning
+
+        private
+
+        # Sets the model flags required for Sapio-managed studies before saving.
+        #
+        # The lazy_metadata flag is set to true to avoid triggering the creation of a StudyMetadata record
+        # and it's associated validations.
+        #
+        # @return [void]
+        def set_externally_managed_flags
+          @model.externally_managed = true
+          @model.skip_externally_managed_restriction = true
+          @model.lazy_metadata = true
+        end
+
+        # Sets the external UUID for the study if provided in the context.
+        #
+        # Prevents the default UUID generation on creation and then links the UUID to the study once saved.
+        #
+        # param [Proc] yield The block to execute for creating the study.
+        #
+        # @return [void]
+        def set_external_uuid
+          uuid = context[:uuid]
+          return yield if uuid.blank?
+
+          @model.lazy_uuid_generation = true
+          yield
+          @model.create_uuid_object!(external_id: uuid)
+        end
       end
     end
   end

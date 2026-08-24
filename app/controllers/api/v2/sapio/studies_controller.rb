@@ -69,55 +69,10 @@ module Api
         #
         # @return [void]
         def create
-          study = build_sapio_study
-          if study.save
-            assign_supplied_uuid(study)
-            render_study_created(study)
-          else
-            render json: { errors: study.errors.full_messages }, status: :unprocessable_content
-          end
+          super
         end
 
         private
-
-        # Builds and configures a new Study instance from the Sapio payload.
-        def build_sapio_study
-          Study.new(study_params).tap do |study|
-            study.externally_managed = true
-            study.skip_externally_managed_restriction = true
-            study.lazy_metadata = true
-            study.lazy_uuid_generation = true if sapio_study_payload[:uuid].present?
-          end
-        end
-
-        # Assigns the UUID supplied by Integration Hub, skipping auto-generation.
-        # Only runs if a UUID was included in the payload.
-        def assign_supplied_uuid(study)
-          supplied_uuid = sapio_study_payload[:uuid]
-          return if supplied_uuid.blank?
-
-          study.create_uuid_object!(external_id: supplied_uuid)
-        end
-
-        # Renders the 201 Created response for a successfully saved study.
-        def render_study_created(study)
-          render json: {
-            data: {
-              attributes: { id: study.id, uuid: study.uuid, name: study.name },
-              links: { self: api_v2_sapio_study_url(study) }
-            }
-          }, status: :created
-        end
-
-        # Builds the top-level attributes hash passed to +Study.new+.
-        def study_params
-          { name: sapio_study_payload[:name] }
-        end
-
-        # Permits and memoizes the Sapio study payload parameters.
-        def sapio_study_payload
-          @sapio_study_payload ||= params.expect(study: %i[name uuid])
-        end
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
         #
