@@ -636,8 +636,11 @@ describe 'Sapio Studies API', with: :api_v2 do
 
     let(:valid_payload) do
       {
-        study: {
-          name: 'Sapio Created Study'
+        data: {
+          type: 'studies',
+          attributes: {
+            name: 'Sapio Created Study'
+          }
         }
       }
     end
