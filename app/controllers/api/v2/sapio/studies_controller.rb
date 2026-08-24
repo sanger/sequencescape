@@ -17,6 +17,8 @@ module Api
         # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
         RESULTS_RANGE = 1..1000
 
+        before_action :check_sapio_studies_endpoint_enabled
+        before_action :check_externally_managed_study_restrictions_enabled, only: [:create]
         # Before create study, authorize requests from Integration Hub API keys only.
         before_action :authorize_integration_hub!, only: [:create]
 
@@ -24,17 +26,7 @@ module Api
         #
         # @return [void]
         def index
-          return render_feature_flag_disabled unless feature_flag_enabled?
           return render_missing_search_param unless search_param_present?
-
-          super
-        end
-
-        # Displays details for a single study resource.
-        #
-        # @return [void]
-        def show
-          return render_feature_flag_disabled unless feature_flag_enabled?
 
           super
         end
@@ -77,8 +69,6 @@ module Api
         #
         # @return [void]
         def create
-          return render_feature_flag_disabled unless externally_managed_study_restrictions_enabled?
-
           study = build_sapio_study
           if study.save
             assign_supplied_uuid(study)
@@ -146,16 +136,18 @@ module Api
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is enabled
-        def feature_flag_enabled?
-          Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        # @return [void] Renders a standardized JSON:API error if the +y26_170_sapio_studies_endpoint+ feature flag
+        # is disabled.
+        def check_sapio_studies_endpoint_enabled
+          render_feature_disabled unless Flipper.enabled?(:y26_170_sapio_studies_endpoint)
         end
 
         # Checks whether the Sapio managed study restrictions feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_172_enable_externally_managed_study_restrictions+ flag is enabled
-        def externally_managed_study_restrictions_enabled?
-          Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
+        # @return [void] Renders a standardized JSON:API error if the
+        # +y26_172_enable_externally_managed_study_restrictions+ feature flag is disabled.
+        def check_externally_managed_study_restrictions_enabled
+          render_feature_disabled unless Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
         end
 
         # Checks whether the required JSON:API search filter parameter is present?
@@ -168,7 +160,7 @@ module Api
         # Renders a standardized JSON:API error for a disabled feature flag configuration.
         #
         # @return [void]
-        def render_feature_flag_disabled
+        def render_feature_disabled
           render_errors(Errors::FeatureDisabled.new.errors)
         end
 
