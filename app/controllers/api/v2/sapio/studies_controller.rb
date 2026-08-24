@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# NOTE: Before adding additional functionality here, confirm the same effect cannot be achieved using vanilla JSONAPI:
+# - Idioms for controllers: https://jsonapi-resources.com/v0.10/guide/controllers.html
+# - Idioms for resources: https://jsonapi-resources.com/v0.10/guide/resources.html
+
 module Api
   module V2
     module Sapio
