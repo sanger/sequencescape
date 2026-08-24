@@ -692,6 +692,10 @@ describe 'Sapio Studies API', with: :api_v2 do
           expect(response).to have_http_status(:created)
         end
 
+        it 'does not return any errors in the response' do
+          expect(json['errors']).to be_nil
+        end
+
         it 'creates a study in the database' do
           expect(Study.find_by(name: 'Sapio Created Study')).not_to be_nil
         end
