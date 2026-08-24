@@ -14,6 +14,19 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  class Forbidden < JSONAPI::Exceptions::Error
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :forbidden,
+          title: 'Forbidden',
+          code: 'FORBIDDEN',
+          detail: 'Integration Hub API key required.'
+        )
+      ]
+    end
+  end
+
   class MissingSearchParam < JSONAPI::Exceptions::Error
     def errors
       [

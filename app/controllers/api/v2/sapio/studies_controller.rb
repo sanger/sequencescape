@@ -20,7 +20,7 @@ module Api
         before_action :check_sapio_studies_endpoint_enabled
         before_action :check_externally_managed_study_restrictions_enabled, only: [:create]
         # Before create study, authorize requests from Integration Hub API keys only.
-        before_action :authorize_integration_hub!, only: [:create]
+        before_action :authorize_integration_hub, only: [:create]
 
         # Enforces a name search constraint on resource index listing.
         #
@@ -80,21 +80,6 @@ module Api
 
         private
 
-        # Ensures that the request is authorized with an Integration Hub API key.
-        def authorize_integration_hub!
-          return if @api_application&.integration_hub?
-
-          render status: :forbidden,
-                 json: {
-                   errors: [
-                     {
-                       title: 'Forbidden',
-                       detail: 'Integration Hub API key required.'
-                     }
-                   ]
-                 }
-        end
-
         # Builds and configures a new Study instance from the Sapio payload.
         def build_sapio_study
           Study.new(study_params).tap do |study|
@@ -150,6 +135,11 @@ module Api
           render_feature_disabled unless Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
         end
 
+        # Ensures that the request is authorized with an Integration Hub API key.
+        def authorize_integration_hub
+          render_forbidden unless @api_application&.integration_hub?
+        end
+
         # Checks whether the required JSON:API search filter parameter is present?
         #
         # @return [Boolean] true if the filter[name] parameter is present
@@ -169,6 +159,13 @@ module Api
         # @return [void]
         def render_missing_search_param
           render_errors(Errors::MissingSearchParam.new.errors)
+        end
+
+        # Renders a standardized JSON:API error for a forbidden request.
+        #
+        # @return [void]
+        def render_forbidden
+          render_errors(Errors::Forbidden.new.errors)
         end
 
         # Returns request context for JSONAPI::Resources, which is available
