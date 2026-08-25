@@ -43,17 +43,17 @@ module Api
         before_save :set_externally_managed_flags
         around_create :set_external_uuid
 
-        ##
+        ###
         # Filters
-        #
+        ###
 
         # Override the name filter from parent to support wildcard patterns
         # Accepts patterns like "my_study*" or "my_study?"
         filter :name, apply: method(:apply_name_filter)
 
-        ##
+        ###
         # Relationships
-        #
+        ###
 
         # @!attribute [r] study_metadata
         #   @return [StudyMetadataResource] The metadata associated with this
@@ -64,9 +64,9 @@ module Api
         #   @return [UserResource, nil] The user associated with this study.
         has_one :user, class_name: 'User', foreign_key_on: :self
 
-        ##
+        ###
         # Attributes
-        #
+        ###
 
         # @!attribute [r] name
         #   @return [String] The name of the study.
