@@ -41,7 +41,7 @@ module Api
         include Api::V2::Sapio::StudySearchQuery
 
         before_save :set_externally_managed_flags
-        around_create :set_external_uuid
+        after_create :set_external_uuid
 
         ###
         # Filters
@@ -78,11 +78,12 @@ module Api
 
         def uuid=(external_uuid)
           # Validation for unique UUID within the Study types
-          return if Uuid.find_uuid('Study', external_uuid).blank?
+          if Uuid.find_uuid('Study', external_uuid).present?
+            @model.errors.add(:uuid, 'has already been taken')
+            raise JSONAPI::Exceptions::ValidationErrors
+          end
 
-          @model.errors.add(:uuid, 'has already been taken')
-          raise JSONAPI::Exceptions::ValidationErrors
-
+          @model.lazy_uuid_generation = true
           # Don't actually do anything until after_save
         end
 
@@ -133,18 +134,13 @@ module Api
 
         # Sets the external UUID for the study if provided in the context.
         #
-        # Prevents the default UUID generation on creation and then links the UUID to the study once saved.
-        #
-        # param [Proc] yield The block to execute for creating the study.
+        # Links the externally provided UUID to the study once saved.
         #
         # @return [void]
         def set_external_uuid
-          uuid = @uuid
-          return yield if uuid.blank?
+          return if @uuid.blank?
 
-          @model.lazy_uuid_generation = true
-          yield
-          @model.create_uuid_object!(external_id: uuid)
+          @model.create_uuid_object!(external_id: @uuid)
         end
       end
     end
