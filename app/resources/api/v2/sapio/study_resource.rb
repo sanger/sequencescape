@@ -76,6 +76,16 @@ module Api
         #   @return [String] The UUID of the study.
         attribute :uuid
 
+        def uuid=(external_uuid)
+          # Validation for unique UUID within the Study types
+          return if Uuid.find_uuid('Study', external_uuid).blank?
+
+          @model.errors.add(:uuid, 'has already been taken')
+          raise JSONAPI::Exceptions::ValidationErrors
+
+          # Don't actually do anything until after_save
+        end
+
         # @!attribute [r] created_at
         #   @return [String] Timestamp when the study was created.
         attribute :created_at
@@ -129,7 +139,7 @@ module Api
         #
         # @return [void]
         def set_external_uuid
-          uuid = context[:uuid]
+          uuid = @uuid
           return yield if uuid.blank?
 
           @model.lazy_uuid_generation = true

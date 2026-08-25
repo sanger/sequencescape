@@ -702,7 +702,7 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         it 'returns the study id' do
           study = Study.find_by(name: 'Sapio Created Study')
-          expect(json.dig('data', 'attributes', 'id')).to eq(study.id)
+          expect(json.dig('data', 'id')).to eq(study.id.to_s)
         end
 
         it 'returns the study uuid' do
@@ -744,7 +744,17 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         it 'returns validation error messages' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
-          expect(json['errors']).not_to be_empty
+          expect(json['errors']).to eq(
+            [
+              {
+                'title' => "can't be blank",
+                'detail' => "name - can't be blank",
+                'code' => '100',
+                'source' => { 'pointer' => '/data/attributes/name' },
+                'status' => '422'
+              }
+            ]
+          )
         end
 
         it 'does not create a study' do
@@ -773,6 +783,10 @@ describe 'Sapio Studies API', with: :api_v2 do
           expect(response).to have_http_status(:created)
         end
 
+        it 'does not return any errors in the response' do
+          expect(json['errors']).to be_nil
+        end
+
         it 'uses the supplied UUID in the response' do
           expect(json.dig('data', 'attributes', 'uuid')).to eq(supplied_uuid)
         end
@@ -780,6 +794,37 @@ describe 'Sapio Studies API', with: :api_v2 do
         it 'stores the supplied UUID on the study' do
           study = Study.find_by(name: 'Sapio Created Study')
           expect(study.uuid).to eq(supplied_uuid)
+        end
+      end
+
+      context 'with an integration hub API key and a duplicate uuid' do
+        let(:existing_study) { create(:study, name: 'Existing Sapio Study') }
+        let(:duplicate_uuid_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                name: 'Sapio Created Study',
+                uuid: existing_study.uuid
+              }
+            }
+          }
+        end
+
+        before { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 422 Unprocessable Entity' do
+          expect(response).to have_http_status(:unprocessable_content)
+        end
+
+        it 'returns a uuid validation error' do
+          expect(json['errors']).to include(
+            a_hash_including('code' => 'VALIDATION_ERROR', 'detail' => 'uuid - has already been taken')
+          )
+        end
+
+        it 'does not create a study' do
+          expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
         end
       end
 
