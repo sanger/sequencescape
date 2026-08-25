@@ -9,7 +9,7 @@ RSpec.describe Api::V2::Sapio::StudyResource, type: :resource do
   let(:resource_model) { build_stubbed(:study) }
 
   # Mutability
-  it { expect(described_class.mutable?).to be(false) }
+  it { expect(described_class.mutable?).to be(true) }
 
   # Model Name
   it { is_expected.to have_model_name 'Study' }
