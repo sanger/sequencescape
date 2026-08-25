@@ -73,6 +73,7 @@ module Api
         attribute :name
 
         # @!attribute [r] uuid
+        #   @note This attribute should only be set when creating a study.
         #   @return [String] The UUID of the study.
         attribute :uuid
 
