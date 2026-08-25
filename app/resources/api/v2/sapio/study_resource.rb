@@ -78,12 +78,6 @@ module Api
         attribute :uuid
 
         def uuid=(external_uuid)
-          # Validation for unique UUID within the Study types
-          if Uuid.find_id(external_uuid).present?
-            @model.errors.add(:uuid, 'has already been taken')
-            raise JSONAPI::Exceptions::ValidationErrors
-          end
-
           # Setup resource to create the UUID after the study is saved, since the study must exist first
           @model.lazy_uuid_generation = true # Don't create the UUID on model creation
           context[:external_uuid] = external_uuid # Store the external UUID in the context to be used in after_create

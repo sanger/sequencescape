@@ -814,12 +814,17 @@ describe 'Sapio Studies API', with: :api_v2 do
         before { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
 
         it 'returns 422 Unprocessable Entity' do
-          expect(response).to have_http_status(:unprocessable_content)
+          expect(response).to have_http_status(:bad_request)
         end
 
         it 'returns a uuid validation error' do
-          expect(json['errors']).to include(
-            a_hash_including('code' => 'VALIDATION_ERROR', 'detail' => 'uuid - has already been taken')
+          expect(json['errors']).to eq(
+            [{
+              'title' => 'Invalid field value',
+              'detail' => 'This UUID already exists and is not a valid value for uuid.',
+              'code' => '103',
+              'status' => '400'
+            }]
           )
         end
 
