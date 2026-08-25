@@ -78,7 +78,7 @@ module Api
 
         def uuid=(external_uuid)
           # Validation for unique UUID within the Study types
-          if Uuid.find_uuid('Study', external_uuid).present?
+          if Uuid.find_id(external_uuid).present?
             @model.errors.add(:uuid, 'has already been taken')
             raise JSONAPI::Exceptions::ValidationErrors
           end
