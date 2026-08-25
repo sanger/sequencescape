@@ -149,19 +149,30 @@ module Api
       end
 
       class StudyProcessor < JSONAPI::Processor
+        before_create_resource :validate_uuid_format
         before_create_resource :validate_uuid_uniqueness
 
         private
 
+        # Validates that the provided UUID is in a valid format.
+        def validate_uuid_format
+          return if external_uuid.blank? || Uuid.uuid?(external_uuid)
+
+          raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, external_uuid)
+        end
+
         # Validate that the provided UUID is unique
         def validate_uuid_uniqueness
-          external_uuid = params.dig(:data, :attributes, :uuid)
           return if external_uuid.blank?
 
           # Validation for unique UUID within the Study types
           return if Uuid.find_id(external_uuid).blank?
 
           raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, 'This UUID already exists and')
+        end
+
+        def external_uuid
+          @external_uuid ||= params.dig(:data, :attributes, :uuid)
         end
       end
     end

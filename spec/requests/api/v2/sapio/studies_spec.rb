@@ -833,6 +833,55 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
+      shared_examples 'a POST request with an invalid uuid' do
+        before { api_post base_endpoint, malformed_uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 400 Bad Request' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a uuid validation error' do
+          expect(json['errors']).to eq(
+            [{
+              'title' => 'Invalid field value',
+              'detail' => "#{invalid_uuid} is not a valid value for uuid.",
+              'code' => '103',
+              'status' => '400'
+            }]
+          )
+        end
+
+        it 'does not create a study' do
+          expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
+        end
+      end
+
+      %w[
+        invalid-uuid-format
+        {123e4567-e89b-12d3-a456-426614174000}
+        123e4567e89b12d3a456426614174000
+        00000000000000000000000000000000
+        0x123e4567e89b12d3a456426614174000
+      ].each do |invalid_uuid_value|
+        context "with invalid uuid format #{invalid_uuid_value.inspect}" do
+          let(:invalid_uuid) { invalid_uuid_value }
+
+          let(:malformed_uuid_payload) do
+            {
+              data: {
+                type: 'studies',
+                attributes: {
+                  name: 'Sapio Created Study',
+                  uuid: invalid_uuid_value
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'a POST request with an invalid uuid'
+        end
+      end
+
       context 'with no uuid in payload' do
         before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
