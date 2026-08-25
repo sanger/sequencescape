@@ -83,8 +83,9 @@ module Api
             raise JSONAPI::Exceptions::ValidationErrors
           end
 
-          @model.lazy_uuid_generation = true
-          # Don't actually do anything until after_save
+          # Setup resource to create the UUID after the study is saved, since the study must exist first
+          @model.lazy_uuid_generation = true # Don't create the UUID on model creation
+          context[:external_uuid] = external_uuid # Store the external UUID in the context to be used in after_create
         end
 
         # @!attribute [r] created_at
@@ -138,9 +139,11 @@ module Api
         #
         # @return [void]
         def set_external_uuid
-          return if @uuid.blank?
+          uuid = context[:external_uuid]
+          return if uuid.blank?
 
-          @model.create_uuid_object!(external_id: @uuid)
+          # Create the UUID and link it to the study.
+          @model.create_uuid_object!(external_id: uuid)
         end
       end
     end
