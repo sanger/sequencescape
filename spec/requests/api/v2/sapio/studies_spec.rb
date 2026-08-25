@@ -685,7 +685,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a valid payload' do
+      context 'with an integration hub API key and a valid payload with name only' do
         before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'returns 201 Created' do
@@ -725,7 +725,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a missing study name' do
+      context 'when missing a study name' do
         let(:no_name_payload) do
           {
             data: {
@@ -763,7 +763,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a supplied uuid' do
+      context 'with an integration hub API key and valid supplied name and uuid' do
         let(:supplied_uuid) { '12345678-1234-5678-9abc-123456789012' }
         let(:uuid_payload) do
           {
@@ -797,7 +797,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a duplicate uuid' do
+      context 'with a duplicate uuid' do
         let(:existing_study) { create(:study, name: 'Existing Sapio Study') }
         let(:duplicate_uuid_payload) do
           {
@@ -828,7 +828,7 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and no uuid in payload' do
+      context 'with no uuid in payload' do
         before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'auto-generates a UUID for the study' do
