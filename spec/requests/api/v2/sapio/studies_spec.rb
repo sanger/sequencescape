@@ -726,7 +726,16 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
 
       context 'with an integration hub API key and a missing study name' do
-        let(:no_name_payload) { { study: { uuid: '12345678-1234-5678-9abc-123456789012' } } }
+        let(:no_name_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                uuid: '12345678-1234-5678-9abc-123456789012'
+              }
+            }
+          }
+        end
 
         it 'returns 422 Unprocessable Entity' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
@@ -746,7 +755,17 @@ describe 'Sapio Studies API', with: :api_v2 do
 
       context 'with an integration hub API key and a supplied uuid' do
         let(:supplied_uuid) { '12345678-1234-5678-9abc-123456789012' }
-        let(:uuid_payload) { { study: valid_payload[:study].merge(uuid: supplied_uuid) } }
+        let(:uuid_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                name: 'Sapio Created Study',
+                uuid: supplied_uuid
+              }
+            }
+          }
+        end
 
         before { api_post base_endpoint, uuid_payload, headers: integration_hub_headers }
 
