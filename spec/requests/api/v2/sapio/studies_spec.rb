@@ -749,7 +749,7 @@ describe 'Sapio Studies API', with: :api_v2 do
               {
                 'title' => "can't be blank",
                 'detail' => "name - can't be blank",
-                'code' => '100',
+                'code' => JSONAPI::VALIDATION_ERROR,
                 'source' => { 'pointer' => '/data/attributes/name' },
                 'status' => '422'
               }
@@ -822,7 +822,7 @@ describe 'Sapio Studies API', with: :api_v2 do
             [{
               'title' => 'Invalid field value',
               'detail' => 'This UUID already exists and is not a valid value for uuid.',
-              'code' => '103',
+              'code' => JSONAPI::INVALID_FIELD_VALUE,
               'status' => '400'
             }]
           )
@@ -845,7 +845,7 @@ describe 'Sapio Studies API', with: :api_v2 do
             [{
               'title' => 'Invalid field value',
               'detail' => "#{invalid_uuid} is not a valid value for uuid.",
-              'code' => '103',
+              'code' => JSONAPI::INVALID_FIELD_VALUE,
               'status' => '400'
             }]
           )
