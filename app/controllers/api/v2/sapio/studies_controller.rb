@@ -31,41 +31,9 @@ module Api
           super
         end
 
-        # Creates a new Study that is mastered in Sapio (externally_managed: true)
-        # from the Integration Hub payload and grants ownership to the requesting user.
+        # Creates a new externally managed Study.
         #
-        # @note This endpoint is intended exclusively for creating *new* studies that
-        #   originate in Sapio. It should NOT be used to transfer an existing
-        #   Sequencescape study to Sapio — use the update (PATCH) endpoint
-        #   for that purpose, which sets +externally_managed+ on an existing record.
-        #
-        # @note Requires an Integration Hub API key. All other callers will receive
-        #   a 403 Forbidden response.
-        #
-        # @note Requires the +:y26_172_enable_externally_managed_study_restrictions+
-        #   feature flag to be enabled. Returns 404 otherwise.
-        #
-        # == Expected Payload
-        #
-        # The request body must be a JSON object with a top-level +study+ key:
-        #
-        #   POST /api/v2/sapio/studies
-        #   Content-Type: application/json
-        #   X-Sequencescape-Client-Id: <integration_hub_api_key>
-        #
-        # {
-        #   "study": {
-        #     "name": "(required) Unique study name, max 200 chars",
-        #     "uuid": "(required) UUID to assign to the study, must be a valid UUID string"
-        #   }
-        # }
-        #
-        # == Responses
-        #
-        # [201 Created]     Study created successfully. Body contains +id+, +uuid+, +name+, and a +self+ link.
-        # [403 Forbidden]   Missing or non-Integration Hub API key.
-        # [404 Not Found]   Feature flag disabled.
-        # [422 Unprocessable Entity] Validation failed (e.g. missing +name+). Body contains +errors+ array.
+        # It should NOT be used to transfer an existing Sequencescape study to Sapio.
         #
         # @return [void]
         def create
