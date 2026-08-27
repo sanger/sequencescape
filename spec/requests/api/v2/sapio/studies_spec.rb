@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-describe 'Sapio Studies API', with: :api_v2 do
+describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
   let(:base_endpoint) { '/api/v2/sapio/studies' }
 
   let(:study_attrs) do
@@ -129,19 +129,8 @@ describe 'Sapio Studies API', with: :api_v2 do
     ]
   end
 
-  before do
-    # Enable the Sapio studies endpoint feature flag for tests
-    Flipper.enable(:y26_170_sapio_studies_endpoint)
-  end
-
-  after do
-    Flipper.disable(:y26_170_sapio_studies_endpoint)
-  end
-
   describe 'GET /api/v2/sapio/studies' do
-    context 'when sapio studies endpoint feature flag is disabled' do
-      before { Flipper.disable(:y26_170_sapio_studies_endpoint) }
-
+    context 'when sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
       it 'returns a 404 Not Found response' do
         api_get base_endpoint
         expect(response).to have_http_status(:not_found)
@@ -602,17 +591,7 @@ describe 'Sapio Studies API', with: :api_v2 do
   end
 
   describe 'GET /api/v2/sapio/studies/:id' do
-    before do
-      Flipper.enable(:y26_170_sapio_studies_endpoint)
-    end
-
-    after do
-      Flipper.disable(:y26_170_sapio_studies_endpoint)
-    end
-
-    context 'when sapio studies endpoint feature flag is disabled' do
-      before { Flipper.disable(:y26_170_sapio_studies_endpoint) }
-
+    context 'when sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
       it 'returns a 404 Not Found response' do
         api_get base_endpoint
         expect(response).to have_http_status(:not_found)
