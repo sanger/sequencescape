@@ -69,18 +69,18 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: not specified → Male ' \
-       'Country of origin: not specified → United Kingdom ' \
-       'Dna source: not specified → Genomic ' \
-       'Volume: not specified → 10 ' \
-       'Sample public name: not specified → Human ' \
-       'Sample common name: not specified → Human ' \
-       'Sample taxon: not specified → 9606 ' \
-       'Sample description: not specified → Human ' \
-       'Date of sample collection: not specified → 2022-12-12 ' \
        'Concentration: not specified → 20 ' \
+       'Country of origin: not specified → United Kingdom ' \
+       'Date of sample collection: not specified → 2022-12-12 ' \
+       'Dna source: not specified → Genomic ' \
+       'Donor: not specified → 12345 ' \
+       'Gender: not specified → Male ' \
+       'Sample common name: not specified → Human ' \
+       'Sample description: not specified → Human ' \
+       'Sample public name: not specified → Human ' \
+       'Sample taxon: not specified → 9606 ' \
        'Supplier name: not specified → aaaa ' \
-       'Donor: not specified → 12345',
+       'Volume: not specified → 10',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
     ]
@@ -117,17 +117,17 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
       ['Message', 'Content', 'Created at', 'Created by'],
       ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
       ['Updated sample metadata',
-       'Gender: not specified → Male ' \
-       'Country of origin: not specified → United Kingdom ' \
-       'Dna source: not specified → Genomic ' \
-       'Volume: not specified → 10 ' \
-       'Sample public name: not specified → Human ' \
-       'Sample common name: not specified → Human ' \
-       'Sample taxon: not specified → 10012 ' \
-       'Sample description: not specified → Human ' \
-       'Date of sample collection: not specified → 2022-12-07 ' \
        'Concentration: not specified → 20 ' \
-       'Supplier name: not specified → xxxx',
+       'Country of origin: not specified → United Kingdom ' \
+       'Date of sample collection: not specified → 2022-12-07 ' \
+       'Dna source: not specified → Genomic ' \
+       'Gender: not specified → Male ' \
+       'Sample common name: not specified → Human ' \
+       'Sample description: not specified → Human ' \
+       'Sample public name: not specified → Human ' \
+       'Sample taxon: not specified → 10012 ' \
+       'Supplier name: not specified → xxxx ' \
+       'Volume: not specified → 10',
        'Monday 12 July, 2010 10:25', ''],
       ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
     ]
@@ -157,9 +157,9 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
     visit(history_sample_path(sample_1))
     sample_1_events << [
       'Updated sample metadata',
-      'Volume: 10 → 15 ' \
       'Date of sample collection: 2022-12-12 → 2022-12-01 ' \
-      'Supplier name: aaaa → aaaa_updated',
+      'Supplier name: aaaa → aaaa_updated ' \
+      'Volume: 10 → 15',
       'Monday 12 July, 2010 10:25', ''
     ]
     sample_1_events << ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
@@ -219,18 +219,18 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
         ['Message', 'Content', 'Created at', 'Created by'],
         ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
         ['Updated sample metadata',
-         'Gender: not specified → Male ' \
-         'Country of origin: not specified → United Kingdom ' \
-         'Dna source: not specified → Genomic ' \
-         'Volume: not specified → 10 ' \
-         'Sample public name: not specified → Human ' \
-         'Sample common name: not specified → Human ' \
-         'Sample taxon: not specified → 9613 ' \
-         'Sample description: not specified → Human ' \
-         'Date of sample collection: not specified → 2022-12-12 ' \
          'Concentration: not specified → 20 ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Dna source: not specified → Genomic ' \
+         'Donor: not specified → 12345 ' \
+         'Gender: not specified → Male ' \
+         'Sample common name: not specified → Human ' \
+         'Sample description: not specified → Human ' \
+         'Sample public name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
          'Supplier name: not specified → eeee ' \
-         'Donor: not specified → 12345',
+         'Volume: not specified → 10',
          'Monday 12 July, 2010 10:25', ''],
         ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
       ]
@@ -258,10 +258,10 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
       visit(history_sample_path(sample_8))
       sample_8_events << [
         'Updated sample metadata',
-        'Volume: 10 → 15 ' \
-        'Sample taxon: 9613 → 10013 ' \
         'Date of sample collection: 2022-12-12 → 2022-12-08 ' \
-        'Supplier name: eeee → eeee_updated',
+        'Sample taxon: 9613 → 10013 ' \
+        'Supplier name: eeee → eeee_updated ' \
+        'Volume: 10 → 15',
         'Monday 12 July, 2010 10:25', ''
       ]
       sample_8_events << ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'jane']
@@ -303,18 +303,18 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
         ['Message', 'Content', 'Created at', 'Created by'],
         ['Created by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john'],
         ['Updated sample metadata',
-         'Gender: not specified → Male ' \
-         'Country of origin: not specified → United Kingdom ' \
-         'Dna source: not specified → Genomic ' \
-         'Volume: not specified → 10 ' \
-         'Sample public name: not specified → Human ' \
-         'Sample common name: not specified → Human ' \
-         'Sample taxon: not specified → 9613 ' \
-         'Sample description: not specified → Human ' \
-         'Date of sample collection: not specified → 2022-12-12 ' \
          'Concentration: not specified → 20 ' \
+         'Country of origin: not specified → United Kingdom ' \
+         'Date of sample collection: not specified → 2022-12-12 ' \
+         'Dna source: not specified → Genomic ' \
+         'Donor: not specified → 12345 ' \
+         'Gender: not specified → Male ' \
+         'Sample common name: not specified → Human ' \
+         'Sample description: not specified → Human ' \
+         'Sample public name: not specified → Human ' \
+         'Sample taxon: not specified → 9613 ' \
          'Supplier name: not specified → eeee ' \
-         'Donor: not specified → 12345',
+         'Volume: not specified → 10',
          'Monday 12 July, 2010 10:25', ''],
         ['Updated by Sample Manifest', sample_manifest.name, 'Monday 12 July, 2010 10:25', 'john']
       ]
@@ -342,9 +342,9 @@ describe 'Track SampleManifest updates', :js, :sample_manifest do
       visit(history_sample_path(sample_8))
       sample_8_events << [
         'Updated sample metadata',
-        'Sample taxon: 9613 → 10013 ' \
-        'Date of sample collection: 2022-12-12 → 2022-12-08 ' \
         'Concentration: 20 → 10 ' \
+        'Date of sample collection: 2022-12-12 → 2022-12-08 ' \
+        'Sample taxon: 9613 → 10013 ' \
         'Supplier name: eeee → eeee_updated',
         'Monday 12 July, 2010 10:25', ''
       ]

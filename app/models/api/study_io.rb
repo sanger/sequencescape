@@ -93,6 +93,7 @@ class Api::StudyIo < Api::Base
     map_attribute_to_json_attribute(:data_release_delay_reason)
     map_attribute_to_json_attribute(:data_release_timing_publication_comment)
     map_attribute_to_json_attribute(:data_share_in_preprint)
+    map_attribute_to_json_attribute(:data_release_prevention_reason)
 
     map_attribute_to_json_attribute(:data_access_group)
 
