@@ -1069,15 +1069,18 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
             expect(json['errors'].size).to eq(1)
           end
 
-          it 'serializes the exact error keys with correct details', :aggregate_failures do
-            error = json['errors'].first
-            expect(error).to include(
-              'title' => 'is invalid',
-              'detail' => 'state - is invalid',
-              'code' => JSONAPI::VALIDATION_ERROR,
-              'status' => '422'
+          it 'serializes the exact error keys with correct details' do
+            expect(json['errors']).to eq(
+              [
+                {
+                  'title' => 'is invalid',
+                  'detail' => 'state - is invalid',
+                  'code' => JSONAPI::VALIDATION_ERROR,
+                  'status' => '422',
+                  'source' => { 'pointer' => '/data/attributes/state' }
+                }
+              ]
             )
-            expect(error.dig('source', 'pointer')).to eq('/data/attributes/state')
           end
         end
       end
