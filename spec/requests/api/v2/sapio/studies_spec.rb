@@ -881,6 +881,9 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
   end
 
   describe 'PATCH /api/v2/sapio/studies/:id', :externally_managed_restrictions_enabled do
+    let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+    let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+
     let(:resource_type) { 'studies' }
     let(:resource_id) { study.id }
     let(:payload) do
@@ -904,15 +907,94 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
     end
 
     before do
-      api_patch "#{base_endpoint}/#{study.id}", payload
+      api_patch "#{base_endpoint}/#{study.id}", payload, headers: integration_hub_headers
     end
 
-    # TODO: Add tests for:
-    #  - check_sapio_studies_endpoint_enabled
-    #  - check_externally_managed_study_restrictions_enabled
-    #  - authorize_integration_hub
+    context 'when the sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
+      let(:attributes) { { state: 'active' } }
 
-    context 'when updating the study resource' do
+      it 'returns a 404 Not Found response' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not update the study resource' do
+        study.reload
+        expect(study.state).to eq('pending')
+      end
+    end
+
+    context 'when the sapio studies endpoint feature flag is enabled', :sapio_studies_endpoint_enabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        study.reload
+        expect(study.state).to eq('active')
+      end
+    end
+
+    context 'when the externally_managed study restrictions feature flag is disabled',
+            :externally_managed_restrictions_disabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 404 Not Found response' do
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not update the study resource' do
+        study.reload
+        expect(study.state).to eq('pending')
+      end
+    end
+
+    context 'when the externally_managed study restrictions feature flag is enabled',
+            :externally_managed_restrictions_enabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        study.reload
+        expect(study.state).to eq('active')
+      end
+    end
+
+    context 'when the integration hub API key is not provided' do
+      let(:integration_hub_headers) { {} }
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 403 Forbidden response' do
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'does not update the study resource' do
+        study.reload
+        expect(study.state).to eq('pending')
+      end
+    end
+
+    context 'when the integration hub API key is provided' do
+      let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+      let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        study.reload
+        expect(study.state).to eq('active')
+      end
+    end
+
+    context 'when updating the study resource', :externally_managed_restrictions_enabled do
       context 'when the update succeeds' do
         let(:attributes) { { state: 'active' } }
 
