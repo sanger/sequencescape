@@ -27,6 +27,30 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # Based on https://jsonapi.org/format/#crud-creating-responses-409
+  class FieldValueConflict < JSONAPI::Exceptions::Error
+    attr_accessor :field, :value
+
+    def initialize(field, value, error_object_overrides = {})
+      @field = field
+      @value = value
+      super(error_object_overrides)
+    end
+
+    def errors
+      detail_message = "The value #{value} for the field #{field} conflicts with an existing record."
+      [
+        JSONAPI::Error.new(
+          status: :conflict,
+          title: 'Conflict',
+          code: 'FIELD_VALUE_CONFLICT',
+          detail: detail_message,
+          source: { pointer: "/data/attributes/#{field}" }
+        )
+      ]
+    end
+  end
+
   class MissingSearchParam < JSONAPI::Exceptions::Error
     def errors
       [

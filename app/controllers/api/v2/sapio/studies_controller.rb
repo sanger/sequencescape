@@ -136,7 +136,7 @@ module Api
           # Validation for unique UUID against all Sequencescape UUIDs
           return if Uuid.find_id(external_uuid).blank?
 
-          raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, 'This UUID already exists and')
+          raise Errors::FieldValueConflict.new(:uuid, external_uuid)
         end
 
         def external_uuid

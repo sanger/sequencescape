@@ -813,17 +813,20 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         before { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
 
-        it 'returns 422 Unprocessable Entity' do
-          expect(response).to have_http_status(:bad_request)
+        it 'returns 409 Conflict' do
+          expect(response).to have_http_status(:conflict)
         end
 
         it 'returns a uuid validation error' do
           expect(json['errors']).to eq(
             [{
-              'title' => 'Invalid field value',
-              'detail' => 'This UUID already exists and is not a valid value for uuid.',
-              'code' => JSONAPI::INVALID_FIELD_VALUE,
-              'status' => '400'
+              'title' => 'Conflict',
+              'detail' => "The value #{existing_study.uuid} for the field uuid conflicts with an existing record.",
+              'code' => 'FIELD_VALUE_CONFLICT',
+              'status' => '409',
+              'source' => {
+                'pointer' => '/data/attributes/uuid'
+              }
             }]
           )
         end
