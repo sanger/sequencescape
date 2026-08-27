@@ -133,7 +133,7 @@ module Api
         def validate_uuid_uniqueness
           return if external_uuid.blank?
 
-          # Validation for unique UUID within the Study types
+          # Validation for unique UUID against all Sequencescape UUIDs
           return if Uuid.find_id(external_uuid).blank?
 
           raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, 'This UUID already exists and')
