@@ -15,8 +15,8 @@ RSpec.describe Api::V2::Sapio::StudyResource, type: :resource do
   it { is_expected.to have_model_name 'Study' }
 
   # Attributes
-  it { is_expected.to have_readonly_attribute :name }
-  it { is_expected.to have_readonly_attribute :uuid }
+  it { is_expected.to have_write_once_attribute :name }
+  it { is_expected.to have_write_once_attribute :uuid }
   it { is_expected.to have_readonly_attribute :created_at }
   it { is_expected.to have_readonly_attribute :updated_at }
   it { is_expected.to have_readonly_attribute :blocked }

@@ -103,13 +103,13 @@ module Api
         #   @note Maximum length is 200 characters.
         #   @note Must be unique across all studies.
         #   @return [String] The name of the study.
-        attribute :name, readonly: true
+        attribute :name, write_once: true
 
         # @!attribute [r] uuid
         #   A version 1 UUID that uniquely identifies the study.
         #   @note This attribute should only be set when creating a study.
         #   @return [String] The UUID of the study.
-        attribute :uuid, readonly: true
+        attribute :uuid, write_once: true
 
         def uuid=(external_uuid)
           # Setup resource to create the UUID after the study is saved, since the study must exist first
