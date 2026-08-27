@@ -609,7 +609,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
     end
   end
 
-  describe 'POST /api/v2/sapio/studies' do
+  describe 'POST /api/v2/sapio/studies', :externally_managed_restrictions_enabled do
     let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
     let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
     let(:regular_app) { create(:api_application) }
@@ -625,9 +625,8 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       }
     end
 
-    context 'when the externally_managed study restrictions feature flag is disabled' do
-      before { Flipper.disable(:y26_172_enable_externally_managed_study_restrictions) }
-
+    context 'when the externally_managed study restrictions feature flag is disabled',
+            :externally_managed_restrictions_disabled do
       it 'returns a 404 Not Found response' do
         api_post base_endpoint, valid_payload, headers: integration_hub_headers
         expect(response).to have_http_status(:not_found)
@@ -881,7 +880,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
     end
   end
 
-  describe 'PATCH /api/v2/sapio/studies/:id' do
+  describe 'PATCH /api/v2/sapio/studies/:id', :externally_managed_restrictions_enabled do
     let(:resource_type) { 'studies' }
     let(:resource_id) { study.id }
     let(:payload) do

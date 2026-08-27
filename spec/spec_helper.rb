@@ -261,7 +261,7 @@ RSpec.configure do |config|
   # - Roll the feature flag back to its original state afterward
   config.around(:each, :externally_managed_restrictions_disabled) do |example|
     externally_managed_restrictions_enabled = Flipper.enabled?(:y26_171_enable_externally_managed_study_restrictions)
-    Flipper.disable(:y26_172_enable_externally_managed_mastered_study_restrictions)
+    Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
     example.run
     Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
   end
