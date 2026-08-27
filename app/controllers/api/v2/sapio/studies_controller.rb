@@ -18,9 +18,9 @@ module Api
         RESULTS_RANGE = 1..1000
 
         before_action :check_sapio_studies_endpoint_enabled
-        before_action :check_externally_managed_study_restrictions_enabled, only: [:create]
+        before_action :check_externally_managed_study_restrictions_enabled, only: %i[create update]
         # Before create study, authorize requests from Integration Hub API keys only.
-        before_action :authorize_integration_hub, only: [:create]
+        before_action :authorize_integration_hub, only: %i[create update]
 
         # Enforces a name search constraint on resource index listing.
         #
@@ -37,6 +37,15 @@ module Api
         #
         # @return [void]
         def create
+          # Required for before_action's above
+          super
+        end
+
+        # Updates an existing Study.
+        #
+        # @return [void]
+        def update
+          # Required for before_action's above
           super
         end
 

@@ -929,6 +929,11 @@ describe 'Sapio Studies API', with: :api_v2 do
       api_patch "#{base_endpoint}/#{study.id}", payload
     end
 
+    # TODO: Add tests for:
+    #  - check_sapio_studies_endpoint_enabled
+    #  - check_externally_managed_study_restrictions_enabled
+    #  - authorize_integration_hub
+
     context 'when updating the study resource' do
       context 'when the update succeeds' do
         let(:attributes) { { state: 'active' } }
