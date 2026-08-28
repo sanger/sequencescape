@@ -61,7 +61,24 @@ module Api
       #     }
       #   }
       #
-      # @todo: Add update examples
+      # == Updating an Existing Study
+      #
+      # Existing studies can be updated using the PATCH method. When an update is made through the
+      # sapio endpoint, the `externally_managed` attribute is automatically set to true, indicating
+      # that the study is now managed externally.
+      #
+      # @example PATCH request to update an existing study
+      #  PATCH /api/v2/sapio/studies/123
+      #  Content-Type: application/json X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #  {
+      #    "data": {
+      #      "type": "studies",
+      #      "id": "123",
+      #      "attributes": {
+      #        "state": "active"
+      #      }
+      #    }
+      #  }
       #
       # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
@@ -107,7 +124,7 @@ module Api
 
         # @!attribute [r] uuid
         #   A version 1 UUID that uniquely identifies the study.
-        #   @note This attribute should only be set when creating a study.
+        #   @note Cannot be updated after creation.
         #   @return [String] The UUID of the study.
         attribute :uuid, write_once: true
 
