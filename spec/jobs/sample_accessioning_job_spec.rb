@@ -3,7 +3,7 @@ require 'rails_helper'
 
 # See additional related tests in spec/models/sample_spec.rb
 
-RSpec.describe SampleAccessioningJob do
+RSpec.describe SampleAccessioningJob, :accessioning_enabled do
   include AccessionV1ClientHelper
 
   let(:first_open_study) { create(:open_study, accession_number: 'ENA123') }
@@ -25,7 +25,7 @@ RSpec.describe SampleAccessioningJob do
     allow(ExceptionNotifier).to receive(:notify_exception)
   end
 
-  describe '#perform', :accessioning_enabled do
+  describe '#perform' do
     # An accession sample status is created when the job is queued
 
     context 'when the submission fails validation' do
@@ -330,7 +330,7 @@ RSpec.describe SampleAccessioningJob do
     end
   end
 
-  describe '#success', :accessioning_enabled do
+  describe '#success' do
     before do
       create(:accession_sample_status, sample: sample, status: 'failed')
       create(:accession_sample_status, sample: sample, status: 'failed')
