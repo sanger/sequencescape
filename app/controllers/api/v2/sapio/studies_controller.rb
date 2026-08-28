@@ -21,6 +21,7 @@ module Api
         before_action :check_externally_managed_study_restrictions_enabled, only: %i[create update]
         # Before create study, authorize requests from Integration Hub API keys only.
         before_action :authorize_integration_hub, only: %i[create update]
+        before_action :check_externally_managed, only: %i[update]
 
         # Enforces a name search constraint on resource index listing.
         #
@@ -72,6 +73,14 @@ module Api
           render_forbidden unless @api_application&.integration_hub?
         end
 
+        # Checks whether the study is externally managed.
+        #
+        # @return [void] Renders a standardized JSON:API error if the study is not externally managed.
+        def check_externally_managed
+          study = Study.find_by(id: params[:id]) || Study.find_by(uuid: external_uuid)
+          render_locked unless study.externally_managed?
+        end
+
         # Checks whether the required JSON:API search filter parameter is present?
         #
         # @return [Boolean] true if the filter[name] parameter is present
@@ -98,6 +107,16 @@ module Api
         # @return [void]
         def render_forbidden
           render_errors(Errors::Forbidden.new.errors)
+        end
+
+        # Renders a standardized JSON:API error for a locked resource.
+        #
+        # This is raised in the specific case that a study has `externally_managed` set to false.
+        #
+        # @return [void]
+        def render_locked
+          message = 'Study is not externally managed and cannot be updated via this endpoint.'
+          render_errors(JSONAPI::Exceptions::RecordLocked.new(message).errors)
         end
 
         # Returns request context for JSONAPI::Resources, which is available

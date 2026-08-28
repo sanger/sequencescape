@@ -895,11 +895,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
     end
     let(:attributes) { {} }
 
+    let(:externally_managed) { true } # only externally managed studies can be updated
     let(:study) do
       # set all enums and booleans to a known state
       create(:study,
              state: 'pending',
-             externally_managed: false,
+             externally_managed: externally_managed,
              blocked: false,
              ethically_approved: false,
              enforce_data_release: false,
@@ -982,6 +983,34 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
       let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
 
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        study.reload
+        expect(study.state).to eq('active')
+      end
+    end
+
+    context 'when a study is not externally managed' do
+      let(:externally_managed) { false }
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 423 Locked response' do
+        expect(response).to have_http_status(:locked)
+      end
+
+      it 'does not update the study resource' do
+        study.reload
+        expect(study.state).to eq('pending')
+      end
+    end
+
+    context 'when a study is externally managed' do
+      let(:externally_managed) { true }
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 200 OK response' do

@@ -68,9 +68,9 @@ module Api
       #
       # == Updating an Existing Study
       #
-      # Existing studies can be updated using the PATCH method. When an update is made through the
-      # sapio endpoint, the `externally_managed` attribute is automatically set to true, indicating
-      # that the study is now managed externally.
+      # Existing studies can be updated using the PATCH method. Only studies that have been marked
+      # as +externally_managed+ can be updated via this endpoint. Attempts to update a study that is
+      # not externally managed will return a **423 Locked** response.
       #
       # @example PATCH request to update an existing study
       #  PATCH /api/v2/sapio/studies/123
@@ -91,8 +91,10 @@ module Api
       class StudyResource < Api::V2::BaseResource
         include Api::V2::Sapio::StudySearchQuery
 
-        before_save :set_externally_managed_flags
+        before_create :allow_changes, :prepare_study_for_external_management
         after_create :set_external_uuid
+
+        before_update :allow_changes
 
         ###
         # Filters
@@ -177,15 +179,19 @@ module Api
 
         private
 
-        # Sets the model flags required for Sapio-managed studies before saving.
+        # Allow externally managed studies to be altered via the API
+        def allow_changes
+          @model.skip_externally_managed_restriction = true
+        end
+
+        # Sets the model flags required for externally-managed studies before saving.
         #
         # The lazy_metadata flag is set to true to avoid triggering the creation of a StudyMetadata record
         # and it's associated validations.
         #
         # @return [void]
-        def set_externally_managed_flags
+        def prepare_study_for_external_management
           @model.externally_managed = true
-          @model.skip_externally_managed_restriction = true
           @model.lazy_metadata = true
         end
 
