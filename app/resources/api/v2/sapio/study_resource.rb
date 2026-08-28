@@ -51,13 +51,18 @@ module Api
       # — use the update (PATCH) endpoint for that purpose - which also sets +externally_managed+ on
       # an existing record.
       #
+      # If a UUID is not provided, one will be generated automatically.
+      #
       # @example POST request to create a new externally managed study
       #   POST /api/v2/sapio/studies
       #   Content-Type: application/json X-Sequencescape-Client-Id: <integration_hub_api_key>
       #   {
-      #     "study": {
-      #       "name": "Unique study name, max 200 chars",
-      #       "uuid": "11111111-2222-3333-4444-555555666666"
+      #     "data": {
+      #       "type": "studies",
+      #       "attributes": {
+      #         "name": "Unique study name, max 200 chars",
+      #         "uuid": "11111111-2222-3333-4444-555555666666"
+      #       }
       #     }
       #   }
       #
