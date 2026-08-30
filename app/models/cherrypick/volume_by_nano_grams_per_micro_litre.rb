@@ -87,7 +87,9 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
 
   private
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/CopDirectiveSyntax
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/CopDirectiveSyntax
   def check_inputs_to_volume_to_cherrypick_by_nano_grams_per_micro_litre!(
     final_volume_desired,
     final_conc_desired,
@@ -103,7 +105,9 @@ module Cherrypick::VolumeByNanoGramsPerMicroLitre
     end
     if source_concentration.blank? || source_concentration.to_f < 0.0
       raise Cherrypick::ConcentrationError,
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             "Source concentration (#{source_concentration.inspect}) is invalid for cherrypick by nano grams per micro litre"
       # rubocop:enable Layout/LineLength
     end

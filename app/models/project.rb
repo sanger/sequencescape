@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 require 'aasm'
 
-# rubocop:disable Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders

@@ -87,7 +87,9 @@ class DataReleaseTest < ActiveSupport::TestCase
         data_release_study_types = ['transcriptomics', 'other sequencing-based assay', 'genotyping or cytogenetics']
         data_release_strategies = %w[managed open]
 
-        # rubocop:todo Metrics/BlockLength
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:todo Metrics/BlockLength, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         data_release_study_types.each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
             setup { @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value }

@@ -94,7 +94,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
   class << self
     # The default behaviour for any model I/O is to write out all of the columns as they appear.  Some of
     # the columns are ignored, a few manipulated, but mostly it's a direct copy.
+    # rubocop:todo Style/DirectiveScope
     # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:enable Style/DirectiveScope
     def render_class_for_model(model) # rubocop:todo Metrics/CyclomaticComplexity
       render_class = Class.new(self)
 
@@ -269,7 +271,9 @@ class Api::Base # rubocop:todo Metrics/ClassLength
 
     # rubocop:enable Metrics/MethodLength
 
-    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     def json_attribute_for_attribute(attribute_or_association, *rest) # rubocop:todo Metrics/AbcSize
       json_attribute = attribute_to_json_attribute_mappings[attribute_or_association.to_sym]
       if json_attribute.blank?

@@ -111,7 +111,9 @@ describe 'Bulk submission', js: false do
         let(:deprecated) { true }
         let(:file_name) { '1_deprecated_rows.csv' }
         let(:expected_content) do
-          # rubocop:todo Layout/LineLength
+          # rubocop:todo Lint/MissingCopEnableDirective
+          # rubocop:todo Layout/LineLength, Style/DirectiveScope
+          # rubocop:enable Lint/MissingCopEnableDirective
           "Template: 'Cherrypick for pulldown - Pulldown WGS - HiSeq Paired end sequencing' is deprecated and no longer in use."
           # rubocop:enable Layout/LineLength
         end

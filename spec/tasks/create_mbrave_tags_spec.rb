@@ -2,7 +2,9 @@
 require 'spec_helper'
 require 'rake'
 
-# rubocop:todo RSpec/DescribeClass
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo RSpec/DescribeClass, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 describe 'mbrave tasks' do
   let(:task) { Rake::Task[task_name] }
 
@@ -50,7 +52,9 @@ describe 'mbrave tasks' do
       let(:reverse_file) { 'reverse' }
       let(:version) { 'v1' }
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       it 'creates the tag group with the right indexing' do
         expect(MbraveTagsCreator).to receive(:process_create_tag_groups).with(
           forward_file,

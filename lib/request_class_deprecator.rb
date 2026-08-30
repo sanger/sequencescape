@@ -18,7 +18,11 @@ module RequestClassDeprecator
   end
 
   # rubocop:todo Metrics/MethodLength
-  # rubocop:disable Rails/SkipsModelValidations
+  # rubocop:todo Lint/CopDirectiveSyntax
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:disable Rails/SkipsModelValidations, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
+  # rubocop:enable Lint/CopDirectiveSyntax
   def deprecate_class(request_class_name, options = {}) # rubocop:todo Metrics/AbcSize
     state_changes = options.fetch(:state_change, {})
     new_request_type = options.fetch(:new_type, transfer_request)

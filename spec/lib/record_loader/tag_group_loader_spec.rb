@@ -86,7 +86,9 @@ RSpec.describe RecordLoader::TagGroupLoader, :loader, type: :model do
       end.not_to(change { tag_group.tags.count })
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     it 'updates adapter_type_id if different' do
       options = { 'tags' => tags, 'adapter_type_name' => adapter_type.name }
       tag_group = loader.create_or_update!(section_name, options)

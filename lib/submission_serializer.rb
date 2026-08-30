@@ -57,7 +57,9 @@ module SubmissionSerializer
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
+  # rubocop:todo Style/DirectiveScope
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Style/DirectiveScope
   def self.construct!(hash) # rubocop:todo Metrics/CyclomaticComplexity
     st = {}
 

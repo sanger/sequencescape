@@ -108,7 +108,9 @@ module Request::Statistics
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def sample_statistics_new # rubocop:todo Metrics/AbcSize
     counters =
       join_asset

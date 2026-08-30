@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-# rubocop:disable RSpec/VerifiedDoubles
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable RSpec/VerifiedDoubles, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
   let(:sample) { instance_double(Sample, name: 'Sample_001') }
   let(:sample2) { instance_double(Sample, name: 'Sample_002') }

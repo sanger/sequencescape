@@ -37,7 +37,9 @@ class ExtendedValidator < ApplicationRecord
   scope :for_submission,
         ->(submission) do
           joins(
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             'INNER JOIN request_types_extended_validators ON request_types_extended_validators.extended_validator_id = extended_validators.id'
             # rubocop:enable Layout/LineLength
           ).where(request_types_extended_validators: { request_type_id: submission.request_types })

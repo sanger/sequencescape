@@ -92,7 +92,9 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     when 'pending'
       display_user_guide('Your submission is currently pending.') +
         tag.p(
-          # rubocop:todo Layout/LineLength
+          # rubocop:todo Lint/CopDirectiveSyntax
+          # rubocop:todo Layout/LineLength, Style/DirectiveScope
+          # rubocop:enable Lint/CopDirectiveSyntax
           'It should be processed approximately 10 minutes after you have submitted it, however sometimes this may take longer.'
           # rubocop:enable Layout/LineLength
         )
@@ -101,7 +103,9 @@ module SubmissionsHelper # rubocop:todo Metrics/ModuleLength
     when 'failed'
       display_user_error(
         raw(
-          # rubocop:todo Layout/LineLength
+          # rubocop:todo Lint/MissingCopEnableDirective
+          # rubocop:todo Layout/LineLength, Style/DirectiveScope
+          # rubocop:enable Lint/MissingCopEnableDirective
           "<h3>Your submission has failed:</h3><p> #{h((submission.message || 'No failure reason recorded').lines.first)} </p>"
           # rubocop:enable Layout/LineLength
         )

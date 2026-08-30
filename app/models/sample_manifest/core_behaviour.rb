@@ -94,7 +94,9 @@ module SampleManifest::CoreBehaviour
 
   private
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def behaviour_module # rubocop:todo Metrics/CyclomaticComplexity
     # asset_type comes from the query params for the new/create manifest actions page.
     case asset_type

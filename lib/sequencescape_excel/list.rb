@@ -59,7 +59,9 @@ module SequencescapeExcel
       # - create a list of keys
       # - create a struct class based on the name
       # - creates a method which returns a list of keys for the items in each key
-      # rubocop:todo Metrics/MethodLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       def list_for(*args) # rubocop:todo Metrics/AbcSize
         options = args.extract_options!
 

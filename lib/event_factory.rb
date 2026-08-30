@@ -59,7 +59,9 @@ class EventFactory
   #################################
 
   # creates an event and sends an email when update(s) to a request fail
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def self.request_update_note_to_manager(request, user, message) # rubocop:todo Metrics/AbcSize
     content =
       # rubocop:todo Layout/LineLength

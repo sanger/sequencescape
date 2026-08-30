@@ -13,7 +13,9 @@ module Sanger
           end
         end
 
+        # rubocop:todo Style/DirectiveScope
         # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
+        # rubocop:enable Style/DirectiveScope
         def should_require_login(*actions) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize
           params = (actions.pop if actions.last.is_a?(Hash)) || {}
           actions << :index if actions.empty?

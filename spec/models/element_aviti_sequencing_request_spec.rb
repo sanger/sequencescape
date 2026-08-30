@@ -81,7 +81,9 @@ RSpec.describe ElementAvitiSequencingRequest do
     end
 
     context 'when requested_flowcell_type is LO and read_length is not 75 or 150' do
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       it 'is invalid and displays error message' do
         request.request_metadata.requested_flowcell_type = 'LO'
         request.request_metadata.read_length = 300

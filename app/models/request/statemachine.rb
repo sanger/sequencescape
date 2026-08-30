@@ -3,7 +3,9 @@
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/ModuleLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 module Request::Statemachine
   extend ActiveSupport::Concern
 

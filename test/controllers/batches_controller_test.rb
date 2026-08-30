@@ -72,7 +72,9 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           should 'expose the library information correctly' do
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
             # rubocop:enable Layout/LineLength
           end

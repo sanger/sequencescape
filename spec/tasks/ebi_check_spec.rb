@@ -3,7 +3,9 @@
 require 'rails_helper'
 require 'rake'
 
+# rubocop:todo Style/DirectiveScope
 # rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+# rubocop:enable Style/DirectiveScope
 RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   let(:task) { Rake::Task[task_name] }
   let(:process) { instance_double(EBICheck::Process) }

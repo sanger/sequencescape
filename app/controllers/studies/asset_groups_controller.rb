@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class Studies::AssetGroupsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.

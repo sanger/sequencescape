@@ -67,7 +67,9 @@ module Submission::LinearRequestGraph
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
-    # rubocop:todo Metrics/BlockLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Metrics/BlockLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     multiplier.times do
       # If the request type is for multiplexing it means that all of the assets end up in one target asset.
       # Otherwise there are the same number of target assets as source.

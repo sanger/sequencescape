@@ -623,7 +623,9 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
     requests.all? { |request| request.asset.resource? || request.events.family_pass_and_fail.exists? }
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def generate_target_assets_for_requests # rubocop:todo Metrics/AbcSize
     requests_to_update = []
 

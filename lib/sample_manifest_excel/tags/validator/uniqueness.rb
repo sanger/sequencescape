@@ -36,7 +36,9 @@ module SampleManifestExcel
 
         private
 
+        # rubocop:todo Style/DirectiveScope
         # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+        # rubocop:enable Style/DirectiveScope
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
           i7s = []
           i5s = []

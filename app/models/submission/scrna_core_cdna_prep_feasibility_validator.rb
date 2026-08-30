@@ -15,7 +15,9 @@
 #
 # The messages are generated using the strings in the locale file.
 #
-# rubocop:disable Metrics/ModuleLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:disable Metrics/ModuleLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # Add the methods from the calculator module for volume calculations.
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
@@ -147,6 +149,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #
   # @return [void]
   # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:enable Style/DirectiveScope
   def validate_scrna_core_cdna_prep_feasibility_by_samples
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       barcodes, well_locations = extract_barcodes_and_well_locations(rows)
@@ -201,21 +204,21 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @param size_type [String] the type of pool size ('smallest' or 'biggest')
   #
   # @return [void]
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable Metrics/ParameterLists, Style/DirectiveScope
   def add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, count, size_type)
-    errors.add(
-      :spreadsheet,
-      I18n.t(
-        'errors.number_of_pools_by_samples',
-        study_name: study_name,
-        project_name: project_name,
-        min: min,
-        max: max,
-        count: count,
-        size_type: size_type,
-        scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
-      )
+  errors.add( # rubocop:todo Layout/IndentationWidth
+    :spreadsheet,
+    I18n.t(
+      'errors.number_of_pools_by_samples',
+      study_name: study_name,
+      project_name: project_name,
+      min: min,
+      max: max,
+      count: count,
+      size_type: size_type,
+      scope: I18N_SCOPE_SCRNA_CORE_CDNA_PREP_FEASIBILITY_VALIDATOR
     )
+  )
   end
   # rubocop:enable Metrics/ParameterLists
 
@@ -234,24 +237,24 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #   donor clash, so this is invalid.
   #
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Style/DirectiveScope
   def validate_scrna_core_cdna_prep_feasibility_by_donors
-    group_rows_by_study_and_project.each do |(study_name, project_name), rows|
-      number_of_pools = rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
-      donor_id_groups = group_rows_by_donor_id(rows)
-      _donor_id, biggest_group = donor_id_groups.max_by { |_key, value| value.size }
+  group_rows_by_study_and_project.each do |(study_name, project_name), rows| # rubocop:todo Layout/IndentationWidth
+    number_of_pools = rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
+    donor_id_groups = group_rows_by_donor_id(rows)
+    _donor_id, biggest_group = donor_id_groups.max_by { |_key, value| value.size }
 
-      next if biggest_group.size <= number_of_pools
+    next if biggest_group.size <= number_of_pools
 
-      barcodes_or_well_locations = list_barcodes_or_well_locations_to_check_for_donors(biggest_group)
-      add_error_scrna_core_cdna_prep_feasibility_by_donors(
-        study_name,
-        project_name,
-        biggest_group.size,
-        number_of_pools,
-        barcodes_or_well_locations
-      )
-    end
+    barcodes_or_well_locations = list_barcodes_or_well_locations_to_check_for_donors(biggest_group)
+    add_error_scrna_core_cdna_prep_feasibility_by_donors(
+      study_name,
+      project_name,
+      biggest_group.size,
+      number_of_pools,
+      barcodes_or_well_locations
+    )
+  end
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -307,24 +310,24 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # the user the submission created page.
   #
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Style/DirectiveScope
   def validate_scrna_core_cdna_prep_full_allowance
-    group_rows_by_study_and_project.each do |(study_name, project_name), rows|
-      number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
-      number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
-      final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
-      full_allowance = calculate_volume_needed(number_of_cells_per_chip_well, 2, 2)
+  group_rows_by_study_and_project.each do |(study_name, project_name), rows| # rubocop:todo Layout/IndentationWidth
+    number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
+    number_of_cells_per_chip_well = rows.first[headers.index(HEADER_CELLS_PER_CHIP_WELL)].to_i
+    final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
+    full_allowance = calculate_volume_needed(number_of_cells_per_chip_well, 2, 2)
 
-      next if final_resuspension_volume >= full_allowance
+    next if final_resuspension_volume >= full_allowance
 
-      add_warning_scrna_core_cdna_prep_full_allowance(
-        study_name,
-        project_name,
-        number_of_samples_in_smallest_pool,
-        final_resuspension_volume.round(1), # round to 1 decimal place
-        full_allowance.round(1) # round to 1 decimal place
-      )
-    end
+    add_warning_scrna_core_cdna_prep_full_allowance(
+      study_name,
+      project_name,
+      number_of_samples_in_smallest_pool,
+      final_resuspension_volume.round(1), # round to 1 decimal place
+      full_allowance.round(1) # round to 1 decimal place
+    )
+  end
   end
   # rubocop:enable Metrics/MethodLength
 
@@ -447,7 +450,9 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @param rows [Array<Array<String>>] the CSV rows of a study and project
 
   # @return [Hash<String, Array<Array<String>>] the mapping between donor IDs and the corresponding rows
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:disable Metrics/AbcSize, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def group_rows_by_donor_id(rows)
     barcodes, well_locations = extract_barcodes_and_well_locations(rows)
     receptacles = find_receptacles(barcodes, well_locations)

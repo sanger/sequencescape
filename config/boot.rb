@@ -9,7 +9,11 @@ require "bundler/setup" # Set up gems listed in the Gemfile.
 # see any benifit, and in practice the purge is unlikely to trigger as its rare
 # we go over a month without a release.
 # Disable some Rails cops, as Rails isn't actually loaded at this point.
-# rubocop:disable Rails/Output, Rails/TimeZone
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Rails/Output, Rails/TimeZone, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
+# rubocop:enable Lint/CopDirectiveSyntax
 begin
   time = File.stat('tmp/cache/bootsnap-compile-cache').birthtime
 

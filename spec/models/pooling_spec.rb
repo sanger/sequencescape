@@ -88,7 +88,9 @@ describe Pooling, :poolings do
         expect(pooling.standard_mx_tube.aliquots.count).to eq 5
         expect(pooling.message).to eq(
           notice:
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/CopDirectiveSyntax
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/CopDirectiveSyntax
             "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} and stock_mx_tube #{Tube.last(2).first.human_barcode} "
           # rubocop:enable Layout/LineLength
         )
@@ -131,7 +133,9 @@ describe Pooling, :poolings do
         expect(pooling.print_job_required?).to be true
         expect(pooling.message).to eq(
           notice:
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             "Samples were transferred successfully to standard_mx_tube #{Tube.last.human_barcode} Your 1 label(s) have been sent to printer #{barcode_printer.name}"
           # rubocop:enable Layout/LineLength
         )

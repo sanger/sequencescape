@@ -3,7 +3,9 @@
 require 'rails_helper'
 require 'ebi_check/client'
 
-# rubocop:disable RSpec/MultipleExpectations
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable RSpec/MultipleExpectations, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 RSpec.describe EBICheck::Client do
   let(:drop_box_url) { 'https://example.com/ena/submit/drop-box' }
   let(:ega_options) { { user: 'ega_user', password: 'ega_pw' } }

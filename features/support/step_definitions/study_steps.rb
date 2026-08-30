@@ -298,12 +298,16 @@ Given /^I create study "([^"]*)" with faculty sponsor "([^"]*)"$/ do |study_name
   step('I select "PCR" from "EBI Library Selection"')
   step('I choose "Yes" from "Do any of the samples in this study contain human DNA?"')
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/CopDirectiveSyntax
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/CopDirectiveSyntax
     'I choose "No" from "Does this study contain samples that are contaminated with human DNA which must be removed prior to analysis?"'
     # rubocop:enable Layout/LineLength
   )
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     'I choose "Yes" from "Are all the samples to be used in this study commercially available, unlinked anonymised cell-lines?"'
     # rubocop:enable Layout/LineLength
   )

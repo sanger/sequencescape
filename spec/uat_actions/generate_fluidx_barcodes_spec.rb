@@ -2,7 +2,9 @@
 
 require 'rails_helper'
 
-# rubocop:disable RSpec/MultipleExpectations
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:disable RSpec/MultipleExpectations, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 describe UatActions::GenerateFluidxBarcodes do
   let(:uat_action) { described_class.new(params) }
 
@@ -31,7 +33,9 @@ describe UatActions::GenerateFluidxBarcodes do
     context 'with valid options' do
       let(:params) { { barcode_count: 10, barcode_prefix: 'SQ', barcode_index: 1 } }
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       it 'generates barcodes' do
         expect(uat_action.perform).to be true
         expect(uat_action.report['barcodes'].size).to eq params[:barcode_count].to_i

@@ -78,7 +78,9 @@ end
 Given /^I have already made a "([^"]+)" request with ID (\d+) within the study "([^"]+)" for the project "([^"]+)"$/ do |type, id, study_name, project_name|
   # rubocop:enable Layout/LineLength
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     "I have already made 1 \"#{type}\" request with IDs starting at #{id} within the study \"#{study_name}\" for the project \"#{project_name}\""
     # rubocop:enable Layout/LineLength
   )

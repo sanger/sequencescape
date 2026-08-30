@@ -3,7 +3,9 @@
 require 'rails_helper'
 require 'ebi_check/process'
 
+# rubocop:todo Style/DirectiveScope
 # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+# rubocop:enable Style/DirectiveScope
 describe EBICheck::Process do
   let(:buffer) { StringIO.new } # to capture output
   let(:study1_number) { 'EGA123' }

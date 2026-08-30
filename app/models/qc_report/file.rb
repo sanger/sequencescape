@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 class QcReport::File
   ACCEPTED_MIMETYPE = 'text/csv'
   ACCEPTED_EXTENSTION = 'csv'
@@ -47,7 +49,9 @@ class QcReport::File
     unless is_a_report?
       return (
         invalid(
-          # rubocop:todo Layout/LineLength
+          # rubocop:todo Lint/MissingCopEnableDirective
+          # rubocop:todo Layout/LineLength, Style/DirectiveScope
+          # rubocop:enable Lint/MissingCopEnableDirective
           "#{filename} does not appear to be a qc report file. Make sure the #{FILE_VERSION_KEY} line has not been removed."
           # rubocop:enable Layout/LineLength
         )

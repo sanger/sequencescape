@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/ModuleLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)

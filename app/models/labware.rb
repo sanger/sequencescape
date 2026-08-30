@@ -2,7 +2,9 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-# rubocop:disable Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class Labware < Asset
   include Commentable
   include Uuid::Uuidable

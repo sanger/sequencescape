@@ -95,7 +95,9 @@ RSpec.describe LinearSubmission do
             let(:request_type_option) { [library_creation_request_type.id, sequencing_request_type.id] }
 
             it 'create requests but not comments' do
-              # rubocop:todo RSpec/ChangeByZero
+              # rubocop:todo Lint/CopDirectiveSyntax
+              # rubocop:todo RSpec/ChangeByZero, Style/DirectiveScope
+              # rubocop:enable Lint/CopDirectiveSyntax
               expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 1).and change(
                 Comment,
                 :count
@@ -119,8 +121,12 @@ RSpec.describe LinearSubmission do
             end
 
             it 'create requests but not comments' do
-              # rubocop:todo RSpec/ChangeByZero
-              expect { mpx_submission.process! }.to change(Request, :count).by(mx_asset_count + 2).and change(
+              # rubocop:todo Lint/MissingCopEnableDirective
+              # rubocop:todo RSpec/ChangeByZero, Style/DirectiveScope
+              # rubocop:enable Lint/MissingCopEnableDirective
+              expect do
+                mpx_submission.process!
+              end.to change(Request, :count).by(mx_asset_count + 2).and change(
                 Comment,
                 :count
               ).by(0)

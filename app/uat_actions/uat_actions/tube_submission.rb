@@ -3,7 +3,9 @@
 # This UAT Action will generates a basic submission for tubes. Initially, it
 # has been designed for generating scRNA Core Donor Pooling and cDNA Prep
 # submissions on LRC Bank Seq/Spare tubes.
-# rubocop:disable Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class UatActions::TubeSubmission < UatActions
   self.title = 'Tube submission'
   self.description = 'Generates a basic submission for tubes.'

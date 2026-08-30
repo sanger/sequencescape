@@ -18,7 +18,9 @@ class Ability::Administrator
 
   private
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting Administrator privileges' }
 

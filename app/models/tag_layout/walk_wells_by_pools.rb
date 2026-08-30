@@ -2,7 +2,9 @@
 class TagLayout::WalkWellsByPools < TagLayout::Walker
   self.walking_by = 'wells in pools'
 
+  # rubocop:todo Style/DirectiveScope
   # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Style/DirectiveScope
   def walk_wells # rubocop:todo Metrics/CyclomaticComplexity
     # Adjust each of the groups so that any wells that are in the same pool as those at the same position
     # in the group to the left are moved to a non-clashing position.  Effectively this makes the view of the
@@ -29,7 +31,9 @@ class TagLayout::WalkWellsByPools < TagLayout::Walker
 
         current_group.push(well_and_pool) # Move the well to the end of the group
 
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:todo Layout/LineLength, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         current_group[index] = [nil, well_and_pool.last] # Blank out the well at the current position but maintain the pool
         # rubocop:enable Layout/LineLength
       end

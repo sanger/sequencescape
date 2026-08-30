@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo Metrics/ModuleLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 
@@ -72,7 +74,9 @@ module StudyReport::StudyDetails
     ]
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
     yield(progress_report_header)
 

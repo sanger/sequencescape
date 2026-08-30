@@ -2,7 +2,9 @@
 # Class to support creation of tag groups, tag layout templates and generation of the
 # mbrave.yml config needed by limber to be able to generate the mbrave UMI file at the
 # end of the bioscan process.
-# rubocop:disable Metrics/ClassLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:disable Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 class MbraveTagsCreator
   YAML_FILENAME = 'mbrave.yml'
   TAG_IDENTIFIER = 'Bioscan'
@@ -33,7 +35,9 @@ class MbraveTagsCreator
 
   def self.log_line
     # We want to enforce that logs go to STDOUT while printing the barcodes
-    # rubocop:disable Rails/Output
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:disable Rails/Output, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     puts yield
     # rubocop:enable Rails/Output
   end

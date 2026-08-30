@@ -255,7 +255,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     @qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
   end
 
+  # rubocop:todo Style/DirectiveScope
   # rubocop:disable Naming/MemoizedInstanceVariableName
+  # rubocop:enable Style/DirectiveScope
   def find_or_create_qc_assay!
     @qc_assay ||= QcAssay.find_or_create_by!(lot_number: "sample_manifest_id:#{id}")
   end

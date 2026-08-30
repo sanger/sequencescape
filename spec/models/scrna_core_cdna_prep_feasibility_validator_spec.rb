@@ -256,7 +256,9 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_samples) { 0 }
       let(:group_3_number_of_samples) { 0 }
 
+      # rubocop:todo Style/DirectiveScope
       # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -281,7 +283,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 3 }
       let(:group_3_number_of_pools) { 2 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -358,7 +364,11 @@ RSpec.describe BulkSubmission, with: :uploader do
         allow(Rails.application.config).to receive(:scrna_config).and_return(scrna_config_dup)
       end
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -383,7 +393,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 3 }
       let(:group_3_number_of_pools) { 3 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -455,7 +469,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 2 }
       let(:group_3_number_of_pools) { 2 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
 
@@ -497,7 +515,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -585,7 +607,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       # We cannot put the first 5 samples into separate pools to avoid donor
       # clash, because we have 4 pools.
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the error message' do
         # Barcodes or well locations of the labware with the same donor ID are
         # listed in the error message. This test uses tubes; hence the barcodes
@@ -621,7 +647,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
       # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the warning message' do
         warning_message =
           I18n.t(
@@ -651,7 +681,11 @@ RSpec.describe BulkSubmission, with: :uploader do
 
       let(:group_1_cells_per_chip_well) { 26_250 }
 
-      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the warning message' do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings).to be_empty
@@ -670,7 +704,11 @@ RSpec.describe BulkSubmission, with: :uploader do
 
       let(:group_1_cells_per_chip_well) { 20_000 }
 
-      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/MultipleExpectations, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'does not add the warning message' do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings).to be_empty
@@ -687,7 +725,11 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:todo Style/DirectiveScope
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
+      # rubocop:enable Style/DirectiveScope
       it 'adds the warning message for each study-project' do
         expect(bulk_submission).to be_valid
 

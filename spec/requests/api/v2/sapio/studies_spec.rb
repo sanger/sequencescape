@@ -367,7 +367,9 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
       it 'returns all attributes for included study_metadata.data_release_study_type', :aggregate_failures do
         # NOTE: More includes can be added, separated by commas.
         api_get "#{base_endpoint}?filter[name]=Study*" \
@@ -406,7 +408,9 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     context 'with sparse fields' do
       before do
         create(:study, name: 'Study A')

@@ -14,7 +14,9 @@ class Batch::RequestFailAndRemover
             absence: {
               message:
                 lambda { |_, data|
+                  # rubocop:todo Style/DirectiveScope
                   # rubocop:todo Layout/LineLength
+                  # rubocop:enable Style/DirectiveScope
                   "Fail and remove were both selected for the following - #{data[:value].to_sentence} this is not supported."
                   # rubocop:enable Layout/LineLength
                 }

@@ -224,7 +224,9 @@ RSpec.describe AssetLink do
           end
 
           # Patch has_duplicates method.
-          # rubocop:disable RSpec/AnyInstance
+          # rubocop:todo Lint/MissingCopEnableDirective
+          # rubocop:disable RSpec/AnyInstance, Style/DirectiveScope
+          # rubocop:enable Lint/MissingCopEnableDirective
           allow_any_instance_of(Dag::CreateCorrectnessValidator).to receive(:has_duplicates).and_return(false)
           # rubocop:enable RSpec/AnyInstance
 

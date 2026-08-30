@@ -12,7 +12,9 @@ class Robot::Generator::TecanV3 < Robot::Generator::TecanV2
   # @param data_object [Hash] the picking data object
   # @return [String] the buffer addition steps string
   # @see Robot::Generator::Behaviours::TecanDefault#buffers
+  # rubocop:todo Style/DirectiveScope
   # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  # rubocop:enable Style/DirectiveScope
   def buffers(data_object)
     data_object = data_object_for_buffers(data_object)
     groups = Hash.new { |h, k| h[k] = [] } # channel => [steps]

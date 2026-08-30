@@ -156,7 +156,9 @@ class Asset < ApplicationRecord
   def register_stock!
     class_name = self.class.name
     if stock_message_template.nil?
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:todo Layout/LineLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       raise StandardError,
             "No stock template configured for #{class_name}. If #{class_name} is a stock, set stock_template on the class."
       # rubocop:enable Layout/LineLength

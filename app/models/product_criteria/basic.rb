@@ -1,5 +1,7 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class ProductCriteria::Basic
   SUPPORTED_WELL_ATTRIBUTES = %i[
     gel_pass

@@ -62,7 +62,9 @@ class SequencingPipeline < Pipeline
         request_clone.update!(state: 'pending', target_asset_id: nil, request_metadata_attributes: rma)
         request_clone.comments.create!(
           description:
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             "Automatically created clone of request #{request.id} which was removed from Batch #{batch.id} at #{DateTime.now}"
           # rubocop:enable Layout/LineLength
         )

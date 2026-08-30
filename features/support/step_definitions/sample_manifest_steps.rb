@@ -67,7 +67,9 @@ Given /^the Sanger sample IDs will be sequentially generated$/ do
   )
 end
 
-# rubocop:todo Metrics/BlockLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo Metrics/BlockLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 Then /^the samples table should look like:$/ do |table|
   table.hashes.each do |expected_data|
     sanger_sample_id = expected_data[:sanger_sample_id]
@@ -126,7 +128,7 @@ Then /^the sample reference genomes should be:$/ do |table|
   end
 end
 
-# rubocop:todo Metrics/BlockLength
+# rubocop:todo Metrics/BlockLength, Style/DirectiveScope
 Then /^the samples should be tagged in library and multiplexed library tubes with:$/ do |table|
   pooled_aliquots =
     MultiplexedLibraryTube.last.aliquots.map { |a| [a.sample.sanger_sample_id, a.tag.map_id, a.library_id] }
@@ -159,7 +161,9 @@ Then /^the samples should be tagged in library and multiplexed library tubes wit
                  "insert_size_to: #{expected_data[:insert_size_to]} #{lt.aliquots.first.insert_size_to}"
     assert_equal lt.receptacle.id, lt.aliquots.first.library_id, "Library_id hasn't been set"
     assert pooled_aliquots.delete([expected_data[:sanger_sample_id], expected_data[:tag_index].to_i, lt.receptacle.id]),
-           # rubocop:todo Layout/LineLength
+           # rubocop:todo Lint/MissingCopEnableDirective
+           # rubocop:todo Layout/LineLength, Style/DirectiveScope
+           # rubocop:enable Lint/MissingCopEnableDirective
            "Couldn't find #{expected_data[:sanger_sample_id]} with tag #{expected_data[:tag_index]} in MX tube. (#{pooled_aliquots.inspect})"
     # rubocop:enable Layout/LineLength
   end

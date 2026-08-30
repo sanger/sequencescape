@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class LocationReport < ApplicationRecord
   # includes / extends
   extend DbFile::Uploader

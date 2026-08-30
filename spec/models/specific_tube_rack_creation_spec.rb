@@ -401,7 +401,9 @@ RSpec.describe SpecificTubeRackCreation do
         it 'calls create_new_barcode with the correct arguments' do
           specific_tube_rack_creation.send(:handle_tube_rack_barcode, new_tube_rack_barcode_string, new_tube_rack)
 
-          # rubocop:disable RSpec/SubjectStub
+          # rubocop:todo Lint/CopDirectiveSyntax
+          # rubocop:disable RSpec/SubjectStub, Style/DirectiveScope
+          # rubocop:enable Lint/CopDirectiveSyntax
           expect(specific_tube_rack_creation).to have_received(:create_new_barcode).with(
             new_tube_rack_barcode_string,
             new_tube_rack
@@ -426,16 +428,18 @@ RSpec.describe SpecificTubeRackCreation do
           # rubocop:enable RSpec/SubjectStub
         end
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
         it 'calls redirect_existing_barcode with the correct arguments' do
           specific_tube_rack_creation.send(:handle_tube_rack_barcode, existing_tube_rack_barcode_string, new_tube_rack)
 
-          # rubocop:disable RSpec/SubjectStub
-          expect(specific_tube_rack_creation).to have_received(:redirect_existing_barcode).with(
-            existing_tube_rack_barcode_record,
-            new_tube_rack,
-            existing_tube_rack_barcode_string
-          )
+            # rubocop:disable RSpec/SubjectStub, Style/DirectiveScope
+            # rubocop:todo Layout/IndentationConsistency
+            expect(specific_tube_rack_creation).to have_received(:redirect_existing_barcode).with(
+              existing_tube_rack_barcode_record,
+              new_tube_rack,
+              existing_tube_rack_barcode_string
+            )
+          # rubocop:enable Layout/IndentationConsistency
           # rubocop:enable RSpec/SubjectStub
         end
         # rubocop:enable RSpec/ExampleLength
@@ -467,7 +471,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the barcode format is not recognized' do
         let(:tube_rack_barcode_format) { nil }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:create_new_barcode, new_tube_rack_barcode_string, new_tube_rack)
@@ -488,7 +492,7 @@ RSpec.describe SpecificTubeRackCreation do
 
         before { allow(existing_tube_rack_barcode_record).to receive(:labware=).with(new_tube_rack) }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
         it 'redirects the barcode to the new tube rack' do
           specific_tube_rack_creation.send(
             :redirect_existing_barcode,
@@ -505,7 +509,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the existing labware is not a TubeRack' do
         let(:existing_labware) { create(:plate) }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(
@@ -554,7 +558,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the metadata does not save successfully' do
         let(:save_result) { false }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:add_tube_rack_metadata, new_tube_rack_barcode_string, new_tube_rack)
@@ -657,7 +661,9 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the racked tube does not save successfully' do
         let(:save_result) { false }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         it 'raises an StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:link_tube_to_rack, tube, new_tube_rack, tube_position)

@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe HasPolyMetadata, type: :concern do
-  # rubocop:disable RSpec/BeforeAfterAll
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:disable RSpec/BeforeAfterAll, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   before(:all) do
     ActiveRecord::Schema.define do
       create_table :dummy_models, force: true do |t|

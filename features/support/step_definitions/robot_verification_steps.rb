@@ -42,7 +42,9 @@ Given(
   step('the last batch has a barcode of "550000555760"')
 end
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Metrics/BlockLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 Given(
   /^I have a released cherrypicking batch with 3 plates and the minimum robot pick is "([^"]*)"$/
 ) do |minimum_robot_pick|

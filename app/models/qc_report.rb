@@ -13,7 +13,9 @@ class QcReport < ApplicationRecord
       end
     end
 
-    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         # When adding new states, please make sure you update the config/locals/en.yml file

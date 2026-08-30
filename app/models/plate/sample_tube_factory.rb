@@ -20,7 +20,9 @@ class Plate::SampleTubeFactory < SimpleDelegator
     sample_tubes
   end
 
+  # rubocop:todo Style/DirectiveScope
   # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Style/DirectiveScope
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
 

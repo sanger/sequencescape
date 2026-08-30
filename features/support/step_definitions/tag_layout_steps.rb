@@ -113,7 +113,9 @@ Given /^the UUID for the plate associated with the tag layout with ID (\d+) is "
   set_uuid_for(TagLayout.find(id).plate, uuid_value)
 end
 
-# rubocop:todo Metrics/MethodLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 def pool_by_strategy(source, destination, pooling_strategy) # rubocop:todo Metrics/AbcSize
   unless pooling_strategy.sum == source.size
     Rails.logger.info("Pooling strategy does not fit plate size #{source.size}: #{pooling_strategy.inspect}")

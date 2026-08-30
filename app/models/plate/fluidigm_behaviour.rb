@@ -36,7 +36,9 @@ module Plate::FluidigmBehaviour
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def apply_fluidigm_data(fluidigm_file) # rubocop:todo Metrics/AbcSize
     qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)

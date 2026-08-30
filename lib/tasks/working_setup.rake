@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 require './lib/oligo_enumerator'
 
-# rubocop:disable Rails/RakeEnvironment
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Rails/RakeEnvironment, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 namespace :working do
   # We don't want to load Sequencescape just to tell the user that nothing happens.
   task :basic do

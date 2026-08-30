@@ -364,7 +364,9 @@ RSpec.describe CompoundAliquot do
     end
     let(:compound_aliquot) { build(:compound_aliquot, request: request, source_aliquots: [aliquot1, aliquot2]) }
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:disable RSpec/ExampleLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     it 'returns a hash with expected keys' do
       attrs = compound_aliquot.aliquot_attributes
       expect(attrs).to include(

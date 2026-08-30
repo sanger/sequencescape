@@ -31,7 +31,9 @@ shared_examples 'a correct double label printer' do
       {
         left_text: date_today,
         right_text:
-          # rubocop:todo Layout/LineLength
+          # rubocop:todo Lint/MissingCopEnableDirective
+          # rubocop:todo Layout/LineLength, Style/DirectiveScope
+          # rubocop:enable Lint/MissingCopEnableDirective
           "#{batch.output_plate_role} #{batch.output_plate_purpose.name} #{plate1.barcode_number} #{batch.studies.first.abbreviation}",
         # rubocop:enable Layout/LineLength
         label_name: 'extra_label'

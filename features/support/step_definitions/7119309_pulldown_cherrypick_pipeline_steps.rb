@@ -4,7 +4,9 @@ Given(
   /^plate "([^"]*)" with (\d+) samples in study "([^"]*)" exists$/
 ) do |plate_barcode, number_of_samples, study_name|
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     "I have a plate \"#{plate_barcode}\" in study \"#{study_name}\" with #{number_of_samples} samples in asset group \"Plate asset group #{plate_barcode}\""
     # rubocop:enable Layout/LineLength
   )

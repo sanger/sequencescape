@@ -57,7 +57,9 @@ class CreatorTest < ActiveSupport::TestCase
       matching_aliquots = well.aliquots.first.matches?(child.wells[i].aliquots.first)
 
       assert matching_aliquots,
-             # rubocop:todo Layout/LineLength
+             # rubocop:todo Lint/MissingCopEnableDirective
+             # rubocop:todo Layout/LineLength, Style/DirectiveScope
+             # rubocop:enable Lint/MissingCopEnableDirective
              "Aliquots do not match in #{well.map_description}: #{well.aliquots.first} !~= #{child.wells[i].aliquots.first}"
       # rubocop:enable Layout/LineLength
     end

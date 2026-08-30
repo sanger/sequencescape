@@ -154,7 +154,9 @@ module SequencescapeExcel
     end
 
     def inspect
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:todo Layout/LineLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       "<#{self.class}: @options=#{options}, @first_row=#{first_row}, @last_row=#{last_row}, @first_column=#{first_column}, @last_column=#{last_column}, @worksheet_name=#{worksheet_name}>"
       # rubocop:enable Layout/LineLength
     end

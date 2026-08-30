@@ -3,7 +3,9 @@
 # Prepend to an ability class to include Power User privileges
 # These are the privileges shared by administrators and managers
 module Ability::Shared::PowerUser
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def grant_privileges # rubocop:todo Metrics/AbcSize
     super
     Rails.logger.debug { 'Granting PowerUser privileges' }

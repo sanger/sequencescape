@@ -48,7 +48,9 @@ def assert_label_exists(label_text, required = false)
   )
 end
 
+# rubocop:todo Style/DirectiveScope
 # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+# rubocop:enable Style/DirectiveScope
 def locate_labeled_field_type(label_text, field_type) # rubocop:todo Metrics/CyclomaticComplexity
   field = page.find_field(label_text) or raise Capybara::ElementNotFound, "Could not find #{label_text.inspect}"
   case field_type

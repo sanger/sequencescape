@@ -24,7 +24,9 @@ describe PsdFormatter do
       Rails.logger.info 'info message'
       log.rewind
       expect(log.read).to match(
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo Lint/CopDirectiveSyntax
+        # rubocop:todo Layout/LineLength, Style/DirectiveScope
+        # rubocop:enable Lint/CopDirectiveSyntax
         /\A\(thread-#{Thread.current.object_id}\) \[#{application_name}:#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
         # rubocop:enable Layout/LineLength
       )
@@ -38,7 +40,9 @@ describe PsdFormatter do
       Rails.logger.info 'info message'
       log.rewind
       expect(log.read).to match(
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:todo Layout/LineLength, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         /\A\(thread-#{Thread.current.object_id}\) \[#{deployment_info.version}:#{deployment_info.environment}\]  INFO -- : info message/
         # rubocop:enable Layout/LineLength
       )

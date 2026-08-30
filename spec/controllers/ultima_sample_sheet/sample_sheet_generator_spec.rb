@@ -45,7 +45,9 @@ require 'rails_helper'
 # 6,Sample6,Z0099,TCAG,2,C1,native,6
 #
 # rubocop:enable Layout/LineLength
+# rubocop:todo Style/DirectiveScope
 # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+# rubocop:enable Style/DirectiveScope
 RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   # Eagerly create the global section record.
   before { create(:ultima_global) }

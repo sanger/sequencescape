@@ -49,7 +49,9 @@ end
 # These are the steps for the general checking of the batch request behaviour.  Note that you probably
 # shouldn't be merging these steps into generic ones as they are fairly specific.
 #########################################################################################################
-# rubocop:todo Metrics/MethodLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 def build_batch_for(name, count) # rubocop:todo Metrics/AbcSize
   pipeline = Pipeline.find_by(name:) or raise StandardError, "Cannot find pipeline #{name.inspect}"
   submission_details = yield(pipeline)

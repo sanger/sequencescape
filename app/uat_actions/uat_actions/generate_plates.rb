@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 # Will construct plates with well_count wells filled with samples
-# rubocop:disable Metrics/ClassLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:disable Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 class UatActions::GeneratePlates < UatActions
   self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'

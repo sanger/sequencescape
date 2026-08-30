@@ -13,7 +13,9 @@ Given(
   purpose = FactoryBot.create :plate_purpose
   purpose_name = purpose.name
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/CopDirectiveSyntax
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/CopDirectiveSyntax
     "I have a \"#{purpose_name}\" plate \"#{plate_barcode}\" in study \"#{study_name}\" with #{number_of_samples} samples in asset group \"#{asset_group_name}\""
     # rubocop:enable Layout/LineLength
   )
@@ -45,7 +47,9 @@ Given(/^I have a cherrypicking batch with (\d+) samples$/) do |number_of_samples
   step('I have a project called "Test project"')
   step('I have an active study called "Test study"')
   step(
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Layout/LineLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     "I have a plate \"SQPD-1234567\" in study \"Test study\" with #{number_of_samples} samples in asset group \"Plate asset group\""
     # rubocop:enable Layout/LineLength
   )

@@ -19,7 +19,9 @@
 # Constants:
 # - VIEW_PATH: The path to the view template for rendering the form.
 #
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo Lint/CopDirectiveSyntax
+# rubocop:todo Metrics/ClassLength, Style/DirectiveScope
+# rubocop:enable Lint/CopDirectiveSyntax
 class PlatesFromTubesController < ApplicationController
   before_action :set_barcode_printers, only: %i[new create]
   before_action :set_plate_creators, only: %i[new create]
@@ -68,9 +70,13 @@ class PlatesFromTubesController < ApplicationController
   #
   # If the user selects 'Stock Plate', then the plate creator is set to StockPlateCreator.
   # If the user selects 'RNA Stock Plate', then the plate creator is set to RnaStockPlateCreator.
+  # rubocop:todo Layout/LineLength
   # If the user selects 'All of the above', then the plate creators are both StockPlateCreator and RnaStockPlateCreator
+  # rubocop:enable Layout/LineLength
   #
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/AbcSize, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def find_plate_creator
     @plate_creator =
       if params[:plates_from_tubes][:plate_type].to_s == 'Stock Plate'

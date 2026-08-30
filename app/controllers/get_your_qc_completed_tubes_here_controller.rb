@@ -5,7 +5,9 @@ class GetYourQcCompletedTubesHereController < ApplicationController
   def new
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def create # rubocop:todo Metrics/AbcSize
     @generator =
       LibPoolNormTubeGenerator.new(params[:barcode], current_user, Study.find_by(name: 'Lib PCR-XP QC Completed Tubes'))

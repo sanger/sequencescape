@@ -49,7 +49,9 @@ module Role::UserRoleHelper
     #
     # @note Disabling Naming/PredicateName as this is not a predicate, but instead has been named
     #       to evoke the behaviour of has_many/has_one
-    def has_role(role_name) # rubocop:disable Naming/PredicateName
+    # rubocop:todo Lint/CopDirectiveSyntax
+    def has_role(role_name) # rubocop:disable Naming/PredicateName, Lint/CopDirectiveSyntax
+      # rubocop:enable Lint/CopDirectiveSyntax
       define_method("#{role_name}?") { |authorizable = nil| role?(role_name, authorizable) }
       alias_method "#{role_name}_of?", "#{role_name}?"
       define_method("grant_#{role_name}") { |authorizable = nil| grant_role(role_name, authorizable) }

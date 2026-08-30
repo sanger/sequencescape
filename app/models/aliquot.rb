@@ -201,13 +201,17 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     elsif object.bait_library_id.present? && (bait_library_id != object.bait_library_id)
       false # We have different bait libraries
     elsif (no_tag1? && object.tag1?) || (no_tag2? && object.tag2?)
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo Lint/CopDirectiveSyntax
+      # rubocop:todo Layout/LineLength, Style/DirectiveScope
+      # rubocop:enable Lint/CopDirectiveSyntax
       raise StandardError, 'Tag missing from downstream aliquot' # The downstream aliquot is untagged, but is tagged upstream. Something is wrong!
       # rubocop:enable Layout/LineLength
     elsif object.no_tags?
       true # The upstream aliquot was untagged, we don't need to check tags
     else
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo Lint/MissingCopEnableDirective
+      # rubocop:todo Layout/LineLength, Style/DirectiveScope
+      # rubocop:enable Lint/MissingCopEnableDirective
       (object.no_tag1? || (tag_id == object.tag_id)) && (object.no_tag2? || (tag2_id == object.tag2_id)) # Both aliquots are tagged, we need to check if they match
       # rubocop:enable Layout/LineLength
     end

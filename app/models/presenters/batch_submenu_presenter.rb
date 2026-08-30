@@ -51,7 +51,9 @@ module Presenters
       ability.can? permission, object
     end
 
+    # rubocop:todo Style/DirectiveScope
     # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:enable Style/DirectiveScope
     def build_submenu
       add_submenu_option 'View summary', controller: :pipelines, action: :summary
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
@@ -108,9 +110,17 @@ module Presenters
     end
 
     # rubocop is suggesting changes that returns false positive
+    # rubocop:todo Style/DirectiveScope
     # rubocop: disable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
+    # rubocop:enable Style/DirectiveScope
     def aviti_requests?
-      @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Lint/CopDirectiveSyntax
+  # rubocop:todo Layout/IndentationWidth, Style/DirectiveScope, Lint/CopDirectiveSyntax, Style/DirectiveScope
+  # rubocop:enable Lint/CopDirectiveSyntax
+  # rubocop:enable Lint/MissingCopEnableDirective
+  @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
+      # rubocop:enable Layout/IndentationWidth
     end
     # rubocop: enable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
 

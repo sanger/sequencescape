@@ -7,7 +7,9 @@ module QcableStatemachineChecks
       instance_eval(&)
     end
 
-    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo Lint/MissingCopEnableDirective
+    # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+    # rubocop:enable Lint/MissingCopEnableDirective
     def check_event(name, options) # rubocop:todo Metrics/AbcSize
       target = @target
       acceptable_states = options[:from]

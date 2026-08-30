@@ -115,7 +115,9 @@ RSpec.describe ExportPoolXpToTractionJob do
         allow(Rails.logger).to receive(:debug).and_call_original
 
         # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
-        # rubocop:disable RSpec/MessageSpies
+        # rubocop:todo Lint/CopDirectiveSyntax
+        # rubocop:disable RSpec/MessageSpies, Style/DirectiveScope
+        # rubocop:enable Lint/CopDirectiveSyntax
         expect(Rails.logger).to receive(:debug) do |&block|
           expect(block.call).to eq("Using cached schema for #{schema_subject} v#{schema_version}")
         end
@@ -151,7 +153,9 @@ RSpec.describe ExportPoolXpToTractionJob do
         allow(Rails.logger).to receive(:debug).and_call_original
 
         # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
-        # rubocop:disable RSpec/MessageSpies
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:disable RSpec/MessageSpies, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         expect(Rails.logger).to receive(:debug) do |&block|
           expect(block.call).to eq("Fetching and caching schema for #{schema_subject} v#{schema_version}")
         end

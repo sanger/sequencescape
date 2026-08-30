@@ -73,7 +73,9 @@ Given 'H12 on {asset_name} is empty' do |plate|
 end
 
 # rubocop:todo Metrics/PerceivedComplexity, Metrics/AbcSize
-# rubocop:todo Metrics/MethodLength
+# rubocop:todo Lint/MissingCopEnableDirective
+# rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+# rubocop:enable Lint/MissingCopEnableDirective
 def work_pipeline_for(submissions, name, template = nil) # rubocop:todo Metrics/CyclomaticComplexity
   raise StandardError, 'No submissions to process' if submissions.empty?
 

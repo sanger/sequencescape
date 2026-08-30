@@ -21,7 +21,9 @@ module SampleManifest::UnspecifiedBehaviour
 
     def generate_sample_and_aliquot(sanger_sample_id, asset)
       raise StandardError,
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo Lint/MissingCopEnableDirective
+            # rubocop:todo Layout/LineLength, Style/DirectiveScope
+            # rubocop:enable Lint/MissingCopEnableDirective
             "UnspecifiedBehaviour can not be used to create Sample: #{sanger_sample_id}, for Asset: #{asset.display_name}."
       # rubocop:enable Layout/LineLength
     end

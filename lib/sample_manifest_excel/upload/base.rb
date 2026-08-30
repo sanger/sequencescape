@@ -51,7 +51,9 @@ module SampleManifestExcel
       end
 
       def inspect
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo Lint/MissingCopEnableDirective
+        # rubocop:todo Layout/LineLength, Style/DirectiveScope
+        # rubocop:enable Lint/MissingCopEnableDirective
         "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
         # rubocop:enable Layout/LineLength
       end

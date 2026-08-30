@@ -74,7 +74,9 @@ module SampleManifestExcel
           errors.add(:base, "Retention instruction checks failed at row: #{retention_error_row.number}. #{err_msg}")
         end
 
+        # rubocop:todo Style/DirectiveScope
         # rubocop:disable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity, Metrics/AbcSize, Metrics/MethodLength
+        # rubocop:enable Style/DirectiveScope
         def non_matching_retention_instructions_for_plates
           return nil, nil unless upload.respond_to?(:rows)
 

@@ -22,7 +22,9 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
     @comment.uniq!
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo Lint/MissingCopEnableDirective
+  # rubocop:todo Metrics/MethodLength, Style/DirectiveScope
+  # rubocop:enable Lint/MissingCopEnableDirective
   def assess! # rubocop:todo Metrics/AbcSize
     @qc_decision = 'passed'
     STATE_ORDER.each do |decision|
