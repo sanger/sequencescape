@@ -133,7 +133,7 @@ GEM
     ansi (1.6.0)
     ast (2.4.3)
     attr_extras (7.1.0)
-    avro (1.12.1)
+    avro (1.12.2)
       multi_json (~> 1.0)
     base64 (0.3.0)
     benchmark (0.5.0)
@@ -653,7 +653,7 @@ GEM
       mutex_m
       rack-proxy (~> 0.6, >= 0.6.1)
       zeitwerk (~> 2.2)
-    webmock (3.26.2)
+    webmock (3.26.3)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)

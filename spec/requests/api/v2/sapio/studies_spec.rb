@@ -636,8 +636,11 @@ describe 'Sapio Studies API', with: :api_v2 do
 
     let(:valid_payload) do
       {
-        study: {
-          name: 'Sapio Created Study'
+        data: {
+          type: 'studies',
+          attributes: {
+            name: 'Sapio Created Study'
+          }
         }
       }
     end
@@ -682,11 +685,15 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a valid payload' do
+      context 'with an integration hub API key and a valid payload with name only' do
         before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'returns 201 Created' do
           expect(response).to have_http_status(:created)
+        end
+
+        it 'does not return any errors in the response' do
+          expect(json['errors']).to be_nil
         end
 
         it 'creates a study in the database' do
@@ -695,7 +702,7 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         it 'returns the study id' do
           study = Study.find_by(name: 'Sapio Created Study')
-          expect(json.dig('data', 'attributes', 'id')).to eq(study.id)
+          expect(json.dig('data', 'id')).to eq(study.id.to_s)
         end
 
         it 'returns the study uuid' do
@@ -718,8 +725,17 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a missing study name' do
-        let(:no_name_payload) { { study: { uuid: '12345678-1234-5678-9abc-123456789012' } } }
+      context 'when missing a study name' do
+        let(:no_name_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                uuid: '12345678-1234-5678-9abc-123456789012'
+              }
+            }
+          }
+        end
 
         it 'returns 422 Unprocessable Entity' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
@@ -728,7 +744,17 @@ describe 'Sapio Studies API', with: :api_v2 do
 
         it 'returns validation error messages' do
           api_post base_endpoint, no_name_payload, headers: integration_hub_headers
-          expect(json['errors']).not_to be_empty
+          expect(json['errors']).to eq(
+            [
+              {
+                'title' => "can't be blank",
+                'detail' => "name - can't be blank",
+                'code' => JSONAPI::VALIDATION_ERROR,
+                'source' => { 'pointer' => '/data/attributes/name' },
+                'status' => '422'
+              }
+            ]
+          )
         end
 
         it 'does not create a study' do
@@ -737,14 +763,28 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and a supplied uuid' do
+      context 'with an integration hub API key and valid supplied name and uuid' do
         let(:supplied_uuid) { '12345678-1234-5678-9abc-123456789012' }
-        let(:uuid_payload) { { study: valid_payload[:study].merge(uuid: supplied_uuid) } }
+        let(:uuid_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                name: 'Sapio Created Study',
+                uuid: supplied_uuid
+              }
+            }
+          }
+        end
 
         before { api_post base_endpoint, uuid_payload, headers: integration_hub_headers }
 
         it 'returns 201 Created' do
           expect(response).to have_http_status(:created)
+        end
+
+        it 'does not return any errors in the response' do
+          expect(json['errors']).to be_nil
         end
 
         it 'uses the supplied UUID in the response' do
@@ -757,7 +797,95 @@ describe 'Sapio Studies API', with: :api_v2 do
         end
       end
 
-      context 'with an integration hub API key and no uuid in payload' do
+      context 'with a duplicate uuid' do
+        let(:existing_study) { create(:study, name: 'Existing Sapio Study') }
+        let(:duplicate_uuid_payload) do
+          {
+            data: {
+              type: 'studies',
+              attributes: {
+                name: 'Sapio Created Study',
+                uuid: existing_study.uuid
+              }
+            }
+          }
+        end
+
+        before { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 409 Conflict' do
+          expect(response).to have_http_status(:conflict)
+        end
+
+        it 'returns a uuid validation error' do
+          expect(json['errors']).to eq(
+            [{
+              'title' => 'Conflict',
+              'detail' => "The value #{existing_study.uuid} for the field uuid conflicts with an existing record.",
+              'code' => 'FIELD_VALUE_CONFLICT',
+              'status' => '409',
+              'source' => {
+                'pointer' => '/data/attributes/uuid'
+              }
+            }]
+          )
+        end
+
+        it 'does not create a study' do
+          expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
+        end
+      end
+
+      shared_examples 'a POST request with an invalid uuid' do
+        before { api_post base_endpoint, malformed_uuid_payload, headers: integration_hub_headers }
+
+        it 'returns 400 Bad Request' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a uuid validation error' do
+          expect(json['errors']).to eq(
+            [{
+              'title' => 'Invalid field value',
+              'detail' => "#{invalid_uuid} is not a valid value for uuid.",
+              'code' => JSONAPI::INVALID_FIELD_VALUE,
+              'status' => '400'
+            }]
+          )
+        end
+
+        it 'does not create a study' do
+          expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
+        end
+      end
+
+      %w[
+        invalid-uuid-format
+        {123e4567-e89b-12d3-a456-426614174000}
+        123e4567e89b12d3a456426614174000
+        00000000000000000000000000000000
+        0x123e4567e89b12d3a456426614174000
+      ].each do |invalid_uuid_value|
+        context "with invalid uuid format #{invalid_uuid_value.inspect}" do
+          let(:invalid_uuid) { invalid_uuid_value }
+
+          let(:malformed_uuid_payload) do
+            {
+              data: {
+                type: 'studies',
+                attributes: {
+                  name: 'Sapio Created Study',
+                  uuid: invalid_uuid_value
+                }
+              }
+            }
+          end
+
+          it_behaves_like 'a POST request with an invalid uuid'
+        end
+      end
+
+      context 'with no uuid in payload' do
         before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'auto-generates a UUID for the study' do
