@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_13_145512) do
+ActiveRecord::Schema[8.1].define(version: 2026_08_28_163003) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1864,11 +1864,40 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_145512) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "ultima_applications", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Relationship between applications, primers, and instruments", force: :cascade do |t|
+    t.string "name", null: false, comment: "Name used in UI and bulk submissions, e.g. 10x Flex"
+    t.text "description", null: false, comment: "Description of the application, e.g. 10x Genomics GEM-X Flex Gene Expression"
+    t.bigint "ug100_configuration_id", null: false, comment: "Application preset, type, and recipe used for UG100"
+    t.bigint "ug200_configuration_id", null: false, comment: "Application preset, type, and recipe used for UG200"
+    t.bigint "uga_primer_id", null: false, comment: "UGA indexing primer (Forward/R1 side)"
+    t.bigint "ugb_primer_id", null: false, comment: "UGB primer (Reverse/R2 side)"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["ug100_configuration_id"], name: "index_ultima_applications_on_ug100_configuration_id"
+    t.index ["ug200_configuration_id"], name: "index_ultima_applications_on_ug200_configuration_id"
+    t.index ["uga_primer_id"], name: "index_ultima_applications_on_uga_primer_id"
+    t.index ["ugb_primer_id"], name: "index_ultima_applications_on_ugb_primer_id"
+  end
+
+  create_table "ultima_configurations", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Sample sheet configurations for Ultima applications", force: :cascade do |t|
+    t.string "application_type", null: false, comment: "Application type used in the Samples section, e.g. scRNA_GEX_10x_flex"
+    t.string "application_preset", null: false, comment: "Application preset used in the Global section, e.g. 10x Flex"
+    t.string "sequencing_recipe", null: false, comment: "Sequencing recipe used to select the highest preset for mixed types, e.g. 75 cycles"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ultima_globals", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "application"
     t.string "sequencing_recipe"
     t.string "analysis_recipe"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "ultima_primers", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "UGA/UGB primers used for Ultima applications", force: :cascade do |t|
+    t.string "name", null: false, comment: "Name of the UGA or UGB primer, e.g. UG-tR1, UG-tR2"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -2059,6 +2088,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_13_145512) do
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_request_collections"
   add_foreign_key "transfer_request_collection_transfer_requests", "transfer_requests"
   add_foreign_key "transfer_request_collections", "users"
+  add_foreign_key "ultima_applications", "ultima_configurations", column: "ug100_configuration_id", name: "fk_ultima_apps_on_ug100_config"
+  add_foreign_key "ultima_applications", "ultima_configurations", column: "ug200_configuration_id", name: "fk_ultima_apps_on_ug200_config"
+  add_foreign_key "ultima_applications", "ultima_primers", column: "uga_primer_id", name: "fk_ultima_apps_on_uga_primer"
+  add_foreign_key "ultima_applications", "ultima_primers", column: "ugb_primer_id", name: "fk_ultima_apps_on_ugb_primer"
   add_foreign_key "work_completions", "labware", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
