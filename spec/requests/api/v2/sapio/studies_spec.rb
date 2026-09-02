@@ -665,42 +665,50 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       end
 
       context 'with an integration hub API key and a valid payload with name only' do
-        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+        let(:perform_request) { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'returns 201 Created' do
+          perform_request
           expect(response).to have_http_status(:created)
         end
 
         it 'does not return any errors in the response' do
+          perform_request
           expect(json['errors']).to be_nil
         end
 
         it 'creates a study in the database' do
+          perform_request
           expect(Study.find_by(name: 'Sapio Created Study')).not_to be_nil
         end
 
         it 'returns the study id' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'id')).to eq(study.id.to_s)
         end
 
         it 'returns the study uuid' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
         end
 
         it 'returns the study name' do
+          perform_request
           expect(json.dig('data', 'attributes', 'name')).to eq('Sapio Created Study')
         end
 
         it 'returns a self link referencing the study' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'links', 'self')).to include(study.id.to_s)
         end
 
         it 'sets externally_managed to true on the created study' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.externally_managed).to be(true)
+          expect { perform_request }.to(change do
+            Study.find_by(name: 'Sapio Created Study')&.externally_managed
+          end.from(nil).to(true))
         end
       end
 
@@ -907,7 +915,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
              enforce_accessioning: false)
     end
 
-    before do
+    let(:perform_request) do
       api_patch "#{base_endpoint}/#{study.id}", payload, headers: integration_hub_headers
     end
 
@@ -915,12 +923,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 404 Not Found response' do
+        perform_request
         expect(response).to have_http_status(:not_found)
       end
 
       it 'does not update the study resource' do
-        study.reload
-        expect(study.state).to eq('pending')
+        expect { perform_request }.not_to(change { study.reload.state })
       end
     end
 
@@ -928,12 +936,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 200 OK response' do
+        perform_request
         expect(response).to have_http_status(:ok)
       end
 
       it 'updates the study resource with the provided attributes' do
-        study.reload
-        expect(study.state).to eq('active')
+        expect { perform_request }.to change { study.reload.state }.from('pending').to('active')
       end
     end
 
@@ -942,12 +950,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 404 Not Found response' do
+        perform_request
         expect(response).to have_http_status(:not_found)
       end
 
       it 'does not update the study resource' do
-        study.reload
-        expect(study.state).to eq('pending')
+        expect { perform_request }.not_to(change { study.reload.state })
       end
     end
 
@@ -956,12 +964,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 200 OK response' do
+        perform_request
         expect(response).to have_http_status(:ok)
       end
 
       it 'updates the study resource with the provided attributes' do
-        study.reload
-        expect(study.state).to eq('active')
+        expect { perform_request }.to change { study.reload.state }.from('pending').to('active')
       end
     end
 
@@ -970,12 +978,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 403 Forbidden response' do
+        perform_request
         expect(response).to have_http_status(:forbidden)
       end
 
       it 'does not update the study resource' do
-        study.reload
-        expect(study.state).to eq('pending')
+        expect { perform_request }.not_to(change { study.reload.state })
       end
     end
 
@@ -986,12 +994,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 200 OK response' do
+        perform_request
         expect(response).to have_http_status(:ok)
       end
 
       it 'updates the study resource with the provided attributes' do
-        study.reload
-        expect(study.state).to eq('active')
+        expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
       end
     end
 
@@ -1000,12 +1008,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 423 Locked response' do
+        perform_request
         expect(response).to have_http_status(:locked)
       end
 
       it 'does not update the study resource' do
-        study.reload
-        expect(study.state).to eq('pending')
+        expect { perform_request }.not_to(change { study.reload.state })
       end
     end
 
@@ -1014,12 +1022,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       let(:attributes) { { state: 'active' } }
 
       it 'returns a 200 OK response' do
+        perform_request
         expect(response).to have_http_status(:ok)
       end
 
       it 'updates the study resource with the provided attributes' do
-        study.reload
-        expect(study.state).to eq('active')
+        expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
       end
     end
 
@@ -1028,6 +1036,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         let(:attributes) { { state: 'active' } }
 
         it 'returns a 200 OK status code' do
+          perform_request
           expect(response).to have_http_status(:ok)
         end
       end
@@ -1036,10 +1045,12 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         let(:attributes) { { name: 'Updated Study' } }
 
         it 'returns a 400 Bad Request status code' do
+          perform_request
           expect(response).to have_http_status(:bad_request)
         end
 
         it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+          perform_request
           expect(json).to have_key('errors')
           expect(json).not_to have_key('data')
           expect(json['errors']).to be_an(Array)
@@ -1047,6 +1058,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         end
 
         it 'serializes the exact error keys with correct details', :aggregate_failures do
+          perform_request
           error = json['errors'].first
           expect(error).to include(
             'title' => 'Param not allowed',
@@ -1060,34 +1072,36 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       context 'when updating the name' do
         let(:attributes) { { name: 'Updated Study' } }
 
-        it 'fails to update' do
-          expect(study.reload.name).not_to eq('Updated Study')
+        it 'does not change the name' do
+          expect { perform_request }.not_to(change { study.reload.name })
         end
       end
 
       context 'when updating the UUID' do
         let(:attributes) { { uuid: 'new-uuid-value' } }
 
-        it 'fails to update' do
-          expect(study.reload.uuid).not_to eq('new-uuid-value')
+        it 'does not change the UUID' do
+          expect { perform_request }.not_to(change { study.reload.uuid })
         end
       end
 
       context 'when updating the state' do
         let(:attributes) { { state: 'active' } }
 
-        it 'successfully updates' do
-          expect(study.reload.state).to eq('active')
+        it 'changes the state' do
+          expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
         end
 
         context 'when an invalid state is provided' do
           let(:attributes) { { state: 'invalid_state' } }
 
           it 'returns a 422 Unprocessable Entity status code' do
+            perform_request
             expect(response).to have_http_status(:unprocessable_content)
           end
 
           it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+            perform_request
             expect(json).to have_key('errors')
             expect(json).not_to have_key('data')
             expect(json['errors']).to be_an(Array)
@@ -1095,6 +1109,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           end
 
           it 'serializes the exact error keys with correct details' do
+            perform_request
             expect(json['errors']).to eq(
               [
                 {
@@ -1113,56 +1128,56 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       context 'when updating externally_managed' do
         let(:attributes) { { externally_managed: false } }
 
-        it 'fails to update' do
-          expect(study.reload.externally_managed).to be true
+        it 'does not change externally_managed' do
+          expect { perform_request }.not_to(change { study.reload.externally_managed })
         end
       end
 
       context 'when updating blocked' do
         let(:attributes) { { blocked: true } }
 
-        it 'fails to update' do
-          expect(study.reload.blocked).to be false
+        it 'does not change blocked' do
+          expect { perform_request }.not_to(change { study.reload.blocked })
         end
       end
 
       context 'when updating ethically_approved' do
         let(:attributes) { { ethically_approved: true } }
 
-        it 'fails to update' do
-          expect(study.reload.ethically_approved).to be_nil
+        it 'does not change ethically_approved' do
+          expect { perform_request }.not_to(change { study.reload.ethically_approved })
         end
       end
 
       context 'when updating enforce_data_release' do
         let(:attributes) { { enforce_data_release: true } }
 
-        it 'fails to update' do
-          expect(study.reload.enforce_data_release).to be false
+        it 'does not change enforce_data_release' do
+          expect { perform_request }.not_to(change { study.reload.enforce_data_release })
         end
       end
 
       context 'when updating enforce_accessioning' do
         let(:attributes) { { enforce_accessioning: true } }
 
-        it 'fails to update' do
-          expect(study.reload.enforce_accessioning).to be false
+        it 'does not change enforce_accessioning' do
+          expect { perform_request }.not_to(change { study.reload.enforce_accessioning })
         end
       end
 
       context 'when updating the created_at timestamp' do
         let(:attributes) { { created_at: 1.day.ago } }
 
-        it 'fails to update' do
-          expect(study.reload.created_at).not_to eq(1.day.ago)
+        it 'does not change created_at' do
+          expect { perform_request }.not_to(change { study.reload.created_at })
         end
       end
 
       context 'when updating the updated_at timestamp' do
         let(:attributes) { { updated_at: 1.day.ago } }
 
-        it 'fails to update' do
-          expect(study.reload.updated_at).not_to eq(1.day.ago)
+        it 'does not change updated_at' do
+          expect { perform_request }.not_to(change { study.reload.updated_at })
         end
       end
     end
