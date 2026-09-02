@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-class UltimaConfiguration < ApplicationRecord
+class UltimaPreset < ApplicationRecord
 end
