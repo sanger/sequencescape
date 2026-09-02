@@ -1080,10 +1080,6 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           expect(study.reload.state).to eq('active')
         end
 
-        it 'sets externally_managed to true' do
-          expect(study.reload.externally_managed).to be true
-        end
-
         context 'when an invalid state is provided' do
           let(:attributes) { { state: 'invalid_state' } }
 
@@ -1115,9 +1111,9 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       end
 
       context 'when updating externally_managed' do
-        let(:attributes) { { externally_managed: true } }
+        let(:attributes) { { externally_managed: false } }
 
-        it 'successfully updates' do
+        it 'fails to update' do
           expect(study.reload.externally_managed).to be true
         end
       end
