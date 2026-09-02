@@ -10,8 +10,9 @@ module Api
       # @note Requires the +:y26_172_enable_externally_managed_study_restrictions+ feature flag to
       #   be enabled. Returns **404 Not Found** otherwise.
       #
-      # @note Requests using POST require an Integration Hub API key. All other callers will
-      #   receive a **403 Forbidden** response.
+      # @note Requests that modify data require a valid Integration Hub API key. If this key is not
+      #   provided, the request will return a **403 Forbidden** response. See the examples for more
+      #   details.
       #
       # @note It does not subclass `Api::V2::StudyResource` to decouple it from the default Study
       #   resource, which is used by other API consumers.
@@ -44,18 +45,18 @@ module Api
       #
       # == Creating a New Externally Managed Study
       #
-      # The POST method creates a new {Study} that is managed externally, granting ownership to the requesting user.
+      # The POST method creates a new {Study} that is managed externally, granting ownership to the
+      # requesting user.
       #
       # This method is intended exclusively for creating *new* studies that originate in an external
-      # LIMS. It should NOT be used to transfer an existing Sequencescape study to the external LIMS
-      # — use the update (PATCH) endpoint for that purpose - which also sets +externally_managed+ on
-      # an existing record.
+      # LIMS. It should NOT be used to transfer an existing Sequencescape study to the external LIMS.
       #
       # If a UUID is not provided, one will be generated automatically.
       #
       # @example POST request to create a new externally managed study
       #   POST /api/v2/sapio/studies
-      #   Content-Type: application/json X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
       #   {
       #     "data": {
       #       "type": "studies",
@@ -73,17 +74,18 @@ module Api
       # not externally managed will return a **423 Locked** response.
       #
       # @example PATCH request to update an existing study
-      #  PATCH /api/v2/sapio/studies/123
-      #  Content-Type: application/json X-Sequencescape-Client-Id: <integration_hub_api_key>
-      #  {
-      #    "data": {
-      #      "type": "studies",
-      #      "id": "123",
-      #      "attributes": {
-      #        "state": "active"
-      #      }
-      #    }
-      #  }
+      #   PATCH /api/v2/sapio/studies/123
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   {
+      #     "data": {
+      #       "type": "studies",
+      #       "id": "123",
+      #       "attributes": {
+      #         "state": "active"
+      #       }
+      #     }
+      #   }
       #
       # For more information about JSON:API see the [JSON:API Specifications](https://jsonapi.org/format/)
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
