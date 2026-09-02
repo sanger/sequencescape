@@ -11,19 +11,19 @@ class CreateUltimaApplications < ActiveRecord::Migration[8.1]
              null: false,
              comment: 'Description of the application, e.g. 10x Genomics GEM-X Flex Gene Expression'
 
-      t.references :ug100_configuration,
+      t.references :ug100_preset,
                    null: false,
                    comment: 'Application preset, type, and recipe used for UG100',
                    foreign_key: {
-                     to_table: :ultima_configurations,
-                     name: :fk_ultima_apps_on_ug100_config
+                     to_table: :ultima_presets,
+                     name: :fk_ultima_apps_on_ug100_preset
                    }
-      t.references :ug200_configuration,
+      t.references :ug200_preset,
                    null: false,
                    comment: 'Application preset, type, and recipe used for UG200',
                    foreign_key: {
-                     to_table: :ultima_configurations,
-                     name: :fk_ultima_apps_on_ug200_config
+                     to_table: :ultima_presets,
+                     name: :fk_ultima_apps_on_ug200_preset
                    }
       t.references :uga_primer,
                    null: false,
