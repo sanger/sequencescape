@@ -10,8 +10,9 @@ module Api
       # @note Requires the +:y26_172_enable_externally_managed_study_restrictions+ feature flag to
       #   be enabled. Returns **404 Not Found** otherwise.
       #
-      # @note Requests using POST require an Integration Hub API key. All other callers will
-      #   receive a **403 Forbidden** response.
+      # @note Requests that modify data require a valid Integration Hub API key. If this key is not
+      #   provided, the request will return a **403 Forbidden** response. See the examples for more
+      #   details.
       #
       # @note It does not subclass `Api::V2::StudyResource` to decouple it from the default Study
       #   resource, which is used by other API consumers.
@@ -35,7 +36,8 @@ module Api
       #
       # @example search studies, include study_metadata, and specify fields
       #  GET /api/v2/sapio/studies?filter[name]=My Study \
-      #    &include=study_metadata.reference_genome &fields[studies]=name,uuid \
+      #    &include=study_metadata.reference_genome \
+      #    &fields[studies]=name,uuid \
       #    &fields[study_metadata]=study_description,study_abstract
       #
       # @example GET request for a specific study by ID
@@ -43,20 +45,45 @@ module Api
       #
       # == Creating a New Externally Managed Study
       #
-      # The POST method creates a new {Study} that is managed externally, granting ownership to the requesting user.
+      # The POST method creates a new {Study} that is managed externally, granting ownership to the
+      # requesting user.
       #
       # This method is intended exclusively for creating *new* studies that originate in an external
-      # LIMS. It should NOT be used to transfer an existing Sequencescape study to the external LIMS
-      # — use the update (PATCH) endpoint for that purpose - which also sets +externally_managed+ on
-      # an existing record.
+      # LIMS. It should NOT be used to transfer an existing Sequencescape study to the external LIMS.
+      #
+      # If a UUID is not provided, one will be generated automatically.
       #
       # @example POST request to create a new externally managed study
       #   POST /api/v2/sapio/studies
-      #   Content-Type: application/json X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
       #   {
-      #     "study": {
-      #       "name": "Unique study name, max 200 chars",
-      #       "uuid": "11111111-2222-3333-4444-555555666666"
+      #     "data": {
+      #       "type": "studies",
+      #       "attributes": {
+      #         "name": "Unique study name, max 200 chars",
+      #         "uuid": "11111111-2222-3333-4444-555555666666"
+      #       }
+      #     }
+      #   }
+      #
+      # == Updating an Existing Study
+      #
+      # Existing studies can be updated using the PATCH method. Only studies that have been marked
+      # as +externally_managed+ can be updated via this endpoint. Attempts to update a study that is
+      # not externally managed will return a **423 Locked** response.
+      #
+      # @example PATCH request to update an existing study
+      #   PATCH /api/v2/sapio/studies/123
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   {
+      #     "data": {
+      #       "type": "studies",
+      #       "id": "123",
+      #       "attributes": {
+      #         "state": "active"
+      #       }
       #     }
       #   }
       #
@@ -66,8 +93,10 @@ module Api
       class StudyResource < Api::V2::BaseResource
         include Api::V2::Sapio::StudySearchQuery
 
-        before_save :set_externally_managed_flags
+        before_create :allow_changes, :prepare_study_for_external_management
         after_create :set_external_uuid
+
+        before_update :allow_changes
 
         ###
         # Filters
@@ -100,13 +129,13 @@ module Api
         #   @note Maximum length is 200 characters.
         #   @note Must be unique across all studies.
         #   @return [String] The name of the study.
-        attribute :name
+        attribute :name, write_once: true
 
         # @!attribute [r] uuid
         #   A version 1 UUID that uniquely identifies the study.
-        #   @note This attribute should only be set when creating a study.
+        #   @note Cannot be updated after creation.
         #   @return [String] The UUID of the study.
-        attribute :uuid
+        attribute :uuid, write_once: true
 
         def uuid=(external_uuid)
           # Setup resource to create the UUID after the study is saved, since the study must exist first
@@ -116,46 +145,55 @@ module Api
 
         # @!attribute [r] created_at
         #   @return [String] Timestamp when the study was created.
-        attribute :created_at
+        attribute :created_at, readonly: true
 
         # @!attribute [r] updated_at
         #   @return [String] Timestamp when the study was last updated.
         #   @note study_metadata association specifies touch: true, so updated_at
         #     will reflect changes to the study_metadata as well.
-        attribute :updated_at
+        attribute :updated_at, readonly: true
 
         # @!attribute [r] blocked
         #   @return [Boolean] Whether the study is blocked.
         #   @note All rows in production have this column set to false.
-        attribute :blocked
+        attribute :blocked, readonly: true
 
-        # @!attribute [r] state
+        # @!attribute [rw] state
         #   @return [String] The state of the study (pending, active, or inactive).
         attribute :state
 
+        # @!attribute [r] externally_managed
+        #  @note Cannot be updated after creation.
+        #  @return [Boolean] Whether the study is managed by an external LIMS.
+        attribute :externally_managed, write_once: true
+
         # @!attribute [r] ethically_approved
         #   @return [Boolean] Whether ethical approval is set.
-        attribute :ethically_approved
+        attribute :ethically_approved, readonly: true
 
         # @!attribute [r] enforce_data_release
         #   @return [Boolean] Whether data release enforcement is enabled.
-        attribute :enforce_data_release
+        attribute :enforce_data_release, readonly: true
 
         # @!attribute [r] enforce_accessioning
         #   @return [Boolean] Whether accessioning enforcement is enabled.
-        attribute :enforce_accessioning
+        attribute :enforce_accessioning, readonly: true
 
         private
 
-        # Sets the model flags required for Sapio-managed studies before saving.
+        # Allow externally managed studies to be altered via the API
+        def allow_changes
+          @model.skip_externally_managed_restriction = true
+        end
+
+        # Sets the model flags required for externally-managed studies before saving.
         #
         # The lazy_metadata flag is set to true to avoid triggering the creation of a StudyMetadata record
         # and it's associated validations.
         #
         # @return [void]
-        def set_externally_managed_flags
+        def prepare_study_for_external_management
           @model.externally_managed = true
-          @model.skip_externally_managed_restriction = true
           @model.lazy_metadata = true
         end
 

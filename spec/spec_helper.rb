@@ -216,6 +216,36 @@ RSpec.configure do |config|
     Flipper.enable(:y25_706_enable_accessioning, accessioning_enabled)
   end
 
+  # Temporarily disables Delayed::Job backgrounding for the duration of the example.
+  # When :un_delay_jobs is set, jobs will be executed immediately instead of being enqueued.
+  # This is useful for specs that need to test job side effects synchronously
+  # and is often used in conjunction with :accessioning_enabled.
+  config.around(:each, :un_delay_jobs) do |example|
+    Delayed::Worker.delay_jobs = false
+    example.run
+    Delayed::Worker.delay_jobs = true
+  end
+
+  # Add sapio_studies_endpoint_enabled to a spec to automatically:
+  # - Set y26_170_sapio_studies_endpoint to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_studies_endpoint_enabled) do |example|
+    sapio_studies_endpoint_enabled = Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+    Flipper.enable(:y26_170_sapio_studies_endpoint)
+    example.run
+    Flipper.enable(:y26_170_sapio_studies_endpoint, sapio_studies_endpoint_enabled)
+  end
+
+  # Add sapio_studies_endpoint_disabled to a spec to automatically:
+  # - Set y26_170_sapio_studies_endpoint to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_studies_endpoint_disabled) do |example|
+    sapio_studies_endpoint_enabled = Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+    Flipper.disable(:y26_170_sapio_studies_endpoint)
+    example.run
+    Flipper.enable(:y26_170_sapio_studies_endpoint, sapio_studies_endpoint_enabled)
+  end
+
   # Add externally_managed_restrictions_enabled to a spec to automatically:
   # - Set y26_172_enable_externally_managed_study_restrictions to true before the test
   # - Roll the feature flag back to its original state afterward
@@ -231,19 +261,9 @@ RSpec.configure do |config|
   # - Roll the feature flag back to its original state afterward
   config.around(:each, :externally_managed_restrictions_disabled) do |example|
     externally_managed_restrictions_enabled = Flipper.enabled?(:y26_171_enable_externally_managed_study_restrictions)
-    Flipper.disable(:y26_172_enable_externally_managed_mastered_study_restrictions)
+    Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
     example.run
     Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
-  end
-
-  # Temporarily disables Delayed::Job backgrounding for the duration of the example.
-  # When :un_delay_jobs is set, jobs will be executed immediately instead of being enqueued.
-  # This is useful for specs that need to test job side effects synchronously
-  # and is often used in conjunction with :accessioning_enabled.
-  config.around(:each, :un_delay_jobs) do |example|
-    Delayed::Worker.delay_jobs = false
-    example.run
-    Delayed::Worker.delay_jobs = true
   end
 
   config.before do

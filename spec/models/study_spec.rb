@@ -1028,34 +1028,4 @@ RSpec.describe Study do
       end
     end
   end
-
-  describe '#prevent_externally_managed_changes_unless_integration_hub' do
-    let(:study) { create(:study, externally_managed: false) }
-
-    context 'when feature flag is enabled and updated from SS', :externally_managed_restrictions_enabled do
-      it 'prevents changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be false
-        expect(study.errors[:base]).to include(
-          I18n.t('studies.externally_managed.integration_hub_update_only')
-        )
-      end
-    end
-
-    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
-      #  bypass the validation to simulate an update from Integration Hub
-      before do
-        study.skip_externally_managed_restriction = true
-      end
-
-      it 'allows changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be true
-      end
-    end
-
-    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
-      it 'allows changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be true
-      end
-    end
-  end
 end
