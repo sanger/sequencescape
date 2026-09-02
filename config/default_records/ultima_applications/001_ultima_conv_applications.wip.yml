@@ -5,3 +5,164 @@
   ug200_preset: "Unprocessed CRAM"
   uga_primer: "UG-tR1"
   ugb_primer: "UG-tR2"
+
+"10x 3' scRNA v3":
+  description: "10x 3' scRNA v3"
+  ug100_preset: "10x 3' scRNA v3"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"10x 5' scRNA v3":
+  description: "10x 5' scRNA v3"
+  ug100_preset: "10x 5' scRNA v3"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"10x 5' scRNA v2":
+  description: "10x 5' scRNA v2"
+  ug100_preset: "10x 5' scRNA v2"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"10x Flex":
+  description: "10x Genomics GEM-X Flex Gene Expression"
+  ug100_preset: "10x Flex"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Flex v2":
+  description: "10x Genomics GEM-X Flex v2 Gene Expression"
+  ug100_preset: "10x Flex v2"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-CE-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Visium HD Generic":
+  description: "10x Genomics Visium HD (for use with custom probesets)"
+  ug100_preset: "10x Visium HD Generic"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Visium HD Human":
+  description: "10x Genomics Visium HD Human Transcriptome"
+  ug100_preset: "10x Visium HD Human"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Visium HD Mouse":
+  description: "10x Genomics Visium HD Mouse Transcriptome"
+  ug100_preset: "10x Visium HD Mouse"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Visium HD 3'":
+  description: "10x Genomics Visium HD 3’"
+  ug100_preset: "10x Visium HD 3'"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-srR2"
+
+"10x Flex CRISPR":
+  description: "10x Genomics Flex CRISPR"
+  ug100_preset: "10x Flex CRISPR"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"10x 5' scRNA v3 CRISPR":
+  description: "10x Genomics 5’ CRISPR"
+  ug100_preset: "10x 5' scRNA v3 CRISPR"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"Parse scRNA v3":
+  description: "Parse Biosciences Evercode™ Whole Transcriptome v3"
+  ug100_preset: "Parse scRNA v3"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR2"
+  ugb_primer: "UG-tR1"
+
+"Twist FlexPrep UHT":
+  description: "Twist FlexPrep™ UHT Library Preparation Kit"
+  ug100_preset: "Twist FlexPrep UHT"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"Olink Explore HT":
+  description: "Olink Explore HT"
+  ug100_preset: "Olink Explore HT"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG Universal Primer v2"
+
+"NEB EM-Seq":
+  description: "NEBNext Enzymatic Methyl-seq Kit"
+  ug100_preset: "NEB EM-Seq"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"Scale QuantumScale":
+  description: "Scale Bioscience QuantumScale Single Cell RNA"
+  ug100_preset: "Scale QuantumScale"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG nxR2"
+
+"Bioskryb scWGS":
+  description: "BioSkryb Genomics ResolveDNA and ResolveOME™"
+  ug100_preset: "Bioskryb scWGS"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
+
+"Converted Nextera":
+  description: "Generic Nextera library conversion – adapter trimming"
+  ug100_preset: "Converted Nextera"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG NX-R1"
+  ugb_primer: "NX-R2"
+
+"Converted TruSeq":
+  description: "Converted TruSeq"
+  ug100_preset: "Converted TruSeq"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG Universal (F) Indexing Primer"
+  ugb_primer: "UG Universal (R) Primer v2"
+
+"10x 5' v3 Feature Barcode":
+  description: "10x Genomics GEM-X Single Cell 5 Feature Barcode Kit v3"
+  ug100_preset: "10x 5' Feature Barcoding v3"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "NX-R2"
+
+"10x 5' v4 Feature Barcode":
+  description: "10x Genomics GEM-X Single Cell 5 Feature Barcode Kit v4"
+  ug100_preset: "10x 5' Feature Barcoding v4"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "NX-R2"
+
+"10x Multiome ATAC":
+  description: "10x Genomics Next GEM Single Cell Multiome ATAC + Gene Expression"
+  ug100_preset: "10x Multiome ATAC"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG NX-R1"
+  ugb_primer: "NX-R2"
+
+"10x ATAC v2":
+  description: "10x Genomics Next GEM Single Cell ATAC Kit v2"
+  ug100_preset: "10x ATAC v2"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "NX-R2"
