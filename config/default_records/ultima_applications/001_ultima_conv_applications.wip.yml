@@ -1,0 +1,7 @@
+---
+"10x 3' scRNA v4":
+  description: "10x 3' scRNA v4"
+  ug100_preset: "10x 3' scRNA v4"
+  ug200_preset: "Unprocessed CRAM"
+  uga_primer: "UG-tR1"
+  ugb_primer: "UG-tR2"
