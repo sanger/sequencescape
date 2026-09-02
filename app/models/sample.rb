@@ -88,7 +88,7 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   extend Metadata
 
   has_metadata do
-    include ReferenceGenome::Associations
+    belongs_to :reference_genome
 
     association(:reference_genome, :name, required: true)
 
@@ -186,6 +186,8 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
                 message: 'only allows ASCII',
                 allow_blank: true
               }
+
+    validates :reference_genome_id, numericality: { greater_than: 0, message: 'appears to be invalid' }
 
     with_options(on: %i[EGA ENA]) do
       validates :sample_taxon_id, presence: { message: 'is required' }

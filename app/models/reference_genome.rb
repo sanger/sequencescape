@@ -14,12 +14,4 @@ class ReferenceGenome < ApplicationRecord
               case_sensitive: false
             }
   broadcast_with_warren
-
-  module Associations
-    def self.included(base)
-      base.validates_presence_of :reference_genome_id
-      base.validates_numericality_of :reference_genome_id, greater_than: 0, message: 'appears to be invalid'
-      base.belongs_to :reference_genome
-    end
-  end
 end
