@@ -3,7 +3,7 @@
 require 'rails_helper'
 require './spec/requests/api/v2/shared_examples/api_key_authenticatable'
 
-describe 'Sapio Studies API', with: :api_v2 do
+describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
   let(:base_endpoint) { '/api/v2/sapio/studies' }
 
   let(:study_attrs) do
@@ -14,6 +14,7 @@ describe 'Sapio Studies API', with: :api_v2 do
       updated_at
       blocked
       state
+      externally_managed
       ethically_approved
       enforce_data_release
       enforce_accessioning
@@ -128,19 +129,8 @@ describe 'Sapio Studies API', with: :api_v2 do
     ]
   end
 
-  before do
-    # Enable the Sapio studies endpoint feature flag for tests
-    Flipper.enable(:y26_170_sapio_studies_endpoint)
-  end
-
-  after do
-    Flipper.disable(:y26_170_sapio_studies_endpoint)
-  end
-
   describe 'GET /api/v2/sapio/studies' do
-    context 'when sapio studies endpoint feature flag is disabled' do
-      before { Flipper.disable(:y26_170_sapio_studies_endpoint) }
-
+    context 'when sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
       it 'returns a 404 Not Found response' do
         api_get base_endpoint
         expect(response).to have_http_status(:not_found)
@@ -601,17 +591,7 @@ describe 'Sapio Studies API', with: :api_v2 do
   end
 
   describe 'GET /api/v2/sapio/studies/:id' do
-    before do
-      Flipper.enable(:y26_170_sapio_studies_endpoint)
-    end
-
-    after do
-      Flipper.disable(:y26_170_sapio_studies_endpoint)
-    end
-
-    context 'when sapio studies endpoint feature flag is disabled' do
-      before { Flipper.disable(:y26_170_sapio_studies_endpoint) }
-
+    context 'when sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
       it 'returns a 404 Not Found response' do
         api_get base_endpoint
         expect(response).to have_http_status(:not_found)
@@ -629,7 +609,7 @@ describe 'Sapio Studies API', with: :api_v2 do
     end
   end
 
-  describe 'POST /api/v2/sapio/studies' do
+  describe 'POST /api/v2/sapio/studies', :externally_managed_restrictions_enabled do
     let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
     let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
     let(:regular_app) { create(:api_application) }
@@ -645,9 +625,8 @@ describe 'Sapio Studies API', with: :api_v2 do
       }
     end
 
-    context 'when the externally_managed study restrictions feature flag is disabled' do
-      before { Flipper.disable(:y26_172_enable_externally_managed_study_restrictions) }
-
+    context 'when the externally_managed study restrictions feature flag is disabled',
+            :externally_managed_restrictions_disabled do
       it 'returns a 404 Not Found response' do
         api_post base_endpoint, valid_payload, headers: integration_hub_headers
         expect(response).to have_http_status(:not_found)
@@ -686,42 +665,50 @@ describe 'Sapio Studies API', with: :api_v2 do
       end
 
       context 'with an integration hub API key and a valid payload with name only' do
-        before { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+        let(:perform_request) { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
 
         it 'returns 201 Created' do
+          perform_request
           expect(response).to have_http_status(:created)
         end
 
         it 'does not return any errors in the response' do
+          perform_request
           expect(json['errors']).to be_nil
         end
 
         it 'creates a study in the database' do
+          perform_request
           expect(Study.find_by(name: 'Sapio Created Study')).not_to be_nil
         end
 
         it 'returns the study id' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'id')).to eq(study.id.to_s)
         end
 
         it 'returns the study uuid' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
         end
 
         it 'returns the study name' do
+          perform_request
           expect(json.dig('data', 'attributes', 'name')).to eq('Sapio Created Study')
         end
 
         it 'returns a self link referencing the study' do
+          perform_request
           study = Study.find_by(name: 'Sapio Created Study')
           expect(json.dig('data', 'links', 'self')).to include(study.id.to_s)
         end
 
         it 'sets externally_managed to true on the created study' do
-          study = Study.find_by(name: 'Sapio Created Study')
-          expect(study.externally_managed).to be(true)
+          expect { perform_request }.to(change do
+            Study.find_by(name: 'Sapio Created Study')&.externally_managed
+          end.from(nil).to(true))
         end
       end
 
@@ -898,6 +885,315 @@ describe 'Sapio Studies API', with: :api_v2 do
           expect(json.dig('data', 'attributes', 'uuid')).to eq(study.uuid)
         end
       end
+    end
+  end
+
+  describe 'PATCH /api/v2/sapio/studies/:id', :externally_managed_restrictions_enabled do
+    let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+    let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+
+    let(:resource_type) { 'studies' }
+    let(:resource_id) { study.id }
+    let(:payload) do
+      { data: {
+        id: resource_id,
+        type: resource_type,
+        attributes: attributes
+      } }
+    end
+    let(:attributes) { {} }
+
+    let(:externally_managed) { true } # only externally managed studies can be updated
+    let(:study) do
+      # set all enums and booleans to a known state
+      create(:study,
+             state: 'pending',
+             externally_managed: externally_managed,
+             blocked: false,
+             ethically_approved: false,
+             enforce_data_release: false,
+             enforce_accessioning: false)
+    end
+
+    let(:perform_request) do
+      api_patch "#{base_endpoint}/#{study.id}", payload, headers: integration_hub_headers
+    end
+
+    context 'when the sapio studies endpoint feature flag is disabled', :sapio_studies_endpoint_disabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 404 Not Found response' do
+        perform_request
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not update the study resource' do
+        expect { perform_request }.not_to(change { study.reload.state })
+      end
+    end
+
+    context 'when the sapio studies endpoint feature flag is enabled', :sapio_studies_endpoint_enabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        perform_request
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        expect { perform_request }.to change { study.reload.state }.from('pending').to('active')
+      end
+    end
+
+    context 'when the externally_managed study restrictions feature flag is disabled',
+            :externally_managed_restrictions_disabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 404 Not Found response' do
+        perform_request
+        expect(response).to have_http_status(:not_found)
+      end
+
+      it 'does not update the study resource' do
+        expect { perform_request }.not_to(change { study.reload.state })
+      end
+    end
+
+    context 'when the externally_managed study restrictions feature flag is enabled',
+            :externally_managed_restrictions_enabled do
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        perform_request
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        expect { perform_request }.to change { study.reload.state }.from('pending').to('active')
+      end
+    end
+
+    context 'when the integration hub API key is not provided' do
+      let(:integration_hub_headers) { {} }
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 403 Forbidden response' do
+        perform_request
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'does not update the study resource' do
+        expect { perform_request }.not_to(change { study.reload.state })
+      end
+    end
+
+    context 'when the integration hub API key is provided' do
+      let(:integration_hub_app) { create(:api_application, name: 'Integration Hub') }
+      let(:integration_hub_headers) { { 'X-Sequencescape-Client-Id': integration_hub_app.key } }
+
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        perform_request
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
+      end
+    end
+
+    context 'when a study is not externally managed' do
+      let(:externally_managed) { false }
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 423 Locked response' do
+        perform_request
+        expect(response).to have_http_status(:locked)
+      end
+
+      it 'does not update the study resource' do
+        expect { perform_request }.not_to(change { study.reload.state })
+      end
+    end
+
+    context 'when a study is externally managed' do
+      let(:externally_managed) { true }
+      let(:attributes) { { state: 'active' } }
+
+      it 'returns a 200 OK response' do
+        perform_request
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'updates the study resource with the provided attributes' do
+        expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
+      end
+    end
+
+    context 'when updating the study resource', :externally_managed_restrictions_enabled do
+      context 'when the update succeeds' do
+        let(:attributes) { { state: 'active' } }
+
+        it 'returns a 200 OK status code' do
+          perform_request
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context 'when a read-only attribute is attempted to be updated' do
+        let(:attributes) { { name: 'Updated Study' } }
+
+        it 'returns a 400 Bad Request status code' do
+          perform_request
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+          perform_request
+          expect(json).to have_key('errors')
+          expect(json).not_to have_key('data')
+          expect(json['errors']).to be_an(Array)
+          expect(json['errors'].size).to eq(1)
+        end
+
+        it 'serializes the exact error keys with correct details', :aggregate_failures do
+          perform_request
+          error = json['errors'].first
+          expect(error).to include(
+            'title' => 'Param not allowed',
+            'detail' => 'name is not allowed.',
+            'code' => JSONAPI::PARAM_NOT_ALLOWED,
+            'status' => '400'
+          )
+        end
+      end
+
+      context 'when updating the name' do
+        let(:attributes) { { name: 'Updated Study' } }
+
+        it 'does not change the name' do
+          expect { perform_request }.not_to(change { study.reload.name })
+        end
+      end
+
+      context 'when updating the UUID' do
+        let(:attributes) { { uuid: 'new-uuid-value' } }
+
+        it 'does not change the UUID' do
+          expect { perform_request }.not_to(change { study.reload.uuid })
+        end
+      end
+
+      context 'when updating the state' do
+        let(:attributes) { { state: 'active' } }
+
+        it 'changes the state' do
+          expect { perform_request }.to(change { study.reload.state }.from('pending').to('active'))
+        end
+
+        context 'when an invalid state is provided' do
+          let(:attributes) { { state: 'invalid_state' } }
+
+          it 'returns a 422 Unprocessable Entity status code' do
+            perform_request
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+
+          it 'returns a strict, JSON:API specification compliant error document', :aggregate_failures do
+            perform_request
+            expect(json).to have_key('errors')
+            expect(json).not_to have_key('data')
+            expect(json['errors']).to be_an(Array)
+            expect(json['errors'].size).to eq(1)
+          end
+
+          it 'serializes the exact error keys with correct details' do
+            perform_request
+            expect(json['errors']).to eq(
+              [
+                {
+                  'title' => 'is invalid',
+                  'detail' => 'state - is invalid',
+                  'code' => JSONAPI::VALIDATION_ERROR,
+                  'status' => '422',
+                  'source' => { 'pointer' => '/data/attributes/state' }
+                }
+              ]
+            )
+          end
+        end
+      end
+
+      context 'when updating externally_managed' do
+        let(:attributes) { { externally_managed: false } }
+
+        it 'does not change externally_managed' do
+          expect { perform_request }.not_to(change { study.reload.externally_managed })
+        end
+      end
+
+      context 'when updating blocked' do
+        let(:attributes) { { blocked: true } }
+
+        it 'does not change blocked' do
+          expect { perform_request }.not_to(change { study.reload.blocked })
+        end
+      end
+
+      context 'when updating ethically_approved' do
+        let(:attributes) { { ethically_approved: true } }
+
+        it 'does not change ethically_approved' do
+          expect { perform_request }.not_to(change { study.reload.ethically_approved })
+        end
+      end
+
+      context 'when updating enforce_data_release' do
+        let(:attributes) { { enforce_data_release: true } }
+
+        it 'does not change enforce_data_release' do
+          expect { perform_request }.not_to(change { study.reload.enforce_data_release })
+        end
+      end
+
+      context 'when updating enforce_accessioning' do
+        let(:attributes) { { enforce_accessioning: true } }
+
+        it 'does not change enforce_accessioning' do
+          expect { perform_request }.not_to(change { study.reload.enforce_accessioning })
+        end
+      end
+
+      context 'when updating the created_at timestamp' do
+        let(:attributes) { { created_at: 1.day.ago } }
+
+        it 'does not change created_at' do
+          expect { perform_request }.not_to(change { study.reload.created_at })
+        end
+      end
+
+      context 'when updating the updated_at timestamp' do
+        let(:attributes) { { updated_at: 1.day.ago } }
+
+        it 'does not change updated_at' do
+          expect { perform_request }.not_to(change { study.reload.updated_at })
+        end
+      end
+    end
+  end
+
+  describe 'DELETE /api/v2/sapio/studies/:id' do
+    let(:resource) { create(:study) }
+
+    it 'returns a 405 Method Not Allowed status code' do
+      api_delete "#{base_endpoint}/#{resource.id}"
+      expect(response).to have_http_status(:method_not_allowed)
+    end
+
+    it 'does not delete the study' do
+      api_delete "#{base_endpoint}/#{resource.id}"
+      expect(Study.exists?(resource.id)).to be true
     end
   end
 end

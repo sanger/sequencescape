@@ -142,6 +142,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # External management
+  attribute :externally_managed, :boolean, default: false
   # Flag set by Integration Hub requests to lift the externally managed study edit lock.
   attr_accessor :skip_externally_managed_restriction
 
@@ -194,8 +196,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
               message: 'cannot contain spaces or be blank'
             }
   validate :validate_ethically_approved, unless: :externally_managed?
-  # add validation when create or update sapio study
-  validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
   validate :prevent_updates_when_externally_managed, on: :update
 
   # Callbacks
@@ -651,19 +651,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   private
-
-  # This validation only runs when the value of externally_managed is changing
-  # It prevents changes to externally_managed unless the request is coming from Integration Hub
-  # i.e. only Integration Hub can set/change the value of externally_managed
-  def prevent_externally_managed_changes_unless_integration_hub
-    return unless externally_managed_restrictions_enabled?
-
-    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
-    return unless will_save_change_to_externally_managed?
-    return if skip_externally_managed_restriction
-
-    errors.add(:base, I18n.t('studies.externally_managed.integration_hub_update_only'))
-  end
 
   # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
