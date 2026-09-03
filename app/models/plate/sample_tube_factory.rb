@@ -20,7 +20,7 @@ class Plate::SampleTubeFactory < SimpleDelegator
     sample_tubes
   end
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo-next Metrics/MethodLength, Metrics/AbcSize
   def self.create_sample_tubes_asset_group_and_print_barcodes(plates, barcode_printer, study)
     return nil if plates.empty?
 
@@ -40,5 +40,4 @@ class Plate::SampleTubeFactory < SimpleDelegator
 
     asset_group
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end

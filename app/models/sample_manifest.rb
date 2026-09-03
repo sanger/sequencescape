@@ -255,11 +255,10 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
     @qc_assay = QcAssay.find_by(lot_number: "sample_manifest_id:#{id}")
   end
 
-  # rubocop:disable Naming/MemoizedInstanceVariableName
+  # rubocop:disable-next Naming/MemoizedInstanceVariableName
   def find_or_create_qc_assay!
     @qc_assay ||= QcAssay.find_or_create_by!(lot_number: "sample_manifest_id:#{id}")
   end
-  # rubocop:enable Naming/MemoizedInstanceVariableName
 
   def prevent_creation_with_externally_managed_study
     return unless study&.ui_locked?

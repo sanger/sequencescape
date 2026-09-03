@@ -228,9 +228,8 @@ describe 'Location reports' do
       click_button('Create report from labwhere')
       expect(
         page
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo-next Layout/LineLength
       ).to have_text 'Failed to create report: LabWhere location not found, please scan or enter a valid location barcode.'
-      # rubocop:enable Layout/LineLength
     end
   end
 end

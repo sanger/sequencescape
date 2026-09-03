@@ -2,7 +2,7 @@
 
 # This may create invalid UUID external_id values but it means that we don't have to conform to the
 # standard in our features.
-# rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+# rubocop:todo-next Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
 def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   if h1.is_a?(Hash) && h2.is_a?(Hash)
     result = {}
@@ -25,7 +25,6 @@ def recursive_diff(h1, h2) # rubocop:todo Metrics/CyclomaticComplexity
   end
   h1
 end
-# rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 
 def assert_hash_equal(h1, h2, *)
   d1 = recursive_diff(h1, h2)
@@ -162,7 +161,7 @@ Then /^ignoring "([^"]+)" the JSON should be:$/ do |key_list, serialised_json|
   end
 end
 
-# rubocop:todo Metrics/PerceivedComplexity
+# rubocop:todo-next Metrics/PerceivedComplexity
 def strip_extraneous_fields(left, right) # rubocop:todo Metrics/CyclomaticComplexity
   if left.is_a?(Hash) && right.is_a?(Hash)
     right.delete_if { |k, _| not left.key?(k) }
@@ -175,7 +174,6 @@ def strip_extraneous_fields(left, right) # rubocop:todo Metrics/CyclomaticComple
     right
   end
 end
-# rubocop:enable Metrics/PerceivedComplexity
 
 # I like to know where my JSON is wrong!
 def decode_json(json, source)

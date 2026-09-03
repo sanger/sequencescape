@@ -87,7 +87,7 @@ class DataReleaseTest < ActiveSupport::TestCase
         data_release_study_types = ['transcriptomics', 'other sequencing-based assay', 'genotyping or cytogenetics']
         data_release_strategies = %w[managed open]
 
-        # rubocop:todo Metrics/BlockLength
+        # rubocop:todo-next Metrics/BlockLength
         data_release_study_types.each do |data_release_sort_of_study_value|
           context "where sort of study is #{data_release_sort_of_study_value}" do
             setup { @study.study_metadata.data_release_study_type.name = data_release_sort_of_study_value }
@@ -129,7 +129,6 @@ class DataReleaseTest < ActiveSupport::TestCase
             end
           end
         end
-        # rubocop:enable Metrics/BlockLength
       end
     end
   end

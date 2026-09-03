@@ -56,7 +56,7 @@ module Robot::Generator::Behaviours::HamiltonDefault
   end
 
   # formats the data object into rows to output in the file
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def source_mappings(data_object) # rubocop:todo Metrics/AbcSize
     source_mappings = ''
     each_mapping(data_object) do |mapping, destination_plate_barcode, plate_details|
@@ -80,5 +80,4 @@ module Robot::Generator::Behaviours::HamiltonDefault
     end
     source_mappings
   end
-  # rubocop:enable Metrics/MethodLength
 end

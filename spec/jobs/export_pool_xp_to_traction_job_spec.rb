@@ -115,11 +115,10 @@ RSpec.describe ExportPoolXpToTractionJob do
         allow(Rails.logger).to receive(:debug).and_call_original
 
         # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
-        # rubocop:disable RSpec/MessageSpies
+        # rubocop:disable-next RSpec/MessageSpies
         expect(Rails.logger).to receive(:debug) do |&block|
           expect(block.call).to eq("Using cached schema for #{schema_subject} v#{schema_version}")
         end
-        # rubocop:enable RSpec/MessageSpies
 
         export_job.get_message_schema(schema_subject, schema_version)
       end
@@ -151,11 +150,10 @@ RSpec.describe ExportPoolXpToTractionJob do
         allow(Rails.logger).to receive(:debug).and_call_original
 
         # Ideally we'd use .to have_received but I'm unable to make it work with block syntax.
-        # rubocop:disable RSpec/MessageSpies
+        # rubocop:disable-next RSpec/MessageSpies
         expect(Rails.logger).to receive(:debug) do |&block|
           expect(block.call).to eq("Fetching and caching schema for #{schema_subject} v#{schema_version}")
         end
-        # rubocop:enable RSpec/MessageSpies
 
         export_job.get_message_schema(schema_subject, schema_version)
       end

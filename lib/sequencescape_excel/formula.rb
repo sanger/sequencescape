@@ -57,9 +57,8 @@ module SequencescapeExcel
     end
 
     def inspect
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo-next Layout/LineLength
       "<#{self.class}: @type=#{type}, @first_cell_reference=#{first_cell_reference}, @absolute_reference=#{absolute_reference}, @operator=#{operator}, @operand#{operand}>"
-      # rubocop:enable Layout/LineLength
     end
   end
 end
