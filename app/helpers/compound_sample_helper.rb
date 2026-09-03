@@ -50,7 +50,7 @@ module CompoundSampleHelper
 
   # using insertAll to avoid N queries for 9k samples, as we are already in a transaction and will
   # roll back if any validation fails
-  # rubocop:disable Rails/SkipsModelValidations
+  # rubocop:disable-next Rails/SkipsModelValidations
   def create_component_samples_for_compound(compound_sample, component_samples)
     validation_errors = SampleCompoundComponent.bulk_validate_component_samples(component_samples)
     if validation_errors.any?
@@ -61,5 +61,4 @@ module CompoundSampleHelper
       { compound_sample_id: compound_sample.id, component_sample_id: s.id }
     end)
   end
-  # rubocop:enable Rails/SkipsModelValidations
 end

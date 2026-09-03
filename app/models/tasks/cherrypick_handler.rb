@@ -104,7 +104,7 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo-next Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
   def do_cherrypick_task(_task, params) # rubocop:todo Metrics/CyclomaticComplexity
     plates = params[:plate]
     size = params[:plate_size]
@@ -242,5 +242,4 @@ module Tasks::CherrypickHandler # rubocop:todo Metrics/ModuleLength
     # rubocop:enable Metrics/BlockLength
     [true, 'Layout set']
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
 end

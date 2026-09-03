@@ -9,7 +9,7 @@ require "bundler/setup" # Set up gems listed in the Gemfile.
 # see any benifit, and in practice the purge is unlikely to trigger as its rare
 # we go over a month without a release.
 # Disable some Rails cops, as Rails isn't actually loaded at this point.
-# rubocop:disable Rails/Output, Rails/TimeZone
+# rubocop:disable-next Rails/Output, Rails/TimeZone
 begin
   time = File.stat('tmp/cache/bootsnap-compile-cache').birthtime
 
@@ -32,6 +32,5 @@ rescue Errno::ENOENT, NotImplementedError
   # Saw this on travis where 'birthtime' was not implimented
   # In this case we'll just continue.
 end
-# rubocop:enable Rails/Output, Rails/TimeZone
 
 require "bootsnap/setup" # Speed up boot time by caching expensive operations.

@@ -13,7 +13,7 @@ module Sanger
           end
         end
 
-        # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
+        # rubocop:todo-next Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
         def should_require_login(*actions) # rubocop:todo Metrics/CyclomaticComplexity, Metrics/AbcSize
           params = (actions.pop if actions.last.is_a?(Hash)) || {}
           actions << :index if actions.empty?
@@ -64,7 +64,6 @@ module Sanger
             end
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/BlockLength
       end
     end
   end
