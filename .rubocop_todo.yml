@@ -108,12 +108,7 @@ Lint/ConstantDefinitionInBlock:
     - 'spec/lib/sample_manifest_excel/tags_spec.rb'
     - 'spec/lib/sequencescape_excel/list_spec.rb'
 
-# Offense count: 1
-Lint/CopDirectiveSyntax:
-  Exclude:
-    - 'app/models/role/user_role_helper.rb'
-
-# Offense count: 12
+# Offense count: 17
 # Configuration parameters: IgnoreLiteralBranches, IgnoreConstantBranches, IgnoreDuplicateElseBranch.
 Lint/DuplicateBranch:
   Exclude:
