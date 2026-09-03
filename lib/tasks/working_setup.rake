@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require './lib/oligo_enumerator'
 
-# rubocop:disable Rails/RakeEnvironment
+# rubocop:disable-next Rails/RakeEnvironment
 namespace :working do
   # We don't want to load Sequencescape just to tell the user that nothing happens.
   task :basic do
@@ -26,4 +26,3 @@ namespace :working do
     puts 'Tag plates, and various stock plates can all be generated through UAT actions.'
   end
 end
-# rubocop:enable Rails/RakeEnvironment

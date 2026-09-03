@@ -15,7 +15,7 @@
 #
 # The messages are generated using the strings in the locale file.
 #
-# rubocop:disable Metrics/ModuleLength
+# rubocop:disable-next Metrics/ModuleLength
 module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # Add the methods from the calculator module for volume calculations.
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
@@ -146,7 +146,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #   For the allowed range of 5 to 25 samples, this is valid.
   #
   # @return [void]
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength
   def validate_scrna_core_cdna_prep_feasibility_by_samples
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       barcodes, well_locations = extract_barcodes_and_well_locations(rows)
@@ -162,7 +162,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       end
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # Calculates the pool size types as smallest and biggest for the feasibility
   # by samples validation. The smallest pool size is the quotient of the number
@@ -201,7 +200,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @param size_type [String] the type of pool size ('smallest' or 'biggest')
   #
   # @return [void]
-  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable-next Metrics/ParameterLists
   def add_error_scrna_core_cdna_prep_feasibility_by_samples(study_name, project_name, min, max, count, size_type)
     errors.add(
       :spreadsheet,
@@ -217,7 +216,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       )
     )
   end
-  # rubocop:enable Metrics/ParameterLists
 
   # Validates the feasibility of scRNA Core cDNA preparation by donor IDs.
   # This method groups rows by study and project, extracts the number of pools
@@ -234,7 +232,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   #   donor clash, so this is invalid.
   #
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def validate_scrna_core_cdna_prep_feasibility_by_donors
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       number_of_pools = rows.first[headers.index(HEADER_NUMBER_OF_POOLS)].to_i
@@ -253,7 +251,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   # Adds an error message for the feasibility of scRNA Core cDNA Prep by donor IDs.
   #
@@ -307,7 +304,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # the user the submission created page.
   #
   # @return [void]
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable-next Metrics/MethodLength
   def validate_scrna_core_cdna_prep_full_allowance
     group_rows_by_study_and_project.each do |(study_name, project_name), rows|
       number_of_samples_in_smallest_pool = calculate_number_of_samples_in_smallest_pool(rows)
@@ -326,7 +323,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength
 
   # Adds a warning message for the full allowance in the submission.
   #
@@ -447,7 +443,7 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
   # @param rows [Array<Array<String>>] the CSV rows of a study and project
 
   # @return [Hash<String, Array<Array<String>>] the mapping between donor IDs and the corresponding rows
-  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
   def group_rows_by_donor_id(rows)
     barcodes, well_locations = extract_barcodes_and_well_locations(rows)
     receptacles = find_receptacles(barcodes, well_locations)
@@ -460,7 +456,6 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     groups = receptacles.group_by { |receptacle| receptacle.aliquots.first.sample.sample_metadata.donor_id }
     groups.transform_values! { |array| array.map { |receptacle| receptacle_to_row_map[receptacle] } }
   end
-  # rubocop:enable Metrics/AbcSize
 
   # This method returns the scRNA config from the Rails application config.
   # @return [Hash] the scRNA config
@@ -468,4 +463,3 @@ module Submission::ScrnaCoreCdnaPrepFeasibilityValidator
     Rails.application.config.scrna_config
   end
 end
-# rubocop:enable Metrics/ModuleLength

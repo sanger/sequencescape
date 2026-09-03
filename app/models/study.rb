@@ -462,9 +462,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo-next Layout/LineLength
       'No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people.'
-      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -674,7 +673,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
-  # rubocop:disable Metrics/ClassLength
+  # rubocop:disable-next Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
     delegate :externally_managed?, to: :owner, allow_nil: true
@@ -833,5 +832,4 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

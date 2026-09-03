@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo-next Metrics/ModuleLength
 module NavigationHelpers
   # Finds the specified page for the given model with the specified name.
   def page_for_model(model, page, name)
@@ -167,6 +167,5 @@ module NavigationHelpers
   end
   # rubocop:enable Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/CyclomaticComplexity
 end
-# rubocop:enable Metrics/ModuleLength
 
 World(NavigationHelpers)

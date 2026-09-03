@@ -364,7 +364,7 @@ RSpec.describe CompoundAliquot do
     end
     let(:compound_aliquot) { build(:compound_aliquot, request: request, source_aliquots: [aliquot1, aliquot2]) }
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     it 'returns a hash with expected keys' do
       attrs = compound_aliquot.aliquot_attributes
       expect(attrs).to include(
@@ -377,7 +377,6 @@ RSpec.describe CompoundAliquot do
         :sample
       )
     end
-    # rubocop:enable RSpec/ExampleLength
 
     it 'includes tag_id from source aliquots' do
       expect(compound_aliquot.aliquot_attributes[:tag_id]).to eq(tag.id)

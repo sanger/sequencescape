@@ -357,7 +357,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         end
       end
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:disable-next RSpec/ExampleLength
       it 'returns all attributes for included study_metadata.data_release_study_type', :aggregate_failures do
         # NOTE: More includes can be added, separated by commas.
         api_get "#{base_endpoint}?filter[name]=Study*" \
@@ -367,7 +367,6 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           expect(data_release_study_type['attributes']).to include(*data_release_study_type_attrs)
         end
       end
-      # rubocop:enable RSpec/ExampleLength
 
       it 'returns all attributes for included study_metadata.reference_genome', :aggregate_failures do
         # NOTE: reference_genome_name attribute is available on study_metadata as well, for convenience.
@@ -396,7 +395,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
       end
     end
 
-    # rubocop:disable RSpec/ExampleLength
+    # rubocop:disable-next RSpec/ExampleLength
     context 'with sparse fields' do
       before do
         create(:study, name: 'Study A')
@@ -464,7 +463,6 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         end
       end
     end
-    # rubocop:enable RSpec/ExampleLength
 
     context 'with active and inactive studies' do
       before do

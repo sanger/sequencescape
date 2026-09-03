@@ -97,7 +97,7 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:todo-next Metrics/MethodLength, Metrics/AbcSize
   def create_plates_from_tube_racks!(
     tube_racks,
     barcode_printer,
@@ -138,7 +138,6 @@ class Plate::Creator < ApplicationRecord # rubocop:todo Metrics/ClassLength
     warnings_list << 'Barcode labels failed to print.' unless print_job.execute
     true
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   # Creates plates from the given tubes and appends them to the created_plates array.
   # If successfully created, sends a label printing job with plate parameters to the

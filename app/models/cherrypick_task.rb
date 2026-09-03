@@ -171,7 +171,7 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
   end
 
   # returns array [ [ request id, source plate barcode, source coordinate ] ]
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def build_plate_wells_from_requests(requests, workflow_controller = nil) # rubocop:todo Metrics/AbcSize
     loaded_requests = Request.where(requests: { id: requests }).includes(asset: [{ plate: :barcodes }, :map])
 
@@ -200,5 +200,4 @@ class CherrypickTask < Task # rubocop:todo Metrics/ClassLength
 
     sorted_requests.map { |request| [request.id, request.asset.plate.human_barcode, request.asset.map_description] }
   end
-  # rubocop:enable Metrics/MethodLength
 end

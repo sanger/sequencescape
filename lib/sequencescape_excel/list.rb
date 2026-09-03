@@ -59,7 +59,7 @@ module SequencescapeExcel
       # - create a list of keys
       # - create a struct class based on the name
       # - creates a method which returns a list of keys for the items in each key
-      # rubocop:todo Metrics/MethodLength
+      # rubocop:todo-next Metrics/MethodLength
       def list_for(*args) # rubocop:todo Metrics/AbcSize
         options = args.extract_options!
 
@@ -95,7 +95,6 @@ module SequencescapeExcel
           list_model_const
         end
       end
-      # rubocop:enable Metrics/MethodLength
     end
 
     def initialize

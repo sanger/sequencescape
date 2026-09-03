@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe HasPolyMetadata, type: :concern do
-  # rubocop:disable RSpec/BeforeAfterAll
+  # rubocop:disable-next RSpec/BeforeAfterAll
   before(:all) do
     ActiveRecord::Schema.define do
       create_table :dummy_models, force: true do |t|
@@ -11,7 +11,6 @@ RSpec.describe HasPolyMetadata, type: :concern do
       end
     end
   end
-  # rubocop:enable RSpec/BeforeAfterAll
 
   before do
     stub_const('DummyModel', Class.new(ApplicationRecord) do

@@ -51,9 +51,8 @@ module SampleManifestExcel
       end
 
       def inspect
-        # rubocop:todo Layout/LineLength
+        # rubocop:todo-next Layout/LineLength
         "<#{self.class}: @file=#{file}, @columns=#{columns.inspect}, @start_row=#{start_row}, @sanger_sample_id_column=#{sanger_sample_id_column}, @data=#{data.inspect}>"
-        # rubocop:enable Layout/LineLength
       end
 
       ##
