@@ -42,7 +42,7 @@ Given(
   step('the last batch has a barcode of "550000555760"')
 end
 
-# rubocop:disable Metrics/BlockLength
+# rubocop:disable-next Metrics/BlockLength
 Given(
   /^I have a released cherrypicking batch with 3 plates and the minimum robot pick is "([^"]*)"$/
 ) do |minimum_robot_pick|
@@ -81,7 +81,6 @@ Given(
   step('I press "Release this batch"')
   step('the last batch has a barcode of "550000555760"')
 end
-# rubocop:enable Metrics/BlockLength
 
 Given /^I have a released cherrypicking batch with 1 plate which doesnt need buffer$/ do
   step('I have a released cherrypicking batch with 1 samples and the minimum robot pick is "1"')

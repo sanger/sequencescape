@@ -46,10 +46,7 @@ module Role::UserRoleHelper
     #     @return [Boolean] Returns true if the user has the role $1
     #   @!method grant_$1(role_name, authorizable)
     #     @return [Boolean] Returns true if the user has the role $1
-    #
-    # @note Disabling Naming/PredicateName as this is not a predicate, but instead has been named
-    #       to evoke the behaviour of has_many/has_one
-    def has_role(role_name) # rubocop:disable Naming/PredicateName
+    def has_role(role_name)
       define_method("#{role_name}?") { |authorizable = nil| role?(role_name, authorizable) }
       alias_method "#{role_name}_of?", "#{role_name}?"
       define_method("grant_#{role_name}") { |authorizable = nil| grant_role(role_name, authorizable) }

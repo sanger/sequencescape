@@ -72,9 +72,8 @@ class BatchesControllerTest < ActionController::TestCase
           end
 
           should 'expose the library information correctly' do
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo-next Layout/LineLength
             assert_select "sample[library_id='#{@library.receptacle.id}'][library_name='#{@library.name}'][library_type='Standard']"
-            # rubocop:enable Layout/LineLength
           end
 
           should 'not have information about spiked in buffers' do

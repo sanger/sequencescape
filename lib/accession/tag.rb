@@ -127,10 +127,9 @@ module Accession
   # It also allow other config settings for the XML service like the list defined inside OTHER_DEFAULT_SETTINGS
   # NB: this regexp is defined in <https://www.ebi.ac.uk/ena/browser/api/xml/ERC000011>
   class TagCollectionDate < Tag
-    # rubocop:disable Layout/LineLength
+    # rubocop:disable-next Layout/LineLength
     REGEXP =
       %r{(^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01])(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?(/[0-9]{4}(-[0-9]{2}(-[0-9]{2}(T[0-9]{2}:[0-9]{2}(:[0-9]{2})?Z?([+-][0-9]{1,2})?)?)?)?)?$)|(^not applicable$)|(^not collected$)|(^not provided$)|(^restricted access$)|(^missing: control sample$)|(^missing: sample group$)|(^missing: synthetic construct$)|(^missing: lab stock$)|(^missing: third party data$)|(^missing: data agreement established pre-2023$)|(^missing: endangered species$)|(^missing: human-identifiable$)|(^missing$)}
-    # rubocop:enable Layout/LineLength
 
     def value_for(record, key)
       val = record.send(key)

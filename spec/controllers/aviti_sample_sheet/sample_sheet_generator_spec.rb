@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-# rubocop:disable RSpec/VerifiedDoubles
+# rubocop:disable-next RSpec/VerifiedDoubles
 RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
   let(:sample) { instance_double(Sample, name: 'Sample_001') }
   let(:sample2) { instance_double(Sample, name: 'Sample_002') }
@@ -343,4 +343,3 @@ RSpec.describe AvitiSampleSheet::SampleSheetGenerator do
     end
   end
 end
-# rubocop:enable RSpec/VerifiedDoubles
