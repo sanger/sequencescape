@@ -1,0 +1,100 @@
+---
+"10x 3' scRNA v4":
+  application_type: scRNA_GEX_10x_3prime_v4
+  sequencing_recipe: 3scRNA
+
+"10x 3' scRNA v3":
+  application_type: scRNA_GEX_10x_3prime_v3
+  sequencing_recipe: 3scRNA
+
+"10x 5' scRNA v3":
+  application_type: scRNA_GEX_10x_5prime_v3
+  sequencing_recipe: 116 cycles
+
+"10x 5' scRNA v2":
+  application_type: scRNA_GEX_10x_5prime_v2
+  sequencing_recipe: 116 cycles
+
+"10x Flex":
+  application_type: scRNA_GEX_10x_flex
+  sequencing_recipe: 75 cycles
+
+"10x Flex v2":
+  application_type: scRNA_GEX_10x_flex_v2
+  sequencing_recipe: 10xFlexV2
+
+"10x Visium HD Generic":
+  application_type: scRNA_visiumHD_10x_generic
+  sequencing_recipe: VisiumHD
+
+"10x Visium HD Human":
+  application_type: scRNA_visiumHD_10x_human_probeset_v2
+  sequencing_recipe: VisiumHD
+
+"10x Visium HD Mouse":
+  application_type: scRNA_visiumHD_10x_mouse_probeset_v2
+  sequencing_recipe: VisiumHD
+
+"10x Visium HD 3'":
+  application_type: scRNA_visiumHD_10x_3prime
+  sequencing_recipe: VisiumHD
+
+"10x Flex CRISPR":
+  application_type: scRNA_CRISPR_10x_flex
+  sequencing_recipe: 75 cycles
+
+"10x 5' scRNA v3 CRISPR":
+  application_type: scRNA_CRISPR_10x_5prime_v3
+  sequencing_recipe: 116 cycles
+
+"Parse scRNA v3":
+  application_type: scRNA_Parse_v3
+  sequencing_recipe: ParseV3
+
+"Twist FlexPrep UHT":
+  application_type: exome_twist_v2
+  sequencing_recipe: 116 cycles
+
+"Olink Explore HT":
+  application_type: olink_explore_HT
+  sequencing_recipe: 54 cycles
+
+"NEB EM-Seq":
+  application_type: converted_methylation
+  sequencing_recipe: 116 cycles
+
+"Scale QuantumScale":
+  application_type: scRNA_GEX_scale_quantum
+  sequencing_recipe: Scale
+
+"Bioskryb scWGS":
+  application_type: converted-truseq
+  sequencing_recipe: 116 cycles
+
+"Converted Nextera":
+  application_type: converted-nextera
+  sequencing_recipe: 116 cycles
+
+"Converted TruSeq":
+  application_type: converted-truseq
+  sequencing_recipe: 116 cycles
+
+"10x 5' Feature Barcoding v3":
+  application_type: scRNA_FeatureBarcode_10x_5prime_v3
+  sequencing_recipe: 116 cycles
+
+"10x 5' Feature Barcoding v4":
+  application_type: scRNA_FeatureBarcode_10x_5prime_v4
+  sequencing_recipe: 116 cycles
+
+"10x Multiome ATAC":
+  application_type: scRNA_ATAC_10x_multiome
+  sequencing_recipe: 116 cycles
+
+"10x ATAC v2":
+  application_type: scRNA_ATAC_10x_v2
+  sequencing_recipe: 116 cycles
+
+"Unprocessed CRAM":
+  application_type: test
+  sequencing_recipe: 116 cycles
