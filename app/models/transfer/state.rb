@@ -71,9 +71,8 @@ module Transfer::State
                 # we're basically looking for all of the tubes.
                 if states.sort != ALL_STATES.sort
                   join_options = [
-                    # rubocop:todo Layout/LineLength
+                    # rubocop:todo-next Layout/LineLength
                     'LEFT OUTER JOIN `transfer_requests` transfer_requests_as_target ON transfer_requests_as_target.target_asset_id = `assets`.id'
-                    # rubocop:enable Layout/LineLength
                   ]
 
                   joins(join_options).where(transfer_requests_as_target: { state: states })

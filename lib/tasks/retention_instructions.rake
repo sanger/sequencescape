@@ -33,7 +33,7 @@ namespace :retention_instructions do
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def process_labware(labware, saved_count)
     retention_instruction =
       find_retention_instruction_key_for_value(labware.custom_metadatum_collection.metadata['retention_instruction'])
@@ -54,5 +54,4 @@ namespace :retention_instructions do
     end
     saved_count
   end
-  # rubocop:enable Metrics/MethodLength
 end

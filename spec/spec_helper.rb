@@ -226,6 +226,46 @@ RSpec.configure do |config|
     Delayed::Worker.delay_jobs = true
   end
 
+  # Add sapio_studies_endpoint_enabled to a spec to automatically:
+  # - Set y26_170_sapio_studies_endpoint to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_studies_endpoint_enabled) do |example|
+    sapio_studies_endpoint_enabled = Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+    Flipper.enable(:y26_170_sapio_studies_endpoint)
+    example.run
+    Flipper.enable(:y26_170_sapio_studies_endpoint, sapio_studies_endpoint_enabled)
+  end
+
+  # Add sapio_studies_endpoint_disabled to a spec to automatically:
+  # - Set y26_170_sapio_studies_endpoint to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_studies_endpoint_disabled) do |example|
+    sapio_studies_endpoint_enabled = Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+    Flipper.disable(:y26_170_sapio_studies_endpoint)
+    example.run
+    Flipper.enable(:y26_170_sapio_studies_endpoint, sapio_studies_endpoint_enabled)
+  end
+
+  # Add externally_managed_restrictions_enabled to a spec to automatically:
+  # - Set y26_172_enable_externally_managed_study_restrictions to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :externally_managed_restrictions_enabled) do |example|
+    externally_managed_restrictions_enabled = Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions)
+    example.run
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
+  end
+
+  # Add externally_managed_restrictions_disabled to a spec to automatically:
+  # - Set y26_172_enable_externally_managed_study_restrictions to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :externally_managed_restrictions_disabled) do |example|
+    externally_managed_restrictions_enabled = Flipper.enabled?(:y26_171_enable_externally_managed_study_restrictions)
+    Flipper.disable(:y26_172_enable_externally_managed_study_restrictions)
+    example.run
+    Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
+  end
+
   config.before do
     # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution

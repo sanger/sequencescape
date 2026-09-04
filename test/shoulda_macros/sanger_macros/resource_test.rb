@@ -12,7 +12,7 @@ module Sanger
       module Macros # rubocop:todo Metrics/ModuleLength
         RESTFUL_ACTIONS = %w[index new create show update destroy edit].freeze
 
-        # rubocop:todo Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
+        # rubocop:todo-next Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
         def resource_test(resource_name, kwords)
           ignore_actions = kwords[:ignore_actions] || []
           actions = kwords[:actions] || (RESTFUL_ACTIONS - ignore_actions)
@@ -229,7 +229,6 @@ module Sanger
             end
           end
         end
-        # rubocop:enable Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       end
     end
   end

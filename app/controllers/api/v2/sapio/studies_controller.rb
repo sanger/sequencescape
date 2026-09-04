@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# NOTE: Before adding additional functionality here, confirm the same effect cannot be achieved using vanilla JSONAPI:
+# - Idioms for controllers: https://jsonapi-resources.com/v0.10/guide/controllers.html
+# - Idioms for resources: https://jsonapi-resources.com/v0.10/guide/resources.html
+
 module Api
   module V2
     module Sapio
@@ -13,22 +17,36 @@ module Api
         # the +index+ action (Api::V2::BaseResource::MAX_RESULTS).
         RESULTS_RANGE = 1..1000
 
+        before_action :check_sapio_studies_endpoint_enabled
+        before_action :check_externally_managed_study_restrictions_enabled, only: %i[create update]
+        # Before create study, authorize requests from Integration Hub API keys only.
+        before_action :authorize_integration_hub, only: %i[create update]
+        before_action :check_externally_managed, only: %i[update]
+
         # Enforces a name search constraint on resource index listing.
         #
         # @return [void]
         def index
-          return render_feature_flag_disabled unless feature_flag_enabled?
           return render_missing_search_param unless search_param_present?
 
           super
         end
 
-        # Displays details for a single study resource.
+        # Creates a new externally managed Study.
+        #
+        # It should NOT be used to transfer an existing Sequencescape study to Sapio.
         #
         # @return [void]
-        def show
-          return render_feature_flag_disabled unless feature_flag_enabled?
+        def create
+          # Required for before_action's above
+          super
+        end
 
+        # Updates an existing Study.
+        #
+        # @return [void]
+        def update
+          # Required for before_action's above
           super
         end
 
@@ -36,9 +54,31 @@ module Api
 
         # Checks whether the Sapio studies endpoint feature flag is enabled.
         #
-        # @return [Boolean] true if the +:y26_170_sapio_studies_endpoint+ flag is enabled
-        def feature_flag_enabled?
-          Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        # @return [void] Renders a standardized JSON:API error if the +y26_170_sapio_studies_endpoint+ feature flag
+        # is disabled.
+        def check_sapio_studies_endpoint_enabled
+          render_feature_disabled unless Flipper.enabled?(:y26_170_sapio_studies_endpoint)
+        end
+
+        # Checks whether the Sapio managed study restrictions feature flag is enabled.
+        #
+        # @return [void] Renders a standardized JSON:API error if the
+        # +y26_172_enable_externally_managed_study_restrictions+ feature flag is disabled.
+        def check_externally_managed_study_restrictions_enabled
+          render_feature_disabled unless Flipper.enabled?(:y26_172_enable_externally_managed_study_restrictions)
+        end
+
+        # Ensures that the request is authorized with an Integration Hub API key.
+        def authorize_integration_hub
+          render_forbidden unless @api_application&.integration_hub?
+        end
+
+        # Checks whether the study is externally managed.
+        #
+        # @return [void] Renders a standardized JSON:API error if the study is not externally managed.
+        def check_externally_managed
+          study = Study.find_by(id: params[:id]) || Study.find_by(uuid: external_uuid)
+          render_locked unless study.externally_managed?
         end
 
         # Checks whether the required JSON:API search filter parameter is present?
@@ -51,7 +91,7 @@ module Api
         # Renders a standardized JSON:API error for a disabled feature flag configuration.
         #
         # @return [void]
-        def render_feature_flag_disabled
+        def render_feature_disabled
           render_errors(Errors::FeatureDisabled.new.errors)
         end
 
@@ -60,6 +100,23 @@ module Api
         # @return [void]
         def render_missing_search_param
           render_errors(Errors::MissingSearchParam.new.errors)
+        end
+
+        # Renders a standardized JSON:API error for a forbidden request.
+        #
+        # @return [void]
+        def render_forbidden
+          render_errors(Errors::Forbidden.new.errors)
+        end
+
+        # Renders a standardized JSON:API error for a locked resource.
+        #
+        # This is raised in the specific case that a study has `externally_managed` set to false.
+        #
+        # @return [void]
+        def render_locked
+          message = 'Study is not externally managed and cannot be updated via this endpoint.'
+          render_errors(JSONAPI::Exceptions::RecordLocked.new(message).errors)
         end
 
         # Returns request context for JSONAPI::Resources, which is available
@@ -84,6 +141,34 @@ module Api
             context[:filter_name] = params.dig(:filter, :name)
           end
           context
+        end
+      end
+
+      class StudyProcessor < JSONAPI::Processor
+        before_create_resource :validate_uuid_format
+        before_create_resource :validate_uuid_uniqueness
+
+        private
+
+        # Validates that the provided UUID is in a valid format.
+        def validate_uuid_format
+          return if external_uuid.blank? || Uuid.uuid?(external_uuid)
+
+          raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, external_uuid)
+        end
+
+        # Validate that the provided UUID is unique
+        def validate_uuid_uniqueness
+          return if external_uuid.blank?
+
+          # Validation for unique UUID against all Sequencescape UUIDs
+          return if Uuid.find_id(external_uuid).blank?
+
+          raise Errors::FieldValueConflict.new(:uuid, external_uuid)
+        end
+
+        def external_uuid
+          @external_uuid ||= params.dig(:data, :attributes, :uuid)
         end
       end
     end

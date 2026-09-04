@@ -28,17 +28,15 @@ RSpec.describe SequencescapeExcel::Formula, :sample_manifest, :sample_manifest_e
 
   it 'produces the correct output for the ISERROR formula' do
     expect(formula.update(references.merge(type: :is_error, operator: '>', operand: 999)).to_s).to eq(
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo-next Layout/LineLength
       "AND(NOT(ISBLANK(#{references[:first_cell_reference]})),ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0))"
-      # rubocop:enable Layout/LineLength
     )
   end
 
   it 'produces the correct output irrespective of the format of type' do
     expect(formula.update(references.merge(type: 'is_error', operator: '>', operand: 999)).to_s).to eq(
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo-next Layout/LineLength
       "AND(NOT(ISBLANK(#{references[:first_cell_reference]})),ISERROR(MATCH(#{references[:first_cell_reference]},#{references[:absolute_reference]},0)>0))"
-      # rubocop:enable Layout/LineLength
     )
   end
 

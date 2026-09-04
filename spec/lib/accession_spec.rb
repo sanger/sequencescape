@@ -13,6 +13,9 @@ RSpec.describe Accession do
       it 'does not add an accession number' do
         described_class.accession_sample(sample, event_user)
 
+        # Reload required since a different instance of the sample is updated
+        sample.reload
+
         expect(sample.sample_metadata.sample_ebi_accession_number).to be_nil
       end
     end
@@ -69,6 +72,8 @@ RSpec.describe Accession do
             rescue Accession::InternalValidationError
               # Ignore the error and continue execution
             end
+            # Reload required since a different instance of the sample is updated with the accession number
+            accessionable_sample.reload
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
         end
@@ -79,6 +84,8 @@ RSpec.describe Accession do
               stub_accession_client(:submit_and_fetch_accession_number, return_value: 'EGA00001000240')
             )
             described_class.accession_sample(accessionable_sample, event_user)
+            # Reload required since a different instance of the sample is updated with the accession number
+            accessionable_sample.reload
           end
 
           it 'adds an accession number' do
@@ -98,8 +105,6 @@ RSpec.describe Accession do
           end
 
           it 'does not add an accession number' do
-            accessionable_sample.save!
-
             expect(accessionable_sample.sample_metadata.sample_ebi_accession_number).to be_nil
           end
 

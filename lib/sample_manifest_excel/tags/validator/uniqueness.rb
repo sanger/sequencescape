@@ -36,7 +36,7 @@ module SampleManifestExcel
 
         private
 
-        # rubocop:todo Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
+        # rubocop:todo-next Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity, Metrics/AbcSize
         def check_tag_groups_and_indexes(tag_groups, tag_indexes, tag2_groups, tag2_indexes)
           i7s = []
           i5s = []
@@ -48,7 +48,6 @@ module SampleManifestExcel
           end
           find_tags_clash(i7s.zip(i5s))
         end
-        # rubocop:enable Metrics/AbcSize, Metrics/PerceivedComplexity, Metrics/CyclomaticComplexity
       end
     end
   end

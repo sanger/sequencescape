@@ -130,7 +130,7 @@ Rails.application.routes.draw do
       end
 
       namespace :sapio do
-        resources :studies, only: %i[index show]
+        jsonapi_resources :studies
       end
     end
   end

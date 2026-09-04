@@ -7,7 +7,7 @@ group :default do
   gem 'concurrent-ruby'
   gem 'configatron'
   gem 'formtastic'
-  gem 'rails', '~> 8.0.0'
+  gem 'rails'
 
   # Previously part of ruby or rails, now separate gems
   gem 'drb'
@@ -36,6 +36,7 @@ group :default do
   gem 'record_loader', git: 'https://github.com/sanger/record_loader', tag: 'v1.1.0'
 
   gem 'mysql2', platforms: :mri
+  gem 'unsort_db_schema_columns' # revert Rails 8.1 behaviour of sorting columns in the db/schema.rb file
   gem 'will_paginate'
 
   gem 'carrierwave'
@@ -66,7 +67,7 @@ group :default do
   # for Sanger/PSD projects.
   # Version 0.1.x was created from the [develop](https://github.com/sanger/jsonapi-resources/tree/develop) branch
   # published, and pinned for Sequencescape compatibility.
-  gem 'sanger-jsonapi-resources', '~> 0.1.3'
+  gem 'sanger-jsonapi-resources', '~> 0.1.4'
 
   # gem 'sanger-jsonapi-resources', github: 'sanger/jsonapi-resources', branch: 'develop'
   gem 'csv', '~> 3.3' # Required by jsonapi-resources, previously part of ruby

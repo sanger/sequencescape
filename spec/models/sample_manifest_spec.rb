@@ -379,4 +379,35 @@ RSpec.describe SampleManifest, :sample_manifest do
       end
     end
   end
+
+  describe '#prevent_creation_with_mastered_study' do
+    let(:mastered_study) { create(:sapio_study) }
+    let(:normal_study) { create(:study, externally_managed: false) }
+
+    context 'when sapio restrictions are enabled', :externally_managed_restrictions_enabled do
+      context 'and study is externally_managed' do
+        it 'prevents sample manifest creation' do
+          manifest = build(:sample_manifest, study: mastered_study)
+          expect(manifest).not_to be_valid
+          expect(manifest.errors[:study]).to include(
+            I18n.t('studies.externally_managed.sample_manifest_creation_error')
+          )
+        end
+      end
+
+      context 'and study is not externally_managed' do
+        it 'allows sample manifest creation' do
+          manifest = build(:sample_manifest, study: normal_study)
+          expect(manifest).to be_valid
+        end
+      end
+    end
+
+    context 'when sapio restrictions are disabled', :sapio_restrictions_disabled do
+      it 'allows sample manifest creation even for mastered studies' do
+        manifest = build(:sample_manifest, study: mastered_study)
+        expect(manifest).to be_valid
+      end
+    end
+  end
 end

@@ -24,4 +24,18 @@ class SampleCompoundComponent < ApplicationRecord
 
     errors.add(:component_sample, 'cannot have further component samples.')
   end
+
+  # Bulk validation to be called before insert_all the component samples in CompoundSampleHelper#create_compound_sample
+  # Avoids running N queries for 9k samples by doing set-based checks.
+  # No need to check if the compound sample is already a compound sample, as it is created in the same transaction and
+  #   will not have any component samples yet.
+  def self.bulk_validate_component_samples(component_samples)
+    errors = []
+    invalid_component_ids = SampleCompoundComponent.where(compound_sample_id: component_samples.map(&:id))
+      .pluck(:compound_sample_id).uniq
+    if invalid_component_ids.any?
+      errors << "Component samples #{invalid_component_ids.join(', ')} cannot have further component samples."
+    end
+    errors
+  end
 end

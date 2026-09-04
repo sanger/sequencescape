@@ -991,4 +991,41 @@ RSpec.describe Study do
       expect { user.grant_follower(study) }.to change(Warren.handler.messages, :count).from(0)
     end
   end
+
+  describe '#prevent_updates_when_externally_managed' do
+    let(:study) { create(:sapio_study) }
+
+    # test that updates are prevented when the feature flag is enabled and the update is from the UI
+    context 'when feature flag is enabled and updated from the UI', :externally_managed_restrictions_enabled do
+      it 'prevents updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be false
+        expect(study.errors[:base]).to include(
+          I18n.t('studies.externally_managed.not_editable')
+        )
+      end
+    end
+
+    # updates are allowed when the feature flag is enabled and the update is from Integration Hub
+    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
+      before do
+        study.skip_externally_managed_restriction = true
+      end
+
+      it 'allows updates' do
+        study.name = 'New Name'
+
+        expect(study.save).to be true
+      end
+    end
+
+    # test that updates are allowed when the feature flag is disabled
+    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
+      it 'allows updates' do
+        study.name = 'New Name'
+        expect(study.save).to be true
+      end
+    end
+  end
 end

@@ -32,3 +32,9 @@ FactoryBot.define do
     sample
   end
 end
+FactoryBot.define do
+  factory :sample_compound_component do
+    compound_sample factory: :sample
+    component_sample factory: :sample
+  end
+end
