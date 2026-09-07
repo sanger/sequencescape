@@ -137,7 +137,7 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Returns application preset for given library type
     # @param library_type [String] Name of the library type
-    # @returns [String] Application preset
+    # @return [String] Application preset
     def library_type_to_application(library_type)
       mapping = { 'Ultima High Throughput PCR Amplified 96' => 'WGS Native Amplified' }
       mapping.fetch(library_type, 'WGS Native') # Default is WGS Native
@@ -148,7 +148,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     #   - Sets WGS Native as the application value.
     #   - Removes sequencing_recipe and analysis_recipe columns.
     # @param csv [CSV] the CSV object to append rows to
-    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
+    # @param request [UltimaSequencingRequest] the request whose global data is to be added
     def add_support_global_section(csv, request)
       library_type = request.asset.aliquots.first.library_type
       application = library_type_to_application(library_type)

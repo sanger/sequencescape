@@ -23,7 +23,7 @@ module UltimaSampleSheet::UG200SampleSheetGenerator
     # Adds the global section to the CSV for UG200.
     # The request parameter is currently unused.
     # @param csv [CSV] the CSV object to append rows to
-    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
+    # @param request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, request)
       add_support_global_section(csv, request)
     end
