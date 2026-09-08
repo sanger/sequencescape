@@ -67,7 +67,7 @@ module Submission::LinearRequestGraph
 
     request_type, multiplier = request_type_and_multiplier_pairs.shift
 
-    # rubocop:todo Metrics/BlockLength
+    # rubocop:todo-next Metrics/BlockLength
     multiplier.times do
       # If the request type is for multiplexing it means that all of the assets end up in one target asset.
       # Otherwise there are the same number of target assets as source.
@@ -121,7 +121,6 @@ module Submission::LinearRequestGraph
 
       create_request_chain!(request_type_and_multiplier_pairs.dup, target_data_set, multiplexing_assets, &block)
     end
-    # rubocop:enable Metrics/BlockLength
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity

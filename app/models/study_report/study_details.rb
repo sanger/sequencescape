@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo-next Metrics/ModuleLength
 module StudyReport::StudyDetails
   BATCH_SIZE = 1000
 
@@ -72,7 +72,7 @@ module StudyReport::StudyDetails
     ]
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def progress_report_on_all_assets # rubocop:todo Metrics/AbcSize
     yield(progress_report_header)
 
@@ -124,6 +124,4 @@ module StudyReport::StudyDetails
         end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end
-# rubocop:enable Metrics/ModuleLength

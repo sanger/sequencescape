@@ -27,9 +27,8 @@ module User::Authentication
     end
     save if changed?
   rescue StandardError => e
-    # rubocop:todo Layout/LineLength
+    # rubocop:todo-next Layout/LineLength
     logger.error "Profile failed for user #{login}: result code #{ldap.get_operation_result.code} message #{ldap.get_operation_result.message} - #{e}"
-    # rubocop:enable Layout/LineLength
   end
   private :update_profile_via_ldap
 

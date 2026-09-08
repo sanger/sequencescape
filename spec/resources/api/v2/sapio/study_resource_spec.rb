@@ -15,15 +15,16 @@ RSpec.describe Api::V2::Sapio::StudyResource, type: :resource do
   it { is_expected.to have_model_name 'Study' }
 
   # Attributes
-  it { is_expected.to have_readwrite_attribute :name }
-  it { is_expected.to have_readwrite_attribute :uuid }
-  it { is_expected.to have_readwrite_attribute :created_at }
-  it { is_expected.to have_readwrite_attribute :updated_at }
-  it { is_expected.to have_readwrite_attribute :blocked }
+  it { is_expected.to have_write_once_attribute :name }
+  it { is_expected.to have_write_once_attribute :uuid }
+  it { is_expected.to have_readonly_attribute :created_at }
+  it { is_expected.to have_readonly_attribute :updated_at }
+  it { is_expected.to have_readonly_attribute :blocked }
   it { is_expected.to have_readwrite_attribute :state }
-  it { is_expected.to have_readwrite_attribute :ethically_approved }
-  it { is_expected.to have_readwrite_attribute :enforce_data_release }
-  it { is_expected.to have_readwrite_attribute :enforce_accessioning }
+  it { is_expected.to have_write_once_attribute :externally_managed }
+  it { is_expected.to have_readonly_attribute :ethically_approved }
+  it { is_expected.to have_readonly_attribute :enforce_data_release }
+  it { is_expected.to have_readonly_attribute :enforce_accessioning }
 
   # Relationships
   it { is_expected.to have_a_writable_has_one(:study_metadata).with_class_name('StudyMetadata') }

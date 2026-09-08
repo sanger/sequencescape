@@ -28,9 +28,8 @@ module Transfer::Associations
       scope :with_no_outgoing_transfers,
             lambda {
               select("DISTINCT #{base.quoted_table_name}.*").joins(
-                # rubocop:todo Layout/LineLength
+                # rubocop:todo-next Layout/LineLength
                 "LEFT OUTER JOIN `transfers` outgoing_transfers ON outgoing_transfers.`source_id`=#{base.quoted_table_name}.`id`"
-                # rubocop:enable Layout/LineLength
               ).where('outgoing_transfers.source_id IS NULL')
             }
     end

@@ -25,9 +25,8 @@ RSpec.describe 'samples/show.html.erb' do
       it 'renders the withdrawn message' do
         regexp =
           Regexp.new(
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo-next Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_fs(:db)}.*",
-            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         render
@@ -48,9 +47,8 @@ RSpec.describe 'samples/show.html.erb' do
       it 'does not render the withdrawn message' do
         regexp =
           Regexp.new(
-            # rubocop:todo Layout/LineLength
+            # rubocop:todo-next Layout/LineLength
             "Patient consent has been withdrawn for this sample.*by user.*#{current_user.login}.*at .*#{time.to_fs(:db)}.*",
-            # rubocop:enable Layout/LineLength
             Regexp::MULTILINE
           )
         render
