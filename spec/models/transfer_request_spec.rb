@@ -148,7 +148,7 @@ RSpec.describe TransferRequest do
         expect(library_request.reload.state).to eq('started')
       end
 
-      it 'does not starts the dummy library request when started' do
+      it 'does not start the dummy library request when started' do
         subject.start!
         expect(dummy_library_request.reload.state).to eq('pending')
       end
@@ -427,6 +427,23 @@ RSpec.describe TransferRequest do
 
       it 'returns the submission_id from the active request on the asset' do
         expect(transfer_request.send(:effective_submission_id)).to eq(new_submission.id)
+      end
+    end
+
+    context 'when the source asset has active requests from multiple submissions' do
+      let(:dna_submission) { create(:submission) }
+      let(:rna_submission) { create(:submission) }
+      let!(:rna_request) { create(:library_request, asset: source, submission: rna_submission, state: 'pending') }
+      let!(:dna_request) { create(:library_request, asset: source, submission: dna_submission, state: 'pending') }
+
+      before { transfer_request.submission_id = dna_submission.id }
+
+      it 'prefers the transfer request submission over another active submission on the same asset' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(dna_submission.id)
+      end
+
+      it 'only includes sibling requests for the transfer submission' do
+        expect(transfer_request.sibling_requests).to contain_exactly(dna_request)
       end
     end
   end

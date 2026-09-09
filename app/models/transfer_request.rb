@@ -239,7 +239,17 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Returns the submission_id of an active request on the source asset if one exists,
   # falling back to self.submission_id. This handles the case where a new submission has
   # been created on the asset and the outer_request still carries the old submission_id.
+  # Fix to check for active request for submission was added to handle combined LCM case
+  # where there are 2 Library requests on the Stock plate wells and it was not starting the
+  # second requests.
   def effective_submission_id
+    active_request_for_submission = asset.requests_as_source.find do |r|
+      TRANSFERABLE_STATES.include?(r.state) && r.submission_id == submission_id
+    end
+    return submission_id if active_request_for_submission.present?
+
+    # Default behaviour. If no active request for the current submission is found, fall back to
+    # any active request.
     active_request = asset.requests_as_source.find { |r| TRANSFERABLE_STATES.include?(r.state) }
     active_request&.submission_id || submission_id
   end
