@@ -148,7 +148,7 @@ RSpec.describe TransferRequest do
         expect(library_request.reload.state).to eq('started')
       end
 
-      it 'does not starts the dummy library request when started' do
+      it 'does not start the dummy library request when started' do
         subject.start!
         expect(dummy_library_request.reload.state).to eq('pending')
       end
@@ -398,6 +398,84 @@ RSpec.describe TransferRequest do
       it 'sets submission_id to the request submission_id' do
         transfer_request.outer_request = library_request
         expect(transfer_request.submission_id).to eq(library_request.submission_id)
+      end
+    end
+  end
+
+  describe '#effective_submission_id' do
+    subject(:transfer_request) { build(:transfer_request, asset: source, target_asset: destination) }
+
+    context 'when the source asset has no active requests' do
+      let(:old_submission) { create(:submission) }
+
+      before { transfer_request.submission_id = old_submission.id }
+
+      it 'falls back to self.submission_id' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(old_submission.id)
+      end
+    end
+
+    context 'when the source asset has an active request from a new submission' do
+      let(:old_submission) { create(:submission) }
+      let(:new_submission) { create(:submission) }
+      let(:active_request) { create(:library_request, asset: source, submission: new_submission, state: 'pending') }
+
+      before do
+        active_request
+        transfer_request.submission_id = old_submission.id
+      end
+
+      it 'returns the submission_id from the active request on the asset' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(new_submission.id)
+      end
+    end
+
+    context 'when the source asset has active requests from multiple submissions' do
+      let(:dna_submission) { create(:submission) }
+      let(:rna_submission) { create(:submission) }
+      let(:rna_request) { create(:library_request, asset: source, submission: rna_submission, state: 'pending') }
+      let(:dna_request) { create(:library_request, asset: source, submission: dna_submission, state: 'pending') }
+
+      before do
+        rna_request
+        dna_request
+        transfer_request.submission_id = dna_submission.id
+      end
+
+      it 'prefers the transfer request submission over another active submission on the same asset' do
+        expect(transfer_request.send(:effective_submission_id)).to eq(dna_submission.id)
+      end
+
+      it 'only includes sibling requests for the transfer submission' do
+        expect(transfer_request.sibling_requests).to contain_exactly(dna_request)
+      end
+    end
+  end
+
+  describe '#sibling_requests' do
+    context 'when a new submission has been created on the source asset' do
+      # Scenario: outer_request was set from the old submission, recording a stale submission_id
+      # on the transfer request. A new submission now has active requests on the same asset.
+      # sibling_requests should resolve via the new active submission, not the stale one.
+      subject(:transfer_request) do
+        build(:transfer_request, asset: source, target_asset: destination, submission: old_submission)
+      end
+
+      let(:old_submission) { create(:submission) }
+      let(:new_submission) { create(:submission) }
+      let!(:old_library_request) do
+        create(:library_request, asset: source, submission: old_submission, state: 'failed')
+      end
+      let!(:new_library_request) do
+        create(:library_request, asset: source, submission: new_submission, state: 'pending')
+      end
+
+      it 'returns requests from the new active submission' do
+        expect(transfer_request.sibling_requests).to include(new_library_request)
+      end
+
+      it 'does not return requests from the stale old submission' do
+        expect(transfer_request.sibling_requests).not_to include(old_library_request)
       end
     end
   end

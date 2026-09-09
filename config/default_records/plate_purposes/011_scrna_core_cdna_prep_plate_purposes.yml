@@ -23,7 +23,7 @@ LRC GEM-X 5p cDNA Input:
   input_plate: true
   stock_plate: true
   cherrypickable_target: false
-  default_state: passed
+  default_state: passed # Default state for the input plate so no submission needed
 # The 'LRC GEM-X 5p Cherrypick' purpose is included here so it is available for library submissions.
 LRC GEM-X 5p Cherrypick:
   input_plate: false
@@ -34,9 +34,10 @@ LRC GEM-X 5p cDNA PCR CITE:
   stock_plate: false
   cherrypickable_target: false
 LRC GEM-X 5p CITE SUP Input:
-  input_plate: true # Passed when submission is built.
-  stock_plate: true # Uploaded via sample manifest.
+  input_plate: true
+  stock_plate: true
   cherrypickable_target: false # Not destination in cherrypicking.
+  default_state: passed # Default state for the input plate so no submission needed
 LRC GEM-X 5p CITE SUP XP:
   input_plate: false
   stock_plate: false
