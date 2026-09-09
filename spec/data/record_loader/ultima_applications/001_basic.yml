@@ -1,0 +1,7 @@
+---
+Test application:
+  description: Test description
+  ug100_preset_name: UG100 preset 1
+  ug200_preset_name: UG200 preset 1
+  uga_primer_name: UGA primer 1
+  ugb_primer_name: UGB primer 1
