@@ -242,6 +242,7 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Fix to check for active request for submission was added to handle combined LCM case
   # where there are 2 Library requests on the Stock plate wells and it was not starting the
   # second requests.
+  # rubocop:disable-next Metrics/AbcSize
   def effective_submission_id
     active_request_for_submission = asset.requests_as_source.find do |r|
       TRANSFERABLE_STATES.include?(r.state) && r.submission_id == submission_id

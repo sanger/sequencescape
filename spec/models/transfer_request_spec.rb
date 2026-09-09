@@ -433,10 +433,14 @@ RSpec.describe TransferRequest do
     context 'when the source asset has active requests from multiple submissions' do
       let(:dna_submission) { create(:submission) }
       let(:rna_submission) { create(:submission) }
-      let!(:rna_request) { create(:library_request, asset: source, submission: rna_submission, state: 'pending') }
-      let!(:dna_request) { create(:library_request, asset: source, submission: dna_submission, state: 'pending') }
+      let(:rna_request) { create(:library_request, asset: source, submission: rna_submission, state: 'pending') }
+      let(:dna_request) { create(:library_request, asset: source, submission: dna_submission, state: 'pending') }
 
-      before { transfer_request.submission_id = dna_submission.id }
+      before do
+        rna_request
+        dna_request
+        transfer_request.submission_id = dna_submission.id
+      end
 
       it 'prefers the transfer request submission over another active submission on the same asset' do
         expect(transfer_request.send(:effective_submission_id)).to eq(dna_submission.id)
