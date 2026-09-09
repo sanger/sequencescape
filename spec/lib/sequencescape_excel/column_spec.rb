@@ -150,6 +150,25 @@ RSpec.describe SequencescapeExcel::Column, :sample_manifest, :sample_manifest_ex
     end
   end
 
+  context 'with an is_error conditional formatting but no matching validation range' do
+    let(:column) do
+      described_class.new(
+        options
+          .except(:validation)
+          .merge(conditional_formattings: { is_error: attributes_for(:conditional_formatting) })
+      )
+    end
+
+    it 'raises rather than silently checking against an unrelated range' do
+      # Regression test: is_error's formula matches the cell's value against a
+      # named range taken from this column's own validation. Without a
+      # validation that resolves to a real range, it used to fall back to
+      # NullRange's placeholder reference, silently highlighting cells based on
+      # an unrelated range's data.
+      expect { column.update(27, 150, range_list, worksheet) }.to raise_error(RuntimeError, /is_error/)
+    end
+  end
+
   context 'with no conditional formattings' do
     let(:column) { described_class.new(options.except(:conditional_formattings)) }
 
