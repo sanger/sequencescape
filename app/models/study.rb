@@ -206,7 +206,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   # add validation when create or update sapio study
   validate :prevent_updates_when_externally_managed, on: :update
-  validate :prevent_externally_managed_changes_unless_integration_hub, on: %i[create update]
 
   # Callbacks
   before_validation :set_default_ethical_approval
