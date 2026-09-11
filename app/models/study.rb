@@ -698,6 +698,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # unless the request is coming from Integration Hub
   def prevent_updates_when_externally_managed
     return unless externally_managed_restrictions_enabled?
+    return unless externally_managed?
 
     return if skip_externally_managed_restriction
 
