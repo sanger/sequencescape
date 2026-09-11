@@ -401,12 +401,11 @@ RSpec.describe SpecificTubeRackCreation do
         it 'calls create_new_barcode with the correct arguments' do
           specific_tube_rack_creation.send(:handle_tube_rack_barcode, new_tube_rack_barcode_string, new_tube_rack)
 
-          # rubocop:disable RSpec/SubjectStub
+          # rubocop:disable-next RSpec/SubjectStub
           expect(specific_tube_rack_creation).to have_received(:create_new_barcode).with(
             new_tube_rack_barcode_string,
             new_tube_rack
           )
-          # rubocop:enable RSpec/SubjectStub
         end
       end
 
@@ -426,19 +425,17 @@ RSpec.describe SpecificTubeRackCreation do
           # rubocop:enable RSpec/SubjectStub
         end
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'calls redirect_existing_barcode with the correct arguments' do
           specific_tube_rack_creation.send(:handle_tube_rack_barcode, existing_tube_rack_barcode_string, new_tube_rack)
 
-          # rubocop:disable RSpec/SubjectStub
+          # rubocop:disable-next RSpec/SubjectStub
           expect(specific_tube_rack_creation).to have_received(:redirect_existing_barcode).with(
             existing_tube_rack_barcode_record,
             new_tube_rack,
             existing_tube_rack_barcode_string
           )
-          # rubocop:enable RSpec/SubjectStub
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
 
@@ -467,7 +464,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the barcode format is not recognized' do
         let(:tube_rack_barcode_format) { nil }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:create_new_barcode, new_tube_rack_barcode_string, new_tube_rack)
@@ -476,7 +473,6 @@ RSpec.describe SpecificTubeRackCreation do
             "The tube rack barcode '#{new_tube_rack_barcode_string}' is not a recognised format."
           )
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
 
@@ -488,7 +484,7 @@ RSpec.describe SpecificTubeRackCreation do
 
         before { allow(existing_tube_rack_barcode_record).to receive(:labware=).with(new_tube_rack) }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'redirects the barcode to the new tube rack' do
           specific_tube_rack_creation.send(
             :redirect_existing_barcode,
@@ -499,13 +495,12 @@ RSpec.describe SpecificTubeRackCreation do
 
           expect(existing_tube_rack_barcode_record).to have_received(:labware=).with(new_tube_rack)
         end
-        # rubocop:enable RSpec/ExampleLength
       end
 
       context 'when the existing labware is not a TubeRack' do
         let(:existing_labware) { create(:plate) }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(
@@ -520,7 +515,6 @@ RSpec.describe SpecificTubeRackCreation do
             'by another type of labware, cannot create tube rack.'
           )
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
 
@@ -554,7 +548,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the metadata does not save successfully' do
         let(:save_result) { false }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'raises a StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:add_tube_rack_metadata, new_tube_rack_barcode_string, new_tube_rack)
@@ -563,7 +557,6 @@ RSpec.describe SpecificTubeRackCreation do
             "New metadata for tube rack (key: #{metadata_key}, value: #{new_tube_rack_barcode_string}) did not save"
           )
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
 
@@ -657,7 +650,7 @@ RSpec.describe SpecificTubeRackCreation do
       context 'when the racked tube does not save successfully' do
         let(:save_result) { false }
 
-        # rubocop:disable RSpec/ExampleLength
+        # rubocop:disable-next RSpec/ExampleLength
         it 'raises an StandardError with the correct message' do
           expect do
             specific_tube_rack_creation.send(:link_tube_to_rack, tube, new_tube_rack, tube_position)
@@ -666,7 +659,6 @@ RSpec.describe SpecificTubeRackCreation do
             "The tube 'Tube1' could not be linked to the tube rack 'TubeRack1' at position 'A1'."
           )
         end
-        # rubocop:enable RSpec/ExampleLength
       end
     end
   end

@@ -13,6 +13,9 @@ module Api
       # or look at the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation
       # of the JSON:API standard.
       class StudyMetadataResource < Api::V2::StudyMetadataResource
+        # This resource is immutable, meaning that no changes can be made via the API.
+        immutable
+
         ##
         # Relationships
         #

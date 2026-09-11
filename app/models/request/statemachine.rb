@@ -3,7 +3,7 @@
 # It provides various callbacks that can be hooked in to by the derived classes.
 require 'aasm'
 
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo-next Metrics/ModuleLength
 module Request::Statemachine
   extend ActiveSupport::Concern
 
@@ -228,4 +228,3 @@ module Request::Statemachine
     %w[pending cancelled].include?(state)
   end
 end
-# rubocop:enable Metrics/ModuleLength

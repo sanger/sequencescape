@@ -2,12 +2,15 @@
 
 require 'exception_notification'
 
-# Sends sample data to the ENA or EGA in order to generate an accession number
-# Records the generated accession number on the sample
-# Records the statuses and response from the failed attempts in the accession statuses
+# Sends sample data to the ENA or EGA to generate an accession number.
+#
+# The sample and event user are passed by ID so that the latest data can be retrieved when the job runs.
+# Saves the generated accession number on the sample.
+# Saves the status and response from failed attempts in the accession statuses.
+#
 # @see Accession::Submission
 SampleAccessioningJob =
-  Struct.new(:accessionable, :event_user) do # rubocop:disable Metrics/ClassLength
+  Struct.new(:sample_id, :event_user_id) do # rubocop:disable Metrics/ClassLength
     def perform
       submission = Accession::Submission.new(accessionable)
       accessionable.validate! # See Accession::Sample.validate! in lib/accession/sample.rb
@@ -190,5 +193,15 @@ SampleAccessioningJob =
         failure_groups << 'Internal validations'
       end
       failure_groups
+    end
+
+    # Lazily load and cache the accessionable sample for the job
+    def accessionable
+      @accessionable ||= Accession.build_accessionable(Sample.find(sample_id))
+    end
+
+    # Lazily load and cache the event user for the job
+    def event_user
+      @event_user ||= User.find(event_user_id)
     end
   end

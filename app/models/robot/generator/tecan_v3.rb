@@ -12,7 +12,7 @@ class Robot::Generator::TecanV3 < Robot::Generator::TecanV2
   # @param data_object [Hash] the picking data object
   # @return [String] the buffer addition steps string
   # @see Robot::Generator::Behaviours::TecanDefault#buffers
-  # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  # rubocop:disable-next Metrics/AbcSize,Metrics/MethodLength
   def buffers(data_object)
     data_object = data_object_for_buffers(data_object)
     groups = Hash.new { |h, k| h[k] = [] } # channel => [steps]
@@ -42,7 +42,6 @@ class Robot::Generator::TecanV3 < Robot::Generator::TecanV2
     end
     blocks.join("\n")
   end
-  # rubocop:enable Metrics/AbcSize,Metrics/MethodLength
 
   # Adds a 'Break' command between the buffer and sample addition steps.
   #

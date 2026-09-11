@@ -7,7 +7,7 @@ module QcableStatemachineChecks
       instance_eval(&)
     end
 
-    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo-next Metrics/MethodLength
     def check_event(name, options) # rubocop:todo Metrics/AbcSize
       target = @target
       acceptable_states = options[:from]
@@ -44,7 +44,6 @@ module QcableStatemachineChecks
         end
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   def state_machine(state_machined_class, &)

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-# rubocop:todo Metrics/ModuleLength
+# rubocop:todo-next Metrics/ModuleLength
 module ApplicationHelper
   include ControllerHelper
 
@@ -374,7 +374,6 @@ module ApplicationHelper
     end
   end
 end
-# rubocop:enable Metrics/ModuleLength
 
 # error_messages_for method was deprecated, however lots of the tests depend on the message format it
 # was using.

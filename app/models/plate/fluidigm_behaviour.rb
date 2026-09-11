@@ -36,7 +36,7 @@ module Plate::FluidigmBehaviour
     end
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def apply_fluidigm_data(fluidigm_file) # rubocop:todo Metrics/AbcSize
     qc_assay = QcAssay.new
     raise FluidigmError, 'File does not match plate' unless fluidigm_file.for_plate?(fluidigm_barcode)
@@ -74,5 +74,4 @@ module Plate::FluidigmBehaviour
       end
     events.updated_fluidigm_plate!('FLUIDIGM_DATA')
   end
-  # rubocop:enable Metrics/MethodLength
 end

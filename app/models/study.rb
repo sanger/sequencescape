@@ -141,6 +141,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   attr_accessor :approval, :run_count, :total_price
 
+  # External management
+  attribute :externally_managed, :boolean, default: false
   # Flag set by Integration Hub requests to lift the externally managed study edit lock.
   attr_accessor :skip_externally_managed_restriction
 
@@ -491,9 +493,8 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
   def warnings
     # These studies are now invalid, but the warning should remain until existing studies are fixed.
     if study_metadata.managed? && study_metadata.data_access_group.blank?
-      # rubocop:todo Layout/LineLength
+      # rubocop:todo-next Layout/LineLength
       'No user group specified for a managed study. Please specify a valid Unix user group to ensure study data is visible to the correct people.'
-      # rubocop:enable Layout/LineLength
     end
   end
 
@@ -681,19 +682,6 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   private
 
-  # This validation only runs when the value of externally_managed is changing
-  # It prevents changes to externally_managed unless the request is coming from Integration Hub
-  # i.e. only Integration Hub can set/change the value of externally_managed
-  def prevent_externally_managed_changes_unless_integration_hub
-    return unless externally_managed_restrictions_enabled?
-
-    # will_save_change_to_#{field_name}? is an ActiveRecord dirty-tracking method.
-    return unless will_save_change_to_externally_managed?
-    return if skip_externally_managed_restriction
-
-    errors.add(:base, I18n.t('studies.externally_managed.integration_hub_update_only'))
-  end
-
   # This validation prevents any updates to a study that is managed in SAPIO
   # unless the request is coming from Integration Hub
   def prevent_updates_when_externally_managed
@@ -716,7 +704,7 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.ethically_approved ||= ethical_approval_required? ? false : nil
   end
 
-  # rubocop:disable Metrics/ClassLength
+  # rubocop:disable-next Metrics/ClassLength
   class Metadata
     delegate :enforce_data_release, to: :study
     delegate :externally_managed?, to: :owner, allow_nil: true
@@ -866,5 +854,4 @@ class Study < ApplicationRecord # rubocop:todo Metrics/ClassLength
       self.class.where(snp_parent_study_id: snp_study_id).includes(:study).map(&:study)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

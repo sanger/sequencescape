@@ -224,9 +224,8 @@ RSpec.describe AssetLink do
           end
 
           # Patch has_duplicates method.
-          # rubocop:disable RSpec/AnyInstance
+          # rubocop:disable-next RSpec/AnyInstance
           allow_any_instance_of(Dag::CreateCorrectnessValidator).to receive(:has_duplicates).and_return(false)
-          # rubocop:enable RSpec/AnyInstance
 
           # Patch save_edge_or_handle_error method.
           allow(described_class).to receive(:save_edge_or_handle_error).and_wrap_original do |method, *args|
