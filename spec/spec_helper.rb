@@ -266,6 +266,26 @@ RSpec.configure do |config|
     Flipper.enable(:y26_172_enable_externally_managed_study_restrictions, externally_managed_restrictions_enabled)
   end
 
+  # Add sapio_study_upsert_enabled to a spec to automatically:
+  # - Set y26_245_sapio_study_upsert to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_study_upsert_enabled) do |example|
+    sapio_study_upsert_enabled = Flipper.enabled?(:y26_245_sapio_study_upsert)
+    Flipper.enable(:y26_245_sapio_study_upsert)
+    example.run
+    Flipper.enable(:y26_245_sapio_study_upsert, sapio_study_upsert_enabled)
+  end
+
+  # Add sapio_study_upsert_disabled to a spec to automatically:
+  # - Set y26_245_sapio_study_upsert to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_study_upsert_disabled) do |example|
+    sapio_study_upsert_enabled = Flipper.enabled?(:y26_245_sapio_study_upsert)
+    Flipper.disable(:y26_245_sapio_study_upsert)
+    example.run
+    Flipper.enable(:y26_245_sapio_study_upsert, sapio_study_upsert_enabled)
+  end
+
   config.before do
     # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution
