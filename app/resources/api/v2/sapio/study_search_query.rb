@@ -69,6 +69,20 @@ module Api
         end
 
         class_methods do
+          # Splits a query into quoted-phrase and unquoted-chunk tokens.
+          # A quoted-phrase token includes its surrounding quotes.
+          #
+          # @param query [String] The search string, potentially containing quoted phrases.
+          # @return [Array<String>] The tokens, in order.
+          def tokenize_query(query)
+            # "[^"\\]*(?:\\.[^"\\]*)*" : Quoted token
+            # |                        : OR
+            # [^"]+                    : Unquoted chunk
+            query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
+          end
+        end
+
+        class_methods do
           # Builds a SQL LIKE pattern from the query, supporting:
           # - quoted phrases as literal text
           # - unquoted `*` as `%`
@@ -83,12 +97,7 @@ module Api
           # @return [ActiveRecord::Relation] A relation filtered by the translated
           #   LIKE pattern.
           def wildcard_name_scope(records, query)
-            # "[^"\\]*(?:\\.[^"\\]*)*" : Quoted token
-            # |                        : OR
-            # [^"]+                    : Unquoted chunk
-            tokens = query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
-
-            translated_pattern = tokens.map do |token|
+            translated_pattern = tokenize_query(query).map do |token|
               if token.start_with?('"') && token.end_with?('"')
                 # Inside quotes: strip delimiters, treat content as literal
                 sql_escape(token[1..-2])
@@ -99,6 +108,21 @@ module Api
             end.join
 
             records.where("studies.name LIKE :pattern ESCAPE '\\\\'", pattern: translated_pattern)
+          end
+        end
+
+        class_methods do
+          # Strips quote delimiters from every quoted phrase in the query,
+          # treating quoted content as literal text wherever it appears (even
+          # when only part of the query is quoted, e.g. `MAVE_SGE "v0.2.1"`).
+          #
+          # @param query [String] The search string, potentially containing quoted phrases.
+          # @return [String] The query with quote delimiters removed.
+          def strip_quotes(query)
+            tokenize_query(query)
+              .map { |token| token.start_with?('"') && token.end_with?('"') ? token[1..-2] : token }
+              .join
+              .squish
           end
         end
 
@@ -115,14 +139,16 @@ module Api
         class_methods do
           # Filters studies by name using exact match, partial match, and,
           # where appropriate, phonetic match.
-          # If the query is quoted, the quotes are stripped before matching and
-          # the search term is treated as literal text.
+          # Quoted phrases are stripped of their quotes and treated as literal
+          # text, even when only part of the query is quoted (e.g.
+          # `MAVE_SGE "v0.2.1"`).
           #
-          # Phonetic (SOUNDEX) matching is skipped for quoted "exact phrase"
-          # queries, and for any query containing digits. MySQL's SOUNDEX()
-          # ignores all non-alphabetic characters, so it cannot distinguish
-          # names that differ only numerically (e.g. "v0.2.1" vs "v0.3.1"),
-          # which would otherwise cause both to match a search for either one.
+          # Phonetic (SOUNDEX) matching is skipped when the whole query is one
+          # quoted "exact phrase", and for any query containing digits.
+          # MySQL's SOUNDEX() ignores all non-alphabetic characters, so it
+          # cannot distinguish names that differ only numerically (e.g.
+          # "v0.2.1" vs "v0.3.1"), which would otherwise cause both to match
+          # a search for either one.
           #
           # @param records [ActiveRecord::Relation] The base study relation to filter.
           # @param query [String] The search string to match against study names.
@@ -130,7 +156,7 @@ module Api
           #   phonetic name matching.
           def contains_name_scope(records, query)
             quoted = query.start_with?('"') && query.end_with?('"')
-            query = query[1..-2].squish if quoted
+            query = strip_quotes(query)
             escaped_query = sql_escape(query)
 
             condition = 'studies.name = :exact OR ' \
