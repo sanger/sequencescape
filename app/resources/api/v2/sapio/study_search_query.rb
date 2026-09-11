@@ -74,8 +74,8 @@ module Api
           # - unquoted `*` as `%`
           # - unquoted `?` as `_`
           #
-          # Any `%`, `_`, or `\` characters inside literal text are escaped so they
-          # are treated as data, not LIKE metacharacters.
+          # Any `%`, `_`, or `\` characters inside literal text are escaped so
+          # they are treated as data, not LIKE metacharacters.
           #
           # @param records [ActiveRecord::Relation] The base study relation to filter.
           # @param query [String] The search string, potentially containing quoted
@@ -113,20 +113,30 @@ module Api
         end
 
         class_methods do
-          # Filters studies by name using exact match, partial match, and phonetic match.
-          # If the query is quoted, the quotes are stripped before matching and the
-          # search term is treated as literal text.
+          # Filters studies by name using exact match, partial match, and,
+          # where appropriate, phonetic match.
+          # If the query is quoted, the quotes are stripped before matching and
+          # the search term is treated as literal text.
+          #
+          # Phonetic (SOUNDEX) matching is skipped for quoted "exact phrase"
+          # queries, and for any query containing digits. MySQL's SOUNDEX()
+          # ignores all non-alphabetic characters, so it cannot distinguish
+          # names that differ only numerically (e.g. "v0.2.1" vs "v0.3.1"),
+          # which would otherwise cause both to match a search for either one.
           #
           # @param records [ActiveRecord::Relation] The base study relation to filter.
           # @param query [String] The search string to match against study names.
           # @return [ActiveRecord::Relation] A relation filtered by exact, partial, or
           #   phonetic name matching.
           def contains_name_scope(records, query)
-            query = query[1..-2].squish if query.start_with?('"') && query.end_with?('"')
+            quoted = query.start_with?('"') && query.end_with?('"')
+            query = query[1..-2].squish if quoted
             escaped_query = sql_escape(query)
+
             condition = 'studies.name = :exact OR ' \
-                        "studies.name LIKE :partial ESCAPE '\\\\' OR " \
-                        'SOUNDEX(studies.name) = SOUNDEX(:query)'
+                        "studies.name LIKE :partial ESCAPE '\\\\'"
+            condition += ' OR SOUNDEX(studies.name) = SOUNDEX(:query)' unless quoted || query.match?(/\d/)
+
             records.where(condition, exact: query, partial: "%#{escaped_query}%", query: query)
           end
         end
