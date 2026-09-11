@@ -595,6 +595,27 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         expect(json['data'].length).to eq(1)
         expect(json['data'][0]['attributes']['name']).to eq('MAVE_SGE v0.2.1')
       end
+
+      it 'returns only the exact match for a partially quoted query', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=MAVE_SGE \"v0.2.1\""
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('MAVE_SGE v0.2.1')
+      end
+
+      it 'returns only the exact match for a wildcard query mixing ? and a quoted phrase', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=MAVE_SGE v?.\"2.1\""
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('MAVE_SGE v0.2.1')
+      end
+
+      it 'returns only the exact match for a non-wildcard query split across a quoted phrase', :aggregate_failures do
+        api_get "#{base_endpoint}?filter[name]=MAVE_SGE v0.\"2.1\""
+        expect(response).to have_http_status(:success)
+        expect(json['data'].length).to eq(1)
+        expect(json['data'][0]['attributes']['name']).to eq('MAVE_SGE v0.2.1')
+      end
     end
 
     context 'with multiple wildcards and exact phrases in query' do
