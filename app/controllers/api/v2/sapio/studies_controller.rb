@@ -199,13 +199,33 @@ module Api
         end
 
         # Wraps the existing Study resource so it renders exactly like a
-        # freshly created resource.
+        # freshly created resource, marking it as externally managed if it
+        # is not already.
         #
         # @param id [Integer] the primary key of the existing Study.
         # @return [JSONAPI::ResourceOperationResult] the existing Study resource
         def existing_resource_result(id)
           resource = resource_klass.find_by_key(id, context:)
+          mark_externally_managed(resource._model)
           JSONAPI::ResourceOperationResult.new(:ok, resource)
+        end
+
+        # Marks +study+ as externally managed, unless it already is.
+        #
+        # @note This does not yet broadcast the change to mlwarehouse (see Y26-245).
+        #
+        # @param study [Study] model to mark as externally managed
+        # @return [void]
+        def mark_externally_managed(study)
+          return if study.externally_managed?
+
+          # Bypasses Study#prevent_updates_when_externally_managed, which would otherwise block this
+          # save as soon as externally_managed becomes true below. Api::V2::Sapio::StudyResource's own
+          # before_create/before_update hook sets this for the normal create/update flow, but this
+          # method saves the model directly, so it must be set here too.
+          study.skip_externally_managed_restriction = true
+          study.externally_managed = true
+          study.save!
         end
 
         # Looks up the id of the existing Study with the supplied uuid.
