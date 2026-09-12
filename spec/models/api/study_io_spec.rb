@@ -65,4 +65,26 @@ RSpec.describe Api::StudyIo do
   end
 
   it_behaves_like('an IO object')
+
+  describe 'is_current' do
+    let(:study) { subject }
+    let(:rendered_json) { described_class.to_hash(study) }
+
+    context 'when the study is not externally managed' do
+      it 'is true' do
+        expect(rendered_json['is_current']).to be(true)
+      end
+    end
+
+    context 'when the study is externally managed' do
+      before do
+        study.skip_externally_managed_restriction = true
+        study.update!(externally_managed: true)
+      end
+
+      it 'is false' do
+        expect(rendered_json['is_current']).to be(false)
+      end
+    end
+  end
 end

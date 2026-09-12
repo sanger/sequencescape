@@ -45,11 +45,23 @@ module Api
       #
       # == Creating a New Externally Managed Study
       #
-      # The POST method creates a new {Study} that is managed externally, granting ownership to the
-      # requesting user.
+      # The POST method creates a new {Study} that is managed externally,
+      # granting ownership to the requesting user.
       #
-      # This method is intended exclusively for creating *new* studies that originate in an external
-      # LIMS. It should NOT be used to transfer an existing Sequencescape study to the external LIMS.
+      # @note When the +y26_245_sapio_study_upsert+ feature flag is enabled,
+      #   this method behaves as an upsert based on the supplied +uuid+: if
+      #   Sequencescape does not already have a Study with that uuid, a new
+      #   Study is created as described above; if it already has one, that
+      #   Study is instead marked +externally_managed+ (if not already) and
+      #   broadcast to mlwarehouse, rather than raising a conflict. No other
+      #   attributes on the existing Study are changed by this. This means
+      #   the method CAN be used to transfer an existing Sequencescape study
+      #   to the external LIMS, once this flag is enabled. When this feature
+      #   flag is disabled, this method is intended exclusively for creating
+      #   *new* studies that originate in an external LIMS, and should NOT be
+      #   used to transfer an existing Sequencescape study to the external
+      #   LIMS - supplying a uuid that already exists will return a
+      #   **409 Conflict** instead.
       #
       # If a UUID is not provided, one will be generated automatically.
       #
@@ -66,6 +78,23 @@ module Api
       #       }
       #     }
       #   }
+      #
+      # @example POST request that upserts an existing Study
+      #   (y26_245_sapio_study_upsert enabled)
+      #   POST /api/v2/sapio/studies
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   {
+      #     "data": {
+      #       "type": "studies",
+      #       "attributes": {
+      #         "name": "Ignored - the existing Study's name is not changed",
+      #         "uuid": "11111111-2222-3333-4444-555555666666"
+      #       }
+      #     }
+      #   }
+      #   # Returns 200 OK with the existing Study, now externally_managed,
+      #   # instead of 201 Created.
       #
       # == Updating an Existing Study
       #

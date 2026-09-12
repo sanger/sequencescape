@@ -796,19 +796,113 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           }
         end
 
-        before { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
+        let(:perform_request) { api_post base_endpoint, duplicate_uuid_payload, headers: integration_hub_headers }
 
-        it 'returns 409 Conflict' do
-          expect(response).to have_http_status(:conflict)
+        context 'when the sapio study upsert feature flag is disabled', :sapio_study_upsert_disabled do
+          before { perform_request }
+
+          it 'returns 409 Conflict' do
+            expect(response).to have_http_status(:conflict)
+          end
+
+          it 'returns a uuid validation error' do
+            expect(json['errors']).to eq(
+              [{
+                'title' => 'Conflict',
+                'detail' => "The value #{existing_study.uuid} for the field uuid conflicts with an existing record.",
+                'code' => 'FIELD_VALUE_CONFLICT',
+                'status' => '409',
+                'source' => {
+                  'pointer' => '/data/attributes/uuid'
+                }
+              }]
+            )
+          end
+
+          it 'does not create a study' do
+            expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
+          end
         end
 
-        it 'returns a uuid validation error' do
+        context 'when the sapio study upsert feature flag is enabled', :sapio_study_upsert_enabled do
+          before { existing_study } # ensure the study exists before measuring changes caused by perform_request
+
+          it 'returns 200 OK' do
+            perform_request
+            expect(response).to have_http_status(:ok)
+          end
+
+          it 'does not return any errors in the response' do
+            perform_request
+            expect(json['errors']).to be_nil
+          end
+
+          it 'does not create a new study' do
+            expect { perform_request }.not_to change(Study, :count)
+          end
+
+          it 'returns the existing study id' do
+            perform_request
+            expect(json.dig('data', 'id')).to eq(existing_study.id.to_s)
+          end
+
+          it 'returns the existing study uuid' do
+            perform_request
+            expect(json.dig('data', 'attributes', 'uuid')).to eq(existing_study.uuid)
+          end
+
+          it 'does not change the existing study name' do
+            expect { perform_request }.not_to(change { existing_study.reload.name })
+          end
+
+          context 'when the existing study is not already externally managed' do
+            before { allow(Warren.handler).to receive(:<<) }
+
+            it 'sets externally_managed to true on the existing study' do
+              expect { perform_request }.to(change { existing_study.reload.externally_managed }.from(false).to(true))
+            end
+
+            it 'broadcasts the existing study' do
+              perform_request
+
+              expect(Warren.handler).to have_received(:<<).with(an_instance_of(Warren::Message::Full))
+            end
+          end
+
+          context 'when the existing study is already externally managed' do
+            let(:existing_study) { create(:study, name: 'Existing Sapio Study', externally_managed: true) }
+
+            before { allow(Warren.handler).to receive(:<<) }
+
+            it 'does not change externally_managed on the existing study' do
+              expect { perform_request }.not_to(change { existing_study.reload.externally_managed })
+            end
+
+            it 'does not broadcast the existing study' do
+              perform_request
+
+              expect(Warren.handler).not_to have_received(:<<)
+            end
+          end
+        end
+      end
+
+      context 'with no uuid in payload', :sapio_study_upsert_enabled do
+        let(:perform_request) { api_post base_endpoint, valid_payload, headers: integration_hub_headers }
+
+        it 'returns 400 Bad Request' do
+          perform_request
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns a missing uuid error' do
+          perform_request
           expect(json['errors']).to eq(
             [{
-              'title' => 'Conflict',
-              'detail' => "The value #{existing_study.uuid} for the field uuid conflicts with an existing record.",
-              'code' => 'FIELD_VALUE_CONFLICT',
-              'status' => '409',
+              'title' => 'Missing Uuid',
+              'detail' => 'A uuid is required to upsert a Study via this endpoint.',
+              'code' => 'MISSING_UUID',
+              'status' => '400',
               'source' => {
                 'pointer' => '/data/attributes/uuid'
               }
@@ -817,7 +911,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
         end
 
         it 'does not create a study' do
-          expect(Study.find_by(name: 'Sapio Created Study')).to be_nil
+          expect { perform_request }.not_to change(Study, :count)
         end
       end
 
