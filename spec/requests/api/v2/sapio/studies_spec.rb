@@ -855,8 +855,18 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
             expect { perform_request }.not_to(change { existing_study.reload.name })
           end
 
-          it 'does not change externally_managed on the existing study' do
-            expect { perform_request }.not_to(change { existing_study.reload.externally_managed })
+          context 'when the existing study is not already externally managed' do
+            it 'sets externally_managed to true on the existing study' do
+              expect { perform_request }.to(change { existing_study.reload.externally_managed }.from(false).to(true))
+            end
+          end
+
+          context 'when the existing study is already externally managed' do
+            let(:existing_study) { create(:study, name: 'Existing Sapio Study', externally_managed: true) }
+
+            it 'does not change externally_managed on the existing study' do
+              expect { perform_request }.not_to(change { existing_study.reload.externally_managed })
+            end
           end
         end
       end
@@ -874,7 +884,7 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           expect(json['errors']).to eq(
             [{
               'title' => 'Missing Uuid',
-              'detail' => 'A uuid is required to create or take ownership of a Study via this endpoint.',
+              'detail' => 'A uuid is required to upsert a Study via this endpoint.',
               'code' => 'MISSING_UUID',
               'status' => '400',
               'source' => {
