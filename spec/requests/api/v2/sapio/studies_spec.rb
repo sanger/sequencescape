@@ -856,16 +856,32 @@ describe 'Sapio Studies API', :sapio_studies_endpoint_enabled, with: :api_v2 do
           end
 
           context 'when the existing study is not already externally managed' do
+            before { allow(Warren.handler).to receive(:<<) }
+
             it 'sets externally_managed to true on the existing study' do
               expect { perform_request }.to(change { existing_study.reload.externally_managed }.from(false).to(true))
+            end
+
+            it 'broadcasts the existing study' do
+              perform_request
+
+              expect(Warren.handler).to have_received(:<<).with(an_instance_of(Warren::Message::Full))
             end
           end
 
           context 'when the existing study is already externally managed' do
             let(:existing_study) { create(:study, name: 'Existing Sapio Study', externally_managed: true) }
 
+            before { allow(Warren.handler).to receive(:<<) }
+
             it 'does not change externally_managed on the existing study' do
               expect { perform_request }.not_to(change { existing_study.reload.externally_managed })
+            end
+
+            it 'does not broadcast the existing study' do
+              perform_request
+
+              expect(Warren.handler).not_to have_received(:<<)
             end
           end
         end
