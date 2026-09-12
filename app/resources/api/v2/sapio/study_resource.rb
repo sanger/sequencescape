@@ -79,6 +79,23 @@ module Api
       #     }
       #   }
       #
+      # @example POST request that upserts an existing Study
+      #   (y26_245_sapio_study_upsert enabled)
+      #   POST /api/v2/sapio/studies
+      #   Content-Type: application/json
+      #   X-Sequencescape-Client-Id: <integration_hub_api_key>
+      #   {
+      #     "data": {
+      #       "type": "studies",
+      #       "attributes": {
+      #         "name": "Ignored - the existing Study's name is not changed",
+      #         "uuid": "11111111-2222-3333-4444-555555666666"
+      #       }
+      #     }
+      #   }
+      #   # Returns 200 OK with the existing Study, now externally_managed,
+      #   # instead of 201 Created.
+      #
       # == Updating an Existing Study
       #
       # Existing studies can be updated using the PATCH method. Only studies that have been marked
