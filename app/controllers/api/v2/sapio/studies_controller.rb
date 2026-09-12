@@ -32,9 +32,11 @@ module Api
           super
         end
 
-        # Creates a new externally managed Study.
-        #
-        # It should NOT be used to transfer an existing Sequencescape study to Sapio.
+        # Creates a new externally managed Study, or, when the
+        # +y26_245_sapio_study_upsert+ feature flag is enabled and the
+        # supplied uuid already belongs to an existing Study, marks that
+        # Study as externally managed instead
+        # (see StudyProcessor#create_resource).
         #
         # @return [void]
         def create
