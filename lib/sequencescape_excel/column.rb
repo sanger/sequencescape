@@ -113,15 +113,25 @@ module SequencescapeExcel
       @updated
     end
 
-    ##
-    # Create a column range based on the first column, first row and last low
-    # If the column has a validation range return it or return a NullRange.
-    # Update the column validation using the passed worksheet and found range.
-    # Update the conditional formatting based on a range and worksheet.
+    # Creates a column range based on the first column, first row and last row.
+    # Looks up the range matching the column's validation (range_name), falling
+    # back to a NullRange if there isn't one.
+    # Updates the column validation using the passed worksheet and found range.
+    # Updates the conditional formatting based on a range and worksheet.
+    #
+    # @param first_row [Integer] the first row number (1-based)
+    # @param last_row [Integer] the last row number (1-based)
+    # @param ranges [RangeList] the named ranges available to look up this
+    #   column's range_name in
+    # @param worksheet [Axlsx::Worksheet] the worksheet to add the validation
+    #   and conditional formatting to
+    # @return [Column] self
     def update(first_row, last_row, ranges, worksheet)
       self.range = { first_column: number, first_row: first_row, last_row: last_row }
 
       range = ranges.find_by(range_name) || NullRange.new
+      check_is_error_formatting_has_a_range(range)
+
       validation.update(range: range, reference: self.range.reference, worksheet: worksheet)
 
       conditional_formattings.update(
@@ -180,6 +190,22 @@ module SequencescapeExcel
 
     def classify_name
       updates.to_s.delete('?').classify
+    end
+
+    # 'is_error' checks that the entered value is found within a named range,
+    # and that range comes from this column's own validation (range_name).
+    # Without a range that resolves to a real, defined range, it would silently
+    # fall back to NullRange's placeholder reference and highlight cells based
+    # on unrelated data.
+    #
+    # @param range [Range, NullRange] the range to check
+    # @raise [RuntimeError] if the check fails, indicating a misconfiguration
+    def check_is_error_formatting_has_a_range(range)
+      return unless range.is_a?(NullRange)
+      return unless conditional_formattings.find_by(:name, :is_error)
+
+      raise "Column '#{name}' has an 'is_error' conditional formatting but " \
+            'its validation does not reference a valid named range.'
     end
   end
 end
