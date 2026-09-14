@@ -39,9 +39,7 @@ module Api
 
             relation
           end
-        end
 
-        class_methods do
           # Returns the value of the +filter[name]+ parameter from the request context.
           #
           # @param options [Hash] The options hash passed to the filter method.
@@ -49,9 +47,7 @@ module Api
           def filter_name(options)
             options.dig(:context, :filter_name).to_s.squish
           end
-        end
 
-        class_methods do
           # Returns true if the query contains wildcard characters outside of
           # "quoted phrases" (literal strings). The wildcard characters are '*'
           # and '?'. If the query contains unbalanced quotes, wildcard
@@ -66,16 +62,26 @@ module Api
           def wildcard_query?(query)
             query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|([*?])/).flatten.compact.any?
           end
-        end
 
-        class_methods do
+          # Splits a query into quoted-phrase and unquoted-chunk tokens.
+          # A quoted-phrase token includes its surrounding quotes.
+          #
+          # @param query [String] The search string, potentially containing quoted phrases.
+          # @return [Array<String>] The tokens, in order.
+          def tokenize_query(query)
+            # "[^"\\]*(?:\\.[^"\\]*)*" : Quoted token
+            # |                        : OR
+            # [^"]+                    : Unquoted chunk
+            query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
+          end
+
           # Builds a SQL LIKE pattern from the query, supporting:
           # - quoted phrases as literal text
           # - unquoted `*` as `%`
           # - unquoted `?` as `_`
           #
-          # Any `%`, `_`, or `\` characters inside literal text are escaped so they
-          # are treated as data, not LIKE metacharacters.
+          # Any `%`, `_`, or `\` characters inside literal text are escaped so
+          # they are treated as data, not LIKE metacharacters.
           #
           # @param records [ActiveRecord::Relation] The base study relation to filter.
           # @param query [String] The search string, potentially containing quoted
@@ -83,12 +89,7 @@ module Api
           # @return [ActiveRecord::Relation] A relation filtered by the translated
           #   LIKE pattern.
           def wildcard_name_scope(records, query)
-            # "[^"\\]*(?:\\.[^"\\]*)*" : Quoted token
-            # |                        : OR
-            # [^"]+                    : Unquoted chunk
-            tokens = query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
-
-            translated_pattern = tokens.map do |token|
+            translated_pattern = tokenize_query(query).map do |token|
               if token.start_with?('"') && token.end_with?('"')
                 # Inside quotes: strip delimiters, treat content as literal
                 sql_escape(token[1..-2])
@@ -100,9 +101,20 @@ module Api
 
             records.where("studies.name LIKE :pattern ESCAPE '\\\\'", pattern: translated_pattern)
           end
-        end
 
-        class_methods do
+          # Strips quote delimiters from every quoted phrase in the query,
+          # treating quoted content as literal text wherever it appears (even
+          # when only part of the query is quoted, e.g. `MAVE_SGE "v0.2.1"`).
+          #
+          # @param query [String] The search string, potentially containing quoted phrases.
+          # @return [String] The query with quote delimiters removed.
+          def strip_quotes(query)
+            tokenize_query(query)
+              .map { |token| token.start_with?('"') && token.end_with?('"') ? token[1..-2] : token }
+              .join
+              .squish
+          end
+
           # Escapes SQL LIKE wildcard and escape characters in a literal string.
           #
           # @param str [String] The string to escape for use in a LIKE pattern.
@@ -110,23 +122,33 @@ module Api
           def sql_escape(str)
             str.gsub(/[%_\\]/) { |char| "\\#{char}" }
           end
-        end
 
-        class_methods do
-          # Filters studies by name using exact match, partial match, and phonetic match.
-          # If the query is quoted, the quotes are stripped before matching and the
-          # search term is treated as literal text.
+          # Filters studies by name using exact match, partial match, and,
+          # where appropriate, phonetic match.
+          # Quoted phrases are stripped of their quotes and treated as literal
+          # text, even when only part of the query is quoted (e.g.
+          # `MAVE_SGE "v0.2.1"`).
+          #
+          # Phonetic (SOUNDEX) matching is skipped when the whole query is one
+          # quoted "exact phrase", and for any query containing digits.
+          # MySQL's SOUNDEX() ignores all non-alphabetic characters, so it
+          # cannot distinguish names that differ only numerically (e.g.
+          # "v0.2.1" vs "v0.3.1"), which would otherwise cause both to match
+          # a search for either one.
           #
           # @param records [ActiveRecord::Relation] The base study relation to filter.
           # @param query [String] The search string to match against study names.
           # @return [ActiveRecord::Relation] A relation filtered by exact, partial, or
           #   phonetic name matching.
           def contains_name_scope(records, query)
-            query = query[1..-2].squish if query.start_with?('"') && query.end_with?('"')
+            quoted = query.start_with?('"') && query.end_with?('"')
+            query = strip_quotes(query)
             escaped_query = sql_escape(query)
+
             condition = 'studies.name = :exact OR ' \
-                        "studies.name LIKE :partial ESCAPE '\\\\' OR " \
-                        'SOUNDEX(studies.name) = SOUNDEX(:query)'
+                        "studies.name LIKE :partial ESCAPE '\\\\'"
+            condition += ' OR SOUNDEX(studies.name) = SOUNDEX(:query)' unless quoted || query.match?(/\d/)
+
             records.where(condition, exact: query, partial: "%#{escaped_query}%", query: query)
           end
         end
