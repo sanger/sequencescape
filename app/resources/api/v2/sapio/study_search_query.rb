@@ -39,9 +39,7 @@ module Api
 
             relation
           end
-        end
 
-        class_methods do
           # Returns the value of the +filter[name]+ parameter from the request context.
           #
           # @param options [Hash] The options hash passed to the filter method.
@@ -49,9 +47,7 @@ module Api
           def filter_name(options)
             options.dig(:context, :filter_name).to_s.squish
           end
-        end
 
-        class_methods do
           # Returns true if the query contains wildcard characters outside of
           # "quoted phrases" (literal strings). The wildcard characters are '*'
           # and '?'. If the query contains unbalanced quotes, wildcard
@@ -66,9 +62,7 @@ module Api
           def wildcard_query?(query)
             query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|([*?])/).flatten.compact.any?
           end
-        end
 
-        class_methods do
           # Splits a query into quoted-phrase and unquoted-chunk tokens.
           # A quoted-phrase token includes its surrounding quotes.
           #
@@ -80,9 +74,7 @@ module Api
             # [^"]+                    : Unquoted chunk
             query.scan(/"[^"\\]*(?:\\.[^"\\]*)*"|[^"]+/)
           end
-        end
 
-        class_methods do
           # Builds a SQL LIKE pattern from the query, supporting:
           # - quoted phrases as literal text
           # - unquoted `*` as `%`
@@ -109,9 +101,7 @@ module Api
 
             records.where("studies.name LIKE :pattern ESCAPE '\\\\'", pattern: translated_pattern)
           end
-        end
 
-        class_methods do
           # Strips quote delimiters from every quoted phrase in the query,
           # treating quoted content as literal text wherever it appears (even
           # when only part of the query is quoted, e.g. `MAVE_SGE "v0.2.1"`).
@@ -124,9 +114,7 @@ module Api
               .join
               .squish
           end
-        end
 
-        class_methods do
           # Escapes SQL LIKE wildcard and escape characters in a literal string.
           #
           # @param str [String] The string to escape for use in a LIKE pattern.
@@ -134,9 +122,7 @@ module Api
           def sql_escape(str)
             str.gsub(/[%_\\]/) { |char| "\\#{char}" }
           end
-        end
 
-        class_methods do
           # Filters studies by name using exact match, partial match, and,
           # where appropriate, phonetic match.
           # Quoted phrases are stripped of their quotes and treated as literal
