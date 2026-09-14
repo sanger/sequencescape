@@ -992,6 +992,21 @@ RSpec.describe Study do
     end
   end
 
+  context 'when a study is externally managed' do
+    describe '#validation' do
+      it 'is valid with only the study name' do
+        study = described_class.new(name: 'Externally Managed Study', externally_managed: true)
+        expect(study.save).to be true
+      end
+
+      it 'is invalid with only the externally managed flag' do
+        study = described_class.new(externally_managed: true)
+        expect(study.save).to be false
+        expect(study.errors[:name]).to include("can't be blank")
+      end
+    end
+  end
+
   describe '#prevent_updates_when_externally_managed' do
     let(:study) { create(:sapio_study) }
 
@@ -1016,6 +1031,16 @@ RSpec.describe Study do
       it 'allows updates' do
         study.name = 'New Name'
 
+        expect(study.save).to be true
+      end
+    end
+
+    context 'when feature flagged is enabled and the study is locally managed',
+            :externally_managed_restrictions_enabled do
+      let(:study) { create(:study, externally_managed: false) }
+
+      it 'allows updates' do
+        study.name = 'New Name'
         expect(study.save).to be true
       end
     end
