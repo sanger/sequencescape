@@ -95,6 +95,7 @@ Metrics/BlockLength:
   - scenario
   - namespace
   - task
+  - class_methods
   - included
   - shared_context
   - shared_examples
