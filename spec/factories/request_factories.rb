@@ -101,6 +101,20 @@ FactoryBot.define do
     end
   end
 
+  factory :hi_seq_sequencing_request, class: 'HiSeqSequencingRequest' do
+    request_type { create(:nova_seq_x_sequencing_request_type, read_lengths: [50, 100, 150, 300]) }
+    request_purpose { :standard }
+    sti_type { 'HiSeqSequencingRequest' }
+    request_metadata_attributes do
+      {
+        fragment_size_required_from: 150,
+        fragment_size_required_to: 400,
+        requested_flowcell_type: '1.5B',
+        read_length: 300
+      }
+    end
+  end
+
   factory :ultima_sequencing_request, class: 'UltimaSequencingRequest' do
     request_type factory: %i[ultima_sequencing]
     request_purpose { :standard }
