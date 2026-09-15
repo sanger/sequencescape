@@ -87,3 +87,10 @@ RVIG Lib PCR XP:
 # These used to be imported as Stock Plates and then 'fake cherrypicked' onto 'LB Lib PCR XP', which were allowed down the multiplexing pipelines.
 # Now, they can be imported and submitted as this more accurate plate purpose.
 Library Stock Plate: *limber_input_96
+
+# Final plate for several pipelines including Hi-C
+# Required in sequencescape to enable illumina to ultima library conversion submissions
+LBB Lib PCR-XP:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false
