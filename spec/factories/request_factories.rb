@@ -142,9 +142,9 @@ FactoryBot.define do
     request_type factory: %i[limber_ultima_htp_conversion]
     request_purpose { :standard }
     sti_type { 'UltimaConversionRequest' }
+    transient { ultima_application { create(:ultima_application) } }
     request_metadata_attributes do
-      # TODO: make this a factory instead of directly using UltimaApplication.first.id
-      { ultima_application_id: UltimaApplication.first.id }
+      { ultima_application_id: ultima_application.id }
     end
   end
 
