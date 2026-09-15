@@ -51,6 +51,20 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  class MissingUuid < JSONAPI::Exceptions::Error
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :bad_request,
+          title: 'Missing Uuid',
+          code: 'MISSING_UUID',
+          detail: 'A uuid is required to upsert a Study via this endpoint.',
+          source: { pointer: '/data/attributes/uuid' }
+        )
+      ]
+    end
+  end
+
   class MissingSearchParam < JSONAPI::Exceptions::Error
     def errors
       [

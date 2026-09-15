@@ -32,9 +32,11 @@ module Api
           super
         end
 
-        # Creates a new externally managed Study.
-        #
-        # It should NOT be used to transfer an existing Sequencescape study to Sapio.
+        # Creates a new externally managed Study, or, when the
+        # +y26_245_sapio_study_upsert+ feature flag is enabled and the
+        # supplied uuid already belongs to an existing Study, marks that
+        # Study as externally managed instead
+        # (see StudyProcessor#create_resource).
         #
         # @return [void]
         def create
@@ -145,10 +147,40 @@ module Api
       end
 
       class StudyProcessor < JSONAPI::Processor
+        before_create_resource :validate_uuid_presence
         before_create_resource :validate_uuid_format
         before_create_resource :validate_uuid_uniqueness
 
+        # Creates a new Study, unless the +y26_245_sapio_study_upsert+ feature
+        # flag is enabled and the supplied uuid already belongs to an existing
+        # Study, in which case that Study is returned as-is instead of raising
+        # a conflict.
+        #
+        # @note This is the first step towards full upsert behaviour
+        #   (see Y26-245). It does not yet mark the existing Study as
+        #   +externally_managed+ or broadcast it to mlwarehouse.
+        #
+        # @return [JSONAPI::ResourceOperationResult]
+        def create_resource
+          return existing_resource_result(existing_study_id) if upsert_enabled? && existing_study_id
+
+          super
+        end
+
         private
+
+        # Validates that a uuid was supplied, when the
+        # +y26_245_sapio_study_upsert+ feature flag is enabled. Without a uuid,
+        # Sequencescape has nothing to match against an existing Study, so the
+        # upsert behaviour (see #create_resource) cannot work.
+        #
+        # @raise [Errors::MissingUuid] if the uuid is missing and upsert is
+        #   enabled.
+        def validate_uuid_presence
+          return if external_uuid.present? || !upsert_enabled?
+
+          raise Errors::MissingUuid
+        end
 
         # Validates that the provided UUID is in a valid format.
         def validate_uuid_format
@@ -157,9 +189,11 @@ module Api
           raise JSONAPI::Exceptions::InvalidFieldValue.new(:uuid, external_uuid)
         end
 
-        # Validate that the provided UUID is unique
+        # Validate that the provided UUID is unique, unless the
+        # +y26_245_sapio_study_upsert+ feature flag is enabled, in which case a
+        # duplicate uuid is handled by #create_resource instead of raising.
         def validate_uuid_uniqueness
-          return if external_uuid.blank?
+          return if external_uuid.blank? || upsert_enabled?
 
           # Validation for unique UUID against all Sequencescape UUIDs
           return if Uuid.find_id(external_uuid).blank?
@@ -167,6 +201,63 @@ module Api
           raise Errors::FieldValueConflict.new(:uuid, external_uuid)
         end
 
+        # Wraps the existing Study resource so it renders exactly like a
+        # freshly created resource, marking it as externally managed if it
+        # is not already.
+        #
+        # @param id [Integer] the primary key of the existing Study.
+        # @return [JSONAPI::ResourceOperationResult] the existing Study resource
+        def existing_resource_result(id)
+          resource = resource_klass.find_by_key(id, context:)
+          mark_externally_managed(resource._model)
+          JSONAPI::ResourceOperationResult.new(:ok, resource)
+        end
+
+        # Marks +study+ as externally managed, unless it already is, and
+        # broadcasts the change to mlwarehouse.
+        #
+        # @note The broadcast only happens on the false-to-true transition.
+        #   Once a Study is already externally managed, re-broadcasting on
+        #   subsequent calls risks overwriting data mlwarehouse has received.
+        #
+        # @param study [Study] model to mark as externally managed
+        # @return [void]
+        def mark_externally_managed(study)
+          return if study.externally_managed?
+
+          # Bypasses Study#prevent_updates_when_externally_managed, which
+          # would otherwise block this save as soon as externally_managed
+          # becomes true below. Api::V2::Sapio::StudyResource's own
+          # before_create/before_update hook sets this for the normal
+          # create/update flow, but this method saves the model directly,
+          # so it must be set here too.
+          study.skip_externally_managed_restriction = true
+          study.externally_managed = true
+          study.save!
+          study.broadcast
+        end
+
+        # Looks up the id of the existing Study with the supplied uuid.
+        #
+        # @return [Integer, nil] the id of the existing Study, or nil.
+        def existing_study_id
+          return if external_uuid.blank?
+
+          Study.with_uuid(external_uuid).pick(:id)
+        end
+
+        # Checks whether the +y26_245_sapio_study_upsert+ feature flag is
+        # enabled.
+        #
+        # @return [Boolean] true if the feature flag is enabled, false
+        #   otherwise.
+        def upsert_enabled?
+          Flipper.enabled?(:y26_245_sapio_study_upsert)
+        end
+
+        # The raw uuid string supplied in the request payload, if any.
+        #
+        # @return [String, nil]
         def external_uuid
           @external_uuid ||= params.dig(:data, :attributes, :uuid)
         end
