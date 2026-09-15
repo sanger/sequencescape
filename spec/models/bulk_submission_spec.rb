@@ -190,6 +190,50 @@ describe BulkSubmission, with: :uploader do
     end
   end
 
+  context 'when creating a submission with ultima application' do
+    let(:spreadsheet_filename) { 'ultima_conversion_request.csv' }
+    let!(:request_type) { create(:limber_ultima_htp_conversion) }
+    let!(:ultima_preset) do
+      UltimaPreset.create!(name: 'UG100 preset', application_type: 'scRNA_GEX_10x_flex', sequencing_recipe: '75 cycles')
+    end
+    let!(:ultima_primer_a) { UltimaPrimer.create!(name: 'UGA-1') }
+    let!(:ultima_primer_b) { UltimaPrimer.create!(name: 'UGB-1') }
+    let!(:ultima_application) do
+      UltimaApplication.create!(
+        name: '10x Flex',
+        description: '10x Genomics GEM-X Flex Gene Expression',
+        ug100_preset: ultima_preset,
+        ug200_preset: ultima_preset,
+        uga_primer: ultima_primer_a,
+        ugb_primer: ultima_primer_b
+      )
+    end
+
+    let!(:submission_template) do
+      create(:limber_wgs_submission_template, name: 'ultima_conversion_test', request_types: [request_type])
+    end
+
+    let(:expected_request_options) do
+      {
+        'read_length' => '100',
+        'ultima_application_name' => '10x Flex',
+        'library_type' => 'Standard',
+        'multiplier' => {
+          request_type.id.to_s => 1
+        }
+      }
+    end
+
+    it 'is valid' do
+      expect(subject).to be_valid
+    end
+
+    it 'sets the expected request options' do
+      subject.process
+      expect(generated_submission.orders.first.request_options).to eq(expected_request_options)
+    end
+  end
+
   context 'when creating a submission with bait libraries' do
     let(:spreadsheet_filename) { '2_valid_sc_submissions.csv' }
     let!(:bait_library) { create(:bait_library, name: 'Bait library 1') }
@@ -430,6 +474,31 @@ describe BulkSubmission, with: :uploader do
         let(:spreadsheet_filename) { 'scRNA_bulk_submission_tube_invalid_greater.csv' }
 
         it_behaves_like 'an invalid scRNA Bulk Submission', 'scRNA_bulk_submission_tube_invalid_greater', 32
+      end
+    end
+
+    context 'when creating a submission with invalid ultima applications' do
+      let(:submission_template_hash) do
+        {
+          name: 'Limber-Htp - Ultima Conv - Ultima UG100 sequencing',
+          submission_class_name: 'LinearSubmission',
+          product_catalogue: 'Generic',
+          submission_parameters: {
+            request_options: {},
+            request_types: request_types.map(&:key)
+          }
+        }
+      end
+      let(:spreadsheet_filename) { 'ultima_conversion_additional_validations_invalid_ultima_applications.csv' }
+
+      before { SubmissionSerializer.construct!(submission_template_hash) }
+
+      it 'raises an error and sets an error message' do
+        expect { subject.process }.to raise_error(ActiveRecord::RecordInvalid)
+        expect(subject.errors.messages[:spreadsheet][0]).to eq(
+          "ultima application should be identical for all requests in asset group 'assetgroup123'. " \
+          "Given values were: '10x Flex' and '10x Visium HD Human'."
+        )
       end
     end
   end

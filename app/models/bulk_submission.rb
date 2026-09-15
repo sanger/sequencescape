@@ -253,7 +253,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
     '% phix requested',
     'low diversity',
     'ot recipe',
-    'wafer size'
+    'wafer size',
+    'ultima application'
   ].freeze
 
   ALIAS_FIELDS = { 'plate barcode' => 'barcode', 'tube barcode' => 'barcode' }.freeze
@@ -361,7 +362,8 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         ['% phix requested', 'percent_phix_requested'],
         ['low diversity', 'low_diversity'],
         ['ot recipe', 'ot_recipe'],
-        ['wafer size', 'wafer_size']
+        ['wafer size', 'wafer_size'],
+        ['ultima application', 'ultima_application_name']
       ].each do |source_key, target_key|
         assign_value_if_source_present(details, source_key, request_options, target_key)
       end
