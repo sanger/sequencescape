@@ -19,7 +19,7 @@
 # Constants:
 # - VIEW_PATH: The path to the view template for rendering the form.
 #
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo-next Metrics/ClassLength
 class PlatesFromTubesController < ApplicationController
   before_action :set_barcode_printers, only: %i[new create]
   before_action :set_plate_creators, only: %i[new create]
@@ -70,7 +70,7 @@ class PlatesFromTubesController < ApplicationController
   # If the user selects 'RNA Stock Plate', then the plate creator is set to RnaStockPlateCreator.
   # If the user selects 'All of the above', then the plate creators are both StockPlateCreator and RnaStockPlateCreator
   #
-  # rubocop:todo Metrics/AbcSize
+  # rubocop:todo-next Metrics/AbcSize
   def find_plate_creator
     @plate_creator =
       if params[:plates_from_tubes][:plate_type].to_s == 'Stock Plate'
@@ -82,7 +82,6 @@ class PlatesFromTubesController < ApplicationController
       end
     @max_wells = @plate_creator.map { |pc| pc.plate_purposes.first.size }.max
   end
-  # rubocop:enable Metrics/AbcSize
 
   # Set the barcode printers based on the user's selection on the radio buttons
   def set_barcode_printers
@@ -275,4 +274,3 @@ class PlatesFromTubesController < ApplicationController
     handle_successful_creation
   end
 end
-# rubocop:enable Metrics/ClassLength

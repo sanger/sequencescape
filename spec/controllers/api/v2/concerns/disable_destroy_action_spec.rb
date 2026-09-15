@@ -13,9 +13,8 @@ RSpec.describe Api::V2::Concerns::DisableDestroyAction do
   # anonymous controller is being defined. Attempting to use `described_class` in this context
   # results in a NameError, as RSpec has not yet defined it. Therefore, we disable the RuboCop
   # RSpec/DescribedClass rule for this line only.
-  # rubocop:disable RSpec/DescribedClass
+  # rubocop:disable-next RSpec/DescribedClass
   controller(ActionController::Base) { include Api::V2::Concerns::DisableDestroyAction }
-  # rubocop:enable RSpec/DescribedClass
 
   before { routes.draw { delete 'destroy' => 'anonymous#destroy' } }
 

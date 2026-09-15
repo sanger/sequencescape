@@ -18,7 +18,7 @@ class Ability::Administrator
 
   private
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def grant_privileges # rubocop:todo Metrics/AbcSize
     Rails.logger.debug { 'Granting Administrator privileges' }
 
@@ -87,5 +87,4 @@ class Ability::Administrator
     can :manage, Submission
     can :cancel, Submission
   end
-  # rubocop:enable Metrics/MethodLength
 end

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-# rubocop:disable RSpec/MultipleExpectations
+# rubocop:disable-next RSpec/MultipleExpectations
 describe UatActions::GenerateFluidxBarcodes do
   let(:uat_action) { described_class.new(params) }
 
@@ -31,7 +31,7 @@ describe UatActions::GenerateFluidxBarcodes do
     context 'with valid options' do
       let(:params) { { barcode_count: 10, barcode_prefix: 'SQ', barcode_index: 1 } }
 
-      # rubocop:disable RSpec/ExampleLength
+      # rubocop:disable-next RSpec/ExampleLength
       it 'generates barcodes' do
         expect(uat_action.perform).to be true
         expect(uat_action.report['barcodes'].size).to eq params[:barcode_count].to_i
@@ -40,7 +40,6 @@ describe UatActions::GenerateFluidxBarcodes do
         expect(uat_action.report['barcodes'].first).to end_with(params[:barcode_index].to_s) # first index
         expect(uat_action.report['barcodes'].last).to end_with(params[:barcode_count].to_s) # last
       end
-      # rubocop:enable RSpec/ExampleLength
     end
 
     context 'with existing barcodes' do
@@ -150,4 +149,3 @@ describe UatActions::GenerateFluidxBarcodes do
     end
   end
 end
-# rubocop:enable RSpec/MultipleExpectations

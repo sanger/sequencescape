@@ -51,7 +51,7 @@ module Presenters
       ability.can? permission, object
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+    # rubocop:disable-next Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
     def build_submenu
       add_submenu_option 'View summary', controller: :pipelines, action: :summary
       add_submenu_option pluralize(@batch.comments.size, 'comment'), batch_comments_path(@batch)
@@ -76,7 +76,6 @@ module Presenters
       add_submenu_option 'Download Sample Sheet', id: @batch.id, controller: :batches,
                                                   action: :generate_sample_sheet
     end
-    # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
 
     # Determines whether to display the submenu option for downloading the sample sheet.
     #
@@ -108,11 +107,10 @@ module Presenters
     end
 
     # rubocop is suggesting changes that returns false positive
-    # rubocop: disable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
+    # rubocop: disable-next Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
     def aviti_requests?
       @batch.requests.any? { |request| request.is_a?(ElementAvitiSequencingRequest) }
     end
-    # rubocop: enable Performance/RedundantEqualityComparisonBlock, Style/PredicateWithKind
 
     def ultima_run_manifest?
       @batch.released? && ultima_requests?

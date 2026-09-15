@@ -94,7 +94,7 @@ module SampleManifest::CoreBehaviour
 
   private
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def behaviour_module # rubocop:todo Metrics/CyclomaticComplexity
     # asset_type comes from the query params for the new/create manifest actions page.
     case asset_type
@@ -116,5 +116,4 @@ module SampleManifest::CoreBehaviour
       raise StandardError, "Unknown core behaviour (#{asset_type.inspect}) for sample manifest"
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

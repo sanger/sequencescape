@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'aasm'
 
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class Project < ApplicationRecord
   # It has to be here, as there are has_many through: :orders associations in modules
   has_many :orders
@@ -155,4 +155,3 @@ class Project < ApplicationRecord
           )
         end
 end
-# rubocop:enable Metrics/ClassLength

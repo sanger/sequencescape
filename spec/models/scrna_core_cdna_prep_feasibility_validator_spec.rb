@@ -256,7 +256,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_samples) { 0 }
       let(:group_3_number_of_samples) { 0 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -269,7 +269,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
 
     context 'when the total number of samples is greater than the maximum allowed' do
@@ -281,7 +280,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 3 }
       let(:group_3_number_of_pools) { 2 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -294,7 +293,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
   end
 
@@ -358,7 +356,7 @@ RSpec.describe BulkSubmission, with: :uploader do
         allow(Rails.application.config).to receive(:scrna_config).and_return(scrna_config_dup)
       end
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -371,7 +369,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
 
     context 'when the total number of pools is greater than the maximum allowed' do
@@ -383,7 +380,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 3 }
       let(:group_3_number_of_pools) { 3 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -396,7 +393,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
   end
 
@@ -455,7 +451,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 2 }
       let(:group_3_number_of_pools) { 2 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
 
@@ -485,7 +481,6 @@ RSpec.describe BulkSubmission, with: :uploader do
           expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
         end
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
 
     context 'when the biggest pool size is greater than the maximum allowed' do
@@ -497,7 +492,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         error_message =
           I18n.t(
@@ -513,7 +508,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
   end
 
@@ -585,7 +579,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       # We cannot put the first 5 samples into separate pools to avoid donor
       # clash, because we have 4 pools.
 
-      # rubocop:disable RSpec/ExampleLength, RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/ExampleLength, RSpec/MultipleExpectations
       it 'adds the error message' do
         # Barcodes or well locations of the labware with the same donor ID are
         # listed in the error message. This test uses tubes; hence the barcodes
@@ -605,7 +599,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect { bulk_submission.process }.to raise_error(ActiveRecord::RecordInvalid)
         expect(bulk_submission.errors[:spreadsheet]).to include(error_message)
       end
-      # rubocop:enable RSpec/ExampleLength, RSpec/MultipleExpectations
     end
   end
 
@@ -621,7 +614,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:disable-next RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'adds the warning message' do
         warning_message =
           I18n.t(
@@ -637,7 +630,6 @@ RSpec.describe BulkSubmission, with: :uploader do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings[:spreadsheet]).to include(warning_message)
       end
-      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
 
     context 'when final_resuspension_volume is equal to the full allowance' do
@@ -651,12 +643,11 @@ RSpec.describe BulkSubmission, with: :uploader do
 
       let(:group_1_cells_per_chip_well) { 26_250 }
 
-      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/MultipleExpectations
       it 'adds the warning message' do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings).to be_empty
       end
-      # rubocop:enable RSpec/MultipleExpectations
     end
 
     context 'when final resuspension volume is less than the full allowance' do
@@ -670,12 +661,11 @@ RSpec.describe BulkSubmission, with: :uploader do
 
       let(:group_1_cells_per_chip_well) { 20_000 }
 
-      # rubocop:disable RSpec/MultipleExpectations
+      # rubocop:disable-next RSpec/MultipleExpectations
       it 'does not add the warning message' do
         expect(bulk_submission).to be_valid
         expect(bulk_submission.warnings).to be_empty
       end
-      # rubocop:enable RSpec/MultipleExpectations
     end
 
     context 'when there are multiple full allowance warnings' do
@@ -687,7 +677,7 @@ RSpec.describe BulkSubmission, with: :uploader do
       let(:group_2_number_of_pools) { 1 }
       let(:group_3_number_of_pools) { 1 }
 
-      # rubocop:disable RSpec/MultipleExpectations, RSpec/ExampleLength
+      # rubocop:disable-next RSpec/MultipleExpectations, RSpec/ExampleLength
       it 'adds the warning message for each study-project' do
         expect(bulk_submission).to be_valid
 
@@ -706,7 +696,6 @@ RSpec.describe BulkSubmission, with: :uploader do
           expect(bulk_submission.warnings[:spreadsheet]).to include(warning_message)
         end
       end
-      # rubocop:enable RSpec/MultipleExpectations, RSpec/ExampleLength
     end
   end
 

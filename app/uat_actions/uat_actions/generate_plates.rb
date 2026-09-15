@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Will construct plates with well_count wells filled with samples
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class UatActions::GeneratePlates < UatActions
   self.title = 'Generate plate'
   self.description = 'Generate plates in the selected study.'
@@ -208,4 +208,3 @@ class UatActions::GeneratePlates < UatActions
     Purpose.find_by!(name: plate_purpose_name)
   end
 end
-# rubocop:enable Metrics/ClassLength

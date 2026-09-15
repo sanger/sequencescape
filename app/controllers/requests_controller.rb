@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 require 'event_factory'
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo-next Metrics/ClassLength
 class RequestsController < ApplicationController
   # WARNING! This filter bypasses security mechanisms in rails 4 and mimics rails 2 behviour.
   # It should be removed wherever possible and the correct Strong  Parameter options applied in its place.
@@ -189,4 +189,3 @@ class RequestsController < ApplicationController
     permitted
   end
 end
-# rubocop:enable Metrics/ClassLength

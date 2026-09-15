@@ -2,7 +2,7 @@
 
 # Labware represents a physical object which moves around the lab.
 # It has one or more receptacles.
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class Labware < Asset
   include Commentable
   include Uuid::Uuidable
@@ -417,4 +417,3 @@ class Labware < Asset
     nil
   end
 end
-# rubocop:enable Metrics/ClassLength

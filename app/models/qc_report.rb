@@ -13,7 +13,7 @@ class QcReport < ApplicationRecord
       end
     end
 
-    # rubocop:todo Metrics/MethodLength
+    # rubocop:todo-next Metrics/MethodLength
     def self.included(base) # rubocop:todo Metrics/AbcSize
       base.class_eval do
         # When adding new states, please make sure you update the config/locals/en.yml file
@@ -70,7 +70,6 @@ class QcReport < ApplicationRecord
         extend ClassMethods
       end
     end
-    # rubocop:enable Metrics/MethodLength
   end
 
   module ReportBehaviour

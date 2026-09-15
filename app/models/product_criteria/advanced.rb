@@ -22,7 +22,7 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
     @comment.uniq!
   end
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def assess! # rubocop:todo Metrics/AbcSize
     @qc_decision = 'passed'
     STATE_ORDER.each do |decision|
@@ -43,5 +43,4 @@ class ProductCriteria::Advanced < ProductCriteria::Basic
         end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

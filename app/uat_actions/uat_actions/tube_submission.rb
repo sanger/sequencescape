@@ -3,7 +3,7 @@
 # This UAT Action will generates a basic submission for tubes. Initially, it
 # has been designed for generating scRNA Core Donor Pooling and cDNA Prep
 # submissions on LRC Bank Seq/Spare tubes.
-# rubocop:disable Metrics/ClassLength
+# rubocop:disable-next Metrics/ClassLength
 class UatActions::TubeSubmission < UatActions
   self.title = 'Tube submission'
   self.description = 'Generates a basic submission for tubes.'
@@ -266,4 +266,3 @@ class UatActions::TubeSubmission < UatActions
   # @return [User] The UAT user can be used in any places where a user is expected.
   delegate :user, to: :'UatActions::StaticRecords'
 end
-# rubocop:enable Metrics/ClassLength

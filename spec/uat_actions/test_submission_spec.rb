@@ -402,9 +402,8 @@ describe UatActions::TestSubmission do
       allow(generator).to receive(:well_layout=)
       allow(generator).to receive(:number_of_samples_in_each_well=)
       allow(generator).to receive(:study_name=)
-      # rubocop:disable RSpec/SubjectStub
+      # rubocop:disable-next RSpec/SubjectStub
       allow(test_submission).to receive(:default_purpose_name).and_return(default_purpose_name)
-      # rubocop:enable RSpec/SubjectStub
     end
 
     context 'with default parameters' do

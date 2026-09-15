@@ -992,6 +992,21 @@ RSpec.describe Study do
     end
   end
 
+  context 'when a study is externally managed' do
+    describe '#validation' do
+      it 'is valid with only the study name' do
+        study = described_class.new(name: 'Externally Managed Study', externally_managed: true)
+        expect(study.save).to be true
+      end
+
+      it 'is invalid with only the externally managed flag' do
+        study = described_class.new(externally_managed: true)
+        expect(study.save).to be false
+        expect(study.errors[:name]).to include("can't be blank")
+      end
+    end
+  end
+
   describe '#prevent_updates_when_externally_managed' do
     let(:study) { create(:sapio_study) }
 
@@ -1020,41 +1035,21 @@ RSpec.describe Study do
       end
     end
 
-    # test that updates are allowed when the feature flag is disabled
-    context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
+    context 'when feature flagged is enabled and the study is locally managed',
+            :externally_managed_restrictions_enabled do
+      let(:study) { create(:study, externally_managed: false) }
+
       it 'allows updates' do
         study.name = 'New Name'
         expect(study.save).to be true
       end
     end
-  end
 
-  describe '#prevent_externally_managed_changes_unless_integration_hub' do
-    let(:study) { create(:study, externally_managed: false) }
-
-    context 'when feature flag is enabled and updated from SS', :externally_managed_restrictions_enabled do
-      it 'prevents changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be false
-        expect(study.errors[:base]).to include(
-          I18n.t('studies.externally_managed.integration_hub_update_only')
-        )
-      end
-    end
-
-    context 'when feature flag is enabled and updated by Integration Hub', :externally_managed_restrictions_enabled do
-      #  bypass the validation to simulate an update from Integration Hub
-      before do
-        study.skip_externally_managed_restriction = true
-      end
-
-      it 'allows changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be true
-      end
-    end
-
+    # test that updates are allowed when the feature flag is disabled
     context 'when feature flag is disabled', :externally_managed_restrictions_disabled do
-      it 'allows changing externally_managed' do
-        expect(study.update(externally_managed: true)).to be true
+      it 'allows updates' do
+        study.name = 'New Name'
+        expect(study.save).to be true
       end
     end
   end

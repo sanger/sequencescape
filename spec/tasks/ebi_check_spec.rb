@@ -3,7 +3,7 @@
 require 'rails_helper'
 require 'rake'
 
-# rubocop:disable RSpec/ExampleLength,RSpec/MultipleExpectations
+# rubocop:disable-next RSpec/ExampleLength,RSpec/MultipleExpectations
 RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
   let(:task) { Rake::Task[task_name] }
   let(:process) { instance_double(EBICheck::Process) }
@@ -135,4 +135,3 @@ RSpec.describe 'ebi rake tasks' do # rubocop:disable RSpec/DescribeClass
     end
   end
 end
-# rubocop:enable RSpec/ExampleLength,RSpec/MultipleExpectations

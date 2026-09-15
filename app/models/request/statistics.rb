@@ -108,7 +108,7 @@ module Request::Statistics
 
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:todo Metrics/MethodLength
+  # rubocop:todo-next Metrics/MethodLength
   def sample_statistics_new # rubocop:todo Metrics/AbcSize
     counters =
       join_asset
@@ -124,5 +124,4 @@ module Request::Statistics
       end
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end

@@ -172,7 +172,7 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
       end
       # Within a single transaction process each of the rows of the CSV file as a separate submission.  Any name
       # fields need to be mapped to IDs, and the 'assets' field needs to be split up and processed if present.
-      # rubocop:todo Metrics/BlockLength
+      # rubocop:todo-next Metrics/BlockLength
       ActiveRecord::Base.transaction do
         submission_details.each do |submissions|
           submissions.each do |submission_name, orders|
@@ -216,7 +216,6 @@ class BulkSubmission # rubocop:todo Metrics/ClassLength
         # If there are any errors then the transaction needs to be rolled back.
         raise ActiveRecord::Rollback if errors.present?
       end
-      # rubocop:enable Metrics/BlockLength
     end
   end
 

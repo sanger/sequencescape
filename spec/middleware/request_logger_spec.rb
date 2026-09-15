@@ -128,10 +128,10 @@ RSpec.describe RequestLogger do
   context 'when response is 789 Unknown Status' do
     let(:status_code) { 789 }
 
-    it_behaves_like 'logs request with',  :info
+    it_behaves_like 'logs request with', :info
   end
 
   context 'when log level is set to :debug' do
-    it_behaves_like 'logs request with',  :debug
+    it_behaves_like 'logs request with', :debug
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# rubocop:todo Metrics/ClassLength
+# rubocop:todo-next Metrics/ClassLength
 class LocationReport < ApplicationRecord
   # includes / extends
   extend DbFile::Uploader
@@ -211,4 +211,3 @@ class LocationReport < ApplicationRecord
     curr_locn_children.each { |curr_locn| get_labwares_per_location(curr_locn.barcode) } if curr_locn_children.present?
   end
 end
-# rubocop:enable Metrics/ClassLength
