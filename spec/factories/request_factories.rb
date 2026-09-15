@@ -138,6 +138,16 @@ FactoryBot.define do
     end
   end
 
+  factory(:ultima_conversion_request, class: 'UltimaConversionRequest') do
+    request_type factory: %i[limber_ultima_htp_conversion]
+    request_purpose { :standard }
+    sti_type { 'UltimaConversionRequest' }
+    request_metadata_attributes do
+      # TODO: make this a factory instead of directly using UltimaApplication.first.id
+      { ultima_application_id: UltimaApplication.first.id }
+    end
+  end
+
   factory(:library_creation_request, parent: :request, class: 'LibraryCreationRequest') do
     asset factory: %i[sample_tube]
     request_type factory: %i[library_creation_request_type]
