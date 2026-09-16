@@ -29,6 +29,8 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
 
   # Builds a hash mapping each source-plate well to its destination MX library tube and its
   # ancestor stock wells. The first ancestor stock well is used to resolve the submission and tube.
+  # NB. Ancestor stock wells are not necessarily in plates with a purpose.stock_plate true. It is
+  # possible for a well to have a stock Well::Link, set up in a transfer_request.
   def well_to_destination
     # source.stock_wells returns a hash like:
     # {
