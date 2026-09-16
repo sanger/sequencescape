@@ -7,7 +7,12 @@ limber_ultima_htp_conversion:
   billable: true
   product_line_name: Ultima
   acceptable_purposes:
+    - LB Lib PCR-XP
+    - LTN Lib PCR XP
+    - RVI Lib PCR XP
+    - RVIG Lib PCR XP
     - LBB Lib PCR-XP
+    - LBB Lib PCR-XP Norm
 
 limber_ultima_ltp_conversion:
   name: Limber Ultima LTP Conversion
@@ -18,4 +23,9 @@ limber_ultima_ltp_conversion:
   billable: true
   product_line_name: Ultima
   acceptable_purposes:
+    - LB Lib PCR-XP
+    - LTN Lib PCR XP
+    - RVIG Lib PCR XP
+    - RVI Lib PCR XP
     - LBB Lib PCR-XP
+    - LBB Lib PCR-XP Norm
