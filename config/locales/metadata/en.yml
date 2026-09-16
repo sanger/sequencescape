@@ -82,6 +82,9 @@ en:
         wafer_size:
           label: Wafer Size
 
+        ultima_application_name:
+          label: Ultima application name
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
