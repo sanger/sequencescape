@@ -4,115 +4,96 @@ require 'rails_helper'
 
 RSpec.describe HiSeqSequencingRequest do
   let(:request) { create(:hi_seq_sequencing_request) }
-  let(:validator) { HiSeqSequencingRequest::NovaSeqXPERequestOptionsValidator.new(request) }
+  let(:validator) { described_class::NovaSeqXPERequestOptionsValidator.new(request) }
 
-  # request.validate exercises the attribute-level validation (against the
-  # request_type_validators valid_options list), while validator.validate
-  # exercises only the cross-field validation added in this class.
-  describe 'Validations' do
-    context 'when flowcell type is 1.5B and read length is 300' do
-      let(:metadata) { { requested_flowcell_type: '1.5B', read_length: 300 } }
+  before do
+    request.request_metadata.assign_attributes(requested_flowcell_type: flowcell_type, read_length: read_length)
+  end
 
-      before { request.request_metadata.assign_attributes(metadata) }
+  describe 'read length by flowcell type' do
+    context 'with the 1.5B flowcell type' do
+      let(:flowcell_type) { '1.5B' }
 
-      it 'is valid in the class' do
-        request.validate
-        expect(request).to be_valid
-      end
+      [50, 100, 150, 300].each do |valid_read_length|
+        context "when the read length is #{valid_read_length}" do
+          let(:read_length) { valid_read_length }
 
-      it 'has no errors in the validator' do
-        validator.validate
-        expect(validator.errors).to be_empty
-      end
-    end
+          it 'is valid in the class' do
+            request.validate
+            expect(request).to be_valid
+          end
 
-    context 'when flowcell type is 1.5B and read length is 150 (still allowed additively)' do
-      let(:metadata) { { requested_flowcell_type: '1.5B', read_length: 150 } }
-
-      before { request.request_metadata.assign_attributes(metadata) }
-
-      it 'is valid in the class' do
-        request.validate
-        expect(request).to be_valid
-      end
-
-      it 'has no errors in the validator' do
-        validator.validate
-        expect(validator.errors).to be_empty
+          it 'has no errors in the validator' do
+            validator.validate
+            expect(validator.errors).to be_empty
+          end
+        end
       end
     end
 
-    context 'when flowcell type is 1.5B and read length is not one of the allowed values' do
-      let(:metadata) { { requested_flowcell_type: '1.5B', read_length: 75 } }
+    context 'with the 10B flowcell type' do
+      let(:flowcell_type) { '10B' }
 
-      before { request.request_metadata.assign_attributes(metadata) }
+      [50, 100, 150].each do |valid_read_length|
+        context "when the read length is #{valid_read_length}" do
+          let(:read_length) { valid_read_length }
 
-      it 'is not valid in the validator' do
-        validator.validate
-        expect(validator).not_to be_valid
+          it 'is valid in the class' do
+            request.validate
+            expect(request).to be_valid
+          end
+
+          it 'has no errors in the validator' do
+            validator.validate
+            expect(validator.errors).to be_empty
+          end
+        end
       end
 
-      it 'has the correct error message from the validator' do
-        validator.validate
-        expect(validator.errors[:read_length]).to include(
-          'can only be one of 50, 100, 150, 300 when the flowcell type is 1.5B'
-        )
-      end
-    end
+      context 'when the read length is 300' do
+        let(:read_length) { 300 }
 
-    context 'when flowcell type is 10B and read length is 150' do
-      let(:metadata) { { requested_flowcell_type: '10B', read_length: 150 } }
+        it 'is not valid in the validator' do
+          validator.validate
+          expect(validator).not_to be_valid
+        end
 
-      before { request.request_metadata.assign_attributes(metadata) }
-
-      it 'is valid in the class' do
-        request.validate
-        expect(request).to be_valid
-      end
-
-      it 'has no errors in the validator' do
-        validator.validate
-        expect(validator.errors).to be_empty
-      end
-    end
-
-    context 'when flowcell type is 5B and read length is 100' do
-      let(:metadata) { { requested_flowcell_type: '5B', read_length: 100 } }
-
-      before { request.request_metadata.assign_attributes(metadata) }
-
-      it 'has no errors in the validator' do
-        validator.validate
-        expect(validator.errors).to be_empty
+        it 'has the correct error message from the validator' do
+          validator.validate
+          expect(validator.errors[:read_length]).to include(
+            '300 is only available for the 1.5B flowcell type. ' \
+            'Available read lengths for the 10B flowcell type are 50, 100, 150.'
+          )
+        end
       end
     end
 
-    context 'when flowcell type is not 1.5B and read length is 300' do
-      let(:metadata) { { requested_flowcell_type: '10B', read_length: 300 } }
+    context 'when no flowcell type is selected' do
+      let(:flowcell_type) { nil }
 
-      before { request.request_metadata.assign_attributes(metadata) }
+      context 'when the read length is 300' do
+        let(:read_length) { 300 }
 
-      it 'is not valid in the validator' do
-        validator.validate
-        expect(validator).not_to be_valid
+        it 'is not valid in the validator' do
+          validator.validate
+          expect(validator).not_to be_valid
+        end
+
+        it 'has the correct error message from the validator' do
+          validator.validate
+          expect(validator.errors[:read_length]).to include(
+            '300 is only available for the 1.5B flowcell type, but no flowcell type was selected.'
+          )
+        end
       end
 
-      it 'has the correct error message from the validator' do
-        validator.validate
-        expect(validator.errors[:read_length]).to include(
-          'can only be one of 50, 100, 150 when the flowcell type is not 1.5B'
-        )
-      end
-    end
+      context 'when the read length is 150' do
+        let(:read_length) { 150 }
 
-    context 'when flowcell type is 25B and read length is 300' do
-      let(:metadata) { { requested_flowcell_type: '25B', read_length: 300 } }
-
-      before { request.request_metadata.assign_attributes(metadata) }
-
-      it 'is not valid in the validator' do
-        validator.validate
-        expect(validator).not_to be_valid
+        it 'has no errors in the validator' do
+          validator.validate
+          expect(validator.errors).to be_empty
+        end
       end
     end
   end
