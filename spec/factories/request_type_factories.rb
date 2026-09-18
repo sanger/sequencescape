@@ -144,6 +144,11 @@ FactoryBot.define do
       request_class { UltimaUG200SequencingRequest }
     end
 
+    factory :limber_ultima_htp_conversion do
+      asset_type { 'Well' }
+      request_class { UltimaConversionRequest }
+    end
+
     factory :miseq_sequencing_request_type do
       request_class { MiSeqSequencingRequest }
       asset_type { 'LibraryTube' }
