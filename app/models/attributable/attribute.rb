@@ -85,7 +85,7 @@ module Attributable
 
     # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
     def configure(model) # rubocop:todo Metrics/CyclomaticComplexity
-      conditions = @options.slice(:if, :on)
+      conditions = @options.slice(:if, :on, :unless)
       save_blank_value = @options.delete(:save_blank)
       allow_blank = save_blank_value
       model.with_options(conditions) do |object|

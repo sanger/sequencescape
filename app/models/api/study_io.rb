@@ -45,6 +45,7 @@ class Api::StudyIo < Api::Base
 
   extra_json_attributes do |object, json_attributes|
     json_attributes['abbreviation'] = object.abbreviation
+    json_attributes['is_current'] = !object.externally_managed?
 
     object.roles.each do |role|
       role_key = role.name.downcase.gsub(/\s+/, '_')
