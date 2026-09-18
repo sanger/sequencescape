@@ -156,10 +156,6 @@ module Api
         # Study, in which case that Study is returned as-is instead of raising
         # a conflict.
         #
-        # @note This is the first step towards full upsert behaviour
-        #   (see Y26-245). It does not yet mark the existing Study as
-        #   +externally_managed+ or broadcast it to mlwarehouse.
-        #
         # @return [JSONAPI::ResourceOperationResult]
         def create_resource
           return existing_resource_result(existing_study_id) if upsert_enabled? && existing_study_id
