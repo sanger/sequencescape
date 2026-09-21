@@ -1,0 +1,15 @@
+# These submission templates are used to enter the illumina to ultima library ltp conversion pipeline
+---
+Limber-Bespoke - Ultima Conv - Ultima U100 sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_ultima_ltp_conversion", "limber_multiplexing_ultima", "ultima_sequencing"]
+    product_line_name: Ultima
+    product_catalogue_name: Generic
+
+Limber-Bespoke - Ultima Conv - Ultima UG200 sequencing:
+  submission_class_name: "LinearSubmission"
+  related_records:
+    request_type_keys: ["limber_ultima_ltp_conversion", "limber_multiplexing_ultima_ug200", "ultima_ug200_sequencing"]
+    product_line_name: Ultima
+    product_catalogue_name: Generic
