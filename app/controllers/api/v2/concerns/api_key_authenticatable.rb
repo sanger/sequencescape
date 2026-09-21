@@ -13,15 +13,15 @@ module Api
         included { prepend_before_action :authenticate_with_api_key }
 
         def authenticate_with_api_key
-          # Check if the route requires an API key
-          return if permissive_route
-
           http_env_api_key = 'HTTP_X_SEQUENCESCAPE_CLIENT_ID'
 
           if request.env.key? http_env_api_key
             validate_api_key request.env[http_env_api_key]
           else
             log_request_without_key
+            # Temporarily allow permissive routes and log access attempt
+            return if permissive_route && !Flipper.enabled?(:y25_441_remove_permissive_routes)
+
             render_unauthorized if Flipper.enabled?(:y25_442_make_api_key_mandatory)
           end
         end

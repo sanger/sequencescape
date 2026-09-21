@@ -67,5 +67,61 @@ RSpec.describe Api::V2::Concerns::ApiKeyAuthenticatable do
         expect(controller).not_to have_received(:render_unauthorized)
       end
     end
+
+    context 'when using permissive route behaviour' do
+      before { Flipper.enable(:y25_442_make_api_key_mandatory) }
+
+      context 'when the route is permissive and y25_441_remove_permissive_routes is disabled' do
+        before do
+          allow(controller).to receive(:permissive_route).and_return(true)
+          Flipper.disable(:y25_441_remove_permissive_routes)
+        end
+
+        it 'does not render unauthorized' do
+          controller.send(:authenticate_with_api_key)
+
+          expect(controller).not_to have_received(:render_unauthorized)
+        end
+      end
+
+      context 'when the route is permissive but y25_441_remove_permissive_routes is enabled' do
+        before do
+          allow(controller).to receive(:permissive_route).and_return(true)
+          Flipper.enable(:y25_441_remove_permissive_routes)
+        end
+
+        it 'renders unauthorized' do
+          controller.send(:authenticate_with_api_key)
+
+          expect(controller).to have_received(:render_unauthorized)
+        end
+      end
+
+      context 'when the route is not permissive and y25_441_remove_permissive_routes is disabled' do
+        before do
+          allow(controller).to receive(:permissive_route).and_return(false)
+          Flipper.disable(:y25_441_remove_permissive_routes)
+        end
+
+        it 'renders unauthorized' do
+          controller.send(:authenticate_with_api_key)
+
+          expect(controller).to have_received(:render_unauthorized)
+        end
+      end
+
+      context 'when the route is not permissive and y25_441_remove_permissive_routes is enabled' do
+        before do
+          allow(controller).to receive(:permissive_route).and_return(false)
+          Flipper.enable(:y25_441_remove_permissive_routes)
+        end
+
+        it 'renders unauthorized' do
+          controller.send(:authenticate_with_api_key)
+
+          expect(controller).to have_received(:render_unauthorized)
+        end
+      end
+    end
   end
 end
