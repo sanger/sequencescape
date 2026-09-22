@@ -62,7 +62,6 @@ Rails.application.routes.draw do
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :orders, except: %i[update]
-      jsonapi_resources :pick_lists
       jsonapi_resources :plate_conversions, except: %i[update]
       jsonapi_resources :plate_creations, except: %i[update]
       jsonapi_resources :plate_purposes, except: %i[update]
