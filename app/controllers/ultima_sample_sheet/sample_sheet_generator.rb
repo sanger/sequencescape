@@ -56,6 +56,10 @@ module UltimaSampleSheet::SampleSheetGenerator
         'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => {
           plate_num: 4,
           z_start: 289
+        },
+        'UG-RD-1940 (Solaris 2.0 PCR-Free Adapters for Ultima Genomics P1)' => {
+          plate_num: 1,
+          z_start: 1
         }
       }.freeze
     end
@@ -135,16 +139,26 @@ module UltimaSampleSheet::SampleSheetGenerator
       csv << pad(data)
     end
 
+    # Returns application preset for given library type
+    # @param library_type [String] Name of the library type
+    # @return [String] Application preset
+    def library_type_to_application(library_type)
+      mapping = { 'Ultima High Throughput PCR Amplified 96' => 'WGS Native Amplified' }
+      mapping.fetch(library_type, 'WGS Native') # Default is WGS Native
+    end
+
     # Adds the new global section format to be used when the feature flag
     # :y25_140_support_ultima_ug100_upgrade is enabled:
     #   - Sets WGS Native as the application value.
     #   - Removes sequencing_recipe and analysis_recipe columns.
     # @param csv [CSV] the CSV object to append rows to
-    # @param _request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_support_global_section(csv, _request)
+    # @param request [UltimaSequencingRequest] the request whose global data is to be added
+    def add_support_global_section(csv, request)
+      library_type = request.asset.aliquots.first.library_type
+      application = library_type_to_application(library_type)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
-      data = ['WGS Native'] # Application
+      data = [application] # Application
       csv << pad(data)
     end
 
