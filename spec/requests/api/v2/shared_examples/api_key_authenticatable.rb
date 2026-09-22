@@ -23,9 +23,6 @@ shared_examples_for 'ApiKeyAuthenticatable' do
       before { Flipper.enable :y25_442_make_api_key_mandatory }
 
       it 'gets an unauthorized response' do
-        # Ensure permissive routes are not removed for this test scenario
-        Flipper.disable :y25_441_remove_permissive_routes
-
         api_get base_endpoint, headers: client_headers
 
         # Permissive routes are successful without API keys
@@ -34,14 +31,6 @@ shared_examples_for 'ApiKeyAuthenticatable' do
         else
           expect(response).to have_http_status(:unauthorized)
         end
-      end
-
-      it 'gets an unauthorized response when the route is permissive but y25_441_remove_permissive_routes is enabled' do
-        Flipper.enable :y25_441_remove_permissive_routes
-
-        api_get base_endpoint, headers: client_headers
-
-        expect(response).to have_http_status(:unauthorized)
       end
     end
 

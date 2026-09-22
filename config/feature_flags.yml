@@ -20,7 +20,6 @@ y26_094_email_users_on_accessioning_failures: Sends notification email to users 
 
 # API
 y25_442_make_api_key_mandatory: Makes API key mandatory for all API requests
-y25_441_remove_permissive_routes: Removes permissive routes from the API, enforcing API key authentication for all requests
 
 # Sapio studies
 y26_170_sapio_studies_endpoint: Enables the Sapio studies endpoint

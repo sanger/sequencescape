@@ -13,15 +13,15 @@ module Api
         included { prepend_before_action :authenticate_with_api_key }
 
         def authenticate_with_api_key
+          # Check if the route requires an API key
+          return if permissive_route
+
           http_env_api_key = 'HTTP_X_SEQUENCESCAPE_CLIENT_ID'
 
           if request.env.key? http_env_api_key
             validate_api_key request.env[http_env_api_key]
           else
-            # Temporarily allow permissive routes and log access attempt
             log_request_without_key
-            return if permissive_route && !Flipper.enabled?(:y25_441_remove_permissive_routes)
-
             render_unauthorized if Flipper.enabled?(:y25_442_make_api_key_mandatory)
           end
         end
@@ -34,9 +34,6 @@ module Api
           @api_application = ApiApplication.find_by!(key: api_key)
         rescue ActiveRecord::RecordNotFound
           log_invalid_api_key api_key
-          # Temporarily allow permissive routes even with a bad key
-          return if permissive_route && !Flipper.enabled?(:y25_441_remove_permissive_routes)
-
           render_unauthorized
         end
 
