@@ -68,7 +68,12 @@ shared_examples_for 'ApiKeyAuthenticatable' do
     it 'gets an unauthorized response' do
       api_get(base_endpoint, headers:)
 
-      expect(response).to have_http_status(:unauthorized)
+      # Permissive routes are successful with invalid API keys
+      if permissive_route
+        expect(response).to have_http_status(:success)
+      else
+        expect(response).to have_http_status(:unauthorized)
+      end
     end
 
     it 'logs the request with client details' do
