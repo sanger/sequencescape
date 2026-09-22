@@ -34,6 +34,9 @@ module Api
           @api_application = ApiApplication.find_by!(key: api_key)
         rescue ActiveRecord::RecordNotFound
           log_invalid_api_key api_key
+          # Temporarily allow permissive routes even with a bad key
+          return if permissive_route && !Flipper.enabled?(:y25_441_remove_permissive_routes)
+
           render_unauthorized
         end
 
