@@ -56,6 +56,10 @@ module UltimaSampleSheet::SampleSheetGenerator
         'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => {
           plate_num: 4,
           z_start: 289
+        },
+        'UG-RD-1940 (Solaris 2.0 PCR-Free Adapters for Ultima Genomics P1)' => {
+          plate_num: 1,
+          z_start: 1
         }
       }.freeze
     end

@@ -1,0 +1,5 @@
+---
+UG-RD-1940 (Solaris 2.0 PCR-Free Adapters for Ultima Genomics P1):
+  :tag_group_name: UG-RD-1940 (Solaris 2.0 PCR-Free Adapters for Ultima Genomics P1)
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
