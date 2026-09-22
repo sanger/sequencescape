@@ -667,12 +667,6 @@ Rails.application.routes.draw do
 
   resources :quad_stamp, only: %i[new create]
   resources :pick_lists, only: %i[index show]
-  resource :plate_picks, only: [:show] do
-    member do
-      get 'plates/:barcode', to: 'plate_picks#plates'
-      get 'batches/:id', to: 'plate_picks#batches'
-    end
-  end
 
   # Custom standalone route for bioscan control locations, allowing only
   # the POST request, migrated from the Lighthouse pickings endpoint.

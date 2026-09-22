@@ -1407,7 +1407,6 @@ Rails/HelperInstanceVariable:
 Rails/HttpStatus:
   Exclude:
     - 'app/controllers/admin/users_controller.rb'
-    - 'app/controllers/plate_picks_controller.rb'
     - 'app/controllers/projects_controller.rb'
     - 'app/controllers/studies/documents_controller.rb'
 
@@ -1508,7 +1507,6 @@ Rails/StrongParametersExpect:
     - 'app/controllers/phi_x/stocks_controller.rb'
     - 'app/controllers/pick_lists_controller.rb'
     - 'app/controllers/pipelines_controller.rb'
-    - 'app/controllers/plate_picks_controller.rb'
     - 'app/controllers/plate_templates_controller.rb'
     - 'app/controllers/plates_controller.rb'
     - 'app/controllers/plates_from_tubes_controller.rb'
