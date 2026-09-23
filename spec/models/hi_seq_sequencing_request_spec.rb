@@ -97,4 +97,16 @@ RSpec.describe HiSeqSequencingRequest do
       end
     end
   end
+
+  describe 'inherited fragment size validation' do
+    let(:flowcell_type) { '1.5B' }
+    let(:read_length) { 150 }
+
+    before { request.request_metadata.fragment_size_required_from = 0 }
+
+    it 'rejects a non-positive fragment size in the validator' do
+      validator.validate
+      expect(validator.errors[:fragment_size_required_from]).to be_present
+    end
+  end
 end
