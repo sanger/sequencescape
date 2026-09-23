@@ -111,4 +111,59 @@ RSpec.describe HiSeqSequencingRequest do
       expect(validator.errors[:fragment_size_required_from]).to be_present
     end
   end
+
+  # Submissions validate request options on the order, which runs both the
+  # request type's read length list and NovaSeqXPERequestOptionsValidator.
+  describe 'order request options validation' do
+    let(:request_type) do
+      create(:nova_seq_x_sequencing_request_type,
+             read_lengths: [50, 100, 150, 300])
+    end
+    let(:order) do
+      build(:order,
+            request_types: [request_type.id],
+            request_options: { read_length: read_length,
+                               requested_flowcell_type: flowcell_type })
+    end
+    let(:read_length_errors) { order.errors[:'request_options.read_length'] }
+
+    before { order.validate }
+
+    [
+      { flowcell_type: '1.5B', read_length: '300' },
+      { flowcell_type: '5B', read_length: '150' },
+      { flowcell_type: '10B', read_length: '150' }
+    ].each do |options|
+      context "with #{options[:read_length]} and #{options[:flowcell_type]}" do
+        let(:flowcell_type) { options[:flowcell_type] }
+        let(:read_length) { options[:read_length] }
+
+        it 'has no read length errors' do
+          expect(read_length_errors).to be_empty
+        end
+      end
+    end
+
+    %w[5B 10B].each do |type|
+      context "with 300 and #{type}" do
+        let(:flowcell_type) { type }
+        let(:read_length) { '300' }
+
+        it 'rejects the read length' do
+          expect(read_length_errors).to include(
+            a_string_starting_with('300 is only available for the 1.5B')
+          )
+        end
+      end
+    end
+
+    context 'with a read length not in the request type list' do
+      let(:flowcell_type) { '1.5B' }
+      let(:read_length) { '75' }
+
+      it 'rejects the read length' do
+        expect(read_length_errors).to include(a_string_including("is '75'"))
+      end
+    end
+  end
 end
