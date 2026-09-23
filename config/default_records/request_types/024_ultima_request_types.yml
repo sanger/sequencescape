@@ -11,6 +11,7 @@ limber_ultima_htp_pcr_free:
     - UPF Cherrypicked
   library_types:
     - Ultima High Throughput PCR Free 96
+    - Ultima High Throughput PCR Amplified 96
 limber_multiplexing_ultima:
   name: Limber Multiplexing Ultima
   asset_type: Well

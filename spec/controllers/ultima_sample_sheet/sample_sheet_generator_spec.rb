@@ -77,16 +77,18 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   let(:request2) { create(:ultima_sequencing_request, asset: tube2.receptacle, request_type: request_type) }
 
   # Eagerly create tubes with aliquots to get consistent IDs.
+  let(:library_type) { 'Standard' }
+
   let!(:tube1) do
     receptacle = create(:receptacle)
-    tag_group1.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:) }
+    tag_group1.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:, library_type:) }
     tube = create(:multiplexed_library_tube, receptacle:)
     create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
     tube
   end
   let!(:tube2) do
     receptacle = create(:receptacle)
-    tag_group2.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:) }
+    tag_group2.tags.first(3).map { |tag| create(:aliquot, tag:, receptacle:, library_type:) }
     tube = create(:multiplexed_library_tube, receptacle:)
     create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
     tube
@@ -260,6 +262,15 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
         expect(csv1[3].compact_blank).to eq(generator.global_title_config)
         expect(csv1[4].compact_blank).to eq(['Application'])
         expect(csv1[5].compact_blank).to eq(['WGS Native'])
+      end
+
+      context 'with amplified libraries' do
+        let(:library_type) { 'Ultima High Throughput PCR Amplified 96' }
+
+        it 'generates amplified application values' do
+          expect(csv1[5].compact_blank).to eq(['WGS Native Amplified'])
+          expect(csv1[9..].pluck(6).uniq).to eq(['native'])
+        end
       end
     end
 
