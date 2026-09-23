@@ -8,6 +8,8 @@ class HiSeqSequencingRequest < SequencingRequest
 
   FLOWCELL_1_5B = '1.5B'
   READ_LENGTH_1_5B_ONLY = 300
+  # Used in the error message only; keep in sync with ReadLengthRequestedNovaseqX
+  # in config/default_records/request_type_validators/default_records.yml.
   STANDARD_READ_LENGTHS = [50, 100, 150].freeze
 
   class NovaSeqXPERequestOptionsValidator < SequencingRequest::RequestOptionsValidator
