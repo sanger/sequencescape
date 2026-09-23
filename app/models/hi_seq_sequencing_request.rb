@@ -3,13 +3,14 @@
 class HiSeqSequencingRequest < SequencingRequest
   # Delegate to request_metadata so the attributes are visible to the validator in the RSpec tests.
   # This delegation has no real effect outside of the tests.
-  delegate :requested_flowcell_type, :read_length, to: :request_metadata
+  delegate :fragment_size_required_from, :fragment_size_required_to, :requested_flowcell_type, :read_length,
+           to: :request_metadata
 
   FLOWCELL_1_5B = '1.5B'
   READ_LENGTH_1_5B_ONLY = 300
   STANDARD_READ_LENGTHS = [50, 100, 150].freeze
 
-  class NovaSeqXPERequestOptionsValidator < DelegateValidation::Validator
+  class NovaSeqXPERequestOptionsValidator < SequencingRequest::RequestOptionsValidator
     delegate :requested_flowcell_type, :read_length, to: :target
 
     validate :validate_300_read_length
