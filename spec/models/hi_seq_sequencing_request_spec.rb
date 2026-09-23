@@ -10,6 +10,8 @@ RSpec.describe HiSeqSequencingRequest do
     request.request_metadata.assign_attributes(requested_flowcell_type: flowcell_type, read_length: read_length)
   end
 
+  # request.validate tests the metadata validations, e.g. read length is in
+  # the request type's list; validator.validate tests the 1.5B-only 300 rule.
   describe 'read length by flowcell type' do
     context 'with the 1.5B flowcell type' do
       let(:flowcell_type) { '1.5B' }
