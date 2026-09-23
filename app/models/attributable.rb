@@ -52,7 +52,7 @@ module Attributable
 
   # Field infos for both custom attributes and associations, used for read-only display
   def display_field_infos
-    field_infos + association_details.map { |detail| detail.to_field_info(self) }
+    field_infos + association_details.map { |detail| detail.to_display_field_info(self) }
   end
 
   def required?(field)

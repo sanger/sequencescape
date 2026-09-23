@@ -1196,7 +1196,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_080340) do
     t.integer "percent_phix_requested"
     t.integer "ot_recipe"
     t.string "wafer_size"
-    t.integer "ultima_application_id"
+    t.bigint "ultima_application_id"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
@@ -1528,7 +1528,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_080340) do
     t.boolean "enforce_data_release", default: true
     t.boolean "enforce_accessioning", default: true
     t.integer "reference_genome_id", default: 1
-    t.boolean "externally_managed", default: false, null: false, comment: "Indicates whether the study is managed externally (e.g., by Sapio)."
+    t.boolean "externally_managed", default: false, null: false, comment: "managed externally (e.g., by Sapio)."
     t.index ["ethically_approved"], name: "index_studies_on_ethically_approved"
     t.index ["state"], name: "index_studies_on_state"
     t.index ["updated_at"], name: "index_studies_on_updated_at"

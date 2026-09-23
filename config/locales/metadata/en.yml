@@ -83,7 +83,7 @@ en:
           label: Wafer Size
 
         ultima_application_name:
-          label: Ultima application name
+          label: Ultima Application
 
     library_creation_request:
       <<: *REQUEST
