@@ -4,10 +4,15 @@ require 'rails_helper'
 
 RSpec.describe HiSeqSequencingRequest do
   let(:request) { create(:hi_seq_sequencing_request) }
-  let(:validator) { described_class::NovaSeqXPERequestOptionsValidator.new(request) }
+  let(:validator) do
+    described_class::NovaSeqXPERequestOptionsValidator.new(request)
+  end
 
   before do
-    request.request_metadata.assign_attributes(requested_flowcell_type: flowcell_type, read_length: read_length)
+    request.request_metadata.assign_attributes(
+      requested_flowcell_type: flowcell_type,
+      read_length: read_length
+    )
   end
 
   # request.validate tests the metadata validations, e.g. read length is in
@@ -33,39 +38,45 @@ RSpec.describe HiSeqSequencingRequest do
       end
     end
 
-    context 'with the 10B flowcell type' do
-      let(:flowcell_type) { '10B' }
+    standard_read_lengths = [50, 100, 150]
 
-      [50, 100, 150].each do |valid_read_length|
-        context "when the read length is #{valid_read_length}" do
-          let(:read_length) { valid_read_length }
+    %w[5B 10B 25B].each do |type|
+      context "with the #{type} flowcell type" do
+        let(:flowcell_type) { type }
 
-          it 'is valid in the class' do
-            request.validate
-            expect(request).to be_valid
-          end
+        standard_read_lengths.each do |valid_read_length|
+          context "when the read length is #{valid_read_length}" do
+            let(:read_length) { valid_read_length }
 
-          it 'has no errors in the validator' do
-            validator.validate
-            expect(validator.errors).to be_empty
+            it 'is valid in the class' do
+              request.validate
+              expect(request).to be_valid
+            end
+
+            it 'has no errors in the validator' do
+              validator.validate
+              expect(validator.errors).to be_empty
+            end
           end
         end
-      end
 
-      context 'when the read length is 300' do
-        let(:read_length) { 300 }
-
-        it 'is not valid in the validator' do
-          validator.validate
-          expect(validator).not_to be_valid
-        end
-
-        it 'has the correct error message from the validator' do
-          validator.validate
-          expect(validator.errors[:read_length]).to include(
+        context 'when the read length is 300' do
+          let(:read_length) { 300 }
+          let(:error) do
             '300 is only available for the 1.5B flowcell type. ' \
-            'Available read lengths for the 10B flowcell type are 50, 100, 150.'
-          )
+              "Available read lengths for the #{type} flowcell type " \
+              'are 50, 100, 150.'
+          end
+
+          it 'is not valid in the validator' do
+            validator.validate
+            expect(validator).not_to be_valid
+          end
+
+          it 'has the correct error message from the validator' do
+            validator.validate
+            expect(validator.errors[:read_length]).to include(error)
+          end
         end
       end
     end
@@ -84,7 +95,8 @@ RSpec.describe HiSeqSequencingRequest do
         it 'has the correct error message from the validator' do
           validator.validate
           expect(validator.errors[:read_length]).to include(
-            '300 is only available for the 1.5B flowcell type, but no flowcell type was selected.'
+            '300 is only available for the 1.5B flowcell type, ' \
+            'but no flowcell type was selected.'
           )
         end
       end
