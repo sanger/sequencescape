@@ -82,6 +82,14 @@ en:
         wafer_size:
           label: Wafer Size
 
+        # Needed for the translated ultima_application_id to name when viewing requests
+        ultima_application_name:
+          label: Ultima Application
+
+        # Needed for single submission order options
+        ultima_application:
+          label: Ultima Application
+
     library_creation_request:
       <<: *REQUEST
     sequencing_request:
@@ -111,6 +119,9 @@ en:
       <<: *REQUEST
 
     ultima_ug200_sequencing_request:
+      <<: *REQUEST
+
+    ultima_conversion_request:
       <<: *REQUEST
 
     pulldown:

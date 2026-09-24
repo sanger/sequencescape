@@ -1,0 +1,19 @@
+limber_ultima_htp_conversion: &limber_ultima_conversion
+  name: Limber Ultima HTP Conversion
+  asset_type: Well
+  order: 2
+  request_class_name: UltimaConversionRequest
+  for_multiplexing: false
+  billable: true
+  product_line_name: Ultima
+  acceptable_purposes:
+    - LB Lib PCR-XP
+    - LTN Lib PCR XP
+    - RVI Lib PCR XP
+    - RVIG Lib PCR XP
+    - LBB Lib PCR-XP
+    - LBB Lib PCR-XP Norm
+
+limber_ultima_ltp_conversion:
+  <<: *limber_ultima_conversion
+  name: Limber Ultima LTP Conversion
