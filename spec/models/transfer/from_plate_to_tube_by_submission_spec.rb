@@ -7,18 +7,17 @@ RSpec.describe Transfer::FromPlateToTubeBySubmission do
 
   # source_plate is a transfer_plate with a single well (no empty wells to confuse stock_wells).
   # We self-link the well via Well::Link so Plate#stock_wells returns it as its own stock well.
-  # Library completion requests (for_multiplexing: true) on the well let
-  # Submission#multiplexed_labware resolve the correct MX library tube.
+  # An incoming transfer request associates the well with a submission. Its library completion
+  # request lets Submission#multiplexed_labware resolve the correct MX library tube.
   let(:source_plate) { create(:transfer_plate, well_count: 1) }
   let(:well) { source_plate.wells.first }
 
-  let(:old_submission) { create(:submission) }
-  let(:new_submission) { create(:submission) }
-  let(:old_mx_tube) { create(:multiplexed_library_tube) }
-  let(:new_mx_tube) { create(:multiplexed_library_tube) }
+  let(:submission) { create(:submission) }
+  let(:mx_tube) { create(:multiplexed_library_tube) }
 
   # Creates a library_completion request on the well and sets its state.
   def build_library_completion(asset:, submission:, target_tube:, state: 'pending')
+    create(:transfer_request_with_submission, target_asset: asset, submission: submission)
     create(
       :library_completion,
       asset: asset,
@@ -35,89 +34,19 @@ RSpec.describe Transfer::FromPlateToTubeBySubmission do
 
   before { link_stock_well(well) }
 
-  # ─── #active_submission_id_for ────────────────────────────────────────────────
-
-  describe '#active_submission_id_for' do
-    subject(:transfer) { described_class.new(source: source_plate, user: user) }
-
-    context 'when the well has a single pending request' do
-      before do
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
-      end
-
-      it 'returns the submission_id of the pending request' do
-        expect(transfer.send(:active_submission_id_for, well)).to eq(new_submission.id)
-      end
-    end
-
-    context 'when the well has a single started request' do
-      before do
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'started')
-      end
-
-      it 'returns the submission_id of the started request' do
-        expect(transfer.send(:active_submission_id_for, well)).to eq(new_submission.id)
-      end
-    end
-
-    context 'when the well has only a passed (completed) request' do
-      before do
-        build_library_completion(asset: well, submission: old_submission, target_tube: old_mx_tube, state: 'passed')
-      end
-
-      it 'falls back to the first submission_id on the well' do
-        # The fallback path; the exact value depends on the well's submission associations.
-        result = transfer.send(:active_submission_id_for, well)
-        expect(result).to be_nil.or eq(old_submission.id)
-      end
-    end
-
-    context 'when the well has both a passed old request and a pending new request' do
-      before do
-        build_library_completion(asset: well, submission: old_submission, target_tube: old_mx_tube, state: 'passed')
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
-      end
-
-      it 'returns the submission_id of the new active (pending) request' do
-        expect(transfer.send(:active_submission_id_for, well)).to eq(new_submission.id)
-      end
-
-      it 'does not return the old completed submission_id' do
-        expect(transfer.send(:active_submission_id_for, well)).not_to eq(old_submission.id)
-      end
-    end
-  end
-
   # ─── #locate_mx_library_tube_for ─────────────────────────────────────────────
 
   describe '#locate_mx_library_tube_for' do
     subject(:transfer) { described_class.new(source: source_plate, user: user) }
 
-    context 'when a source_well with a pending request is provided' do
+    context 'when a source well has an incoming transfer request' do
       before do
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
+        build_library_completion(asset: well, submission: submission, target_tube: mx_tube)
       end
 
-      it 'returns the MX tube associated with the active submission' do
-        result = transfer.send(:locate_mx_library_tube_for, well, [], well)
-        expect(result).to eq(new_mx_tube)
-      end
-    end
-
-    context 'when the well has both a completed old and a pending new request' do
-      before do
-        build_library_completion(asset: well, submission: old_submission, target_tube: old_mx_tube, state: 'passed')
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
-      end
-
-      it 'returns the new submission MX tube' do
-        result = transfer.send(:locate_mx_library_tube_for, well, [], well)
-        expect(result).to eq(new_mx_tube)
-      end
-
-      it 'does not return the old submission MX tube' do
-        result = transfer.send(:locate_mx_library_tube_for, well, [], well)
-        expect(result).not_to eq(old_mx_tube)
+      it 'returns the MX tube associated with the well submission' do
+        result = transfer.send(:locate_mx_library_tube_for, well, [])
+        expect(result).to eq(mx_tube)
       end
     end
   end
@@ -128,7 +57,7 @@ RSpec.describe Transfer::FromPlateToTubeBySubmission do
     subject(:transfer) { described_class.new(source: source_plate, user: user) }
 
     before do
-      build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
+      build_library_completion(asset: well, submission: submission, target_tube: mx_tube)
     end
 
     it 'returns a hash keyed by the source well' do
@@ -137,48 +66,26 @@ RSpec.describe Transfer::FromPlateToTubeBySubmission do
     end
 
     it 'maps the well to an array of [tube, stock_wells]' do
-      expect(transfer.send(:well_to_destination)[well]).to match([new_mx_tube, a_collection_including(well)])
+      expect(transfer.send(:well_to_destination)[well]).to match([mx_tube, a_collection_including(well)])
     end
   end
 
   # ─── Integration: Transfer::FromPlateToTubeBySubmission.create! ───────────────
 
   describe '.create!' do
-    context 'when the well has a single active submission' do
+    context 'when the well has a submission' do
       before do
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
+        build_library_completion(asset: well, submission: submission, target_tube: mx_tube)
       end
 
       it 'creates a transfer request targeting the correct MX tube' do
         described_class.create!(source: source_plate, user: user)
-        expect(well.transfer_requests_as_source.first.target_labware).to eq(new_mx_tube)
+        expect(well.transfer_requests_as_source.first.target_labware).to eq(mx_tube)
       end
 
       it 'sets the correct submission_id on the transfer request' do
         described_class.create!(source: source_plate, user: user)
-        expect(well.transfer_requests_as_source.first.submission_id).to eq(new_submission.id)
-      end
-    end
-
-    context 'when the well has a completed old submission and a new active submission' do
-      before do
-        build_library_completion(asset: well, submission: old_submission, target_tube: old_mx_tube, state: 'passed')
-        build_library_completion(asset: well, submission: new_submission, target_tube: new_mx_tube, state: 'pending')
-      end
-
-      it 'transfers to the new submission MX tube' do
-        described_class.create!(source: source_plate, user: user)
-        expect(well.transfer_requests_as_source.first.target_labware).to eq(new_mx_tube)
-      end
-
-      it 'does not transfer to the old submission MX tube' do
-        described_class.create!(source: source_plate, user: user)
-        expect(well.transfer_requests_as_source.first.target_labware).not_to eq(old_mx_tube)
-      end
-
-      it 'sets the new submission_id on the transfer request' do
-        described_class.create!(source: source_plate, user: user)
-        expect(well.transfer_requests_as_source.first.submission_id).to eq(new_submission.id)
+        expect(well.transfer_requests_as_source.first.submission_id).to eq(submission.id)
       end
     end
   end
