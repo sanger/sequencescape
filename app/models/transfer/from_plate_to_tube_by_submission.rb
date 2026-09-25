@@ -7,16 +7,15 @@ class Transfer::FromPlateToTubeBySubmission < Transfer::BetweenPlateAndTubes
 
   private
 
+  # Returns the MX library tube that the given well should be transferred into.
   def locate_mx_library_tube_for(well, _stock_wells)
     asset_cache[well.submission_ids.first]
   end
 
-  #
-  # The asset cache saves the asset for each submission, ensuring we only need
-  # to look it up once.
-  #
-  # @return [Asset] The asset into which the well should be transferred
-  #
+  # Memoised hash that maps a submission_id to the multiplexed labware created for that
+  # submission. Entries are populated on first access, so each submission is looked up at
+  # most once per transfer operation.
+  # @return [Hash{Integer => Labware}]
   def asset_cache
     @asset_cache ||=
       Hash.new { |cache, submission_id| cache[submission_id] = Submission.find(submission_id).multiplexed_labware }
