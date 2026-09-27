@@ -17,3 +17,17 @@ limber_ultima_htp_conversion: &limber_ultima_conversion
 limber_ultima_ltp_conversion:
   <<: *limber_ultima_conversion
   name: Limber Ultima LTP Conversion
+
+limber_multiplexing_ultima_htp: &limber_multiplexing_ultima
+  name: Limber Multiplexing Ultima HTP
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Ultima
+  target_purpose_name: UHTP Lib Pool Norm
+
+limber_multiplexing_ultima_ltp:
+  <<: *limber_multiplexing_ultima
+  name: Limber Multiplexing Ultima LTP
+  target_purpose_name: ULTP Lib Pool Norm
