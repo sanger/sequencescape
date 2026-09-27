@@ -6,3 +6,11 @@
 LB Lib Pool Norm:
   type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube
+
+UHTP Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+
+ULTP Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
