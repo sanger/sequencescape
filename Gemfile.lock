@@ -286,7 +286,7 @@ GEM
       prism (>= 1.3.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
-    json (3.0.2)
+    json (2.21.2)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -719,6 +719,7 @@ DEPENDENCIES
   flipper-ui (~> 1.0)
   formtastic
   hashdiff
+  json (~> 2.0)
   jsonapi-resources-matchers
   knapsack_pro
   launchy
