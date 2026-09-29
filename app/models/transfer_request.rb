@@ -29,9 +29,6 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # States which are still considered to be processable (ie. not failed or cancelled)
   ACTIVE_STATES = %w[pending started passed qc_complete].freeze
 
-  # States considered to be transferable
-  TRANSFERABLE_STATES = %w[pending started].freeze
-
   # target_asset and asset are both Receptacle objects, and are the source and target of the transfer request.
   # That is, when a transfer is made, the asset is moved from the source to the target, which are both receptacles.
   # The assets on a request can be treated as a particular class when being used by certain pieces of code.
