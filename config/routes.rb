@@ -665,7 +665,6 @@ Rails.application.routes.draw do
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 
   resources :quad_stamp, only: %i[new create]
-  resources :pick_lists, only: %i[index show]
 
   # Custom standalone route for bioscan control locations, allowing only
   # the POST request, migrated from the Lighthouse pickings endpoint.
