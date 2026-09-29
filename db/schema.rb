@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_08_28_163003) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_29_125719) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -745,14 +745,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_163003) do
     t.integer "permissable_id"
     t.datetime "created_at", precision: nil
     t.datetime "updated_at", precision: nil
-  end
-
-  create_table "pick_lists", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
-    t.integer "state", default: 0, null: false
-    t.integer "submission_id", null: false
-    t.datetime "created_at", precision: nil, null: false
-    t.datetime "updated_at", precision: nil, null: false
-    t.index ["submission_id"], name: "index_pick_lists_on_submission_id"
   end
 
   create_table "pipeline_request_information_types", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
@@ -2045,7 +2037,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_28_163003) do
   add_foreign_key "lot_types", "plate_purposes", column: "target_purpose_id", name: "fk_lot_types_to_plate_purposes"
   add_foreign_key "lots", "lot_types", name: "fk_lots_to_lot_types"
   add_foreign_key "messenger_creators", "plate_purposes", column: "purpose_id", name: "fk_messenger_creators_to_plate_purposes"
-  add_foreign_key "pick_lists", "submissions"
   add_foreign_key "pipelines_request_types", "pipelines", name: "pipelines_request_types_ibfk_1"
   add_foreign_key "pipelines_request_types", "request_types", name: "pipelines_request_types_ibfk_2"
   add_foreign_key "plate_purposes", "barcode_prefixes"
