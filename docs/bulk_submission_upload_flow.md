@@ -26,7 +26,7 @@ flowchart TD
     L -. asynchronous .-> N[SubmissionBuilderJob#perform]
     N --> O[submission.build_batch]
     O --> P[State: processing]
-    P --> Q[Build request graphs and assets]
+    P --> Q[Build request graphs and receptacles]
     Q --> R{Processing succeeds?}
 
     R -->|No| S[State: failed]
@@ -68,7 +68,7 @@ Relevant code:
 2. `build_batch` runs `finalize_build!` in a database transaction.
 3. `process!` changes the submission from `pending` to `processing`.
 4. Entering `processing` calls `Submission#process_submission!`.
-5. Each order builds its request graph, creating the required requests, assets, and multiplexing relationships. Multiplexing assets can be passed between orders.
+5. Each order builds its request graph, creating the required requests and target receptacles, and connecting them through multiplexing relationships. Multiplexing receptacles can be passed between orders.
 6. Any required pre-capture pools are built, and processing fails if no requests were created.
 7. If processing succeeds, `ready!` changes the submission to `ready` and broadcasts order events.
 
@@ -80,6 +80,10 @@ Relevant code:
 - `app/models/submission.rb`
 - `app/models/submission/linear_request_graph.rb`
 - `app/models/submission/flexible_request_graph.rb`
+
+## Terminology
+
+In this part of Sequencescape, `asset` means a `Receptacle`: the source or target container associated with a request. A receptacle may have associated labware, such as a plate or tube, but the request graph passes receptacle records around. The flexible request graph uses the associated labware when creating `AssetLink` edges.
 
 ## Failure behaviour
 
