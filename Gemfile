@@ -39,7 +39,11 @@ group :default do
   gem 'unsort_db_schema_columns' # revert Rails 8.1 behaviour of sorting columns in the db/schema.rb file
   gem 'will_paginate'
 
+  # File uploads
+  # Sequencescape does not use image processing, but carrierwave requires an image processing library
   gem 'carrierwave'
+  gem 'image_processing', '~> 1.1' # Restrict to v1.x to remove ruby-vips requirement in v2.x
+
   gem 'net-ldap'
 
   # Will paginate clashes awkwardly with bootstrap
