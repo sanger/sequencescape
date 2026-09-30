@@ -14,7 +14,7 @@ module Qcable::Statemachine
         state :qc_in_progress, enter: :on_qc
         state :exhausted, enter: :on_used
 
-        initial_state Proc.new { |qcable| qcable.default_state }
+        initial_state proc { |qcable| qcable.default_state }
 
         # State Machine events
         event :do_stamp do
@@ -66,7 +66,7 @@ module Qcable::Statemachine
     # We validate the presence of lot, however initial state gets called BEFORE we reach validation
     return :created if lot.nil?
 
-    asset_purpose.default_state.to_sym || :created
+    asset_purpose.default_state.to_sym
   end
 
   def on_failed
