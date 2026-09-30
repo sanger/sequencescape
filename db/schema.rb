@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_09_15_080340) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_29_120000) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1443,6 +1443,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_15_080340) do
     t.integer "container_id"
     t.integer "control_type"
     t.integer "priority", default: 0
+    t.boolean "externally_managed", default: false, null: false, comment: "Indicates whether the sample is managed externally (e.g., by Sapio)."
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"
