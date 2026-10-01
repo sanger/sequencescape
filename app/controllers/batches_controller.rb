@@ -299,7 +299,12 @@ class BatchesController < ApplicationController # rubocop:todo Metrics/ClassLeng
   def verify_layout
     # scanned tube barcode params from page are called barcode_0, barcode_1, ... barcode_n
     scanned_barcodes = Array.new(@batch.requests.count) { |i| params["barcode_#{i}"] }
-    verification_flavour = params[:verification_flavour].to_sym
+    raw_flavour = params[:verification_flavour]
+    if raw_flavour.nil?
+      flash[:error] = 'Unknown or missing verification flavour.'
+      return redirect_to batch_path(@batch)
+    end
+    verification_flavour = raw_flavour.to_sym
     model_method = VERIFICATION_FLAVOUR_TO_MODEL_ACTION[verification_flavour]
 
     if @batch.send(model_method, scanned_barcodes, current_user)
