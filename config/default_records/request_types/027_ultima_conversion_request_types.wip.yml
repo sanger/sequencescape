@@ -28,9 +28,17 @@ limber_multiplexing_ultima_ltp:
   name: Limber Multiplexing Ultima LTP
   target_purpose_name: ULTP Lib Pool Norm
 
-limber_ultima_ltp_conversion:
-  <<: *limber_ultima_conversion
-  name: Limber Ultima LTP Conversion
+# Aggregates wells from one or more Illumina library plates into ULTP DNA Norm.
+# Partial submissions are allowed; only the submitted wells are aggregated.
+# The requests are passed by work completion on ULTP DNA Norm.
+limber_ultima_ltp_aggregation:
+  name: Limber Ultima LTP Aggregation
+  asset_type: Well
+  order: 1
+  request_class_name: CustomerRequest
+  for_multiplexing: false
+  billable: false
+  product_line_name: Ultima
   acceptable_purposes:
     - LB Lib PCR-XP
     - LTN Lib PCR XP
@@ -38,5 +46,13 @@ limber_ultima_ltp_conversion:
     - RVIG Lib PCR XP
     - LBB Lib PCR-XP
     - LBB Lib PCR-XP Norm
-    - ULTP Cherrypick
+    - Library Stock Plate
+
+# The conversion submission is made on ULTP DNA Norm after aggregation, or
+# directly on a Library Stock Plate (libraries from faculty).
+limber_ultima_ltp_conversion:
+  <<: *limber_ultima_conversion
+  name: Limber Ultima LTP Conversion
+  acceptable_purposes:
+    - ULTP DNA Norm
     - Library Stock Plate
