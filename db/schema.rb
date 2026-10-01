@@ -1434,6 +1434,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_29_125719) do
     t.integer "container_id"
     t.integer "control_type"
     t.integer "priority", default: 0
+    t.boolean "externally_managed", default: false, null: false, comment: "Indicates whether the sample is managed externally (e.g., by Sapio)."
     t.index ["created_at"], name: "index_samples_on_created_at"
     t.index ["name"], name: "index_samples_on_name"
     t.index ["sample_manifest_id"], name: "index_samples_on_sample_manifest_id"

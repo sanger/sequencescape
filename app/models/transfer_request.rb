@@ -172,7 +172,8 @@ class TransferRequest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   end
 
   # A sibling request is a customer request out of the same asset and in the same submission
-  def sibling_requests # rubocop:todo Metrics/AbcSize
+  # rubocop:disable-next Metrics/AbcSize
+  def sibling_requests
     if associated_requests.loaded?
       associated_requests.select { |r| r.submission_id == submission_id }
     elsif asset.requests.loaded?
