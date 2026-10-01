@@ -37,9 +37,9 @@ flowchart TD
     T -->|Yes| U[Mark reception failed<br/>no writes made]
     T -->|No| V[Begin single transaction]
 
-    V --> W[Create labware<br/>with supplied UUID]
+    V --> W[Create labware with supplied UUID,<br/>marked externally managed]
     W --> X[Create receptacles<br/>with supplied UUIDs]
-    X --> Y[Create samples with supplied UUID,<br/>sanger sample ID, supplier name,<br/>minimal metadata]
+    X --> Y[Create samples with supplied UUID,<br/>sanger sample ID, supplier name,<br/>minimal metadata,<br/>marked externally managed]
     Y --> Z[Link sample to its study<br/>and create aliquot with study]
     Z --> AA[Record reception events]
     AA --> AB{Transaction succeeds?}
@@ -89,6 +89,12 @@ Already-present labware and samples are not linked to the external system's reco
 All new records are created in a single transaction, so a reception is all-or-nothing. A payload size cap limits how large that transaction can become. Clients split large receptions into several calls.
 
 New labware, receptacles and samples use the UUIDs supplied by the external system rather than generated ones. `Heron::Factories::Sample#replace_uuid` is an existing example of this. Supplied UUIDs must be lowercase and in canonical form, and must not already exist. The receptacle UUIDs matter in particular, because the well UUID is used as the `stock_resource_uuid` in the multi-LIMS warehouse.
+
+New labware and samples are marked `externally_managed` when their UUIDs are stored, so Sequencescape can identify records that came from an external system. Already-present records are never marked, because their UUIDs are not stored. Child labware created later in Sequencescape is not marked either.
+
+The flag's main purpose is to stop externally managed samples being broadcast to the multi-LIMS warehouse, because the external system writes those sample rows itself. `Sample` switches from `broadcast_with_warren` to `broadcast_with_warren_except_externally_managed`, as `Study` already uses. This applies to every save, so later edits to these samples in Sequencescape are not broadcast either. Unlike on `Study`, the flag does not lock samples or labware against edits.
+
+Aliquots are not flagged and still broadcast, but they need no handling. Their messages are published as `saved.aliquot.<id>`, and the unified warehouse consumer is not bound to that routing key, so they are not written to the warehouse.
 
 Another process could create a barcode between reconciliation and the write transaction. A unique constraint on barcodes would make the write fail and roll back. Otherwise, the write transaction should check the barcodes again.
 
