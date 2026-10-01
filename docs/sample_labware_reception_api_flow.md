@@ -50,7 +50,7 @@ flowchart TD
     U --> AE[Create webhook delivery]
     AC --> AE
     AD --> AE
-    AE --> AF[POST signed webhook with<br/>per-labware outcome and<br/>canonical Sequencescape UUIDs]
+    AE --> AF[POST signed webhook with<br/>per-labware outcome<br/>keyed by barcode]
     AF --> AG{Webhook succeeds?}
     AG -->|Yes| AH[Mark delivery delivered]
     AG -->|No| AI[Record error and retry with backoff]
@@ -82,6 +82,8 @@ Every labware in the payload is checked before any records are written:
 
 Any conflict rejects the whole reception. Because conflicts are found before writing, they never cause a rollback.
 
+Already-present labware and samples are not linked to the external system's records by UUID. The payload UUIDs for them are ignored, and the two systems' records correspond only by barcode for labware and supplier name for samples. See [ADR 074: Work orders for Labware and Samples previously known to Sequencescape](https://ssg-confluence.internal.sanger.ac.uk/spaces/SLIM/pages/354943562/ADR+074+%C2%A0Work+orders+for+Labware+and+Samples+previously+known+to+Sequencescape).
+
 ## Writes
 
 All new records are created in a single transaction, so a reception is all-or-nothing. A payload size cap limits how large that transaction can become. Clients split large receptions into several calls.
@@ -101,7 +103,7 @@ Another process could create a barcode between reconciliation and the write tran
 
 ## Webhook
 
-A signed webhook is sent whether the reception completes or fails. It reports the outcome for each labware: created, already present or conflict. It also returns the Sequencescape UUIDs for every labware, receptacle and sample. For already-present labware, these are the UUIDs Sequencescape already held, not the ones in the payload, so the external system can link to the records Sequencescape actually uses.
+A signed webhook is sent whether the reception completes or fails. It reports the outcome for each labware, keyed by barcode: created, already present or conflict. It does not return Sequencescape UUIDs. Created records already use the payload UUIDs, and already-present records are deliberately not linked by UUID, as described in ADR 074.
 
 ## Open questions
 
