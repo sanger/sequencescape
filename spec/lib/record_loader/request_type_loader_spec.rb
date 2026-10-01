@@ -93,6 +93,26 @@ RSpec.describe RecordLoader::RequestTypeLoader, :loader, type: :model do
     end
   end
 
+  context 'when configured to replace acceptable purposes' do
+    let(:selected_files) { 'request_types_replace_purposes' }
+
+    before do
+      create(:plate_purpose, name: 'Example purpose 2')
+      a_new_record_loader('request_types_basic').create!
+      record_loader.create!
+    end
+
+    it 'replaces existing acceptable purposes with the configured purposes' do
+      expect(RequestType.find_by!(key: 'example_type_2').acceptable_purposes).to contain_exactly(
+        have_attributes(name: 'Example purpose 2')
+      )
+    end
+
+    it 'does not pass the replacement option as a request type attribute' do
+      expect(RequestType.find_by!(key: 'example_type_2')).not_to respond_to(:replace_acceptable_purposes)
+    end
+  end
+
   context 'when the request type exists but we are updating request_class_name' do
     let(:selected_files) { 'request_types_updated_class_name' }
 
