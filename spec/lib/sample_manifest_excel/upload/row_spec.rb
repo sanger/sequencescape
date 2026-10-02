@@ -117,40 +117,46 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     expect(described_class.new(number: 1, data: data)).not_to be_valid
   end
 
-  it '#value returns value for specified key' do
-    expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
-      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
-    )
+  describe '#value' do
+    it 'returns the value for the specified key' do
+      expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
+        sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
+      )
+    end
   end
 
-  it '#at returns value at specified index (offset by 1)' do
-    expect(described_class.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
+  describe '#at' do
+    it 'returns the value at the specified index (offset by 1)' do
+      expect(described_class.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
+    end
+
+    it 'strips spaces, including non-breaking ones (\u00A0)' do
+      row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
+      tag_cell_content = data_with_spaces[2]
+      tag_cell_content_retrieved = row.at(3)
+      expect(tag_cell_content.bytes[0]).to eq(32)
+      expect(tag_cell_content.bytes[10]).to eq(160)
+      expect(tag_cell_content_retrieved).to eq('ATTACTCG')
+    end
+
+    it 'strips spaces' do
+      row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
+      reference_genome_cell_content = data_with_spaces[4]
+      reference_genome_cell_content_retrieved = row.at(5)
+      volume_cell_content = data_with_spaces[6]
+      volume_cell_content_retrieved = row.at(7)
+      empty_cell_content = data_with_spaces[3]
+      empty_cell_content_retrieved = row.at(4)
+      expect(reference_genome_cell_content_retrieved).to eq(reference_genome_cell_content)
+      expect(volume_cell_content_retrieved).to eq(volume_cell_content)
+      expect(empty_cell_content_retrieved).to eq(empty_cell_content)
+    end
   end
 
-  it '#at strips down spaces including non-breaking ones (\u00A0)' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
-    tag_cell_content = data_with_spaces[2]
-    tag_cell_content_retrieved = row.at(3)
-    expect(tag_cell_content.bytes[0]).to eq(32)
-    expect(tag_cell_content.bytes[10]).to eq(160)
-    expect(tag_cell_content_retrieved).to eq('ATTACTCG')
-  end
-
-  it '#at strips down spaces' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
-    reference_genome_cell_content = data_with_spaces[4]
-    reference_genome_cell_content_retrieved = row.at(5)
-    volume_cell_content = data_with_spaces[6]
-    volume_cell_content_retrieved = row.at(7)
-    empty_cell_content = data_with_spaces[3]
-    empty_cell_content_retrieved = row.at(4)
-    expect(reference_genome_cell_content_retrieved).to eq(reference_genome_cell_content)
-    expect(volume_cell_content_retrieved).to eq(volume_cell_content)
-    expect(empty_cell_content_retrieved).to eq(empty_cell_content)
-  end
-
-  it '#first? is true if this is the first row' do
-    expect(described_class.new(number: 1, data: data, columns: columns)).to be_first
+  describe '#first?' do
+    it 'returns true for the first row' do
+      expect(described_class.new(number: 1, data: data, columns: columns)).to be_first
+    end
   end
 
   it 'is not valid without a primary receptacle or sample' do
