@@ -129,7 +129,12 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
     context 'when the upload fails due to an Invalid byte sequence error' do
       before do
         allow(uploader).to receive(:run!).and_raise(CSV::InvalidEncodingError.new(Encoding::UTF_8, 10))
+        allow(Rails.logger).to receive(:error).and_call_original
         post :create, params: { upload: upload_file }
+      end
+
+      it 'logs the invalid encoding error' do
+        expect(Rails.logger).to have_received(:error).with('Invalid byte sequence in UTF-8 in line 10.')
       end
 
       it 'sets an error flash message' do
