@@ -386,3 +386,22 @@ wafer_size:
     range_name: :wafer_size
   conditional_formattings:
     empty_cell:
+ultima_application:
+  heading: Ultima Application
+  attribute: :ultima_application
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: true
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Ultima application"
+      error: "You must enter a Ultima application from the list provided."
+      promptTitle: "Ultima Application"
+      prompt: "Select a Ultima application from the approved list"
+    range_name: :ultima_application
+  conditional_formattings:
+    empty_cell:
