@@ -139,7 +139,7 @@ FactoryBot.define do
   end
 
   factory(:ultima_conversion_request, class: 'UltimaConversionRequest') do
-    request_type factory: %i[limber_ultima_htp_conversion]
+    request_type factory: %i[limber_ultima_ltp_conversion]
     request_purpose { :standard }
     sti_type { 'UltimaConversionRequest' }
     transient { ultima_application { create(:ultima_application) } }
