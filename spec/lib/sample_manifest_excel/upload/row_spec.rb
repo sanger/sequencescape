@@ -105,6 +105,10 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
   end
 
   context 'when validating' do
+    it 'is valid with all required data' do
+      expect(described_class.new(number: 1, data: data, columns: columns)).to be_valid
+    end
+
     it 'is not valid without row number' do
       expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
       expect(described_class.new(data:, columns:)).not_to be_valid
