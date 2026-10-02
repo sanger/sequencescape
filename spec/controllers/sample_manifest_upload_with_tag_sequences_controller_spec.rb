@@ -117,7 +117,30 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
 
       it 'sets an error flash message' do
         expect(flash[:error]).to eq(
-          'Your sample manifest contained invalid data and could not be uploaded: Invalid data'
+          'The sample manifest contained invalid data and could not be uploaded: Invalid data'
+        )
+      end
+
+      it 'renders the new template' do
+        expect(response).to render_template(:new)
+      end
+    end
+
+    context 'when the upload fails due to an Invalid byte sequence error' do
+      before do
+        allow(uploader).to receive(:run!).and_raise(CSV::InvalidEncodingError.new(Encoding::UTF_8, 10))
+        allow(Rails.logger).to receive(:error).and_call_original
+        post :create, params: { upload: upload_file }
+      end
+
+      it 'logs the invalid encoding error' do
+        expect(Rails.logger).to have_received(:error).with('Invalid byte sequence in UTF-8 in line 10.')
+      end
+
+      it 'sets an error flash message' do
+        expect(flash[:error]).to eq(
+          'The sample manifest contained invalid encoding and could not be uploaded: ' \
+          'Invalid byte sequence in UTF-8 in line 10.'
         )
       end
 
@@ -133,7 +156,7 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
       end
 
       it 'sets an error flash message' do
-        expect(flash[:error]).to eq('Your sample manifest couldn\'t be uploaded.')
+        expect(flash[:error]).to eq('The sample manifest couldn\'t be uploaded.')
       end
 
       it 'renders the new template' do
