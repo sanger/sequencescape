@@ -14,6 +14,8 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     else
       error('The sample manifest couldn\'t be uploaded.')
     end
+  rescue CSV::InvalidEncodingError => e
+    error("The sample manifest contained invalid encoding and could not be uploaded: #{e.message}")
   rescue AccessionService::AccessionValidationFailed => e
     error("The sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end

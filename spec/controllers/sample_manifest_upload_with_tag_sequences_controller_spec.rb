@@ -126,6 +126,24 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
       end
     end
 
+    context 'when the upload fails due to an Invalid byte sequence error' do
+      before do
+        allow(uploader).to receive(:run!).and_raise(CSV::InvalidEncodingError.new(Encoding::UTF_8, 10))
+        post :create, params: { upload: upload_file }
+      end
+
+      it 'sets an error flash message' do
+        expect(flash[:error]).to eq(
+          'The sample manifest contained invalid encoding and could not be uploaded: ' \
+          'Invalid byte sequence in UTF-8 in line 10.'
+        )
+      end
+
+      it 'renders the new template' do
+        expect(response).to render_template(:new)
+      end
+    end
+
     context 'when the upload fails for other reasons' do
       before do
         allow(uploader).to receive(:run!).and_return(false)
