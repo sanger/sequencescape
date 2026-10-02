@@ -108,7 +108,7 @@ describe UatActions::TestSubmission do
 
     context 'with optional ultima application supplied' do
       let(:submission_template) do
-        create(:limber_wgs_submission_template, request_types: [create(:limber_ultima_htp_conversion)])
+        create(:limber_wgs_submission_template, request_types: [create(:limber_ultima_ltp_conversion)])
       end
       let(:ultima_application) { create(:ultima_application) }
       let(:parameters) do

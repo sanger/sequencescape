@@ -192,7 +192,7 @@ describe BulkSubmission, with: :uploader do
 
   context 'when creating a submission with ultima application' do
     let(:spreadsheet_filename) { 'ultima_conversion_request.csv' }
-    let!(:request_type) { create(:limber_ultima_htp_conversion) }
+    let!(:request_type) { create(:limber_ultima_ltp_conversion) }
     let!(:ultima_preset) do
       UltimaPreset.create!(name: 'UG100 preset', application_type: 'scRNA_GEX_10x_flex', sequencing_recipe: '75 cycles')
     end
@@ -480,7 +480,7 @@ describe BulkSubmission, with: :uploader do
     context 'when creating a submission with invalid ultima applications' do
       let(:submission_template_hash) do
         {
-          name: 'Limber-Htp - Ultima Conv - Ultima UG100 sequencing',
+          name: 'Limber-Bespoke - Ultima Conv - Ultima UG100 sequencing',
           submission_class_name: 'LinearSubmission',
           product_catalogue: 'Generic',
           submission_parameters: {
