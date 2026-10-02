@@ -16,6 +16,7 @@ RSpec.describe Api::V2::TagLayoutResource, type: :resource do
   it { is_expected.to have_writeonly_attribute :enforce_uniqueness }
   it { is_expected.to have_readwrite_attribute :initial_tag }
   it { is_expected.to have_writeonly_attribute :plate_uuid }
+  it { is_expected.to have_writeonly_attribute :replace_tags }
   it { is_expected.to have_readwrite_attribute :substitutions }
   it { is_expected.to have_writeonly_attribute :tag_group_uuid }
   it { is_expected.to have_writeonly_attribute :tag2_group_uuid }
