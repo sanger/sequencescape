@@ -12,10 +12,10 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     if upload_manifest
       set_upload_flash_message
     else
-      error('Your sample manifest couldn\'t be uploaded.')
+      error('The sample manifest couldn\'t be uploaded.')
     end
   rescue AccessionService::AccessionValidationFailed => e
-    error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
+    error("The sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end
 
   def rows_with_warnings

@@ -117,7 +117,7 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
 
       it 'sets an error flash message' do
         expect(flash[:error]).to eq(
-          'Your sample manifest contained invalid data and could not be uploaded: Invalid data'
+          'The sample manifest contained invalid data and could not be uploaded: Invalid data'
         )
       end
 
@@ -133,7 +133,7 @@ RSpec.describe SampleManifestUploadWithTagSequencesController do
       end
 
       it 'sets an error flash message' do
-        expect(flash[:error]).to eq('Your sample manifest couldn\'t be uploaded.')
+        expect(flash[:error]).to eq('The sample manifest couldn\'t be uploaded.')
       end
 
       it 'renders the new template' do
