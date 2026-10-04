@@ -1,4 +1,4 @@
-// Tests for cherrypick_strategies.js buffer input toggle logic
+// Tests for cherrypick_strategies.js buffer input toggle and strategy card highlight logic
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 
@@ -29,5 +29,79 @@ describe("Buffer input toggle", () => {
 
     autoBufferCheckbox.click(); // checked to unchecked
     expect(bufferInput.disabled).toBe(true);
+  });
+
+  it("disables buffer input on page load when checkbox is unchecked", () => {
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+
+    expect(bufferInput.disabled).toBe(true);
+  });
+
+  it("enables buffer input on page load when checkbox is already checked", () => {
+    autoBufferCheckbox.checked = true;
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+
+    expect(bufferInput.disabled).toBe(false);
+  });
+
+  it("does nothing on pages without the buffer inputs", () => {
+    document.body.innerHTML = "";
+
+    // Errors thrown by event listeners are reported on window rather than thrown by dispatchEvent.
+    const errors = [];
+    const recordError = (event) => errors.push(event.error);
+    window.addEventListener("error", recordError);
+
+    document.dispatchEvent(new Event("DOMContentLoaded"));
+
+    window.removeEventListener("error", recordError);
+    expect(errors).toEqual([]);
+  });
+});
+
+describe("Strategy card highlight", () => {
+  beforeEach(async () => {
+    // Mirrors _cherrypick_strategies.html.erb, where the concentration strategy is selected and highlighted by default.
+    document.body.innerHTML = `
+      <div class="card border-primary" data-group="cherrypick_strategy">
+        <h5 class="card-title">Concentration</h5>
+        <input type="radio" name="cherrypick[strategy]" value="nano_grams_per_micro_litre" checked />
+      </div>
+      <div class="card" data-group="cherrypick_strategy">
+        <h5 class="card-title">Amount</h5>
+        <input type="radio" name="cherrypick[strategy]" value="nano_grams" />
+      </div>
+      <div class="card" data-group="cherrypick_strategy">
+        <h5 class="card-title">Volume</h5>
+        <input type="radio" name="cherrypick[strategy]" value="micro_litre" />
+      </div>
+    `;
+
+    // The radio button listeners are attached on import, so import after the DOM is set up.
+    vi.resetModules();
+    await import("@/entrypoints/cherrypick_strategies.js");
+  });
+
+  const selectStrategy = (strategy) => {
+    document.querySelector(`input[name="cherrypick[strategy]"][value="${strategy}"]`).click();
+  };
+
+  const highlightedCardTitles = () =>
+    [...document.querySelectorAll(".card.border-primary")].map((card) => card.querySelector(".card-title").textContent);
+
+  it.each([
+    { strategy: "nano_grams", title: "Amount" },
+    { strategy: "micro_litre", title: "Volume" },
+  ])("highlights only the $title card when $strategy is selected", ({ strategy, title }) => {
+    selectStrategy(strategy);
+
+    expect(highlightedCardTitles()).toEqual([title]);
+  });
+
+  it("moves the highlight back to the Concentration card when nano_grams_per_micro_litre is reselected", () => {
+    selectStrategy("micro_litre");
+    selectStrategy("nano_grams_per_micro_litre");
+
+    expect(highlightedCardTitles()).toEqual(["Concentration"]);
   });
 });
