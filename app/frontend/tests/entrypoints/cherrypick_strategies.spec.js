@@ -13,7 +13,7 @@ describe("Buffer input toggle", () => {
 
     // Re-import module so its DOMContentLoaded listener is re-registered each test.
     vi.resetModules();
-    await import("./cherrypick_strategies.js");
+    await import("@/entrypoints/cherrypick_strategies.js");
 
     bufferInput = document.getElementById("buffer_volume_for_empty_wells");
     autoBufferCheckbox = document.getElementById("automatic_buffer_addition");
