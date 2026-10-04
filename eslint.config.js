@@ -7,9 +7,6 @@ export default [
   js.configs.recommended,
   eslintConfigPrettier,
   {
-    files: ["**/*.js,**/*.cjs"],
-  },
-  {
     rules: {
       "no-unused-vars": [
         "error",
