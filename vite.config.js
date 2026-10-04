@@ -25,7 +25,6 @@ export default defineConfig({
     },
   },
   test: {
-    autoBuild: false,
     globals: true,
     environment: "jsdom",
     coverage: {
