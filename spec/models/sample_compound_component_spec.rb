@@ -83,4 +83,16 @@ RSpec.describe SampleCompoundComponent, :cardinal do
       end
     end
   end
+
+  describe '#tag' do
+    it 'is valid without a tag' do
+      expect(build(:sample_compound_component)).to be_valid
+    end
+
+    it 'stores the tag of the component sample' do
+      tag = create(:tag)
+      component = create(:sample_compound_component, tag:)
+      expect(component.reload.tag).to eq(tag)
+    end
+  end
 end
