@@ -123,7 +123,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Adds the global section to the CSV.
-    # The request parameter is currently unused.
+    # The request parameter supplies the library type for the fallback value.
     # @param csv [CSV] the CSV object to append rows to
     # @param request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, request)
@@ -155,11 +155,59 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param request [UltimaSequencingRequest] the request whose global data is to be added
     def add_support_global_section(csv, request)
       library_type = request.asset.aliquots.first.library_type
-      application = library_type_to_application(library_type)
+      preset = support_global_application_preset
+      application = preset ? preset.name : library_type_to_application(library_type)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
       data = [application] # Application
       csv << pad(data)
+    end
+
+    # Returns the UG100 preset selected by conversion requests on the newest
+    # stock-plate ancestor of the first active batch request.
+    # @return [UltimaPreset, nil] the selected preset, or nil when no conversion exists
+    def support_global_application_preset
+      return @support_global_application_preset if defined?(@support_global_application_preset)
+
+      conversion_requests = ultima_conversion_requests
+      return @support_global_application_preset = nil if conversion_requests.empty?
+
+      application_ids = conversion_requests.map do |conversion_request|
+        conversion_request.request_metadata.ultima_application_id
+      end
+      # expect a single application id
+      validate_ultima_application_ids!(application_ids)
+
+      # fetch the UG100 preset
+      @support_global_application_preset = fetch_global_preset(application_ids.first)
+    end
+
+    # Fetches the UG100 preset for the given Ultima application ID.
+    # @param application_id [Integer] the ID of the Ultima application
+    # @return [UltimaPreset, nil] the UG100 preset associated with the application, or nil if not found
+    def fetch_global_preset(application_id)
+      UltimaApplication.find(application_id).ug100_preset
+    end
+
+    # Returns conversion requests on stock wells linked to aliquots across all active batch requests.
+    # @return [Array<UltimaConversionRequest>] the matching conversion requests, or an empty array
+    def ultima_conversion_requests
+      stock_wells = batch_requests.flat_map do |request|
+        request.asset.aliquots.filter_map { |aliquot| aliquot.request&.asset }
+      end.flat_map(&:stock_wells_for_downstream_wells).uniq
+
+      return [] if stock_wells.empty?
+
+      Request.where(asset_id: stock_wells.map(&:id), sti_type: 'UltimaConversionRequest').to_a
+    end
+
+    # Ensures conversion requests all reference the same present Ultima application.
+    # @param application_ids [Array<Integer, nil>] application IDs collected from conversion request metadata
+    # @raise [ArgumentError] if an ID is missing or the requests reference multiple applications
+    def validate_ultima_application_ids!(application_ids)
+      return if application_ids.all?(&:present?) && application_ids.uniq.one?
+
+      raise ArgumentError, 'Expected Ultima conversion requests to reference one Ultima application'
     end
 
     # Adds the samples section to the CSV for the given request.
@@ -185,9 +233,15 @@ module UltimaSampleSheet::SampleSheetGenerator
         index_barcode_sequence_for(aliquot),
         barcode_plate_num_for(aliquot),
         barcode_plate_well_for(aliquot),
-        'native', # application_type
+        application_type,
         study_id_for(aliquot)
       ]
+    end
+
+    # Returns the selected UG100 application type or the existing default.
+    # @return [String] the application type
+    def application_type
+      support_global_application_preset&.application_type || 'native'
     end
 
     # Returns a unique sample_ID for the given aliquot. This prefixes numbers

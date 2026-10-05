@@ -256,7 +256,10 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     end
 
     context 'when Flipper :y25_140_support_ultima_ug100_upgrade is enabled' do
-      before { allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(true) }
+      before do
+        allow(Flipper).to receive(:enabled?).and_call_original
+        allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(true)
+      end
 
       it 'generates global section with only Application column and WGS Native value' do
         expect(csv1[3].compact_blank).to eq(generator.global_title_config)
@@ -270,6 +273,88 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
         it 'generates amplified application values' do
           expect(csv1[5].compact_blank).to eq(['WGS Native Amplified'])
           expect(csv1[9..].pluck(6).uniq).to eq(['native'])
+        end
+      end
+
+      context 'with Ultima conversion requests' do
+        before do
+          conversion_request
+          second_conversion_request
+          unrelated_conversion_request
+          tube1.aliquots.each { |aliquot| aliquot.update!(request: conversion_request) }
+          tube2.aliquots.each { |aliquot| aliquot.update!(request: second_conversion_request) }
+        end
+
+        let(:conversion_preset) do
+          create(:ultima_preset, name: 'GEM-X Flex', application_type: 'scRNA_GEX_10x_flex')
+        end
+        let(:conversion_application) { create(:ultima_application, ug100_preset: conversion_preset) }
+        let!(:conversion_stock_plate) { create(:stock_plate, well_count: 3) }
+        let(:other_application) { create(:ultima_application) }
+        let(:conversion_request) do
+          create(
+            :ultima_conversion_request,
+            asset: conversion_stock_plate.wells.first,
+            ultima_application: conversion_application
+          )
+        end
+        let(:second_conversion_request) do
+          create(
+            :ultima_conversion_request,
+            asset: conversion_stock_plate.wells.second,
+            ultima_application: conversion_application
+          )
+        end
+        let(:unrelated_conversion_request) do
+          create(
+            :ultima_conversion_request,
+            asset: conversion_stock_plate.wells.third,
+            ultima_application: other_application
+          )
+        end
+
+        it 'uses conversion requests on the stock wells linked to batch aliquots' do
+          expect(csv1[5].compact_blank).to eq(['GEM-X Flex'])
+          expect(csv1[9..].pluck(6).uniq).to eq(['scRNA_GEX_10x_flex'])
+        end
+
+        it 'checks conversion requests for all batch requests' do
+          other_stock_plate = create(:stock_plate, well_count: 1)
+          other_conversion_request = create(
+            :ultima_conversion_request,
+            asset: other_stock_plate.wells.first,
+            ultima_application: other_application
+          )
+          tube2.aliquots.each { |aliquot| aliquot.update!(request: other_conversion_request) }
+
+          expect { csv1 }.to raise_error(ArgumentError, /one Ultima application/)
+        end
+
+        it 'accepts multiple conversion requests with the same application' do
+          create(
+            :ultima_conversion_request,
+            asset: conversion_stock_plate.wells.second,
+            ultima_application: conversion_application
+          )
+
+          expect { csv1 }.not_to raise_error
+        end
+
+        it 'rejects conversion requests with conflicting applications' do
+          create(
+            :ultima_conversion_request,
+            asset: conversion_stock_plate.wells.first,
+            ultima_application: other_application
+          )
+
+          expect { csv1 }.to raise_error(ArgumentError, /one Ultima application/)
+        end
+
+        it 'rejects conversion requests without an application ID' do
+          expect do
+            application_id = conversion_request.request_metadata.ultima_application_id
+            generator.send(:validate_ultima_application_ids!, [application_id, nil])
+          end.to raise_error(ArgumentError, /one Ultima application/)
         end
       end
     end
