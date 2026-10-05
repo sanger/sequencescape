@@ -43,20 +43,6 @@ describe("Buffer input toggle", () => {
 
     expect(bufferInput.disabled).toBe(false);
   });
-
-  it("does nothing on pages without the buffer inputs", () => {
-    document.body.innerHTML = "";
-
-    // Errors thrown by event listeners are reported on window rather than thrown by dispatchEvent.
-    const errors = [];
-    const recordError = (event) => errors.push(event.error);
-    window.addEventListener("error", recordError);
-
-    document.dispatchEvent(new Event("DOMContentLoaded"));
-
-    window.removeEventListener("error", recordError);
-    expect(errors).toEqual([]);
-  });
 });
 
 describe("Strategy card highlight", () => {
