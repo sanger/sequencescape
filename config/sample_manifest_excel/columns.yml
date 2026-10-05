@@ -90,7 +90,7 @@ component_tag_sequence:
       promptTitle: "Component tag sequence"
       prompt: "Input the component sample's tag sequence."
   conditional_formattings:
-    empty_warning_cell:
+    empty_mandatory_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
