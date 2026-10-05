@@ -84,13 +84,13 @@ component_tag_sequence:
       allowBlank: false
       showInputMessage: true
       showErrorMessage: true
-      errorStyle: :warning
+      errorStyle: :stop
       errorTitle: "Component tag sequence"
       error: "Component tag sequence cannot be blank or exceed 60 characters"
       promptTitle: "Component tag sequence"
       prompt: "Input the component sample's tag sequence."
   conditional_formattings:
-    empty_mandatory_cell:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
