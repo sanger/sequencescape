@@ -6,7 +6,7 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     prepare_manifest_pagination
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength
     return error('No file attached') if params[:upload].blank?
 
     if upload_manifest
