@@ -19,19 +19,20 @@ module SequencescapeExcel
 
       validate :check_tag_exists
 
+      # The tag group the component tags come from, or nil if it is missing.
+      def self.tag_group
+        ::TagGroup.find_by(name: TAG_GROUP_NAME)
+      end
+
       # Returns the tag in the tag group whose oligo matches the value, or
       # nil if there is none.
       def tag
         return if value.blank?
 
-        @tag ||= tag_group&.tags&.find_by(oligo: value.upcase)
+        @tag ||= self.class.tag_group&.tags&.find_by(oligo: value.upcase)
       end
 
       private
-
-      def tag_group
-        ::TagGroup.find_by(name: TAG_GROUP_NAME)
-      end
 
       def check_tag_exists
         return if value.blank? || tag.present?
