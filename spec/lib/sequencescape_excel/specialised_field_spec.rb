@@ -489,6 +489,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         expect(component_tag_sequence.tag).to eq(component_tag)
       end
 
+      it 'finds the tag group' do
+        expect(described_class.tag_group).to eq(component_tag_group)
+      end
+
       it 'matches the oligo regardless of case' do
         field = component_tag_sequence_for(oligo.downcase)
         expect(field.tag).to eq(component_tag)
