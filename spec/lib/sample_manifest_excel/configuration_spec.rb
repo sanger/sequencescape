@@ -106,6 +106,13 @@ RSpec.describe SampleManifestExcel::Configuration, :sample_manifest, :sample_man
       )
     end
 
+    it 'has the Kinnex compound sample tube template' do
+      type = configuration.manifest_types.find_by('kinnex_compound_sample_tube')
+      columns = configuration.columns.find(:kinnex_compound_sample_tube)
+      expect(type.asset_type).to eq('compound_tube')
+      expect(columns.names).to eq(type.columns.map(&:to_s))
+    end
+
     it 'resolves the component tag sequence heading on upload' do
       column = all_columns.find_by(:heading, 'COMPONENT TAG SEQUENCE')
       expect(column.name).to eq('component_tag_sequence')
