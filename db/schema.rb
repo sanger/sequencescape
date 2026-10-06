@@ -1188,6 +1188,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_09_29_125719) do
     t.integer "percent_phix_requested"
     t.integer "ot_recipe"
     t.string "wafer_size"
+    t.bigint "ultima_application_id"
     t.index ["request_id"], name: "index_request_metadata_on_request_id"
   end
 
