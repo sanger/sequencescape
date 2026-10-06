@@ -39,7 +39,11 @@ group :default do
   gem 'unsort_db_schema_columns' # revert Rails 8.1 behaviour of sorting columns in the db/schema.rb file
   gem 'will_paginate'
 
+  # File uploads
+  # Sequencescape does not use image processing, but carrierwave requires an image processing library
   gem 'carrierwave'
+  gem 'image_processing', '~> 1.1' # Restrict to v1.x to remove ruby-vips requirement in v2.x
+
   gem 'net-ldap'
 
   # Will paginate clashes awkwardly with bootstrap
@@ -80,6 +84,7 @@ group :default do
 
   # Provides message schema encoding and decoding for messages to RabbitMQ
   gem 'avro'
+  gem 'json', '~> 2.0' # Required by avro (and others), but should be removed once avro handles the dependency correctly
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes

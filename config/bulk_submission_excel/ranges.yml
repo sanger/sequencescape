@@ -32,3 +32,6 @@ wafer_size:
     - "5TB"
     - "10TB"
     - "20TB"
+ultima_application:
+  identifier: :name
+  scope: :alphabetical
