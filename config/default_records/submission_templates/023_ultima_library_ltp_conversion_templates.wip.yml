@@ -9,7 +9,7 @@ Limber-Bespoke - Ultima Conv - Aggregation:
     product_line_name: Ultima
     product_catalogue_name: Generic
 
-Limber-Bespoke - Ultima Conv - Ultima U100 sequencing:
+Limber-Bespoke - Ultima Conv - Ultima UG100 sequencing:
   submission_class_name: "LinearSubmission"
   related_records:
     request_type_keys: ["limber_ultima_ltp_conversion", "limber_multiplexing_ultima_ltp", "ultima_sequencing"]
