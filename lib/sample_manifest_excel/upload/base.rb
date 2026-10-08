@@ -133,6 +133,7 @@ module SampleManifestExcel
 
       private
 
+      # rubocop:todo-next Metrics/CyclomaticComplexity
       def create_processor # rubocop:todo Metrics/MethodLength
         case sample_manifest&.asset_type
         when '1dtube'
@@ -145,6 +146,8 @@ module SampleManifestExcel
           Upload::Processor::Plate.new(self)
         when 'tube_rack'
           Upload::Processor::TubeRack.new(self)
+        when 'compound_tube'
+          Upload::Processor::CompoundTube.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
