@@ -34,6 +34,14 @@ class SampleManifest::CompoundSampleBuilder
     end
   end
 
+  # Updates the metadata the compound sample takes from its components, e.g.
+  # after a manifest re-upload has changed them.
+  # @param compound [Sample] the compound sample of the components
+  # @return [Boolean] true
+  def update_shared_metadata!(compound)
+    compound.sample_metadata.update!(shared_metadata)
+  end
+
   private
 
   attr_reader :study, :receptacle, :tags_by_component, :library_type
@@ -62,10 +70,11 @@ class SampleManifest::CompoundSampleBuilder
     )
   end
 
+  # Each field's value when all the components share it, otherwise nil.
   def shared_metadata
-    SHARED_METADATA.each_with_object({}) do |field, shared|
+    SHARED_METADATA.index_with do |field|
       values = components.map { |c| c.sample_metadata.public_send(field) }
-      shared[field] = values.first if values.uniq.one? && values.first.present?
+      values.first if values.uniq.one?
     end
   end
 
