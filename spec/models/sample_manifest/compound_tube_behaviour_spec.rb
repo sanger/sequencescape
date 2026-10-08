@@ -19,6 +19,10 @@ RSpec.describe SampleManifest::CompoundTubeBehaviour, :sample_manifest do
   end
   let(:tubes) { manifest.labware }
 
+  it 'does not put the samples in receptacles' do
+    expect(manifest.core_behaviour).not_to be_samples_in_receptacles
+  end
+
   context 'when the component tag group exists' do
     before do
       create(:tag_group, name: tag_group_name, tag_count: tag_count)
