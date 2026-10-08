@@ -52,6 +52,27 @@ i5:
       prompt: "i7."
   conditional_formattings:
     empty_warning_cell:
+# Copy of the component_tag_sequence column in
+# config/sample_manifest_excel/columns.yml.
+component_tag_sequence:
+  heading: COMPONENT TAG SEQUENCE
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :between
+      formula1: "1"
+      formula2: "60"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Component tag sequence"
+      error: "Component tag sequence cannot be blank or exceed 60 characters"
+      promptTitle: "Component tag sequence"
+      prompt: "Input the component sample's tag sequence."
+  conditional_formattings:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
