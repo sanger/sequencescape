@@ -18,6 +18,17 @@ RSpec.describe SampleManifest, :sample_manifest do
     end
   end
 
+  describe '#core_behaviour' do
+    asset_types = SampleManifest::CoreBehaviour::BEHAVIOURS - ['compound_tube']
+
+    (asset_types + [nil]).each do |asset_type|
+      it "puts the samples in receptacles for #{asset_type.inspect}" do
+        manifest = described_class.new(asset_type:)
+        expect(manifest.core_behaviour).to be_samples_in_receptacles
+      end
+    end
+  end
+
   describe '#generate' do
     let(:manifest) { create(:sample_manifest, study:, count:, asset_type:, purpose:) }
     let(:purpose) { nil }
