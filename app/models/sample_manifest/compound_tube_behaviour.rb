@@ -26,6 +26,12 @@ module SampleManifest::CompoundTubeBehaviour
       false
     end
 
+    # Creates a component sample on upload, without an aliquot in the tube.
+    # The name and arguments are shared by all manifest behaviours.
+    def generate_sample_and_aliquot(sanger_sample_id, _receptacle)
+      create_sample(sanger_sample_id).tap { |sample| study.samples << sample }
+    end
+
     private
 
     # The components of a compound sample must all have different tags, so a
