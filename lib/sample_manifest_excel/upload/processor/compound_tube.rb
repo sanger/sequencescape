@@ -10,6 +10,9 @@ module SampleManifestExcel
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
+        COMPOUND_SAMPLE_CHANGED =
+          'The tube already has a compound sample with other component ' \
+          'samples or tags, which a re-upload cannot change.'
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
 
@@ -32,21 +35,42 @@ module SampleManifestExcel
         private
 
         def create_compound_samples
-          upload.rows.group_by(&:asset).each do |receptacle, rows|
-            build_compound_sample(receptacle, rows)
-          end
-          @compound_samples_created = true
+          @compound_samples_created =
+            upload.rows.group_by(&:asset).all? do |receptacle, rows|
+              compound_sample_for(receptacle, rows)
+            end
         rescue ActiveRecord::RecordInvalid => e
           @compound_samples_created = log_error_and_return_false(e.message)
+        end
+
+        # On a re-upload the tube already has its compound sample. It is kept
+        # if the rows have the same component samples and tags.
+        def compound_sample_for(receptacle, rows)
+          compound = receptacle.aliquots.first&.sample
+          return build_compound_sample(receptacle, rows) if compound.nil?
+          return true if tags_of(compound) == tags_by_component(rows)
+
+          message = "#{rows.first.row_title} #{COMPOUND_SAMPLE_CHANGED}"
+          log_error_and_return_false(message)
         end
 
         def build_compound_sample(receptacle, rows)
           SampleManifest::CompoundSampleBuilder.new(
             study: upload.sample_manifest.study,
             receptacle: receptacle,
-            tags_by_component: rows.to_h { |row| [row.sample, tag_of(row)] },
+            tags_by_component: tags_by_component(rows),
             library_type: library_type_of(rows.first)
           ).build!
+        end
+
+        def tags_by_component(rows)
+          rows.to_h { |row| [row.sample, tag_of(row)] }
+        end
+
+        def tags_of(compound)
+          compound.joins_as_compound_sample.to_h do |link|
+            [link.component_sample, link.tag]
+          end
         end
 
         def tag_of(row)
