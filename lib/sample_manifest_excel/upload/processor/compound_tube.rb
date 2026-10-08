@@ -44,23 +44,33 @@ module SampleManifestExcel
         end
 
         # On a re-upload the tube already has its compound sample. It is kept
-        # if the rows have the same component samples and tags.
+        # if the rows have the same component samples and tags, and takes any
+        # corrections to the metadata it shares with them.
         def compound_sample_for(receptacle, rows)
+          builder = compound_sample_builder(receptacle, rows)
           compound = receptacle.aliquots.first&.sample
-          return build_compound_sample(receptacle, rows) if compound.nil?
-          return true if tags_of(compound) == tags_by_component(rows)
+          return builder.build! if compound.nil?
+          return reject_changed_compound(rows) unless same_tags?(compound, rows)
 
-          message = "#{rows.first.row_title} #{COMPOUND_SAMPLE_CHANGED}"
-          log_error_and_return_false(message)
+          builder.update_shared_metadata!(compound)
         end
 
-        def build_compound_sample(receptacle, rows)
+        def compound_sample_builder(receptacle, rows)
           SampleManifest::CompoundSampleBuilder.new(
             study: upload.sample_manifest.study,
             receptacle: receptacle,
             tags_by_component: tags_by_component(rows),
             library_type: library_type_of(rows.first)
-          ).build!
+          )
+        end
+
+        def same_tags?(compound, rows)
+          tags_of(compound) == tags_by_component(rows)
+        end
+
+        def reject_changed_compound(rows)
+          message = "#{rows.first.row_title} #{COMPOUND_SAMPLE_CHANGED}"
+          log_error_and_return_false(message)
         end
 
         def tags_by_component(rows)
