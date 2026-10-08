@@ -526,6 +526,76 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             .to include(/Component tag sequence must match a tag/)
         end
       end
+
+      context 'when the manifest is uploaded again' do
+        let(:override_samples) { true }
+        let(:reupload_file_name) { 'reupload_test_file.xlsx' }
+        let(:reupload_file) do
+          download.save(reupload_file_name)
+          Rack::Test::UploadedFile.new(Rails.root.join(reupload_file_name), '')
+        end
+        let(:reuploader) do
+          overrides = { samples: override_samples, exclude_fields: [] }
+          described_class.new(
+            reupload_file, SampleManifestExcel.configuration, user, overrides
+          )
+        end
+        let(:tags) { component_tag_group.tags.order(:map_id).to_a }
+
+        after { FileUtils.rm_f(reupload_file_name) }
+
+        it 'does not create any samples' do
+          expect { reuploader.run! }.not_to change(Sample, :count)
+        end
+
+        it 'processes the upload' do
+          reuploader.run!
+          expect(reuploader).to be_processed
+        end
+
+        it 'keeps one compound sample in each tube with components' do
+          reuploader.run!
+          filled_tube_count = components_per_tube.count(&:positive?)
+          expect(compound_aliquots.size).to eq(filled_tube_count)
+        end
+
+        context 'without overriding the samples' do
+          let(:override_samples) { false }
+
+          it 'processes the upload' do
+            reuploader.run!
+            expect(reuploader).to be_processed
+          end
+        end
+
+        context 'with a changed component tag' do
+          # The first row of the first tube gets a tag its tube does not use.
+          let(:reupload_file) do
+            worksheet = download.worksheet
+            column = worksheet.columns.find_by(:name, :component_tag_sequence)
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row - 1]
+            row.cells[column.number - 1].value = tags.last.oligo
+            super()
+          end
+
+          before { reuploader.run! }
+
+          it 'does not process the upload' do
+            expect(reuploader).not_to be_processed
+          end
+
+          it 'reports that the compound sample cannot change' do
+            expect(reuploader.errors.full_messages)
+              .to include(/a re-upload cannot change/)
+          end
+
+          it 'keeps the tags of the compound sample' do
+            links = compound_aliquots.first.sample.joins_as_compound_sample
+            first_tube_tags = tags.first(components_per_tube.first)
+            expect(links.to_set(&:tag)).to eq(first_tube_tags.to_set)
+          end
+        end
+      end
     end
   end
 
