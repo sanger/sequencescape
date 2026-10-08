@@ -397,6 +397,97 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         end
       end
     end
+
+    context 'with a compound sample tube manifest' do
+      let(:tag_count) { 8 }
+      let(:components_per_tube) { [6, 6, 0] }
+      let(:uploader) do
+        described_class.new(
+          test_file, SampleManifestExcel.configuration, user, false
+        )
+      end
+      let(:manifest) { uploader.upload.sample_manifest }
+      let(:download) do
+        columns = SampleManifestExcel.configuration.columns
+        build(
+          :test_download_compound_tubes,
+          columns: columns.kinnex_compound_sample_tube.dup,
+          count: components_per_tube.size,
+          components_per_tube: components_per_tube
+        )
+      end
+      let(:test_data) { download.worksheet.data }
+      let(:samples) { Sample.where(sample_manifest_id: manifest.id) }
+      let(:rows_by_tube) do
+        manifest.sample_manifest_assets.includes(:sample)
+          .group_by(&:asset).values
+      end
+
+      before do
+        handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+        create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: tag_count)
+        download.save(test_file_name)
+        uploader.run!
+      end
+
+      it 'processes the upload' do
+        expect(uploader).to be_processed
+      end
+
+      it 'completes the manifest' do
+        expect(manifest).to be_completed
+      end
+
+      it 'creates a component sample for each filled row of each tube' do
+        expect(rows_by_tube.map { |rows| rows.count(&:sample) })
+          .to eq(components_per_tube)
+      end
+
+      it 'stores the metadata of the component samples' do
+        expect(samples.map(&:sample_metadata)).to all(
+          have_attributes(
+            supplier_name: test_data[:supplier_name],
+            donor_id: test_data[:donor_id]
+          )
+        )
+      end
+
+      it 'does not put the component samples in the tubes' do
+        receptacles = rows_by_tube.map { |rows| rows.first.asset }
+        expect(receptacles.flat_map(&:aliquots)).to be_empty
+      end
+
+      it 'gives the component samples no aliquots' do
+        expect(samples.flat_map(&:aliquots)).to be_empty
+      end
+
+      it 'sets the retention instruction of the tubes with components' do
+        filled_tubes = rows_by_tube.select { |rows| rows.any?(&:sample) }
+        tubes = filled_tubes.map { |rows| rows.first.asset.labware }
+        expect(tubes.map(&:retention_instruction))
+          .to all(eq('long_term_storage'))
+      end
+
+      context 'when a component tag sequence is not in the tag group' do
+        let(:download) do
+          super().tap do |test_download|
+            worksheet = test_download.worksheet
+            column = worksheet.columns.find_by(:name, :component_tag_sequence)
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row - 1]
+            row.cells[column.number - 1].value = 'ACGTACGT'
+          end
+        end
+
+        it 'does not process the upload' do
+          expect(uploader).not_to be_processed
+        end
+
+        it 'reports the component tag sequence error' do
+          expect(uploader.errors.full_messages)
+            .to include(/Component tag sequence must match a tag/)
+        end
+      end
+    end
   end
 
   context 'when checking sample manifest state', :un_delay_jobs do
