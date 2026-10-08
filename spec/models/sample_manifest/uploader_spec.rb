@@ -681,6 +681,72 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             end
           end
         end
+
+        context 'with the blank tube filled' do
+          # The tube has no compound sample yet, so the re-upload builds one,
+          # as a first upload does. New rows need no override.
+          let(:override_samples) { false }
+          let(:blank_tube_index) { components_per_tube.index(0) }
+          let(:new_component_count) { 2 }
+          let(:reupload_file) do
+            first_row_index = blank_tube_index * tag_count
+            tags.first(new_component_count).each_with_index do |tag, offset|
+              values = test_data.merge(component_tag_sequence: tag.oligo)
+              values.each do |name, value|
+                set_cell(first_row_index + offset, name, value)
+              end
+            end
+            super()
+          end
+
+          it 'creates the component samples and their compound sample' do
+            expect { reuploader.run! }
+              .to change(Sample, :count).by(new_component_count + 1)
+          end
+
+          context 'when re-uploaded' do
+            # Read before the re-upload, from the tubes filled the first time.
+            let!(:first_compounds) do
+              manifest.assets.uniq.filter_map do |receptacle|
+                receptacle.aliquots.first&.sample
+              end
+            end
+            let(:new_tube_rows) { rows_by_tube[blank_tube_index] }
+            let(:new_tube_aliquots) { new_tube_rows.first.asset.aliquots }
+            let(:new_compound) { new_tube_aliquots.first.sample }
+
+            before { reuploader.run! }
+
+            it 'processes the upload' do
+              expect(reuploader).to be_processed
+            end
+
+            it 'puts one compound sample aliquot in the tube' do
+              expect(new_tube_aliquots.size).to eq(1)
+            end
+
+            it 'makes the compound sample from the new component samples' do
+              expect(new_compound.component_samples)
+                .to match_array(new_tube_rows.filter_map(&:sample))
+            end
+
+            it 'stores the tags of the new component samples' do
+              links = new_compound.joins_as_compound_sample
+              expect(links.map(&:tag))
+                .to match_array(tags.first(new_component_count))
+            end
+
+            it 'sets the library type of the compound sample aliquot' do
+              expect(new_tube_aliquots.first.library_type)
+                .to eq(test_data[:library_type])
+            end
+
+            it 'keeps the compound samples of the other tubes' do
+              expect(compound_aliquots.map(&:sample))
+                .to match_array(first_compounds + [new_compound])
+            end
+          end
+        end
       end
     end
   end
