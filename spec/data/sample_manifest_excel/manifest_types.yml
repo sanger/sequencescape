@@ -831,3 +831,28 @@ plate_without_country_of_origin:
     - :donor_id
     - :phenotype
     - :control_type
+# Copy of kinnex_compound_sample_tube in
+# config/sample_manifest_excel/manifest_types.yml, except it uses
+# :library_type. That is the test config's only LIBRARY TYPE column and, like
+# :library_type_required in the real config, it uses the LibraryType handler
+# on upload.
+kinnex_compound_sample_tube:
+  heading: "Kinnex Compound Sample Tube"
+  asset_type: "compound_tube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :component_tag_sequence
+    - :library_type
+    - :donor_id
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_description
