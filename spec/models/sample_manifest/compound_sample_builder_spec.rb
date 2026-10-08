@@ -1,0 +1,73 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe SampleManifest::CompoundSampleBuilder do
+  let(:study) { create(:study) }
+  let(:receptacle) { create(:empty_sample_tube).receptacle }
+  let(:tags) { create_list(:tag, 2) }
+  let(:components) do
+    [9606, 10_090].map do |taxon_id|
+      create(
+        :sample,
+        sample_metadata_attributes: {
+          supplier_name: 'POOL-1',
+          sample_common_name: 'Homo sapiens',
+          sample_taxon_id: taxon_id
+        }
+      )
+    end
+  end
+  let(:tags_by_component) { components.zip(tags).to_h }
+  let(:builder) do
+    described_class.new(
+      study: study,
+      receptacle: receptacle,
+      tags_by_component: tags_by_component,
+      library_type: 'My library type'
+    )
+  end
+  let!(:compound) { builder.build! }
+  let(:aliquot) { receptacle.aliquots.first }
+
+  it 'creates the compound sample in the study' do
+    expect(study.reload.samples).to include(compound)
+  end
+
+  it 'names the compound sample with a new sanger sample id' do
+    expect(compound.name).to start_with(study.abbreviation)
+  end
+
+  it 'links the component samples to the compound sample' do
+    expect(compound.component_samples).to match_array(components)
+  end
+
+  it 'stores the tag of each component sample on its link' do
+    links = compound.joins_as_compound_sample
+    expect(links.to_h { |link| [link.component_sample, link.tag] })
+      .to eq(tags_by_component)
+  end
+
+  it 'puts only the compound sample in the receptacle' do
+    expect(receptacle.aliquots.map(&:sample)).to eq([compound])
+  end
+
+  it 'sets the library type of the aliquot' do
+    expect(aliquot.library_type).to eq('My library type')
+  end
+
+  it 'does not tag the aliquot' do
+    expect(aliquot.tag).to be_nil
+  end
+
+  it 'copies the metadata that all the component samples share' do
+    expect(compound.sample_metadata).to have_attributes(
+      supplier_name: 'POOL-1',
+      sample_common_name: 'Homo sapiens'
+    )
+  end
+
+  it 'does not copy the metadata the component samples differ in' do
+    expect(compound.sample_metadata.sample_taxon_id).to be_nil
+  end
+end
