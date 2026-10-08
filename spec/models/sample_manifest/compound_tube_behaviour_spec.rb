@@ -61,6 +61,29 @@ RSpec.describe SampleManifest::CompoundTubeBehaviour, :sample_manifest do
     it 'prints one label per tube' do
       expect(manifest.printables).to match_array(tubes)
     end
+
+    describe 'creating a component sample on upload' do
+      let(:row) { manifest.sample_manifest_assets.first }
+      let!(:sample) do
+        manifest.create_sample_and_aliquot(row.sanger_sample_id, row.asset)
+      end
+
+      it 'creates the sample with the sanger sample id of the row' do
+        expect(sample.sanger_sample_id).to eq(row.sanger_sample_id)
+      end
+
+      it 'adds the sample to the study' do
+        expect(study.reload.samples).to include(sample)
+      end
+
+      it 'does not put the sample in the tube' do
+        expect(row.asset.aliquots).to be_empty
+      end
+
+      it 'gives the sample no aliquots' do
+        expect(sample.aliquots).to be_empty
+      end
+    end
   end
 
   context 'when the component tag group does not exist' do
