@@ -33,6 +33,13 @@ module SampleManifest::CoreBehaviour
     def details(&)
       details_array.each(&)
     end
+
+    # Whether the samples are put into the manifest's receptacles on upload.
+    # False for compound sample manifests: only the compound sample is in the
+    # receptacle, not its component samples.
+    def samples_in_receptacles?
+      true
+    end
   end
 
   # The samples get registered in the stock resource table at the end of manifest upload and processing
