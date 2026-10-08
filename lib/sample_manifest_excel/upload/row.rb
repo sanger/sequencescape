@@ -175,7 +175,11 @@ module SampleManifestExcel
         false
       end
 
+      # The labware of the sample's receptacle. When the manifest does not put
+      # samples into receptacles, the labware the manifest row is for.
       def labware
+        return asset.labware unless samples_in_receptacles?
+
         sample.primary_receptacle.labware
       end
 
