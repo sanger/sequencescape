@@ -364,9 +364,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
       let(:rows_by_tube) { upload.rows.group_by(&:asset).values }
 
-      def change_barcode(row, barcode)
-        index = row.columns.find_by(:name, 'sanger_tube_id').number - 1
-        row.data[index] = barcode
+      def change_value(row, column_name, value)
+        index = row.columns.find_by(:name, column_name).number - 1
+        row.data[index] = value
       end
 
       it 'is the processor for compound sample tube manifests' do
@@ -409,17 +409,35 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       it 'is not valid when a barcode is used for more than one tube' do
         first_tube_rows, second_tube_rows = rows_by_tube
         barcode = first_tube_rows.first.value('sanger_tube_id')
-        change_barcode(second_tube_rows.first, barcode)
+        change_value(second_tube_rows.first, 'sanger_tube_id', barcode)
         processor.valid?
         expect(processor.errors.full_messages)
           .to include(/Barcode is used for more than one tube/)
       end
 
       it 'is not valid when a tube has more than one barcode' do
-        change_barcode(rows_by_tube.first.second, 'NT1234567X')
+        change_value(rows_by_tube.first.second, 'sanger_tube_id', 'NT1234567X')
         processor.valid?
         expect(processor.errors.full_messages)
           .to include(/Tube has more than one barcode/)
+      end
+
+      it 'is not valid when a tag is used twice in a tube' do
+        first_row, second_row = rows_by_tube.first
+        tag = first_row.value('component_tag_sequence')
+        change_value(second_row, 'component_tag_sequence', tag)
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Component tag sequence is already " \
+          "used in this tube by row #{first_row.number}."
+        )
+      end
+
+      it 'is valid when different tubes use the same tag' do
+        first_tube_rows, second_tube_rows = rows_by_tube
+        tag = first_tube_rows.first.value('component_tag_sequence')
+        change_value(second_tube_rows.first, 'component_tag_sequence', tag)
+        expect(processor).to be_valid
       end
     end
 
