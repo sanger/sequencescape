@@ -33,7 +33,7 @@ jobs:
         run: node --version
 
       - name: Setup yarn
-        run: yarn install
+        run: yarn install --frozen-lockfile
 
       - name: Run yarn test
         run: yarn coverage
