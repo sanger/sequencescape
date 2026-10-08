@@ -21,7 +21,7 @@ class StampTest < ActiveSupport::TestCase
         @qcable = create(:qcable_with_asset)
 
         # Unfortunately we can't do this, as stamp looks for qcables directly.
-        # @qcable.expects(:do_stamp!).returns(true)
+        # @qcable.expects(:do_stamp_qc_state!).returns(true)
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         @stamp = create(:stamp, stamp_qcables: [sqc])
 
@@ -32,7 +32,7 @@ class StampTest < ActiveSupport::TestCase
         @qcable = create(:qcable_with_asset)
 
         # Unfortunately we can't do this, as stamp looks for qcables directly.
-        # @qcable.expects(:do_stamp!).returns(true)
+        # @qcable.expects(:do_stamp_qc_state!).returns(true)
 
         sqc = Stamp::StampQcable.new(bed: '1', order: 1, qcable: @qcable)
         @stamp = create(:stamp, stamp_qcables: [sqc])
