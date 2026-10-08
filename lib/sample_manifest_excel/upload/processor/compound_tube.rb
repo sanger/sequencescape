@@ -10,8 +10,12 @@ module SampleManifestExcel
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
+        TAG_USED_TWICE =
+          'Component tag sequence is already used in this tube by row'
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
+
+        validate :check_tags_unique_in_tube
 
         # After the component samples, creates a compound sample for each tube
         # with filled rows. Blank rows are not in the upload, so a blank tube
@@ -121,6 +125,32 @@ module SampleManifestExcel
 
         def tube_id_for(sanger_sample_id)
           upload.cache.find_by(sanger_sample_id:)&.asset&.labware_id
+        end
+
+        # The component samples of a tube are told apart by their tags, so a
+        # tag can be used only once in a tube. Other tubes can use it again.
+        def check_tags_unique_in_tube
+          first_rows = {}
+          tagged_rows.each do |row, tube_id, tag|
+            first_row = first_rows[[tube_id, tag]] ||= row
+            next if first_row == row
+
+            errors.add(:base, "#{row.row_title} #{TAG_USED_TWICE} " \
+                              "#{first_row.number}.")
+          end
+        end
+
+        # Each row with a tag and a tube of the manifest, with both.
+        def tagged_rows
+          return [] unless upload.respond_to?(:rows)
+
+          upload.rows.filter_map do |row|
+            tag = tag_of(row)
+            next if tag.nil?
+
+            tube_id = tube_id_for(row.value('sanger_sample_id'))
+            [row, tube_id, tag] if tube_id
+          end
         end
       end
     end
