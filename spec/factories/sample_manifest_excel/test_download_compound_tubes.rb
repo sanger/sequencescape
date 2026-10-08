@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  # Needs the component tag group: it decides the number of rows per tube.
+  # The component tag group decides the number of rows per tube. The factory
+  # creates it, with component_tag_count tags, unless it already exists.
   # components_per_tube lists the number of filled rows in each tube; by
   # default all the rows of every tube are filled.
   factory :test_download_compound_tubes,
           class: 'SampleManifestExcel::TestDownload' do
+    transient { component_tag_count { 4 } }
+
     columns { FactoryBot.build(:column_list) }
     validation_errors { [] }
     study { 'WTCCC' }
@@ -31,6 +34,12 @@ FactoryBot.define do
     end
 
     initialize_with do
+      handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+      handler.tag_group || FactoryBot.create(
+        :tag_group,
+        name: handler::TAG_GROUP_NAME,
+        tag_count: component_tag_count
+      )
       new(
         data:,
         columns:,
