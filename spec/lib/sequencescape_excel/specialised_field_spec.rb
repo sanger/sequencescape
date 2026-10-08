@@ -502,6 +502,10 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
         expect(component_tag_sequence_for(nil)).not_to be_valid
       end
 
+      it 'returns no tag when the value is blank' do
+        expect(component_tag_sequence_for(nil).tag).to be_nil
+      end
+
       it 'is not valid when the oligo is only in another tag group' do
         create(:tag, tag_group: create(:tag_group), oligo: 'ACGT', map_id: 1)
         field = component_tag_sequence_for('ACGT')
