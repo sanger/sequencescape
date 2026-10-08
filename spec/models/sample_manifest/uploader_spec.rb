@@ -568,6 +568,45 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           end
         end
 
+        context 'with corrected metadata for the first tube' do
+          let(:library_type) { create(:library_type, name: 'Corrected type') }
+          let(:compound_aliquot) { compound_aliquots.first }
+          let(:reupload_file) do
+            set_first_tube_values(:supplier_name, 'CORRECTED-POOL')
+            set_first_tube_values(:library_type, library_type.name)
+            super()
+          end
+
+          def set_first_tube_values(column_name, value)
+            worksheet = download.worksheet
+            index = worksheet.columns.find_by(:name, column_name).number - 1
+            first_tube_rows(worksheet).each do |row|
+              row.cells[index].value = value
+            end
+          end
+
+          def first_tube_rows(worksheet)
+            first = worksheet.first_row - 1
+            rows = worksheet.axlsx_worksheet.rows
+            Array.new(components_per_tube.first) { |index| rows[first + index] }
+          end
+
+          before { reuploader.run! }
+
+          it 'processes the upload' do
+            expect(reuploader).to be_processed
+          end
+
+          it 'corrects the shared metadata of the compound sample' do
+            expect(compound_aliquot.sample.sample_metadata.supplier_name)
+              .to eq('CORRECTED-POOL')
+          end
+
+          it 'corrects the library type of the compound sample aliquot' do
+            expect(compound_aliquot.library_type).to eq(library_type.name)
+          end
+        end
+
         context 'with a changed component tag' do
           # The first row of the first tube gets a tag its tube does not use.
           let(:reupload_file) do
