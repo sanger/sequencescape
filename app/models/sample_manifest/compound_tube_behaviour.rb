@@ -21,6 +21,11 @@ module SampleManifest::CompoundTubeBehaviour
     end
     alias printables labware
 
+    # The component samples are not in the tube: only the compound sample is.
+    def samples_in_receptacles?
+      false
+    end
+
     private
 
     # The components of a compound sample must all have different tags, so a
