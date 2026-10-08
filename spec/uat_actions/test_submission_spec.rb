@@ -106,6 +106,29 @@ describe UatActions::TestSubmission do
       end
     end
 
+    context 'with optional ultima application supplied' do
+      let(:submission_template) do
+        create(:limber_wgs_submission_template, request_types: [create(:limber_ultima_ltp_conversion)])
+      end
+      let(:ultima_application) { create(:ultima_application) }
+      let(:parameters) do
+        { submission_template_name: submission_template.name, ultima_application_name: ultima_application.name }
+      end
+
+      it 'can be performed' do
+        expect(uat_action.perform).to be true
+        expect(uat_action.report['plate_barcode_0']).to eq report['plate_barcode_0']
+        expect(uat_action.report['submission_id']).to be_a Integer
+        expect(uat_action.report['ultima_application']).to eq ultima_application.name
+      end
+
+      it 'sets the ultima application in the order request options' do
+        uat_action.perform
+        order = Submission.find(uat_action.report['submission_id']).orders.first
+        expect(order.request_options[:ultima_application_name]).to eq ultima_application.name
+      end
+    end
+
     context 'with optional number of wells with samples supplied' do
       let(:parameters) { { submission_template_name: submission_template.name, number_of_wells_with_samples: '2' } }
 
@@ -291,6 +314,32 @@ describe UatActions::TestSubmission do
         it 'does not add the error message' do
           uat_action.valid? # run validations
           expect(uat_action.errors[:primer_panel_name]).not_to include(error_message)
+        end
+      end
+    end
+
+    describe '#validate_ultima_application_exists' do
+      let(:parameters) { { ultima_application_name: } }
+      let(:error_message) do
+        format(described_class::ERROR_ULTIMA_APPLICATION_DOES_NOT_EXIST, ultima_application_name)
+      end
+
+      context 'when the ultima application does not exist' do
+        let(:ultima_application_name) { 'Invalid Ultima Application' }
+
+        it 'adds the error message' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:ultima_application_name]).to include(error_message)
+        end
+      end
+
+      context 'when the ultima application exists' do
+        let(:ultima_application) { create(:ultima_application) }
+        let(:ultima_application_name) { ultima_application.name }
+
+        it 'does not add the error message' do
+          uat_action.valid? # run validations
+          expect(uat_action.errors[:ultima_application_name]).not_to include(error_message)
         end
       end
     end
