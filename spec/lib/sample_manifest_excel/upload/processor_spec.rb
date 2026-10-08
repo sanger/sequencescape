@@ -352,6 +352,53 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
     end
 
+    describe SampleManifestExcel::Upload::Processor::CompoundTube do
+      let(:manifest_type) { 'kinnex_compound_sample_tube' }
+      let(:component_tag_group) do
+        handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+        create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 3)
+      end
+      let(:download) do
+        component_tag_group
+        build(:test_download_compound_tubes, columns: column_list, count: 2)
+      end
+      let(:rows_by_tube) { upload.rows.group_by(&:asset).values }
+
+      def change_barcode(row, barcode)
+        index = row.columns.find_by(:name, 'sanger_tube_id').number - 1
+        row.data[index] = barcode
+      end
+
+      it 'is the processor for compound sample tube manifests' do
+        expect(upload.processor).to be_a(described_class)
+      end
+
+      it 'is valid when the rows of each tube share its barcode' do
+        expect(processor).to be_valid
+      end
+
+      it 'does not put the component samples in the tubes' do
+        processor.run(tag_group)
+        expect(upload.rows.flat_map { |row| row.asset.aliquots }).to be_empty
+      end
+
+      it 'is not valid when a barcode is used for more than one tube' do
+        first_tube_rows, second_tube_rows = rows_by_tube
+        barcode = first_tube_rows.first.value('sanger_tube_id')
+        change_barcode(second_tube_rows.first, barcode)
+        processor.valid?
+        expect(processor.errors.full_messages)
+          .to include(/Barcode is used for more than one tube/)
+      end
+
+      it 'is not valid when a tube has more than one barcode' do
+        change_barcode(rows_by_tube.first.second, 'NT1234567X')
+        processor.valid?
+        expect(processor.errors.full_messages)
+          .to include(/Tube has more than one barcode/)
+      end
+    end
+
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
       let(:download) { build(:test_download_tubes, columns: column_list, manifest_type: manifest_type) }
       let(:tag_set1) { create(:tag_set, tag_group: TagGroup.first, tag2_group: nil, name: TagGroup.first.name) }
