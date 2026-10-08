@@ -1425,7 +1425,7 @@ RequestType.find_each do |request_type|
   read_lengths =
     {
       # By request class
-      'HiSeqSequencingRequest' => [50, 100, 150, 300],
+      'HiSeqSequencingRequest' => [50, 75, 100, 150],
       'MiSeqSequencingRequest' => [25, 50, 130, 150, 250, 300],
       'SequencingRequest' => [37, 54, 76, 108]
     }[
@@ -1433,9 +1433,10 @@ RequestType.find_each do |request_type|
     ]
 
   if read_lengths.present?
-    RequestType::Validator.find_or_create_by!(
+    RequestType::Validator.create!(
       request_type: request_type,
-      request_option: 'read_length'
-    ) { |validator| validator.valid_options = read_lengths }
+      request_option: 'read_length',
+      valid_options: read_lengths
+    )
   end
 end
