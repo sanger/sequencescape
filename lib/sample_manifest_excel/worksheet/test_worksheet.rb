@@ -19,23 +19,15 @@ module SampleManifestExcel
                     :partial,
                     :cgap,
                     :num_plates,
-                    :num_filled_wells_per_plate
+                    :num_filled_wells_per_plate,
+                    :components_per_tube
       attr_reader :dynamic_attributes, :tags, :study
       attr_writer :manifest_type, :num_rows_per_well
 
-      def initialize(attributes = {}) # rubocop:todo Metrics/MethodLength
+      def initialize(attributes = {})
         super
         @validation_errors ||= []
-        if type == 'Plates'
-          # create a worksheet for Plates
-          create_plate_dynamic_attributes
-        else
-          # by default create a worksheet for Tubes
-          create_library_type
-          create_reference_genome
-          create_tube_dynamic_attributes
-          create_tube_requests
-        end
+        create_dynamic_attributes
         create_styles
         add_title_and_description(study.name, supplier, count)
         add_headers
@@ -96,6 +88,8 @@ module SampleManifestExcel
           FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
         when /tube_rack/
           FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
+        when /compound/
+          create_compound_tube_manifest
         else
           FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
         end
@@ -106,6 +100,21 @@ module SampleManifestExcel
       end
 
       private
+
+      def create_dynamic_attributes
+        if type == 'Plates'
+          # create a worksheet for Plates
+          create_plate_dynamic_attributes
+        elsif compound_tubes?
+          create_compound_tube_dynamic_attributes
+        else
+          # by default create a worksheet for Tubes
+          create_library_type
+          create_reference_genome
+          create_tube_dynamic_attributes
+          create_tube_requests
+        end
+      end
 
       def initialize_dynamic_attributes
         {}.tap { |hsh| first_to_last.each { |i| hsh[i] = {} } }.with_indifferent_access
@@ -151,6 +160,69 @@ module SampleManifestExcel
       end
 
       # rubocop:enable Metrics/MethodLength
+
+      def compound_tubes?
+        manifest_type.include?('compound')
+      end
+
+      # Needs the component tag group, which decides the rows per tube.
+      def create_compound_tube_manifest
+        FactoryBot.create(
+          :sample_manifest,
+          asset_type: 'compound_tube',
+          count: count,
+          study: study,
+          purpose: Tube::Purpose.standard_sample_tube
+        ).tap(&:generate)
+      end
+
+      def create_compound_tube_dynamic_attributes
+        create_library_type
+        # One row per manifest asset; no_of_rows counts the rows after the first
+        self.no_of_rows = sample_manifest.sample_manifest_assets.count - 1
+        @dynamic_attributes = initialize_dynamic_attributes
+        record_compound_tube_samples
+      end
+
+      # The filled rows of a tube take the component tags in order; the rows
+      # after the tube's number of components are blank.
+      def record_compound_tube_samples
+        row_nums = first_to_last.to_a
+        rows_by_tube.each_with_index do |assets, tube_no|
+          assets.each_with_index do |sample_manifest_asset, index|
+            tag = component_tags[index] if index < components_in_tube(tube_no)
+            row = dynamic_attributes[row_nums.shift]
+            record_compound_tube_row(row, sample_manifest_asset, tag)
+          end
+        end
+      end
+
+      def record_compound_tube_row(row, sample_manifest_asset, tag)
+        row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
+        row[:sanger_tube_id] = sample_manifest_asset.human_barcode
+        if tag
+          row[:component_tag_sequence] = tag.oligo
+        else
+          row[:blank] = true
+        end
+      end
+
+      def rows_by_tube
+        sample_manifest.sample_manifest_assets.group_by(&:asset).values
+      end
+
+      def component_tags
+        @component_tags ||=
+          SequencescapeExcel::SpecialisedField::ComponentTagSequence
+            .tag_group.tags.order(:map_id).to_a
+      end
+
+      # The number of filled rows in each tube: all of them by default.
+      def components_in_tube(tube_index)
+        return component_tags.size if components_per_tube.nil?
+
+        components_per_tube.fetch(tube_index)
+      end
 
       def create_tube_dynamic_attributes
         @dynamic_attributes = initialize_dynamic_attributes
@@ -233,6 +305,10 @@ module SampleManifestExcel
 
       # rubocop:todo Metrics/PerceivedComplexity, Metrics/MethodLength, Metrics/AbcSize
       def add_cell_data(column, row_num, partial) # rubocop:todo Metrics/CyclomaticComplexity
+        # A blank compound tube row only has its sanger ids and barcode.
+        row = dynamic_attributes[row_num]
+        return row[column.name] if row[:blank]
+
         if partial && empty_row?(row_num)
           data[column.name] || dynamic_attributes[row_num][column.name] unless empty_columns.include?(column.name)
         elsif validation_errors.include?(:insert_size_from) && column.name == 'insert_size_from' &&
