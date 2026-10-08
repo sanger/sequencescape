@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
-# Creates the compound sample for one receptacle of a compound sample
-# manifest, e.g. a tube of a Kinnex compound sample tube manifest.
+# Creates, or updates, the compound sample for one receptacle of a compound
+# sample manifest, e.g. a tube of a Kinnex compound sample tube manifest.
 #
 # The manifest upload creates the component samples without aliquots. This
 # creates:
 # - the compound sample, in the study, named with a new sanger sample id
 # - a link to each component sample, with the component's tag
 # - the compound sample's aliquot: the only aliquot in the receptacle
+#
+# A re-upload updates the compound sample like other manifests update their
+# samples: it adds new component samples, corrects tags and updates the
+# shared metadata. It does not remove component samples.
 class SampleManifest::CompoundSampleBuilder
   # Metadata copied to the compound sample when all its components agree.
   SHARED_METADATA = %i[supplier_name sample_common_name sample_taxon_id].freeze
@@ -34,12 +38,17 @@ class SampleManifest::CompoundSampleBuilder
     end
   end
 
-  # Updates the metadata the compound sample takes from its components, e.g.
-  # after a manifest re-upload has changed them.
-  # @param compound [Sample] the compound sample of the components
+  # Links the given component samples that are new to the compound sample,
+  # corrects the tags of the others, and updates the shared metadata from
+  # all its component samples.
+  # @param compound [Sample] the compound sample
   # @return [Boolean] true
-  def update_shared_metadata!(compound)
-    compound.sample_metadata.update!(shared_metadata)
+  def update!(compound)
+    ActiveRecord::Base.transaction do
+      update_links(compound)
+      all_components = compound.component_samples.reload
+      compound.sample_metadata.update!(shared_metadata(all_components))
+    end
   end
 
   private
@@ -62,6 +71,19 @@ class SampleManifest::CompoundSampleBuilder
     end
   end
 
+  def update_links(compound)
+    links = compound.joins_as_compound_sample.index_by(&:component_sample_id)
+    tags_by_component.each do |component, tag|
+      link = links[component.id]
+      next link.update!(tag:) if link
+
+      compound.joins_as_compound_sample.create!(
+        component_sample: component,
+        tag: tag
+      )
+    end
+  end
+
   def create_aliquot(compound)
     receptacle.aliquots.create!(
       sample: compound,
@@ -71,14 +93,10 @@ class SampleManifest::CompoundSampleBuilder
   end
 
   # Each field's value when all the components share it, otherwise nil.
-  def shared_metadata
+  def shared_metadata(components = tags_by_component.keys)
     SHARED_METADATA.index_with do |field|
       values = components.map { |c| c.sample_metadata.public_send(field) }
       values.first if values.uniq.one?
     end
-  end
-
-  def components
-    tags_by_component.keys
   end
 end

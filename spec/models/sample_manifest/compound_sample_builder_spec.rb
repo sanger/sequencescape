@@ -71,18 +71,42 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
     expect(compound.sample_metadata.sample_taxon_id).to be_nil
   end
 
-  describe '#update_shared_metadata!' do
+  describe '#update!' do
     let(:metadata) { compound.reload.sample_metadata }
+    let(:links) { compound.reload.joins_as_compound_sample }
+    let(:new_tag) { create(:tag) }
+
+    def update_with(tags_by_component)
+      described_class.new(study:, receptacle:, tags_by_component:)
+        .update!(compound)
+    end
+
+    it 'adds a new component sample with its tag' do
+      new_component = create(:sample)
+      update_with(new_component => new_tag)
+      expect(links.find_by(component_sample: new_component).tag).to eq(new_tag)
+    end
+
+    it 'corrects the tag of a component sample' do
+      update_with(components.first => new_tag)
+      expect(links.find_by(component_sample: components.first).tag)
+        .to eq(new_tag)
+    end
+
+    it 'keeps the component samples it is not given' do
+      update_with({})
+      expect(compound.reload.component_samples).to match_array(components)
+    end
 
     it 'takes the corrected metadata the component samples share' do
       components.each { |c| c.sample_metadata.update!(supplier_name: 'POOL-2') }
-      builder.update_shared_metadata!(compound)
+      update_with({})
       expect(metadata.supplier_name).to eq('POOL-2')
     end
 
     it 'clears the metadata the component samples no longer share' do
       components.first.sample_metadata.update!(sample_common_name: 'Mouse')
-      builder.update_shared_metadata!(compound)
+      update_with({})
       expect(metadata.sample_common_name).to be_nil
     end
   end

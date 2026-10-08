@@ -544,6 +544,16 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
         after { FileUtils.rm_f(reupload_file_name) }
 
+        # Changes a cell of the download before it is saved for the re-upload.
+        # Rows are counted from the first row of the first tube.
+        def set_cell(row_index, column_name, value)
+          worksheet = download.worksheet
+          first = worksheet.first_row - 1
+          row = worksheet.axlsx_worksheet.rows[first + row_index]
+          number = worksheet.columns.find_by(:name, column_name).number
+          row.cells[number - 1].value = value
+        end
+
         it 'does not create any samples' do
           expect { reuploader.run! }.not_to change(Sample, :count)
         end
@@ -572,23 +582,11 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           let(:library_type) { create(:library_type, name: 'Corrected type') }
           let(:compound_aliquot) { compound_aliquots.first }
           let(:reupload_file) do
-            set_first_tube_values(:supplier_name, 'CORRECTED-POOL')
-            set_first_tube_values(:library_type, library_type.name)
-            super()
-          end
-
-          def set_first_tube_values(column_name, value)
-            worksheet = download.worksheet
-            index = worksheet.columns.find_by(:name, column_name).number - 1
-            first_tube_rows(worksheet).each do |row|
-              row.cells[index].value = value
+            components_per_tube.first.times do |index|
+              set_cell(index, :supplier_name, 'CORRECTED-POOL')
+              set_cell(index, :library_type, library_type.name)
             end
-          end
-
-          def first_tube_rows(worksheet)
-            first = worksheet.first_row - 1
-            rows = worksheet.axlsx_worksheet.rows
-            Array.new(components_per_tube.first) { |index| rows[first + index] }
+            super()
           end
 
           before { reuploader.run! }
@@ -607,31 +605,58 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           end
         end
 
-        context 'with a changed component tag' do
+        context 'with a corrected component tag' do
           # The first row of the first tube gets a tag its tube does not use.
           let(:reupload_file) do
-            worksheet = download.worksheet
-            column = worksheet.columns.find_by(:name, :component_tag_sequence)
-            row = worksheet.axlsx_worksheet.rows[worksheet.first_row - 1]
-            row.cells[column.number - 1].value = tags.last.oligo
+            set_cell(0, :component_tag_sequence, tags.last.oligo)
             super()
+          end
+          let(:first_component_tag) do
+            component = filled_rows_by_tube.first.first.sample
+            compound_aliquots.first.sample.joins_as_compound_sample
+              .find_by(component_sample: component).tag
           end
 
           before { reuploader.run! }
 
-          it 'does not process the upload' do
-            expect(reuploader).not_to be_processed
+          it 'processes the upload' do
+            expect(reuploader).to be_processed
           end
 
-          it 'reports that the compound sample cannot change' do
-            expect(reuploader.errors.full_messages)
-              .to include(/a re-upload cannot change/)
+          it 'corrects the tag of the component sample' do
+            expect(first_component_tag).to eq(tags.last)
           end
 
-          it 'keeps the tags of the compound sample' do
-            links = compound_aliquots.first.sample.joins_as_compound_sample
-            first_tube_tags = tags.first(components_per_tube.first)
-            expect(links.to_set(&:tag)).to eq(first_tube_tags.to_set)
+          context 'without overriding the samples' do
+            let(:override_samples) { false }
+
+            it 'keeps the tag of the component sample' do
+              expect(first_component_tag).to eq(tags.first)
+            end
+          end
+        end
+
+        context 'with a newly filled row in the first tube' do
+          # New rows add their component samples, even without an override.
+          let(:override_samples) { false }
+          let(:new_row_index) { components_per_tube.first }
+          let(:new_tag) { tags[new_row_index] }
+          let(:reupload_file) do
+            values = test_data.merge(component_tag_sequence: new_tag.oligo)
+            values.each { |name, value| set_cell(new_row_index, name, value) }
+            super()
+          end
+          let(:first_tube_links) do
+            compound_aliquots.first.sample.joins_as_compound_sample
+          end
+
+          it 'creates the component sample of the new row' do
+            expect { reuploader.run! }.to change(Sample, :count).by(1)
+          end
+
+          it 'adds it to the compound sample of its tube, with its tag' do
+            reuploader.run!
+            expect(first_tube_links.map(&:tag)).to include(new_tag)
           end
         end
       end

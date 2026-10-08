@@ -10,9 +10,6 @@ module SampleManifestExcel
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
-        COMPOUND_SAMPLE_CHANGED =
-          'The tube already has a compound sample with other component ' \
-          'samples or tags, which a re-upload cannot change.'
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
 
@@ -43,44 +40,35 @@ module SampleManifestExcel
           @compound_samples_created = log_error_and_return_false(e.message)
         end
 
-        # On a re-upload the tube already has its compound sample. It is kept
-        # if the rows have the same component samples and tags, and takes any
-        # corrections to the metadata it shares with them.
+        # On a re-upload the tube already has its compound sample. Like other
+        # manifests, only the rows saved by this upload change it: new rows
+        # add component samples, and with an override, corrected tags and
+        # metadata are applied. Rows skipped without an override change
+        # nothing, and cleared rows do not remove component samples.
         def compound_sample_for(receptacle, rows)
-          builder = compound_sample_builder(receptacle, rows)
           compound = receptacle.aliquots.first&.sample
-          return builder.build! if compound.nil?
-          return reject_changed_compound(rows) unless same_tags?(compound, rows)
+          return build_compound_sample(receptacle, rows) if compound.nil?
 
-          builder.update_shared_metadata!(compound)
+          updated_rows = rows.select(&:sample_updated?)
+          compound_sample_builder(receptacle, updated_rows).update!(compound)
         end
 
-        def compound_sample_builder(receptacle, rows)
+        def build_compound_sample(receptacle, rows)
+          library_type = library_type_of(rows.first)
+          compound_sample_builder(receptacle, rows, library_type).build!
+        end
+
+        def compound_sample_builder(receptacle, rows, library_type = nil)
           SampleManifest::CompoundSampleBuilder.new(
             study: upload.sample_manifest.study,
             receptacle: receptacle,
             tags_by_component: tags_by_component(rows),
-            library_type: library_type_of(rows.first)
+            library_type: library_type
           )
-        end
-
-        def same_tags?(compound, rows)
-          tags_of(compound) == tags_by_component(rows)
-        end
-
-        def reject_changed_compound(rows)
-          message = "#{rows.first.row_title} #{COMPOUND_SAMPLE_CHANGED}"
-          log_error_and_return_false(message)
         end
 
         def tags_by_component(rows)
           rows.to_h { |row| [row.sample, tag_of(row)] }
-        end
-
-        def tags_of(compound)
-          compound.joins_as_compound_sample.to_h do |link|
-            [link.component_sample, link.tag]
-          end
         end
 
         def tag_of(row)
