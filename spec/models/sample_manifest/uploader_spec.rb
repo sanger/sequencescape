@@ -422,10 +422,20 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         manifest.sample_manifest_assets.includes(:sample)
           .group_by(&:asset).values
       end
-
-      before do
+      let(:filled_rows_by_tube) do
+        rows_by_tube.select { |rows| rows.any?(&:sample) }
+      end
+      let(:component_tag_group) do
         handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: tag_count)
+      end
+      # Each filled tube holds exactly one aliquot: its compound sample's.
+      let(:compound_aliquots) do
+        filled_rows_by_tube.map { |rows| rows.first.asset.aliquots.sole }
+      end
+
+      before do
+        component_tag_group
         download.save(test_file_name)
         uploader.run!
       end
@@ -452,18 +462,47 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         )
       end
 
-      it 'does not put the component samples in the tubes' do
-        receptacles = rows_by_tube.map { |rows| rows.first.asset }
-        expect(receptacles.flat_map(&:aliquots)).to be_empty
-      end
-
       it 'gives the component samples no aliquots' do
         expect(samples.flat_map(&:aliquots)).to be_empty
       end
 
+      it 'puts a compound sample in each tube with components' do
+        filled_tube_count = components_per_tube.count(&:positive?)
+        expect(compound_aliquots.size).to eq(filled_tube_count)
+      end
+
+      it 'makes each compound sample from the component samples of its tube' do
+        components = filled_rows_by_tube.map do |rows|
+          rows.filter_map(&:sample).to_set
+        end
+        expect(compound_aliquots.map { |a| a.sample.component_samples.to_set })
+          .to eq(components)
+      end
+
+      it 'stores the tags of the component samples on the compound samples' do
+        tags = component_tag_group.tags.order(:map_id).to_a
+        expected = components_per_tube.select(&:positive?).map do |count|
+          tags.first(count).to_set
+        end
+        actual = compound_aliquots.map do |aliquot|
+          aliquot.sample.joins_as_compound_sample.to_set(&:tag)
+        end
+        expect(actual).to eq(expected)
+      end
+
+      it 'sets the library type of the compound sample aliquots' do
+        expect(compound_aliquots.map(&:library_type))
+          .to all(eq(test_data[:library_type]))
+      end
+
+      it 'leaves the tubes without components empty' do
+        blank_rows_by_tube = rows_by_tube - filled_rows_by_tube
+        expect(blank_rows_by_tube.flat_map { |rows| rows.first.asset.aliquots })
+          .to be_empty
+      end
+
       it 'sets the retention instruction of the tubes with components' do
-        filled_tubes = rows_by_tube.select { |rows| rows.any?(&:sample) }
-        tubes = filled_tubes.map { |rows| rows.first.asset.labware }
+        tubes = filled_rows_by_tube.map { |rows| rows.first.asset.labware }
         expect(tubes.map(&:retention_instruction))
           .to all(eq('long_term_storage'))
       end

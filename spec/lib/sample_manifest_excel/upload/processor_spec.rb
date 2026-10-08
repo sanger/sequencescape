@@ -377,9 +377,33 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(processor).to be_valid
       end
 
-      it 'does not put the component samples in the tubes' do
-        processor.run(tag_group)
-        expect(upload.rows.flat_map { |row| row.asset.aliquots }).to be_empty
+      context 'when run' do
+        # Each tube holds exactly one aliquot: its compound sample's.
+        let(:compounds) do
+          rows_by_tube.map do |rows|
+            rows.first.asset.aliquots.reload.sole.sample
+          end
+        end
+
+        before { processor.run(tag_group) }
+
+        it 'is processed' do
+          expect(processor).to be_processed
+        end
+
+        it 'makes each compound sample from the component samples of a tube' do
+          expect(compounds.map { |compound| compound.component_samples.to_set })
+            .to eq(rows_by_tube.map { |rows| rows.to_set(&:sample) })
+        end
+
+        it 'stores the tag of each component sample on its link' do
+          links = compounds.flat_map(&:joins_as_compound_sample)
+          tags = upload.rows.to_h do |row|
+            [row.sample, row.value('component_tag_sequence')]
+          end
+          expect(links.to_h { |link| [link.component_sample, link.tag.oligo] })
+            .to eq(tags)
+        end
       end
 
       it 'is not valid when a barcode is used for more than one tube' do

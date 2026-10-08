@@ -10,8 +10,56 @@ module SampleManifestExcel
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
+        TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+        LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
+
+        # After the component samples, creates a compound sample for each tube
+        # with filled rows. Blank rows are not in the upload, so a blank tube
+        # gets no compound sample.
+        def run(tag_group)
+          super
+          create_compound_samples if sample_manifest_updated?
+        end
+
+        def processed?
+          super && compound_samples_created?
+        end
+
+        def compound_samples_created?
+          @compound_samples_created || false
+        end
 
         private
+
+        def create_compound_samples
+          upload.rows.group_by(&:asset).each do |receptacle, rows|
+            build_compound_sample(receptacle, rows)
+          end
+          @compound_samples_created = true
+        rescue ActiveRecord::RecordInvalid => e
+          @compound_samples_created = log_error_and_return_false(e.message)
+        end
+
+        def build_compound_sample(receptacle, rows)
+          SampleManifest::CompoundSampleBuilder.new(
+            study: upload.sample_manifest.study,
+            receptacle: receptacle,
+            tags_by_component: rows.to_h { |row| [row.sample, tag_of(row)] },
+            library_type: library_type_of(rows.first)
+          ).build!
+        end
+
+        def tag_of(row)
+          field_of(row, TAG_FIELD)&.tag
+        end
+
+        def library_type_of(row)
+          field_of(row, LIBRARY_TYPE_FIELD)&.value
+        end
+
+        def field_of(row, field_class)
+          row.specialised_fields.find { |field| field.is_a?(field_class) }
+        end
 
         # The rows of a tube share its barcode. So instead of each row having
         # a different barcode, a barcode must belong to only one tube and a
