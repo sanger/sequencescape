@@ -266,9 +266,16 @@ module SampleManifestExcel
       end
 
       def check_primary_receptacle
+        return unless samples_in_receptacles?
         return if sample.primary_receptacle.present?
 
         errors.add(:base, "#{row_title} Does not have a primary receptacle.")
+      end
+
+      # False for compound sample manifests: their component samples are not
+      # put into the receptacles, so they have no primary receptacle.
+      def samples_in_receptacles?
+        manifest_asset.sample_manifest.core_behaviour.samples_in_receptacles?
       end
 
       def check_specialised_fields(exclude_fields)
