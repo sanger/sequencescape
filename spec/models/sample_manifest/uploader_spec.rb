@@ -658,6 +658,28 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             reuploader.run!
             expect(first_tube_links.map(&:tag)).to include(new_tag)
           end
+
+          context 'when re-uploaded' do
+            let(:new_component) do
+              filled_rows_by_tube.first[new_row_index].sample
+            end
+
+            before { reuploader.run! }
+
+            it 'creates the new component sample without an aliquot' do
+              expect(new_component.aliquots).to be_empty
+            end
+
+            it 'stores the metadata of the new component sample' do
+              expect(new_component.sample_metadata.supplier_name)
+                .to eq(test_data[:supplier_name])
+            end
+
+            it 'links the new component sample to its tube compound sample' do
+              expect(new_component.compound_samples)
+                .to eq([compound_aliquots.first.sample])
+            end
+          end
         end
       end
     end
