@@ -70,4 +70,20 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
   it 'does not copy the metadata the component samples differ in' do
     expect(compound.sample_metadata.sample_taxon_id).to be_nil
   end
+
+  describe '#update_shared_metadata!' do
+    let(:metadata) { compound.reload.sample_metadata }
+
+    it 'takes the corrected metadata the component samples share' do
+      components.each { |c| c.sample_metadata.update!(supplier_name: 'POOL-2') }
+      builder.update_shared_metadata!(compound)
+      expect(metadata.supplier_name).to eq('POOL-2')
+    end
+
+    it 'clears the metadata the component samples no longer share' do
+      components.first.sample_metadata.update!(sample_common_name: 'Mouse')
+      builder.update_shared_metadata!(compound)
+      expect(metadata.sample_common_name).to be_nil
+    end
+  end
 end
