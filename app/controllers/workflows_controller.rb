@@ -59,16 +59,24 @@ class WorkflowsController < ApplicationController
         return false
       end
 
-      ActiveRecord::Base.transaction do
-        task_success, task_message = @task.do_task(self, params, current_user)
-        if task_success
-          # Task completed, start the batch is necessary and display the next one
-          start_batch
-          @stage += 1
-          params[:id] = @stage
-          @task = @workflow.tasks[@stage]
+      begin
+        ActiveRecord::Base.transaction do
+          task_success, task_message = @task.do_task(self, params, current_user)
+          if task_success
+            # Task completed, start the batch is necessary and display the next one
+            start_batch
+            @stage += 1
+            params[:id] = @stage
+            @task = @workflow.tasks[@stage]
+          end
+          flash[task_success ? :notice : :alert] ||= task_message if task_message
         end
-        flash[task_success ? :notice : :alert] ||= task_message if task_message
+      rescue Request::SampleCompoundAliquotTransfer::Error => e
+        # The compound sample could not be created, eg. because the source samples
+        # share the same tag1/tag2/tag_depth combination. Display the error to the
+        # user instead of raising a 500.
+        task_success = false
+        flash[:alert] = "Unable to complete this task: #{e.message}"
       end
     end
 
