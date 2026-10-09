@@ -104,75 +104,155 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     ]
   end
 
-  it 'is not valid without row number' do
-    expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
-    expect(described_class.new(data:, columns:)).not_to be_valid
+  context 'when validating' do
+    it 'is valid with all required data' do
+      expect(described_class.new(number: 1, data: data, columns: columns)).to be_valid
+    end
+
+    it 'is not valid without row number' do
+      expect(described_class.new(number: 'one', data: data, columns: columns)).not_to be_valid
+      expect(described_class.new(data:, columns:)).not_to be_valid
+    end
+
+    it 'is not valid without some data' do
+      expect(described_class.new(number: 1, columns: columns)).not_to be_valid
+    end
+
+    it 'is not valid without some columns' do
+      expect(described_class.new(number: 1, data: data)).not_to be_valid
+    end
+
+    it 'is not valid without a primary receptacle or sample' do
+      data[1] = 2
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
+      data[1] = 999_999
+      row = described_class.new(number: 1, data: data, columns: columns)
+      expect(row.validate_sample(no_overrides)).to be false
+      expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
+    end
+
+    it 'is not valid when the sample has no primary receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      allow(row.sample).to receive(:primary_receptacle).and_return(nil)
+      row.validate_sample(no_overrides)
+      expect(row.errors.full_messages)
+        .to include('Row 1 - Does not have a primary receptacle.')
+    end
+
+    it 'is not valid unless all specialised fields are valid' do
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
+      data[5] = 'Dodgy library type'
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
+      data[5] = 'My New Library Type'
+      data[6] = 'one'
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
+    end
+
+    it 'is not valid unless metadata is valid' do
+      described_class.new(number: 1, data: data, columns: columns)
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
+      data[16] = 'Cell-line'
+      expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
+    end
   end
 
-  it 'is not valid without some data' do
-    expect(described_class.new(number: 1, columns: columns)).not_to be_valid
+  describe '#value' do
+    it 'returns the value for the specified key' do
+      expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
+        sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
+      )
+    end
   end
 
-  it 'is not valid without some columns' do
-    expect(described_class.new(number: 1, data: data)).not_to be_valid
+  describe '#at' do
+    it 'returns the value at the specified index (offset by 1)' do
+      expect(described_class.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
+    end
+
+    it 'strips spaces, including non-breaking ones (\u00A0)' do
+      row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
+      tag_cell_content = data_with_spaces[2]
+      tag_cell_content_retrieved = row.at(3)
+      expect(tag_cell_content.bytes[0]).to eq(32)
+      expect(tag_cell_content.bytes[10]).to eq(160)
+      expect(tag_cell_content_retrieved).to eq('ATTACTCG')
+    end
+
+    it 'strips spaces' do
+      row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
+      reference_genome_cell_content = data_with_spaces[4]
+      reference_genome_cell_content_retrieved = row.at(5)
+      volume_cell_content = data_with_spaces[6]
+      volume_cell_content_retrieved = row.at(7)
+      empty_cell_content = data_with_spaces[3]
+      empty_cell_content_retrieved = row.at(4)
+      expect(reference_genome_cell_content_retrieved).to eq(reference_genome_cell_content)
+      expect(volume_cell_content_retrieved).to eq(volume_cell_content)
+      expect(empty_cell_content_retrieved).to eq(empty_cell_content)
+    end
   end
 
-  it '#value returns value for specified key' do
-    expect(described_class.new(number: 1, data: data, columns: columns).value(:sanger_sample_id)).to eq(
-      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id
-    )
+  describe '#first?' do
+    it 'returns true for the first row' do
+      expect(described_class.new(number: 1, data: data, columns: columns)).to be_first
+    end
   end
 
-  it '#at returns value at specified index (offset by 1)' do
-    expect(described_class.new(number: 1, data: data, columns: columns).at(3)).to eq('AA')
+  describe '#empty?' do
+    it 'knows if it is empty' do
+      empty_data = [
+        sample_manifest.labware.first.human_barcode,
+        sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        '',
+        sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
+        ''
+      ]
+      row = described_class.new(number: 1, data: data, columns: columns)
+      empty_row = described_class.new(number: 1, data: empty_data, columns: columns)
+      expect(row.empty?).to be false
+      expect(empty_row.empty?).to be true
+    end
   end
 
-  it '#at strips down spaces including non-breaking ones (\u00A0)' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
-    tag_cell_content = data_with_spaces[2]
-    tag_cell_content_retrieved = row.at(3)
-    expect(tag_cell_content.bytes[0]).to eq(32)
-    expect(tag_cell_content.bytes[10]).to eq(160)
-    expect(tag_cell_content_retrieved).to eq('ATTACTCG')
-  end
-
-  it '#at strips down spaces' do
-    row = described_class.new(number: 1, data: data_with_spaces, columns: columns)
-    reference_genome_cell_content = data_with_spaces[4]
-    reference_genome_cell_content_retrieved = row.at(5)
-    volume_cell_content = data_with_spaces[6]
-    volume_cell_content_retrieved = row.at(7)
-    empty_cell_content = data_with_spaces[3]
-    empty_cell_content_retrieved = row.at(4)
-    expect(reference_genome_cell_content_retrieved).to eq(reference_genome_cell_content)
-    expect(volume_cell_content_retrieved).to eq(volume_cell_content)
-    expect(empty_cell_content_retrieved).to eq(empty_cell_content)
-  end
-
-  it '#first? is true if this is the first row' do
-    expect(described_class.new(number: 1, data: data, columns: columns)).to be_first
-  end
-
-  it 'is not valid without a primary receptacle or sample' do
-    data[1] = 2
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
-    data[1] = 999_999
-    row = described_class.new(number: 1, data: data, columns: columns)
-    expect(row.validate_sample(no_overrides)).to be false
-    expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
-  end
-
-  it 'returns the labware of the sample receptacle' do
-    row = described_class.new(number: 1, data: data, columns: columns)
-    expect(row.labware).to eq(row.sample.primary_receptacle.labware)
-  end
-
-  it 'is not valid when the sample has no primary receptacle' do
-    row = described_class.new(number: 1, data: data, columns: columns)
-    allow(row.sample).to receive(:primary_receptacle).and_return(nil)
-    row.validate_sample(no_overrides)
-    expect(row.errors.full_messages)
-      .to include('Row 1 - Does not have a primary receptacle.')
+  describe '#labware' do
+    it 'returns the labware of the sample receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      expect(row.labware).to eq(row.sample.primary_receptacle.labware)
+    end
   end
 
   context 'when the manifest is for compound tubes' do
@@ -210,59 +290,45 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     end
   end
 
-  it 'is not valid unless all specialised fields are valid' do
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
-    data[5] = 'Dodgy library type'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
-    data[5] = 'My New Library Type'
-    data[6] = 'one'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
-  end
+  context 'when updating' do
+    it 'updates the aliquot with the specialised fields' do
+      sample_count = Sample.count
+      row = described_class.new(number: 1, data: data, columns: columns)
+      row.sample
+      row.update_specialised_fields(tag_group, exclude_none)
+      aliquot = row.aliquots.first
+      expect(Sample.count - sample_count).to eq(1)
+      expect(aliquot.tag.oligo).to eq('AA')
+      expect(aliquot.tag2.oligo).to eq('CC')
+      expect(aliquot.insert_size_from).to eq(200)
+      expect(aliquot.insert_size_to).to eq(1500)
+    end
 
-  it 'is not valid unless metadata is valid' do
-    described_class.new(number: 1, data: data, columns: columns)
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
-    data[16] = 'Cell-line'
-    expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be false
-  end
+    it 'updates the sample metadata' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      row.update_metadata_fields(exclude_none)
+      expect(row.metadata).to have_attributes(
+        concentration: '1',
+        gender: 'Unknown',
+        dna_source: 'Cell Line',
+        date_of_sample_collection: 'Nov-16',
+        date_of_sample_extraction: 'Nov-16',
+        sample_purified: 'No',
+        concentration_determined_by: 'OTHER',
+        sample_public_name: 'SCG--1222_A01',
+        sample_taxon_id: 9606,
+        sample_common_name: 'Homo sapiens',
+        donor_id: '11',
+        phenotype: 'Unknown'
+      )
+    end
 
-  it 'updates the aliquot with the specialised fields' do
-    sample_count = Sample.count
-    row = described_class.new(number: 1, data: data, columns: columns)
-    row.sample
-    row.update_specialised_fields(tag_group, exclude_none)
-    aliquot = row.aliquots.first
-    expect(Sample.count - sample_count).to eq(1)
-    expect(aliquot.tag.oligo).to eq('AA')
-    expect(aliquot.tag2.oligo).to eq('CC')
-    expect(aliquot.insert_size_from).to eq(200)
-    expect(aliquot.insert_size_to).to eq(1500)
-  end
-
-  it 'updates the sample metadata' do
-    row = described_class.new(number: 1, data: data, columns: columns)
-    row.update_metadata_fields(exclude_none)
-    expect(row.metadata).to have_attributes(
-      concentration: '1',
-      gender: 'Unknown',
-      dna_source: 'Cell Line',
-      date_of_sample_collection: 'Nov-16',
-      date_of_sample_extraction: 'Nov-16',
-      sample_purified: 'No',
-      concentration_determined_by: 'OTHER',
-      sample_public_name: 'SCG--1222_A01',
-      sample_taxon_id: 9606,
-      sample_common_name: 'Homo sapiens',
-      donor_id: '11',
-      phenotype: 'Unknown'
-    )
-  end
-
-  it 'updates the sample' do
-    row = described_class.new(number: 1, data: data, columns: columns)
-    row.update_sample(tag_group, no_overrides)
-    row.metadata
-    expect(row).to be_sample_updated
+    it 'updates the sample' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      row.update_sample(tag_group, no_overrides)
+      row.metadata
+      expect(row).to be_sample_updated
+    end
   end
 
   context 'when over-writable fields are expected but blank' do
@@ -301,54 +367,6 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       row.validate_sample({ samples: true, exclude_fields: [:concentration] })
       expect(row.errors.full_messages).not_to include('Row 1 - Concentration is expected but blank.')
     end
-  end
-
-  it 'knows if it is empty' do
-    empty_data = [
-      sample_manifest.labware.first.human_barcode,
-      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      sample_manifest.labware.first.sample_manifest_assets.first.sanger_sample_id,
-      ''
-    ]
-    row = described_class.new(number: 1, data: data, columns: columns)
-    empty_row = described_class.new(number: 1, data: empty_data, columns: columns)
-    expect(row.empty?).to be false
-    expect(empty_row.empty?).to be true
   end
 
   context 'when there are tag columns to link' do

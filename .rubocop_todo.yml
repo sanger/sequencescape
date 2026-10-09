@@ -249,7 +249,6 @@ Lint/UselessAssignment:
 Lint/UselessOr:
   Exclude:
     - 'app/models/cherrypick_task/control_locator.rb'
-    - 'app/models/qcable/statemachine.rb'
     - 'app/models/ui_helper/summary.rb'
 
 # Offense count: 8
@@ -2036,7 +2035,6 @@ Style/PreferredHashMethods:
 Style/Proc:
   Exclude:
     - 'app/models/lib_pool_norm_tube_generator.rb'
-    - 'app/models/qcable/statemachine.rb'
 
 # Offense count: 19
 # This cop supports unsafe autocorrection (--autocorrect-all).
