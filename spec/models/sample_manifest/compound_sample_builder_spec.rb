@@ -71,6 +71,24 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
     expect(compound.sample_metadata.sample_taxon_id).to be_nil
   end
 
+  context 'with component samples with the same tag' do
+    let(:same_tag_components) { create_list(:sample, 2) }
+    let(:same_tag_builder) do
+      described_class.new(
+        study: study,
+        receptacle: create(:empty_sample_tube).receptacle,
+        tags_by_component: same_tag_components.index_with { tags.first }
+      )
+    end
+
+    it 'rejects them' do
+      names = same_tag_components.map(&:name).to_sentence
+      expect { same_tag_builder.build! }.to raise_error(
+        ActiveRecord::RecordInvalid, /#{names} have the same component tag/
+      )
+    end
+  end
+
   describe '#update!' do
     let(:metadata) { compound.reload.sample_metadata }
     let(:links) { compound.reload.joins_as_compound_sample }
@@ -91,6 +109,26 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
       update_with(components.first => new_tag)
       expect(links.find_by(component_sample: components.first).tag)
         .to eq(new_tag)
+    end
+
+    it 'rejects a new component sample with a tag the compound uses' do
+      new_component = create(:sample)
+      expect { update_with(new_component => tags.first) }.to raise_error(
+        ActiveRecord::RecordInvalid,
+        /#{components.first.name} and #{new_component.name} have the same/
+      )
+    end
+
+    it 'rejects a corrected tag another component sample uses' do
+      expect { update_with(components.first => tags.second) }
+        .to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'lets two component samples swap their tags' do
+      swapped = components.zip(tags.reverse).to_h
+      update_with(swapped)
+      expect(links.to_h { |link| [link.component_sample, link.tag] })
+        .to eq(swapped)
     end
 
     it 'keeps the component samples it is not given' do
