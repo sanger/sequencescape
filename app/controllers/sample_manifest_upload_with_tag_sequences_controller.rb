@@ -6,16 +6,19 @@ class SampleManifestUploadWithTagSequencesController < ApplicationController
     prepare_manifest_pagination
   end
 
-  def create
+  def create # rubocop:disable Metrics/MethodLength
     return error('No file attached') if params[:upload].blank?
 
     if upload_manifest
       set_upload_flash_message
     else
-      error('Your sample manifest couldn\'t be uploaded.')
+      error('The sample manifest couldn\'t be uploaded.')
     end
+  rescue CSV::InvalidEncodingError => e
+    Rails.logger.error(e.message)
+    error("The sample manifest contained invalid encoding and could not be uploaded: #{e.message}")
   rescue AccessionService::AccessionValidationFailed => e
-    error("Your sample manifest contained invalid data and could not be uploaded: #{e.message}")
+    error("The sample manifest contained invalid data and could not be uploaded: #{e.message}")
   end
 
   def rows_with_warnings

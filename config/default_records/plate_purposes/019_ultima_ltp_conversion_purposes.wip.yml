@@ -1,0 +1,10 @@
+---
+# Created in Limber by aggregating Illumina library plates, and normalised for
+# the Ultima LTP conversion. The conversion submission is made on this plate,
+# so it must exist before it can be listed in the request type acceptable
+# purposes.
+ULTP DNA Norm:
+  input_plate: false
+  stock_plate: false
+  cherrypickable_target: false
+  size: 96
