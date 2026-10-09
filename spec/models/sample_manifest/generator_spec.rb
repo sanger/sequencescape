@@ -125,6 +125,24 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     expect(described_class.new(attributes, user, configuration)).not_to be_print_job_required
   end
 
+  context 'with a compound sample tube template' do
+    let(:template) { 'kinnex_compound_sample_tube' }
+    let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+    let(:generator) { described_class.new(attributes, user, configuration) }
+
+    it 'rejects the template while the feature flag is off' do
+      Flipper.disable(flag)
+      generator.valid?
+      expect(generator.errors.full_messages)
+        .to include("#{template} is not a valid template")
+    end
+
+    it 'accepts the template when the feature flag is on' do
+      Flipper.enable(flag)
+      expect(generator).to be_valid
+    end
+  end
+
   context 'with rows_per_well set' do
     let(:template) { 'pools_plate' }
 

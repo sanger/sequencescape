@@ -131,6 +131,14 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       expect(row.errors.full_messages).to include('Row 1 - Sample can\'t be blank.')
     end
 
+    it 'is not valid when the sample has no primary receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      allow(row.sample).to receive(:primary_receptacle).and_return(nil)
+      row.validate_sample(no_overrides)
+      expect(row.errors.full_messages)
+        .to include('Row 1 - Does not have a primary receptacle.')
+    end
+
     it 'is not valid unless all specialised fields are valid' do
       expect(described_class.new(number: 1, data: data, columns: columns).validate_sample(no_overrides)).to be true
       data[5] = 'Dodgy library type'
@@ -237,6 +245,48 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
       empty_row = described_class.new(number: 1, data: empty_data, columns: columns)
       expect(row.empty?).to be false
       expect(empty_row.empty?).to be true
+    end
+  end
+
+  describe '#labware' do
+    it 'returns the labware of the sample receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      expect(row.labware).to eq(row.sample.primary_receptacle.labware)
+    end
+  end
+
+  context 'when the manifest is for compound tubes' do
+    let(:columns) do
+      configuration.columns.all.extract(%w[sanger_sample_id supplier_name])
+    end
+    let(:sample_manifest) do
+      create(
+        :sample_manifest,
+        asset_type: 'compound_tube',
+        count: 1,
+        purpose: Tube::Purpose.standard_sample_tube
+      )
+    end
+    let(:sanger_sample_id) do
+      sample_manifest.sample_manifest_assets.first.sanger_sample_id
+    end
+    let(:data) { [sanger_sample_id, 'SUPPLIER-NAME'] }
+
+    before do
+      handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+      create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 2)
+      sample_manifest.generate
+    end
+
+    it 'is valid without a primary receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      expect(row.validate_sample(no_overrides)).to be true
+    end
+
+    it 'returns the tube of the manifest row as its labware' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      tube = sample_manifest.sample_manifest_assets.first.asset.labware
+      expect(row.labware).to eq(tube)
     end
   end
 

@@ -19,6 +19,10 @@ module SampleManifest::UnspecifiedBehaviour
       raise StandardError, 'UnspecifiedBehaviour can not be used to build manifests'
     end
 
+    def samples_in_receptacles?
+      true
+    end
+
     def generate_sample_and_aliquot(sanger_sample_id, asset)
       raise StandardError,
             # rubocop:todo-next Layout/LineLength

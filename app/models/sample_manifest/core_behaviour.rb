@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 module SampleManifest::CoreBehaviour
-  BEHAVIOURS = %w[1dtube plate multiplexed_library library library_plate tube_rack].freeze
+  BEHAVIOURS = %w[
+    1dtube plate multiplexed_library library library_plate tube_rack
+    compound_tube
+  ].freeze
+
+  # Asset types not released yet, with the feature flags that enable them.
+  FLAGGED_ASSET_TYPES = {
+    'compound_tube' => :y26_147_2_enable_compound_sample_tube_manifests
+  }.freeze
 
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
@@ -29,6 +37,13 @@ module SampleManifest::CoreBehaviour
 
     def details(&)
       details_array.each(&)
+    end
+
+    # Whether the samples are put into the manifest's receptacles on upload.
+    # False for compound sample manifests: only the compound sample is in the
+    # receptacle, not its component samples.
+    def samples_in_receptacles?
+      true
     end
   end
 
@@ -82,8 +97,13 @@ module SampleManifest::CoreBehaviour
     base.class_eval do
       delegate :details, :details_array, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
 
+      # An asset type behind a feature flag is supported only when the flag
+      # is on.
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || BEHAVIOURS.include?(asset_type)
+        return true if asset_type.nil?
+
+        flag = FLAGGED_ASSET_TYPES[asset_type]
+        BEHAVIOURS.include?(asset_type) && (flag.nil? || Flipper.enabled?(flag))
       end
     end
   end
@@ -110,6 +130,8 @@ module SampleManifest::CoreBehaviour
       'LibraryTubeBehaviour'
     when 'library_plate'
       'LibraryPlateBehaviour'
+    when 'compound_tube'
+      'CompoundTubeBehaviour'
     when nil
       'UnspecifiedBehaviour'
     else

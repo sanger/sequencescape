@@ -18,6 +18,39 @@ RSpec.describe SampleManifest, :sample_manifest do
     end
   end
 
+  describe '#core_behaviour' do
+    asset_types = SampleManifest::CoreBehaviour::BEHAVIOURS - ['compound_tube']
+
+    (asset_types + [nil]).each do |asset_type|
+      it "puts the samples in receptacles for #{asset_type.inspect}" do
+        manifest = described_class.new(asset_type:)
+        expect(manifest.core_behaviour).to be_samples_in_receptacles
+      end
+    end
+  end
+
+  describe '.supported_asset_type?' do
+    let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+
+    it 'supports an asset type without a feature flag' do
+      expect(described_class).to be_supported_asset_type('1dtube')
+    end
+
+    it 'does not support an unknown asset type' do
+      expect(described_class).not_to be_supported_asset_type('unknown')
+    end
+
+    it 'does not support compound tubes while the feature flag is off' do
+      Flipper.disable(flag)
+      expect(described_class).not_to be_supported_asset_type('compound_tube')
+    end
+
+    it 'supports compound tubes when the feature flag is on' do
+      Flipper.enable(flag)
+      expect(described_class).to be_supported_asset_type('compound_tube')
+    end
+  end
+
   describe '#generate' do
     let(:manifest) { create(:sample_manifest, study:, count:, asset_type:, purpose:) }
     let(:purpose) { nil }

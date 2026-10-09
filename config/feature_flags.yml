@@ -26,3 +26,7 @@ y26_170_sapio_studies_endpoint: Enables the Sapio studies endpoint
 y26_172_enable_externally_managed_study_restrictions: Blocks UI/API updates to externally_managed studies except Integration Hub and explicit console bypass
 y26_192_prevent_ui_study_creation: Prevents users from creating studies in the UI, only allowing study creation via API
 y26_245_sapio_study_upsert: Enables upsert behaviour on the Sapio study creation endpoint for uuids that already exist
+
+# Kinnex compound sample manifests
+y26_147_2_enable_compound_sample_tube_manifests: >-
+  Enables creating compound sample tube manifests, e.g. Kinnex

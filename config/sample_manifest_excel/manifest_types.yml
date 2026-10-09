@@ -884,3 +884,26 @@ tube_extraction:
     - :sample_ebi_accession_number
     - :donor_id
     - :phenotype
+# Each tube holds one compound sample made from several component samples,
+# one row each. The number of rows per tube comes from the number of tags in
+# the component tag group (see SampleManifest::CompoundTubeBehaviour).
+kinnex_compound_sample_tube:
+  heading: "Kinnex Compound Sample Tube"
+  asset_type: "compound_tube"
+  columns:
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :component_tag_sequence
+    - :library_type_required
+    - :donor_id
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_description

@@ -103,10 +103,21 @@ class Sdb::SampleManifestsController < Sdb::BaseController # rubocop:todo Metric
     @purposes = @sample_manifest.acceptable_purposes.pluck(:name, :id)
     @rack_purposes = @sample_manifest.acceptable_rack_purposes.pluck(:name, :id) if params[:asset_type] == 'tube_rack'
     @barcode_printers = @sample_manifest.applicable_barcode_printers.pluck(:name)
-    @templates = SampleManifestExcel.configuration.manifest_types.by_asset_type(params[:asset_type]).to_a
+    @templates = templates_for(params[:asset_type])
     return unless SampleManifest.tube_asset_types.include?(params[:asset_type])
 
     @barcode_types = Rails.application.config.tube_manifest_barcode_config[:barcode_type_labels].values.sort
+  end
+
+  # The templates for the asset type, or all of them without one. Templates
+  # for an asset type behind a feature flag that is off are left out.
+  def templates_for(asset_type)
+    SampleManifestExcel.configuration.manifest_types
+      .by_asset_type(asset_type)
+      .filter_map do |_name, template|
+        supported = SampleManifest.supported_asset_type?(template.asset_type)
+        template.to_a if supported
+      end
   end
 
   def new_manifest_params
