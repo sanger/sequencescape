@@ -75,6 +75,19 @@ module Api
         @model.plate = Plate.with_uuid(value).first
       end
 
+      # @!attribute [w] replace_tags
+      #   A flag indicating whether the layout replaces the existing tags of
+      #   the aliquots. Without a tag2 group, it removes their existing tag2
+      #   instead of keeping it. Used when tags are added to aliquots that are
+      #   already tagged, e.g. Ultima tags on Illumina libraries.
+      #   @param value [Boolean] Whether to replace the existing tags.
+      #   @return [Void]
+      attribute :replace_tags, writeonly: true
+
+      def replace_tags=(value)
+        @model.replace_tags = ActiveModel::Type::Boolean.new.cast(value)
+      end
+
       # @!attribute [rw] substitutions
       #   A hash of substitutions to be applied during the layout creation, mapping placeholders to values.
       #   @return [Hash] The substitutions for the tag layout.

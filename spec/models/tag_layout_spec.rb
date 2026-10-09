@@ -1033,4 +1033,51 @@ describe TagLayout do
       end
     end
   end
+
+  # Tags added to a plate whose aliquots already have tags, e.g. Ultima tags on
+  # Illumina libraries. With replace_tags, the aliquots have only the new tags.
+  context 'when the aliquots already have tags' do
+    let(:plate) { create(:plate_with_tagged_wells, sample_count: 8) }
+    let(:walking_by) { 'wells of plate' }
+    let(:direction) { 'column' }
+
+    def create_tag_layout(**)
+      create(:tag_layout, plate:, user:, tag_group:, tag2_group:, walking_by:, direction:, **)
+    end
+
+    def tags_of(tag_type)
+      generate_tag_layout(plate.reload, tag_type).values.flatten
+    end
+
+    context 'without a tag2 group' do
+      it 'keeps the existing tag2 by default' do
+        existing_tag2s = tags_of(:tag2)
+        create_tag_layout
+
+        expect(tags_of(:tag2)).to eq existing_tag2s
+      end
+
+      it 'applies the new tags when replacing the tags' do
+        create_tag_layout(replace_tags: true)
+
+        expect(tags_of(:tag)).to all(have_attributes(tag_group_id: tag_group.id))
+      end
+
+      it 'removes the existing tag2 when replacing the tags' do
+        create_tag_layout(replace_tags: true)
+
+        expect(tags_of(:tag2)).to all(be_nil)
+      end
+    end
+
+    context 'with a tag2 group' do
+      let(:tag2_group) { create(:tag_group, tag_count:) }
+
+      it 'applies the new tag2 when replacing the tags' do
+        create_tag_layout(replace_tags: true)
+
+        expect(tags_of(:tag2)).to all(have_attributes(tag_group_id: tag2_group.id))
+      end
+    end
+  end
 end
