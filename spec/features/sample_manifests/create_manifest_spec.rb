@@ -61,6 +61,31 @@ describe 'SampleManifest controller', :sample_manifest do
     it_behaves_like 'a plate manifest'
   end
 
+  context 'when the compound sample tube feature flag is off' do
+    before do
+      Flipper.disable(:y26_147_2_enable_compound_sample_tube_manifests)
+      page.refresh
+    end
+
+    it 'has no link to create compound sample tube manifests' do
+      expect(page)
+        .to have_no_link('Create manifest for compound sample tubes')
+    end
+  end
+
+  context 'when the compound sample tube feature flag is on' do
+    before do
+      Flipper.enable(:y26_147_2_enable_compound_sample_tube_manifests)
+      page.refresh
+    end
+
+    it 'links to the compound sample tube manifest templates' do
+      click_link('Create manifest for compound sample tubes')
+      options = ['Select a template', 'Kinnex Compound Sample Tube']
+      expect(page).to have_select('Template', options:)
+    end
+  end
+
   context 'without a type specified' do
     let!(:created_purpose) { create(:plate_purpose, stock_plate: true) }
     let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
