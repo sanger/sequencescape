@@ -439,6 +439,36 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         change_value(second_tube_rows.first, 'component_tag_sequence', tag)
         expect(processor).to be_valid
       end
+
+      it 'is not valid when a tube has two library types' do
+        first_row, second_row = rows_by_tube.first
+        change_value(second_row, 'library_type', 'Another library type')
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Library type differs from row " \
+          "#{first_row.number} of the same tube."
+        )
+      end
+
+      it 'is not valid when a tube has two retention instructions' do
+        first_row, second_row = rows_by_tube.first
+        change_value(
+          second_row, 'retention_instruction', 'Destroy after 2 years'
+        )
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Retention instruction differs from row " \
+          "#{first_row.number} of the same tube."
+        )
+      end
+
+      it 'is valid when each tube has its own library type and retention' do
+        rows_by_tube.second.each do |row|
+          change_value(row, 'library_type', 'Another library type')
+          change_value(row, 'retention_instruction', 'Destroy after 2 years')
+        end
+        expect(processor).to be_valid
+      end
     end
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
