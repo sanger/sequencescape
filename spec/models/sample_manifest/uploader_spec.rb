@@ -747,6 +747,35 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
             end
           end
         end
+
+        context 'with a new row using a tag kept without an override' do
+          # The spreadsheet has no repeated tag: the first row shows another
+          # tag. But without an override, the first component sample keeps
+          # its tag, which the new row also uses.
+          let(:override_samples) { false }
+          let(:new_row_index) { components_per_tube.first }
+          let(:reupload_file) do
+            set_cell(0, :component_tag_sequence, tags.last.oligo)
+            values = test_data.merge(component_tag_sequence: tags.first.oligo)
+            values.each { |name, value| set_cell(new_row_index, name, value) }
+            super()
+          end
+
+          it 'does not create the component sample of the new row' do
+            expect { reuploader.run! }.not_to change(Sample, :count)
+          end
+
+          it 'does not process the upload' do
+            reuploader.run!
+            expect(reuploader).not_to be_processed
+          end
+
+          it 'reports the component samples with the same tag' do
+            reuploader.run!
+            expect(reuploader.errors.full_messages)
+              .to include(/have the same component tag sequence/)
+          end
+        end
       end
     end
   end
