@@ -5,6 +5,11 @@ module SampleManifest::CoreBehaviour
     compound_tube
   ].freeze
 
+  # Asset types not released yet, with the feature flags that enable them.
+  FLAGGED_ASSET_TYPES = {
+    'compound_tube' => :y26_147_2_enable_compound_sample_tube_manifests
+  }.freeze
+
   # Include in cores which exhibit the default behaviour
   module NoSpecializedValidation
     def validate_specialized_fields(*args)
@@ -92,8 +97,13 @@ module SampleManifest::CoreBehaviour
     base.class_eval do
       delegate :details, :details_array, :validate_specialized_fields, :specialized_fields, to: :core_behaviour
 
+      # An asset type behind a feature flag is supported only when the flag
+      # is on.
       def self.supported_asset_type?(asset_type)
-        asset_type.nil? || BEHAVIOURS.include?(asset_type)
+        return true if asset_type.nil?
+
+        flag = FLAGGED_ASSET_TYPES[asset_type]
+        BEHAVIOURS.include?(asset_type) && (flag.nil? || Flipper.enabled?(flag))
       end
     end
   end
