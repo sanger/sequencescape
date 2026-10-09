@@ -7,6 +7,7 @@ module SampleManifestExcel
       # Processes the upload of a compound sample tube manifest, e.g. Kinnex.
       # Each row is a component sample, and all the rows of a tube show that
       # tube's barcode.
+      # rubocop:todo-next Metrics/ClassLength
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
@@ -15,7 +16,15 @@ module SampleManifestExcel
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
 
+        # Values for the whole tube, with their labels for errors.
+        TUBE_FIELDS = {
+          LIBRARY_TYPE_FIELD => 'Library type',
+          SequencescapeExcel::SpecialisedField::RetentionInstruction =>
+            'Retention instruction'
+        }.freeze
+
         validate :check_tags_unique_in_tube
+        validate :check_tube_values_consistent
 
         # After the component samples, creates a compound sample for each tube
         # with filled rows. Blank rows are not in the upload, so a blank tube
@@ -112,14 +121,9 @@ module SampleManifestExcel
 
         # Each row with a barcode and a tube of the manifest, with both.
         def barcoded_rows
-          return [] unless upload.respond_to?(:rows)
-
-          upload.rows.filter_map do |row|
-            next if row.columns.blank? || row.data.blank?
-
+          tube_rows.filter_map do |row, tube_id|
             barcode = row.value('sanger_tube_id')
-            tube_id = tube_id_for(row.value('sanger_sample_id'))
-            [row, barcode, tube_id] if barcode && tube_id
+            [row, barcode, tube_id] if barcode
           end
         end
 
@@ -142,14 +146,43 @@ module SampleManifestExcel
 
         # Each row with a tag and a tube of the manifest, with both.
         def tagged_rows
+          tube_rows.filter_map do |row, tube_id|
+            tag = tag_of(row)
+            [row, tube_id, tag] if tag
+          end
+        end
+
+        # The library type and the retention instruction are for the whole
+        # tube, so all the rows of a tube must have the same values.
+        def check_tube_values_consistent
+          TUBE_FIELDS.each do |field_class, label|
+            check_same_value_in_tube(field_class, label)
+          end
+        end
+
+        def check_same_value_in_tube(field_class, label)
+          first_rows = {}
+          tube_rows.each do |row, tube_id|
+            value = field_of(row, field_class)&.value
+            next if value.blank?
+
+            first_row, first_value = first_rows[tube_id] ||= [row, value]
+            next if value == first_value
+
+            errors.add(:base, "#{row.row_title} #{label} differs from row " \
+                              "#{first_row.number} of the same tube.")
+          end
+        end
+
+        # Each row with a tube of the manifest, with the tube.
+        def tube_rows
           return [] unless upload.respond_to?(:rows)
 
           upload.rows.filter_map do |row|
-            tag = tag_of(row)
-            next if tag.nil?
+            next if row.columns.blank? || row.data.blank?
 
             tube_id = tube_id_for(row.value('sanger_sample_id'))
-            [row, tube_id, tag] if tube_id
+            [row, tube_id] if tube_id
           end
         end
       end
