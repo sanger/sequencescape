@@ -12,6 +12,9 @@
 # A re-upload updates the compound sample like other manifests update their
 # samples: it adds new component samples, corrects tags and updates the
 # shared metadata. It does not remove component samples.
+#
+# The component samples are told apart by their tags, so a tag can be used
+# only once in a compound sample.
 class SampleManifest::CompoundSampleBuilder
   # Metadata copied to the compound sample when all its components agree.
   SHARED_METADATA = %i[supplier_name sample_common_name sample_taxon_id].freeze
@@ -29,10 +32,12 @@ class SampleManifest::CompoundSampleBuilder
   end
 
   # @return [Sample] the compound sample
+  # @raise [ActiveRecord::RecordInvalid] if a tag is used more than once
   def build!
     ActiveRecord::Base.transaction do
       create_compound_sample.tap do |compound|
         link_components(compound)
+        check_tags_unique!(compound)
         create_aliquot(compound)
       end
     end
@@ -43,9 +48,11 @@ class SampleManifest::CompoundSampleBuilder
   # all its component samples.
   # @param compound [Sample] the compound sample
   # @return [Boolean] true
+  # @raise [ActiveRecord::RecordInvalid] if a tag is used more than once
   def update!(compound)
     ActiveRecord::Base.transaction do
       update_links(compound)
+      check_tags_unique!(compound)
       all_components = compound.component_samples.reload
       compound.sample_metadata.update!(shared_metadata(all_components))
     end
@@ -82,6 +89,22 @@ class SampleManifest::CompoundSampleBuilder
         tag: tag
       )
     end
+  end
+
+  # Checks the tags the compound sample ends up with, after all the links
+  # are made. So two component samples can swap their tags, and a tag kept
+  # without an override, or by a cleared row, is still checked.
+  def check_tags_unique!(compound)
+    links = compound.joins_as_compound_sample.includes(:component_sample)
+    shared = links.select(&:tag_id).group_by(&:tag_id).values.select(&:many?)
+    return if shared.empty?
+
+    shared.each do |shared_links|
+      names = shared_links.map { |link| link.component_sample.name }
+      compound.errors.add(:base, "Component samples #{names.to_sentence} " \
+                                 'have the same component tag sequence')
+    end
+    raise ActiveRecord::RecordInvalid, compound
   end
 
   def create_aliquot(compound)
