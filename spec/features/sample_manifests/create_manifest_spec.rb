@@ -63,14 +63,29 @@ describe 'SampleManifest controller', :sample_manifest do
 
   context 'without a type specified' do
     let!(:created_purpose) { create(:plate_purpose, stock_plate: true) }
+    let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+    let(:kinnex_template) { 'Kinnex Compound Sample Tube' }
 
     it 'indicate the purpose field is used for plates only' do
       visit(new_sample_manifest_path)
       within('#sample_manifest_template') do
-        expect(page).to have_css('option', count: 27)
+        expect(page).to have_css('option', count: 26)
       end
       select(created_purpose.name, from: 'Purpose')
       expect(page).to have_text('Used for plate manifests only')
+    end
+
+    it 'hides compound sample tube templates while the feature flag is off' do
+      Flipper.disable(flag)
+      visit(new_sample_manifest_path)
+      template_field = find_field('Template')
+      expect(template_field).to have_no_css('option', text: kinnex_template)
+    end
+
+    it 'lists compound sample tube templates when the feature flag is on' do
+      Flipper.enable(flag)
+      visit(new_sample_manifest_path)
+      expect(page).to have_select('Template', with_options: [kinnex_template])
     end
   end
 
