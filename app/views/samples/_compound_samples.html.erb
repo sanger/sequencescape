@@ -6,7 +6,8 @@
   <table width='100%'>
     <thead>
       <tr>
-        <th width='70%'></th>
+        <%# Leave room for long oligos when there are tags %>
+        <th width='<%= @compound_tags.any? ? '50%' : '70%' %>'></th>
         <% if @compound_tags.any? %>
           <th>Tag</th>
         <% end %>
@@ -20,7 +21,8 @@
             <%= compound.name || 'Un-named' %>
           </td>
           <% if @compound_tags.any? %>
-            <td>
+            <%# Oligos can be long, e.g. 51 bases for Kinnex %>
+            <td class='text-break'>
               <% if (tag = @compound_tags[compound.id]) %>
                 <%= render partial: 'shared/tag_info', locals: { tag: } %>
               <% end %>
