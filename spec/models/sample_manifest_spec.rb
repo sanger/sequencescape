@@ -27,6 +27,15 @@ RSpec.describe SampleManifest, :sample_manifest do
         expect(manifest.core_behaviour).to be_samples_in_receptacles
       end
     end
+
+    asset_types.each do |asset_type|
+      it "registers stock once per row for #{asset_type.inspect}" do
+        receptacles = [Receptacle.new] * 2
+        manifest = described_class.new(asset_type:)
+        expect(manifest.core_behaviour.stock_receptacles(receptacles))
+          .to eq(receptacles)
+      end
+    end
   end
 
   describe '.supported_asset_type?' do
