@@ -469,6 +469,42 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
         expect(processor).to be_valid
       end
+
+      context 'when a row has a tag but no supplier name' do
+        # The second row of the first tube loses its supplier name.
+        let(:download) do
+          super().tap do |test_download|
+            worksheet = test_download.worksheet
+            column = worksheet.columns.find_by(:name, :supplier_name)
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row]
+            row.cells[column.number - 1].value = nil
+          end
+        end
+
+        it 'reports the row instead of dropping it' do
+          processor.valid?
+          expect(processor.errors.full_messages).to include(
+            "Row #{upload.rows.first.number + 1} - Has a component tag " \
+            'sequence but no supplier name.'
+          )
+        end
+      end
+
+      context 'when tubes have blank rows' do
+        let(:download) do
+          component_tag_group
+          build(
+            :test_download_compound_tubes,
+            columns: column_list,
+            count: 2,
+            components_per_tube: [2, 1]
+          )
+        end
+
+        it 'is valid' do
+          expect(processor).to be_valid
+        end
+      end
     end
 
     describe SampleManifestExcel::Upload::Processor::LibraryTube do
