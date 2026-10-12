@@ -1,0 +1,37 @@
+<%= panel do %>
+  <h3>
+    Compound Samples <%= counter_badge @compound_samples.count %>
+  </h3>
+
+  <table width='100%'>
+    <thead>
+      <tr>
+        <th width='70%'></th>
+        <% if @compound_tags.any? %>
+          <th>Tag</th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% @compound_samples.each do |compound| %>
+        <tr>
+          <td>
+            <%= link_to "Sample #{compound.id}", sample_path(compound) %>
+            <%= compound.name || 'Un-named' %>
+          </td>
+          <% if @compound_tags.any? %>
+            <td>
+              <% if (tag = @compound_tags[compound.id]) %>
+                <%= render partial: 'shared/tag_info', locals: { tag: } %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div style="margin-top: 25px;">
+    <%= pagination @compound_samples, param_name: :compound_page %>
+  </div>
+<% end %>

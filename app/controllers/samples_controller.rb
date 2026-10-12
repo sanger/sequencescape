@@ -8,6 +8,9 @@ class SamplesController < ApplicationController
 
   include AccessionHelper
 
+  # Component and compound samples listed per page on a sample's page.
+  SAMPLES_PER_PAGE = 25
+
   def index
     @samples = Sample.order(created_at: :desc).page(params[:page])
     respond_to do |format|
@@ -17,12 +20,12 @@ class SamplesController < ApplicationController
     end
   end
 
-  def show # rubocop:disable Metrics/AbcSize
+  def show
     @sample = Sample.includes(:assets, :studies).find(params[:id])
     @studies = Study.where(state: %w[pending active]).alphabetical
     @page_name = @sample.name
-    @component_samples = @sample.component_samples.paginate({ page: params[:page], per_page: 25 })
-    @component_tags = component_tags
+    load_component_samples
+    load_compound_samples
 
     respond_to do |format|
       format.html
@@ -178,14 +181,46 @@ class SamplesController < ApplicationController
 
   private
 
+  # A compound sample's component samples, a page at a time, with their tags.
+  def load_component_samples
+    @component_samples = @sample.component_samples.paginate(
+      page: params[:page], per_page: SAMPLES_PER_PAGE
+    )
+    @component_tags = component_tags
+  end
+
+  # The compound samples this sample is a component of, a page at a time,
+  # with its tag in each. Paged apart from the component samples.
+  def load_compound_samples
+    @compound_samples = @sample.compound_samples.paginate(
+      page: params[:compound_page], per_page: SAMPLES_PER_PAGE
+    )
+    @compound_tags = compound_tags
+  end
+
   # The tag of each component sample on the page, by component sample id.
   # Only compound samples whose components have tags, e.g. Kinnex, have any.
   def component_tags
-    @sample.joins_as_compound_sample
-      .where(component_sample_id: @component_samples.map(&:id))
+    link_tags(@sample.joins_as_compound_sample, :component_sample_id,
+              @component_samples)
+  end
+
+  # The tag this sample has in each compound sample on the page, by compound
+  # sample id. Only components of compound samples such as Kinnex have one.
+  def compound_tags
+    link_tags(@sample.joins_as_component_sample, :compound_sample_id,
+              @compound_samples)
+  end
+
+  # The tags of the compound sample links to the samples on the page, by the
+  # id of those samples. Only the page's links are read, as a compound sample
+  # can have thousands of components.
+  def link_tags(links, sample_key, samples)
+    links
+      .where(sample_key => samples.map(&:id))
       .where.not(tag_id: nil)
       .includes(tag: :tag_group)
-      .to_h { |link| [link.component_sample_id, link.tag] }
+      .to_h { |link| [link[sample_key], link.tag] }
   end
 
   def accession_not_enabled
