@@ -33,6 +33,12 @@ RSpec.describe SampleManifest::CompoundTubeBehaviour, :sample_manifest do
       expect(tubes.size).to eq(2)
     end
 
+    it 'registers each tube as stock once, whatever its number of rows' do
+      row_receptacles = manifest.sample_manifest_assets.map(&:asset)
+      expect(manifest.core_behaviour.stock_receptacles(row_receptacles))
+        .to match_array(tubes.map(&:receptacle))
+    end
+
     it 'creates sample tubes' do
       expect(tubes).to all(be_a(SampleTube))
     end

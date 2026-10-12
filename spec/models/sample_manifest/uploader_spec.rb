@@ -501,6 +501,12 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           .to be_empty
       end
 
+      it 'registers the stock resource of each tube with components once' do
+        stock_messages = Messenger.where(root: 'stock_resource')
+        expect(stock_messages.map(&:target))
+          .to match_array(compound_aliquots.map(&:receptacle))
+      end
+
       it 'sets the retention instruction of the tubes with components' do
         tubes = filled_rows_by_tube.map { |rows| rows.first.asset.labware }
         expect(tubes.map(&:retention_instruction))
