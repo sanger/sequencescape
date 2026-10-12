@@ -17,7 +17,9 @@ class BatchCreationValidator < ActiveModel::Validator
   def all_requests_are_ready?(record)
     # Checks that SequencingRequests have at least one LibraryCreationRequest in passed status before being processed
     # (as referred by #75102998)
-    record.errors.add :base, 'All requests must be ready to be added to a batch' unless record.requests.all?(&:ready?)
+    return true if record.skip_request_readiness_check || record.requests.all?(&:ready?)
+
+    record.errors.add :base, 'All requests must be ready to be added to a batch'
   end
 
   def batch_meets_minimum_size(record)

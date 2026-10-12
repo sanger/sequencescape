@@ -33,6 +33,8 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DEFAULT_VOLUME = 13
 
+  attr_accessor :skip_request_readiness_check
+
   self.per_page = 500
 
   belongs_to :user
