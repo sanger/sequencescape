@@ -45,6 +45,13 @@ module SampleManifest::CoreBehaviour
     def samples_in_receptacles?
       true
     end
+
+    # The receptacles to register as stock after an upload, given the
+    # receptacle of each row whose sample the upload created. By default,
+    # one registration per row.
+    def stock_receptacles(receptacles)
+      receptacles
+    end
   end
 
   # The samples get registered in the stock resource table at the end of manifest upload and processing

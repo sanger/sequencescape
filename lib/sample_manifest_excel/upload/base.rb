@@ -199,7 +199,10 @@ module SampleManifestExcel
       def stock_receptacles_to_be_registered
         return [] unless sample_manifest.core_behaviour.stocks?
 
-        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
+        @stock_receptacles_to_be_registered ||=
+          sample_manifest.core_behaviour.stock_receptacles(
+            rows.select(&:sample_created?).map(&:asset)
+          )
       end
     end
   end
