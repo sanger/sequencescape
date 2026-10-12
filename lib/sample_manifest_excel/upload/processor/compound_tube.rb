@@ -13,6 +13,8 @@ module SampleManifestExcel
         TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
         TAG_USED_TWICE =
           'Component tag sequence is already used in this tube by row'
+        TAG_WITHOUT_SUPPLIER_NAME =
+          'Has a component tag sequence but no supplier name.'
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
         LIBRARY_TYPE_FIELD = SequencescapeExcel::SpecialisedField::LibraryType
 
@@ -25,6 +27,7 @@ module SampleManifestExcel
 
         validate :check_tags_unique_in_tube
         validate :check_tube_values_consistent
+        validate :check_tagged_rows_have_supplier_name
 
         # After the component samples, creates a compound sample for each tube
         # with filled rows. Blank rows are not in the upload, so a blank tube
@@ -171,6 +174,38 @@ module SampleManifestExcel
 
             errors.add(:base, "#{row.row_title} #{label} differs from row " \
                               "#{first_row.number} of the same tube.")
+          end
+        end
+
+        # As in other manifests, rows without a supplier name are left out of
+        # the upload as unused. But a component tag sequence shows the row is
+        # a component in the tube, so it is reported rather than silently
+        # dropped: a tag without a sample is the data risk this manifest is
+        # meant to reduce.
+        def check_tagged_rows_have_supplier_name
+          unnamed_tagged_rows.each do |row|
+            errors.add(:base, "#{row.row_title} #{TAG_WITHOUT_SUPPLIER_NAME}")
+          end
+        end
+
+        # The rows left out of the upload for having no supplier name that
+        # have a tag.
+        def unnamed_tagged_rows
+          return [] unless upload.respond_to?(:data) && upload.columns.present?
+
+          sheet_rows.select do |row|
+            row.empty? && row.value(:component_tag_sequence).present?
+          end
+        end
+
+        # Every row of the spreadsheet, numbered as in Upload::Rows, including
+        # the rows it leaves out.
+        def sheet_rows
+          columns = upload.columns
+          start_row = upload.data.start_row
+          upload.data.each_with_index.map do |data, index|
+            number = index + start_row + 1
+            Row.new(number:, data:, columns:)
           end
         end
 
