@@ -22,6 +22,7 @@ class SamplesController < ApplicationController
     @studies = Study.where(state: %w[pending active]).alphabetical
     @page_name = @sample.name
     @component_samples = @sample.component_samples.paginate({ page: params[:page], per_page: 25 })
+    @component_tags = component_tags
 
     respond_to do |format|
       format.html
@@ -176,6 +177,16 @@ class SamplesController < ApplicationController
   end
 
   private
+
+  # The tag of each component sample on the page, by component sample id.
+  # Only compound samples whose components have tags, e.g. Kinnex, have any.
+  def component_tags
+    @sample.joins_as_compound_sample
+      .where(component_sample_id: @component_samples.map(&:id))
+      .where.not(tag_id: nil)
+      .includes(tag: :tag_group)
+      .to_h { |link| [link.component_sample_id, link.tag] }
+  end
 
   def accession_not_enabled
     flash[:error] = 'Accessioning is not enabled in this environment'

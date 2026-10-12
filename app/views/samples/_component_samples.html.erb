@@ -7,6 +7,9 @@
     <thead>
       <tr>
         <th width='70%'></th>
+        <% if @component_tags.any? %>
+          <th>Tag</th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -16,6 +19,13 @@
             <%= link_to "Sample #{cs.id}", sample_path(cs) %>
             <%= cs.name || 'Un-named' %>
           </td>
+          <% if @component_tags.any? %>
+            <td>
+              <% if (tag = @component_tags[cs.id]) %>
+                <%= render partial: 'shared/tag_info', locals: { tag: } %>
+              <% end %>
+            </td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
