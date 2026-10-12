@@ -26,6 +26,12 @@ module SampleManifest::CompoundTubeBehaviour
       false
     end
 
+    # A tube has a row for each component, but it is one stock resource that
+    # holds only its compound sample, so it is registered once.
+    def stock_receptacles(receptacles)
+      receptacles.uniq
+    end
+
     # Creates a component sample on upload, without an aliquot in the tube.
     # The name and arguments are shared by all manifest behaviours.
     def generate_sample_and_aliquot(sanger_sample_id, _receptacle)
