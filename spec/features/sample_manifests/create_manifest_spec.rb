@@ -79,6 +79,11 @@ describe 'SampleManifest controller', :sample_manifest do
       page.refresh
     end
 
+    it 'asks for the number of tubes' do
+      click_link('Create manifest for compound sample tubes')
+      expect(page).to have_field('Tubes required')
+    end
+
     it 'links to the compound sample tube manifest templates' do
       click_link('Create manifest for compound sample tubes')
       options = ['Select a template', 'Kinnex Compound Sample Tube']
