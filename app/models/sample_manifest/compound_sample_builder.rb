@@ -5,7 +5,8 @@
 #
 # The manifest upload creates the component samples without aliquots. This
 # creates:
-# - the compound sample, in the study, named with a new sanger sample id
+# - the compound sample, in the study, with a new sanger sample id as its
+#   name and its sanger sample id, as it is the sample in the tube
 # - a link to each component sample, with the component's tag
 # - the compound sample's aliquot: the only aliquot in the receptacle
 #
@@ -62,9 +63,14 @@ class SampleManifest::CompoundSampleBuilder
 
   attr_reader :study, :receptacle, :tags_by_component, :library_type
 
+  # Like the other samples of a manifest, it has a sanger sample id, e.g.
+  # for the labels of its tube.
   def create_compound_sample
+    sanger_sample_id =
+      SangerSampleId.generate_sanger_sample_id!(study.abbreviation)
     study.samples.create!(
-      name: SangerSampleId.generate_sanger_sample_id!(study.abbreviation),
+      name: sanger_sample_id,
+      sanger_sample_id: sanger_sample_id,
       sample_metadata_attributes: shared_metadata
     )
   end
