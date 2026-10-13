@@ -373,6 +373,10 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         expect(upload.processor).to be_a(described_class)
       end
 
+      it 'is not valid without an upload' do
+        expect(described_class.new(nil)).not_to be_valid
+      end
+
       it 'is valid when the rows of each tube share its barcode' do
         expect(processor).to be_valid
       end
