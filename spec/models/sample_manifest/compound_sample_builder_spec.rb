@@ -38,6 +38,10 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
     expect(compound.name).to start_with(study.abbreviation)
   end
 
+  it 'gives the compound sample its name as its sanger sample id' do
+    expect(compound.sanger_sample_id).to eq(compound.name)
+  end
+
   it 'links the component samples to the compound sample' do
     expect(compound.component_samples).to match_array(components)
   end
