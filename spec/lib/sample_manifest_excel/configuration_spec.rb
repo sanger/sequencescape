@@ -120,5 +120,40 @@ RSpec.describe SampleManifestExcel::Configuration, :sample_manifest, :sample_man
         SequencescapeExcel::SpecialisedField::ComponentTagSequence
       )
     end
+
+    it 'resolves the LIBRARY TYPE heading to the long-read column on upload' do
+      column = all_columns.find_by(:heading, 'LIBRARY TYPE')
+      expect(column.name).to eq('library_type_long_read')
+    end
+
+    it 'has the same Kinnex template as the test config' do
+      test_configuration = described_class.new
+      test_configuration.folder =
+        File.join('spec', 'data', 'sample_manifest_excel')
+      test_configuration.load!
+      template = 'kinnex_compound_sample_tube'
+      expect(test_configuration.manifest_types.find_by(template).columns)
+        .to eq(configuration.manifest_types.find_by(template).columns)
+    end
+
+    context 'with the Kinnex library types' do
+      let(:kinnex_library_types) do
+        LibraryType.records_in('005_kinnex_library_types')
+      end
+      let(:library_type_range) do
+        column = configuration.columns.find(:kinnex_compound_sample_tube)
+          .find_by(:heading, 'LIBRARY TYPE')
+        configuration.ranges.find_by(column.range_name)
+      end
+
+      before do
+        kinnex_library_types.each { |name| create(:library_type, name:) }
+        create(:library_type, name: 'Another library type')
+      end
+
+      it 'lists only them in the Kinnex template' do
+        expect(library_type_range.options).to eq(kinnex_library_types)
+      end
+    end
   end
 end

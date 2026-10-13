@@ -492,7 +492,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
       it 'sets the library type of the compound sample aliquots' do
         expect(compound_aliquots.map(&:library_type))
-          .to all(eq(test_data[:library_type]))
+          .to all(eq(test_data[:library_type_kinnex]))
       end
 
       it 'leaves the tubes without components empty' do
@@ -590,7 +590,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
           let(:reupload_file) do
             components_per_tube.first.times do |index|
               set_cell(index, :supplier_name, 'CORRECTED-POOL')
-              set_cell(index, :library_type, library_type.name)
+              set_cell(index, :library_type_kinnex, library_type.name)
             end
             super()
           end
@@ -744,7 +744,7 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
 
             it 'sets the library type of the compound sample aliquot' do
               expect(new_tube_aliquots.first.library_type)
-                .to eq(test_data[:library_type])
+                .to eq(test_data[:library_type_kinnex])
             end
 
             it 'keeps the compound samples of the other tubes' do

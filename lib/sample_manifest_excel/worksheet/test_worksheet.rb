@@ -352,10 +352,13 @@ module SampleManifestExcel
         end
       end
 
+      # The library types in the data must exist for the upload, whichever
+      # LIBRARY TYPE column the template uses.
       def create_library_type
         return if validation_errors.include?(:library_type)
 
-        LibraryType.where(name: data[:library_type]).first_or_create
+        data.values_at(:library_type, :library_type_kinnex).compact
+          .each { |name| LibraryType.where(name:).first_or_create }
       end
 
       def create_reference_genome

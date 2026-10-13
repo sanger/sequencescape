@@ -174,6 +174,33 @@ chromium_tag_well:
       formula:
         operator: ">"
         operand: 3
+# Kinnex compound sample manifests: only the Kinnex library types (see the
+# library_type_kinnex range). On upload, every LIBRARY TYPE column is read
+# through the last one defined with that heading, library_type. All of
+# them update library_type, so the upload is the same either way, but keeping
+# this column before library_type leaves other manifests' uploads exactly
+# as they were. Each template's drop-down comes from its own column.
+library_type_kinnex:
+  heading: LIBRARY TYPE
+  updates: library_type
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      hideDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+    range_name: :library_type_kinnex
+  conditional_formattings:
+    empty_mandatory_cell:
+    is_error:
 library_type:
   heading: LIBRARY TYPE
   unlocked: true

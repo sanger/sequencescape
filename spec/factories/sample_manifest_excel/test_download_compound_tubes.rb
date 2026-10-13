@@ -21,7 +21,7 @@ FactoryBot.define do
       {
         supplier_name: 'SCG--1222_A0',
         retention_instruction: 'Long term storage',
-        library_type: 'My personal library type',
+        library_type_kinnex: 'Pacbio_Kinnex_Full_Length',
         donor_id: 'id',
         date_of_sample_collection: 'Nov-16',
         country_of_origin: 'United Kingdom',

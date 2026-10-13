@@ -896,7 +896,7 @@ kinnex_compound_sample_tube:
     - :supplier_name
     - :retention_instruction
     - :component_tag_sequence
-    - :library_type_required
+    - :library_type_kinnex
     - :donor_id
     - :date_of_sample_collection
     - :country_of_origin
