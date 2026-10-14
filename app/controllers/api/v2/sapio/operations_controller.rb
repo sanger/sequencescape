@@ -10,8 +10,10 @@ module Api
       # controller rather than a JSON:API resource controller.
       #
       # The endpoint is behind the +y26_282_sapio_work_order_endpoint+
-      # feature flag.
+      # feature flag and needs an API key.
       class OperationsController < ApplicationController
+        include Api::V2::Concerns::ApiKeyAuthenticatable
+
         skip_before_action :login_required
         skip_before_action :verify_authenticity_token
 
