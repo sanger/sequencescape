@@ -286,24 +286,24 @@ RSpec.configure do |config|
     Flipper.enable(:y26_245_sapio_study_upsert, sapio_study_upsert_enabled)
   end
 
-  # Add sapio_work_order_endpoint_enabled to a spec to automatically:
-  # - Set y26_282_sapio_work_order_endpoint to true before the test
+  # Add sapio_operations_endpoint_enabled to a spec to automatically:
+  # - Set y26_282_sapio_operations_endpoint to true before the test
   # - Roll the feature flag back to its original state afterward
-  config.around(:each, :sapio_work_order_endpoint_enabled) do |example|
-    enabled = Flipper.enabled?(:y26_282_sapio_work_order_endpoint)
-    Flipper.enable(:y26_282_sapio_work_order_endpoint)
+  config.around(:each, :sapio_operations_endpoint_enabled) do |example|
+    enabled = Flipper.enabled?(:y26_282_sapio_operations_endpoint)
+    Flipper.enable(:y26_282_sapio_operations_endpoint)
     example.run
-    Flipper.enable(:y26_282_sapio_work_order_endpoint, enabled)
+    Flipper.enable(:y26_282_sapio_operations_endpoint, enabled)
   end
 
-  # Add sapio_work_order_endpoint_disabled to a spec to automatically:
-  # - Set y26_282_sapio_work_order_endpoint to false before the test
+  # Add sapio_operations_endpoint_disabled to a spec to automatically:
+  # - Set y26_282_sapio_operations_endpoint to false before the test
   # - Roll the feature flag back to its original state afterward
-  config.around(:each, :sapio_work_order_endpoint_disabled) do |example|
-    enabled = Flipper.enabled?(:y26_282_sapio_work_order_endpoint)
-    Flipper.disable(:y26_282_sapio_work_order_endpoint)
+  config.around(:each, :sapio_operations_endpoint_disabled) do |example|
+    enabled = Flipper.enabled?(:y26_282_sapio_operations_endpoint)
+    Flipper.disable(:y26_282_sapio_operations_endpoint)
     example.run
-    Flipper.enable(:y26_282_sapio_work_order_endpoint, enabled)
+    Flipper.enable(:y26_282_sapio_operations_endpoint, enabled)
   end
 
   config.before do
