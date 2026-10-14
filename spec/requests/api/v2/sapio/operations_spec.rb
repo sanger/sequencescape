@@ -4,7 +4,10 @@ require 'rails_helper'
 
 describe 'Sapio Operations API' do
   let(:base_endpoint) { '/api/v2/sapio/operations' }
-  let(:api_application) { create(:api_application) }
+  let(:integration_hub_app) do
+    create(:api_application, name: ApiApplication::INTEGRATION_HUB_NAME)
+  end
+  let(:other_app) { create(:api_application) }
   let(:payload) { {} }
   let(:json) { response.parsed_body }
 
@@ -16,7 +19,7 @@ describe 'Sapio Operations API' do
 
   context 'when the feature flag is disabled',
           :sapio_work_order_endpoint_disabled do
-    before { post_request(api_key: api_application.key) }
+    before { post_request(api_key: integration_hub_app.key) }
 
     it 'returns not found' do
       expect(response).to have_http_status(:not_found)
@@ -40,6 +43,17 @@ describe 'Sapio Operations API' do
       end
     end
 
+    context 'without an API key when API keys are optional' do
+      before do
+        Flipper.disable(:y25_442_make_api_key_mandatory)
+        post_request
+      end
+
+      it 'returns forbidden' do
+        expect(response).to have_http_status(:forbidden)
+      end
+    end
+
     context 'with an unknown API key' do
       before { post_request(api_key: 'unknown') }
 
@@ -48,8 +62,21 @@ describe 'Sapio Operations API' do
       end
     end
 
-    context 'with a valid API key' do
-      before { post_request(api_key: api_application.key) }
+    context 'with another application API key' do
+      before { post_request(api_key: other_app.key) }
+
+      it 'returns forbidden' do
+        expect(response).to have_http_status(:forbidden)
+      end
+
+      it 'returns an Integration Hub API key required error' do
+        expect(json.dig('errors', 0, 'detail'))
+          .to eq('Integration Hub API key required.')
+      end
+    end
+
+    context 'with the Integration Hub API key' do
+      before { post_request(api_key: integration_hub_app.key) }
 
       it 'returns accepted' do
         expect(response).to have_http_status(:accepted)
