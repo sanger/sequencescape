@@ -25,6 +25,20 @@ module Api
         before_action :check_endpoint_enabled
         before_action :authorize_integration_hub
         before_action :parse_payload
+        before_action :check_structure
+
+        NOT_AN_OBJECT = 'The request body must be a JSON object.'
+
+        # The top level checks: JSON pointer, error detail and check method.
+        STRUCTURE_RULES = [
+          [
+            '/request/external_id',
+            'request.external_id must be a non-empty string.',
+            :external_id_present?
+          ],
+          ['/labware', 'labware must be an array.', :labware_present?],
+          ['/work_order', 'work_order must be an object.', :work_order_present?]
+        ].freeze
 
         # Accepts a combined reception and work order request.
         #
@@ -62,6 +76,51 @@ module Api
           @payload = JSON.parse(request.raw_post)
         rescue JSON::ParserError
           render_errors(Errors::InvalidJson.new.errors)
+        end
+
+        # Renders an error for each problem with the top level of the
+        # payload: the request ID and the reception and work order
+        # sections. The contents of the sections are not checked here.
+        #
+        # @return [void]
+        def check_structure
+          errors = structure_errors
+          render_errors(errors) if errors.any?
+        end
+
+        # @return [Array<JSONAPI::Error>] the top level problems, if any
+        def structure_errors
+          return structure_error('', NOT_AN_OBJECT) unless @payload.is_a?(Hash)
+
+          STRUCTURE_RULES.flat_map do |pointer, detail, check|
+            send(check) ? [] : structure_error(pointer, detail)
+          end
+        end
+
+        # @return [Boolean] true if request.external_id is a non-empty string
+        def external_id_present?
+          request_section = @payload['request']
+          return false unless request_section.is_a?(Hash)
+
+          external_id = request_section['external_id']
+          external_id.is_a?(String) && external_id.present?
+        end
+
+        # @return [Boolean] true if the reception section is an array
+        def labware_present?
+          @payload['labware'].is_a?(Array)
+        end
+
+        # @return [Boolean] true if the work order section is an object
+        def work_order_present?
+          @payload['work_order'].is_a?(Hash)
+        end
+
+        # @param pointer [String] JSON pointer to the problem
+        # @param detail [String] description of the problem
+        # @return [Array<JSONAPI::Error>]
+        def structure_error(pointer, detail)
+          Errors::InvalidStructure.new(pointer, detail).errors
         end
 
         # Renders JSON:API style errors with the status of the first error.
