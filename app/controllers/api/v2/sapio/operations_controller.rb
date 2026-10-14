@@ -9,7 +9,7 @@ module Api
       # The payload is plain JSON rather than JSON:API, so this is a plain
       # controller rather than a JSON:API resource controller.
       #
-      # The endpoint is behind the +y26_282_sapio_work_order_endpoint+
+      # The endpoint is behind the +y26_282_sapio_operations_endpoint+
       # feature flag and accepts requests only with the Integration Hub API
       # key.
       class OperationsController < ApplicationController
@@ -73,7 +73,7 @@ module Api
         #
         # @return [void]
         def check_endpoint_enabled
-          return if Flipper.enabled?(:y26_282_sapio_work_order_endpoint)
+          return if Flipper.enabled?(:y26_282_sapio_operations_endpoint)
 
           render_errors(Errors::FeatureDisabled.new.errors)
         end
