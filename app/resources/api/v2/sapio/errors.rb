@@ -95,6 +95,29 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # A problem with the top level of a request body, at a JSON pointer.
+  class InvalidStructure < JSONAPI::Exceptions::Error
+    attr_reader :pointer, :detail_message
+
+    def initialize(pointer, detail_message, error_object_overrides = {})
+      @pointer = pointer
+      @detail_message = detail_message
+      super(error_object_overrides)
+    end
+
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :unprocessable_content,
+          title: 'Invalid Request Structure',
+          code: 'INVALID_STRUCTURE',
+          detail: detail_message,
+          source: { pointer: }
+        )
+      ]
+    end
+  end
+
   class InvalidJson < JSONAPI::Exceptions::Error
     def errors
       [
