@@ -94,4 +94,17 @@ module Api::V2::Sapio::Errors
       ]
     end
   end
+
+  class InvalidJson < JSONAPI::Exceptions::Error
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :bad_request,
+          title: 'Invalid JSON',
+          code: 'INVALID_JSON',
+          detail: 'The request body is not valid JSON.'
+        )
+      ]
+    end
+  end
 end
