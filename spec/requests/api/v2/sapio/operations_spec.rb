@@ -8,7 +8,11 @@ describe 'Sapio Operations API' do
     create(:api_application, name: ApiApplication::INTEGRATION_HUB_NAME)
   end
   let(:other_app) { create(:api_application) }
-  let(:body) { {}.to_json }
+  # The smallest payload with the expected top level.
+  let(:valid_payload) do
+    { request: { external_id: 'request-1' }, labware: [], work_order: {} }
+  end
+  let(:body) { valid_payload.to_json }
   let(:json) { response.parsed_body }
 
   def post_request(api_key: nil)
@@ -99,6 +103,54 @@ describe 'Sapio Operations API' do
 
         it 'returns bad request' do
           expect(response).to have_http_status(:bad_request)
+        end
+      end
+
+      # Each case changes the valid payload and names the expected pointer.
+      {
+        'a body that is not an object' => [->(_) { [] }, ''],
+        'no request section' =>
+          [->(p) { p.except(:request) }, '/request/external_id'],
+        'a request section that is not an object' =>
+          [->(p) { p.merge(request: 'request-1') }, '/request/external_id'],
+        'an empty external ID' =>
+          [->(p) { p.merge(request: { external_id: '' }) },
+           '/request/external_id'],
+        'an external ID that is not a string' =>
+          [->(p) { p.merge(request: { external_id: 1 }) },
+           '/request/external_id'],
+        'no labware section' => [->(p) { p.except(:labware) }, '/labware'],
+        'a labware section that is not an array' =>
+          [->(p) { p.merge(labware: {}) }, '/labware'],
+        'no work order section' =>
+          [->(p) { p.except(:work_order) }, '/work_order'],
+        'a work order section that is not an object' =>
+          [->(p) { p.merge(work_order: []) }, '/work_order']
+      }.each do |description, (change, pointer)|
+        context "with #{description}" do
+          let(:body) { change.call(valid_payload).to_json }
+
+          it 'returns unprocessable content' do
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+
+          it 'returns an invalid structure error' do
+            expect(json.dig('errors', 0, 'code')).to eq('INVALID_STRUCTURE')
+          end
+
+          it 'points to the problem' do
+            expect(json.dig('errors', 0, 'source', 'pointer')).to eq(pointer)
+          end
+        end
+      end
+
+      context 'with an empty object' do
+        let(:body) { {}.to_json }
+
+        it 'returns an error for each missing part' do
+          pointers =
+            json['errors'].map { |error| error.dig('source', 'pointer') }
+          expect(pointers).to eq(%w[/request/external_id /labware /work_order])
         end
       end
     end
