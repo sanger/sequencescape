@@ -22,7 +22,7 @@ describe 'Sapio Operations API' do
   end
 
   context 'when the feature flag is disabled',
-          :sapio_work_order_endpoint_disabled do
+          :sapio_operations_endpoint_disabled do
     before { post_request(api_key: integration_hub_app.key) }
 
     it 'returns not found' do
@@ -35,7 +35,7 @@ describe 'Sapio Operations API' do
   end
 
   context 'when the feature flag is enabled',
-          :sapio_work_order_endpoint_enabled do
+          :sapio_operations_endpoint_enabled do
     context 'without an API key when API keys are mandatory' do
       before do
         Flipper.enable(:y25_442_make_api_key_mandatory)
