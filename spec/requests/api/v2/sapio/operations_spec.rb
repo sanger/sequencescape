@@ -79,6 +79,31 @@ describe 'Sapio Operations API' do
       end
     end
 
+    context 'when Rails logs the request parameters' do
+      let(:logged) { [] }
+
+      before do
+        allow(Rails.logger).to receive(:info)
+          .and_wrap_original do |original, *args, &block|
+            logged << args.first.to_s if args.first.to_s.include?('Parameters:')
+            original.call(*args, &block)
+          end
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'logs the payload as filtered' do
+        expect(logged.join).to include('[FILTERED]')
+      end
+
+      it 'does not log the payload values' do
+        expect(logged.join).not_to include('request-1')
+      end
+
+      it 'does not log a wrapped copy of the payload' do
+        expect(logged.join).not_to include('operation')
+      end
+    end
+
     context 'with the Integration Hub API key' do
       before { post_request(api_key: integration_hub_app.key) }
 
