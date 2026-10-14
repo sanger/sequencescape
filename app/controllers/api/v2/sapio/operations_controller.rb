@@ -10,7 +10,8 @@ module Api
       # controller rather than a JSON:API resource controller.
       #
       # The endpoint is behind the +y26_282_sapio_work_order_endpoint+
-      # feature flag and needs an API key.
+      # feature flag and accepts requests only with the Integration Hub API
+      # key.
       class OperationsController < ApplicationController
         include Api::V2::Concerns::ApiKeyAuthenticatable
 
@@ -18,6 +19,7 @@ module Api
         skip_before_action :verify_authenticity_token
 
         before_action :check_endpoint_enabled
+        before_action :authorize_integration_hub
 
         # Accepts a combined reception and work order request.
         #
@@ -35,6 +37,16 @@ module Api
           return if Flipper.enabled?(:y26_282_sapio_work_order_endpoint)
 
           render_errors(Errors::FeatureDisabled.new.errors)
+        end
+
+        # Renders a forbidden error unless the request uses the Integration
+        # Hub API key.
+        #
+        # @return [void]
+        def authorize_integration_hub
+          return if api_application&.integration_hub?
+
+          render_errors(Errors::Forbidden.new.errors)
         end
 
         # Renders JSON:API style errors with the status of the first error.
