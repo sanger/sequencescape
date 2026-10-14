@@ -8,13 +8,13 @@ describe 'Sapio Operations API' do
     create(:api_application, name: ApiApplication::INTEGRATION_HUB_NAME)
   end
   let(:other_app) { create(:api_application) }
-  let(:payload) { {} }
+  let(:body) { {}.to_json }
   let(:json) { response.parsed_body }
 
   def post_request(api_key: nil)
     headers = { 'CONTENT_TYPE' => 'application/json' }
     headers['X-Sequencescape-Client-Id'] = api_key if api_key
-    post base_endpoint, params: payload.to_json, headers: headers
+    post base_endpoint, params: body, headers: headers
   end
 
   context 'when the feature flag is disabled',
@@ -80,6 +80,26 @@ describe 'Sapio Operations API' do
 
       it 'returns accepted' do
         expect(response).to have_http_status(:accepted)
+      end
+
+      context 'with invalid JSON' do
+        let(:body) { '{"request": ' }
+
+        it 'returns bad request' do
+          expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'returns an invalid JSON error' do
+          expect(json.dig('errors', 0, 'code')).to eq('INVALID_JSON')
+        end
+      end
+
+      context 'with an empty body' do
+        let(:body) { '' }
+
+        it 'returns bad request' do
+          expect(response).to have_http_status(:bad_request)
+        end
       end
     end
   end
