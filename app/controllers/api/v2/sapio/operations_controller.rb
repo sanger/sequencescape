@@ -22,10 +22,18 @@ module Api
         # parse_payload instead.
         skip_before_action :extract_header_info
 
+        # Payloads can be many megabytes, so Rails shouldn't add a copy of
+        # them under the controller name.
+        wrap_parameters false
+
         before_action :check_endpoint_enabled
         before_action :authorize_integration_hub
         before_action :parse_payload
         before_action :check_structure
+
+        # Matches every parameter name except the routing ones, so the
+        # payload is logged as [FILTERED].
+        PAYLOAD_LOG_FILTER = /\A(?!(?:controller|action|format)\z)/
 
         NOT_AN_OBJECT = 'The request body must be a JSON object.'
 
@@ -48,6 +56,18 @@ module Api
         end
 
         private
+
+        # Adds PAYLOAD_LOG_FILTER to this request's parameter filters before
+        # Rails logs the parameters, which happens before any before_action.
+        # The global filters are kept, and other endpoints are not affected.
+        #
+        # @return [void]
+        def process_action(*)
+          filters = request.get_header('action_dispatch.parameter_filter')
+          request.set_header('action_dispatch.parameter_filter',
+                             Array(filters) + [PAYLOAD_LOG_FILTER])
+          super
+        end
 
         # Renders a not found error unless the feature flag is enabled.
         #
