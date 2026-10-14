@@ -4,17 +4,19 @@ require 'rails_helper'
 
 describe 'Sapio Operations API' do
   let(:base_endpoint) { '/api/v2/sapio/operations' }
+  let(:api_application) { create(:api_application) }
   let(:payload) { {} }
   let(:json) { response.parsed_body }
 
-  def post_request
+  def post_request(api_key: nil)
     headers = { 'CONTENT_TYPE' => 'application/json' }
+    headers['X-Sequencescape-Client-Id'] = api_key if api_key
     post base_endpoint, params: payload.to_json, headers: headers
   end
 
   context 'when the feature flag is disabled',
           :sapio_work_order_endpoint_disabled do
-    before { post_request }
+    before { post_request(api_key: api_application.key) }
 
     it 'returns not found' do
       expect(response).to have_http_status(:not_found)
@@ -27,10 +29,31 @@ describe 'Sapio Operations API' do
 
   context 'when the feature flag is enabled',
           :sapio_work_order_endpoint_enabled do
-    before { post_request }
+    context 'without an API key when API keys are mandatory' do
+      before do
+        Flipper.enable(:y25_442_make_api_key_mandatory)
+        post_request
+      end
 
-    it 'returns accepted' do
-      expect(response).to have_http_status(:accepted)
+      it 'returns unauthorized' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'with an unknown API key' do
+      before { post_request(api_key: 'unknown') }
+
+      it 'returns unauthorized' do
+        expect(response).to have_http_status(:unauthorized)
+      end
+    end
+
+    context 'with a valid API key' do
+      before { post_request(api_key: api_application.key) }
+
+      it 'returns accepted' do
+        expect(response).to have_http_status(:accepted)
+      end
     end
   end
 end
