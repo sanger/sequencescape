@@ -26,7 +26,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     def global_headers_config
-      return ['Application'].freeze
+      ['Application'].freeze
     end
 
     def samples_title_config
@@ -70,29 +70,29 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Generates a ZIP archive containing individual sample sheet CSV files
-    # for each request in the batch. This sorts the requests by id to ensure
+    # for each request in the batch. This sorts the batch requests by id to ensure
     # consistent ordering of CSV files in the zip archive.
     # @return [String] the ZIP archive as a binary string
     def generate
       zip_stream = Zip::OutputStream.write_buffer do |zip|
-        batch_requests.sort_by(&:id).each do |request|
-          zip.put_next_entry(entry_name(request))
-          zip.write(csv_string(request).encode('UTF-8'))
+        batch_requests.sort_by(&:id).each do |batch_request|
+          zip.put_next_entry(entry_name(batch_request))
+          zip.write(csv_string(batch_request).encode('UTF-8'))
         end
       end
       zip_stream.string
     end
 
-    # Generates the CSV string for a single request.
-    # @param request [UltimaSequencingRequest] the request to generate the CSV for
+    # Generates the CSV string for a single sequencing request.
+    # @param sequencing_request [BatchRequest] the sequencing request to generate the CSV for
     # @return [String] the CSV content as a string with CRLF line endings
-    def csv_string(request)
+    def csv_string(sequencing_request)
       CSV.generate(row_sep: "\r\n", force_quotes: false, quote_empty: false) do |csv|
-        add_header_section(csv, request)
+        add_header_section(csv, sequencing_request)
         csv << pad # empty row
-        add_global_section(csv, request)
+        add_global_section(csv, sequencing_request)
         csv << pad
-        add_samples_section(csv, request)
+        add_samples_section(csv, sequencing_request)
       end
     end
 
@@ -113,25 +113,34 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Adds the header section to the CSV. The free form text includes the batch ID and asset barcode.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose header data is to be added
-    def add_header_section(csv, request)
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request whose header data is to be added
+    def add_header_section(csv, sequencing_request)
       csv << pad(header_title_config)
-      free_form_text = "Batch #{@batch.id} #{request.asset.human_barcode}"
+      free_form_text = "Batch #{@batch.id} #{sequencing_request.asset.human_barcode}"
       csv << pad([free_form_text])
     end
 
     # Adds the global section to the CSV.
-    # The request parameter supplies the library type for the fallback value.
+    # The sequencing_request parameter supplies the library type for the fallback value.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_global_section(csv, request)
-      library_type = request.asset.aliquots.first.library_type
-      preset = global_application_preset
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request whose global data is to be added
+    def add_global_section(csv, sequencing_request)
+      library_type = sequencing_request.asset.aliquots.first.library_type
+      preset = preset_for_sequencing_request(sequencing_request)
       application = preset ? preset.name : library_type_to_application(library_type)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
       data = [application] # Application
       csv << pad(data)
+    end
+
+    # Assumption here that all aliquots in the sequencing request share the same preset.
+    # NB. We are only using this assumption to set the Global application value.
+    # And there will not be a preset if there is no conversion request.
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
+    # @return [Preset, nil] the preset for the sequencing request, or nil if none exists
+    def preset_for_sequencing_request(sequencing_request)
+      sequencing_request.preset_for_aliquot(sequencing_request.asset.aliquots.first)
     end
 
     # Returns application preset for given library type
@@ -142,69 +151,23 @@ module UltimaSampleSheet::SampleSheetGenerator
       mapping.fetch(library_type, 'WGS Native') # Default is WGS Native
     end
 
-    # Returns the UG100 preset selected by conversion requests on the newest
-    # stock-plate ancestor of the first active batch request.
-    # @return [UltimaPreset, nil] the selected preset, or nil when no conversion exists
-    def global_application_preset
-      return @global_application_preset if defined?(@global_application_preset)
-
-      conversion_requests = ultima_conversion_requests
-      return @global_application_preset = nil if conversion_requests.empty?
-
-      application_ids = conversion_requests.map do |conversion_request|
-        conversion_request.request_metadata.ultima_application_id
-      end
-      # expect a single application id
-      validate_ultima_application_ids!(application_ids)
-
-      # fetch the UG100 preset
-      @global_application_preset = fetch_global_preset(application_ids.first)
-    end
-
-    # Fetches the UG100 preset for the given Ultima application ID.
-    # @param application_id [Integer] the ID of the Ultima application
-    # @return [UltimaPreset, nil] the UG100 preset associated with the application, or nil if not found
-    def fetch_global_preset(application_id)
-      UltimaApplication.find(application_id).ug100_preset
-    end
-
-    # Returns conversion requests on stock wells linked to aliquots across all active batch requests.
-    # @return [Array<UltimaConversionRequest>] the matching conversion requests, or an empty array
-    def ultima_conversion_requests
-      stock_wells = batch_requests.flat_map do |request|
-        request.asset.aliquots.filter_map { |aliquot| aliquot.request&.asset }
-      end.flat_map(&:stock_wells_for_downstream_wells).uniq
-
-      return [] if stock_wells.empty?
-
-      Request.where(asset_id: stock_wells.map(&:id), sti_type: 'UltimaConversionRequest').to_a
-    end
-
-    # Ensures conversion requests all reference the same present Ultima application.
-    # @param application_ids [Array<Integer, nil>] application IDs collected from conversion request metadata
-    # @raise [ArgumentError] if an ID is missing or the requests reference multiple applications
-    def validate_ultima_application_ids!(application_ids)
-      return if application_ids.all?(&:present?) && application_ids.uniq.one?
-
-      raise ArgumentError, 'Expected Ultima conversion requests to reference one Ultima application'
-    end
-
-    # Adds the samples section to the CSV for the given request.
-    # Each aliquot in the request's asset will have a corresponding row.
+    # Adds the samples section to the CSV for the given sequencing request.
+    # Each aliquot in the sequencing_request's asset will have a corresponding row.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose samples are to be added
-    def add_samples_section(csv, request)
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing request whose samples are to be added
+    def add_samples_section(csv, sequencing_request)
       csv << pad(samples_title_config)
       csv << pad(samples_headers_config)
-      request.asset.aliquots.sort_by(&:id).each do |aliquot|
-        csv << sample_row_for(aliquot)
+      sequencing_request.asset.aliquots.sort_by(&:id).each do |aliquot|
+        csv << sample_row_for(aliquot, sequencing_request)
       end
     end
 
     # Builds a sample section row for a single aliquot.
     # @param aliquot [Aliquot] the aliquot whose sample row is needed
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
     # @return [Array<String>] the sample row values
-    def sample_row_for(aliquot)
+    def sample_row_for(aliquot, sequencing_request)
       [
         sample_id_for(aliquot),
         library_name_for(aliquot),
@@ -212,15 +175,9 @@ module UltimaSampleSheet::SampleSheetGenerator
         index_barcode_sequence_for(aliquot),
         barcode_plate_num_for(aliquot),
         barcode_plate_well_for(aliquot),
-        application_type,
+        sequencing_request.application_type_for_aliquot(aliquot),
         study_id_for(aliquot)
       ]
-    end
-
-    # Returns the selected UG100 application type or the existing default.
-    # @return [String] the application type
-    def application_type
-      global_application_preset&.application_type || 'native'
     end
 
     # Returns a unique sample_ID for the given aliquot. This prefixes numbers

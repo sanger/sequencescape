@@ -254,8 +254,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     end
 
     it 'generates global section with only Application column and WGS Native value' do
-      puts csv1[3..5].map(&:compact_blank)
-
       expect(csv1[3].compact_blank).to eq(generator.global_title_config)
       expect(csv1[4].compact_blank).to eq(['Application'])
       expect(csv1[5].compact_blank).to eq(['WGS Native'])
@@ -270,21 +268,14 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       end
     end
 
-    context 'with Ultima conversion requests' do
-      before do
-        conversion_request
-        second_conversion_request
-        unrelated_conversion_request
-        tube1.aliquots.each { |aliquot| aliquot.update!(request: conversion_request) }
-        tube2.aliquots.each { |aliquot| aliquot.update!(request: second_conversion_request) }
-      end
-
+    context 'with an ancestor Ultima conversion request' do
       let(:conversion_preset) do
         create(:ultima_preset, name: 'GEM-X Flex', application_type: 'scRNA_GEX_10x_flex')
       end
       let(:conversion_application) { create(:ultima_application, ug100_preset: conversion_preset) }
-      let!(:conversion_stock_plate) { create(:stock_plate, well_count: 3) }
-      let(:other_application) { create(:ultima_application) }
+      let!(:conversion_stock_plate) do
+        create(:stock_plate, well_count: 1, well_factory: :tagged_well)
+      end
       let(:conversion_request) do
         create(
           :ultima_conversion_request,
@@ -292,63 +283,47 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
           ultima_application: conversion_application
         )
       end
-      let(:second_conversion_request) do
-        create(
-          :ultima_conversion_request,
-          asset: conversion_stock_plate.wells.second,
-          ultima_application: conversion_application
-        )
-      end
-      let(:unrelated_conversion_request) do
-        create(
-          :ultima_conversion_request,
-          asset: conversion_stock_plate.wells.third,
-          ultima_application: other_application
-        )
+
+      before do
+        conversion_stock_plate.wells.first.aliquots.first.update!(request: conversion_request)
+        tube1.parents << conversion_stock_plate
+        tube2.parents << conversion_stock_plate
       end
 
-      it 'uses conversion requests on the stock wells linked to batch aliquots' do
+      it 'uses the ancestor conversion request for the global and sample sections' do
         expect(csv1[5].compact_blank).to eq(['GEM-X Flex'])
         expect(csv1[9..].pluck(6).uniq).to eq(['scRNA_GEX_10x_flex'])
       end
+    end
 
-      it 'checks conversion requests for all batch requests' do
-        other_stock_plate = create(:stock_plate, well_count: 1)
-        other_conversion_request = create(
-          :ultima_conversion_request,
-          asset: other_stock_plate.wells.first,
-          ultima_application: other_application
-        )
-        tube2.aliquots.each { |aliquot| aliquot.update!(request: other_conversion_request) }
-
-        expect { csv1 }.to raise_error(ArgumentError, /one Ultima application/)
+    context 'with conversion requests at different ancestor levels' do
+      let(:near_preset) do
+        create(:ultima_preset, name: 'Nearest preset', application_type: 'nearest_application_type')
+      end
+      let(:far_preset) do
+        create(:ultima_preset, name: 'Distant preset', application_type: 'distant_application_type')
+      end
+      let(:near_application) { create(:ultima_application, ug100_preset: near_preset) }
+      let(:far_application) { create(:ultima_application, ug100_preset: far_preset) }
+      let!(:near_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
+      let!(:far_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
+      let(:near_request) do
+        create(:ultima_conversion_request, asset: near_plate.wells.first, ultima_application: near_application)
+      end
+      let(:far_request) do
+        create(:ultima_conversion_request, asset: far_plate.wells.first, ultima_application: far_application)
       end
 
-      it 'accepts multiple conversion requests with the same application' do
-        create(
-          :ultima_conversion_request,
-          asset: conversion_stock_plate.wells.second,
-          ultima_application: conversion_application
-        )
-
-        expect { csv1 }.not_to raise_error
+      before do
+        near_plate.wells.first.aliquots.first.update!(request: near_request)
+        far_plate.wells.first.aliquots.first.update!(request: far_request)
+        near_plate.parents << far_plate
+        tube1.parents << near_plate
       end
 
-      it 'rejects conversion requests with conflicting applications' do
-        create(
-          :ultima_conversion_request,
-          asset: conversion_stock_plate.wells.first,
-          ultima_application: other_application
-        )
-
-        expect { csv1 }.to raise_error(ArgumentError, /one Ultima application/)
-      end
-
-      it 'rejects conversion requests without an application ID' do
-        expect do
-          application_id = conversion_request.request_metadata.ultima_application_id
-          generator.send(:validate_ultima_application_ids!, [application_id, nil])
-        end.to raise_error(ArgumentError, /one Ultima application/)
+      it 'uses the conversion request on the nearest ancestor' do
+        expect(csv1[5].compact_blank).to eq(['Nearest preset'])
+        expect(csv1[9..].pluck(6).uniq).to eq(['nearest_application_type'])
       end
     end
   end

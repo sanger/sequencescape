@@ -29,8 +29,8 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
   let(:pipeline) { create(:ultima_ug200_sequencing_pipeline, request_types: [request_type]) }
   let(:batch) { create(:ultima_sequencing_batch, pipeline:, requests:) }
   let(:requests) { [request1, request2] }
-  let(:request1) { create(:ultima_sequencing_request, asset: tube1.receptacle, request_type: request_type) }
-  let(:request2) { create(:ultima_sequencing_request, asset: tube2.receptacle, request_type: request_type) }
+  let(:request1) { create(:ultima_ug200_sequencing_request, asset: tube1.receptacle, request_type: request_type) }
+  let(:request2) { create(:ultima_ug200_sequencing_request, asset: tube2.receptacle, request_type: request_type) }
 
   # Eagerly create tubes with aliquots to get consistent IDs.
   let(:library_type) { 'Standard' }
@@ -90,12 +90,12 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       let(:flex_apex_preset) do
         create(
           :ultima_preset,
-          name: described_class::TEN_X_FLEX_V2_APPLICATION_NAME,
+          name: described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME,
           application_type: 'Unprocessed CRAM'
         )
       end
       let(:ultima_application) { create(:ultima_application, ug200_preset: flex_apex_preset) }
-      let!(:stock_plate) { create(:stock_plate, well_count: 1) }
+      let!(:stock_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
       let!(:conversion_request) do
         create(
           :ultima_conversion_request,
@@ -105,7 +105,8 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       end
 
       before do
-        tube1.aliquots.each { |aliquot| aliquot.update!(request: conversion_request) }
+        stock_plate.wells.first.aliquots.first.update!(request: conversion_request)
+        tube1.parents << stock_plate
       end
 
       it 'uses the application type from the UG200 preset' do
@@ -114,7 +115,9 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
 
       it 'includes the barcode schema in the global section', :aggregate_failures do
         expect(csv1[4].compact_blank).to eq(%w[Application barcode_schema])
-        expect(csv1[5].compact_blank).to eq(['10x Flex V2', 'ug_efficient_tt'])
+        expect(csv1[5].compact_blank).to eq(
+          [described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME, 'ug_efficient_tt']
+        )
       end
     end
 
@@ -155,8 +158,12 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
     let(:request_type) { create(:ultima_ug200_sequencing) }
     let(:pipeline) { create(:ultima_ug200_sequencing_pipeline, request_types: [request_type]) }
     let(:batch) { create(:ultima_sequencing_batch, pipeline: pipeline, requests: [request1, request2]) }
-    let(:request1) { create(:ultima_sequencing_request, asset: tube1.receptacle, request_type: request_type) }
-    let(:request2) { create(:ultima_sequencing_request, asset: tube2.receptacle, request_type: request_type) }
+    let(:request1) do
+      create(:ultima_ug200_sequencing_request, asset: tube1.receptacle, request_type: request_type)
+    end
+    let(:request2) do
+      create(:ultima_ug200_sequencing_request, asset: tube2.receptacle, request_type: request_type)
+    end
     let(:library_type) { 'Standard' }
     let(:csv1) { CSV.parse(generator.csv_string(request1), row_sep: "\r\n", nil_value: '') }
     let(:csv2) { CSV.parse(generator.csv_string(request2), row_sep: "\r\n", nil_value: '') }
