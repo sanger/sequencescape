@@ -28,4 +28,4 @@ y26_192_prevent_ui_study_creation: Prevents users from creating studies in the U
 y26_245_sapio_study_upsert: Enables upsert behaviour on the Sapio study creation endpoint for uuids that already exist
 
 # Sapio work orders
-y26_282_sapio_work_order_endpoint: Enables the Sapio work order endpoint
+y26_282_sapio_operations_endpoint: Enables the Sapio operations endpoint
