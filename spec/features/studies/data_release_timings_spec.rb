@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/data_release_timings.feature
-RSpec.describe 'Study data release timings', :js do
+describe 'Study data release timings', :js do
   include StudyFormHelper
 
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }

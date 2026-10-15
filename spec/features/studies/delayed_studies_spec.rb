@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/5528168_delayed_studies_causing_errors.feature
-RSpec.describe 'Delayed studies' do
+describe 'Delayed studies' do
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }
   let!(:study) { create(:study, name: 'Testing delayed studies', state: 'active') }
 

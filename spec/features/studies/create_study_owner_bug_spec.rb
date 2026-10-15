@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/5859843_create_study_owner_bug.feature
-RSpec.describe 'Creating a study when a study owner has no name' do
+describe 'Creating a study when a study owner has no name' do
   include StudyFormHelper
 
   let(:admin) { create(:admin, first_name: 'John', last_name: 'Smith') }

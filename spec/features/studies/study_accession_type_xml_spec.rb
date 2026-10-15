@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/5549125_add_OTHER_study_type_to_EBI.feature
-RSpec.describe 'Study accession XML study type' do
+describe 'Study accession XML study type' do
   # Study types the EBI recognises (StudyType#valid_type is true)
   ebi_study_types = [
     'Synthetic Genomics',

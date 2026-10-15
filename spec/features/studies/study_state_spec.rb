@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/study_state.feature
-RSpec.describe 'Study state' do
+describe 'Study state' do
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }
   let!(:study) { create(:study, name: 'Test study', state: 'active') }
 

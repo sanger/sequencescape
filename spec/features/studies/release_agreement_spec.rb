@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/release_agreement.feature
-RSpec.describe 'Study release agreement', :js do
+describe 'Study release agreement', :js do
   include StudyFormHelper
 
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }

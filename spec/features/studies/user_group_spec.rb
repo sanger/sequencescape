@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/user_group.feature
-RSpec.describe 'Study user group warning' do
+describe 'Study user group warning' do
   let(:user) { create(:admin, first_name: 'John', last_name: 'Smith') }
 
   before { login_user(user) }

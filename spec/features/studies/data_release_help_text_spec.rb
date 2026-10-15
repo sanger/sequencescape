@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/8447221_data_release_help_text.feature
-RSpec.describe 'Update the data release fields when creating a study', :js do
+describe 'Update the data release fields when creating a study', :js do
   include StudyFormHelper
 
   let(:user) { create(:user, login: 'user', roles: [create(:role, name: 'manager')]) }

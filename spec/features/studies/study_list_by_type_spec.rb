@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 # Migrated from features/studies/listing_by_type.feature
-RSpec.describe 'Listing studies by type', :js do
+describe 'Listing studies by type', :js do
   let!(:user) { create(:listing_studies_user, :with_role, role_name: 'internal') }
 
   before do
