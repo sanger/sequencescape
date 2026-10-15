@@ -35,6 +35,9 @@ module Api
         # payload is logged as [FILTERED].
         PAYLOAD_LOG_FILTER = /\A(?!(?:controller|action|format)\z)/
 
+        # The kind of operation this endpoint creates
+        OPERATION_TYPE = 'reception_and_work_order'
+
         NOT_AN_OBJECT = 'The request body must be a JSON object.'
 
         # The top level checks: JSON pointer, error detail and check method.
@@ -52,6 +55,7 @@ module Api
         #
         # @return [void]
         def create
+          create_operation
           render json: {}, status: :accepted
         end
 
@@ -141,6 +145,29 @@ module Api
         # @return [Array<JSONAPI::Error>]
         def structure_error(pointer, detail)
           Errors::InvalidStructure.new(pointer, detail).errors
+        end
+
+        # Saves the request as an operation, with the raw body as its
+        # payload. The task statuses start as pending.
+        #
+        # @return [ApiOperation] the saved operation
+        def create_operation
+          payload = request.raw_post
+          ApiOperation.create!(
+            api_application: api_application,
+            external_id: @payload.dig('request', 'external_id'),
+            work_order_external_id: work_order_external_id,
+            operation_type: OPERATION_TYPE,
+            payload: payload,
+            payload_digest: ApiOperation::PayloadDigest.hexdigest(payload)
+          )
+        end
+
+        # @return [String, nil] work_order.external_id, if it is a string;
+        #   it is stored but not used yet
+        def work_order_external_id
+          external_id = @payload['work_order']['external_id']
+          external_id if external_id.is_a?(String)
         end
 
         # Renders JSON:API style errors with the status of the first error.
