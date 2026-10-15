@@ -84,6 +84,13 @@ class SampleManifest::CompoundSampleBuilder
     end
   end
 
+  # Applies the given component samples (tags_by_component) to the compound
+  # sample's links. A component sample that is already linked gets its tag
+  # corrected; the link is saved only if the tag changed. A new component
+  # sample gets a new link. Links to component samples that are not given
+  # are kept: a re-upload does not remove component samples, as other
+  # manifests do not remove samples.
+  # @param compound [Sample] the compound sample to update
   def update_links(compound)
     links = compound.joins_as_compound_sample.index_by(&:component_sample_id)
     tags_by_component.each do |component, tag|
