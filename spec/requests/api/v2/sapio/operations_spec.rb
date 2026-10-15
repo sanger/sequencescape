@@ -111,6 +111,60 @@ describe 'Sapio Operations API' do
         expect(response).to have_http_status(:accepted)
       end
 
+      describe 'the saved operation' do
+        let(:operation) { ApiOperation.last }
+
+        it 'saves one operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
+
+        it 'belongs to the Integration Hub application' do
+          expect(operation.api_application).to eq(integration_hub_app)
+        end
+
+        it 'stores the request ID' do
+          expect(operation.external_id).to eq('request-1')
+        end
+
+        it 'stores the operation type' do
+          expect(operation.operation_type).to eq('reception_and_work_order')
+        end
+
+        it 'stores the payload digest' do
+          expect(operation.payload_digest)
+            .to eq(ApiOperation::PayloadDigest.hexdigest(body))
+        end
+
+        it 'starts both task statuses as pending' do
+          expect([operation.reception_status, operation.work_order_status])
+            .to eq(%w[pending pending])
+        end
+
+        it 'stores no work order ID when none is given' do
+          expect(operation.work_order_external_id).to be_nil
+        end
+
+        context 'with a pretty-printed body' do
+          let(:body) { JSON.pretty_generate(valid_payload) }
+
+          it 'stores the payload exactly as sent' do
+            expect(operation.payload).to eq(body)
+          end
+        end
+
+        context 'with a work order ID' do
+          let(:body) do
+            valid_payload
+              .merge(work_order: { external_id: 'REQ000811' })
+              .to_json
+          end
+
+          it 'stores the work order ID' do
+            expect(operation.work_order_external_id).to eq('REQ000811')
+          end
+        end
+      end
+
       context 'with invalid JSON' do
         let(:body) { '{"request": ' }
 
