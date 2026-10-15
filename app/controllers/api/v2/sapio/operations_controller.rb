@@ -55,8 +55,8 @@ module Api
         #
         # @return [void]
         def create
-          create_operation
-          render json: {}, status: :accepted
+          operation = create_operation
+          render json: operation_json(operation), status: :accepted
         end
 
         private
@@ -161,6 +161,19 @@ module Api
             payload: payload,
             payload_digest: ApiOperation::PayloadDigest.hexdigest(payload)
           )
+        end
+
+        # The operation's identifier and statuses, as returned to the caller.
+        #
+        # @param operation [ApiOperation]
+        # @return [Hash]
+        def operation_json(operation)
+          {
+            operation_id: operation.uuid,
+            status: operation.status,
+            reception_status: operation.reception_status,
+            work_order_status: operation.work_order_status
+          }
         end
 
         # @return [String, nil] work_order.external_id, if it is a string;
