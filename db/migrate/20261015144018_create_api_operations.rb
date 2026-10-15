@@ -8,9 +8,11 @@ class CreateApiOperations < ActiveRecord::Migration[8.1]
     create_table :api_operations,
                  comment: 'Requests received by API operations endpoints ' \
                           'and their processing progress' do |t|
+      # Indexed below, together with external_id
       t.references :api_application,
                    type: :integer,
                    null: false,
+                   index: false,
                    foreign_key: true,
                    comment: 'The calling system, identified by its API key'
       t.string :external_id,
@@ -43,6 +45,10 @@ class CreateApiOperations < ActiveRecord::Migration[8.1]
              comment: 'Errors recorded while processing, by task'
 
       t.timestamps
+
+      # One operation per calling system and request ID, even for
+      # concurrent requests. It also serves the api_application foreign key.
+      t.index %i[api_application_id external_id], unique: true
     end
   end
 end

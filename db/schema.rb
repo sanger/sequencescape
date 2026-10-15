@@ -79,7 +79,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.json "error_details", comment: "Errors recorded while processing, by task"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["api_application_id"], name: "index_api_operations_on_api_application_id"
+    t.index ["api_application_id", "external_id"], name: "index_api_operations_on_api_application_id_and_external_id", unique: true
   end
 
   create_table "asset_audits", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
