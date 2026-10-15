@@ -533,6 +533,33 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         end
       end
 
+      context 'when a tube has two library types' do
+        # The second row of the first tube has another, existing library type.
+        let(:download) do
+          super().tap do |test_download|
+            library_type = create(:library_type, name: 'Another library type')
+            worksheet = test_download.worksheet
+            column = worksheet.columns.find_by(:name, :library_type_kinnex)
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row]
+            row.cells[column.number - 1].value = library_type.name
+          end
+        end
+
+        it 'does not process the upload' do
+          expect(uploader).not_to be_processed
+        end
+
+        it 'reports the row with the other library type' do
+          expect(uploader.errors.full_messages)
+            .to include(/Library type differs from row/)
+        end
+
+        it 'builds no compound sample' do
+          tubes = rows_by_tube.map { |rows| rows.first.asset }
+          expect(tubes.flat_map(&:aliquots)).to be_empty
+        end
+      end
+
       context "when a tube's first row is empty" do
         # The first row of the first tube keeps only its sanger ids and
         # barcode, like a row the customer did not use.
