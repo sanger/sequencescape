@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module UltimaSampleSheet::UG200SampleSheetGenerator
-  TEN_X_FLEX_V2_APPLICATION_PRESET_NAME = '10x Flex v2'
+  TEN_X_FLEX_V2_APPLICATION_NAME = '10x Flex v2'
 
   # Initiates the sample sheet generation for the given batch.
   # @param batch [Batch] the Ultima UG200 sequencing batch to generate sample sheets for
@@ -31,7 +31,7 @@ module UltimaSampleSheet::UG200SampleSheetGenerator
       preset = sequencing_request.preset_for_aliquot(aliquot)
       application = sequencing_request
         .nearest_ultima_conversion_request_for(aliquot)&.ultima_application
-      return super unless application&.name == TEN_X_FLEX_V2_APPLICATION_PRESET_NAME
+      return super unless application&.name == TEN_X_FLEX_V2_APPLICATION_NAME
 
       csv << pad(global_title_config)
       csv << pad(%w[Application barcode_schema])

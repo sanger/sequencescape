@@ -97,7 +97,7 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       let(:ultima_application) do
         create(
           :ultima_application,
-          name: described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME,
+          name: described_class::TEN_X_FLEX_V2_APPLICATION_NAME,
           ug200_preset: flex_apex_preset
         )
       end
