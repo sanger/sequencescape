@@ -111,6 +111,15 @@ describe 'Sapio Operations API' do
         expect(response).to have_http_status(:accepted)
       end
 
+      it 'returns the operation ID and statuses' do
+        expect(json).to eq(
+          'operation_id' => ApiOperation.last.uuid,
+          'status' => 'queued',
+          'reception_status' => 'pending',
+          'work_order_status' => 'pending'
+        )
+      end
+
       describe 'the saved operation' do
         let(:operation) { ApiOperation.last }
 
