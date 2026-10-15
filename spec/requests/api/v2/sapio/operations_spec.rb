@@ -184,6 +184,10 @@ describe 'Sapio Operations API' do
         it 'returns an invalid JSON error' do
           expect(json.dig('errors', 0, 'code')).to eq('INVALID_JSON')
         end
+
+        it 'does not save an operation' do
+          expect(ApiOperation.count).to eq(0)
+        end
       end
 
       context 'with an empty body' do
@@ -191,6 +195,10 @@ describe 'Sapio Operations API' do
 
         it 'returns bad request' do
           expect(response).to have_http_status(:bad_request)
+        end
+
+        it 'does not save an operation' do
+          expect(ApiOperation.count).to eq(0)
         end
       end
 
@@ -228,6 +236,10 @@ describe 'Sapio Operations API' do
 
           it 'points to the problem' do
             expect(json.dig('errors', 0, 'source', 'pointer')).to eq(pointer)
+          end
+
+          it 'does not save an operation' do
+            expect(ApiOperation.count).to eq(0)
           end
         end
       end
