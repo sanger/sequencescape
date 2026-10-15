@@ -70,7 +70,7 @@ class UltimaSequencingRequest < SequencingRequest
     frontier = aliquot.receptacle.parents.to_a
 
     until frontier.empty?
-      conversion_request = conversion_request_for_ancestor_level(frontier)
+      conversion_request = conversion_request_for_ancestor_level(frontier, aliquot.sample_id)
       return conversion_request if conversion_request
 
       frontier = frontier.flat_map(&:parents).uniq
@@ -81,10 +81,11 @@ class UltimaSequencingRequest < SequencingRequest
 
   private
 
-  def conversion_request_for_ancestor_level(labware)
+  def conversion_request_for_ancestor_level(labware, sample_id)
     Aliquot
       .joins(:receptacle)
-      .where(receptacles: { labware_id: labware.map(&:id) })
+      .where(receptacles: { labware_id: labware.map(&:id) },
+             aliquots: { sample_id: })
       .includes(:request)
       .filter_map(&:request)
       .find { |request| request.is_a?(UltimaConversionRequest) }
