@@ -69,6 +69,9 @@ module SampleManifestExcel
           compound_sample_builder(receptacle, updated_rows).update!(compound)
         end
 
+        # The first filled row's library type is the tube's: the upload is
+        # only valid if all the rows of a tube have the same library type
+        # (see check_tube_values_consistent). Empty rows are not in rows.
         def build_compound_sample(receptacle, rows)
           library_type = library_type_of(rows.first)
           compound_sample_builder(receptacle, rows, library_type).build!
