@@ -23,7 +23,8 @@ RSpec.describe 'Delayed studies' do
       visit study_information_path(study)
       click_link 'study details'
 
-      expect(page).to have_text("#{period} months")
+      expect(page).to have_css('tr', text: /Delay for:\s+#{period} months/)
+      expect(page).to have_css('tr', text: /Please explain the reason for delaying release:\s+It's not working/)
     end
   end
 end

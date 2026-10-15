@@ -50,5 +50,8 @@ RSpec.describe 'Study release agreement', :js do
 
     expect_to_be_on_information_page_for(study_name)
     expect(page).to have_text('Your study has been created')
+
+    agreement = Study.find_by!(name: study_name).study_metadata.data_release_non_standard_agreement
+    expect(agreement.filename).to eq('blah.fasta')
   end
 end

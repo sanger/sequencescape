@@ -21,4 +21,19 @@ RSpec.describe 'Study user group warning' do
       expect(page).to have_no_text('No user group specified for a managed study.')
     end
   end
+
+  # Not in the original feature: a control to check the warning is still shown when it should be.
+  context 'with a managed study that has no data access group' do
+    let!(:study) { create(:study, name: 'Bad study', metadata_options: { data_access_group: nil }) }
+
+    it 'warns about a missing user group on the manage page' do
+      # Managed studies without a data access group are now invalid, so the validation has to be skipped.
+      # rubocop:disable-next Rails/SkipsModelValidations
+      study.study_metadata.update_column(:data_release_strategy, 'managed')
+
+      visit admin_study_path(study)
+
+      expect(page).to have_text('No user group specified for a managed study.')
+    end
+  end
 end

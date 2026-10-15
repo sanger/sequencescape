@@ -22,6 +22,7 @@ RSpec.describe 'Update the data release fields when creating a study', :js do
       select 'Other (please specify below)', from: 'Reason for delaying release'
 
       expect(page).to have_css('label', exact_text: 'Reason for delaying release')
+      expect(page).to have_field('Please explain the reason for delaying release')
     end
   end
 

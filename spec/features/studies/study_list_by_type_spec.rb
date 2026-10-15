@@ -27,10 +27,11 @@ RSpec.describe 'Listing studies by type', :js do
     it "lists the studies of type '#{study_type}'" do
       factory_name = :"study_for_study_list_#{study_type.downcase.gsub(/[^a-z0-9]+/, '_')}"
       create(factory_name, user:)
+      expect(page).to have_current_path(studies_path)
 
-      click_link study_type
+      click_link study_type, exact: true
 
-      expect(page).to have_text("Study: #{study_type}")
+      expect(page).to have_css('table#study_list a', exact_text: "Study: #{study_type}")
     end
   end
 end

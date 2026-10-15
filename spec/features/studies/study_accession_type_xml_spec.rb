@@ -23,26 +23,30 @@ RSpec.describe 'Study accession XML study type' do
 
   let!(:study) { create(:study, name: 'My study') }
 
-  def study_type_node_for(study_type)
-    study.study_metadata.update!(study_type:)
+  # Requests the XML sent to the EBI when accessioning the study and returns it as a parsed document.
+  def accession_xml_for(study)
     page.driver.get(study_show_accession_path(study), {}, 'HTTP_ACCEPT' => 'application/xml')
-    Nokogiri::XML(page.source).at_xpath('//STUDY_TYPE')
+    Nokogiri::XML(page.source)
   end
 
   ebi_study_types.each do |name|
     it "uses the '#{name}' study type as is" do
-      node = study_type_node_for(create(:study_type, name: name, valid_type: true))
+      study.study_metadata.update!(study_type: create(:study_type, name: name, valid_type: true))
 
-      expect(node['existing_study_type']).to eq(name)
+      study_type_element = accession_xml_for(study).at_xpath('//STUDY_TYPE')
+
+      expect(study_type_element['existing_study_type']).to eq(name)
     end
   end
 
   non_ebi_study_types.each do |name|
     it "sends '#{name}' as a new study type with an existing type of 'Other'" do
-      node = study_type_node_for(create(:study_type, name: name, valid_type: false))
+      study.study_metadata.update!(study_type: create(:study_type, name: name, valid_type: false))
 
-      expect(node['existing_study_type']).to eq('Other')
-      expect(node['new_study_type']).to eq(name)
+      study_type_element = accession_xml_for(study).at_xpath('//STUDY_TYPE')
+
+      expect(study_type_element['existing_study_type']).to eq('Other')
+      expect(study_type_element['new_study_type']).to eq(name)
     end
   end
 end

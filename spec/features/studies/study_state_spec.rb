@@ -19,5 +19,7 @@ RSpec.describe 'Study state' do
     click_button 'Deactivate'
 
     expect(page).to have_text('This study has been deactivated: some reason')
+    expect(study.reload).to be_inactive
+    expect(study.comments.last.description).to eq('some reason')
   end
 end

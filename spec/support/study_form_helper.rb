@@ -11,11 +11,13 @@ module StudyFormHelper
   DATA_RELEASE_STRATEGY_QUESTION = 'What is the data release strategy for this study?'
 
   # Reference data that the seeds provide to the Cucumber suite, but which RSpec has to create itself.
+  # Uses find_or_create_by! because the study factory also creates 'General' and 'genomic sequencing', so the
+  # records may already exist if a study has been created first.
   def create_study_form_reference_data
-    create(:faculty_sponsor, name: 'Jack Sponsor')
-    create(:program, name: 'General')
+    FacultySponsor.find_or_create_by!(name: 'Jack Sponsor')
+    Program.find_or_create_by!(name: 'General')
     create(:study_type)
-    create(:data_release_study_type, name: 'genomic sequencing')
+    DataReleaseStudyType.find_or_create_by!(name: 'genomic sequencing')
   end
 
   # Study creation through the UI is hidden behind a feature flag.

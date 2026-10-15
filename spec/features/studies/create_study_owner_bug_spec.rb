@@ -22,10 +22,14 @@ RSpec.describe 'Creating a study when a study owner has no name' do
     login_user(admin)
   end
 
-  it 'still shows the create study form' do
+  it 'shows the create study form, listing only the owners that have a last name' do
     visit root_path
+    expect(page).to have_current_path(root_path)
+
     click_link 'Create Study'
 
     expect(page).to have_text('To register a new study')
+    expect(page).to have_select('study_owner_id', with_options: ['John Smith'])
+    expect(page).to have_no_select('study_owner_id', with_options: ['xyz2'])
   end
 end
