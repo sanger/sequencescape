@@ -533,6 +533,37 @@ RSpec.describe SampleManifest::Uploader, :sample_manifest, :sample_manifest_exce
         end
       end
 
+      context "when a tube's first row is empty" do
+        # The first row of the first tube keeps only its sanger ids and
+        # barcode, like a row the customer did not use.
+        let(:download) do
+          super().tap do |test_download|
+            worksheet = test_download.worksheet
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row - 1]
+            names = worksheet.data.keys + [:component_tag_sequence]
+            names.each do |name|
+              number = worksheet.columns.find_by(:name, name).number
+              row.cells[number - 1].value = nil
+            end
+          end
+        end
+        let(:compound_aliquot) { compound_aliquots.first }
+
+        it 'processes the upload' do
+          expect(uploader).to be_processed
+        end
+
+        it 'makes the compound sample from the filled rows only' do
+          expect(compound_aliquot.sample.component_samples.size)
+            .to eq(components_per_tube.first - 1)
+        end
+
+        it 'gives the compound sample aliquot their library type' do
+          expect(compound_aliquot.library_type)
+            .to eq(test_data[:library_type_kinnex])
+        end
+      end
+
       context 'when the manifest is uploaded again' do
         let(:override_samples) { true }
         let(:reupload_file_name) { 'reupload_test_file.xlsx' }
