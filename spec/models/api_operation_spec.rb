@@ -48,6 +48,22 @@ RSpec.describe ApiOperation do
     expect(api_operation.reload.payload).to eq(payload)
   end
 
+  describe '#status' do
+    it 'is queued when neither task has started' do
+      expect(api_operation.status).to eq('queued')
+    end
+
+    it 'is processing once reception has started' do
+      api_operation.reception_status = 'started'
+      expect(api_operation.status).to eq('processing')
+    end
+
+    it 'is processing once the work order has started' do
+      api_operation.work_order_status = 'started'
+      expect(api_operation.status).to eq('processing')
+    end
+  end
+
   describe 'the unique index on calling system and request ID' do
     let(:existing) { create(:api_operation) }
 
