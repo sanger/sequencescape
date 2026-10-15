@@ -6,13 +6,15 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
   let(:study) { create(:study) }
   let(:receptacle) { create(:empty_sample_tube).receptacle }
   let(:tags) { create_list(:tag, 2) }
+  # A pool of two species, which Kinnex compound samples can be.
+  let(:species) { [['Homo sapiens', 9606], ['Mus musculus', 10_090]] }
   let(:components) do
-    [9606, 10_090].map do |taxon_id|
+    species.map do |common_name, taxon_id|
       create(
         :sample,
         sample_metadata_attributes: {
           supplier_name: 'POOL-1',
-          sample_common_name: 'Homo sapiens',
+          sample_common_name: common_name,
           sample_taxon_id: taxon_id
         }
       )
@@ -65,14 +67,25 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
   end
 
   it 'copies the metadata that all the component samples share' do
+    expect(compound.sample_metadata.supplier_name).to eq('POOL-1')
+  end
+
+  it 'does not copy the species when the component samples differ in it' do
     expect(compound.sample_metadata).to have_attributes(
-      supplier_name: 'POOL-1',
-      sample_common_name: 'Homo sapiens'
+      sample_common_name: nil,
+      sample_taxon_id: nil
     )
   end
 
-  it 'does not copy the metadata the component samples differ in' do
-    expect(compound.sample_metadata.sample_taxon_id).to be_nil
+  context 'when all the component samples are of one species' do
+    let(:species) { [['Homo sapiens', 9606]] * 2 }
+
+    it 'copies their species' do
+      expect(compound.sample_metadata).to have_attributes(
+        sample_common_name: 'Homo sapiens',
+        sample_taxon_id: 9606
+      )
+    end
   end
 
   context 'with component samples with the same tag' do
@@ -135,7 +148,7 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
         .to eq(swapped)
     end
 
-    it 'keeps the component samples it is not given' do
+    it 'keeps the component samples left out of the update' do
       update_with({})
       expect(compound.reload.component_samples).to match_array(components)
     end
@@ -147,9 +160,9 @@ RSpec.describe SampleManifest::CompoundSampleBuilder do
     end
 
     it 'clears the metadata the component samples no longer share' do
-      components.first.sample_metadata.update!(sample_common_name: 'Mouse')
+      components.first.sample_metadata.update!(supplier_name: 'POOL-2')
       update_with({})
-      expect(metadata.sample_common_name).to be_nil
+      expect(metadata.supplier_name).to be_nil
     end
   end
 end
