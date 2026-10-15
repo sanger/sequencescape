@@ -48,6 +48,27 @@ RSpec.describe ApiOperation do
     expect(api_operation.reload.payload).to eq(payload)
   end
 
+  describe 'the unique index on calling system and request ID' do
+    let(:existing) { create(:api_operation) }
+
+    it 'rejects a second operation with the same request ID' do
+      duplicate = build(:api_operation,
+                        api_application: existing.api_application,
+                        external_id: existing.external_id)
+      expect { duplicate.save! }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
+    it 'accepts the same request ID from another calling system' do
+      other = build(:api_operation, external_id: existing.external_id)
+      expect { other.save! }.not_to raise_error
+    end
+
+    it 'accepts another request ID from the same calling system' do
+      other = build(:api_operation, api_application: existing.api_application)
+      expect { other.save! }.not_to raise_error
+    end
+  end
+
   it 'gets a uuid when created' do
     api_operation.save!
     expect(api_operation.uuid).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
