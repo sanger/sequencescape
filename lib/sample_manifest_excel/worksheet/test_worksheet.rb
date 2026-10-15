@@ -74,6 +74,8 @@ module SampleManifestExcel
 
       def create_sample_manifest # rubocop:todo Metrics/MethodLength
         case manifest_type
+        # Any template name with "plate" in it. A compound sample plate
+        # template (#5771) needs its own case above this one.
         when /plate/
           FactoryBot.create(
             :pending_plate_sample_manifest,
@@ -88,6 +90,9 @@ module SampleManifestExcel
           FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
         when /tube_rack/
           FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
+        # Compound sample tube templates. A compound sample plate template
+        # (#5771) would match /plate/ first, so its case must go above
+        # /plate/.
         when /compound/
           create_compound_tube_manifest
         else
@@ -161,8 +166,10 @@ module SampleManifestExcel
 
       # rubocop:enable Metrics/MethodLength
 
+      # By the manifest's asset type rather than its template name, which a
+      # compound sample plate template would also match.
       def compound_tubes?
-        manifest_type.include?('compound')
+        sample_manifest.asset_type == 'compound_tube'
       end
 
       # Needs the component tag group, which decides the rows per tube.
