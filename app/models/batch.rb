@@ -33,6 +33,7 @@ class Batch < ApplicationRecord # rubocop:todo Metrics/ClassLength
 
   DEFAULT_VOLUME = 13
 
+  # Flag is used by the Generate and release batch UAT action ONLY
   attr_accessor :skip_request_readiness_check
 
   self.per_page = 500
