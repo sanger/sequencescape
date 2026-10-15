@@ -23,12 +23,15 @@ module UltimaSampleSheet::UG200SampleSheetGenerator
     private
 
     # Adds the global section to the CSV for UG200.
-    # Includes the barcode schema for the 10x Flex V2 application.
+    # Includes the barcode schema for the 10x Flex v2 application.
     # @param csv [CSV] the CSV object to append rows to
     # @param sequencing_request [UltimaSequencingRequest] the request whose global data is to be added
     def add_global_section(csv, sequencing_request)
-      preset = sequencing_request.preset_for_aliquot(sequencing_request.asset.aliquots.first)
-      return super unless preset&.name == TEN_X_FLEX_V2_APPLICATION_PRESET_NAME
+      aliquot = sequencing_request.asset.aliquots.first
+      preset = sequencing_request.preset_for_aliquot(aliquot)
+      application = sequencing_request
+        .nearest_ultima_conversion_request_for(aliquot)&.ultima_application
+      return super unless application&.name == TEN_X_FLEX_V2_APPLICATION_PRESET_NAME
 
       csv << pad(global_title_config)
       csv << pad(%w[Application barcode_schema])

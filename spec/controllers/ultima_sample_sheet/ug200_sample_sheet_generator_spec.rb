@@ -90,11 +90,17 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       let(:flex_apex_preset) do
         create(
           :ultima_preset,
-          name: described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME,
-          application_type: 'Unprocessed CRAM'
+          name: 'Unprocessed CRAM',
+          application_type: 'test'
         )
       end
-      let(:ultima_application) { create(:ultima_application, ug200_preset: flex_apex_preset) }
+      let(:ultima_application) do
+        create(
+          :ultima_application,
+          name: described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME,
+          ug200_preset: flex_apex_preset
+        )
+      end
       let!(:stock_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
       let!(:conversion_request) do
         create(
@@ -109,15 +115,15 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
         tube1.parents << stock_plate
       end
 
-      it 'uses the application type from the UG200 preset' do
-        expect(csv1[9][6]).to eq(flex_apex_preset.application_type)
-      end
-
       it 'includes the barcode schema in the global section', :aggregate_failures do
         expect(csv1[4].compact_blank).to eq(%w[Application barcode_schema])
         expect(csv1[5].compact_blank).to eq(
-          [described_class::TEN_X_FLEX_V2_APPLICATION_PRESET_NAME, 'ug_efficient_tt']
+          ['Unprocessed CRAM', 'ug_efficient_tt']
         )
+      end
+
+      it 'uses the application type from the UG200 preset' do
+        expect(csv1[9][6]).to eq(flex_apex_preset.application_type)
       end
     end
 

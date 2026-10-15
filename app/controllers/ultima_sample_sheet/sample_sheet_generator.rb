@@ -130,7 +130,7 @@ module UltimaSampleSheet::SampleSheetGenerator
       application = preset ? preset.name : library_type_to_application(library_type)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
-      data = [application] # Application
+      data = [application]
       csv << pad(data)
     end
 
