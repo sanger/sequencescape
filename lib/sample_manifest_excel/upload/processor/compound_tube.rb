@@ -10,7 +10,6 @@ module SampleManifestExcel
       # rubocop:todo-next Metrics/ClassLength
       class CompoundTube < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_TUBES = 'Barcode is used for more than one tube.'
-        TUBE_WITH_TWO_BARCODES = 'Tube has more than one barcode.'
         TAG_USED_TWICE =
           'Component tag sequence is already used in this tube by row'
         TAG_WITHOUT_SUPPLIER_NAME =
@@ -20,6 +19,8 @@ module SampleManifestExcel
 
         # Values for the whole tube, with their labels for errors.
         TUBE_FIELDS = {
+          SequencescapeExcel::SpecialisedField::SangerTubeId =>
+            'Sanger tube id',
           LIBRARY_TYPE_FIELD => 'Library type',
           SequencescapeExcel::SpecialisedField::RetentionInstruction =>
             'Retention instruction'
@@ -102,27 +103,20 @@ module SampleManifestExcel
           row.specialised_fields.find { |field| field.is_a?(field_class) }
         end
 
-        # The rows of a tube share its barcode. So instead of each row having
-        # a different barcode, a barcode must belong to only one tube and a
-        # tube must have only one barcode.
+        # The rows of a tube share its barcode, so the base check that every
+        # row has a different barcode does not apply. A barcode must still
+        # belong to only one tube. That a tube has only one barcode is checked
+        # with its other values (TUBE_FIELDS).
         def check_for_barcodes_unique
-          row, message = row_with_inconsistent_barcode
-          return if row.nil?
-
-          errors.add(:base, "#{row.row_title} #{message}")
+          row = row_with_barcode_of_another_tube
+          errors.add(:base, "#{row.row_title} #{BARCODE_FOR_TWO_TUBES}") if row
         end
 
-        def row_with_inconsistent_barcode
+        def row_with_barcode_of_another_tube
           tubes_by_barcode = {}
-          barcodes_by_tube = {}
-          barcoded_rows.each do |row, barcode, tube_id|
-            known_tube = tubes_by_barcode[barcode] ||= tube_id
-            return row, BARCODE_FOR_TWO_TUBES unless known_tube == tube_id
-
-            known_barcode = barcodes_by_tube[tube_id] ||= barcode
-            return row, TUBE_WITH_TWO_BARCODES unless known_barcode == barcode
-          end
-          nil
+          barcoded_rows.find do |_row, barcode, tube_id|
+            (tubes_by_barcode[barcode] ||= tube_id) != tube_id
+          end&.first
         end
 
         # Each row with a barcode and a tube of the manifest, with both.
@@ -158,8 +152,8 @@ module SampleManifestExcel
           end
         end
 
-        # The library type and the retention instruction are for the whole
-        # tube, so all the rows of a tube must have the same values.
+        # The barcode, library type and retention instruction are for the
+        # whole tube, so all the rows of a tube must have the same values.
         def check_tube_values_consistent
           TUBE_FIELDS.each do |field_class, label|
             check_same_value_in_tube(field_class, label)

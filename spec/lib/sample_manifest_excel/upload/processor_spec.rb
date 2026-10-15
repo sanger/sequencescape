@@ -420,10 +420,13 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
       end
 
       it 'is not valid when a tube has more than one barcode' do
-        change_value(rows_by_tube.first.second, 'sanger_tube_id', 'NT1234567X')
+        first_row, second_row = rows_by_tube.first
+        change_value(second_row, 'sanger_tube_id', 'NT1234567X')
         processor.valid?
-        expect(processor.errors.full_messages)
-          .to include(/Tube has more than one barcode/)
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Sanger tube id differs from row " \
+          "#{first_row.number} of the same tube."
+        )
       end
 
       it 'is not valid when a tag is used twice in a tube' do
