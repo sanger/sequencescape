@@ -3457,15 +3457,15 @@ util-deprecate@^1.0.2, util-deprecate@~1.0.1:
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
-vite-plugin-ruby@^5.2.4:
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/vite-plugin-ruby/-/vite-plugin-ruby-5.2.4.tgz#aa285e3dcffd0241ea2ab28ae4a10379ab59c739"
-  integrity sha512-DdFjS7TB8mgPx0Zhsf4kqgZYKxlZHgbyiijAj8l4OTbkEF1Lvk7U/HAGOKWjlpPR9RgatwNGZ1wZwAhyMJBcHg==
+vite-plugin-ruby@^5.2.5:
+  version "5.2.5"
+  resolved "https://registry.yarnpkg.com/vite-plugin-ruby/-/vite-plugin-ruby-5.2.5.tgz#866f99bf008c6631d0e0c3379edb3561b73f38bb"
+  integrity sha512-Oa1cmA7FobR49YcFPa+hvASenxd8tI1jQeOuDRJNh9gsbO8ugDCHI0zh75niQGq8cnMXriJfhJrPa2F2qDeA5Q==
   dependencies:
     obug "^2.0"
     tinyglobby "^0.2.12"
 
-"vite@^6.0.0 || ^7.0.0 || ^8.0.0", vite@^8.0:
+"vite@^6.0.0 || ^7.0.0 || ^8.0.0", vite@^8.0.0:
   version "8.3.4"
   resolved "https://registry.yarnpkg.com/vite/-/vite-8.3.4.tgz#ba08678ba41ba53f41c251b1772946c27b1c874e"
   integrity sha512-IftLE8phJhdNRIGNEV4JCCvfNScoZQVfcXaN8TQropWGJtOHcu+iAB9pHcuGvmEb/kddw0LBe/jS8ztdC6xdiQ==
