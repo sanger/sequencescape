@@ -26,4 +26,32 @@ RSpec.describe 'Sample', :js do
       end
     end
   end
+
+  describe 'Sample details' do
+    let(:user) { create(:admin) }
+    let!(:sample) { create(:sample, name: 'sample_test') }
+
+    before do
+      login_user(user)
+      visit sample_path(sample)
+    end
+
+    it 'shows the manifest that created the sample' do
+      sample_manifest = create(:sample_manifest, id: 1)
+      sample.update!(sample_manifest:)
+      visit sample_path(sample)
+
+      expect(page).to have_link('Manifest_1')
+      click_link 'Manifest_1'
+
+      expect(page).to have_text('Manifest 1')
+    end
+
+    it 'shows the sample metadata fields' do
+      ['Cohort', 'Gender', 'Country of origin', 'Sequencescape Sample ID', 'Public Name', 'Taxon ID',
+       'Sample Collection Date'].each do |label|
+        expect(page).to have_text(label)
+      end
+    end
+  end
 end
