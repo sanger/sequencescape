@@ -159,6 +159,12 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     "#{row}#{col}"
   end
 
+  def add_ancestor_aliquots_for(child_aliquots, plate, request)
+    child_aliquots.each do |child_aliquot|
+      create(:aliquot, sample: child_aliquot.sample, receptacle: plate.wells.first, request: request)
+    end
+  end
+
   context 'with zip output' do
     # Expected Zip entry names
     let(:zip_entry1_name) do
@@ -272,7 +278,9 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       let(:conversion_preset) do
         create(:ultima_preset, name: 'GEM-X Flex', application_type: 'scRNA_GEX_10x_flex')
       end
-      let(:conversion_application) { create(:ultima_application, ug100_preset: conversion_preset) }
+      let(:conversion_application) do
+        create(:ultima_application, name: 'GEM-X Flex', ug100_preset: conversion_preset)
+      end
       let!(:conversion_stock_plate) do
         create(:stock_plate, well_count: 1, well_factory: :tagged_well)
       end
@@ -285,7 +293,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       end
 
       before do
-        conversion_stock_plate.wells.first.aliquots.first.update!(request: conversion_request)
+        child_aliquots = [tube1, tube2].flat_map { |tube| tube.receptacle.aliquots }
+        add_ancestor_aliquots_for(child_aliquots, conversion_stock_plate, conversion_request)
         tube1.parents << conversion_stock_plate
         tube2.parents << conversion_stock_plate
       end
@@ -315,8 +324,9 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       end
 
       before do
-        near_plate.wells.first.aliquots.first.update!(request: near_request)
-        far_plate.wells.first.aliquots.first.update!(request: far_request)
+        child_aliquots = tube1.receptacle.aliquots
+        add_ancestor_aliquots_for(child_aliquots, near_plate, near_request)
+        add_ancestor_aliquots_for(child_aliquots, far_plate, far_request)
         near_plate.parents << far_plate
         tube1.parents << near_plate
       end

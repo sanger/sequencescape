@@ -63,6 +63,12 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
     end
   end
 
+  def add_ancestor_aliquots_for(child_aliquots, plate, request)
+    child_aliquots.each do |child_aliquot|
+      create(:aliquot, sample: child_aliquot.sample, receptacle: plate.wells.first, request: request)
+    end
+  end
+
   context 'with csv output' do
     subject(:generator) { described_class::Generator.new(batch) }
 
@@ -111,7 +117,7 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       end
 
       before do
-        stock_plate.wells.first.aliquots.first.update!(request: conversion_request)
+        add_ancestor_aliquots_for(tube1.receptacle.aliquots, stock_plate, conversion_request)
         tube1.parents << stock_plate
       end
 
