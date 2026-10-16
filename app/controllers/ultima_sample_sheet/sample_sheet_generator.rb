@@ -26,9 +26,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     def global_headers_config
-      return ['Application'].freeze if Flipper.enabled?(:y25_140_support_ultima_ug100_upgrade)
-
-      %w[Application sequencing_recipe analysis_recipe].freeze
+      ['Application'].freeze
     end
 
     def samples_title_config
@@ -72,29 +70,29 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Generates a ZIP archive containing individual sample sheet CSV files
-    # for each request in the batch. This sorts the requests by id to ensure
+    # for each request in the batch. This sorts the batch requests by id to ensure
     # consistent ordering of CSV files in the zip archive.
     # @return [String] the ZIP archive as a binary string
     def generate
       zip_stream = Zip::OutputStream.write_buffer do |zip|
-        batch_requests.sort_by(&:id).each do |request|
-          zip.put_next_entry(entry_name(request))
-          zip.write(csv_string(request).encode('UTF-8'))
+        batch_sequencing_requests.sort_by(&:id).each do |batch_request|
+          zip.put_next_entry(entry_name(batch_request))
+          zip.write(csv_string(batch_request).encode('UTF-8'))
         end
       end
       zip_stream.string
     end
 
-    # Generates the CSV string for a single request.
-    # @param request [UltimaSequencingRequest] the request to generate the CSV for
+    # Generates the CSV string for a single sequencing request.
+    # @param sequencing_request [SequencingRequest] the sequencing request to generate the CSV for
     # @return [String] the CSV content as a string with CRLF line endings
-    def csv_string(request)
+    def csv_string(sequencing_request)
       CSV.generate(row_sep: "\r\n", force_quotes: false, quote_empty: false) do |csv|
-        add_header_section(csv, request)
+        add_header_section(csv, sequencing_request)
         csv << pad # empty row
-        add_global_section(csv, request)
+        add_global_section(csv, sequencing_request)
         csv << pad
-        add_samples_section(csv, request)
+        add_samples_section(csv, sequencing_request)
       end
     end
 
@@ -115,28 +113,34 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     # Adds the header section to the CSV. The free form text includes the batch ID and asset barcode.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose header data is to be added
-    def add_header_section(csv, request)
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request whose header data is to be added
+    def add_header_section(csv, sequencing_request)
       csv << pad(header_title_config)
-      free_form_text = "Batch #{@batch.id} #{request.asset.human_barcode}"
+      free_form_text = "Batch #{@batch.id} #{sequencing_request.asset.human_barcode}"
       csv << pad([free_form_text])
     end
 
     # Adds the global section to the CSV.
-    # The request parameter is currently unused.
+    # The sequencing_request parameter supplies the library type for the fallback value.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_global_section(csv, request)
-      return add_support_global_section(csv, request) if Flipper.enabled?(:y25_140_support_ultima_ug100_upgrade)
-
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request whose global data is to be added
+    def add_global_section(csv, sequencing_request)
+      library_type = sequencing_request.asset.aliquots.first.library_type
+      preset = preset_for_sequencing_request(sequencing_request)
+      application = preset ? preset.name : library_type_to_application(library_type)
       csv << pad(global_title_config)
       csv << pad(global_headers_config)
-      # Currently there is only one UltimaGlobal record; get the last one.
-      # Future enhancements may allow selecting different records based on
-      # sequencing request or batch properties.
-      global = UltimaGlobal.last
-      data = [global.application, global.sequencing_recipe, global.analysis_recipe]
+      data = [application]
       csv << pad(data)
+    end
+
+    # Assumption here that all aliquots in the sequencing request share the same preset.
+    # NB. We are only using this assumption to set the Global application value.
+    # And there will not be a preset if there is no conversion request.
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
+    # @return [Preset, nil] the preset for the sequencing request, or nil if none exists
+    def preset_for_sequencing_request(sequencing_request)
+      sequencing_request.preset_for_aliquot(sequencing_request.asset.aliquots.first)
     end
 
     # Returns application preset for given library type
@@ -147,37 +151,23 @@ module UltimaSampleSheet::SampleSheetGenerator
       mapping.fetch(library_type, 'WGS Native') # Default is WGS Native
     end
 
-    # Adds the new global section format to be used when the feature flag
-    # :y25_140_support_ultima_ug100_upgrade is enabled:
-    #   - Sets WGS Native as the application value.
-    #   - Removes sequencing_recipe and analysis_recipe columns.
+    # Adds the samples section to the CSV for the given sequencing request.
+    # Each aliquot in the sequencing_request's asset will have a corresponding row.
     # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose global data is to be added
-    def add_support_global_section(csv, request)
-      library_type = request.asset.aliquots.first.library_type
-      application = library_type_to_application(library_type)
-      csv << pad(global_title_config)
-      csv << pad(global_headers_config)
-      data = [application] # Application
-      csv << pad(data)
-    end
-
-    # Adds the samples section to the CSV for the given request.
-    # Each aliquot in the request's asset will have a corresponding row.
-    # @param csv [CSV] the CSV object to append rows to
-    # @param request [UltimaSequencingRequest] the request whose samples are to be added
-    def add_samples_section(csv, request)
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing request whose samples are to be added
+    def add_samples_section(csv, sequencing_request)
       csv << pad(samples_title_config)
       csv << pad(samples_headers_config)
-      request.asset.aliquots.sort_by(&:id).each do |aliquot|
-        csv << sample_row_for(aliquot)
+      sequencing_request.asset.aliquots.sort_by(&:id).each do |aliquot|
+        csv << sample_row_for(aliquot, sequencing_request)
       end
     end
 
     # Builds a sample section row for a single aliquot.
     # @param aliquot [Aliquot] the aliquot whose sample row is needed
+    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
     # @return [Array<String>] the sample row values
-    def sample_row_for(aliquot)
+    def sample_row_for(aliquot, sequencing_request)
       [
         sample_id_for(aliquot),
         library_name_for(aliquot),
@@ -185,7 +175,7 @@ module UltimaSampleSheet::SampleSheetGenerator
         index_barcode_sequence_for(aliquot),
         barcode_plate_num_for(aliquot),
         barcode_plate_well_for(aliquot),
-        'native', # application_type
+        sequencing_request.application_type_for_aliquot(aliquot),
         study_id_for(aliquot)
       ]
     end
@@ -275,22 +265,22 @@ module UltimaSampleSheet::SampleSheetGenerator
         .sort_by { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
     end
 
-    # Returns the requests associated with the batch.
-    # This method rejects failed requests.
+    # Returns the sequencing requests associated with the batch.
+    # This method rejects failed sequencing requests.
     # @return [Array<UltimaSequencingRequest>] the requests of the batch
-    def batch_requests
+    def batch_sequencing_requests
       @batch.requests.reject(&:failed?)
     end
 
     # Returns a mapping of aliquots to 1-based index numbers.
     # This sorts aliquots by their ID to ensure consistent ordering. The index
-    # numbers are restarted with 1 for each request in the batch.
+    # numbers are restarted with 1 for each sequencing request in the batch.
     # @return [Hash{Aliquot => Integer}] mapping of aliquots to index numbers
     def sample_id_index_map
       @sample_id_index_map ||= begin
         map = {}
-        batch_requests.each do |request|
-          aliquots = request.asset.aliquots.sort_by(&:id)
+        batch_sequencing_requests.each do |sequencing_request|
+          aliquots = sequencing_request.asset.aliquots.sort_by(&:id)
           aliquots.each_with_index do |aliquot, i|
             map[aliquot] = i + 1
           end
