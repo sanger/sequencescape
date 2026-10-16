@@ -75,7 +75,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @return [String] the ZIP archive as a binary string
     def generate
       zip_stream = Zip::OutputStream.write_buffer do |zip|
-        batch_requests.sort_by(&:id).each do |batch_request|
+        batch_sequencing_requests.sort_by(&:id).each do |batch_request|
           zip.put_next_entry(entry_name(batch_request))
           zip.write(csv_string(batch_request).encode('UTF-8'))
         end
@@ -84,7 +84,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Generates the CSV string for a single sequencing request.
-    # @param sequencing_request [BatchRequest] the sequencing request to generate the CSV for
+    # @param sequencing_request [SequencingRequest] the sequencing request to generate the CSV for
     # @return [String] the CSV content as a string with CRLF line endings
     def csv_string(sequencing_request)
       CSV.generate(row_sep: "\r\n", force_quotes: false, quote_empty: false) do |csv|
@@ -265,22 +265,22 @@ module UltimaSampleSheet::SampleSheetGenerator
         .sort_by { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
     end
 
-    # Returns the requests associated with the batch.
-    # This method rejects failed requests.
+    # Returns the sequencing requests associated with the batch.
+    # This method rejects failed sequencing requests.
     # @return [Array<UltimaSequencingRequest>] the requests of the batch
-    def batch_requests
+    def batch_sequencing_requests
       @batch.requests.reject(&:failed?)
     end
 
     # Returns a mapping of aliquots to 1-based index numbers.
     # This sorts aliquots by their ID to ensure consistent ordering. The index
-    # numbers are restarted with 1 for each request in the batch.
+    # numbers are restarted with 1 for each sequencing request in the batch.
     # @return [Hash{Aliquot => Integer}] mapping of aliquots to index numbers
     def sample_id_index_map
       @sample_id_index_map ||= begin
         map = {}
-        batch_requests.each do |request|
-          aliquots = request.asset.aliquots.sort_by(&:id)
+        batch_sequencing_requests.each do |sequencing_request|
+          aliquots = sequencing_request.asset.aliquots.sort_by(&:id)
           aliquots.each_with_index do |aliquot, i|
             map[aliquot] = i + 1
           end
