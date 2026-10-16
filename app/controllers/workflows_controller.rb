@@ -83,6 +83,10 @@ class WorkflowsController < ApplicationController
       end
       @task.render_task(self, params, current_user)
     end
+  rescue Request::SampleCompoundAliquotTransfer::Error => e
+    # Rescue outside the transaction so task changes and earlier transfers are rolled back.
+    flash.delete(:notice)
+    redirect_to batch_path(@batch), alert: e.message
   end
 
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength, Metrics/PerceivedComplexity
