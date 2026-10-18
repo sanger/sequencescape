@@ -27,12 +27,28 @@ describe 'Primer Panel' do
     expect(page).to have_text(
       'Editing a primer panel will affect all experiments where a primer panel has been used.'
     )
-    expect(find_field('Name').value).to eq('Primer Panel 1')
-    expect(find_field('SNP count').value).to eq('1')
+    expect(find_field('Name').value).to eq('Primer Panel 1') # rubocop:todo Capybara/RSpec/FindElementValueEq
+    expect(find_field('SNP count').value).to eq('1') # rubocop:todo Capybara/RSpec/FindElementValueEq
+    # rubocop:todo Style/DirectiveScope
+    # rubocop:todo Capybara/RSpec/FindElementValueEq
+    # rubocop:enable Style/DirectiveScope
     expect(find_field('primer_panel_programs_pcr_1_name').value).to eq('pcr1 program')
+    # rubocop:enable Capybara/RSpec/FindElementValueEq
+    # rubocop:todo Style/DirectiveScope
+    # rubocop:todo Capybara/RSpec/FindElementValueEq
+    # rubocop:enable Style/DirectiveScope
     expect(find_field('primer_panel_programs_pcr_1_duration').value).to eq('45')
+    # rubocop:enable Capybara/RSpec/FindElementValueEq
+    # rubocop:todo Style/DirectiveScope
+    # rubocop:todo Capybara/RSpec/FindElementValueEq, Style/DirectiveScope
+    # rubocop:enable Style/DirectiveScope
     expect(find_field('primer_panel_programs_pcr_2_name').value).to eq('pcr2 program')
+    # rubocop:enable Capybara/RSpec/FindElementValueEq
+    # rubocop:todo Style/DirectiveScope
+    # rubocop:todo Capybara/RSpec/FindElementValueEq, Style/DirectiveScope
+    # rubocop:enable Style/DirectiveScope
     expect(find_field('primer_panel_programs_pcr_2_duration').value).to eq('20')
+    # rubocop:enable Capybara/RSpec/FindElementValueEq
     click_on 'Update'
     expect(page).to have_text('Primer Panel was successfully updated.')
   end
