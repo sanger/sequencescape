@@ -18,6 +18,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   ERROR_PLATE_PURPOSE_DOES_NOT_EXIST = "Plate purpose '%s' does not exist."
   ERROR_LIBRARY_TYPE_DOES_NOT_EXIST = "Library type '%s' does not exist."
   ERROR_PRIMER_PANEL_DOES_NOT_EXIST = "Primer panel '%s' does not exist."
+  ERROR_ULTIMA_APPLICATION_DOES_NOT_EXIST = "Ultima application '%s' does not exist."
   ERROR_STUDY_DOES_NOT_EXIST = "Study '%s' does not exist."
   ERROR_PROJECT_DOES_NOT_EXIST = "Project '%s' does not exist."
 
@@ -66,6 +67,17 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              select_options: -> { PrimerPanel.alphabetical.pluck(:name) },
              options: {
                include_blank: 'Primer panel selection...'
+             }
+  form_field :ultima_application_name,
+             :select,
+             label: 'Ultima Application',
+             help:
+               'Select the Ultima application to use when creating the requests. ' \
+               'Leave blank if not applicable for your submission template choice. ' \
+               'Currently only used in Ultima conversion pipelines.',
+             select_options: -> { UltimaApplication.alphabetical.pluck(:name) },
+             options: {
+               include_blank: 'Ultima application selection...'
              }
   form_field :study_name,
              :select,
@@ -130,6 +142,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   validate :validate_plate_purpose_exists
   validate :validate_library_type_exists
   validate :validate_primer_panel_exists
+  validate :validate_ultima_application_exists
   validate :validate_study_exists
   validate :validate_project_exists
 
@@ -173,6 +186,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['primer_panel'] = order.request_options[:primer_panel_name] if order.request_options[
       :primer_panel_name
     ].present?
+    report['ultima_application'] = ultima_application_name if ultima_application_name.present?
     report['study_name'] = order.study.name
     report['project_name'] = order.project.name
     report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
@@ -249,6 +263,19 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
 
     message = format(ERROR_PRIMER_PANEL_DOES_NOT_EXIST, primer_panel_name)
     errors.add(:primer_panel_name, message)
+  end
+
+  # Validates that the Ultima application exists for the specified Ultima
+  # application name. It is skipped if no Ultima application name is provided
+  # because it is not applicable for the current submission template.
+  #
+  # return [void]
+  def validate_ultima_application_exists
+    return if ultima_application_name.blank? # not applicable for the template
+    return if UltimaApplication.exists?(name: ultima_application_name)
+
+    message = format(ERROR_ULTIMA_APPLICATION_DOES_NOT_EXIST, ultima_application_name)
+    errors.add(:ultima_application_name, message)
   end
 
   # Validates that the study exists for the specified study name.
@@ -368,6 +395,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     options = {}
     options[:library_type] = library_type_name if library_type_name.present?
     options[:primer_panel_name] = primer_panel_name if primer_panel_name.present?
+    options[:ultima_application_name] = ultima_application_name if ultima_application_name.present?
     options
   end
 

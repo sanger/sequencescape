@@ -227,6 +227,36 @@ describe 'Tag Layouts API', with: :api_v2 do
           it_behaves_like 'a valid request'
         end
 
+        context 'when replacing the tags of tagged aliquots' do
+          let(:plate) { create(:plate_with_tagged_wells, sample_count: 1) }
+          let(:aliquot) { plate.wells.first.aliquots.first }
+          let(:payload) do
+            {
+              data: {
+                type: resource_type,
+                attributes:
+                  base_attributes.merge(
+                    { plate_uuid: plate.uuid, tag_group_uuid: tag_group.uuid, user_uuid: user.uuid, replace_tags: true }
+                  )
+              }
+            }
+          end
+
+          before { api_post base_endpoint, payload }
+
+          it 'responds with a success http code' do
+            expect(response).to have_http_status(:created)
+          end
+
+          it 'applies the new tag' do
+            expect(aliquot.reload.tag.tag_group).to eq(tag_group)
+          end
+
+          it 'removes the existing tag2, as the tag layout has no tag2 group' do
+            expect(aliquot.reload.tag2).to be_nil
+          end
+        end
+
         context 'with relationships' do
           let(:payload) do
             {

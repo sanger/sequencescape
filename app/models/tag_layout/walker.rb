@@ -21,6 +21,6 @@ class TagLayout::Walker
 
   # Over-ridden in the as group by plate module to allow the application of multiple tags.
   def apply_tags(well, tag, tag2)
-    well.attach_tags(tag, tag2) unless well.aliquots.empty?
+    well.attach_tags(tag, tag2, replace: replace_tags) unless well.aliquots.empty?
   end
 end

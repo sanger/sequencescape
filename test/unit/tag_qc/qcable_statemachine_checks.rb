@@ -29,7 +29,7 @@ module QcableStatemachineChecks
             .each do |state|
               should "transition from #{state} to #{end_state}" do
                 @qcable.state = state
-                @qcable.send(:"#{name}")
+                @qcable.send(:"#{name}_qc_state")
 
                 assert_equal end_state.to_s, @qcable.state
               end
@@ -38,7 +38,7 @@ module QcableStatemachineChecks
           (target.aasm.states.map(&:name).map(&:to_s) - acceptable_states.map(&:to_s)).each do |state|
             should "not transition from #{state}" do
               @qcable.state = state
-              assert_raises(AASM::InvalidTransition) { @qcable.send(:"#{name}") }
+              assert_raises(AASM::InvalidTransition) { @qcable.send(:"#{name}_qc_state") }
             end
           end
         end

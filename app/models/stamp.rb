@@ -34,6 +34,6 @@ class Stamp < ApplicationRecord
   private
 
   def stamp!
-    ActiveRecord::Base.transaction { qcables.each(&:do_stamp!) }
+    ActiveRecord::Base.transaction { qcables.each(&:do_stamp_qc_state!) }
   end
 end

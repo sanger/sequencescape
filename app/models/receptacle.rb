@@ -268,8 +268,10 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     (ordered_studies + studies).compact.uniq
   end
 
-  def attach_tag(tag, tag2 = nil)
-    tags = { tag:, tag2: }.compact
+  # Sets the tags of the aliquots. A nil tag2 keeps their existing tag2, unless
+  # replace is true.
+  def attach_tag(tag, tag2 = nil, replace: false)
+    tags = replace ? { tag:, tag2: } : { tag:, tag2: }.compact
     return if tags.empty?
     raise StandardError, 'Cannot tag an empty asset' if aliquots.empty?
 

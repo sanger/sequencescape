@@ -3,8 +3,8 @@ module Qcable::Statemachine
   def self.included(base) # rubocop:todo Metrics/AbcSize, Metrics/MethodLength
     base.class_eval do
       ## State machine
-      ## namespace: true as destroyed clashes with rails, but we can't easily rename the state
-      aasm column: :state, whiny_persistence: true, namespace: true, name: 'qc_state' do
+      ## Namespace event methods to avoid collisions with Rails methods.
+      aasm column: :state, whiny_persistence: true, namespace: :qc_state do
         state :created
         state :pending, enter: :on_stamp
         state :failed, enter: :on_failed
@@ -14,7 +14,7 @@ module Qcable::Statemachine
         state :qc_in_progress, enter: :on_qc
         state :exhausted, enter: :on_used
 
-        initial_state Proc.new { |qcable| qcable.default_state }
+        initial_state proc { |qcable| qcable.default_state }
 
         # State Machine events
         event :do_stamp do
@@ -66,7 +66,7 @@ module Qcable::Statemachine
     # We validate the presence of lot, however initial state gets called BEFORE we reach validation
     return :created if lot.nil?
 
-    asset_purpose.default_state.to_sym || :created
+    asset_purpose.default_state.to_sym
   end
 
   def on_failed

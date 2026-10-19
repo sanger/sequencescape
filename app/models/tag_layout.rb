@@ -59,6 +59,12 @@ class TagLayout < ApplicationRecord
   # The plate we'll be laying out the tags into
   belongs_to :plate, optional: false
 
+  # When true, the layout replaces the existing tags of the aliquots. Without a
+  # tag2 group, it removes their existing tag2 instead of keeping it. Used when
+  # tags are added to aliquots that are already tagged, e.g. Ultima tags on
+  # Illumina libraries.
+  attr_accessor :replace_tags
+
   validates :direction, presence: { message: 'must define a valid algorithm' }
   validates :walking_by, presence: { message: 'must define a valid algorithm' }
 

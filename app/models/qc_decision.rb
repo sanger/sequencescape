@@ -19,7 +19,7 @@ class QcDecision < ApplicationRecord
     private
 
     def make_decision
-      qcable.send(:"#{decision}!")
+      qcable.send(:"#{decision}_qc_state!")
     end
   end
 

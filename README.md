@@ -360,7 +360,7 @@ bundle exec simplecov open
 
 ### Javascript
 
-1. To run the Javascript Vite tests (found in `app/frontend/**/*.test.js`):
+1. To run the Javascript Vite tests:
 
    ```shell
    yarn test
@@ -369,8 +369,15 @@ bundle exec simplecov open
    For a single file:
 
    ```shell
-   yarn test app/frontend/entrypoints/cherrypick_strategies.test.js:22
+   yarn test app/frontend/tests/entrypoints/cherrypick_strategies.spec.js:22
    ```
+
+   Put tests under `app/frontend/tests/`, mirroring the path of the code they test, and name them `*.spec.js`.
+   For example, tests for `app/frontend/shared/scanned_barcode.js` would go in
+   `app/frontend/tests/shared/scanned_barcode.spec.js`. Tests outside `app/frontend/` are not run.
+
+   Do not put test files in `app/frontend/entrypoints/`: Vite builds every file there as an entrypoint, so tests
+   (and Vitest) would be bundled into the production assets.
 
 ## Linting and formatting
 

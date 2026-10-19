@@ -44,7 +44,7 @@ describe("Accessioning tools preview", () => {
 
     // Re-import so listeners are registered fresh each test.
     vi.resetModules();
-    await import("./accessioning_tools.js");
+    await import("@/entrypoints/accessioning_tools.js");
 
     startDateInput = document.getElementById("start_date");
     endDateInput = document.getElementById("end_date");
