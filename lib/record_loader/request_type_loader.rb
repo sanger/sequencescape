@@ -12,11 +12,7 @@ module RecordLoader
     def create_or_update!(key, options)
       request_type = create_or_update_request_type(key, options)
       add_library_types(request_type, options.fetch('library_types', []))
-      add_acceptable_purposes(
-        request_type,
-        options.fetch('acceptable_purposes', []),
-        replace: options.fetch('replace_acceptable_purposes', false)
-      )
+      add_acceptable_purposes(request_type, options.fetch('acceptable_purposes', []))
       request_type
     rescue StandardError => e
       raise StandardError, "Failed to create #{key} due to: #{e.message}"
@@ -49,17 +45,12 @@ module RecordLoader
       add_library_type_validator(request_type)
     end
 
-    def add_acceptable_purposes(request_type, purposes, replace: false)
-      purpose_records = purposes.map { |name| Purpose.find_by!(name:) }
-
-      if replace
-        request_type.acceptable_purposes = purpose_records
-        return
-      end
-
+    def add_acceptable_purposes(request_type, purposes)
       acceptable_purposes = request_type.acceptable_purposes.pluck(:name)
-      purpose_records.each do |purpose|
-        request_type.acceptable_purposes << purpose unless acceptable_purposes.include?(purpose.name)
+      purposes.each do |name|
+        next if acceptable_purposes.include?(name)
+
+        request_type.acceptable_purposes << Purpose.find_by!(name:)
       end
     end
 
@@ -74,7 +65,7 @@ module RecordLoader
     def filter_options(options)
       {
         **default_options,
-        **options.except('acceptable_purposes', 'library_types', 'replace_acceptable_purposes')
+        **options.except('acceptable_purposes', 'library_types')
       }
     end
 

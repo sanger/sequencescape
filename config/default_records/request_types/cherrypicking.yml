@@ -38,16 +38,14 @@ pick_to_snp_type:
   request_class_name: CherrypickForPulldownRequest
   target_asset_type: Well
   initial_state: "pending"
-  replace_acceptable_purposes: true
   acceptable_purposes:
     - STA2
 pick_to_fluidigm:
   name: Pick to Fluidigm
   asset_type: Well
-  order: 3
+  order: 4
   request_class_name: CherrypickForFluidigmRequest
   target_asset_type: Well
   initial_state: "pending"
-  replace_acceptable_purposes: true
   acceptable_purposes:
     - SNP Type
