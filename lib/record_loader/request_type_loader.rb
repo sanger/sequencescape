@@ -63,10 +63,7 @@ module RecordLoader
     end
 
     def filter_options(options)
-      {
-        **default_options,
-        **options.except('acceptable_purposes', 'library_types')
-      }
+      { **default_options, **options.except('acceptable_purposes', 'library_types') }
     end
 
     # Handles the default options not otherwise handled by the database defaults
