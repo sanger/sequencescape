@@ -58,4 +58,36 @@ RSpec.describe 'single_use:fix_fluidigm_acceptable_purposes', type: :task do
       ]
     end)
   end
+
+  context 'with both purposes on each request type, as in production' do
+    def join_row_ids
+      RequestType::RequestTypePlatePurpose
+        .where(request_type: [snp_type_request, fluidigm_request])
+        .ids
+    end
+
+    before do
+      snp_type_request.acceptable_purposes << sta2
+      fluidigm_request.acceptable_purposes << snp_type
+    end
+
+    it 'leaves STA2 as the only purpose of Pick to SNP Type' do
+      task.invoke
+      expect(snp_type_request.reload.acceptable_purposes).to contain_exactly(sta2)
+    end
+
+    it 'leaves SNP Type as the only purpose of Pick to Fluidigm' do
+      task.invoke
+      expect(fluidigm_request.reload.acceptable_purposes).to contain_exactly(snp_type)
+    end
+
+    it 'removes only the wrong rows' do
+      correct_ids = [
+        snp_type_request.request_type_purposes.find_by!(purpose: sta2).id,
+        fluidigm_request.request_type_purposes.find_by!(purpose: snp_type).id
+      ]
+      task.invoke
+      expect(join_row_ids).to match_array(correct_ids)
+    end
+  end
 end
