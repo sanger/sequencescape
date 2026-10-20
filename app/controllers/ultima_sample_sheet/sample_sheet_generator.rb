@@ -140,7 +140,7 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
     # @return [Preset, nil] the preset for the sequencing request, or nil if none exists
     def preset_for_sequencing_request(sequencing_request)
-      sequencing_request.preset_for_aliquot(sequencing_request.asset.aliquots.first)
+      sequencing_request.asset.aliquots.first&.ultima_preset
     end
 
     # Returns application preset for given library type
@@ -159,15 +159,14 @@ module UltimaSampleSheet::SampleSheetGenerator
       csv << pad(samples_title_config)
       csv << pad(samples_headers_config)
       sequencing_request.asset.aliquots.sort_by(&:id).each do |aliquot|
-        csv << sample_row_for(aliquot, sequencing_request)
+        csv << sample_row_for(aliquot)
       end
     end
 
     # Builds a sample section row for a single aliquot.
     # @param aliquot [Aliquot] the aliquot whose sample row is needed
-    # @param sequencing_request [UltimaSequencingRequest] the sequencing_request
     # @return [Array<String>] the sample row values
-    def sample_row_for(aliquot, sequencing_request)
+    def sample_row_for(aliquot)
       [
         sample_id_for(aliquot),
         library_name_for(aliquot),
@@ -175,7 +174,7 @@ module UltimaSampleSheet::SampleSheetGenerator
         index_barcode_sequence_for(aliquot),
         barcode_plate_num_for(aliquot),
         barcode_plate_well_for(aliquot),
-        sequencing_request.application_type_for_aliquot(aliquot),
+        aliquot.ultima_application_type,
         study_id_for(aliquot)
       ]
     end
