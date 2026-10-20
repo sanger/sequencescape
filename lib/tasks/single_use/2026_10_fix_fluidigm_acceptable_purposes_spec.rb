@@ -10,6 +10,14 @@ RSpec.describe 'single_use:fix_fluidigm_acceptable_purposes', type: :task do
   let(:snp_type) { create(:plate_purpose, name: 'SNP Type') }
   let(:snp_type_request) { create(:cherrypick_request_type, key: 'pick_to_snp_type') }
   let(:fluidigm_request) { create(:cherrypick_request_type, key: 'pick_to_fluidigm') }
+  let(:expected_output_lines) do
+    [
+      'Before pick_to_snp_type: ["SNP Type"]',
+      'Before pick_to_fluidigm: ["STA2"]',
+      'After pick_to_snp_type: ["STA2"]',
+      'After pick_to_fluidigm: ["SNP Type"]'
+    ]
+  end
 
   before do
     Rake::Task[task_name].clear if Rake::Task.task_defined?(task_name)
@@ -22,21 +30,14 @@ RSpec.describe 'single_use:fix_fluidigm_acceptable_purposes', type: :task do
     fluidigm_request.acceptable_purposes << sta2
   end
 
-  it 'sets the expected purposes and reports before and after values' do
-    expect { task.invoke }.to output(
-      include(
-        'Before pick_to_snp_type: ["SNP Type"]',
-        'Before pick_to_fluidigm: ["STA2"]',
-        'After pick_to_snp_type: ["STA2"]',
-        'After pick_to_fluidigm: ["SNP Type"]'
-      )
-    ).to_stdout
+  it 'sets the expected purposes and reports before and after values', :aggregate_failures do
+    expect { task.invoke }.to output(include(*expected_output_lines)).to_stdout
 
     expect(snp_type_request.reload.acceptable_purposes).to contain_exactly(sta2)
     expect(fluidigm_request.reload.acceptable_purposes).to contain_exactly(snp_type)
   end
 
-  it 'aborts before changing either request type if an unexpected purpose is present' do
+  it 'aborts before changing either request type if an unexpected purpose is present', :aggregate_failures do
     unexpected_purpose = create(:plate_purpose, name: 'Unexpected purpose')
     fluidigm_request.acceptable_purposes << unexpected_purpose
 
@@ -50,11 +51,11 @@ RSpec.describe 'single_use:fix_fluidigm_acceptable_purposes', type: :task do
     task.invoke
     task.reenable
 
-    expect { task.invoke }.not_to change {
+    expect { task.invoke }.not_to(change do
       [
         snp_type_request.reload.acceptable_purposes.pluck(:id),
         fluidigm_request.reload.acceptable_purposes.pluck(:id)
       ]
-    }
+    end)
   end
 end
