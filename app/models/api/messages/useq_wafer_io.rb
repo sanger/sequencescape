@@ -130,7 +130,6 @@ class Api::Messages::UseqWaferIo < Api::Base
 
     # Finds the closest ancestor conversion request for an aliquot.
     # Searches parent labware one level at a time so nearer requests take precedence.
-    # @param aliquot [Aliquot] the aliquot whose ancestors to search
     # @return [UltimaConversionRequest, nil] the closest matching request, if any
     def nearest_ultima_conversion_request
       return @nearest_ultima_conversion_request if defined?(@nearest_ultima_conversion_request)
