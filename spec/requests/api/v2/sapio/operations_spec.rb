@@ -142,6 +142,10 @@ describe 'Sapio Operations API' do
         it 'does not save another operation' do
           expect(ApiOperation.count).to eq(1)
         end
+
+        it 'does not queue a job' do
+          expect(Delayed::Job.count).to eq(0)
+        end
       end
 
       context 'with a different payload' do
@@ -155,6 +159,10 @@ describe 'Sapio Operations API' do
 
         it 'does not save another operation' do
           expect(ApiOperation.count).to eq(1)
+        end
+
+        it 'does not queue a job' do
+          expect(Delayed::Job.count).to eq(0)
         end
       end
     end
@@ -196,6 +204,10 @@ describe 'Sapio Operations API' do
         it 'does not save another operation' do
           expect(ApiOperation.count).to eq(1)
         end
+
+        it 'queues no job beyond the first request' do
+          expect(Delayed::Job.count).to eq(1)
+        end
       end
 
       context 'when the same payload is sent again in another layout' do
@@ -216,6 +228,10 @@ describe 'Sapio Operations API' do
 
         it 'does not save another operation' do
           expect(ApiOperation.count).to eq(1)
+        end
+
+        it 'queues no job beyond the first request' do
+          expect(Delayed::Job.count).to eq(1)
         end
       end
 
@@ -243,6 +259,10 @@ describe 'Sapio Operations API' do
 
         it 'does not save another operation' do
           expect(ApiOperation.count).to eq(1)
+        end
+
+        it 'queues no job beyond the first request' do
+          expect(Delayed::Job.count).to eq(1)
         end
 
         it 'does not change the existing operation' do
@@ -318,6 +338,10 @@ describe 'Sapio Operations API' do
         it 'does not save an operation' do
           expect(ApiOperation.count).to eq(0)
         end
+
+        it 'does not queue a job' do
+          expect(Delayed::Job.count).to eq(0)
+        end
       end
 
       context 'with an empty body' do
@@ -329,6 +353,10 @@ describe 'Sapio Operations API' do
 
         it 'does not save an operation' do
           expect(ApiOperation.count).to eq(0)
+        end
+
+        it 'does not queue a job' do
+          expect(Delayed::Job.count).to eq(0)
         end
       end
 
@@ -370,6 +398,10 @@ describe 'Sapio Operations API' do
 
           it 'does not save an operation' do
             expect(ApiOperation.count).to eq(0)
+          end
+
+          it 'does not queue a job' do
+            expect(Delayed::Job.count).to eq(0)
           end
         end
       end
