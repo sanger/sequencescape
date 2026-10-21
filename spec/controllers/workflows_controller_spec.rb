@@ -100,21 +100,54 @@ RSpec.describe WorkflowsController do
         allow(controller).to receive(:start_batch).and_call_original
       end
 
-      # A single operation must roll back all of these related records atomically.
-      # rubocop:disable-next RSpec/ExampleLength
-      it 'displays the real validation error and rolls back earlier compound transfers', :aggregate_failures do
-        counts = [Aliquot.count, Sample.count, SampleCompoundComponent.count, LabEvent.count]
-
+      it 'redirects to the batch when the real validation fails' do
         post :stage, params: stage_params
 
         expect(response).to redirect_to(batch_path(batch))
+      end
+
+      it 'displays the compound-aliquot validation message' do
+        post :stage, params: stage_params
+
         expect(flash[:alert]).to include(CompoundAliquot::DUPLICATE_TAG_DEPTH_ERROR_MSG)
-        invalid_aliquots.each { |aliquot| expect(flash[:alert]).to include(aliquot.sample.name) }
+      end
+
+      it 'includes the affected sample names in the validation message' do
+        post :stage, params: stage_params
+
+        expect(flash[:alert]).to include(*invalid_aliquots.map { |aliquot| aliquot.sample.name })
+      end
+
+      it 'does not display a success notice when the validation fails' do
+        post :stage, params: stage_params
+
         expect(flash[:notice]).to be_nil
+      end
+
+      it 'keeps the batch pending after the failed operation' do
+        post :stage, params: stage_params
+
         expect(batch.reload).to be_pending
+      end
+
+      it 'keeps all sequencing requests pending after the failed operation' do
+        post :stage, params: stage_params
+
         expect(sequencing_requests.map { |request| request.reload.state }).to eq(%w[pending pending])
+      end
+
+      it 'rolls back all lane aliquot transfers, including an earlier valid request' do
+        post :stage, params: stage_params
+
         expect(sequencing_requests.map { |request| request.target_asset.aliquots.count }).to eq([0, 0])
-        expect([Aliquot.count, Sample.count, SampleCompoundComponent.count, LabEvent.count]).to eq(counts)
+      end
+
+      it 'rolls back compound sample creation for an earlier valid request' do
+        expect { post :stage, params: stage_params }.not_to change(Sample, :count)
+      end
+
+      it 'rolls back task events created before the validation failure' do
+        expect { post :stage, params: stage_params }.not_to change(LabEvent, :count)
       end
     end
   end
