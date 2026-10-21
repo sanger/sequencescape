@@ -14,9 +14,9 @@ RSpec.describe Schemas::LocalSource do
   # Spacing, key order and number formatting that parsing would lose
   let(:text) { %({"b": 1,\n  "a": 1.10}\n) }
 
-  def write_schema(folder, file_name, content = '{}')
-    root.join(folder, schema_subject).mkpath
-    root.join(folder, schema_subject, file_name).write(content)
+  def write_schema(folder, file_name, content = '{}', subject = schema_subject)
+    root.join(folder, subject).mkpath
+    root.join(folder, subject, file_name).write(content)
   end
 
   before do
@@ -37,8 +37,8 @@ RSpec.describe Schemas::LocalSource do
   end
 
   it 'reads the avro folder as Avro' do
-    write_schema('avro', '3.avsc', '{"type": "record"}')
-    expect(source.fetch(schema_subject, 3).type).to eq(:avro)
+    write_schema('avro', '1.avsc', '{"type": "record"}', 'avro-subject')
+    expect(source.fetch('avro-subject', 1).type).to eq(:avro)
   end
 
   it "ignores files without their folder's extension" do
@@ -58,10 +58,16 @@ RSpec.describe Schemas::LocalSource do
       .to raise_error(Schemas::Source::NotFound)
   end
 
-  it 'raises an error when a version is in more than one type folder' do
-    write_schema('avro', '1.avsc', '{"type": "record"}')
-    expect { source.fetch(schema_subject, version) }
-      .to raise_error(RuntimeError, /More than one file/)
+  # A schema registry keeps all versions of a subject to one type
+  context 'with a subject in more than one type folder' do
+    before { write_schema('avro', '3.avsc', '{"type": "record"}') }
+
+    [1, 3, :latest].each do |asked|
+      it "raises an error for version #{asked.inspect}" do
+        expect { source.fetch(schema_subject, asked) }
+          .to raise_error(RuntimeError, /more than one schema type/)
+      end
+    end
   end
 
   it 'compares versions as numbers for the latest' do
@@ -69,9 +75,14 @@ RSpec.describe Schemas::LocalSource do
     expect(source.fetch(schema_subject, :latest).version).to eq(10)
   end
 
-  it 'includes every type folder for the latest' do
-    write_schema('avro', '3.avsc', '{"type": "record"}')
-    expect(source.fetch(schema_subject, :latest).type).to eq(:avro)
+  it 'ignores folders named like version files for the latest' do
+    root.join('json_schema', schema_subject, '5.json').mkpath
+    expect(source.fetch(schema_subject, :latest).version).to eq(2)
+  end
+
+  it 'ignores files not named by a version number for the type' do
+    write_schema('avro', 'draft.avsc', '{"type": "record"}')
+    expect(source.fetch(schema_subject, :latest).type).to eq(:json_schema)
   end
 
   it 'ignores files not named by a version number for the latest' do
