@@ -78,6 +78,15 @@ RSpec.describe Schemas::Provider do
       expect(described_class.configured.source).to be_a(Schemas::LocalSource)
     end
 
+    it 'gives a validator for the schema the test settings name' do
+      settings = Rails.application.config
+      version = described_class.parse_version(settings.sapio_schema_version)
+      validator = described_class.configured.validator_for(
+        subject: settings.sapio_schema_subject, version: version
+      )
+      expect(validator).to be_a(Schemas::JsonSchemaValidator)
+    end
+
     {
       'an unknown source setting' =>
         ['unknown', 'Unknown schema source: "unknown"'],
