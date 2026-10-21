@@ -49,7 +49,7 @@ RSpec.describe 'Sample', :js do
 
     it 'shows the sample metadata fields' do
       ['Cohort', 'Gender', 'Country of origin', 'Sequencescape Sample ID', 'Public Name', 'Taxon ID',
-       'Sample Collection Date'].each do |label|
+       'Sample Collection Date', 'Volume (µl)'].each do |label|
         expect(page).to have_text(label)
       end
     end

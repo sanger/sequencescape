@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe 'Sample XML interface' do
-  let(:sample) { create(:sample) }
+  let(:sample) { create(:sample, sample_metadata_attributes: { sample_common_name: "John's Gene" }) }
 
   it 'returns the sample and its metadata as XML' do
     visit sample_path(sample, format: :xml)
@@ -23,7 +23,7 @@ RSpec.describe 'Sample XML interface' do
       'Date of consent withdrawn' => '',
       'Identifier of the user that withdrew consent' => '',
       'Cohort' => '',
-      'Common Name' => '',
+      'Common Name' => "John's Gene",
       'Concentration' => '',
       'Concentration determind by' => '',
       'Country of origin' => '',
