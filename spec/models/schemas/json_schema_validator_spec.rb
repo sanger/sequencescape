@@ -66,6 +66,26 @@ RSpec.describe Schemas::JsonSchemaValidator do
     expect(pointers(payload)).to eq(%w[/request/operation_id])
   end
 
+  # prefixItems was added in draft 2020-12, so earlier drafts ignore it.
+  context 'without a $schema keyword' do
+    let(:definition) { { 'prefixItems' => [{ 'type' => 'string' }] } }
+
+    it 'follows draft 2020-12' do
+      expect(pointers([1])).to eq(%w[/0])
+    end
+  end
+
+  context 'with a draft-07 $schema keyword' do
+    let(:definition) do
+      { '$schema' => 'http://json-schema.org/draft-07/schema#',
+        'prefixItems' => [{ 'type' => 'string' }] }
+    end
+
+    it 'follows draft-07' do
+      expect(pointers([1])).to eq([])
+    end
+  end
+
   context 'with a remote reference' do
     let(:definition) { { '$ref' => 'https://example.com/schema.json' } }
 
