@@ -72,4 +72,42 @@ RSpec.describe Schemas::Provider do
       expect(validator.validate({}).pluck(:pointer)).to eq([''])
     end
   end
+
+  describe '.configured' do
+    it 'uses the local source in the test environment' do
+      expect(described_class.configured.source).to be_a(Schemas::LocalSource)
+    end
+
+    {
+      'an unknown source setting' =>
+        ['unknown', 'Unknown schema source: "unknown"'],
+      'no source setting' => [nil, 'Unknown schema source: nil']
+    }.each do |description, (setting, message)|
+      context "with #{description}" do
+        before do
+          allow(Rails.application.config).to receive(:sapio_schema_source)
+            .and_return(setting)
+        end
+
+        it 'raises an argument error' do
+          expect { described_class.configured }
+            .to raise_error(ArgumentError, message)
+        end
+      end
+    end
+  end
+
+  describe '.parse_version' do
+    { 'latest' => :latest, :latest => :latest, '3' => 3, 3 => 3 }
+      .each do |value, version|
+        it "converts #{value.inspect} to #{version.inspect}" do
+          expect(described_class.parse_version(value)).to eq(version)
+        end
+      end
+
+    it 'raises an argument error for anything else' do
+      expect { described_class.parse_version('v3') }
+        .to raise_error(ArgumentError)
+    end
+  end
 end
