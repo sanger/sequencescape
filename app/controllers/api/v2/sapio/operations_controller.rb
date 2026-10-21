@@ -164,11 +164,12 @@ module Api
         end
 
         # Saves the request as an operation, with the raw body as its
-        # payload. The task statuses start as pending.
+        # payload, and queues the job that processes it. The task statuses
+        # start as pending.
         #
         # @return [ApiOperation] the saved operation
         def create_operation
-          ApiOperation.create!(
+          ApiOperation.create_with_job!(
             api_application: api_application,
             external_id: external_id,
             work_order_external_id: work_order_external_id,
