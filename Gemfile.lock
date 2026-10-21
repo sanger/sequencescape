@@ -270,6 +270,7 @@ GEM
       temple (>= 0.8.2)
       thor
       tilt
+    hana (1.3.7)
     hashdiff (1.2.1)
     htmlentities (4.4.2)
     http-accept (1.7.0)
@@ -287,6 +288,11 @@ GEM
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     json (2.21.2)
+    json_schemer (2.5.0)
+      bigdecimal
+      hana (~> 1.3)
+      regexp_parser (~> 2.0)
+      simpleidn (~> 0.2)
     jsonapi-resources (0.9.0)
       activerecord (>= 4.1)
       concurrent-ruby
@@ -596,6 +602,7 @@ GEM
     simplecov (1.3.2)
     simplecov-lcov (0.9.0)
     simplecov_json_formatter (0.1.4)
+    simpleidn (0.3.0)
     slack-notifier (2.4.0)
     sorted_set (1.0.3)
       rbtree
@@ -721,6 +728,7 @@ DEPENDENCIES
   hashdiff
   image_processing (~> 1.1)
   json (~> 2.0)
+  json_schemer (~> 2.5)
   jsonapi-resources-matchers
   knapsack_pro
   launchy
