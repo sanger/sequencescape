@@ -44,7 +44,9 @@ module SampleManifest::CoreBehaviour
       create_sample(sanger_sample_id).tap do |sample|
         tag_depth = tag_depth_for_sample(@manifest.pools, receptacle, sanger_sample_id)
 
-        receptacle.aliquots.create!(sample:, study:, tag_depth:)
+        # If tag_depth is nil, it will be omitted from the hash sent to create and the database default of 1 will
+        # be used. And this will be the case even if the tag and tag2 are not set.
+        receptacle.aliquots.create!({ sample:, study:, tag_depth: }.compact)
 
         study.samples << sample
       end
@@ -57,6 +59,8 @@ module SampleManifest::CoreBehaviour
     # Assigns a tag_depth to a sample in a pool.
     # Tag_depth just needs to be a unique integer for each sample in the pool,
     # So we just use the index in the list of sample manifest assets in this receptacle.
+    # NB. When nil is returned, do not explicitly set nil when creating aliquots,
+    # allow the column default for tag_depth of 1 to be set at database level.
     def tag_depth_for_sample(pools, receptacle, sanger_sample_id)
       return nil unless pools
 

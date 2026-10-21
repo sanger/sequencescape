@@ -70,7 +70,7 @@ RSpec.describe SampleManifest, :sample_manifest do
                 :count
               ).by(1).and change { study.samples.count }.by(1)
               manifest.samples.reset
-              expect(manifest.samples.first.primary_aliquot.study).to eq(study)
+              expect(manifest.samples.first.primary_aliquot.reload).to have_attributes(study: study, tag_depth: 1)
             end
           end
         end
