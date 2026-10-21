@@ -40,16 +40,7 @@ module Api
 
         NOT_AN_OBJECT = 'The request body must be a JSON object.'
 
-        # The top level checks: JSON pointer, error detail and check method.
-        STRUCTURE_RULES = [
-          [
-            '/request/external_id',
-            'request.external_id must be a non-empty string.',
-            :external_id_present?
-          ],
-          ['/labware', 'labware must be an array.', :labware_present?],
-          ['/work_order', 'work_order must be an object.', :work_order_present?]
-        ].freeze
+        NO_EXTERNAL_ID = 'request.external_id must be a non-empty string.'
 
         # Accepts a combined reception and work order request.
         #
@@ -118,9 +109,9 @@ module Api
           render_errors(Errors::InvalidJson.new.errors)
         end
 
-        # Renders an error for each problem with the top level of the
-        # payload: the request ID and the reception and work order
-        # sections. The contents of the sections are not checked here.
+        # Renders an error unless the payload is an object with a request
+        # ID, which looking up an earlier request needs. The rest of the
+        # payload is left to the schema, the contract with the caller.
         #
         # @return [void]
         def check_structure
@@ -128,13 +119,12 @@ module Api
           render_errors(errors) if errors.any?
         end
 
-        # @return [Array<JSONAPI::Error>] the top level problems, if any
+        # @return [Array<JSONAPI::Error>] the problem, if any
         def structure_errors
           return structure_error('', NOT_AN_OBJECT) unless @payload.is_a?(Hash)
+          return [] if external_id_present?
 
-          STRUCTURE_RULES.flat_map do |pointer, detail, check|
-            send(check) ? [] : structure_error(pointer, detail)
-          end
+          structure_error('/request/external_id', NO_EXTERNAL_ID)
         end
 
         # @return [Boolean] true if request.external_id is a non-empty string
@@ -144,16 +134,6 @@ module Api
 
           external_id = request_section['external_id']
           external_id.is_a?(String) && external_id.present?
-        end
-
-        # @return [Boolean] true if the reception section is an array
-        def labware_present?
-          @payload['labware'].is_a?(Array)
-        end
-
-        # @return [Boolean] true if the work order section is an object
-        def work_order_present?
-          @payload['work_order'].is_a?(Hash)
         end
 
         # @param pointer [String] JSON pointer to the problem
@@ -222,10 +202,11 @@ module Api
           }
         end
 
-        # @return [String, nil] work_order.external_id, if it is a string;
-        #   it is stored but not used yet
+        # @return [String, nil] work_order.external_id, if there is a work
+        #   order and its ID is a string; it is stored but not used yet
         def work_order_external_id
-          external_id = @payload['work_order']['external_id']
+          work_order = @payload['work_order']
+          external_id = work_order['external_id'] if work_order.is_a?(Hash)
           external_id if external_id.is_a?(String)
         end
 
