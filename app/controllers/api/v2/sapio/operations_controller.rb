@@ -53,10 +53,18 @@ module Api
 
         # Accepts a combined reception and work order request.
         #
+        # A repeat of an earlier request, with the same request ID and the
+        # same payload, returns the existing operation instead of creating
+        # another one.
+        #
         # @return [void]
         def create
-          operation = create_operation
-          render json: operation_json(operation), status: :accepted
+          existing = existing_operation
+          if existing&.payload_digest == payload_digest
+            render json: operation_json(existing), status: :ok
+          else
+            render json: operation_json(create_operation), status: :accepted
+          end
         end
 
         private
@@ -152,15 +160,31 @@ module Api
         #
         # @return [ApiOperation] the saved operation
         def create_operation
-          payload = request.raw_post
           ApiOperation.create!(
             api_application: api_application,
-            external_id: @payload.dig('request', 'external_id'),
+            external_id: external_id,
             work_order_external_id: work_order_external_id,
             operation_type: OPERATION_TYPE,
-            payload: payload,
-            payload_digest: ApiOperation::PayloadDigest.hexdigest(payload)
+            payload: request.raw_post,
+            payload_digest: payload_digest
           )
+        end
+
+        # @return [ApiOperation, nil] the operation already saved for this
+        #   calling system and request ID, if any
+        def existing_operation
+          ApiOperation.find_by(api_application:, external_id:)
+        end
+
+        # @return [String] request.external_id
+        def external_id
+          @payload.dig('request', 'external_id')
+        end
+
+        # @return [String] the digest of the raw request body
+        def payload_digest
+          @payload_digest ||=
+            ApiOperation::PayloadDigest.hexdigest(request.raw_post)
         end
 
         # The operation's identifier and statuses, as returned to the caller.
