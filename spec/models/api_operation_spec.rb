@@ -48,6 +48,49 @@ RSpec.describe ApiOperation do
     expect(api_operation.reload.payload).to eq(payload)
   end
 
+  describe '.create_with_job!' do
+    let(:attributes) { attributes_for(:api_operation).merge(api_application:) }
+    let(:api_application) { create(:api_application) }
+
+    it 'queues a coordinator job for the saved operation' do
+      operation = described_class.create_with_job!(**attributes)
+      expect(Delayed::Job.last.payload_object)
+        .to eq(ApiOperation::CoordinatorJob.new(operation.id))
+    end
+
+    it 'queues one job' do
+      expect { described_class.create_with_job!(**attributes) }
+        .to change(Delayed::Job, :count).by(1)
+    end
+
+    context 'when the job is not queued' do
+      before do
+        allow(Delayed::Job).to receive(:enqueue)
+          .and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 'saves no operation' do
+        expect do
+          suppress(ActiveRecord::StatementInvalid) do
+            described_class.create_with_job!(**attributes)
+          end
+        end.not_to change(described_class, :count)
+      end
+    end
+
+    context 'when the operation is not saved' do
+      before { described_class.create_with_job!(**attributes) }
+
+      it 'queues no job' do
+        expect do
+          suppress(ActiveRecord::RecordNotUnique) do
+            described_class.create_with_job!(**attributes)
+          end
+        end.not_to change(Delayed::Job, :count)
+      end
+    end
+  end
+
   describe '#status' do
     it 'is queued when neither task has started' do
       expect(api_operation.status).to eq('queued')
