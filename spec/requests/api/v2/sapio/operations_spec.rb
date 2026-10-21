@@ -80,27 +80,29 @@ describe 'Sapio Operations API' do
     end
 
     context 'when Rails logs the request parameters' do
-      let(:logged) { [] }
+      # The parameters Rails logs, taken from its start_processing event, so
+      # the check doesn't depend on which logger or log level is in use.
+      let(:logged_params) { {} }
 
       before do
-        allow(Rails.logger).to receive(:info)
-          .and_wrap_original do |original, *args, &block|
-            logged << args.first.to_s if args.first.to_s.include?('Parameters:')
-            original.call(*args, &block)
-          end
-        post_request(api_key: integration_hub_app.key)
+        capture = ->(*, payload) { logged_params.merge!(payload[:params]) }
+        ActiveSupport::Notifications.subscribed(
+          capture, 'start_processing.action_controller'
+        ) { post_request(api_key: integration_hub_app.key) }
       end
 
-      it 'logs the payload as filtered' do
-        expect(logged.join).to include('[FILTERED]')
+      it 'logs each part of the payload as filtered' do
+        expect(logged_params.slice('request', 'labware', 'work_order'))
+          .to eq('request' => '[FILTERED]', 'labware' => '[FILTERED]',
+                 'work_order' => '[FILTERED]')
       end
 
       it 'does not log the payload values' do
-        expect(logged.join).not_to include('request-1')
+        expect(logged_params.to_s).not_to include('request-1')
       end
 
       it 'does not log a wrapped copy of the payload' do
-        expect(logged.join).not_to include('operation')
+        expect(logged_params).not_to have_key('operation')
       end
     end
 
