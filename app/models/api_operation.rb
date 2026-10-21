@@ -27,6 +27,19 @@ class ApiOperation < ApplicationRecord
   validates :payload_digest, presence: true, length: { is: 64 }
   validates :reception_status, :work_order_status, presence: true
 
+  # Saves an operation and queues its CoordinatorJob in one transaction, so
+  # an operation never lacks its job.
+  #
+  # @param attributes [Hash] the operation's attributes
+  # @return [ApiOperation] the saved operation
+  def self.create_with_job!(**attributes)
+    transaction do
+      create!(**attributes).tap do |operation|
+        Delayed::Job.enqueue(CoordinatorJob.new(operation.id))
+      end
+    end
+  end
+
   # The overall status, derived from the task statuses. Later stories add
   # the end states, such as completed and failed.
   #
