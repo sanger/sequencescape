@@ -4,8 +4,8 @@
 # each subject, with one file for each version:
 # <root>/json_schema/<subject>/<version>.json for JSON Schema, and
 # <root>/avro/<subject>/<version>.avsc for Avro. The folder gives the type.
-# Versions are whole numbers, as in a schema registry, so the latest is the
-# highest number.
+# As in a schema registry, versions are whole numbers, so the latest is the
+# highest number, and all versions of a subject have the same type.
 class Schemas::LocalSource < Schemas::Source
   # The file extension for each schema type, whose folder is named after it
   TYPE_EXTENSIONS = { json_schema: '.json', avro: '.avsc' }.freeze
@@ -24,44 +24,52 @@ class Schemas::LocalSource < Schemas::Source
   end
 
   # (see Schemas::Source#fetch)
-  # @raise [RuntimeError] if the version is in more than one type folder
+  # @raise [RuntimeError] if the subject is in more than one type folder
   def fetch(subject, version)
-    version = latest_version(subject) if version == :latest
-    type, path = schema_file(subject, version)
+    type = subject_type(subject)
+    version = latest_version(type, subject) if version == :latest
+    path = subject_folder(type, subject).join(file_name(type, version))
+    location = "#{subject} version #{version} in #{root}"
+    raise NotFound, "No file for #{location}" unless path.file?
+
     Schemas::Schema.new(text: path.read, type: type, version: version)
   end
 
   private
 
-  # Files not named by a version number, such as draft.json or v1.json, are
-  # ignored.
-  def latest_version(subject)
-    versions =
-      TYPE_EXTENSIONS.flat_map do |type, extension|
-        subject_folder(type, subject).glob("*#{extension}")
-          .filter_map { |path| version_number(path) }
-      end
-    raise NotFound, "No versions of #{subject} in #{root}" if versions.empty?
+  # A schema registry rejects a version whose type differs from the
+  # subject's earlier versions, so a subject in more than one type folder is
+  # an error.
+  def subject_type(subject)
+    types = TYPE_EXTENSIONS.keys.select do |type|
+      version_files(type, subject).any?
+    end
+    raise NotFound, "No versions of #{subject} in #{root}" if types.empty?
+    raise "#{subject} has more than one schema type in #{root}" if types.many?
 
-    versions.max
+    types.first
   end
 
-  def version_number(path)
-    name = path.basename(path.extname).to_s
-    name.to_i if VERSION_NAME.match?(name)
+  def latest_version(type, subject)
+    version_files(type, subject).map { |path| version_name(type, path).to_i }
+      .max
   end
 
-  def schema_file(subject, version)
-    files =
-      TYPE_EXTENSIONS.filter_map do |type, extension|
-        path = subject_folder(type, subject).join("#{version}#{extension}")
-        [type, path] if path.file?
+  # The files named by a version number. Others, such as draft.json or
+  # v1.json, are ignored.
+  def version_files(type, subject)
+    subject_folder(type, subject).glob("*#{TYPE_EXTENSIONS[type]}")
+      .select do |path|
+        path.file? && VERSION_NAME.match?(version_name(type, path))
       end
-    location = "#{subject} version #{version} in #{root}"
-    raise NotFound, "No file for #{location}" if files.empty?
-    raise "More than one file for #{location}" if files.many?
+  end
 
-    files.first
+  def version_name(type, path)
+    path.basename(TYPE_EXTENSIONS[type]).to_s
+  end
+
+  def file_name(type, version)
+    "#{version}#{TYPE_EXTENSIONS[type]}"
   end
 
   def subject_folder(type, subject)
