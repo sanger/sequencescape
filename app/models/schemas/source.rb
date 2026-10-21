@@ -10,8 +10,9 @@ class Schemas::Source
   # Fetches one version of a schema.
   #
   # @param subject [String] the schema's name
-  # @param version [Integer] the schema's version
-  # @return [Schemas::Schema] the schema text and its type
+  # @param version [Integer, :latest] the schema's version, or :latest for
+  #   the highest version the source holds
+  # @return [Schemas::Schema] the schema text, its type and its version
   # @raise [NotFound] if the source doesn't hold that version of the schema
   def fetch(subject, version)
     raise NotImplementedError, 'abstract method'
