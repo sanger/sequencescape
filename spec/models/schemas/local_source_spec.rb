@@ -89,4 +89,17 @@ RSpec.describe Schemas::LocalSource do
   it 'reads from config/schemas by default' do
     expect(described_class.new.root).to eq(Rails.root.join('config/schemas'))
   end
+
+  # The files kept in the repository, so a broken one fails here rather
+  # than when a request is validated against it
+  context 'with the files in config/schemas' do
+    Rails.root.glob('config/schemas/json_schema/*/*.json').each do |path|
+      it "holds a valid schema in #{path.relative_path_from(Rails.root)}" do
+        schema = described_class.new.fetch(path.dirname.basename.to_s,
+                                           path.basename('.json').to_s.to_i)
+        expect { Schemas::JsonSchemaValidator.new(schema) }
+          .not_to raise_error
+      end
+    end
+  end
 end
