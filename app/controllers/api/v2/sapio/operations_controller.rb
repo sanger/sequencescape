@@ -58,16 +58,21 @@ module Api
         # another one. The same request ID with a different payload is a
         # conflict.
         #
+        # Two requests with the same request ID can both find no operation
+        # and then both try to save one. The unique index lets only one
+        # save, and the other is answered as a repeat.
+        #
         # @return [void]
         def create
           existing = existing_operation
-          if existing.nil?
-            render json: operation_json(create_operation), status: :accepted
-          elsif existing.payload_digest == payload_digest
-            render json: operation_json(existing), status: :ok
-          else
-            render_errors(Errors::PayloadConflict.new(external_id).errors)
-          end
+          return render_existing(existing) if existing
+
+          render json: operation_json(create_operation), status: :accepted
+        rescue ActiveRecord::RecordNotUnique
+          existing = existing_operation
+          raise unless existing
+
+          render_existing(existing)
         end
 
         private
@@ -171,6 +176,19 @@ module Api
             payload: request.raw_post,
             payload_digest: payload_digest
           )
+        end
+
+        # Answers a request whose request ID already has an operation: the
+        # operation if the payload is the same, otherwise a conflict.
+        #
+        # @param existing [ApiOperation]
+        # @return [void]
+        def render_existing(existing)
+          if existing.payload_digest == payload_digest
+            render json: operation_json(existing), status: :ok
+          else
+            render_errors(Errors::PayloadConflict.new(external_id).errors)
+          end
         end
 
         # @return [ApiOperation, nil] the operation already saved for this
