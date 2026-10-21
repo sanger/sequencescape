@@ -102,6 +102,14 @@ Rails.application.configure do
   # load WIP features flag
   config.deploy_wip_pipelines = true
 
+  # The schema that Sapio operation payloads are checked against: the source
+  # (local files in config/schemas), the subject, and the version (a number
+  # or latest). Environment variables can override them.
+  config.sapio_schema_source = ENV.fetch('SAPIO_SCHEMA_SOURCE', 'local')
+  config.sapio_schema_subject =
+    ENV.fetch('SAPIO_SCHEMA_SUBJECT', 'work-order-schema')
+  config.sapio_schema_version = ENV.fetch('SAPIO_SCHEMA_VERSION', 'latest')
+
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
 
