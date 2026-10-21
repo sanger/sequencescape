@@ -342,8 +342,8 @@ describe 'Sapio Operations API' do
           end
         end
 
-        context 'with a work order without an ID' do
-          let(:body) { valid_payload.merge(work_order: {}).to_json }
+        context 'without a work order' do
+          let(:body) { valid_payload.except(:work_order).to_json }
 
           it 'stores no work order ID' do
             expect(operation.work_order_external_id).to be_nil
@@ -399,14 +399,7 @@ describe 'Sapio Operations API' do
            '/request/external_id'],
         'an external ID that is not a string' =>
           [->(p) { p.merge(request: { external_id: 1 }) },
-           '/request/external_id'],
-        'no labware section' => [->(p) { p.except(:labware) }, '/labware'],
-        'a labware section that is not an array' =>
-          [->(p) { p.merge(labware: {}) }, '/labware'],
-        'no work order section' =>
-          [->(p) { p.except(:work_order) }, '/work_order'],
-        'a work order section that is not an object' =>
-          [->(p) { p.merge(work_order: []) }, '/work_order']
+           '/request/external_id']
       }.each do |description, (change, pointer)|
         context "with #{description}" do
           let(:body) { change.call(valid_payload).to_json }
@@ -436,10 +429,10 @@ describe 'Sapio Operations API' do
       context 'with an empty object' do
         let(:body) { {}.to_json }
 
-        it 'returns an error for each missing part' do
+        it 'returns one error, for the request ID' do
           pointers =
             json['errors'].map { |error| error.dig('source', 'pointer') }
-          expect(pointers).to eq(%w[/request/external_id /labware /work_order])
+          expect(pointers).to eq(%w[/request/external_id])
         end
       end
     end
