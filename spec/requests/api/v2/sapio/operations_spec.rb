@@ -106,6 +106,59 @@ describe 'Sapio Operations API' do
       end
     end
 
+    # Two requests with the same request ID race: this request's lookup
+    # finds nothing, but the other request's operation is saved before this
+    # one, so the unique index rejects this one.
+    context 'when another request with the same ID wins a race' do
+      let(:other_body) { body }
+      let!(:other_operation) do
+        digest = ApiOperation::PayloadDigest.hexdigest(other_body)
+        create(:api_operation,
+               api_application: integration_hub_app,
+               external_id: 'request-1',
+               payload: other_body,
+               payload_digest: digest)
+      end
+
+      before do
+        lookups = 0
+        allow(ApiOperation).to receive(:find_by)
+          .and_wrap_original do |original, *args, **kwargs|
+            lookups += 1
+            lookups == 1 ? nil : original.call(*args, **kwargs)
+          end
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      context 'with the same payload' do
+        it 'returns ok' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns the other operation' do
+          expect(json['operation_id']).to eq(other_operation.uuid)
+        end
+
+        it 'does not save another operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
+      end
+
+      context 'with a different payload' do
+        let(:other_body) do
+          valid_payload.merge(work_order: { external_id: 'REQ1' }).to_json
+        end
+
+        it 'returns conflict' do
+          expect(response).to have_http_status(:conflict)
+        end
+
+        it 'does not save another operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
+      end
+    end
+
     context 'with the Integration Hub API key' do
       before { post_request(api_key: integration_hub_app.key) }
 
