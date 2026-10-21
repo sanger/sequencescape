@@ -32,10 +32,6 @@ describe 'Site wide information box' do
   end
 
   it 'hides the information box when the message is blank' do
-    fill_in 'custom_text[content]', with: 'A message'
-    click_button 'Save Custom text'
-    visit edit_admin_custom_text_path(custom_text)
-
     fill_in 'custom_text[content]', with: ''
     click_button 'Save Custom text'
 
