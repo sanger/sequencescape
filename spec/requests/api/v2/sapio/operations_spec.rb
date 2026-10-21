@@ -8,17 +8,46 @@ describe 'Sapio Operations API' do
     create(:api_application, name: ApiApplication::INTEGRATION_HUB_NAME)
   end
   let(:other_app) { create(:api_application) }
-  # The smallest payload with the expected top level.
+  # The smallest payload that is valid against the configured schema: one
+  # tube with one sample, and a work order for the tube.
   let(:valid_payload) do
-    { request: { external_id: 'request-1' }, labware: [], work_order: {} }
+    {
+      request: { external_id: 'request-1',
+                 request_type: 'reception_and_work_order',
+                 schema_version: '0.3' },
+      labware: [{ uuid: '6f1c1d2e-0000-4000-8000-000000000001',
+                  barcode: 'TUBE-1', type: 'tube',
+                  receptacles: [receptacle] }],
+      work_order: { external_id: 'work-order-1', service_name: 'service',
+                    requested_by: 'user', cost_code: 'S0001',
+                    requested_labware_identifiers: ['TUBE-1'], options: {} }
+    }
+  end
+  let(:receptacle) do
+    { position: nil, uuid: '6f1c1d2e-0000-4000-8000-000000000002',
+      samples: [{ uuid: '6f1c1d2e-0000-4000-8000-000000000003',
+                  study_uuid: '6f1c1d2e-0000-4000-8000-000000000004',
+                  sanger_sample_id: 'SAMPLE-1',
+                  supplier_sample_name: 'sample 1' }] }
   end
   let(:body) { valid_payload.to_json }
   let(:json) { response.parsed_body }
+  let(:schema_validator) do
+    settings = Rails.application.config
+    Schemas::Provider.configured.validator_for(
+      subject: settings.sapio_schema_subject,
+      version: Schemas::Provider.parse_version(settings.sapio_schema_version)
+    )
+  end
 
   def post_request(api_key: nil, request_body: body)
     headers = { 'CONTENT_TYPE' => 'application/json' }
     headers['X-Sequencescape-Client-Id'] = api_key if api_key
     post base_endpoint, params: request_body, headers: headers
+  end
+
+  it 'uses a payload that is valid against the configured schema' do
+    expect(schema_validator.validate(JSON.parse(body))).to eq([])
   end
 
   context 'when the feature flag is disabled',
@@ -150,7 +179,8 @@ describe 'Sapio Operations API' do
 
       context 'with a different payload' do
         let(:other_body) do
-          valid_payload.merge(work_order: { external_id: 'REQ1' }).to_json
+          valid_payload.deep_merge(work_order: { external_id: 'REQ1' })
+            .to_json
         end
 
         it 'returns conflict' do
@@ -239,7 +269,8 @@ describe 'Sapio Operations API' do
         let(:first_body) { body }
 
         before do
-          changed = valid_payload.merge(work_order: { external_id: 'REQ1' })
+          changed =
+            valid_payload.deep_merge(work_order: { external_id: 'REQ1' })
           post_request(api_key: integration_hub_app.key,
                        request_body: changed.to_json)
         end
@@ -299,8 +330,8 @@ describe 'Sapio Operations API' do
             .to eq(%w[pending pending])
         end
 
-        it 'stores no work order ID when none is given' do
-          expect(operation.work_order_external_id).to be_nil
+        it 'stores the work order ID' do
+          expect(operation.work_order_external_id).to eq('work-order-1')
         end
 
         context 'with a pretty-printed body' do
@@ -311,15 +342,11 @@ describe 'Sapio Operations API' do
           end
         end
 
-        context 'with a work order ID' do
-          let(:body) do
-            valid_payload
-              .merge(work_order: { external_id: 'REQ000811' })
-              .to_json
-          end
+        context 'with a work order without an ID' do
+          let(:body) { valid_payload.merge(work_order: {}).to_json }
 
-          it 'stores the work order ID' do
-            expect(operation.work_order_external_id).to eq('REQ000811')
+          it 'stores no work order ID' do
+            expect(operation.work_order_external_id).to be_nil
           end
         end
       end
