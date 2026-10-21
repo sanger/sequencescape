@@ -161,6 +161,37 @@ describe 'Sapio Operations API' do
         end
       end
 
+      context 'when the request ID is sent again with a different payload' do
+        let(:first_body) { body }
+
+        before do
+          changed = valid_payload.merge(work_order: { external_id: 'REQ1' })
+          post_request(api_key: integration_hub_app.key,
+                       request_body: changed.to_json)
+        end
+
+        it 'returns conflict' do
+          expect(response).to have_http_status(:conflict)
+        end
+
+        it 'returns a payload conflict error' do
+          expect(json.dig('errors', 0, 'code')).to eq('PAYLOAD_CONFLICT')
+        end
+
+        it 'points to the request ID' do
+          expect(json.dig('errors', 0, 'source', 'pointer'))
+            .to eq('/request/external_id')
+        end
+
+        it 'does not save another operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
+
+        it 'does not change the existing operation' do
+          expect(ApiOperation.last.payload).to eq(first_body)
+        end
+      end
+
       describe 'the saved operation' do
         let(:operation) { ApiOperation.last }
 
