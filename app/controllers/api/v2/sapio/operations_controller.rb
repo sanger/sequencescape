@@ -55,15 +55,18 @@ module Api
         #
         # A repeat of an earlier request, with the same request ID and the
         # same payload, returns the existing operation instead of creating
-        # another one.
+        # another one. The same request ID with a different payload is a
+        # conflict.
         #
         # @return [void]
         def create
           existing = existing_operation
-          if existing&.payload_digest == payload_digest
+          if existing.nil?
+            render json: operation_json(create_operation), status: :accepted
+          elsif existing.payload_digest == payload_digest
             render json: operation_json(existing), status: :ok
           else
-            render json: operation_json(create_operation), status: :accepted
+            render_errors(Errors::PayloadConflict.new(external_id).errors)
           end
         end
 
