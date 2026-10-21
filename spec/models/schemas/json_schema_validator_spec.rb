@@ -7,7 +7,8 @@ RSpec.describe Schemas::JsonSchemaValidator do
   subject(:validator) { described_class.new(schema) }
 
   let(:schema) do
-    Schemas::Schema.new(text: definition.to_json, type: :json_schema)
+    Schemas::Schema.new(text: definition.to_json, type: :json_schema,
+                        version: 1)
   end
   let(:definition) do
     {
