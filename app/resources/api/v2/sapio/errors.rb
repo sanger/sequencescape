@@ -118,6 +118,29 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # A request ID that was already used with a different payload.
+  class PayloadConflict < JSONAPI::Exceptions::Error
+    attr_reader :external_id
+
+    def initialize(external_id, error_object_overrides = {})
+      @external_id = external_id
+      super(error_object_overrides)
+    end
+
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :conflict,
+          title: 'Conflict',
+          code: 'PAYLOAD_CONFLICT',
+          detail: "The request ID #{external_id} was already used with a " \
+                  'different payload.',
+          source: { pointer: '/request/external_id' }
+        )
+      ]
+    end
+  end
+
   class InvalidJson < JSONAPI::Exceptions::Error
     def errors
       [
