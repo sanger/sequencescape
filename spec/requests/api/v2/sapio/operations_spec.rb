@@ -175,6 +175,11 @@ describe 'Sapio Operations API' do
         )
       end
 
+      it 'queues one coordinator job for the operation' do
+        expect(Delayed::Job.all.map(&:payload_object))
+          .to eq([ApiOperation::CoordinatorJob.new(ApiOperation.last.id)])
+      end
+
       context 'when the same request is sent again' do
         let!(:first_response) { response.parsed_body }
 
