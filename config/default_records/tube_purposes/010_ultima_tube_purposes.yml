@@ -12,3 +12,8 @@ UPF Balanced Norm:
   type: IlluminaHtp::MxTubePurpose
   target_type: MultiplexedLibraryTube
   stock_plate: false
+
+# Ultima lowthroughput purpose for multiplexing targets
+ULTP Lib Pool Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube

@@ -325,7 +325,10 @@ class Sample < ApplicationRecord # rubocop:todo Metrics/ClassLength
   has_one :sample_manifest_asset, foreign_key: :sanger_sample_id, primary_key: :sanger_sample_id, inverse_of: :sample
 
   has_many_lab_events
-  broadcast_with_warren
+
+  attribute :externally_managed, :boolean, default: false
+
+  broadcast_with_warren_except_externally_managed
 
   validates :name, presence: true
   validates :name,

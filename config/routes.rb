@@ -55,14 +55,13 @@ Rails.application.routes.draw do
 
       jsonapi_resources :barcode_printers
       jsonapi_resources :bulk_transfers, except: %i[update]
-      jsonapi_resources :comments, defaults: { permissive: %i[get post] }
+      jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware, defaults: { permissive: %i[get] }
+      jsonapi_resources :labware
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
       jsonapi_resources :orders, except: %i[update]
-      jsonapi_resources :pick_lists
       jsonapi_resources :plate_conversions, except: %i[update]
       jsonapi_resources :plate_creations, except: %i[update]
       jsonapi_resources :plate_purposes, except: %i[update]
@@ -76,7 +75,7 @@ Rails.application.routes.draw do
       jsonapi_resources :primer_panels
       jsonapi_resources :projects
       jsonapi_resources :purposes
-      jsonapi_resources :qc_assays, defaults: { permissive: %i[get post] }
+      jsonapi_resources :qc_assays
       jsonapi_resources :qc_files, except: %i[update]
       jsonapi_resources :qc_results
       jsonapi_resources :qcables
@@ -666,13 +665,6 @@ Rails.application.routes.draw do
   get 'studies/:study_id/workflows/:id', to: redirect('studies/%{study_id}/information')
 
   resources :quad_stamp, only: %i[new create]
-  resources :pick_lists, only: %i[index show]
-  resource :plate_picks, only: [:show] do
-    member do
-      get 'plates/:barcode', to: 'plate_picks#plates'
-      get 'batches/:id', to: 'plate_picks#batches'
-    end
-  end
 
   # Custom standalone route for bioscan control locations, allowing only
   # the POST request, migrated from the Lighthouse pickings endpoint.

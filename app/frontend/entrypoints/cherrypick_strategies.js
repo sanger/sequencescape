@@ -2,6 +2,7 @@
 document.addEventListener("DOMContentLoaded", function () {
   const bufferInput = document.getElementById("buffer_volume_for_empty_wells");
   const autoBufferCheckbox = document.getElementById("automatic_buffer_addition");
+  /* v8 ignore else */
   if (bufferInput && autoBufferCheckbox) {
     function toggleBufferInput() {
       bufferInput.disabled = !autoBufferCheckbox.checked;

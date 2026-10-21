@@ -148,7 +148,7 @@ RSpec.describe TransferRequest do
         expect(library_request.reload.state).to eq('started')
       end
 
-      it 'does not starts the dummy library request when started' do
+      it 'does not start the dummy library request when started' do
         subject.start!
         expect(dummy_library_request.reload.state).to eq('pending')
       end

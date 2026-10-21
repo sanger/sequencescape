@@ -25,12 +25,13 @@ export default defineConfig({
     },
   },
   test: {
-    autoBuild: false,
     globals: true,
     environment: "jsdom",
     coverage: {
       provider: "v8",
       reporter: ["lcov", "text"],
+      // Report all frontend files, not just those loaded by tests. Paths are relative to the Vite root (app/frontend).
+      include: ["**/*.js"],
     },
   },
 });

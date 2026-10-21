@@ -1,0 +1,12 @@
+---
+# ISC plate purpose definitions
+# The PCR-XP is here because it has a special class (type) to allow loopbacks for Multiplexing
+# which cannot be set from Limber
+LB Cap Lib PCR-XP:
+  type: PoolingSourcePlatePurpose
+  stock_plate: false
+  default_state: pending
+  cherrypickable_target: false
+  target_type: Plate
+  size: 96
+  barcode_printer_type: "96 Well Plate"

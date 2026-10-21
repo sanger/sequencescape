@@ -25,6 +25,10 @@ FactoryBot.define do
     factory :sample_with_accession_number do
       sample_metadata factory: %i[sample_metadata_with_accession_number]
     end
+
+    factory :externally_managed_sample do
+      externally_managed { true }
+    end
   end
 
   factory :study_sample do

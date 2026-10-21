@@ -408,4 +408,50 @@ RSpec.describe Sample, :cardinal do
       end.to change(Warren.handler.messages, :count).from(0)
     end
   end
+
+  context 'when broadcasting to the warehouse', :warren do
+    def sample_message_count
+      Warren.handler.messages.count { |message| message.routing_key.start_with?('queue_broadcast.sample.') }
+    end
+
+    context 'with a sample that is not externally managed' do
+      let!(:sample) { create(:sample) }
+
+      it 'broadcasts on creation' do
+        expect { create(:sample) }.to change { sample_message_count }.by(1)
+      end
+
+      it 'broadcasts on update' do
+        expect { sample.update!(priority: :backlog) }
+          .to change { sample.reload.priority }.from('no_priority').to('backlog')
+          .and change { sample_message_count }.by(1)
+      end
+
+      it 'broadcasts on metadata update' do
+        expect { sample.sample_metadata.update!(gender: 'Male') }
+          .to change { sample.sample_metadata.reload.gender }.from(nil).to('Male')
+          .and change { sample_message_count }.by(1)
+      end
+    end
+
+    context 'with an externally managed sample' do
+      let!(:sample) { create(:externally_managed_sample) }
+
+      it 'does not broadcast on creation' do
+        expect { create(:externally_managed_sample) }.not_to(change { sample_message_count })
+      end
+
+      it 'does not broadcast on update' do
+        expect { sample.update!(priority: :backlog) }
+          .to change { sample.reload.priority }.from('no_priority').to('backlog')
+          .and change { sample_message_count }.by(0)
+      end
+
+      it 'does not broadcast on metadata update' do
+        expect { sample.sample_metadata.update!(gender: 'Male') }
+          .to change { sample.sample_metadata.reload.gender }.from(nil).to('Male')
+          .and change { sample_message_count }.by(0)
+      end
+    end
+  end
 end

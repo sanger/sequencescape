@@ -80,6 +80,11 @@ module Attributable
       )
     end
 
+    # Returns a FieldInfo object. This does not display selection options; it is intended for read-only views.
+    def to_display_field_info(*_args)
+      FieldInfo.new(display_name: display_name, key: assignable_attribute_name, kind: kind)
+    end
+
     def configure(target) # rubocop:todo Metrics/MethodLength
       target.class_eval(
         %{
