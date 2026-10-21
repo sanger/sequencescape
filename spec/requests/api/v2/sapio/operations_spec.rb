@@ -15,10 +15,10 @@ describe 'Sapio Operations API' do
   let(:body) { valid_payload.to_json }
   let(:json) { response.parsed_body }
 
-  def post_request(api_key: nil)
+  def post_request(api_key: nil, request_body: body)
     headers = { 'CONTENT_TYPE' => 'application/json' }
     headers['X-Sequencescape-Client-Id'] = api_key if api_key
-    post base_endpoint, params: body, headers: headers
+    post base_endpoint, params: request_body, headers: headers
   end
 
   context 'when the feature flag is disabled',
@@ -120,6 +120,45 @@ describe 'Sapio Operations API' do
           'reception_status' => 'pending',
           'work_order_status' => 'pending'
         )
+      end
+
+      context 'when the same request is sent again' do
+        let!(:first_response) { response.parsed_body }
+
+        before { post_request(api_key: integration_hub_app.key) }
+
+        it 'returns ok' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns the existing operation ID and statuses' do
+          expect(json).to eq(first_response)
+        end
+
+        it 'does not save another operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
+      end
+
+      context 'when the same payload is sent again in another layout' do
+        let!(:first_response) { response.parsed_body }
+
+        before do
+          post_request(api_key: integration_hub_app.key,
+                       request_body: JSON.pretty_generate(valid_payload))
+        end
+
+        it 'returns ok' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns the existing operation' do
+          expect(json['operation_id']).to eq(first_response['operation_id'])
+        end
+
+        it 'does not save another operation' do
+          expect(ApiOperation.count).to eq(1)
+        end
       end
 
       describe 'the saved operation' do
