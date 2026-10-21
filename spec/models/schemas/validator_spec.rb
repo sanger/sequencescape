@@ -4,7 +4,9 @@ require 'rails_helper'
 require './spec/models/schemas/shared_examples/validator'
 
 RSpec.describe Schemas::Validator do
-  let(:schema) { Schemas::Schema.new(text: '{}', type: :json_schema) }
+  let(:schema) do
+    Schemas::Schema.new(text: '{}', type: :json_schema, version: 1)
+  end
 
   it 'keeps the schema' do
     expect(described_class.new(schema).schema).to eq(schema)
