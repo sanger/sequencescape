@@ -14,14 +14,14 @@ RSpec.describe Schemas::LocalSource do
   # Spacing, key order and number formatting that parsing would lose
   let(:text) { %({"b": 1,\n  "a": 1.10}\n) }
 
-  def write_schema(file_name, content)
-    root.join(schema_subject).mkpath
-    root.join(schema_subject, file_name).write(content)
+  def write_schema(folder, file_name, content = '{}')
+    root.join(folder, schema_subject).mkpath
+    root.join(folder, schema_subject, file_name).write(content)
   end
 
   before do
-    write_schema('1.json', text)
-    write_schema('2.json', '{}')
+    write_schema('json_schema', '1.json', text)
+    write_schema('json_schema', '2.json')
   end
 
   after { FileUtils.remove_entry(root) }
@@ -32,17 +32,23 @@ RSpec.describe Schemas::LocalSource do
     expect(source.fetch(schema_subject, version).text).to eq(text)
   end
 
-  it 'reads a .json file as JSON Schema' do
+  it 'reads the json_schema folder as JSON Schema' do
     expect(source.fetch(schema_subject, version).type).to eq(:json_schema)
   end
 
-  it 'reads an .avsc file as Avro' do
-    write_schema('3.avsc', '{"type": "record"}')
+  it 'reads the avro folder as Avro' do
+    write_schema('avro', '3.avsc', '{"type": "record"}')
     expect(source.fetch(schema_subject, 3).type).to eq(:avro)
   end
 
-  it 'ignores files of other types' do
-    write_schema('3.yml', 'type: object')
+  it "ignores files without their folder's extension" do
+    %w[3.avsc 3.yml].each { |name| write_schema('json_schema', name) }
+    expect { source.fetch(schema_subject, 3) }
+      .to raise_error(Schemas::Source::NotFound)
+  end
+
+  it 'ignores files outside the type folders' do
+    write_schema('.', '3.json')
     expect { source.fetch(schema_subject, 3) }
       .to raise_error(Schemas::Source::NotFound)
   end
@@ -52,25 +58,25 @@ RSpec.describe Schemas::LocalSource do
       .to raise_error(Schemas::Source::NotFound)
   end
 
-  it 'raises an error when a version has a file for each type' do
-    write_schema('1.avsc', '{"type": "record"}')
+  it 'raises an error when a version is in more than one type folder' do
+    write_schema('avro', '1.avsc', '{"type": "record"}')
     expect { source.fetch(schema_subject, version) }
       .to raise_error(RuntimeError, /More than one file/)
   end
 
   it 'compares versions as numbers for the latest' do
-    write_schema('10.json', '{}')
+    write_schema('json_schema', '10.json')
     expect(source.fetch(schema_subject, :latest).version).to eq(10)
   end
 
-  it 'includes every schema type for the latest' do
-    write_schema('3.avsc', '{"type": "record"}')
+  it 'includes every type folder for the latest' do
+    write_schema('avro', '3.avsc', '{"type": "record"}')
     expect(source.fetch(schema_subject, :latest).type).to eq(:avro)
   end
 
   it 'ignores files not named by a version number for the latest' do
-    %w[draft.json v5.json 05.json 6.yml].each do |name|
-      write_schema(name, '{}')
+    %w[draft.json v5.json 05.json 6.avsc 7.yml].each do |name|
+      write_schema('json_schema', name)
     end
     expect(source.fetch(schema_subject, :latest).version).to eq(2)
   end
