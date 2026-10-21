@@ -27,6 +27,8 @@ describe 'Creating projects' do
     visit new_project_path
 
     expect(page).to have_field('Name', type: :text)
+    # Check it is marked as required
+    expect(page).to have_css('label.required', text: 'Name')
     expect(page).to have_field('Project cost code', type: :text)
     expect(page).to have_field('Sequencing Project Manager', type: :select)
     expect(page).to have_field('Sequencing budget division', type: :select)
@@ -62,7 +64,7 @@ describe 'Creating projects' do
     select 'Unallocated', from: 'Sequencing Project Manager'
 
     # Sequencing project fields
-    fill_in 'Funding comments', with: 'Internal'
+    fill_in 'Funding comments', with: 'Grant funded'
     fill_in 'Collaborators', with: 'no collaborators'
     fill_in 'External funding source', with: 'no funding source'
     click_button 'Create'
@@ -72,7 +74,7 @@ describe 'Creating projects' do
     expect(page).to have_text('Your project has been created')
     expect(page).to have_text('Cost code 101')
     expect(page).to have_text('Unallocated')
-    expect(page).to have_text('Internal')
+    expect(page).to have_text('Grant funded')
     expect(page).to have_text('no collaborators')
     expect(page).to have_text('no funding source')
   end
