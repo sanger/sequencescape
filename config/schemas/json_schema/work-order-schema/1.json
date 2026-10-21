@@ -1,0 +1,326 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://someurl.com/contracts/work_order.v0.1.json",
+  "title": "Reception and Work Order Request",
+  "description": "Data contract for importing labware and creating a work order for a selected subset of its samples.",
+  "type": "object",
+  "properties": {
+    "request": {
+      "type": "object",
+      "description": "Integration request metadata and callback configuration.",
+      "properties": {
+        "external_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier used by the calling integration to correlate this request."
+        },
+        "request_type": {
+          "const": "reception_and_work_order",
+          "description": "Combined labware reception and work-order request type."
+        },
+        "schema_version": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Version of the request payload schema."
+        },
+        "callback_url": {
+          "type": "string",
+          "format": "uri",
+          "description": "HTTPS endpoint to receive request status callbacks."
+        }
+      },
+      "required": [
+        "external_id",
+        "request_type",
+        "schema_version",
+        "callback_url"
+      ],
+      "additionalProperties": false
+    },
+    "work_order": {
+      "type": "object",
+      "description": "Work-order details, requested sample selection, and labware to import.",
+      "properties": {
+        "external_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Identifier used by the calling integration to correlate this work order."
+        },
+        "work_order_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Requested work-order type, such as library_preparation."
+        },
+        "requested_by": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Login or identifier of the requester."
+        },
+        "project_uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "requested_sample_uuids": {
+          "type": "array",
+          "description": "UUIDs of the samples in the imported labware that are included in this work order. Samples present in labware but not listed here are imported without being requested.",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/uuid"
+          }
+        },
+        "options": {
+          "type": "object",
+          "description": "Work-order-specific options. Keys and value types are defined by the work_order_type.",
+          "properties": {
+            "fragment_size_from": {
+              "type": "number",
+              "minimum": 1,
+              "description": "Minimum fragment size"
+            },
+            "fragment_size_to": {
+              "type": "number",
+              "minimum": 1,
+              "description": "Maximum fragment size"
+            },
+            "bait_library_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of the bait library"
+            },
+            "library_type": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Type of library"
+            },
+            "flowcell_type": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Type of flowcell"
+            },
+            "pre_capture_plex_level": {
+              "type": "number",
+              "minimum": 1,
+              "description": "Pre-capture plex level"
+            },
+            "gigabases_expected": {
+              "type": "number",
+              "minimum": 1,
+              "description": "Expected number of gigabases"
+            },
+            "primer_panel_name": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Name of the primer panel"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "external_id",
+        "work_order_type",
+        "requested_by",
+        "project_uuid",
+        "requested_sample_uuids",
+        "options"
+      ],
+      "additionalProperties": false
+    },
+    "labware": {
+      "type": "array",
+      "description": "Labware and its receptacles to import. This describes the physical contents, not which samples are requested.",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/labware"
+      }
+    }
+  },
+  "required": [
+    "request",
+    "work_order",
+    "labware"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "uuid": {
+      "type": "string",
+      "format": "uuid",
+      "maxLength": 36
+    },
+    "labware": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "barcode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "enum": [
+            "plate96",
+            "plate384",
+            "tube"
+          ],
+          "description": "Labware type enum value"
+        },
+        "receptacles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/receptacle"
+          }
+        }
+      },
+      "required": [
+        "uuid",
+        "barcode",
+        "labware_type",
+        "receptacles"
+      ],
+      "additionalProperties": false
+    },
+    "receptacle": {
+      "type": "object",
+      "properties": {
+        "position": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "description": "Position of this receptacle within the labware, such as A1. Leave null if not applicable, such as for tubes."
+        },
+        "uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "samples": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/sample"
+          }
+        }
+      },
+      "required": [
+        "position",
+        "uuid",
+        "samples"
+      ],
+      "additionalProperties": false
+    },
+    "sample": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "study_uuid": {
+          "$ref": "#/$defs/uuid"
+        },
+        "sanger_sample_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supplier_sample_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bioscan_supplier_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "control_type": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Control classification, when the sample is a control."
+        },
+        "bioscan_control_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "i7": {
+          "type": "string",
+          "minLength": 1
+        },
+        "i5": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tag_group": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tag_index": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tag2_group": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tag2_index": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chromium_tag_group": {
+          "type": "string",
+          "minLength": 1
+        },
+        "chromium_tag_well": {
+          "type": "string",
+          "minLength": 1
+        },
+        "library_type": {
+          "type": "string",
+          "minLength": 1
+        },
+        "library_type_long_read": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dual_index_tag_set": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dual_index_tag_well": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reference_genome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "insert_size_from": {
+          "type": "string",
+          "minLength": 1
+        },
+        "insert_size_to": {
+          "type": "string",
+          "minLength": 1
+        },
+        "donor_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "primer_panel": {
+          "type": "string",
+          "minLength": 1
+        },
+        "priority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "retention_instruction": {
+          "enum": ["destroy_after_2_years", "return_to_customer_after_2_years", "long_term_storage"]
+        }
+      },
+      "required": [
+        "uuid",
+        "study_uuid",
+        "sanger_sample_id",
+        "supplier_sample_name"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
