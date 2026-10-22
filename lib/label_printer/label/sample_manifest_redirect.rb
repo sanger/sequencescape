@@ -18,7 +18,7 @@ module LabelPrinter
           else
             SampleManifestPlate.new(options).labels
           end
-        when '1dtube', 'library'
+        when '1dtube', 'library', 'compound_tube'
           SampleManifestTube.new(options).labels
         when 'multiplexed_library'
           SampleManifestMultiplex.new(options).labels
