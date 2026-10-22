@@ -176,16 +176,34 @@ module Api::V2::Sapio::Errors
   # file is missing. The caller gets this error; the cause, a configuration
   # problem, is reported to the team only.
   class SchemaUnavailable < JSONAPI::Exceptions::Error
-    # @return [Array<JSONAPI::Error>] one 500 error, without the cause
+    attr_reader :temporary
+
+    # @param temporary [Boolean] true when the schema's source can't be
+    #   reached, so trying again later can succeed
+    def initialize(temporary: false, error_object_overrides: {})
+      @temporary = temporary
+      super(error_object_overrides)
+    end
+
+    # @return [Array<JSONAPI::Error>] one error, without the cause: 503 if
+    #   temporary, otherwise 500
     def errors
       [
         JSONAPI::Error.new(
-          status: :internal_server_error,
+          status: temporary ? :service_unavailable : :internal_server_error,
           title: 'Schema Unavailable',
           code: 'SCHEMA_UNAVAILABLE',
-          detail: 'The payload schema could not be loaded.'
+          detail: detail
         )
       ]
+    end
+
+    private
+
+    def detail
+      return 'The payload schema could not be loaded.' unless temporary
+
+      'The payload schema could not be loaded; try again later.'
     end
   end
 
