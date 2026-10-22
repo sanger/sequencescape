@@ -152,7 +152,6 @@ module Api
           ApiOperation.create_with_job!(
             api_application: api_application,
             external_id: external_id,
-            work_order_external_id: work_order_external_id,
             operation_type: OPERATION_TYPE,
             payload: request.raw_post,
             payload_digest: payload_digest
@@ -195,14 +194,6 @@ module Api
         # @return [Hash]
         def operation_json(operation)
           { operation_id: operation.uuid, status: operation.status }
-        end
-
-        # @return [String, nil] work_order.external_id, if there is a work
-        #   order and its ID is a string; it is stored but not used yet
-        def work_order_external_id
-          work_order = @payload['work_order']
-          external_id = work_order['external_id'] if work_order.is_a?(Hash)
-          external_id if external_id.is_a?(String)
         end
 
         # Renders JSON:API style errors with the status of the first error.
