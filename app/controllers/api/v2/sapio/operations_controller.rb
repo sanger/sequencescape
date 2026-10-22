@@ -144,8 +144,8 @@ module Api
         end
 
         # Saves the request as an operation, with the raw body as its
-        # payload, and queues the job that processes it. The task statuses
-        # start as pending.
+        # payload, and queues the job that processes it. The status starts
+        # as queued.
         #
         # @return [ApiOperation] the saved operation
         def create_operation
@@ -189,17 +189,12 @@ module Api
             ApiOperation::PayloadDigest.hexdigest(request.raw_post)
         end
 
-        # The operation's identifier and statuses, as returned to the caller.
+        # The operation's identifier and status, as returned to the caller.
         #
         # @param operation [ApiOperation]
         # @return [Hash]
         def operation_json(operation)
-          {
-            operation_id: operation.uuid,
-            status: operation.status,
-            reception_status: operation.reception_status,
-            work_order_status: operation.work_order_status
-          }
+          { operation_id: operation.uuid, status: operation.status }
         end
 
         # @return [String, nil] work_order.external_id, if there is a work
