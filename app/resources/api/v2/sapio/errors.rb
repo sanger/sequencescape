@@ -169,6 +169,22 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # The schema couldn't be loaded, for example because a setting or a schema
+  # file is missing. The caller gets this error; the cause, a configuration
+  # problem, is reported to the team only.
+  class SchemaUnavailable < JSONAPI::Exceptions::Error
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :internal_server_error,
+          title: 'Schema Unavailable',
+          code: 'SCHEMA_UNAVAILABLE',
+          detail: 'The payload schema could not be loaded.'
+        )
+      ]
+    end
+  end
+
   class InvalidJson < JSONAPI::Exceptions::Error
     def errors
       [
