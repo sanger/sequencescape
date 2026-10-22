@@ -5,6 +5,7 @@ require 'rails_helper'
 RSpec.describe Schemas::Error do
   [
     Schemas::Source::NotFound,
+    Schemas::Source::Unavailable,
     Schemas::LocalSource::MixedTypes,
     Schemas::JsonSchemaValidator::InvalidSchema,
     Schemas::Provider::UnsupportedType,

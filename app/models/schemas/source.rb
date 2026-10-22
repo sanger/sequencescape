@@ -7,6 +7,10 @@ class Schemas::Source
   class NotFound < Schemas::Error
   end
 
+  # Raised when a source can't be reached or doesn't answer in time
+  class Unavailable < Schemas::Error
+  end
+
   # Fetches one version of a schema.
   #
   # @param subject [String] the schema's name
