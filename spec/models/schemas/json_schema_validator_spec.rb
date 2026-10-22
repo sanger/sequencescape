@@ -99,9 +99,21 @@ RSpec.describe Schemas::JsonSchemaValidator do
   context 'with a schema that is not valid JSON Schema' do
     let(:definition) { { 'type' => 5 } }
 
-    it 'raises an argument error' do
-      expect { validator }
-        .to raise_error(ArgumentError, 'The schema is not a valid JSON Schema.')
+    it 'raises an invalid schema error' do
+      expect { validator }.to raise_error(
+        described_class::InvalidSchema, 'The schema is not a valid JSON Schema.'
+      )
+    end
+  end
+
+  context 'with a schema that is not JSON' do
+    let(:schema) do
+      Schemas::Schema.new(text: '{"type":', type: :json_schema, version: 1)
+    end
+
+    it 'raises an invalid schema error' do
+      expect { validator }.to raise_error(described_class::InvalidSchema,
+                                          'The schema is not JSON.')
     end
   end
 end
