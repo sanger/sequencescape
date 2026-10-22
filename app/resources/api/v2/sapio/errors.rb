@@ -141,6 +141,34 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # A payload that doesn't match the schema, the contract with the caller:
+  # one error for each problem, each naming the schema and version used.
+  class SchemaValidationFailed < JSONAPI::Exceptions::Error
+    attr_reader :problems, :schema_meta
+
+    # @param problems [Array<Hash>] the problems, each with :pointer and
+    #   :detail
+    # @param schema_meta [Hash] the schema's subject and version
+    def initialize(problems, schema_meta, error_object_overrides = {})
+      @problems = problems
+      @schema_meta = schema_meta
+      super(error_object_overrides)
+    end
+
+    def errors
+      problems.map do |problem|
+        JSONAPI::Error.new(
+          status: :unprocessable_content,
+          title: 'Payload Does Not Match Schema',
+          code: 'SCHEMA_VALIDATION_FAILED',
+          detail: problem[:detail],
+          source: { pointer: problem[:pointer] },
+          meta: schema_meta
+        )
+      end
+    end
+  end
+
   class InvalidJson < JSONAPI::Exceptions::Error
     def errors
       [
