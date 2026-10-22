@@ -5,15 +5,19 @@
 # 2020-12 is used when it has none. Formats, such as uuid, are checked, and
 # remote references are not fetched.
 class Schemas::JsonSchemaValidator < Schemas::Validator
+  # Raised when the schema isn't JSON, or isn't valid for its draft, as a
+  # schema that isn't valid can accept every payload
+  class InvalidSchema < Schemas::Error
+  end
+
   # @param schema [Schemas::Schema] a JSON Schema
-  # @raise [ArgumentError] if the schema is not valid for its draft, as a
-  #   schema that isn't valid can accept every payload
+  # @raise [InvalidSchema] if the schema isn't JSON or isn't valid
   def initialize(schema)
     super
-    @schemer = JSONSchemer.schema(JSON.parse(schema.text))
+    @schemer = JSONSchemer.schema(parse(schema.text))
     return if @schemer.valid_schema?
 
-    raise ArgumentError, 'The schema is not a valid JSON Schema.'
+    raise InvalidSchema, 'The schema is not a valid JSON Schema.'
   end
 
   # (see Schemas::Validator#validate)
@@ -23,5 +27,13 @@ class Schemas::JsonSchemaValidator < Schemas::Validator
     @schemer.validate(payload).map do |error|
       { pointer: error['data_pointer'], detail: error['error'] }
     end
+  end
+
+  private
+
+  def parse(text)
+    JSON.parse(text)
+  rescue JSON::ParserError
+    raise InvalidSchema, 'The schema is not JSON.'
   end
 end
