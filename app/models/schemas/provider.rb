@@ -4,7 +4,15 @@
 # picks the Schemas::Validator for the schema's type.
 class Schemas::Provider
   # Raised when no validator exists for a schema's type
-  class UnsupportedType < StandardError
+  class UnsupportedType < Schemas::Error
+  end
+
+  # Raised when the source setting doesn't name a known source
+  class UnknownSource < Schemas::Error
+  end
+
+  # Raised when a version setting is neither latest nor a number
+  class InvalidVersion < Schemas::Error
   end
 
   # The validator for each schema type that has one
@@ -20,11 +28,11 @@ class Schemas::Provider
   # config/environments.
   #
   # @return [Schemas::Provider]
-  # @raise [ArgumentError] if the setting doesn't name a known source
+  # @raise [UnknownSource] if the setting doesn't name a known source
   def self.configured
     name = Rails.application.config.try(:sapio_schema_source)
     build = SOURCES.fetch(name) do
-      raise ArgumentError, "Unknown schema source: #{name.inspect}"
+      raise UnknownSource, "Unknown schema source: #{name.inspect}"
     end
     new(build.call)
   end
@@ -34,11 +42,13 @@ class Schemas::Provider
   #
   # @param value [String, Integer] the setting
   # @return [Integer, :latest] the version
-  # @raise [ArgumentError] if the value is neither latest nor a number
+  # @raise [InvalidVersion] if the value is neither latest nor a number
   def self.parse_version(value)
     return :latest if value.to_s == 'latest'
 
     Integer(value.to_s, 10)
+  rescue ArgumentError
+    raise InvalidVersion, "Not a schema version: #{value.inspect}"
   end
 
   # @param source [Schemas::Source] where schemas are fetched from
