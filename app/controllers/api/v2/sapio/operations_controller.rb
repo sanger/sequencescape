@@ -14,6 +14,7 @@ module Api
       # key.
       class OperationsController < ApplicationController
         include Api::V2::Concerns::ApiKeyAuthenticatable
+        include Api::V2::Concerns::SchemaCheckable
 
         skip_before_action :login_required
         skip_before_action :verify_authenticity_token
@@ -53,6 +54,9 @@ module Api
         # Two requests with the same request ID can both find no operation
         # and then both try to save one. The unique index lets only one
         # save, and the other is answered as a repeat.
+        #
+        # If the schema can't be loaded, a new request gets a server error
+        # and nothing is saved.
         #
         # @return [void]
         def create
@@ -198,18 +202,6 @@ module Api
         # @return [Hash]
         def operation_json(operation)
           { operation_id: operation.uuid, status: operation.status }
-        end
-
-        # Renders the problems the schema check kept, with the total.
-        #
-        # @param check [ApiOperation::SchemaCheck]
-        # @return [void]
-        def render_schema_errors(check)
-          errors =
-            Errors::SchemaValidationFailed.new(check.problems,
-                                               check.schema_meta).errors
-          render_errors(errors, meta: { errors_total: check.total,
-                                        errors_shown: check.problems.size })
         end
 
         # Renders JSON:API style errors with the status of the first error.
