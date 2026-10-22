@@ -8,7 +8,8 @@
 # the payload, so a repeated request can be told apart from a changed one.
 #
 # The status starts as queued. Later stories add the other values, such as
-# completed and failed.
+# completed and failed. response_delivered_at records when the response was
+# delivered to the calling system, and is null until then.
 class ApiOperation < ApplicationRecord
   include Uuid::Uuidable
 
