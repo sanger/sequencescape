@@ -110,6 +110,14 @@ Rails.application.configure do
     ENV.fetch('SAPIO_SCHEMA_SUBJECT', 'work-order-schema')
   config.sapio_schema_version = ENV.fetch('SAPIO_SCHEMA_VERSION', 'latest')
 
+  # The same settings for a schema registry, such as a local Redpanda:
+  # config.sapio_schema_source = ENV.fetch('SAPIO_SCHEMA_SOURCE', 'redpanda')
+  # config.sapio_schema_subject =
+  #   ENV.fetch('SAPIO_SCHEMA_SUBJECT', 'work-order-schema')
+  # config.sapio_schema_version = ENV.fetch('SAPIO_SCHEMA_VERSION', 'latest')
+  # config.sapio_schema_registry_url =
+  #   ENV.fetch('SAPIO_SCHEMA_REGISTRY_URL', 'http://localhost:8081')
+
   # Annotate rendered view with file names.
   config.action_view.annotate_rendered_view_with_filenames = true
 
