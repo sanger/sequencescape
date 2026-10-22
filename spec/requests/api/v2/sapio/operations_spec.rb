@@ -204,12 +204,9 @@ describe 'Sapio Operations API' do
         expect(response).to have_http_status(:accepted)
       end
 
-      it 'returns the operation ID and statuses' do
+      it 'returns the operation ID and status' do
         expect(json).to eq(
-          'operation_id' => ApiOperation.last.uuid,
-          'status' => 'queued',
-          'reception_status' => 'pending',
-          'work_order_status' => 'pending'
+          'operation_id' => ApiOperation.last.uuid, 'status' => 'queued'
         )
       end
 
@@ -227,7 +224,7 @@ describe 'Sapio Operations API' do
           expect(response).to have_http_status(:ok)
         end
 
-        it 'returns the existing operation ID and statuses' do
+        it 'returns the existing operation ID and status' do
           expect(json).to eq(first_response)
         end
 
@@ -325,9 +322,8 @@ describe 'Sapio Operations API' do
             .to eq(ApiOperation::PayloadDigest.hexdigest(body))
         end
 
-        it 'starts both task statuses as pending' do
-          expect([operation.reception_status, operation.work_order_status])
-            .to eq(%w[pending pending])
+        it 'starts as queued' do
+          expect(operation.status).to eq('queued')
         end
 
         it 'stores the work order ID' do
