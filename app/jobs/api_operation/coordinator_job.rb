@@ -8,6 +8,9 @@
 # work order processing are added by later stories (Y26-283 and Y26-289).
 ApiOperation::CoordinatorJob =
   Struct.new(:api_operation_id) do
+    # Delayed Job calls this to run the job.
+    #
+    # @return [void]
     def perform
       api_operation = ApiOperation.find(api_operation_id)
       Rails.logger.info(
