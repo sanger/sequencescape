@@ -39,8 +39,10 @@ module Api
         # The kind of operation this endpoint creates
         OPERATION_TYPE = 'reception_and_work_order'
 
+        # The error detail for a body that is not a JSON object
         NOT_AN_OBJECT = 'The request body must be a JSON object.'
 
+        # The error detail for a missing or empty request ID
         NO_EXTERNAL_ID = 'request.external_id must be a non-empty string.'
 
         # Accepts a combined reception and work order request.
