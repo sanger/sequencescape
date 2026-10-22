@@ -36,6 +36,16 @@ RSpec.describe ApiOperation do
     expect(described_class.new.status).to eq('queued')
   end
 
+  it 'starts without a response delivery time' do
+    expect(described_class.new.response_delivered_at).to be_nil
+  end
+
+  it 'stores the response delivery time' do
+    delivered_at = Time.zone.local(2026, 10, 22, 14, 30)
+    api_operation.update!(response_delivered_at: delivered_at)
+    expect(api_operation.reload.response_delivered_at).to eq(delivered_at)
+  end
+
   it 'stores the payload exactly as given' do
     payload = %({"b": 1, "a": 1.10})
     api_operation.payload = payload
