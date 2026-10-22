@@ -465,6 +465,67 @@ RSpec.describe SequencescapeExcel::SpecialisedField, :sample_manifest, :sample_m
     end
   end
 
+  describe SequencescapeExcel::SpecialisedField::ComponentTagSequence do
+    let(:oligo) { 'CTACACGACGCTCTTCCGATCTACTACACGCAATGAAGTCGCAGGGTTGGG' }
+    let(:component_tag_group) do
+      create(:tag_group, name: described_class::TAG_GROUP_NAME)
+    end
+    let(:component_tag_sequence) { component_tag_sequence_for(oligo) }
+
+    def component_tag_sequence_for(value)
+      described_class.new(value:, sample_manifest_asset:)
+    end
+
+    context 'when the tag group exists' do
+      let!(:component_tag) do
+        create(:tag, tag_group: component_tag_group, oligo: oligo, map_id: 1)
+      end
+
+      it 'is valid when the value is the oligo of a tag in the tag group' do
+        expect(component_tag_sequence).to be_valid
+      end
+
+      it 'returns the matching tag' do
+        expect(component_tag_sequence.tag).to eq(component_tag)
+      end
+
+      it 'finds the tag group' do
+        expect(described_class.tag_group).to eq(component_tag_group)
+      end
+
+      it 'matches the oligo regardless of case' do
+        field = component_tag_sequence_for(oligo.downcase)
+        expect(field.tag).to eq(component_tag)
+      end
+
+      it 'is not valid when the value is blank' do
+        expect(component_tag_sequence_for(nil)).not_to be_valid
+      end
+
+      it 'returns no tag when the value is blank' do
+        expect(component_tag_sequence_for(nil).tag).to be_nil
+      end
+
+      it 'is not valid when the oligo is only in another tag group' do
+        create(:tag, tag_group: create(:tag_group), oligo: 'ACGT', map_id: 1)
+        field = component_tag_sequence_for('ACGT')
+        expect(field).not_to be_valid
+        expect(field.tag).to be_nil
+      end
+
+      it 'does not change the aliquot when updated' do
+        component_tag_sequence.update(tag_group: create(:tag_group))
+        expect(aliquot.reload.tag).to be_nil
+      end
+    end
+
+    context 'when the tag group does not exist' do
+      it 'is not valid' do
+        expect(component_tag_sequence).not_to be_valid
+      end
+    end
+  end
+
   describe SequencescapeExcel::SpecialisedField::TagGroup do
     let!(:tag_group) { create(:tag_group_with_tags) }
     let!(:tag2_group) { create(:tag_group_with_tags) }
