@@ -13,6 +13,10 @@ class Schemas::LocalSource < Schemas::Source
   # A file name that is a version number, such as 1 or 12
   VERSION_NAME = /\A[1-9]\d*\z/
 
+  # Raised when a subject is in more than one type folder
+  class MixedTypes < Schemas::Error
+  end
+
   # @return [Pathname] the directory that holds the schema type folders
   attr_reader :root
 
@@ -24,7 +28,7 @@ class Schemas::LocalSource < Schemas::Source
   end
 
   # (see Schemas::Source#fetch)
-  # @raise [RuntimeError] if the subject is in more than one type folder
+  # @raise [MixedTypes] if the subject is in more than one type folder
   def fetch(subject, version)
     type = subject_type(subject)
     version = latest_version(type, subject) if version == :latest
@@ -45,7 +49,9 @@ class Schemas::LocalSource < Schemas::Source
       version_files(type, subject).any?
     end
     raise NotFound, "No versions of #{subject} in #{root}" if types.empty?
-    raise "#{subject} has more than one schema type in #{root}" if types.many?
+
+    message = "#{subject} has more than one schema type in #{root}"
+    raise MixedTypes, message if types.many?
 
     types.first
   end
