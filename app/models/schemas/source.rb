@@ -4,7 +4,7 @@
 # registry. Subclasses implement #fetch.
 class Schemas::Source
   # Raised when a source doesn't hold the schema asked for
-  class NotFound < StandardError
+  class NotFound < Schemas::Error
   end
 
   # Fetches one version of a schema.
