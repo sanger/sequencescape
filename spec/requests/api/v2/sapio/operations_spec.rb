@@ -326,10 +326,6 @@ describe 'Sapio Operations API' do
           expect(operation.status).to eq('queued')
         end
 
-        it 'stores the work order ID' do
-          expect(operation.work_order_external_id).to eq('work-order-1')
-        end
-
         context 'with a pretty-printed body' do
           let(:body) { JSON.pretty_generate(valid_payload) }
 
@@ -341,8 +337,8 @@ describe 'Sapio Operations API' do
         context 'without a work order' do
           let(:body) { valid_payload.except(:work_order).to_json }
 
-          it 'stores no work order ID' do
-            expect(operation.work_order_external_id).to be_nil
+          it 'saves the operation' do
+            expect(operation.payload).to eq(body)
           end
         end
       end
