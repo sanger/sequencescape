@@ -33,14 +33,10 @@ class CreateApiOperations < ActiveRecord::Migration[8.1]
                null: false,
                comment: 'SHA-256 of the payload in canonical form, ' \
                         'used to detect a changed payload'
-      t.string :reception_status,
+      t.string :status,
                null: false,
-               default: 'pending',
-               comment: 'Progress of the reception task'
-      t.string :work_order_status,
-               null: false,
-               default: 'pending',
-               comment: 'Progress of the work order task'
+               default: 'queued',
+               comment: 'Processing progress, starting as queued'
       t.json :error_details,
              comment: 'Errors recorded while processing, by task'
 
