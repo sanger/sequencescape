@@ -70,4 +70,48 @@ RSpec.describe Schemas::RedpandaSource do
     expect { source.fetch(schema_subject, 3) }
       .to raise_error(Schemas::Source::Unavailable)
   end
+
+  # The test environment's cache keeps nothing, so these use a memory store.
+  context 'with a cache' do
+    let(:cache) { ActiveSupport::Cache::MemoryStore.new }
+    let(:other_source) { described_class.new('http://other-registry') }
+
+    before { allow(Rails).to receive(:cache).and_return(cache) }
+
+    def fetch_twice(asked)
+      2.times do
+        suppress(Schemas::Source::NotFound) do
+          source.fetch(schema_subject, asked)
+        end
+      end
+    end
+
+    it 'asks the registry for a version only once' do
+      fetch_twice(version)
+      expect(a_request(:get, %r{/versions/1\z})).to have_been_made.once
+    end
+
+    it 'asks the registry for the latest version every time' do
+      fetch_twice(:latest)
+      expect(a_request(:get, %r{/versions/latest\z})).to have_been_made.twice
+    end
+
+    it 'does not keep a version the registry does not hold' do
+      fetch_twice(missing_version)
+      expect(a_request(:get, %r{/versions/9\z})).to have_been_made.twice
+    end
+
+    it 'gives a kept version when the registry is down' do
+      source.fetch(schema_subject, version)
+      stub_request(:get, %r{/versions/1\z}).to_timeout
+      expect(source.fetch(schema_subject, version).text).to eq(text)
+    end
+
+    it 'keeps the versions of different registries apart' do
+      source.fetch(schema_subject, version)
+      stub_request(:get, %r{other-registry/}).to_return(status: 404)
+      expect { other_source.fetch(schema_subject, version) }
+        .to raise_error(Schemas::Source::NotFound)
+    end
+  end
 end
