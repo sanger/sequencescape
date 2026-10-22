@@ -1331,6 +1331,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.integer "component_sample_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "tag_id", comment: "The tag of the component sample within the compound sample, e.g. for Kinnex. Null when the components are not tagged."
   end
 
   create_table "sample_manifest_assets", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
