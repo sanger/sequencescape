@@ -85,6 +85,7 @@ group :default do
   # Provides message schema encoding and decoding for messages to RabbitMQ
   gem 'avro'
   gem 'json', '~> 2.0' # Required by avro (and others), but should be removed once avro handles the dependency correctly
+  gem 'json_schemer'
 
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
