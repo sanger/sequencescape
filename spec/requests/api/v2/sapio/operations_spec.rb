@@ -172,6 +172,64 @@ describe 'Sapio Operations API' do
       end
     end
 
+    # A version the test schemas don't have, so the schema can't be loaded
+    context 'when the schema cannot be loaded' do
+      before do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_version).and_return('99')
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'returns internal server error' do
+        expect(response).to have_http_status(:internal_server_error)
+      end
+
+      it 'returns a schema unavailable error' do
+        expect(json.dig('errors', 0, 'code')).to eq('SCHEMA_UNAVAILABLE')
+      end
+
+      it 'does not show the cause to the caller' do
+        expect(json.dig('errors', 0, 'detail'))
+          .to eq('The payload schema could not be loaded.')
+      end
+
+      it 'reports the cause' do
+        expect(ExceptionNotifier).to have_received(:notify_exception).with(
+          an_instance_of(Schemas::Source::NotFound),
+          data: hash_including(external_id: 'request-1')
+        )
+      end
+
+      it 'does not save an operation' do
+        expect(ApiOperation.count).to eq(0)
+      end
+
+      it 'does not queue a job' do
+        expect(Delayed::Job.count).to eq(0)
+      end
+    end
+
+    context 'when a stored request is repeated and the schema cannot load' do
+      let!(:stored_operation) do
+        create(:api_operation,
+               api_application: integration_hub_app,
+               external_id: 'request-1',
+               payload: body,
+               payload_digest: ApiOperation::PayloadDigest.hexdigest(body))
+      end
+
+      before do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_version).and_return('99')
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'returns the stored operation' do
+        expect(json['operation_id']).to eq(stored_operation.uuid)
+      end
+    end
+
     # Two requests with the same request ID race: this request's lookup
     # finds nothing, but the other request's operation is saved before this
     # one, so the unique index rejects this one.
