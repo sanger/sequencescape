@@ -74,8 +74,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.string "operation_type", null: false, comment: "Kind of request, e.g. reception_and_work_order"
     t.text "payload", size: :long, null: false, comment: "Request body exactly as received"
     t.string "payload_digest", limit: 64, null: false, comment: "SHA-256 of the payload in canonical form, used to detect a changed payload"
-    t.string "reception_status", default: "pending", null: false, comment: "Progress of the reception task"
-    t.string "work_order_status", default: "pending", null: false, comment: "Progress of the work order task"
+    t.string "status", default: "queued", null: false, comment: "Processing progress, starting as queued"
     t.json "error_details", comment: "Errors recorded while processing, by task"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
