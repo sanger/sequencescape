@@ -76,4 +76,5 @@ Rails.application.configure do
   config.sapio_schema_source = 'local'
   config.sapio_schema_subject = 'work-order-schema'
   config.sapio_schema_version = 'latest'
+  config.sapio_schema_registry_url = 'http://test-registry'
 end
