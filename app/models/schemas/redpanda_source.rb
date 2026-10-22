@@ -11,6 +11,7 @@ class Schemas::RedpandaSource < Schemas::Source
   # @param url [String] the registry's base URL, without /subjects
   def initialize(url)
     super()
+    @url = url
     @client = HTTPClients::SchemaRegistryClient.new(url)
   end
 
@@ -19,7 +20,7 @@ class Schemas::RedpandaSource < Schemas::Source
   #   answers with an error
   # @raise [Schemas::Provider::UnsupportedType] for a type such as Protobuf
   def fetch(subject, version)
-    answer = @client.schema_version(subject, version)
+    answer = registry_answer(subject, version)
     Schemas::Schema.new(text: answer['schema'], type: type_of(answer),
                         version: answer['version'])
   rescue Faraday::ResourceNotFound
@@ -29,6 +30,17 @@ class Schemas::RedpandaSource < Schemas::Source
   end
 
   private
+
+  # A registry version never changes, so it is kept in Rails.cache without
+  # expiry, by registry, subject and version. The latest version is always
+  # fetched, as it changes when a version is registered.
+  def registry_answer(subject, version)
+    return @client.schema_version(subject, version) if version == :latest
+
+    Rails.cache.fetch("schemas/redpanda/#{@url}/#{subject}/#{version}") do
+      @client.schema_version(subject, version)
+    end
+  end
 
   def type_of(answer)
     schema_type = answer['schemaType']
