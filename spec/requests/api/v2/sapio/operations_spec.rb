@@ -196,6 +196,37 @@ describe 'Sapio Operations API' do
       end
     end
 
+    context 'when the schema registry cannot be reached' do
+      before do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_source).and_return('redpanda')
+        stub_request(:get, %r{\Ahttp://test-registry/}).to_timeout
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'returns service unavailable' do
+        expect(response).to have_http_status(:service_unavailable)
+      end
+
+      it 'returns a schema unavailable error' do
+        expect(json.dig('errors', 0, 'code')).to eq('SCHEMA_UNAVAILABLE')
+      end
+
+      it 'asks the caller to try again later' do
+        expect(response.headers['Retry-After']).to eq('60')
+      end
+
+      it 'reports the cause' do
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(an_instance_of(Schemas::Source::Unavailable), data: anything)
+      end
+
+      it 'does not save an operation' do
+        expect(ApiOperation.count).to eq(0)
+      end
+    end
+
     # A version the test schemas don't have, so the schema can't be loaded
     context 'when the schema cannot be loaded' do
       before do
@@ -216,6 +247,10 @@ describe 'Sapio Operations API' do
       it 'does not show the cause to the caller' do
         expect(json.dig('errors', 0, 'detail'))
           .to eq('The payload schema could not be loaded.')
+      end
+
+      it 'does not ask the caller to try again later' do
+        expect(response.headers).not_to have_key('Retry-After')
       end
 
       it 'reports the cause' do
