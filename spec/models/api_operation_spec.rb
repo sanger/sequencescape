@@ -19,8 +19,7 @@ RSpec.describe ApiOperation do
     operation_type
     payload
     payload_digest
-    reception_status
-    work_order_status
+    status
   ].each do |attribute|
     it "requires #{attribute}" do
       api_operation.public_send(:"#{attribute}=", nil)
@@ -33,12 +32,8 @@ RSpec.describe ApiOperation do
     expect(api_operation).not_to be_valid
   end
 
-  it 'starts with a pending reception status' do
-    expect(described_class.new.reception_status).to eq('pending')
-  end
-
-  it 'starts with a pending work order status' do
-    expect(described_class.new.work_order_status).to eq('pending')
+  it 'starts as queued' do
+    expect(described_class.new.status).to eq('queued')
   end
 
   it 'stores the payload exactly as given' do
@@ -88,22 +83,6 @@ RSpec.describe ApiOperation do
           end
         end.not_to change(Delayed::Job, :count)
       end
-    end
-  end
-
-  describe '#status' do
-    it 'is queued when neither task has started' do
-      expect(api_operation.status).to eq('queued')
-    end
-
-    it 'is processing once reception has started' do
-      api_operation.reception_status = 'started'
-      expect(api_operation.status).to eq('processing')
-    end
-
-    it 'is processing once the work order has started' do
-      api_operation.work_order_status = 'started'
-      expect(api_operation.status).to eq('processing')
     end
   end
 
