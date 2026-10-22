@@ -15,11 +15,18 @@ class Schemas::Provider
   class InvalidVersion < Schemas::Error
   end
 
+  # Raised when a setting the chosen source needs isn't set
+  class MissingSetting < Schemas::Error
+  end
+
   # The validator for each schema type that has one
   VALIDATORS = { json_schema: Schemas::JsonSchemaValidator }.freeze
 
   # The source for each value of the sapio_schema_source setting
-  SOURCES = { 'local' => -> { Schemas::LocalSource.new } }.freeze
+  SOURCES = {
+    'local' => -> { Schemas::LocalSource.new },
+    'redpanda' => -> { Schemas::RedpandaSource.new(registry_url) }
+  }.freeze
 
   # @return [Schemas::Source] where schemas are fetched from
   attr_reader :source
@@ -29,6 +36,7 @@ class Schemas::Provider
   #
   # @return [Schemas::Provider]
   # @raise [UnknownSource] if the setting doesn't name a known source
+  # @raise [MissingSetting] if a setting the source needs isn't set
   def self.configured
     name = Rails.application.config.try(:sapio_schema_source)
     build = SOURCES.fetch(name) do
@@ -50,6 +58,16 @@ class Schemas::Provider
   rescue ArgumentError
     raise InvalidVersion, "Not a schema version: #{value.inspect}"
   end
+
+  # @return [String] the sapio_schema_registry_url setting
+  # @raise [MissingSetting] if it isn't set
+  def self.registry_url
+    url = Rails.application.config.try(:sapio_schema_registry_url)
+    return url if url.present?
+
+    raise MissingSetting, 'sapio_schema_registry_url is not set'
+  end
+  private_class_method :registry_url
 
   # @param source [Schemas::Source] where schemas are fetched from
   def initialize(source)
