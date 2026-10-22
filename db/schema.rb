@@ -75,6 +75,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.string "payload_digest", limit: 64, null: false, comment: "SHA-256 of the payload in canonical form, used to detect a changed payload"
     t.string "status", default: "queued", null: false, comment: "Processing progress, starting as queued"
     t.json "error_details", comment: "Errors recorded while processing, by task"
+    t.datetime "response_delivered_at", comment: "When the response was delivered to the calling system, null until then"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["api_application_id", "external_id"], name: "index_api_operations_on_api_application_id_and_external_id", unique: true
