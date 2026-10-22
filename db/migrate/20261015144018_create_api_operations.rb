@@ -37,6 +37,9 @@ class CreateApiOperations < ActiveRecord::Migration[8.1]
                comment: 'Processing progress, starting as queued'
       t.json :error_details,
              comment: 'Errors recorded while processing, by task'
+      t.datetime :response_delivered_at,
+                 comment: 'When the response was delivered to the calling ' \
+                          'system, null until then'
 
       t.timestamps
 
