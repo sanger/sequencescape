@@ -10,7 +10,8 @@ RSpec.describe Schemas::Error do
     Schemas::JsonSchemaValidator::InvalidSchema,
     Schemas::Provider::UnsupportedType,
     Schemas::Provider::UnknownSource,
-    Schemas::Provider::InvalidVersion
+    Schemas::Provider::InvalidVersion,
+    Schemas::Provider::MissingSetting
   ].each do |error|
     it "is the parent of #{error}" do
       expect(error).to be < described_class

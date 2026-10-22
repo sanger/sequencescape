@@ -78,6 +78,26 @@ RSpec.describe Schemas::Provider do
       expect(described_class.configured.source).to be_a(Schemas::LocalSource)
     end
 
+    context 'with the redpanda source setting' do
+      before do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_source).and_return('redpanda')
+      end
+
+      it 'uses the Redpanda source' do
+        expect(described_class.configured.source)
+          .to be_a(Schemas::RedpandaSource)
+      end
+
+      it 'raises a missing setting error without a registry URL' do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_registry_url).and_return(nil)
+        expect { described_class.configured }.to raise_error(
+          described_class::MissingSetting, /registry_url is not set/
+        )
+      end
+    end
+
     it 'gives a validator for the schema the test settings name' do
       settings = Rails.application.config
       version = described_class.parse_version(settings.sapio_schema_version)

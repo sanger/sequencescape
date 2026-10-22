@@ -172,6 +172,30 @@ describe 'Sapio Operations API' do
       end
     end
 
+    context 'with the schema in a schema registry' do
+      let(:registry_answer) do
+        { subject: 'work-order-schema', version: 3, id: 1, schemaType: 'JSON',
+          schema: Rails.root.join('config/schemas/json_schema/' \
+                                  'work-order-schema/3.json').read }
+      end
+
+      before do
+        allow(Rails.application.config)
+          .to receive(:sapio_schema_source).and_return('redpanda')
+        stub_request(:get, 'http://test-registry/subjects/' \
+                           'work-order-schema/versions/latest')
+          .to_return(body: registry_answer.to_json, headers: {
+                       'Content-Type' =>
+                         HTTPClients::SchemaRegistryClient::MEDIA_TYPE
+                     })
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'accepts a payload that matches it' do
+        expect(response).to have_http_status(:accepted)
+      end
+    end
+
     # A version the test schemas don't have, so the schema can't be loaded
     context 'when the schema cannot be loaded' do
       before do
