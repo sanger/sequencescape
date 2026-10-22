@@ -47,7 +47,8 @@ module Api
         # A repeat of an earlier request, with the same request ID and the
         # same payload, returns the existing operation instead of creating
         # another one. The same request ID with a different payload is a
-        # conflict.
+        # conflict. Only a new request is checked against the schema, so the
+        # answer to a repeat doesn't depend on the schema in use.
         #
         # Two requests with the same request ID can both find no operation
         # and then both try to save one. The unique index lets only one
@@ -57,6 +58,9 @@ module Api
         def create
           existing = existing_operation
           return render_existing(existing) if existing
+
+          schema_check = ApiOperation::SchemaCheck.new(@payload)
+          return render_schema_errors(schema_check) unless schema_check.valid?
 
           render json: operation_json(create_operation), status: :accepted
         rescue ActiveRecord::RecordNotUnique
@@ -196,13 +200,27 @@ module Api
           { operation_id: operation.uuid, status: operation.status }
         end
 
+        # Renders the problems the schema check kept, with the total.
+        #
+        # @param check [ApiOperation::SchemaCheck]
+        # @return [void]
+        def render_schema_errors(check)
+          errors =
+            Errors::SchemaValidationFailed.new(check.problems,
+                                               check.schema_meta).errors
+          render_errors(errors, meta: { errors_total: check.total,
+                                        errors_shown: check.problems.size })
+        end
+
         # Renders JSON:API style errors with the status of the first error.
         #
         # @param errors [Array<JSONAPI::Error>] the errors to render
+        # @param meta [Hash, nil] top-level meta, such as error counts
         # @return [void]
-        def render_errors(errors)
-          render json: { errors: errors.map(&:to_hash) },
-                 status: errors.first.status.to_i
+        def render_errors(errors, meta: nil)
+          body = { errors: errors.map(&:to_hash) }
+          body[:meta] = meta if meta
+          render json: body, status: errors.first.status.to_i
         end
       end
     end
