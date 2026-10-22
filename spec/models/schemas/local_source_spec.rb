@@ -65,7 +65,8 @@ RSpec.describe Schemas::LocalSource do
     [1, 3, :latest].each do |asked|
       it "raises an error for version #{asked.inspect}" do
         expect { source.fetch(schema_subject, asked) }
-          .to raise_error(RuntimeError, /more than one schema type/)
+          .to raise_error(described_class::MixedTypes,
+                          /more than one schema type/)
       end
     end
   end
