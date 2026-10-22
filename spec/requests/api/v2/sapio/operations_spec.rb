@@ -135,6 +135,43 @@ describe 'Sapio Operations API' do
       end
     end
 
+    # Only a new request is checked against the schema, so an earlier
+    # operation is found first, whatever the schema says about its payload.
+    context 'when a stored request is repeated that the schema rejects' do
+      let(:body) { valid_payload.except(:labware).to_json }
+      let!(:stored_operation) do
+        create(:api_operation,
+               api_application: integration_hub_app,
+               external_id: 'request-1',
+               payload: body,
+               payload_digest: ApiOperation::PayloadDigest.hexdigest(body))
+      end
+
+      before { post_request(api_key: integration_hub_app.key) }
+
+      it 'returns ok' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'returns the stored operation' do
+        expect(json['operation_id']).to eq(stored_operation.uuid)
+      end
+    end
+
+    context 'when a used request ID comes with a payload the schema rejects' do
+      let(:body) { valid_payload.except(:labware).to_json }
+
+      before do
+        create(:api_operation, api_application: integration_hub_app,
+                               external_id: 'request-1')
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'returns conflict' do
+        expect(response).to have_http_status(:conflict)
+      end
+    end
+
     # Two requests with the same request ID race: this request's lookup
     # finds nothing, but the other request's operation is saved before this
     # one, so the unique index rejects this one.
@@ -425,6 +462,79 @@ describe 'Sapio Operations API' do
           pointers =
             json['errors'].map { |error| error.dig('source', 'pointer') }
           expect(pointers).to eq(%w[/request/external_id])
+        end
+      end
+
+      # Each case changes the valid payload so that it doesn't match the
+      # schema, and names the expected pointer.
+      {
+        'no labware section' => [->(p) { p.except(:labware) }, ''],
+        'a labware section that is not an array' =>
+          [->(p) { p.merge(labware: {}) }, '/labware'],
+        'a work order section that is not an object' =>
+          [->(p) { p.merge(work_order: []) }, '/work_order'],
+        'an unknown labware type' =>
+          [->(p) { p.merge(labware: [p[:labware].first.merge(type: 'vial')]) },
+           '/labware/0/type']
+      }.each do |description, (change, pointer)|
+        context "with #{description}" do
+          let(:body) { change.call(valid_payload).to_json }
+
+          it 'returns unprocessable content' do
+            expect(response).to have_http_status(:unprocessable_content)
+          end
+
+          it 'returns a schema validation error' do
+            expect(json.dig('errors', 0, 'code'))
+              .to eq('SCHEMA_VALIDATION_FAILED')
+          end
+
+          it 'points to the problem' do
+            expect(json.dig('errors', 0, 'source', 'pointer')).to eq(pointer)
+          end
+
+          it 'names the schema and version used' do
+            expect(json.dig('errors', 0, 'meta')).to eq(
+              'schema' => 'work-order-schema',
+              'version' => schema_validator.schema.version
+            )
+          end
+
+          it 'does not save an operation' do
+            expect(ApiOperation.count).to eq(0)
+          end
+
+          it 'does not queue a job' do
+            expect(Delayed::Job.count).to eq(0)
+          end
+        end
+      end
+
+      context 'with a payload that has one schema problem' do
+        let(:body) { valid_payload.except(:labware).to_json }
+
+        it 'counts the errors' do
+          expect(json['meta']).to eq('errors_total' => 1, 'errors_shown' => 1)
+        end
+      end
+
+      context 'with more schema problems than are returned' do
+        let(:body) do
+          bad_labware = valid_payload[:labware].first.merge(type: 'vial')
+          valid_payload.merge(labware: [bad_labware] * 3).to_json
+        end
+
+        before do
+          stub_const('ApiOperation::SchemaCheck::MAX_PROBLEMS', 2)
+          post_request(api_key: integration_hub_app.key)
+        end
+
+        it 'returns only the first errors' do
+          expect(json['errors'].size).to eq(2)
+        end
+
+        it 'counts all the errors' do
+          expect(json['meta']).to eq('errors_total' => 3, 'errors_shown' => 2)
         end
       end
     end
