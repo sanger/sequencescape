@@ -98,9 +98,9 @@ RSpec.describe Schemas::Provider do
             .and_return(setting)
         end
 
-        it 'raises an argument error' do
+        it 'raises an unknown source error' do
           expect { described_class.configured }
-            .to raise_error(ArgumentError, message)
+            .to raise_error(described_class::UnknownSource, message)
         end
       end
     end
@@ -114,9 +114,10 @@ RSpec.describe Schemas::Provider do
         end
       end
 
-    it 'raises an argument error for anything else' do
-      expect { described_class.parse_version('v3') }
-        .to raise_error(ArgumentError)
+    it 'raises an invalid version error for anything else' do
+      expect { described_class.parse_version('v3') }.to raise_error(
+        described_class::InvalidVersion, 'Not a schema version: "v3"'
+      )
     end
   end
 end
