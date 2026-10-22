@@ -105,6 +105,7 @@ module Api::V2::Sapio::Errors
       super(error_object_overrides)
     end
 
+    # @return [Array<JSONAPI::Error>] one 422 error pointing to the problem
     def errors
       [
         JSONAPI::Error.new(
@@ -127,6 +128,7 @@ module Api::V2::Sapio::Errors
       super(error_object_overrides)
     end
 
+    # @return [Array<JSONAPI::Error>] one 409 error pointing to the request ID
     def errors
       [
         JSONAPI::Error.new(
@@ -155,6 +157,7 @@ module Api::V2::Sapio::Errors
       super(error_object_overrides)
     end
 
+    # @return [Array<JSONAPI::Error>] a 422 error for each problem
     def errors
       problems.map do |problem|
         JSONAPI::Error.new(
@@ -173,6 +176,7 @@ module Api::V2::Sapio::Errors
   # file is missing. The caller gets this error; the cause, a configuration
   # problem, is reported to the team only.
   class SchemaUnavailable < JSONAPI::Exceptions::Error
+    # @return [Array<JSONAPI::Error>] one 500 error, without the cause
     def errors
       [
         JSONAPI::Error.new(
@@ -185,7 +189,9 @@ module Api::V2::Sapio::Errors
     end
   end
 
+  # A request body that is not valid JSON
   class InvalidJson < JSONAPI::Exceptions::Error
+    # @return [Array<JSONAPI::Error>] one 400 error
     def errors
       [
         JSONAPI::Error.new(
