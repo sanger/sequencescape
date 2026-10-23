@@ -6,7 +6,7 @@
 # large response.
 class ApiOperation::SchemaCheck
   # The most problems kept
-  MAX_PROBLEMS = 100
+  MAX_PROBLEMS = 20
 
   # @param payload [Object] the parsed JSON payload
   def initialize(payload)
