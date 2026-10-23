@@ -36,9 +36,6 @@ module Api
         # payload is logged as [FILTERED].
         PAYLOAD_LOG_FILTER = /\A(?!(?:controller|action|format)\z)/
 
-        # The kind of operation this endpoint creates
-        OPERATION_TYPE = 'reception_and_work_order'
-
         # The error detail for a body that is not a JSON object
         NOT_AN_OBJECT = 'The request body must be a JSON object.'
 
@@ -154,15 +151,15 @@ module Api
         end
 
         # Saves the request as an operation, with the raw body as its
-        # payload, and queues the job that processes it. The status starts
-        # as queued.
+        # payload and the request's request_type as its operation type, and
+        # queues the job that processes it. The status starts as queued.
         #
         # @return [ApiOperation] the saved operation
         def create_operation
           ApiOperation.create_with_job!(
             api_application: api_application,
             external_id: external_id,
-            operation_type: OPERATION_TYPE,
+            operation_type: @payload.dig('request', 'request_type'),
             payload: request.raw_post,
             payload_digest: payload_digest
           )
