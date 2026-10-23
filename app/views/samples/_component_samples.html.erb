@@ -6,7 +6,11 @@
   <table width='100%'>
     <thead>
       <tr>
-        <th width='70%'></th>
+        <%# Leave room for long oligos when there are tags %>
+        <th width='<%= @component_tags.any? ? '50%' : '70%' %>'></th>
+        <% if @component_tags.any? %>
+          <th>Tag</th>
+        <% end %>
       </tr>
     </thead>
     <tbody>
@@ -16,6 +20,14 @@
             <%= link_to "Sample #{cs.id}", sample_path(cs) %>
             <%= cs.name || 'Un-named' %>
           </td>
+          <% if @component_tags.any? %>
+            <%# Oligos can be long, e.g. 51 bases for Kinnex %>
+            <td class='text-break'>
+              <% if (tag = @component_tags[cs.id]) %>
+                <%= render partial: 'shared/tag_info', locals: { tag: } %>
+              <% end %>
+            </td>
+          <% end %>
         </tr>
       <% end %>
     </tbody>
