@@ -59,21 +59,19 @@ class WorkflowsController < ApplicationController
         return false
       end
 
-      task_message = nil
-      begin
-        ActiveRecord::Base.transaction do
-          task_success, task_message = @task.do_task(self, params, current_user)
-          if task_success
-            # Task completed, start the batch is necessary and display the next one
-            start_batch
-            @stage += 1
-            params[:id] = @stage
-            @task = @workflow.tasks[@stage]
-          end
+      ActiveRecord::Base.transaction do
+        task_success, task_message = @task.do_task(self, params, current_user)
+        unless task_success
+          flash[:alert] ||= task_message if task_message
+          next
         end
-      rescue Request::SampleCompoundAliquotTransfer::Error => e
-        redirect_to batch_path(@batch), alert: e.message
-        return
+
+        # Task completed, start the batch is necessary and display the next one
+        start_batch
+        @stage += 1
+        params[:id] = @stage
+        @task = @workflow.tasks[@stage]
+        flash[:notice] ||= task_message if task_message
       end
       flash[task_success ? :notice : :alert] ||= task_message if task_message
     end
