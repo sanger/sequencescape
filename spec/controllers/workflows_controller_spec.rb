@@ -23,8 +23,8 @@ RSpec.describe WorkflowsController do
     allow(controller).to receive(:start_batch).and_raise(Request::SampleCompoundAliquotTransfer::Error, error_message)
   end
 
-  # Keep the controller transaction independent of the test's enclosing transaction,
-  # so a rescued exception exercises a real database rollback.
+  # Keep the controller transaction independent of the test's enclosing transaction
+  # so exceptions exercise the actual rollback behavior.
   around do |example|
     ActiveRecord::Base.transaction(requires_new: true, joinable: false) do
       example.run
@@ -33,26 +33,22 @@ RSpec.describe WorkflowsController do
   end
 
   describe 'POST #stage with invalid compound aliquots' do
-    it 'returns to the batch with the validation message instead of a server error', :aggregate_failures do
-      flash[:notice] = 'Previous success message'
-      post :stage, params: stage_params
-
-      expect(response).to redirect_to(batch_path(batch))
-      expect(flash[:alert]).to eq(error_message)
-      expect(flash[:notice]).to be_nil
+    it 'propagates the compound-aliquot validation error' do
+      expect { post :stage, params: stage_params }
+        .to raise_error(Request::SampleCompoundAliquotTransfer::Error, error_message)
     end
 
-    it 'also handles progressing to the next stage', :aggregate_failures do
-      post :stage, params: stage_params.except(:commit)
-
-      expect(response).to redirect_to(batch_path(batch))
-      expect(flash[:alert]).to eq(error_message)
+    it 'propagates the error when continuing without an Update commit' do
+      expect { post :stage, params: stage_params.except(:commit) }
+        .to raise_error(Request::SampleCompoundAliquotTransfer::Error, error_message)
     end
 
     it 'rolls back task events and leaves the batch pending', :aggregate_failures do
       batch
-      expect { post :stage, params: stage_params }.not_to change(LabEvent, :count)
+      expect { post :stage, params: stage_params }
+        .to raise_error(Request::SampleCompoundAliquotTransfer::Error, error_message)
 
+      expect(LabEvent.count).to eq(0)
       expect(batch.reload).to be_pending
     end
 
@@ -100,54 +96,59 @@ RSpec.describe WorkflowsController do
         allow(controller).to receive(:start_batch).and_call_original
       end
 
-      it 'redirects to the batch when the real validation fails' do
-        post :stage, params: stage_params
-
-        expect(response).to redirect_to(batch_path(batch))
+      it 'propagates the error when the real validation fails' do
+        expect { post :stage, params: stage_params }
+          .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
       end
 
-      it 'displays the compound-aliquot validation message' do
-        post :stage, params: stage_params
-
-        expect(flash[:alert]).to include(CompoundAliquot::DUPLICATE_TAG_DEPTH_ERROR_MSG)
+      it 'raises the compound-aliquot validation message' do
+        expect { post :stage, params: stage_params }.to raise_error(
+          Request::SampleCompoundAliquotTransfer::Error,
+          /#{Regexp.escape(CompoundAliquot::DUPLICATE_TAG_DEPTH_ERROR_MSG)}/o
+        )
       end
 
-      it 'includes the affected sample names in the validation message' do
-        post :stage, params: stage_params
-
-        expect(flash[:alert]).to include(*invalid_aliquots.map { |aliquot| aliquot.sample.name })
+      it 'includes the affected sample names in the raised message' do
+        sample_names = invalid_aliquots.map { |aliquot| aliquot.sample.name }
+        expect { post :stage, params: stage_params }.to raise_error(
+          Request::SampleCompoundAliquotTransfer::Error,
+          /#{Regexp.escape(sample_names.to_s)}/o
+        )
       end
 
-      it 'does not display a success notice when the validation fails' do
-        post :stage, params: stage_params
-
-        expect(flash[:notice]).to be_nil
-      end
-
-      it 'keeps the batch pending after the failed operation' do
-        post :stage, params: stage_params
+      it 'keeps the batch pending after the failed operation', :aggregate_failures do
+        expect { post :stage, params: stage_params }
+          .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
 
         expect(batch.reload).to be_pending
       end
 
-      it 'keeps all sequencing requests pending after the failed operation' do
-        post :stage, params: stage_params
+      it 'keeps all sequencing requests pending after the failed operation', :aggregate_failures do
+        expect { post :stage, params: stage_params }
+          .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
 
         expect(sequencing_requests.map { |request| request.reload.state }).to eq(%w[pending pending])
       end
 
-      it 'rolls back all lane aliquot transfers, including an earlier valid request' do
-        post :stage, params: stage_params
+      it 'rolls back all lane aliquot transfers, including an earlier valid request', :aggregate_failures do
+        expect { post :stage, params: stage_params }
+          .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
 
         expect(sequencing_requests.map { |request| request.target_asset.aliquots.count }).to eq([0, 0])
       end
 
-      it 'rolls back compound sample creation for an earlier valid request' do
-        expect { post :stage, params: stage_params }.not_to change(Sample, :count)
+      it 'rolls back compound sample creation for an earlier valid request', :aggregate_failures do
+        expect do
+          expect { post :stage, params: stage_params }
+            .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
+        end.not_to change(Sample, :count)
       end
 
-      it 'rolls back task events created before the validation failure' do
-        expect { post :stage, params: stage_params }.not_to change(LabEvent, :count)
+      it 'rolls back task events created before the validation failure', :aggregate_failures do
+        expect do
+          expect { post :stage, params: stage_params }
+            .to raise_error(Request::SampleCompoundAliquotTransfer::Error)
+        end.not_to change(LabEvent, :count)
       end
     end
   end
