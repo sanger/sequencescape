@@ -8,4 +8,5 @@ Only the Schema Registry section should be used in the console as we are not usi
 New versions of schemas will need manually updating in the RedPanda console.
 
 ## Additional notes
+
 - If a schema registry url is not provided Sequencescape will mock the connection to the schema registry, allowing local development and testing without requiring a live RedPanda instance.
