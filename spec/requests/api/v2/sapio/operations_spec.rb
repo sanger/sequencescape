@@ -227,6 +227,24 @@ describe 'Sapio Operations API' do
       end
     end
 
+    # The drafts allow only one request type, so the schema check is stubbed
+    # to accept another one.
+    context 'with another request type' do
+      let(:body) do
+        valid_payload.deep_merge(request: { request_type: 'reception' }).to_json
+      end
+
+      before do
+        allow(ApiOperation::SchemaCheck).to receive(:new)
+          .and_return(instance_double(ApiOperation::SchemaCheck, valid?: true))
+        post_request(api_key: integration_hub_app.key)
+      end
+
+      it 'stores it as the operation type' do
+        expect(ApiOperation.last.operation_type).to eq('reception')
+      end
+    end
+
     # A version the test schemas don't have, so the schema can't be loaded
     context 'when the schema cannot be loaded' do
       before do
@@ -467,7 +485,7 @@ describe 'Sapio Operations API' do
           expect(operation.external_id).to eq('request-1')
         end
 
-        it 'stores the operation type' do
+        it 'stores the request type as the operation type' do
           expect(operation.operation_type).to eq('reception_and_work_order')
         end
 
