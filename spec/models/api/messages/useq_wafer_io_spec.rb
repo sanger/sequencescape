@@ -422,8 +422,8 @@ RSpec.describe Api::Messages::UseqWaferIo do
                 'application_type' => 'scRNA_GEX_10x_flex',
                 'uga_primer' => ultima_primer_a.name,
                 'ugb_primer' => ultima_primer_b.name,
-                'converted_illumina_tag' => illumina_tag.oligo,
-                'converted_illumina_tag2' => illumina_tag2.oligo
+                'converted_illumina_tag_sequence' => illumina_tag.oligo,
+                'converted_illumina_tag2_sequence' => illumina_tag2.oligo
               }
             ]
           }

@@ -154,13 +154,13 @@ class Api::Messages::UseqWaferIo < Api::Base
         illumina_tagged_wells.flat_map(&:aliquots).select { |al| al.sample_id == sample_id }
     end
 
-    def converted_illumina_tag
+    def converted_illumina_tag_sequence
       return nil if converted_illumina_aliquots.empty?
 
       converted_illumina_aliquots.filter_map { |al| al.tag&.oligo }.first
     end
 
-    def converted_illumina_tag2
+    def converted_illumina_tag2_sequence
       return nil if converted_illumina_aliquots.empty?
 
       converted_illumina_aliquots.filter_map { |al| al.tag2&.oligo }.first
@@ -238,8 +238,8 @@ class Api::Messages::UseqWaferIo < Api::Base
       with_association(:primer_panel) { map_attribute_to_json_attribute(:name, 'primer_panel') }
       with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
-      map_attribute_to_json_attribute(:converted_illumina_tag)
-      map_attribute_to_json_attribute(:converted_illumina_tag2)
+      map_attribute_to_json_attribute(:converted_illumina_tag_sequence)
+      map_attribute_to_json_attribute(:converted_illumina_tag2_sequence)
       map_attribute_to_json_attribute(:ultima_application_type, 'application_type')
       map_attribute_to_json_attribute(:uga_primer)
       map_attribute_to_json_attribute(:ugb_primer)
