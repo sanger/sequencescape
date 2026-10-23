@@ -85,13 +85,13 @@ class Api::Messages::UseqWaferIo < Api::Base
     # The receptacle is either the lane (target of the sequencing request, as in the
     # warehouse message interface) or the source tube (as in the sample sheet):
     # - Sample sheet: looks for all aliquots within the multiplexed library, with the
-    #   sequencing request attached via +receptacle.requests+.
+    #   sequencing request attached via +receptacle.requests_as_source+.
     # - Warehouse message: looks for aliquots within the lane, with the sequencing
     #   request attached via +receptacle.requests_as_target+.
     # @return [UltimaSequencingRequest, nil] the first matching request, if any
     def ultima_sequencing_request
       @ultima_sequencing_request ||=
-        (receptacle.requests_as_target.to_a + receptacle.requests.to_a).grep(UltimaSequencingRequest).first
+        (receptacle.requests_as_target.to_a + receptacle.requests_as_source.to_a).grep(UltimaSequencingRequest).first
     end
 
     # @return [Boolean] whether the sequencing request is a UG200 request (otherwise UG100)
