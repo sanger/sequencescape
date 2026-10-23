@@ -9,9 +9,6 @@ y24_052_enable_data_release_timing_validation: Enables server-side validation th
 
 y25_105_validate_descriptor_required_field: Enables validation of batch workflow task descriptor required field
 
-# Support for new sample sheet format for Ultima UG100
-y25_140_support_ultima_ug100_upgrade: Enables the new sample sheet format for Ultima UG100 after software upgrade
-
 # Accessioning
 y25_706_enable_accessioning: Enables the accessioning feature in the application
 y25_714_skip_accessioning_tag_validation: Skips internal validation of accessioning tags prior to sample accessioning

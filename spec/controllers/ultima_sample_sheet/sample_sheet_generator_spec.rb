@@ -19,8 +19,8 @@ require 'rails_helper'
 # Batch 1 NT1O,,,,,,,
 # ,,,,,,,
 # [Global],,,,,,,
-# Application,sequencing_recipe,analysis_recipe,,,,,
-# WGS native gDNA,UG_116cycles_Baseline_1.8.5.2,wgs1,,,,,
+# Application,,,,,,,
+# WGS Native,,,,,,,
 # ,,,,,,,
 # [Samples],,,,,,,
 # Sample_ID,Library_name,Index_Barcode_Num,Index_Barcode_Sequence,Barcode_Plate_Num,Barcode_Plate_Well,application_type,study_id
@@ -35,8 +35,8 @@ require 'rails_helper'
 # Batch 1 NT2P,,,,,,,
 # ,,,,,,,
 # [Global],,,,,,,
-# Application,sequencing_recipe,analysis_recipe,,,,,
-# WGS native gDNA,UG_116cycles_Baseline_1.8.5.2,wgs1,,,,,
+# Application,,,,,,,
+# WGS Native,,,,,,,
 # ,,,,,,,
 # [Samples],,,,,,,
 # Sample_ID,Library_name,Index_Barcode_Num,Index_Barcode_Sequence,Barcode_Plate_Num,Barcode_Plate_Well,application_type,study_id
@@ -159,6 +159,12 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     "#{row}#{col}"
   end
 
+  def add_ancestor_aliquots_for(child_aliquots, plate, request)
+    child_aliquots.each do |child_aliquot|
+      create(:aliquot, sample: child_aliquot.sample, receptacle: plate.wells.first, request: request)
+    end
+  end
+
   context 'with zip output' do
     # Expected Zip entry names
     let(:zip_entry1_name) do
@@ -228,11 +234,9 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     end
 
     it 'generates global sections' do
-      # Test: Add the following hardcoded values, Application(WGS native gDNA),
-      # sequencing_recipe(UG_116cycles_Baseline_1.8.5.2) and analysis_recipe(wgs1)
       expect(csv1[3].compact_blank).to eq(generator.global_title_config)
       expect(csv1[4].compact_blank).to eq(generator.global_headers_config)
-      expect(csv1[5].compact_blank).to eq(['WGS native gDNA', 'UG_116cycles_Baseline_1.8.5.2', 'wgs1'])
+      expect(csv1[5].compact_blank).to eq(['WGS Native'])
       expect(csv1[6].compact_blank).to eq([])
     end
 
@@ -255,40 +259,81 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv2[9][4]).to eq('2') # Barcode_Plate_Num
     end
 
-    context 'when Flipper :y25_140_support_ultima_ug100_upgrade is enabled' do
-      before { allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(true) }
+    it 'generates global section with only Application column and WGS Native value' do
+      expect(csv1[3].compact_blank).to eq(generator.global_title_config)
+      expect(csv1[4].compact_blank).to eq(['Application'])
+      expect(csv1[5].compact_blank).to eq(['WGS Native'])
+    end
 
-      it 'generates global section with only Application column and WGS Native value' do
-        expect(csv1[3].compact_blank).to eq(generator.global_title_config)
-        expect(csv1[4].compact_blank).to eq(['Application'])
-        expect(csv1[5].compact_blank).to eq(['WGS Native'])
-      end
+    context 'with amplified libraries' do
+      let(:library_type) { 'Ultima High Throughput PCR Amplified 96' }
 
-      context 'with amplified libraries' do
-        let(:library_type) { 'Ultima High Throughput PCR Amplified 96' }
-
-        it 'generates amplified application values' do
-          expect(csv1[5].compact_blank).to eq(['WGS Native Amplified'])
-          expect(csv1[9..].pluck(6).uniq).to eq(['native'])
-        end
+      it 'generates amplified application values' do
+        expect(csv1[5].compact_blank).to eq(['WGS Native Amplified'])
+        expect(csv1[9..].pluck(6).uniq).to eq(['native'])
       end
     end
 
-    context 'when Flipper :y25_140_support_ultima_ug100_upgrade is disabled' do
-      before { allow(Flipper).to receive(:enabled?).with(:y25_140_support_ultima_ug100_upgrade).and_return(false) }
-
-      it 'generates global section with Application, sequencing_recipe, analysis_recipe columns and values' do
-        expect(csv1[3].compact_blank).to eq(generator.global_title_config)
-        expect(csv1[4].compact_blank).to eq(%w[Application sequencing_recipe analysis_recipe])
-        # The values here depend on the UltimaGlobal.last record created in the test setup
-        ultima_global = UltimaGlobal.last
-        expect(csv1[5].compact_blank).to eq(
-          [
-            ultima_global.application,
-            ultima_global.sequencing_recipe,
-            ultima_global.analysis_recipe
-          ]
+    context 'with an ancestor Ultima conversion request' do
+      let(:conversion_preset) do
+        create(:ultima_preset, name: 'GEM-X Flex', application_type: 'scRNA_GEX_10x_flex')
+      end
+      let(:conversion_application) do
+        create(:ultima_application, name: 'GEM-X Flex', ug100_preset: conversion_preset)
+      end
+      let!(:conversion_stock_plate) do
+        create(:stock_plate, well_count: 1, well_factory: :tagged_well)
+      end
+      let(:conversion_request) do
+        create(
+          :ultima_conversion_request,
+          asset: conversion_stock_plate.wells.first,
+          ultima_application: conversion_application
         )
+      end
+
+      before do
+        child_aliquots = [tube1, tube2].flat_map { |tube| tube.receptacle.aliquots }
+        add_ancestor_aliquots_for(child_aliquots, conversion_stock_plate, conversion_request)
+        tube1.parents << conversion_stock_plate
+        tube2.parents << conversion_stock_plate
+      end
+
+      it 'uses the ancestor conversion request for the global and sample sections' do
+        expect(csv1[5].compact_blank).to eq(['GEM-X Flex'])
+        expect(csv1[9..].pluck(6).uniq).to eq(['scRNA_GEX_10x_flex'])
+      end
+    end
+
+    context 'with conversion requests at different ancestor levels' do
+      let(:near_preset) do
+        create(:ultima_preset, name: 'Nearest preset', application_type: 'nearest_application_type')
+      end
+      let(:far_preset) do
+        create(:ultima_preset, name: 'Distant preset', application_type: 'distant_application_type')
+      end
+      let(:near_application) { create(:ultima_application, ug100_preset: near_preset) }
+      let(:far_application) { create(:ultima_application, ug100_preset: far_preset) }
+      let!(:near_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
+      let!(:far_plate) { create(:stock_plate, well_count: 1, well_factory: :tagged_well) }
+      let(:near_request) do
+        create(:ultima_conversion_request, asset: near_plate.wells.first, ultima_application: near_application)
+      end
+      let(:far_request) do
+        create(:ultima_conversion_request, asset: far_plate.wells.first, ultima_application: far_application)
+      end
+
+      before do
+        child_aliquots = tube1.receptacle.aliquots
+        add_ancestor_aliquots_for(child_aliquots, near_plate, near_request)
+        add_ancestor_aliquots_for(child_aliquots, far_plate, far_request)
+        near_plate.parents << far_plate
+        tube1.parents << near_plate
+      end
+
+      it 'uses the conversion request on the nearest ancestor' do
+        expect(csv1[5].compact_blank).to eq(['Nearest preset'])
+        expect(csv1[9..].pluck(6).uniq).to eq(['nearest_application_type'])
       end
     end
   end
