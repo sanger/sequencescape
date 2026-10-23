@@ -307,6 +307,20 @@ describe 'Sapio Operations API' do
       end
     end
 
+    # A unique index error with no earlier operation for this request ID is
+    # not a repeat, so it is raised again rather than answered.
+    context 'when saving hits a unique index without an earlier operation' do
+      before do
+        allow(ApiOperation).to receive(:create_with_job!)
+          .and_raise(ActiveRecord::RecordNotUnique)
+      end
+
+      it 'raises the error' do
+        expect { post_request(api_key: integration_hub_app.key) }
+          .to raise_error(ActiveRecord::RecordNotUnique)
+      end
+    end
+
     # Two requests with the same request ID race: this request's lookup
     # finds nothing, but the other request's operation is saved before this
     # one, so the unique index rejects this one.
