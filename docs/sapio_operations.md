@@ -85,6 +85,7 @@ sample, and a work order for the tube.
 | 422    | `INVALID_STRUCTURE`        | The body is not a JSON object, or `request.external_id` is missing        |
 | 422    | `SCHEMA_VALIDATION_FAILED` | A new request doesn't match the schema                                    |
 | 500    | `SCHEMA_UNAVAILABLE`       | The schema can't be loaded; this is a Sequencescape configuration problem |
+| 503    | `SCHEMA_UNAVAILABLE`       | The schema registry can't be reached; try again after `Retry-After`       |
 
 ### Accepted and repeated requests
 
@@ -150,6 +151,14 @@ lacks it, and the detail names the property.
 }
 ```
 
+### Schema unavailable
+
+A new request gets 500 `SCHEMA_UNAVAILABLE` when Sequencescape can't load the
+schema because of its own configuration, and 503 `SCHEMA_UNAVAILABLE` when
+the schema registry can't be reached. A 503 has a `Retry-After` header with
+the seconds to wait (60) before sending the request again with the same
+request ID. In both cases nothing is stored, and PSD is told the cause.
+
 ## Repeated requests
 
 - A request ID is unique for each calling system. Sending the same request
@@ -160,7 +169,7 @@ lacks it, and the detail names the property.
   operation; the other is answered as a repeat.
 - Only new requests are checked against the schema, so a repeat always gets
   its operation back, whatever the schema version in use.
-- A rejected request (400, 422 or 500) isn't stored, so its request ID stays
+- A rejected request (400, 422, 500 or 503) isn't stored, so its request ID stays
   unused and a corrected payload can be sent with it.
 
 ## What counts as the same payload
@@ -176,15 +185,20 @@ Two payloads are the same when they hold the same JSON data:
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
 - **Settings**, in `config/environments/<env>.rb`:
 
-  | Setting                       | Development default (environment variable)   |
-  | ----------------------------- | -------------------------------------------- |
-  | `config.sapio_schema_source`  | `local` (`SAPIO_SCHEMA_SOURCE`)              |
-  | `config.sapio_schema_subject` | `work-order-schema` (`SAPIO_SCHEMA_SUBJECT`) |
-  | `config.sapio_schema_version` | `latest` (`SAPIO_SCHEMA_VERSION`)            |
+  | Setting                            | Development default (environment variable)                   |
+  | ---------------------------------- | ------------------------------------------------------------ |
+  | `config.sapio_schema_source`       | `local` (`SAPIO_SCHEMA_SOURCE`)                              |
+  | `config.sapio_schema_subject`      | `work-order-schema` (`SAPIO_SCHEMA_SUBJECT`)                 |
+  | `config.sapio_schema_version`      | `latest` (`SAPIO_SCHEMA_VERSION`)                            |
+  | `config.sapio_schema_registry_url` | only for the `redpanda` source (`SAPIO_SCHEMA_REGISTRY_URL`) |
 
-  The test environment has fixed values. Deployed environments get theirs
-  from the deployment project (`environment_template.rb.j2`), and need them
-  before the flag is switched on.
+  The source is `local` (files in this repository) or `redpanda` (a schema
+  registry); `development.rb` has the registry settings commented out. The
+  test environment has fixed values. Deployed environments get theirs from
+  the deployment project (`environment_template.rb.j2`), and need them
+  before the flag is switched on. Production uses a fixed version, never
+  `latest`, so a new schema version only takes effect when it is deployed on
+  purpose.
 
 - **Schema files:** `config/schemas/<type>/<subject>/<version>.<extension>`,
   for example `config/schemas/json_schema/work-order-schema/3.json`. The
@@ -194,6 +208,31 @@ Two payloads are the same when they hold the same JSON data:
 - **Adding a version:** tests use `latest`, so a new version that the test
   payloads don't match fails the specs, as a backward compatible change
   shouldn't.
+- **Schema registry:** the `redpanda` source reads
+  `<registry URL>/subjects/<subject>/versions/<version>` through
+  `HTTPClients::SchemaRegistryClient`. The registry's `schemaType` gives the
+  type: `JSON` is JSON Schema, and none is Avro, which has no validator.
+  Fetched versions are kept in `Rails.cache`; `latest` is always fetched. The
+  client's time limits are its `OPEN_TIMEOUT` and `TIMEOUT` constants; a
+  registry that can't be reached gives a 503 and an exception email.
+- **A local schema registry**, for development:
+
+  ```sh
+  docker run -ti -p 9092:9092 -p 8081:8081 redpandadata/redpanda
+
+  # Register a schema file as the subject's next version
+  jq -Rs '{schema: ., schemaType: "JSON"}' < <schema file> \
+    | curl -X POST "http://localhost:8081/subjects/work-order-schema/versions" \
+        -H 'Content-Type: application/vnd.schemaregistry.v1+json' \
+        --data-binary @-
+
+  # Read it back
+  curl http://localhost:8081/subjects/work-order-schema/versions/latest
+  ```
+
+  Then run Sequencescape with `SAPIO_SCHEMA_SOURCE=redpanda`, and with the
+  registry URL setting uncommented in `development.rb`.
+
 - **Code:** `Api::V2::Sapio::OperationsController`, `ApiOperation` (the
   `api_operations` table), `ApiOperation::SchemaCheck`, the `Schemas`
   classes and `ApiOperation::CoordinatorJob`, which processes each new
