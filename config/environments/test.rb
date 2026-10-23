@@ -71,4 +71,12 @@ Rails.application.configure do
 
   # load WIP features flag
   config.deploy_wip_pipelines = true
+
+  # The schema that Sapio operation payloads are checked against
+  config.sapio_schema_source = 'local'
+  config.sapio_schema_subject = 'work-order-schema'
+  config.sapio_schema_version = 'latest'
+  # A made-up registry, for specs that switch to the redpanda source and
+  # stub its answers with WebMock
+  config.sapio_schema_registry_url = 'http://test-registry'
 end

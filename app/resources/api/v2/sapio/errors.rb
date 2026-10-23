@@ -94,4 +94,131 @@ module Api::V2::Sapio::Errors
       ]
     end
   end
+
+  # A problem with the top level of a request body, at a JSON pointer.
+  class InvalidStructure < JSONAPI::Exceptions::Error
+    attr_reader :pointer, :detail_message
+
+    def initialize(pointer, detail_message, error_object_overrides = {})
+      @pointer = pointer
+      @detail_message = detail_message
+      super(error_object_overrides)
+    end
+
+    # @return [Array<JSONAPI::Error>] one 422 error pointing to the problem
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :unprocessable_content,
+          title: 'Invalid Request Structure',
+          code: 'INVALID_STRUCTURE',
+          detail: detail_message,
+          source: { pointer: }
+        )
+      ]
+    end
+  end
+
+  # A request ID that was already used with a different payload.
+  class PayloadConflict < JSONAPI::Exceptions::Error
+    attr_reader :external_id
+
+    def initialize(external_id, error_object_overrides = {})
+      @external_id = external_id
+      super(error_object_overrides)
+    end
+
+    # @return [Array<JSONAPI::Error>] one 409 error pointing to the request ID
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :conflict,
+          title: 'Conflict',
+          code: 'PAYLOAD_CONFLICT',
+          detail: "The request ID #{external_id} was already used with a " \
+                  'different payload.',
+          source: { pointer: '/request/external_id' }
+        )
+      ]
+    end
+  end
+
+  # A payload that doesn't match the schema, the contract with the caller:
+  # one error for each problem, each naming the schema and version used.
+  class SchemaValidationFailed < JSONAPI::Exceptions::Error
+    attr_reader :problems, :schema_meta
+
+    # @param problems [Array<Hash>] the problems, each with :pointer and
+    #   :detail
+    # @param schema_meta [Hash] the schema's subject and version
+    def initialize(problems, schema_meta, error_object_overrides = {})
+      @problems = problems
+      @schema_meta = schema_meta
+      super(error_object_overrides)
+    end
+
+    # @return [Array<JSONAPI::Error>] a 422 error for each problem
+    def errors
+      problems.map do |problem|
+        JSONAPI::Error.new(
+          status: :unprocessable_content,
+          title: 'Payload Does Not Match Schema',
+          code: 'SCHEMA_VALIDATION_FAILED',
+          detail: problem[:detail],
+          source: { pointer: problem[:pointer] },
+          meta: schema_meta
+        )
+      end
+    end
+  end
+
+  # The schema couldn't be loaded, for example because a setting or a schema
+  # file is missing. The caller gets this error; the cause, a configuration
+  # problem, is reported to the team only.
+  class SchemaUnavailable < JSONAPI::Exceptions::Error
+    attr_reader :temporary
+
+    # @param temporary [Boolean] true when the schema's source can't be
+    #   reached, so trying again later can succeed
+    def initialize(temporary: false, error_object_overrides: {})
+      @temporary = temporary
+      super(error_object_overrides)
+    end
+
+    # @return [Array<JSONAPI::Error>] one error, without the cause: 503 if
+    #   temporary, otherwise 500
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: temporary ? :service_unavailable : :internal_server_error,
+          title: 'Schema Unavailable',
+          code: 'SCHEMA_UNAVAILABLE',
+          detail: detail
+        )
+      ]
+    end
+
+    private
+
+    def detail
+      return 'The payload schema could not be loaded.' unless temporary
+
+      'The payload schema could not be loaded; try again later.'
+    end
+  end
+
+  # A request body that is not valid JSON
+  class InvalidJson < JSONAPI::Exceptions::Error
+    # @return [Array<JSONAPI::Error>] one 400 error
+    def errors
+      [
+        JSONAPI::Error.new(
+          status: :bad_request,
+          title: 'Invalid JSON',
+          code: 'INVALID_JSON',
+          detail: 'The request body is not valid JSON.'
+        )
+      ]
+    end
+  end
 end
