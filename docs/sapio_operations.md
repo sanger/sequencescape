@@ -41,7 +41,7 @@ sample, and a work order for the tube.
   "request": {
     "external_id": "request-1",
     "request_type": "reception_and_work_order",
-    "schema_version": "0.3"
+    "schema_version": "1"
   },
   "labware": [
     {
