@@ -176,9 +176,10 @@ request ID. In both cases nothing is stored, and PSD is told the cause.
 
 Two payloads are the same when they hold the same JSON data:
 
-- Key order, whitespace and how a number is written (`1.10` or `1.1`) don't
+- Key order, whitespace and how a decimal is written (`1.10` or `1.1`) don't
   matter.
-- Array order and values do.
+- Array order, values, and whether a number is an integer or a decimal (`1`
+  or `1.0`) do.
 
 ## For Sequencescape developers
 
