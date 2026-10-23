@@ -35,8 +35,12 @@ RSpec.describe ApiOperation::PayloadDigest do
     expect(digest(compact)).to eq(digest(payload))
   end
 
-  it 'ignores how a number is written' do
+  it 'ignores how a decimal is written' do
     expect(digest('{"a": 1.10}')).to eq(digest('{"a": 1.1}'))
+  end
+
+  it 'treats an integer and a decimal as different' do
+    expect(digest('{"a": 1}')).not_to eq(digest('{"a": 1.0}'))
   end
 
   it 'changes when array order changes' do
