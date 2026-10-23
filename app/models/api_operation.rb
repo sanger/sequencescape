@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # A request received by an API operations endpoint, such as the Sapio
-# reception and work order endpoint, and its processing progress.
+# operations endpoint, and its processing progress.
 #
 # The calling system's request ID (external_id) and the request body
 # (payload) are stored exactly as received. The payload digest identifies

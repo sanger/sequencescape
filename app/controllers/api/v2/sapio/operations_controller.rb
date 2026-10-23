@@ -3,8 +3,9 @@
 module Api
   module V2
     module Sapio
-      # Receives combined reception and work order requests from Integration
-      # Hub.
+      # Receives operation requests from Integration Hub, such as a combined
+      # reception and work order request, and records each as an
+      # ApiOperation whose type is the request's request_type.
       #
       # The payload is plain JSON rather than JSON:API, so this is a plain
       # controller rather than a JSON:API resource controller.
@@ -42,7 +43,7 @@ module Api
         # The error detail for a missing or empty request ID
         NO_EXTERNAL_ID = 'request.external_id must be a non-empty string.'
 
-        # Accepts a combined reception and work order request.
+        # Accepts an operation request.
         #
         # A repeat of an earlier request, with the same request ID and the
         # same payload, returns the existing operation instead of creating
