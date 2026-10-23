@@ -151,4 +151,36 @@ RSpec.describe WorkflowsController do
       end
     end
   end
+
+  describe 'POST #stage when the task returns failure' do
+    let(:task_message) { 'Descriptor values are invalid' }
+
+    before do
+      allow(Tasks::SetDescriptorsHandler::Handler).to receive(:new).and_wrap_original do |original, *args, **kwargs|
+        original.call(*args, **kwargs).tap do |handler|
+          allow(handler).to receive(:perform).and_return([false, task_message])
+        end
+      end
+      allow(controller).to receive(:render_set_descriptors_task) do |current_task, _params|
+        controller.render plain: current_task.name
+      end
+    end
+
+    it 'shows the failure message and renders the current task', :aggregate_failures do
+      post :stage, params: stage_params
+
+      expect(flash[:alert]).to eq(task_message)
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to eq(task.name)
+    end
+
+    it 'does not start or advance the batch', :aggregate_failures do
+      allow(controller).to receive(:start_batch)
+
+      post :stage, params: stage_params
+
+      expect(controller).not_to have_received(:start_batch)
+      expect(batch.reload).to be_pending
+    end
+  end
 end

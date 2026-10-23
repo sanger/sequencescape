@@ -45,6 +45,7 @@ class WorkflowsController < ApplicationController
     # just rendering so we only redirect on "Update" after a successful do_task
     # call.
     task_success = true
+    task_message = nil
 
     # If params[:next_stage] is nil then just render the current task
     # else actually execute the task.
@@ -73,7 +74,6 @@ class WorkflowsController < ApplicationController
         @task = @workflow.tasks[@stage]
         flash[:notice] ||= task_message if task_message
       end
-      flash[task_success ? :notice : :alert] ||= task_message if task_message
     end
 
     if params[:commit] == 'Update' && task_success
