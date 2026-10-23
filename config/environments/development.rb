@@ -115,6 +115,8 @@ Rails.application.configure do
   # config.sapio_schema_subject =
   #   ENV.fetch('SAPIO_SCHEMA_SUBJECT', 'work-order-schema')
   # config.sapio_schema_version = ENV.fetch('SAPIO_SCHEMA_VERSION', 'latest')
+  # The registry's base URL, without /subjects; only the redpanda source
+  # uses it. A local Redpanda listens on port 8081.
   # config.sapio_schema_registry_url =
   #   ENV.fetch('SAPIO_SCHEMA_REGISTRY_URL', 'http://localhost:8081')
 
