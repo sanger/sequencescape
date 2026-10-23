@@ -68,14 +68,6 @@ describe 'UltimaApplications API', with: :api_v2 do
       it 'returns the description' do
         expect(json.dig('data', 'attributes', 'description')).to eq(resource.description)
       end
-
-      it 'returns a reference to the uga_primer' do
-        expect(json.dig('data', 'relationships', 'uga_primer')).to be_present
-      end
-
-      it 'returns a reference to the ugb_primer' do
-        expect(json.dig('data', 'relationships', 'ugb_primer')).to be_present
-      end
     end
 
     context 'with included relationships' do

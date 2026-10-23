@@ -18,7 +18,7 @@ module Api
     #   GET /api/v2/ultima_applications/1?include=uga_primer,ugb_primer
     #
     # @example Filtering by name (as stored in the request options)
-    #   GET /api/v2/ultima_applications?filter[name]=10x Flex&include=uga_primer,ugb_primer
+    #   GET /api/v2/ultima_applications?filter[name]=10x%20Flex&include=uga_primer,ugb_primer
     #
     # For more information about JSON:API, see the [JSON:API Specifications](https://jsonapi.org/format/)
     # or the [JSONAPI::Resources](http://jsonapi-resources.com/) package for Sequencescape's implementation.
@@ -30,7 +30,7 @@ module Api
       ###
 
       # @!attribute [r] name
-      #   The name of the application, as used in the UI and bulk submissions, e.g. "10x Flex".
+      #   The name of the application, e.g. "10x Flex". Matches `request.options['ultima_application']`.
       #   @return [String]
       attribute :name, readonly: true
 
@@ -44,12 +44,12 @@ module Api
       ###
 
       # @!attribute [r] uga_primer
-      #   The UGA indexing primer (Forward/R1 side) used for this application.
+      #   The UGA primer used for this application.
       #   @return [Api::V2::UltimaPrimerResource]
       has_one :uga_primer, readonly: true, class_name: 'UltimaPrimer'
 
       # @!attribute [r] ugb_primer
-      #   The UGB primer (Reverse/R2 side) used for this application.
+      #   The UGB primer used for this application.
       #   @return [Api::V2::UltimaPrimerResource]
       has_one :ugb_primer, readonly: true, class_name: 'UltimaPrimer'
 
@@ -57,11 +57,11 @@ module Api
       # Filters
       ###
 
-      # @!method name
+      # @!method filter_by_name
       #   A filter to return only Ultima applications with the given name(s).
       #   @example
-      #     GET /api/v2/ultima_applications?filter[name]=10x Flex
-      filter :name, apply: ->(records, value, _options) { records.with_name(value) }
+      #     GET /api/v2/ultima_applications?filter[name]=10x%20Flex
+      filter :name
     end
   end
 end
