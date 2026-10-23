@@ -29,6 +29,10 @@ Hub and Sequencescape. Its versions are kept in this repository, in
 Sequencescape also needs `request.external_id`, a non-empty string: the
 request ID, which must be unique for the calling system.
 
+Each environment checks bodies against one schema version, set in its
+configuration. The body's `request.schema_version` isn't used to choose
+it; a schema error's `meta` shows the version used.
+
 The smallest valid body for version 3 of the schema: one tube with one
 sample, and a work order for the tube.
 
