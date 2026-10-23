@@ -123,7 +123,7 @@ request body) when the error is about one part of it.
 
 A new request that doesn't match the schema gets one error for each
 problem, with the schema and version it was checked against. At most the
-first 100 errors are returned; the top-level `meta` gives the total and how
+first 20 errors are returned; the top-level `meta` gives the total and how
 many are shown. For a missing property, the pointer is the object that
 lacks it, and the detail names the property.
 
