@@ -14,7 +14,7 @@ describe 'Sapio Operations API' do
     {
       request: { external_id: 'request-1',
                  request_type: 'reception_and_work_order',
-                 schema_version: '0.3' },
+                 schema_version: '1' },
       labware: [{ uuid: '6f1c1d2e-0000-4000-8000-000000000001',
                   barcode: 'TUBE-1', type: 'tube',
                   receptacles: [receptacle] }],
