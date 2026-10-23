@@ -133,6 +133,7 @@ module SampleManifestExcel
 
       private
 
+      # rubocop:todo-next Metrics/CyclomaticComplexity
       def create_processor # rubocop:todo Metrics/MethodLength
         case sample_manifest&.asset_type
         when '1dtube'
@@ -145,6 +146,8 @@ module SampleManifestExcel
           Upload::Processor::Plate.new(self)
         when 'tube_rack'
           Upload::Processor::TubeRack.new(self)
+        when 'compound_tube'
+          Upload::Processor::CompoundTube.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
@@ -196,7 +199,10 @@ module SampleManifestExcel
       def stock_receptacles_to_be_registered
         return [] unless sample_manifest.core_behaviour.stocks?
 
-        @stock_receptacles_to_be_registered ||= rows.select(&:sample_created?).map(&:asset)
+        @stock_receptacles_to_be_registered ||=
+          sample_manifest.core_behaviour.stock_receptacles(
+            rows.select(&:sample_created?).map(&:asset)
+          )
       end
     end
   end
