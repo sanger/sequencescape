@@ -33,7 +33,7 @@ Each environment checks bodies against one schema version, set in its
 configuration. The body's `request.schema_version` isn't used to choose
 it; a schema error's `meta` shows the version used.
 
-The smallest valid body for version 3 of the schema: one tube with one
+The smallest valid body for version 1 of the schema: one tube with one
 sample, and a work order for the tube.
 
 ```json
@@ -140,7 +140,7 @@ lacks it, and the detail names the property.
       "code": "SCHEMA_VALIDATION_FAILED",
       "source": { "pointer": "/labware/0/type" },
       "status": "422",
-      "meta": { "schema": "work-order-schema", "version": 3 }
+      "meta": { "schema": "work-order-schema", "version": 1 }
     },
     {
       "title": "Payload Does Not Match Schema",
@@ -148,7 +148,7 @@ lacks it, and the detail names the property.
       "code": "SCHEMA_VALIDATION_FAILED",
       "source": { "pointer": "/labware/0" },
       "status": "422",
-      "meta": { "schema": "work-order-schema", "version": 3 }
+      "meta": { "schema": "work-order-schema", "version": 1 }
     }
   ],
   "meta": { "errors_total": 2, "errors_shown": 2 }
@@ -206,7 +206,7 @@ Two payloads are the same when they hold the same JSON data:
   purpose.
 
 - **Schema files:** `config/schemas/<type>/<subject>/<version>.<extension>`,
-  for example `config/schemas/json_schema/work-order-schema/3.json`. The
+  for example `config/schemas/json_schema/work-order-schema/1.json`. The
   folder gives the type (`json_schema`, or `avro` with `.avsc`). Versions are
   whole numbers, and `latest` is the highest. As in a schema registry, all
   versions of a subject have the same type.
