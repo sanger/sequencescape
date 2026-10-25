@@ -50,7 +50,7 @@ RSpec.describe 'Sample edit', :js do
 
     # Helper to get validation message for a field
     def validation_message(field_label)
-      find_field(field_label).native.attribute('validationMessage')
+      find_field(field_label).native.attribute('validationMessage') # rubocop:todo Capybara/NativeAttribute
     end
 
     context 'when the common name is found' do
@@ -63,8 +63,8 @@ RSpec.describe 'Sample edit', :js do
         fill_in 'Common Name', with: common_name
         click_button 'Lookup Taxon from Common Name'
 
-        expect(find_field('Common Name').value).to eq(scientific_name)
-        expect(find_field('Taxon ID').value).to eq(taxon_id)
+        expect(find_field('Common Name').value).to eq(scientific_name) # rubocop:todo Capybara/RSpec/FindElementValueEq
+        expect(find_field('Taxon ID').value).to eq(taxon_id) # rubocop:todo Capybara/RSpec/FindElementValueEq
         expect(validation_message('Common Name')).to eq('')
         expect(validation_message('Taxon ID')).to eq('')
       end
@@ -80,8 +80,8 @@ RSpec.describe 'Sample edit', :js do
         fill_in 'Common Name', with: common_name
         click_button 'Lookup Taxon from Common Name'
 
-        expect(find_field('Common Name').value).to eq(scientific_name)
-        expect(find_field('Taxon ID').value).to eq(taxon_id)
+        expect(find_field('Common Name').value).to eq(scientific_name) # rubocop:todo Capybara/RSpec/FindElementValueEq
+        expect(find_field('Taxon ID').value).to eq(taxon_id) # rubocop:todo Capybara/RSpec/FindElementValueEq
         expect(validation_message('Common Name')).to eq('This organism is not submittable.')
         expect(validation_message('Taxon ID')).to eq('This organism is not submittable.')
       end
@@ -95,8 +95,8 @@ RSpec.describe 'Sample edit', :js do
         fill_in 'Common Name', with: common_name
         click_button 'Lookup Taxon from Common Name'
 
-        expect(find_field('Common Name').value).to eq(common_name)
-        expect(find_field('Taxon ID').value).to eq('<not found>')
+        expect(find_field('Common Name').value).to eq(common_name) # rubocop:todo Capybara/RSpec/FindElementValueEq
+        expect(find_field('Taxon ID').value).to eq('<not found>') # rubocop:todo Capybara/RSpec/FindElementValueEq
         expect(validation_message('Common Name')).to eq('')
         expect(validation_message('Taxon ID')).to eq('This organism cannot be found.')
       end
