@@ -158,7 +158,13 @@ RSpec.describe ApiOperation do
   describe 'tasks' do
     subject(:api_operation) { create(:api_operation) }
 
-    let(:errors) { { 'errors' => [{ 'detail' => 'Unknown study' }] } }
+    let(:errors) do
+      [
+        { pointer: '/labware/0/receptacles/0/samples/0/study_uuid',
+          detail: 'Unknown study' },
+        { detail: 'Deadlock found when trying to get lock' }
+      ]
+    end
 
     before do
       stub_const('ApiOperation::TASKS',
@@ -199,8 +205,20 @@ RSpec.describe ApiOperation do
         expect(api_operation.reload.status).to eq('reception_failed')
       end
 
-      it 'stores what went wrong' do
-        expect(api_operation.reload.error_details).to eq(errors)
+      it 'stores the failed task and its errors' do
+        expect(api_operation.reload.error_details).to eq(
+          'task' => 'reception',
+          'errors' => [
+            { 'pointer' => '/labware/0/receptacles/0/samples/0/study_uuid',
+              'detail' => 'Unknown study' },
+            { 'detail' => 'Deadlock found when trying to get lock' }
+          ]
+        )
+      end
+
+      it 'has the same error details before reloading' do
+        expect(api_operation.error_details)
+          .to eq(api_operation.reload.error_details)
       end
 
       it 'has no next task' do
