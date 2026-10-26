@@ -72,15 +72,18 @@ class ApiOperation < ApplicationRecord
     update!(status: "#{task}_completed")
   end
 
-  # Records that the next task has failed, with what went wrong.
+  # Records that the next task has failed, with its errors. error_details
+  # becomes { "task" => task, "errors" => errors }.
   #
   # @param task [String] the task, which must be the next task
-  # @param error_details [Hash] what went wrong
+  # @param errors [Array<Hash>] the errors, each with a :detail, and a
+  #   :pointer (a JSON pointer) when it is about something in the payload
   # @return [void]
   # @raise [TaskOrderError] if the task is not the next task
-  def fail_task!(task, error_details)
+  def fail_task!(task, errors)
     check_next_task!(task)
-    update!(status: "#{task}_failed", error_details: error_details)
+    update!(status: "#{task}_failed",
+            error_details: { task:, errors: }.deep_stringify_keys)
   end
 
   private
