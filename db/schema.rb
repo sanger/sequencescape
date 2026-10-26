@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
+ActiveRecord::Schema[8.1].define(version: 2026_10_26_153950) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -65,6 +65,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.text "description", size: :medium
     t.string "privilege", null: false
     t.index ["key"], name: "index_api_applications_on_key"
+  end
+
+  create_table "api_operation_events", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Tasks of API operations that completed or failed, in the order they happened", force: :cascade do |t|
+    t.bigint "api_operation_id", null: false, comment: "The operation the task belongs to"
+    t.string "task", null: false, comment: "The task, e.g. reception"
+    t.string "event", null: false, comment: "What happened to the task: completed or failed"
+    t.datetime "created_at", null: false, comment: "When it happened"
+    t.index ["api_operation_id"], name: "index_api_operation_events_on_api_operation_id"
   end
 
   create_table "api_operations", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Requests received by API operations endpoints and their processing progress", force: :cascade do |t|
@@ -2043,6 +2051,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
   add_foreign_key "aliquot_indices", "receptacles", column: "lane_id"
   add_foreign_key "aliquots", "primer_panels"
   add_foreign_key "aliquots", "requests"
+  add_foreign_key "api_operation_events", "api_operations"
   add_foreign_key "api_operations", "api_applications"
   add_foreign_key "assets_deprecated", "plate_types", column: "labware_type_id"
   add_foreign_key "barcodes", "labware", column: "asset_id"

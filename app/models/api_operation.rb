@@ -23,6 +23,11 @@ class ApiOperation < ApplicationRecord
   end
 
   belongs_to :api_application, optional: false
+  has_many :events,
+           -> { order(:id) },
+           class_name: 'ApiOperation::Event',
+           inverse_of: :api_operation,
+           dependent: :destroy
 
   validates :external_id, :operation_type, :payload, :status, presence: true
   validates :payload_digest, presence: true, length: { is: 64 }
@@ -49,7 +54,7 @@ class ApiOperation < ApplicationRecord
     return [] unless TASKS.key?(operation_type)
 
     ['queued'] +
-      tasks.flat_map { |task| %W[#{task}_completed #{task}_failed] }
+      tasks.product(Event::EVENTS).map { |task, event| "#{task}_#{event}" }
   end
 
   # The first task not yet completed: the one to run next.
@@ -69,7 +74,7 @@ class ApiOperation < ApplicationRecord
   # @raise [TaskOrderError] if the task is not the next task
   def complete_task!(task)
     check_next_task!(task)
-    update!(status: "#{task}_completed")
+    record_event!(task, 'completed')
   end
 
   # Records that the next task has failed, with its errors. error_details
@@ -82,11 +87,19 @@ class ApiOperation < ApplicationRecord
   # @raise [TaskOrderError] if the task is not the next task
   def fail_task!(task, errors)
     check_next_task!(task)
-    update!(status: "#{task}_failed",
-            error_details: { task:, errors: }.deep_stringify_keys)
+    record_event!(task, 'failed',
+                  error_details: { task:, errors: }.deep_stringify_keys)
   end
 
   private
+
+  # Adds the event and sets the status to match, in one transaction.
+  def record_event!(task, event, **attributes)
+    transaction do
+      update!(status: "#{task}_#{event}", **attributes)
+      events.create!(task:, event:)
+    end
+  end
 
   def tasks
     TASKS.fetch(operation_type)
