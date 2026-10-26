@@ -93,7 +93,8 @@ class ApiOperation < ApplicationRecord
 
   private
 
-  # Adds the event and sets the status to match, in one transaction.
+  # Adds the event and sets the status to match, in one transaction: the
+  # caller's if there is one, so the task's records commit with them.
   def record_event!(task, outcome, **attributes)
     transaction do
       update!(status: "#{task}_#{outcome}", **attributes)
