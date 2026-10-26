@@ -79,6 +79,141 @@ class Api::Messages::UseqWaferIo < Api::Base
     end
   end
 
+  # Included in Aliquot model
+  module AliquotExtensions
+    # Finds the Ultima sequencing request associated with this aliquot's receptacle.
+    # The receptacle is either the lane (target of the sequencing request, as in the
+    # warehouse message interface) or the source tube (as in the sample sheet):
+    # - Sample sheet: looks for all aliquots within the multiplexed library, with the
+    #   sequencing request attached via +receptacle.requests_as_source+.
+    # - Warehouse message: looks for aliquots within the lane, with the sequencing
+    #   request attached via +receptacle.requests_as_target+.
+    # @return [UltimaSequencingRequest, nil] the first matching request, if any
+    def ultima_sequencing_request
+      @ultima_sequencing_request ||=
+        (receptacle.requests_as_target.to_a + receptacle.requests_as_source.to_a).grep(UltimaSequencingRequest).first
+    end
+
+    # @return [Boolean] whether the sequencing request is a UG200 request (otherwise UG100)
+    def ultima_ug200?
+      ultima_sequencing_request.is_a?(UltimaUG200SequencingRequest)
+    end
+
+    def ultima_application
+      return if ultima_sequencing_request.nil?
+
+      @ultima_application ||= nearest_ultima_conversion_request&.ultima_application
+    end
+
+    def ultima_preset
+      return if ultima_application.nil?
+
+      ultima_ug200? ? ultima_application&.ug200_preset : ultima_application&.ug100_preset
+    end
+
+    # @return [String] the preset's application type, or 'native' if there is no preset
+    def ultima_application_type
+      ultima_preset&.application_type || 'native'
+    end
+
+    def uga_primer
+      return if ultima_application.nil?
+
+      ultima_application.uga_primer.name
+    end
+
+    def ugb_primer
+      return if ultima_application.nil?
+
+      ultima_application.ugb_primer.name
+    end
+
+    # Finds the closest ancestor conversion request for an aliquot.
+    # Searches parent labware one level at a time so nearer requests take precedence.
+    # @return [UltimaConversionRequest, nil] the closest matching request, if any
+    def nearest_ultima_conversion_request
+      return @nearest_ultima_conversion_request if defined?(@nearest_ultima_conversion_request)
+
+      @nearest_ultima_conversion_request = find_nearest_ultima_conversion_request
+    end
+
+    # rubocop:disable-next Style/SafeNavigationChainLength
+    def illumina_tagged_wells
+      @illumina_tagged_wells ||=
+        begin
+          # UltimaConversionRequest refers to the plate with the Ultima tags - so we need to check
+          # from transfer_request - parent plate to get the plate with the Illumina tags
+          conversion_request = nearest_ultima_conversion_request
+          conversion_request&.asset&.transfer_requests_as_target&.flat_map(&:asset) || []
+        end
+    end
+
+    # Aliquots in the converted wells belonging to this sample.
+    def converted_illumina_aliquots
+      @converted_illumina_aliquots ||=
+        illumina_tagged_wells.flat_map(&:aliquots).select { |al| al.sample_id == sample_id }
+    end
+
+    def converted_illumina_tag_sequence
+      return nil if converted_illumina_aliquots.empty?
+
+      converted_illumina_aliquots.filter_map { |al| al.tag&.oligo }.first
+    end
+
+    def converted_illumina_tag2_sequence
+      return nil if converted_illumina_aliquots.empty?
+
+      converted_illumina_aliquots.filter_map { |al| al.tag2&.oligo }.first
+    end
+
+    private
+
+    def find_nearest_ultima_conversion_request
+      # Finds the conversion request that produced this aliquot's library.
+      #
+      # The sequencing request's asset is the multiplexed (MX) tube. Its incoming transfer
+      # requests are the multiplexing requests, which point at the receptacles (e.g. plate wells)
+      # that were pooled into the tube. Those wells may in turn be the target of further transfer
+      # requests (e.g. from the conversion stock plate), and so on up the chain.
+      #
+      # Each pass of the loop moves one transfer level further up from the MX tube:
+      # 1. +frontier+ holds the receptacles reached so far (initially just the MX tube).
+      # 2. Their source receptacles (+upstream_assets+) are looked up, excluding any already
+      #    visited, which also guards against cycles.
+      # 3. Aliquots of this sample in those sources are checked for an UltimaConversionRequest.
+      # 4. If none is found, the sources become the new frontier and the walk continues.
+      #
+      # Searching level by level means the nearest conversion request takes precedence.
+      # Returns nil if there is no sequencing request or no conversion request upstream.
+      return unless (mx_receptacle = ultima_sequencing_request&.asset)
+
+      visited = Set[mx_receptacle.id]
+      frontier = [mx_receptacle]
+      until frontier.empty?
+        frontier = unvisited_upstream_receptacles(frontier, visited)
+        conversion_request = conversion_request_in_receptacles(frontier.map(&:id))
+        return conversion_request if conversion_request
+
+        visited.merge(frontier.map(&:id))
+      end
+      nil
+    end
+
+    def unvisited_upstream_receptacles(receptacles, visited)
+      receptacles.flat_map(&:upstream_assets).uniq.reject { |receptacle| visited.include?(receptacle.id) }
+    end
+
+    def conversion_request_in_receptacles(receptacle_ids)
+      return if receptacle_ids.empty?
+
+      Aliquot
+        .where(receptacle_id: receptacle_ids, sample_id: sample_id)
+        .includes(:request)
+        .filter_map(&:request)
+        .find { |request| request.is_a?(UltimaConversionRequest) }
+    end
+  end
+
   # Batch is the main / top-level model that contributes to the message sent to the MLWH.
   renders_model(::Batch)
 
@@ -127,6 +262,11 @@ class Api::Messages::UseqWaferIo < Api::Base
       with_association(:primer_panel) { map_attribute_to_json_attribute(:name, 'primer_panel') }
       with_association(:library) { map_attribute_to_json_attribute(:external_identifier, 'id_library_lims') }
       map_attribute_to_json_attribute(:aliquot_type, 'entity_type')
+      map_attribute_to_json_attribute(:converted_illumina_tag_sequence)
+      map_attribute_to_json_attribute(:converted_illumina_tag2_sequence)
+      map_attribute_to_json_attribute(:ultima_application_type, 'application_type')
+      map_attribute_to_json_attribute(:uga_primer)
+      map_attribute_to_json_attribute(:ugb_primer)
     end
   end
 end

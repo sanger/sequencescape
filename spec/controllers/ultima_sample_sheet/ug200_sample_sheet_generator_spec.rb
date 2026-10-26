@@ -119,6 +119,7 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       before do
         add_ancestor_aliquots_for(tube1.receptacle.aliquots, stock_plate, conversion_request)
         tube1.parents << stock_plate
+        link_transfer(stock_plate.wells.first, tube1.receptacle)
       end
 
       it 'includes the barcode schema in the global section', :aggregate_failures do

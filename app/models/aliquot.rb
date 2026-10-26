@@ -19,6 +19,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   include Uuid::Uuidable
   include Api::Messages::FlowcellIo::AliquotExtensions
   include Api::Messages::QcResultIo::AliquotExtensions
+  include Api::Messages::UseqWaferIo::AliquotExtensions
   include AliquotIndexer::AliquotScopes
   include Api::AliquotIo::Extensions
   include DataForSubstitution

@@ -297,6 +297,9 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
         add_ancestor_aliquots_for(child_aliquots, conversion_stock_plate, conversion_request)
         tube1.parents << conversion_stock_plate
         tube2.parents << conversion_stock_plate
+        [tube1, tube2].each do |tube|
+          link_transfer(conversion_stock_plate.wells.first, tube.receptacle)
+        end
       end
 
       it 'uses the ancestor conversion request for the global and sample sections' do
@@ -329,6 +332,8 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
         add_ancestor_aliquots_for(child_aliquots, far_plate, far_request)
         near_plate.parents << far_plate
         tube1.parents << near_plate
+        link_transfer(far_plate.wells.first, near_plate.wells.first)
+        link_transfer(near_plate.wells.first, tube1.receptacle)
       end
 
       it 'uses the conversion request on the nearest ancestor' do
