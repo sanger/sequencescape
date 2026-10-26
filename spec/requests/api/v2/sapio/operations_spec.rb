@@ -620,6 +620,12 @@ describe 'Sapio Operations API' do
       # Each case changes the valid payload so that it doesn't match the
       # schema, and names the expected pointer.
       {
+        'an unknown request type' =>
+          [->(p) { p.deep_merge(request: { request_type: 'another_type' }) },
+           '/request/request_type'],
+        'no request type' =>
+          [->(p) { p.merge(request: p[:request].except(:request_type)) },
+           '/request'],
         'no labware section' => [->(p) { p.except(:labware) }, ''],
         'a labware section that is not an array' =>
           [->(p) { p.merge(labware: {}) }, '/labware'],
