@@ -187,7 +187,7 @@ RSpec.describe ApiOperation do
       end
 
       it 'adds a completed event' do
-        expect(api_operation.events.pluck(:task, :event))
+        expect(api_operation.events.pluck(:task, :outcome))
           .to eq([%w[reception completed]])
       end
     end
@@ -203,7 +203,7 @@ RSpec.describe ApiOperation do
       end
 
       it 'has an event for each task, in order' do
-        expect(api_operation.events.pluck(:task, :event))
+        expect(api_operation.events.pluck(:task, :outcome))
           .to eq([%w[reception completed], %w[work_order completed]])
       end
     end
@@ -216,7 +216,7 @@ RSpec.describe ApiOperation do
       end
 
       it 'adds a failed event' do
-        expect(api_operation.events.pluck(:task, :event))
+        expect(api_operation.events.pluck(:task, :outcome))
           .to eq([%w[reception failed]])
       end
 
