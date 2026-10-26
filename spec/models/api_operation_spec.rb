@@ -121,4 +121,83 @@ RSpec.describe ApiOperation do
     api_operation.save!
     expect(api_operation.uuid).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
   end
+
+  it 'runs reception first for a combined request' do
+    expect(api_operation.next_task).to eq('reception')
+  end
+
+  describe 'tasks' do
+    subject(:api_operation) { create(:api_operation) }
+
+    let(:errors) { { 'errors' => [{ 'detail' => 'Unknown study' }] } }
+
+    before do
+      stub_const('ApiOperation::TASKS',
+                 { 'reception_and_work_order' => %w[reception work_order] })
+    end
+
+    it 'runs the first task while queued' do
+      expect(api_operation.next_task).to eq('reception')
+    end
+
+    context 'when a task completes' do
+      before { api_operation.complete_task!('reception') }
+
+      it 'records the task as completed' do
+        expect(api_operation.reload.status).to eq('reception_completed')
+      end
+
+      it 'runs the following task next' do
+        expect(api_operation.next_task).to eq('work_order')
+      end
+    end
+
+    context 'when every task completes' do
+      before do
+        api_operation.complete_task!('reception')
+        api_operation.complete_task!('work_order')
+      end
+
+      it 'has no next task' do
+        expect(api_operation.next_task).to be_nil
+      end
+    end
+
+    context 'when a task fails' do
+      before { api_operation.fail_task!('reception', errors) }
+
+      it 'records the task as failed' do
+        expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'stores what went wrong' do
+        expect(api_operation.reload.error_details).to eq(errors)
+      end
+
+      it 'has no next task' do
+        expect(api_operation.next_task).to be_nil
+      end
+
+      it 'rejects completing the failed task' do
+        expect { api_operation.complete_task!('reception') }
+          .to raise_error(ApiOperation::TaskOrderError)
+      end
+    end
+
+    it 'rejects completing a task out of order' do
+      expect { api_operation.complete_task!('work_order') }
+        .to raise_error(ApiOperation::TaskOrderError)
+    end
+
+    it 'rejects completing a task twice' do
+      api_operation.complete_task!('reception')
+      expect { api_operation.complete_task!('reception') }
+        .to raise_error(ApiOperation::TaskOrderError)
+    end
+
+    it 'rejects failing a task out of order' do
+      expect { api_operation.fail_task!('work_order', errors) }
+        .to raise_error(ApiOperation::TaskOrderError)
+    end
+  end
 end
