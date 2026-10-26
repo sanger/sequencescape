@@ -14,7 +14,7 @@ class CreateApiOperationEvents < ActiveRecord::Migration[8.1]
       t.string :task,
                null: false,
                comment: 'The task, e.g. reception'
-      t.string :event,
+      t.string :outcome,
                null: false,
                comment: 'What happened to the task: completed or failed'
       t.datetime :created_at,

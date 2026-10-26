@@ -54,7 +54,7 @@ class ApiOperation < ApplicationRecord
     return [] unless TASKS.key?(operation_type)
 
     ['queued'] +
-      tasks.product(Event::EVENTS).map { |task, event| "#{task}_#{event}" }
+      tasks.product(Event::OUTCOMES).map { |pair| pair.join('_') }
   end
 
   # The first task not yet completed: the one to run next.
@@ -94,10 +94,10 @@ class ApiOperation < ApplicationRecord
   private
 
   # Adds the event and sets the status to match, in one transaction.
-  def record_event!(task, event, **attributes)
+  def record_event!(task, outcome, **attributes)
     transaction do
-      update!(status: "#{task}_#{event}", **attributes)
-      events.create!(task:, event:)
+      update!(status: "#{task}_#{outcome}", **attributes)
+      events.create!(task:, outcome:)
     end
   end
 
