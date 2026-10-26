@@ -185,6 +185,11 @@ RSpec.describe ApiOperation do
       it 'runs the following task next' do
         expect(api_operation.next_task).to eq('work_order')
       end
+
+      it 'adds a completed event' do
+        expect(api_operation.events.pluck(:task, :event))
+          .to eq([%w[reception completed]])
+      end
     end
 
     context 'when every task completes' do
@@ -196,6 +201,11 @@ RSpec.describe ApiOperation do
       it 'has no next task' do
         expect(api_operation.next_task).to be_nil
       end
+
+      it 'has an event for each task, in order' do
+        expect(api_operation.events.pluck(:task, :event))
+          .to eq([%w[reception completed], %w[work_order completed]])
+      end
     end
 
     context 'when a task fails' do
@@ -203,6 +213,11 @@ RSpec.describe ApiOperation do
 
       it 'records the task as failed' do
         expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'adds a failed event' do
+        expect(api_operation.events.pluck(:task, :event))
+          .to eq([%w[reception failed]])
       end
 
       it 'stores the failed task and its errors' do
@@ -245,6 +260,27 @@ RSpec.describe ApiOperation do
     it 'rejects failing a task out of order' do
       expect { api_operation.fail_task!('work_order', errors) }
         .to raise_error(ApiOperation::TaskOrderError)
+    end
+
+    it 'adds no event for a task out of order' do
+      suppress(ApiOperation::TaskOrderError) do
+        api_operation.complete_task!('work_order')
+      end
+      expect(api_operation.events).to be_empty
+    end
+
+    context 'when the event cannot be saved' do
+      before do
+        allow(ApiOperation::Event).to receive(:new)
+          .and_raise(ActiveRecord::StatementInvalid)
+      end
+
+      it 'keeps the status' do
+        suppress(ActiveRecord::StatementInvalid) do
+          api_operation.complete_task!('reception')
+        end
+        expect(api_operation.reload.status).to eq('queued')
+      end
     end
   end
 end
