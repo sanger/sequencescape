@@ -5,8 +5,9 @@
 # work order. The job is saved in the same transaction as the operation, so
 # every saved operation has its job.
 #
-# This placeholder only logs that the operation is ready. Reception and
-# work order processing are added by later stories (Y26-283 and Y26-289).
+# With the y26_283_sapio_reception feature flag on, it runs the reception
+# (ApiOperation::Reception); with the flag off, it only logs that the
+# operation is ready. Work order processing is added by Y26-289.
 ApiOperation::CoordinatorJob =
   Struct.new(:api_operation_id) do
     # Delayed Job calls this to run the job.
@@ -14,8 +15,12 @@ ApiOperation::CoordinatorJob =
     # @return [void]
     def perform
       api_operation = ApiOperation.find(api_operation_id)
-      Rails.logger.info(
-        "ApiOperation #{api_operation.uuid} is ready for processing"
-      )
+      if Flipper.enabled?(:y26_283_sapio_reception)
+        ApiOperation::Reception.new(api_operation).call
+      else
+        Rails.logger.info(
+          "ApiOperation #{api_operation.uuid} is ready for processing"
+        )
+      end
     end
   end
