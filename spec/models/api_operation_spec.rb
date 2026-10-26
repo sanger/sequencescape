@@ -122,6 +122,35 @@ RSpec.describe ApiOperation do
     expect(api_operation.uuid).to match(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
   end
 
+  describe 'statuses' do
+    it 'lists the statuses of a combined request' do
+      expect(api_operation.statuses)
+        .to eq(%w[queued reception_completed reception_failed])
+    end
+
+    %w[queued reception_completed reception_failed].each do |status|
+      it "accepts #{status}" do
+        api_operation.status = status
+        expect(api_operation).to be_valid
+      end
+    end
+
+    it 'rejects a status of a task its type does not run' do
+      api_operation.status = 'work_order_completed'
+      expect(api_operation).not_to be_valid
+    end
+
+    it 'rejects an unknown status' do
+      api_operation.status = 'completed'
+      expect(api_operation).not_to be_valid
+    end
+
+    it 'rejects any status for a type without tasks' do
+      api_operation.operation_type = 'unknown'
+      expect(api_operation).not_to be_valid
+    end
+  end
+
   it 'runs reception first for a combined request' do
     expect(api_operation.next_task).to eq('reception')
   end

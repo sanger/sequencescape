@@ -228,20 +228,23 @@ describe 'Sapio Operations API' do
     end
 
     # The drafts allow only one request type, so the schema check is stubbed
-    # to accept another one.
+    # to accept another one, and the task lists to give it tasks.
     context 'with another request type' do
+      let(:request_type) { 'another_request_type' }
       let(:body) do
-        valid_payload.deep_merge(request: { request_type: 'reception' }).to_json
+        valid_payload.deep_merge(request: { request_type: }).to_json
       end
 
       before do
+        stub_const('ApiOperation::TASKS',
+                   ApiOperation::TASKS.merge(request_type => %w[reception]))
         allow(ApiOperation::SchemaCheck).to receive(:new)
           .and_return(instance_double(ApiOperation::SchemaCheck, valid?: true))
         post_request(api_key: integration_hub_app.key)
       end
 
       it 'stores it as the operation type' do
-        expect(ApiOperation.last.operation_type).to eq('reception')
+        expect(ApiOperation.last.operation_type).to eq(request_type)
       end
     end
 
