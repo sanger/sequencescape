@@ -29,7 +29,7 @@ module UltimaSampleSheet::UG200SampleSheetGenerator
     def add_global_section(csv, sequencing_request)
       aliquot = sequencing_request.asset.aliquots.first
       preset = aliquot.ultima_preset
-      application = aliquot.nearest_ultima_conversion_request&.ultima_application
+      application = aliquot.ultima_application
       return super unless application&.name == TEN_X_FLEX_V2_APPLICATION_NAME
 
       csv << pad(global_title_config)

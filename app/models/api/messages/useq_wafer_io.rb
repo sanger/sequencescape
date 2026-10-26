@@ -169,21 +169,45 @@ class Api::Messages::UseqWaferIo < Api::Base
     private
 
     def find_nearest_ultima_conversion_request
-      frontier = receptacle.parents
+      # Finds the conversion request that produced this aliquot's library.
+      #
+      # The sequencing request's asset is the multiplexed (MX) tube. Its incoming transfer
+      # requests are the multiplexing requests, which point at the receptacles (e.g. plate wells)
+      # that were pooled into the tube. Those wells may in turn be the target of further transfer
+      # requests (e.g. from the conversion stock plate), and so on up the chain.
+      #
+      # Each pass of the loop moves one transfer level further up from the MX tube:
+      # 1. +frontier+ holds the receptacles reached so far (initially just the MX tube).
+      # 2. Their source receptacles (+upstream_assets+) are looked up, excluding any already
+      #    visited, which also guards against cycles.
+      # 3. Aliquots of this sample in those sources are checked for an UltimaConversionRequest.
+      # 4. If none is found, the sources become the new frontier and the walk continues.
+      #
+      # Searching level by level means the nearest conversion request takes precedence.
+      # Returns nil if there is no sequencing request or no conversion request upstream.
+      return unless (mx_receptacle = ultima_sequencing_request&.asset)
+
+      visited = Set[mx_receptacle.id]
+      frontier = [mx_receptacle]
       until frontier.empty?
-        conversion_request = conversion_request_for_ancestor_level(frontier, sample_id)
+        frontier = unvisited_upstream_receptacles(frontier, visited)
+        conversion_request = conversion_request_in_receptacles(frontier.map(&:id))
         return conversion_request if conversion_request
 
-        frontier = frontier.flat_map(&:parents).uniq
+        visited.merge(frontier.map(&:id))
       end
       nil
     end
 
-    def conversion_request_for_ancestor_level(labware, sample_id)
+    def unvisited_upstream_receptacles(receptacles, visited)
+      receptacles.flat_map(&:upstream_assets).uniq.reject { |receptacle| visited.include?(receptacle.id) }
+    end
+
+    def conversion_request_in_receptacles(receptacle_ids)
+      return if receptacle_ids.empty?
+
       Aliquot
-        .joins(:receptacle)
-        .where(receptacles: { labware_id: labware.map(&:id) },
-               aliquots: { sample_id: })
+        .where(receptacle_id: receptacle_ids, sample_id: sample_id)
         .includes(:request)
         .filter_map(&:request)
         .find { |request| request.is_a?(UltimaConversionRequest) }

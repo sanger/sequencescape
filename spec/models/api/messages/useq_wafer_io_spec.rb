@@ -438,6 +438,7 @@ RSpec.describe Api::Messages::UseqWaferIo do
                          request: conversion_request)
       end
       mx_tube1.parents << conversion_stock_plate
+      create(:transfer_request, asset: conversion_stock_plate.wells.first, target_asset: mx_tube1.receptacle)
       lane1.labware.parents << mx_tube1
       request1
     end
