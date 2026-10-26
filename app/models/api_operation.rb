@@ -26,6 +26,7 @@ class ApiOperation < ApplicationRecord
 
   validates :external_id, :operation_type, :payload, :status, presence: true
   validates :payload_digest, presence: true, length: { is: 64 }
+  validates :status, inclusion: { in: :statuses }
 
   # Saves an operation and queues its CoordinatorJob in one transaction, so
   # an operation never lacks its job.
@@ -38,6 +39,17 @@ class ApiOperation < ApplicationRecord
         Delayed::Job.enqueue(CoordinatorJob.new(operation.id))
       end
     end
+  end
+
+  # The statuses an operation of its type can have: queued, then each task's
+  # completed and failed statuses. None if its type has no tasks.
+  #
+  # @return [Array<String>] the statuses
+  def statuses
+    return [] unless TASKS.key?(operation_type)
+
+    ['queued'] +
+      tasks.flat_map { |task| %W[#{task}_completed #{task}_failed] }
   end
 
   # The first task not yet completed: the one to run next.
