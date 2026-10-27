@@ -2,10 +2,11 @@
 
 # Receives the labware and samples in an operation's payload: labware already
 # in Sequencescape is matched and left unchanged, and the rest is validated
-# and created in one transaction. ApiOperation::CoordinatorJob runs it when
-# the y26_283_sapio_reception feature flag is on.
+# and created. ApiOperation::CoordinatorJob runs it, in a transaction, when
+# the y26_283_sapio_reception feature flag is on, and records the outcome.
 #
-# This first version does nothing; later steps add the reception.
+# This first version receives nothing and finds no errors; later steps add
+# the reception.
 class ApiOperation::Reception
   # @param api_operation [ApiOperation] the operation to receive
   def initialize(api_operation)
@@ -14,7 +15,10 @@ class ApiOperation::Reception
 
   # Receives the operation's labware and samples.
   #
-  # @return [void]
+  # @return [Array<Hash>] the errors, each with a :detail, and a :pointer
+  #   when it is about something in the payload; empty if reception
+  #   succeeded
   def call
+    []
   end
 end
