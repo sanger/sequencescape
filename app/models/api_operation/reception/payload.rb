@@ -5,19 +5,23 @@
 # where its problem is. The payload matched the schema before it was stored,
 # so its structure isn't checked again here; a missing required key raises.
 # The work_order section is not read.
+#
+# The classes are named Payload... so they can't be mistaken for the
+# Labware, Receptacle and Sample models.
 class ApiOperation::Reception::Payload
   # The keys every sample has; its other keys are optional fields
   SAMPLE_KEYS = %w[uuid study_uuid sanger_sample_id supplier_sample_name].freeze
 
-  # A plate or tube
-  Labware = Data.define(:uuid, :barcode, :type, :receptacles, :pointer)
+  # A plate or tube in the payload
+  PayloadLabware =
+    Data.define(:uuid, :barcode, :type, :receptacles, :pointer)
 
-  # A well of a plate, or the inside of a tube (position nil)
-  Receptacle = Data.define(:position, :uuid, :samples, :pointer)
+  # A well of a plate, or the inside of a tube (position nil), in the payload
+  PayloadReceptacle = Data.define(:position, :uuid, :samples, :pointer)
 
-  # A sample in a receptacle. fields holds its optional keys, such as tags,
+  # A sample in the payload. fields holds its optional keys, such as tags,
   # by their payload names.
-  Sample =
+  PayloadSample =
     Data.define(:uuid, :study_uuid, :sanger_sample_id, :supplier_sample_name,
                 :fields, :pointer)
 
@@ -26,11 +30,11 @@ class ApiOperation::Reception::Payload
     @payload = JSON.parse(payload)
   end
 
-  # @return [Array<Labware>] the labware, in payload order
+  # @return [Array<PayloadLabware>] the labware, in payload order
   def labware
     @labware ||=
-      map_with_pointer(@payload.fetch('labware'), '/labware') do |item, pointer|
-        build_labware(item, pointer)
+      map_with_pointer(@payload.fetch('labware'), '/labware') do |json, pointer|
+        build_labware(json, pointer)
       end
   end
 
@@ -41,30 +45,31 @@ class ApiOperation::Reception::Payload
     items.each_with_index.map { |item, index| yield item, "#{base}/#{index}" }
   end
 
-  def build_labware(labware, pointer)
+  def build_labware(json, pointer)
     receptacles =
-      map_with_pointer(labware.fetch('receptacles'),
+      map_with_pointer(json.fetch('receptacles'),
                        "#{pointer}/receptacles") do |item, item_pointer|
         build_receptacle(item, item_pointer)
       end
-    Labware.new(uuid: labware.fetch('uuid'), barcode: labware.fetch('barcode'),
-                type: labware.fetch('type'), receptacles: receptacles,
-                pointer: pointer)
+    PayloadLabware.new(uuid: json.fetch('uuid'), barcode: json.fetch('barcode'),
+                       type: json.fetch('type'), receptacles: receptacles,
+                       pointer: pointer)
   end
 
-  def build_receptacle(receptacle, pointer)
+  def build_receptacle(json, pointer)
     samples =
-      map_with_pointer(receptacle.fetch('samples'),
+      map_with_pointer(json.fetch('samples'),
                        "#{pointer}/samples") do |item, item_pointer|
         build_sample(item, item_pointer)
       end
-    Receptacle.new(position: receptacle.fetch('position'),
-                   uuid: receptacle.fetch('uuid'), samples: samples,
-                   pointer: pointer)
+    PayloadReceptacle.new(position: json.fetch('position'),
+                          uuid: json.fetch('uuid'), samples: samples,
+                          pointer: pointer)
   end
 
-  def build_sample(sample, pointer)
-    Sample.new(**SAMPLE_KEYS.to_h { |key| [key.to_sym, sample.fetch(key)] },
-               fields: sample.except(*SAMPLE_KEYS), pointer: pointer)
+  def build_sample(json, pointer)
+    keys = SAMPLE_KEYS.to_h { |key| [key.to_sym, json.fetch(key)] }
+    PayloadSample.new(**keys, fields: json.except(*SAMPLE_KEYS),
+                              pointer: pointer)
   end
 end
