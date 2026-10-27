@@ -149,4 +149,26 @@ RSpec.describe ApiOperation::Reception::Validation::Tags::TagGroups do
     ActiveSupport::Notifications.subscribed(count, 'sql.active_record', &)
     queries
   end
+
+  describe '#oligos' do
+    let(:samples) do
+      [sample(0, tag_group: tag_group.name, tag_index: 2,
+                 tag2_group: tag2_group.name.upcase, tag2_index: 3),
+       sample(1, tag_group: tag_group.name, tag_index: 1)]
+    end
+
+    def oligo(group, index)
+      group.tags.find_by(map_id: index).oligo
+    end
+
+    it 'gives the oligos of the tag and tag 2, for one aliquot' do
+      expect(scheme.oligos(samples.first))
+        .to eq([[oligo(tag_group, 2), oligo(tag2_group, 3)]])
+    end
+
+    it 'gives nil for a tag 2 not given' do
+      expect(scheme.oligos(samples.last))
+        .to eq([[oligo(tag_group, 1), nil]])
+    end
+  end
 end

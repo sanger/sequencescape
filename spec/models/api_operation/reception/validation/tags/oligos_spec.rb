@@ -85,4 +85,16 @@ RSpec.describe ApiOperation::Reception::Validation::Tags::Oligos do
       )
     end
   end
+
+  describe '#oligos' do
+    let(:fields) { { 'i7' => 'ACGT', 'i5' => 'ttga' } }
+
+    it 'gives the i7 and i5 as given, for one aliquot' do
+      expect(scheme.oligos(samples.first)).to eq([%w[ACGT ttga]])
+    end
+
+    it 'gives nil for an i5 not given' do
+      expect(scheme.oligos(sample({ 'i7' => 'ACGT' }))).to eq([['ACGT', nil]])
+    end
+  end
 end

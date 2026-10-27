@@ -162,4 +162,15 @@ RSpec.describe ApiOperation::Reception::Validation::Tags::Chromium do
       )
     end
   end
+
+  describe '#oligos' do
+    let(:samples) do
+      [sample(0, chromium_tag_group: tag_set.name, chromium_tag_well: 'B1')]
+    end
+
+    it "gives the oligos of the well's four tags, an aliquot each" do
+      expected = (5..8).map { [tag_group.tags.find_by(map_id: it).oligo, nil] }
+      expect(scheme.oligos(samples.first)).to eq(expected)
+    end
+  end
 end
