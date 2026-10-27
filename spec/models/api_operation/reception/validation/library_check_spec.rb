@@ -82,6 +82,64 @@ RSpec.describe ApiOperation::Reception::Validation::LibraryCheck do
     end
   end
 
+  context 'with an insert size range the wrong way round' do
+    let(:samples) do
+      [sample(0, insert_size_from: 300, insert_size_to: 200)]
+    end
+
+    it 'reports the end of the range' do
+      expect(check.errors).to eq(
+        [{ pointer: pointer(0, 'insert_size_to'),
+           detail: 'insert_size_to (200) is less than insert_size_from (300)' }]
+      )
+    end
+  end
+
+  context 'with an insert size range of one size' do
+    let(:samples) do
+      [sample(0, insert_size_from: 200, insert_size_to: 200)]
+    end
+
+    it 'finds no errors' do
+      expect(check.errors).to be_empty
+    end
+  end
+
+  context 'with only one end of the insert size range' do
+    let(:samples) { [sample(0, insert_size_to: 200)] }
+
+    it 'finds no errors' do
+      expect(check.errors).to be_empty
+    end
+  end
+
+  context 'with the same library type in both fields, in another case' do
+    let(:samples) do
+      [sample(0, library_type: library_type.name,
+                 library_type_long_read: library_type.name.upcase)]
+    end
+
+    it 'finds no errors' do
+      expect(check.errors).to be_empty
+    end
+  end
+
+  context 'with different library types in the two fields' do
+    let(:other) { create(:library_type) }
+    let(:samples) do
+      [sample(0, library_type: library_type.name,
+                 library_type_long_read: other.name)]
+    end
+
+    it 'reports the long read field' do
+      expect(check.errors).to eq(
+        [{ pointer: pointer(0, 'library_type_long_read'),
+           detail: "library_type_long_read (#{other.name}) differs from " \
+                   "library_type (#{library_type.name})" }]
+      )
+    end
+  end
+
   context 'with library types in both fields' do
     let(:samples) do
       [sample(0, library_type: library_type.name),
