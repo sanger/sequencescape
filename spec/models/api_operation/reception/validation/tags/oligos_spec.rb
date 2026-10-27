@@ -3,7 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::Reception::Validation::Tags::Oligos do
-  subject(:scheme) { described_class.new(samples) }
+  subject(:scheme) { described_class.new(samples, input) }
+
+  let(:input) do
+    ApiOperation::Reception::Validation::Input.new(
+      payload_labware: [], new_labware: [], new_samples: samples
+    )
+  end
 
   let(:samples) { [sample(fields)] }
 
