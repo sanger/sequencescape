@@ -19,7 +19,9 @@ class ApiOperation::Reception::Validation::TagCheck <
   def errors
     @errors ||=
       mixed_scheme_errors +
-      SCHEMES.flat_map { |scheme| scheme.new(samples_using(scheme)).errors }
+      SCHEMES.flat_map do |scheme|
+        scheme.new(samples_using(scheme), input).errors
+      end
   end
 
   private

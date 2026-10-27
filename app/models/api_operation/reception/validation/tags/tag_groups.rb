@@ -29,25 +29,9 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
   private
 
   def pair_errors(group_field, index_field)
-    pair = [group_field, index_field]
-    giving = samples.select { pair.intersect?(it.fields.keys) }
-    complete, partial = giving.partition { (pair - it.fields.keys).empty? }
-    partial_errors(partial, group_field, index_field) +
-      unknown_group_errors(complete, group_field) +
+    complete, partial_errors = split_pair(group_field, index_field)
+    partial_errors + unknown_group_errors(complete, group_field) +
       missing_tag_errors(complete, group_field, index_field)
-  end
-
-  # An error for each sample with a group but no index, or the other way
-  def partial_errors(partial, group_field, index_field)
-    partial.map do |sample|
-      given, missing =
-        if sample.fields.key?(group_field)
-          [group_field, index_field]
-        else
-          [index_field, group_field]
-        end
-      error("#{sample.pointer}/#{given}", "#{given} needs a #{missing}")
-    end
   end
 
   def unknown_group_errors(complete, group_field)
@@ -69,10 +53,6 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
               "Tag group #{name} has no tag with index #{index} " \
               "(#{used_by(users)})")
       end
-  end
-
-  def used_by(users)
-    "used by #{users.size} #{'sample'.pluralize(users.size)}"
   end
 
   # @return [Integer, nil] the ID of the tag group with the name
