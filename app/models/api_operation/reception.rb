@@ -5,8 +5,9 @@
 # and created. ApiOperation::CoordinatorJob runs it, in a transaction, when
 # the y26_283_sapio_reception feature flag is on, and records the outcome.
 #
-# This version reports known labware that isn't the same (conflicts); later
-# steps validate and create the new labware.
+# All problems are collected: known labware that isn't the same (conflicts),
+# and problems with the payload's labware (validation). Later steps add more
+# checks and create the new labware.
 class ApiOperation::Reception
   # @param api_operation [ApiOperation] the operation to receive
   def initialize(api_operation)
@@ -19,10 +20,16 @@ class ApiOperation::Reception
   #   when it is about something in the payload; empty if reception
   #   succeeded
   def call
-    reconciliation.errors
+    reconciliation.errors + validation.errors
   end
 
   private
+
+  def validation
+    @validation ||=
+      ApiOperation::Reception::Validation
+        .new(payload.labware, reconciliation.new_labware)
+  end
 
   def reconciliation
     @reconciliation ||=
