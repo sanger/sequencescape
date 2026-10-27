@@ -26,6 +26,14 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
       end
   end
 
+  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  def oligos(sample)
+    [PAIRS.map do |group_field, index_field|
+      name = sample.fields[group_field]
+      tags[[tag_group_id(name), sample.fields[index_field]]] if name
+    end]
+  end
+
   private
 
   def pair_errors(group_field, index_field)
@@ -71,13 +79,12 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
   end
 
   def tag?(tag_group_id, index)
-    tags.include?([tag_group_id, index])
+    tags.key?([tag_group_id, index])
   end
 
-  # The tag group ID and index of each tag in the groups the samples name
+  # The oligo of each tag in the groups the samples name, by group ID and
+  # index
   def tags
-    @tags ||=
-      Tag.where(tag_group_id: tag_group_ids.values).where.not(map_id: nil)
-        .pluck(:tag_group_id, :map_id).to_set
+    @tags ||= oligos_by_tag(tag_group_ids.values)
   end
 end

@@ -19,6 +19,16 @@ class ApiOperation::Reception::Validation::Tags::Scheme
     []
   end
 
+  # The oligos of the aliquots the sample's tags give, for comparing tags:
+  # an [i7, i5] pair for each aliquot, with nil for a tag it doesn't have.
+  # Only for a sample whose tags passed this scheme's checks.
+  #
+  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @return [Array<Array(String, String)>] the oligo pairs
+  def oligos(_sample)
+    raise NotImplementedError, "#{self.class} must define oligos"
+  end
+
   private
 
   attr_reader :samples, :input
@@ -68,6 +78,14 @@ class ApiOperation::Reception::Validation::Tags::Scheme
           .to_h { |description, column_order| [description, column_order + 1] }
     end
     @well_indexes[plate_size][Map.strip_description(well)]
+  end
+
+  # The oligo of each tag in the tag groups, by tag group ID and index
+  # (map_id), in one query
+  def oligos_by_tag(tag_group_ids)
+    Tag.where(tag_group_id: tag_group_ids).where.not(map_id: nil)
+      .pluck(:tag_group_id, :map_id, :oligo)
+      .to_h { |group_id, map_id, oligo| [[group_id, map_id], oligo] }
   end
 
   def used_by(users)

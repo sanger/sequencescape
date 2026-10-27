@@ -28,6 +28,11 @@ class ApiOperation::Reception::Validation::Tags::Oligos <
       end
   end
 
+  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  def oligos(sample)
+    [sample.fields.values_at(*FIELDS)]
+  end
+
   private
 
   def oligo_problem(oligo)

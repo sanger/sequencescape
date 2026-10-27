@@ -49,6 +49,13 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
     Array.new(TAGS_PER_WELL) { ((well_index - 1) * TAGS_PER_WELL) + it + 1 }
   end
 
+  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  def oligos(sample)
+    group_id = tag_group_id(tag_set_name(sample))
+    self.class.map_ids(kit_well_index(well(sample)))
+      .map { [tags[[group_id, it]], nil] }
+  end
+
   private
 
   def unknown_tag_set_errors(complete)
@@ -117,13 +124,12 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
   end
 
   def all_tags?(tag_group_id, well_index)
-    self.class.map_ids(well_index).all? { tags.include?([tag_group_id, it]) }
+    self.class.map_ids(well_index).all? { tags.key?([tag_group_id, it]) }
   end
 
-  # The tag group ID and index of each tag in the named tag sets' groups
+  # The oligo of each tag in the named tag sets' groups, by group ID and
+  # index
   def tags
-    @tags ||=
-      Tag.where(tag_group_id: tag_group_ids.values).where.not(map_id: nil)
-        .pluck(:tag_group_id, :map_id).to_set
+    @tags ||= oligos_by_tag(tag_group_ids.values)
   end
 end

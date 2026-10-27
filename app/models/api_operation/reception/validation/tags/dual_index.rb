@@ -36,6 +36,12 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
       end
   end
 
+  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  def oligos(sample)
+    index = plate_well_index(well(sample))
+    [tag_group_ids(tag_set_name(sample)).map { tags[[it, index]] }]
+  end
+
   private
 
   def unknown_tag_set_errors(complete)
@@ -73,7 +79,7 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
   # @return [Array<String>] which of the i7 and i5 tags are missing
   def missing_tags(group_ids, index)
     %w[i7 i5].zip(group_ids).filter_map do |tag, group_id|
-      tag unless tags.include?([group_id, index])
+      tag unless tags.key?([group_id, index])
     end
   end
 
@@ -115,10 +121,9 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
       end
   end
 
-  # The tag group ID and index of each tag in the named tag sets' groups
+  # The oligo of each tag in the named tag sets' groups, by group ID and
+  # index
   def tags
-    @tags ||=
-      Tag.where(tag_group_id: tag_sets.values.flatten)
-        .where.not(map_id: nil).pluck(:tag_group_id, :map_id).to_set
+    @tags ||= oligos_by_tag(tag_sets.values.flatten)
   end
 end
