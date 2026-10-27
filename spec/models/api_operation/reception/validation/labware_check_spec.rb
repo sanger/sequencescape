@@ -108,12 +108,26 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
     end
   end
 
-  context 'with a well of a 384-well plate' do
+  context 'with a new 384-well plate' do
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate384', positions: %w[P24 Z99])]
+    end
+
+    it 'reports the type, and not its positions' do
+      expect(check.errors).to eq(
+        [{ pointer: '/labware/0/type',
+           detail: '384-well plates are not supported by reception yet' }]
+      )
+    end
+  end
+
+  context 'with a known 384-well plate' do
     let(:payload_labware) do
       [labware('PLATE-1', 0, type: 'plate384', positions: %w[P24])]
     end
+    let(:new_labware) { [] }
 
-    it 'accepts it' do
+    it 'finds no errors' do
       expect(check.errors).to be_empty
     end
   end
