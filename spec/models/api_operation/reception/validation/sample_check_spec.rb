@@ -2,8 +2,14 @@
 
 require 'rails_helper'
 
-RSpec.describe ApiOperation::Reception::SampleValidation do
-  subject(:validation) { described_class.new(samples) }
+RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
+  subject(:check) { described_class.new(input) }
+
+  let(:input) do
+    ApiOperation::Reception::Validation::Input.new(
+      payload_labware: [], new_labware: [], new_samples: samples
+    )
+  end
 
   let(:study) { create(:study) }
 
@@ -26,7 +32,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
     let(:samples) { [sample(0), sample(1)] }
 
     it 'finds no errors' do
-      expect(validation.errors).to be_empty
+      expect(check.errors).to be_empty
     end
   end
 
@@ -34,7 +40,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
     let(:samples) { [] }
 
     it 'finds no errors' do
-      expect(validation.errors).to be_empty
+      expect(check.errors).to be_empty
     end
   end
 
@@ -49,7 +55,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       end
 
       it 'reports it once, at its first sample, with how many use it' do
-        expect(validation.errors).to eq(
+        expect(check.errors).to eq(
           [{ pointer: '/labware/0/receptacles/1/samples/0/study_uuid',
              detail: "No study with UUID #{unknown} (used by 2 samples)" }]
         )
@@ -62,7 +68,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       end
 
       it 'reports each' do
-        expect(validation.errors.pluck(:detail)).to eq(
+        expect(check.errors.pluck(:detail)).to eq(
           ["No study with UUID #{unknown} (used by 1 sample)",
            "No study with UUID #{other_unknown} (used by 1 sample)"]
         )
@@ -77,7 +83,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       let(:samples) { [first, replicate(first, 1)] }
 
       it 'finds no errors' do
-        expect(validation.errors).to be_empty
+        expect(check.errors).to be_empty
       end
     end
 
@@ -88,7 +94,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       end
 
       it 'reports the entry and how it differs' do
-        expect(validation.errors).to eq(
+        expect(check.errors).to eq(
           [{ pointer: '/labware/0/receptacles/1/samples/0',
              detail: "Sample #{first.uuid} has a different sanger_sample_id " \
                      'and study_uuid from /labware/0/receptacles/0/samples/0' }]
@@ -104,7 +110,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
     end
 
     it 'reports the second, ignoring case' do
-      expect(validation.errors).to eq(
+      expect(check.errors).to eq(
         [{ pointer: '/labware/0/receptacles/1/samples/0/sanger_sample_id',
            detail: 'Sanger sample ID sample-1 is also used by another ' \
                    'sample, at /labware/0/receptacles/0/samples/0' }]
@@ -118,7 +124,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       let(:samples) { [sample(0, uuid: existing.uuid)] }
 
       it 'reports it' do
-        expect(validation.errors).to eq(
+        expect(check.errors).to eq(
           [{ pointer: '/labware/0/receptacles/0/samples/0/uuid',
              detail: "UUID #{existing.uuid} is already used in " \
                      'Sequencescape' }]
@@ -130,7 +136,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       let(:samples) { [sample(0, uuid: study.uuid)] }
 
       it 'reports it' do
-        expect(validation.errors.sole[:pointer])
+        expect(check.errors.sole[:pointer])
           .to eq('/labware/0/receptacles/0/samples/0/uuid')
       end
     end
@@ -140,7 +146,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       let(:samples) { [first, replicate(first, 1)] }
 
       it 'reports it once' do
-        expect(validation.errors.size).to eq(1)
+        expect(check.errors.size).to eq(1)
       end
     end
   end
@@ -153,7 +159,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       end
 
       it 'reports it' do
-        expect(validation.errors).to eq(
+        expect(check.errors).to eq(
           [{ pointer: '/labware/0/receptacles/0/samples/0/sanger_sample_id',
              detail: "Sanger sample ID #{existing.sanger_sample_id} is " \
                      'already used by a sample in Sequencescape' }]
@@ -167,7 +173,7 @@ RSpec.describe ApiOperation::Reception::SampleValidation do
       before { create(:sample, name: 'Existing_sample') }
 
       it 'reports it' do
-        expect(validation.errors.sole[:pointer])
+        expect(check.errors.sole[:pointer])
           .to eq('/labware/0/receptacles/0/samples/0/sanger_sample_id')
       end
     end

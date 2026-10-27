@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-# Checks the samples in the payload's new labware before anything is
-# created, and collects every problem, each with a pointer into the payload:
+# Checks the samples in the payload's new labware:
 # - Each sample has an existing study. An unknown study is reported once, at
 #   the first sample that uses it, with how many do.
 # - A sample in more than one receptacle (the same UUID) has the same Sanger
@@ -10,20 +9,14 @@
 #   two samples share a Sanger sample ID. Sanger sample IDs are compared
 #   ignoring case, as sample names are.
 # Each check looks up all the samples in one query.
-class ApiOperation::Reception::SampleValidation
+class ApiOperation::Reception::Validation::SampleCheck <
+      ApiOperation::Reception::Validation::Check
   # The fields every entry of a sample in more than one receptacle must share
   SAMPLE_FIELDS = %i[sanger_sample_id supplier_sample_name study_uuid].freeze
 
-  # @param samples [Array<ApiOperation::Reception::Payload::PayloadSample>]
-  #   the samples in the payload's new labware, an entry for each receptacle
-  #   a sample is in
-  def initialize(samples)
-    @samples = samples
-  end
-
-  # @return [Array<Hash>] the problems, each with a :pointer and a :detail
+  # (see ApiOperation::Reception::Validation::Check#errors)
   def errors
-    return [] if @samples.empty?
+    return [] if input.new_samples.empty?
 
     @errors ||=
       study_errors + repeated_sample_errors + shared_sanger_sample_id_errors +
@@ -35,7 +28,7 @@ class ApiOperation::Reception::SampleValidation
   # The entries by UUID; a sample in more than one receptacle has an entry in
   # each
   def samples_by_uuid
-    @samples_by_uuid ||= @samples.group_by(&:uuid)
+    @samples_by_uuid ||= input.new_samples.group_by(&:uuid)
   end
 
   # The first entry of each sample
@@ -45,7 +38,7 @@ class ApiOperation::Reception::SampleValidation
 
   # An error for each study UUID that isn't a Sequencescape study
   def study_errors
-    samples_by_study = @samples.group_by(&:study_uuid)
+    samples_by_study = input.new_samples.group_by(&:study_uuid)
     known = Study.with_uuid(samples_by_study.keys).pluck('uuids.external_id')
     samples_by_study.except(*known).map do |uuid, samples|
       error("#{samples.first.pointer}/study_uuid",
@@ -112,9 +105,5 @@ class ApiOperation::Reception::SampleValidation
     ids = distinct_samples.map(&:sanger_sample_id)
     Sample.where(sanger_sample_id: ids).or(Sample.where(name: ids))
       .pluck(:sanger_sample_id, :name).flatten.compact.to_set(&:downcase)
-  end
-
-  def error(pointer, detail)
-    { pointer:, detail: }
   end
 end

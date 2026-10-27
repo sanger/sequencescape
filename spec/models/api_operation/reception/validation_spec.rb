@@ -60,124 +60,16 @@ RSpec.describe ApiOperation::Reception::Validation do
     end
   end
 
-  context 'with a barcode used twice' do
+  context 'with a labware problem and a sample problem' do
     let(:payload_labware) do
-      [labware('PLATE-1', 0), labware('PLATE-2', 1), labware('PLATE-1', 2)]
+      [plate_with_studies('PLATE-1', 0, [SecureRandom.uuid]),
+       labware('PLATE-1', 1)]
     end
 
-    it 'reports the second use' do
-      expect(validation.errors).to eq(
-        [{ pointer: '/labware/2/barcode',
-           detail: 'Barcode PLATE-1 is also used by /labware/0' }]
-      )
-    end
-  end
-
-  context 'with a known labware whose barcode is used again' do
-    let(:payload_labware) { [labware('PLATE-1', 0), labware('PLATE-1', 1)] }
-    let(:new_labware) { [payload_labware.last] }
-
-    it 'reports it too' do
-      expect(validation.errors.sole[:pointer]).to eq('/labware/1/barcode')
-    end
-  end
-
-  context 'with a tube without a receptacle' do
-    let(:payload_labware) do
-      [labware('TUBE-1', 0, type: 'tube', positions: [])]
-    end
-
-    it 'reports the receptacles' do
-      expect(validation.errors).to eq(
-        [{ pointer: '/labware/0/receptacles',
-           detail: 'A tube has one receptacle, not 0' }]
-      )
-    end
-  end
-
-  context 'with a tube with two receptacles' do
-    let(:payload_labware) do
-      [labware('TUBE-1', 0, type: 'tube', positions: [nil, nil])]
-    end
-
-    it 'reports the receptacles' do
-      expect(validation.errors.sole[:detail])
-        .to eq('A tube has one receptacle, not 2')
-    end
-  end
-
-  context "with a position on a tube's receptacle" do
-    let(:payload_labware) do
-      [labware('TUBE-1', 0, type: 'tube', positions: ['A1'])]
-    end
-
-    it 'reports the position' do
-      expect(validation.errors).to eq(
-        [{ pointer: '/labware/0/receptacles/0/position',
-           detail: "A tube's receptacle has no position" }]
-      )
-    end
-  end
-
-  context 'with a plate position that is not a well of its size' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[A1 A13])] }
-
-    it 'reports the position' do
-      expect(validation.errors).to eq(
-        [{ pointer: '/labware/0/receptacles/1/position',
-           detail: 'A13 is not a well of a 96-well plate' }]
-      )
-    end
-  end
-
-  context 'with a well of a 384-well plate' do
-    let(:payload_labware) do
-      [labware('PLATE-1', 0, type: 'plate384', positions: %w[P24])]
-    end
-
-    it 'accepts it' do
-      expect(validation.errors).to be_empty
-    end
-  end
-
-  context 'with a well listed twice' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[A1 B1 A1])] }
-
-    it 'reports the second listing' do
-      expect(validation.errors).to eq(
-        [{ pointer: '/labware/0/receptacles/2/position',
-           detail: 'Well A1 is listed more than once' }]
-      )
-    end
-  end
-
-  context 'with a well without a position' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: [nil])] }
-
-    it 'reports the position' do
-      expect(validation.errors.sole[:detail]).to eq('A well needs a position')
-    end
-  end
-
-  context 'with known labware' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[Z99])] }
-    let(:new_labware) { [] }
-
-    it 'leaves its positions to the reconciliation' do
-      expect(validation.errors).to be_empty
-    end
-  end
-
-  context 'with several problems' do
-    let(:payload_labware) do
-      [labware('PLATE-1', 0, positions: %w[A13]),
-       labware('PLATE-1', 1, type: 'tube', positions: [])]
-    end
-
-    it 'reports them all' do
-      expect(validation.errors.pluck(:pointer)).to contain_exactly(
-        '/labware/1/barcode', '/labware/0/receptacles/0/position',
-        '/labware/1/receptacles'
+    it 'reports the labware problem first' do
+      expect(validation.errors.pluck(:pointer)).to eq(
+        ['/labware/1/barcode',
+         '/labware/0/receptacles/0/samples/0/study_uuid']
       )
     end
   end
