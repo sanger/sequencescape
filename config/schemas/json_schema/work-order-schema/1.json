@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://someurl.com/contracts/work_order.v0.1.json",
   "title": "Reception and Work Order Request",
   "description": "Data contract for importing labware and creating a work order for a selected subset of its samples.",
   "type": "object",
@@ -22,18 +21,12 @@
           "type": "string",
           "minLength": 1,
           "description": "Version of the request payload schema."
-        },
-        "callback_url": {
-          "type": "string",
-          "format": "uri",
-          "description": "HTTPS endpoint to receive request status callbacks."
         }
       },
       "required": [
         "external_id",
         "request_type",
-        "schema_version",
-        "callback_url"
+        "schema_version"
       ],
       "additionalProperties": false
     },
@@ -46,39 +39,44 @@
           "minLength": 1,
           "description": "Identifier used by the calling integration to correlate this work order."
         },
-        "work_order_type": {
+        "service_name": {
           "type": "string",
           "minLength": 1,
-          "description": "Requested work-order type, such as library_preparation."
+          "description": "Requested work-order service name"
+        },
+        "sequencing_platform": {
+          "enum": ["Aviti", "MiSeq", "NovaSeq6000", "NovaSeqX", "UG100", "UG200"]
         },
         "requested_by": {
           "type": "string",
           "minLength": 1,
           "description": "Login or identifier of the requester."
         },
-        "project_uuid": {
-          "$ref": "#/$defs/uuid"
+        "cost_code": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Cost code associated with the work order."
         },
-        "requested_sample_uuids": {
+        "requested_labware_identifiers": {
           "type": "array",
-          "description": "UUIDs of the samples in the imported labware that are included in this work order. Samples present in labware but not listed here are imported without being requested.",
+          "description": "Identifiers for the receptacles in the imported labware that are included in this work order. Tube barcodes or plate:well combinations.",
           "minItems": 1,
           "uniqueItems": true,
           "items": {
-            "$ref": "#/$defs/uuid"
+            "type": "string"
           }
         },
         "options": {
           "type": "object",
-          "description": "Work-order-specific options. Keys and value types are defined by the work_order_type.",
+          "description": "Work-order-specific options. All possible options are listed but only those required by the work_order service_name need to be provided.",
           "properties": {
-            "fragment_size_from": {
-              "type": "number",
+            "fragment_size_required_from": {
+              "type": "integer",
               "minimum": 1,
               "description": "Minimum fragment size"
             },
-            "fragment_size_to": {
-              "type": "number",
+            "fragment_size_required_to": {
+              "type": "integer",
               "minimum": 1,
               "description": "Maximum fragment size"
             },
@@ -92,25 +90,53 @@
               "minLength": 1,
               "description": "Type of library"
             },
-            "flowcell_type": {
+            "requested_flowcell_type": {
               "type": "string",
               "minLength": 1,
               "description": "Type of flowcell"
             },
+            "pre_capture_group": {
+              "type": "integer",
+              "exclusiveMinimum": 0,
+              "description": "Pre-capture group"
+            },
             "pre_capture_plex_level": {
-              "type": "number",
+              "type": "integer",
               "minimum": 1,
               "description": "Pre-capture plex level"
             },
             "gigabases_expected": {
               "type": "number",
-              "minimum": 1,
+              "exclusiveMinimum": 0,
               "description": "Expected number of gigabases"
             },
             "primer_panel_name": {
               "type": "string",
               "minLength": 1,
               "description": "Name of the primer panel"
+            },
+            "priority": {
+              "enum": [
+                "None",
+                "Low",
+                "Medium",
+                "High"
+              ],
+              "description": "Priority of the work order"
+            },
+            "read_length": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Read length"
+            },
+            "number_of_lanes": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of lanes"
+            },
+            "comments": {
+              "type": "string",
+              "description": "Comments for the work order"
             }
           },
           "additionalProperties": false
@@ -118,10 +144,10 @@
       },
       "required": [
         "external_id",
-        "work_order_type",
+        "service_name",
         "requested_by",
-        "project_uuid",
-        "requested_sample_uuids",
+        "cost_code",
+        "requested_labware_identifiers",
         "options"
       ],
       "additionalProperties": false
@@ -137,7 +163,6 @@
   },
   "required": [
     "request",
-    "work_order",
     "labware"
   ],
   "additionalProperties": false,
@@ -175,7 +200,7 @@
       "required": [
         "uuid",
         "barcode",
-        "labware_type",
+        "type",
         "receptacles"
       ],
       "additionalProperties": false
@@ -230,13 +255,21 @@
           "minLength": 1
         },
         "control_type": {
-          "type": "string",
-          "minLength": 1,
+          "enum": [
+            "negative",
+            "positive",
+            "pcr negative",
+            "pcr positive",
+            "lysate negative"
+          ],
           "description": "Control classification, when the sample is a control."
         },
         "bioscan_control_type": {
-          "type": "string",
-          "minLength": 1
+          "enum": [
+            "pcr positive",
+            "pcr negative",
+            "lysate negative"
+          ]
         },
         "i7": {
           "type": "string",
@@ -251,16 +284,16 @@
           "minLength": 1
         },
         "tag_index": {
-          "type": "string",
-          "minLength": 1
+          "type": "integer",
+          "minimum": 1
         },
         "tag2_group": {
           "type": "string",
           "minLength": 1
         },
         "tag2_index": {
-          "type": "string",
-          "minLength": 1
+          "type": "integer",
+          "minimum": 1
         },
         "chromium_tag_group": {
           "type": "string",
@@ -291,12 +324,12 @@
           "minLength": 1
         },
         "insert_size_from": {
-          "type": "string",
-          "minLength": 1
+          "type": "integer",
+          "minimum": 1
         },
         "insert_size_to": {
-          "type": "string",
-          "minLength": 1
+          "type": "integer",
+          "minimum": 1
         },
         "donor_id": {
           "type": "string",
@@ -307,11 +340,12 @@
           "minLength": 1
         },
         "priority": {
-          "type": "string",
-          "minLength": 1
-        },
-        "retention_instruction": {
-          "enum": ["destroy_after_2_years", "return_to_customer_after_2_years", "long_term_storage"]
+          "enum": [
+            "no_priority",
+            "backlog",
+            "surveillance",
+            "priority"
+          ]
         }
       },
       "required": [

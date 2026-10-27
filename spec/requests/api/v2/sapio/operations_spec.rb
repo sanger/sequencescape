@@ -14,7 +14,7 @@ describe 'Sapio Operations API' do
     {
       request: { external_id: 'request-1',
                  request_type: 'reception_and_work_order',
-                 schema_version: '0.3' },
+                 schema_version: '1' },
       labware: [{ uuid: '6f1c1d2e-0000-4000-8000-000000000001',
                   barcode: 'TUBE-1', type: 'tube',
                   receptacles: [receptacle] }],
@@ -174,9 +174,9 @@ describe 'Sapio Operations API' do
 
     context 'with the schema in a schema registry' do
       let(:registry_answer) do
-        { subject: 'work-order-schema', version: 3, id: 1, schemaType: 'JSON',
+        { subject: 'work-order-schema', version: 1, id: 1, schemaType: 'JSON',
           schema: Rails.root.join('config/schemas/json_schema/' \
-                                  'work-order-schema/3.json').read }
+                                  'work-order-schema/1.json').read }
       end
 
       before do
@@ -617,6 +617,12 @@ describe 'Sapio Operations API' do
       # Each case changes the valid payload so that it doesn't match the
       # schema, and names the expected pointer.
       {
+        'an unknown request type' =>
+          [->(p) { p.deep_merge(request: { request_type: 'another_type' }) },
+           '/request/request_type'],
+        'no request type' =>
+          [->(p) { p.merge(request: p[:request].except(:request_type)) },
+           '/request'],
         'no labware section' => [->(p) { p.except(:labware) }, ''],
         'a labware section that is not an array' =>
           [->(p) { p.merge(labware: {}) }, '/labware'],
