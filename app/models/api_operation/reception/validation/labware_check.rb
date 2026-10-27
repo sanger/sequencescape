@@ -2,18 +2,36 @@
 
 # Checks the payload's labware:
 # - Each barcode appears once in the payload, known labware included.
+# - New labware is of a type reception can create (not UNSUPPORTED_TYPES).
 # - A new tube has one receptacle, with no position.
 # - A new plate's positions are wells of its size, each listed once.
 class ApiOperation::Reception::Validation::LabwareCheck <
       ApiOperation::Reception::Validation::Check
+  # Labware types reception can't create yet, as no purpose is decided for
+  # them, with how they are named in messages. Known labware of these types
+  # can still be matched.
+  UNSUPPORTED_TYPES = { 'plate384' => '384-well plates' }.freeze
+
   # (see ApiOperation::Reception::Validation::Check#errors)
   def errors
     @errors ||=
       duplicate_barcode_errors +
-      input.new_labware.flat_map { |labware| receptacle_errors(labware) }
+      input.new_labware.flat_map do |labware|
+        unsupported_type_errors(labware).presence || receptacle_errors(labware)
+      end
   end
 
   private
+
+  # An error if reception can't create labware of this type; its receptacles
+  # aren't checked then
+  def unsupported_type_errors(payload_labware)
+    name = UNSUPPORTED_TYPES[payload_labware.type]
+    return [] unless name
+
+    [error("#{payload_labware.pointer}/type",
+           "#{name} are not supported by reception yet")]
+  end
 
   # An error for each labware after the first with the same barcode
   def duplicate_barcode_errors
