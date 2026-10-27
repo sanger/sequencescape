@@ -239,13 +239,13 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    faraday (2.14.4)
-      faraday-net_http (>= 2.0, < 3.5)
+    faraday (2.15.0)
+      faraday-net_http (>= 2.0, < 3.6)
       json
       logger
     faraday-multipart (1.2.0)
       multipart-post (~> 2.0)
-    faraday-net_http (3.4.4)
+    faraday-net_http (3.5.0)
       net-http (~> 0.5)
     ffi (1.17.4-arm64-darwin)
     ffi (1.17.4-x86_64-darwin)
@@ -348,12 +348,13 @@ GEM
     mutex_m (0.3.0)
     mysql2 (0.5.7)
       bigdecimal
-    net-http (0.9.1)
+    net-http (0.10.0)
+      net-protocol (>= 0.3.0)
       uri (>= 0.11.1)
     net-imap (0.6.7)
       date
       net-protocol
-    net-ldap (0.20.0)
+    net-ldap (0.21.0)
       base64
       ostruct
     net-pop (0.1.2)
@@ -622,7 +623,7 @@ GEM
     syslog (0.4.0)
       logger
     temple (0.10.4)
-    test-prof (1.6.3)
+    test-prof (1.6.4)
       logger
     thor (1.5.0)
     tilt (2.7.0)
@@ -640,7 +641,7 @@ GEM
     unsort_db_schema_columns (0.1.0)
       activerecord (>= 8.0, < 9.0)
       railties (>= 8.0, < 9.0)
-    uri (1.1.1)
+    uri (1.1.2)
     useragent (0.16.11)
     uuidtools (3.0.0)
     vite_rails (3.11.1)
@@ -652,7 +653,7 @@ GEM
       mutex_m
       rack-proxy (>= 0.6.1)
       zeitwerk (~> 2.2)
-    webmock (3.26.4)
+    webmock (3.34.0)
       addressable (>= 2.8.0)
       crack (>= 0.3.2)
       hashdiff (>= 0.4.0, < 2.0.0)
