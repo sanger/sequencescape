@@ -5,8 +5,8 @@
 # - Each barcode appears once in the payload.
 # - A new tube has one receptacle, with no position.
 # - A new plate's positions are wells of its size, each listed once.
-# - Each sample in the new labware has an existing study. An unknown study is
-#   reported once, at the first sample that uses it, with how many do.
+# - The samples in the new labware pass ApiOperation::Reception::
+#   SampleValidation.
 # Known labware is checked by ApiOperation::Reception::Reconciliation instead,
 # and its samples are not stored, so they aren't checked here.
 class ApiOperation::Reception::Validation
@@ -24,23 +24,10 @@ class ApiOperation::Reception::Validation
     @errors ||=
       duplicate_barcode_errors +
       @new_labware.flat_map { |labware| receptacle_errors(labware) } +
-      study_errors
+      ApiOperation::Reception::SampleValidation.new(new_samples).errors
   end
 
   private
-
-  # An error for each study UUID that isn't a Sequencescape study
-  def study_errors
-    samples_by_study = new_samples.group_by(&:study_uuid)
-    return [] if samples_by_study.empty?
-
-    known = Study.with_uuid(samples_by_study.keys).pluck('uuids.external_id')
-    samples_by_study.except(*known).map do |uuid, samples|
-      error("#{samples.first.pointer}/study_uuid",
-            "No study with UUID #{uuid} (used by " \
-            "#{samples.size} #{'sample'.pluralize(samples.size)})")
-    end
-  end
 
   def new_samples
     @new_labware.flat_map(&:receptacles).flat_map(&:samples)
