@@ -6,8 +6,14 @@
 # fields: each names an existing library type or primer panel, ignoring case.
 # An unknown name is reported once, at the first sample that uses it, with
 # how many do; the names of each kind are looked up in one query.
-# Insert sizes need no check here: the schema already requires whole numbers
-# of at least 1, as the manifest does.
+# The schema already requires insert sizes to be whole numbers of at least 1,
+# as the manifest does.
+#
+# Two rules the manifest doesn't have, as one of its columns can't
+# contradict another:
+# - insert_size_from is at most insert_size_to, when a sample gives both.
+# - library_type and library_type_long_read are the same, ignoring case, when
+#   a sample gives both.
 class ApiOperation::Reception::Validation::LibraryCheck <
       ApiOperation::Reception::Validation::Check
   # Each field, with the model it names a record of and how that is named in
@@ -23,10 +29,34 @@ class ApiOperation::Reception::Validation::LibraryCheck <
     @errors ||=
       FIELDS.flat_map do |field, (model, label)|
         unknown_name_errors(field, model, label)
-      end
+      end + insert_size_errors + library_type_errors
   end
 
   private
+
+  # An error for each sample whose insert size range is the wrong way round
+  def insert_size_errors
+    input.new_samples.filter_map do |sample|
+      from, to = sample.fields.values_at('insert_size_from', 'insert_size_to')
+      next unless from && to && from > to
+
+      error("#{sample.pointer}/insert_size_to",
+            "insert_size_to (#{to}) is less than insert_size_from (#{from})")
+    end
+  end
+
+  # An error for each sample whose two library type fields differ
+  def library_type_errors
+    input.new_samples.filter_map do |sample|
+      type, long_read =
+        sample.fields.values_at('library_type', 'library_type_long_read')
+      next unless type && long_read && type.casecmp(long_read).nonzero?
+
+      error("#{sample.pointer}/library_type_long_read",
+            "library_type_long_read (#{long_read}) differs from " \
+            "library_type (#{type})")
+    end
+  end
 
   def unknown_name_errors(field, model, label)
     users_by_name(field).filter_map do |name, users|
