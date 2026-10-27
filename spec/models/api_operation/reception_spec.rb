@@ -30,6 +30,17 @@ RSpec.describe ApiOperation::Reception do
     end
   end
 
+  context 'with new labware that is not valid' do
+    let(:labware) { labware_with('UNKNOWN-1', type: 'tube') }
+
+    it 'reports the problem' do
+      expect(reception.call).to eq(
+        [{ pointer: '/labware/0/receptacles',
+           detail: 'A tube has one receptacle, not 0' }]
+      )
+    end
+  end
+
   context 'with known labware that differs' do
     let(:plate) { create(:plate) }
     let(:labware) { labware_with(plate.human_barcode, type: 'tube') }
