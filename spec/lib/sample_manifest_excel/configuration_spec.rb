@@ -87,4 +87,73 @@ RSpec.describe SampleManifestExcel::Configuration, :sample_manifest, :sample_man
       expect(configuration.tag_group).to eq('My Magic Tag Group')
     end
   end
+
+  # Uploads match columns by heading against all columns, so two columns
+  # with the same heading clash: only the last one defined is ever found.
+  describe 'with the application folder' do
+    let(:all_columns) { configuration.columns.all }
+
+    before do
+      configuration.folder = File.join('config', 'sample_manifest_excel')
+      configuration.load!
+    end
+
+    it 'resolves the i7 heading to the i7 column on upload' do
+      column = all_columns.find_by(:heading, 'i7 TAG SEQUENCE')
+      expect(column.name).to eq('i7')
+      expect(column.specialised_field).to eq(
+        SequencescapeExcel::SpecialisedField::I7
+      )
+    end
+
+    it 'has the Kinnex compound sample tube template' do
+      type = configuration.manifest_types.find_by('kinnex_compound_sample_tube')
+      columns = configuration.columns.find(:kinnex_compound_sample_tube)
+      expect(type.asset_type).to eq('compound_tube')
+      expect(columns.names).to eq(type.columns.map(&:to_s))
+    end
+
+    it 'resolves the component tag sequence heading on upload' do
+      column = all_columns.find_by(:heading, 'COMPONENT TAG SEQUENCE')
+      expect(column.name).to eq('component_tag_sequence')
+      expect(column.specialised_field).to eq(
+        SequencescapeExcel::SpecialisedField::ComponentTagSequence
+      )
+    end
+
+    it 'resolves the LIBRARY TYPE heading to the long-read column on upload' do
+      column = all_columns.find_by(:heading, 'LIBRARY TYPE')
+      expect(column.name).to eq('library_type_long_read')
+    end
+
+    it 'has the same Kinnex template as the test config' do
+      test_configuration = described_class.new
+      test_configuration.folder =
+        File.join('spec', 'data', 'sample_manifest_excel')
+      test_configuration.load!
+      template = 'kinnex_compound_sample_tube'
+      expect(test_configuration.manifest_types.find_by(template).columns)
+        .to eq(configuration.manifest_types.find_by(template).columns)
+    end
+
+    context 'with the Kinnex library types' do
+      let(:kinnex_library_types) do
+        LibraryType.records_in('005_kinnex_library_types')
+      end
+      let(:library_type_range) do
+        column = configuration.columns.find(:kinnex_compound_sample_tube)
+          .find_by(:heading, 'LIBRARY TYPE')
+        configuration.ranges.find_by(column.range_name)
+      end
+
+      before do
+        kinnex_library_types.each { |name| create(:library_type, name:) }
+        create(:library_type, name: 'Another library type')
+      end
+
+      it 'lists only them in the Kinnex template' do
+        expect(library_type_range.options).to eq(kinnex_library_types)
+      end
+    end
+  end
 end
