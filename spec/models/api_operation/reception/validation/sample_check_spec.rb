@@ -178,4 +178,55 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
       end
     end
   end
+
+  describe 'a sample in a receptacle more than once' do
+    let(:input) do
+      ApiOperation::Reception::Validation::Input.build(labware, labware)
+    end
+    let(:samples) { [] }
+    let(:first) { sample(0) }
+
+    # The sample's entry at the index in receptacle 0, with tag fields
+    def again(sample, index, **fields)
+      sample.with(pointer: "/labware/0/receptacles/0/samples/#{index}",
+                  fields: fields.stringify_keys)
+    end
+
+    def receptacle_with(*entries)
+      ApiOperation::Reception::Payload::PayloadReceptacle.new(
+        position: 'A1', uuid: SecureRandom.uuid, samples: entries,
+        pointer: '/labware/0/receptacles/0'
+      )
+    end
+
+    def plate_with(receptacle)
+      ApiOperation::Reception::Payload::PayloadLabware.new(
+        uuid: SecureRandom.uuid, barcode: 'PLATE-1', type: 'plate96',
+        receptacles: [receptacle], pointer: '/labware/0'
+      )
+    end
+
+    context 'without tags' do
+      let(:labware) { [plate_with(receptacle_with(first, again(first, 1)))] }
+
+      it 'reports the second entry' do
+        expect(check.errors).to eq(
+          [{ pointer: '/labware/0/receptacles/0/samples/1',
+             detail: "Sample #{first.uuid} is also at " \
+                     '/labware/0/receptacles/0/samples/0, without tags' }]
+        )
+      end
+    end
+
+    context 'with tags in all but one entry' do
+      let(:labware) do
+        [plate_with(receptacle_with(first, again(first, 1, i7: 'ACGT'),
+                                    again(first, 2, i7: 'TTGA')))]
+      end
+
+      it 'finds no errors' do
+        expect(check.errors).to be_empty
+      end
+    end
+  end
 end
