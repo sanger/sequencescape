@@ -42,8 +42,7 @@ class ApiOperation::Reception::Validation::SampleCheck <
     known = Study.with_uuid(samples_by_study.keys).pluck('uuids.external_id')
     samples_by_study.except(*known).map do |uuid, samples|
       error("#{samples.first.pointer}/study_uuid",
-            "No study with UUID #{uuid} (used by " \
-            "#{samples.size} #{'sample'.pluralize(samples.size)})")
+            "No study with UUID #{uuid} (#{used_by(samples)})")
     end
   end
 

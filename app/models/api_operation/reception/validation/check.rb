@@ -19,6 +19,10 @@ class ApiOperation::Reception::Validation::Check
 
   attr_reader :input
 
+  def used_by(users)
+    "used by #{users.size} #{'sample'.pluralize(users.size)}"
+  end
+
   def error(pointer, detail)
     { pointer:, detail: }
   end
