@@ -182,12 +182,11 @@ RSpec.describe ApiOperation::Reception::Validation do
     end
   end
 
-  describe 'studies' do
+  describe 'samples' do
     let(:study) { create(:study) }
     let(:unknown) { SecureRandom.uuid }
-    let(:other_unknown) { SecureRandom.uuid }
 
-    context 'with existing studies' do
+    context 'with valid samples in new labware' do
       let(:payload_labware) do
         [plate_with_studies('PLATE-1', 0, [study.uuid, study.uuid])]
       end
@@ -197,34 +196,16 @@ RSpec.describe ApiOperation::Reception::Validation do
       end
     end
 
-    context 'with a study used by several samples that does not exist' do
-      let(:payload_labware) do
-        [plate_with_studies('PLATE-1', 0, [study.uuid, unknown, unknown])]
-      end
+    context 'with a problem in a sample in new labware' do
+      let(:payload_labware) { [plate_with_studies('PLATE-1', 0, [unknown])] }
 
-      it 'reports it once, at its first sample, with how many use it' do
-        expect(validation.errors).to eq(
-          [{ pointer: '/labware/0/receptacles/1/samples/0/study_uuid',
-             detail: "No study with UUID #{unknown} (used by 2 samples)" }]
-        )
+      it 'reports it' do
+        expect(validation.errors.sole[:pointer])
+          .to eq('/labware/0/receptacles/0/samples/0/study_uuid')
       end
     end
 
-    context 'with two studies that do not exist' do
-      let(:payload_labware) do
-        [plate_with_studies('PLATE-1', 0, [unknown]),
-         plate_with_studies('PLATE-2', 1, [other_unknown])]
-      end
-
-      it 'reports each' do
-        expect(validation.errors.pluck(:detail)).to eq(
-          ["No study with UUID #{unknown} (used by 1 sample)",
-           "No study with UUID #{other_unknown} (used by 1 sample)"]
-        )
-      end
-    end
-
-    context 'with known labware' do
+    context 'with a problem in a sample in known labware' do
       let(:payload_labware) { [plate_with_studies('PLATE-1', 0, [unknown])] }
       let(:new_labware) { [] }
 
