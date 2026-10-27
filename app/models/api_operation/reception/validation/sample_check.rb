@@ -8,11 +8,18 @@
 # - Each sample's UUID and Sanger sample ID are new to Sequencescape, and no
 #   two samples share a Sanger sample ID. Sanger sample IDs are compared
 #   ignoring case, as sample names are.
+# - A sample in a receptacle more than once has tags in all but one: its
+#   untagged entries in a receptacle couldn't be told apart.
 # Each check looks up all the samples in one query.
 class ApiOperation::Reception::Validation::SampleCheck <
       ApiOperation::Reception::Validation::Check
   # The fields every entry of a sample in more than one receptacle must share
   SAMPLE_FIELDS = %i[sanger_sample_id supplier_sample_name study_uuid].freeze
+
+  # The fields that give a sample's tags, in any scheme
+  TAG_FIELDS =
+    ApiOperation::Reception::Validation::TagCheck::SCHEMES
+      .flat_map { it::FIELDS }.freeze
 
   # (see ApiOperation::Reception::Validation::Check#errors)
   def errors
@@ -20,7 +27,8 @@ class ApiOperation::Reception::Validation::SampleCheck <
 
     @errors ||=
       study_errors + repeated_sample_errors + shared_sanger_sample_id_errors +
-      used_uuid_errors + used_sanger_sample_id_errors
+      used_uuid_errors + used_sanger_sample_id_errors +
+      untagged_repeat_errors
   end
 
   private
@@ -58,6 +66,25 @@ class ApiOperation::Reception::Validation::SampleCheck <
               "#{fields.to_sentence} from #{first.pointer}")
       end
     end
+  end
+
+  # An error for each untagged entry of a sample after its first untagged
+  # entry in the same receptacle
+  def untagged_repeat_errors
+    input.new_labware.flat_map(&:receptacles).flat_map do |receptacle|
+      receptacle.samples.reject { tagged?(it) }.group_by(&:uuid).values
+        .flat_map do |first, *others|
+          others.map do |sample|
+            error(sample.pointer,
+                  "Sample #{sample.uuid} is also at #{first.pointer}, " \
+                  'without tags')
+          end
+        end
+    end
+  end
+
+  def tagged?(sample)
+    sample.fields.keys.intersect?(TAG_FIELDS)
   end
 
   # An error for each sample whose Sanger sample ID is another's
