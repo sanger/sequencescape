@@ -41,6 +41,35 @@ class ApiOperation::Reception::Validation::Tags::Scheme
     error("#{sample.pointer}/#{given}", "#{given} needs a #{missing}")
   end
 
+  # An error for each new receptacle that holds a sample of this scheme and
+  # other samples too, for schemes that give a sample tags of its own
+  # receptacle
+  #
+  # @param tags [String] the scheme's tags, as named in the message
+  def shared_receptacle_errors(tags)
+    pointers = samples.to_set(&:pointer)
+    input.new_labware.flat_map(&:receptacles).filter_map do |receptacle|
+      in_it = receptacle.samples
+      next unless in_it.many? && in_it.any? { pointers.include?(it.pointer) }
+
+      error(receptacle.pointer,
+            "A receptacle with #{tags} holds one sample, not #{in_it.size}")
+    end
+  end
+
+  # @return [Integer, nil] the well's position by column on a plate of the
+  #   size, from 1 (A1 is 1, B1 is 2), or nil if it isn't one of its wells.
+  #   A zero-padded well (A01) is read as A1.
+  def well_index(well, plate_size)
+    @well_indexes ||= Hash.new do |indexes, size|
+      indexes[size] =
+        Map.where_plate_size(size).where_plate_shape(AssetShape.default_id)
+          .pluck(:description, :column_order)
+          .to_h { |description, column_order| [description, column_order + 1] }
+    end
+    @well_indexes[plate_size][Map.strip_description(well)]
+  end
+
   def used_by(users)
     "used by #{users.size} #{'sample'.pluralize(users.size)}"
   end

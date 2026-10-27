@@ -36,7 +36,7 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
           split_pair('chromium_tag_group', 'chromium_tag_well')
         partial_errors + unknown_tag_set_errors(complete) +
           well_errors(complete) + missing_tag_errors(complete) +
-          receptacle_errors
+          shared_receptacle_errors('Chromium tags')
       end
   end
 
@@ -64,7 +64,7 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
   def well_errors(complete)
     complete.filter_map do |sample|
       well = sample.fields['chromium_tag_well']
-      next if well_index(well)
+      next if kit_well_index(well)
 
       error("#{sample.pointer}/chromium_tag_well",
             "#{well} is not a well of a #{KIT_PLATE_SIZE}-well kit plate")
@@ -73,10 +73,9 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
 
   # An error for each tag set and well without all the well's tags, once
   def missing_tag_errors(complete)
-    complete.select { tag_group_id(tag_set_name(it)) && well_index(well(it)) }
-      .group_by { [tag_set_name(it), well(it)] }
+    complete.select { known?(it) }.group_by { [tag_set_name(it), well(it)] }
       .filter_map do |(name, well), users|
-        next if all_tags?(tag_group_id(name), well_index(well))
+        next if all_tags?(tag_group_id(name), kit_well_index(well))
 
         error("#{users.first.pointer}/chromium_tag_well",
               "Chromium tag set #{name} doesn't have the #{TAGS_PER_WELL} " \
@@ -84,18 +83,9 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
       end
   end
 
-  # An error for each receptacle that holds a sample with Chromium tags
-  # and other samples too
-  def receptacle_errors
-    pointers = samples.to_set(&:pointer)
-    input.new_labware.flat_map(&:receptacles).filter_map do |receptacle|
-      in_it = receptacle.samples
-      next unless in_it.many? && in_it.any? { pointers.include?(it.pointer) }
-
-      error(receptacle.pointer,
-            'A receptacle with Chromium tags holds one sample, not ' \
-            "#{in_it.size}")
-    end
+  # Whether the sample names an existing tag set and a well of the kit plate
+  def known?(sample)
+    tag_group_id(tag_set_name(sample)) && kit_well_index(well(sample))
   end
 
   def tag_set_name(sample)
@@ -122,18 +112,8 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
       end
   end
 
-  # @return [Integer, nil] the well's position by column, from 1
-  def well_index(well)
-    well_indexes[Map.strip_description(well)]
-  end
-
-  # The position by column, from 1, of each well of the kit plate
-  def well_indexes
-    @well_indexes ||=
-      Map.where_plate_size(KIT_PLATE_SIZE)
-        .where_plate_shape(AssetShape.default_id)
-        .pluck(:description, :column_order)
-        .to_h { |description, column_order| [description, column_order + 1] }
+  def kit_well_index(well)
+    well_index(well, KIT_PLATE_SIZE)
   end
 
   def all_tags?(tag_group_id, well_index)
