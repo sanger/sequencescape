@@ -22,6 +22,33 @@ RSpec.describe ApiOperation::Reception::Validation do
     )
   end
 
+  # A plate with one sample in each well, A1 onwards, with the study UUIDs
+  def plate_with_studies(barcode, index, study_uuids)
+    pointer = "/labware/#{index}"
+    receptacles =
+      study_uuids.each_with_index.map do |study_uuid, well_index|
+        receptacle_pointer = "#{pointer}/receptacles/#{well_index}"
+        sample =
+          sample_with_study(study_uuid, "#{receptacle_pointer}/samples/0")
+        ApiOperation::Reception::Payload::PayloadReceptacle.new(
+          position: "#{('A'..'H').to_a[well_index]}1", uuid: SecureRandom.uuid,
+          samples: [sample], pointer: receptacle_pointer
+        )
+      end
+    ApiOperation::Reception::Payload::PayloadLabware.new(
+      uuid: SecureRandom.uuid, barcode: barcode, type: 'plate96',
+      receptacles: receptacles, pointer: pointer
+    )
+  end
+
+  def sample_with_study(study_uuid, pointer)
+    ApiOperation::Reception::Payload::PayloadSample.new(
+      uuid: SecureRandom.uuid, study_uuid: study_uuid,
+      sanger_sample_id: "SAMPLE-#{SecureRandom.hex(4)}",
+      supplier_sample_name: 'Supplier sample', fields: {}, pointer: pointer
+    )
+  end
+
   context 'with a valid plate and tube' do
     let(:payload_labware) do
       [labware('PLATE-1', 0, positions: %w[A1 H12]),
@@ -152,6 +179,58 @@ RSpec.describe ApiOperation::Reception::Validation do
         '/labware/1/barcode', '/labware/0/receptacles/0/position',
         '/labware/1/receptacles'
       )
+    end
+  end
+
+  describe 'studies' do
+    let(:study) { create(:study) }
+    let(:unknown) { SecureRandom.uuid }
+    let(:other_unknown) { SecureRandom.uuid }
+
+    context 'with existing studies' do
+      let(:payload_labware) do
+        [plate_with_studies('PLATE-1', 0, [study.uuid, study.uuid])]
+      end
+
+      it 'finds no errors' do
+        expect(validation.errors).to be_empty
+      end
+    end
+
+    context 'with a study used by several samples that does not exist' do
+      let(:payload_labware) do
+        [plate_with_studies('PLATE-1', 0, [study.uuid, unknown, unknown])]
+      end
+
+      it 'reports it once, at its first sample, with how many use it' do
+        expect(validation.errors).to eq(
+          [{ pointer: '/labware/0/receptacles/1/samples/0/study_uuid',
+             detail: "No study with UUID #{unknown} (used by 2 samples)" }]
+        )
+      end
+    end
+
+    context 'with two studies that do not exist' do
+      let(:payload_labware) do
+        [plate_with_studies('PLATE-1', 0, [unknown]),
+         plate_with_studies('PLATE-2', 1, [other_unknown])]
+      end
+
+      it 'reports each' do
+        expect(validation.errors.pluck(:detail)).to eq(
+          ["No study with UUID #{unknown} (used by 1 sample)",
+           "No study with UUID #{other_unknown} (used by 1 sample)"]
+        )
+      end
+    end
+
+    context 'with known labware' do
+      let(:payload_labware) { [plate_with_studies('PLATE-1', 0, [unknown])] }
+      let(:new_labware) { [] }
+
+      it 'does not check its samples' do
+        expect(validation.errors).to be_empty
+      end
     end
   end
 end
