@@ -57,7 +57,8 @@ Rails.application.routes.draw do
       jsonapi_resources :bulk_transfers, except: %i[update]
       jsonapi_resources :comments
       jsonapi_resources :custom_metadatum_collections
-      jsonapi_resources :labware
+      # Permissive get to enable Traction to fetch labware without requiring an API key
+      jsonapi_resources :labware, defaults: { permissive: %i[get] }
       jsonapi_resources :lanes
       jsonapi_resources :lot_types
       jsonapi_resources :lots
@@ -91,11 +92,13 @@ Rails.application.routes.draw do
       jsonapi_resources :specific_tube_creations, except: %i[update]
       jsonapi_resources :specific_tube_rack_creations, except: %i[update]
       jsonapi_resources :state_changes, except: %i[update]
-      jsonapi_resources :studies
+      # Permissive get to enable Traction to fetch labware without requiring an API key
+      jsonapi_resources :studies, defaults: { permissive: %i[get] }
       jsonapi_resources :submission_pools
       jsonapi_resources :submission_templates
       jsonapi_resources :submissions, except: %i[update]
       jsonapi_resources :tag_group_adapter_types
+      # Permissive get to enable Genomic Informatics to fetch tag groups without requiring an API key (tag_sniff script)
       jsonapi_resources :tag_groups, defaults: { permissive: %i[get] }
       jsonapi_resources :tag_sets, only: %i[index show]
       jsonapi_resources :tag_layout_templates
@@ -112,6 +115,8 @@ Rails.application.routes.draw do
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
       jsonapi_resources :tubes
+      jsonapi_resources :ultima_applications, only: %i[index show]
+      jsonapi_resources :ultima_primers, only: %i[index show]
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
