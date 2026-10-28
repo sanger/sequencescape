@@ -308,5 +308,56 @@ RSpec.describe ApiOperation::Reception::Creation do
           .to contain_exactly('A1', 'B1')
       end
     end
+
+    context 'with a sample with a tag group and index' do
+      let(:tag_group) { create(:tag_group_with_tags, tag_count: 2) }
+      let(:labware) do
+        [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                tag_group: tag_group.name, tag_index: 2))]
+      end
+
+      it 'gives its aliquot the tag, with the tube as its library' do
+        expect(created_sample.aliquots.sole).to have_attributes(
+          tag: tag_group.tags.find_by(map_id: 2), tag2: nil,
+          library: created.receptacle
+        )
+      end
+    end
+
+    context 'with samples with tags in one tube' do
+      let(:tag_group) { create(:tag_group_with_tags, tag_count: 2) }
+      let(:labware) do
+        [tube('SAPIO-1',
+              sample(sanger_sample_id: 'SAMPLE-1',
+                     tag_group: tag_group.name, tag_index: 1),
+              sample(sanger_sample_id: 'SAMPLE-2',
+                     tag_group: tag_group.name, tag_index: 2))]
+      end
+
+      it 'gives each aliquot its tag and the default tag depth' do
+        expect(created.receptacle.aliquots.map do |aliquot|
+          [aliquot.tag.map_id, aliquot.tag_depth]
+        end).to contain_exactly([1, 1], [2, 1])
+      end
+    end
+
+    context 'with a sample with a dual index well' do
+      let(:tag_set) do
+        create(:tag_set, tag_group: create(:tag_group_with_tags, tag_count: 2),
+                         tag2_group: create(:tag_group_with_tags, tag_count: 2))
+      end
+      let(:labware) do
+        [plate('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                 dual_index_tag_set: tag_set.name,
+                                 dual_index_tag_well: 'B1'))]
+      end
+
+      it 'gives its aliquot both tags of the well' do
+        expect(created_sample.aliquots.sole).to have_attributes(
+          tag: tag_set.tag_group.tags.find_by(map_id: 2),
+          tag2: tag_set.tag2_group.tags.find_by(map_id: 2)
+        )
+      end
+    end
   end
 end

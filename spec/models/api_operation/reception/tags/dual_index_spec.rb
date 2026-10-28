@@ -188,4 +188,17 @@ RSpec.describe ApiOperation::Reception::Tags::DualIndex do
       )
     end
   end
+
+  describe '#tag_ids' do
+    let(:samples) do
+      [sample(0, dual_index_tag_set: tag_set.name, dual_index_tag_well: 'b1')]
+    end
+
+    it 'gives the IDs of the i7 and i5 tags of the well, for one aliquot' do
+      expect(scheme.tag_ids(samples.first)).to eq(
+        [[tag_set.tag_group.tags.find_by(map_id: 2).id,
+          tag_set.tag2_group.tags.find_by(map_id: 2).id]]
+      )
+    end
+  end
 end

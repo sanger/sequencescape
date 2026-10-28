@@ -171,4 +171,26 @@ RSpec.describe ApiOperation::Reception::Tags::TagGroups do
         .to eq([[oligo(tag_group, 1), nil]])
     end
   end
+
+  describe '#tag_ids' do
+    let(:samples) do
+      [sample(0, tag_group: tag_group.name, tag_index: 2,
+                 tag2_group: tag2_group.name.upcase, tag2_index: 3),
+       sample(1, tag_group: tag_group.name, tag_index: 1)]
+    end
+
+    def tag_id(group, index)
+      group.tags.find_by(map_id: index).id
+    end
+
+    it 'gives the IDs of the tag and tag 2, for one aliquot' do
+      expect(scheme.tag_ids(samples.first))
+        .to eq([[tag_id(tag_group, 2), tag_id(tag2_group, 3)]])
+    end
+
+    it 'gives nil for a tag 2 not given' do
+      expect(scheme.tag_ids(samples.last))
+        .to eq([[tag_id(tag_group, 1), nil]])
+    end
+  end
 end
