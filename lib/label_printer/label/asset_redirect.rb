@@ -18,8 +18,12 @@ module LabelPrinter
         end
       end
 
+      # Gives a barcode to labware that has none. Labware whose barcode has no
+      # number, such as an external one, keeps that as its only barcode.
       def assets
-        printable_assets.each { |asset| asset.barcode! if asset.barcode_number.blank? }
+        printable_assets.each do |asset|
+          asset.barcode! if asset.barcodes.empty?
+        end
       end
 
       private
