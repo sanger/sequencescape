@@ -108,4 +108,13 @@ RSpec.describe ApiOperation::Reception::Payload do
     body[:labware].first.delete(:barcode)
     expect { payload.labware }.to raise_error(KeyError)
   end
+
+  context 'with a sample UUID in upper case' do
+    let(:sample) { super().merge(uuid: '3F2504E0-4F89-41D3-9A0C-0305E82C3301') }
+
+    it 'reads it in lower case' do
+      expect(plate_labware.receptacles.first.samples.sole.uuid)
+        .to eq('3f2504e0-4f89-41d3-9a0c-0305e82c3301')
+    end
+  end
 end
