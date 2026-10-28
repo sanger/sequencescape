@@ -359,5 +359,26 @@ RSpec.describe ApiOperation::Reception::Creation do
         )
       end
     end
+
+    context 'with a sample with a Chromium well' do
+      let(:chromium) { ApiOperation::Reception::Tags::Chromium }
+      let(:tag_group) do
+        create(:tag_group_with_tags,
+               tag_count: 2 * chromium::TAGS_PER_WELL,
+               adapter_type: create(:adapter_type, name: 'Chromium'))
+      end
+      let(:tag_set) { create(:tag_set, tag_group: tag_group, tag2_group: nil) }
+      let(:labware) do
+        [plate('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                 chromium_tag_group: tag_set.name,
+                                 chromium_tag_well: 'B1'))]
+      end
+
+      it 'gives it an aliquot for each tag of the well, in its well' do
+        expect(created_sample.aliquots.map do |aliquot|
+          [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description]
+        end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1'] })
+      end
+    end
   end
 end

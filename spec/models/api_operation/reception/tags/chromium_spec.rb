@@ -173,4 +173,15 @@ RSpec.describe ApiOperation::Reception::Tags::Chromium do
       expect(scheme.oligos(samples.first)).to eq(expected)
     end
   end
+
+  describe '#tag_ids' do
+    let(:samples) do
+      [sample(0, chromium_tag_group: tag_set.name, chromium_tag_well: 'B1')]
+    end
+
+    it "gives the IDs of the well's four tags, an aliquot each" do
+      expected = (5..8).map { [tag_group.tags.find_by(map_id: it).id, nil] }
+      expect(scheme.tag_ids(samples.first)).to eq(expected)
+    end
+  end
 end
