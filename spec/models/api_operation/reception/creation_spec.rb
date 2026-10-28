@@ -218,4 +218,95 @@ RSpec.describe ApiOperation::Reception::Creation do
       end
     end
   end
+
+  describe 'aliquots' do
+    let(:created_sample) { Sample.find_by!(sanger_sample_id: 'SAMPLE-1') }
+
+    context 'with a sample in a well' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1'))]
+      end
+
+      it 'puts it in its well, with its study' do
+        expect(created_sample.aliquots.sole).to have_attributes(
+          receptacle: created.wells.located_at('A1').sole,
+          study: study, library: nil, tag_depth: 1
+        )
+      end
+    end
+
+    context 'with library fields' do
+      let(:library_type) { create(:library_type) }
+      let(:primer_panel) { create(:primer_panel) }
+      let(:labware) do
+        [tube('SAPIO-1',
+              sample(sanger_sample_id: 'SAMPLE-1',
+                     library_type: library_type.name.upcase,
+                     insert_size_from: 100, insert_size_to: 200,
+                     primer_panel: primer_panel.name.upcase))]
+      end
+
+      it 'sets them on the aliquot, with the library type by its own name' do
+        expect(created_sample.aliquots.sole).to have_attributes(
+          library_type: library_type.name, insert_size_from: 100,
+          insert_size_to: 200, primer_panel: primer_panel
+        )
+      end
+    end
+
+    context 'with a long read library type' do
+      let(:library_type) { create(:library_type) }
+      let(:labware) do
+        [tube('SAPIO-1',
+              sample(sanger_sample_id: 'SAMPLE-1',
+                     library_type_long_read: library_type.name))]
+      end
+
+      it 'sets the library type' do
+        expect(created_sample.aliquots.sole.library_type)
+          .to eq(library_type.name)
+      end
+    end
+
+    context 'with library labware' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1'),
+               sample(i7: 'ACGT'))]
+      end
+
+      it "makes the aliquot's well its library" do
+        aliquot = created_sample.aliquots.sole
+        expect(aliquot.library).to eq(aliquot.receptacle)
+      end
+    end
+
+    context 'with samples without tags in one tube' do
+      let(:labware) do
+        [tube('SAPIO-1', *%w[SAMPLE-1 SAMPLE-2 SAMPLE-3].map do |id|
+          sample(sanger_sample_id: id)
+        end)]
+      end
+
+      it 'gives them their positions as tag depths' do
+        expect(created.receptacle.aliquots.map do |aliquot|
+          [aliquot.sample.sanger_sample_id, aliquot.tag_depth]
+        end).to contain_exactly(['SAMPLE-1', 0], ['SAMPLE-2', 1],
+                                ['SAMPLE-3', 2])
+      end
+
+      it 'gives them no library' do
+        expect(created.receptacle.aliquots.map(&:library)).to all(be_nil)
+      end
+    end
+
+    context 'with a sample in two wells' do
+      let(:replicate) { sample(sanger_sample_id: 'SAMPLE-1') }
+      let(:labware) { [plate('SAPIO-1', replicate, replicate)] }
+
+      it 'puts it in each well' do
+        expect(created_sample.aliquots.map { it.receptacle.map_description })
+          .to contain_exactly('A1', 'B1')
+      end
+    end
+  end
 end
