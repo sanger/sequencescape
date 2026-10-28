@@ -53,4 +53,47 @@ RSpec.describe ApiOperation::Reception do
       )
     end
   end
+
+  describe 'creating the new labware' do
+    let(:creation) do
+      instance_double(ApiOperation::Reception::Creation, call: nil)
+    end
+
+    before do
+      allow(ApiOperation::Reception::Creation)
+        .to receive(:new).and_return(creation)
+      reception.call
+    end
+
+    context 'when nothing is wrong' do
+      let(:labware) { labware_with('UNKNOWN-1') }
+
+      it 'is given the new labware' do
+        expect(ApiOperation::Reception::Creation).to have_received(:new)
+          .with([having_attributes(barcode: 'UNKNOWN-1')])
+      end
+
+      it 'creates it' do
+        expect(creation).to have_received(:call)
+      end
+    end
+
+    context 'when the only labware is known' do
+      let(:plate) { create(:plate) }
+      let(:labware) { labware_with(plate.human_barcode) }
+
+      it 'is given no labware' do
+        expect(ApiOperation::Reception::Creation)
+          .to have_received(:new).with([])
+      end
+    end
+
+    context 'when something is wrong' do
+      let(:labware) { labware_with('UNKNOWN-1', type: 'tube') }
+
+      it 'creates nothing' do
+        expect(creation).not_to have_received(:call)
+      end
+    end
+  end
 end
