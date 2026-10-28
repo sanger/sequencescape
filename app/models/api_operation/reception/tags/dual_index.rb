@@ -38,11 +38,22 @@ class ApiOperation::Reception::Tags::DualIndex <
 
   # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
-    index = plate_well_index(well(sample))
-    [tag_group_ids(tag_set_name(sample)).map { tags[[it, index]] }]
+    pairs(sample, tags)
+  end
+
+  # (see ApiOperation::Reception::Tags::Scheme#tag_ids)
+  def tag_ids(sample)
+    pairs(sample, tag_ids_by_index)
   end
 
   private
+
+  # The sample's i7 and i5 tags, as found by group ID and index in by_index:
+  # one pair, for its one aliquot
+  def pairs(sample, by_index)
+    index = plate_well_index(well(sample))
+    [tag_group_ids(tag_set_name(sample)).map { by_index[[it, index]] }]
+  end
 
   def unknown_tag_set_errors(complete)
     complete.group_by { tag_set_name(it) }.filter_map do |name, samples|
@@ -125,5 +136,10 @@ class ApiOperation::Reception::Tags::DualIndex <
   # index
   def tags
     @tags ||= oligos_by_tag(tag_sets.values.flatten)
+  end
+
+  # The ID of each tag in the sets' tag groups, by group ID and index
+  def tag_ids_by_index
+    @tag_ids_by_index ||= ids_by_tag(tag_sets.values.flatten)
   end
 end

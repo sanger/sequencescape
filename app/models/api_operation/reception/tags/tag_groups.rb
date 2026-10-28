@@ -28,13 +28,24 @@ class ApiOperation::Reception::Tags::TagGroups <
 
   # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
-    [PAIRS.map do |group_field, index_field|
-      name = sample.fields[group_field]
-      tags[[tag_group_id(name), sample.fields[index_field]]] if name
-    end]
+    pairs(sample, tags)
+  end
+
+  # (see ApiOperation::Reception::Tags::Scheme#tag_ids)
+  def tag_ids(sample)
+    pairs(sample, tag_ids_by_index)
   end
 
   private
+
+  # The sample's tag and tag 2, as found by group ID and index in by_index:
+  # one pair, for its one aliquot, with nil for a tag 2 it doesn't give
+  def pairs(sample, by_index)
+    [PAIRS.map do |group_field, index_field|
+      name = sample.fields[group_field]
+      by_index[[tag_group_id(name), sample.fields[index_field]]] if name
+    end]
+  end
 
   def pair_errors(group_field, index_field)
     complete, partial_errors = split_pair(group_field, index_field)
@@ -86,5 +97,10 @@ class ApiOperation::Reception::Tags::TagGroups <
   # index
   def tags
     @tags ||= oligos_by_tag(tag_group_ids.values)
+  end
+
+  # The ID of each tag in the groups the samples name, by group ID and index
+  def tag_ids_by_index
+    @tag_ids_by_index ||= ids_by_tag(tag_group_ids.values)
   end
 end

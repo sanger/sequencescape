@@ -3,7 +3,9 @@
 # A way a payload sample can give its tags, by a set of fields (FIELDS),
 # named NAME in messages. A scheme is given the samples that give their tags
 # its way, and the Input, and checks them. Schemes without rules of their own
-# find no problems.
+# find no problems. For each sample, a scheme also gives the oligos of its
+# aliquots' tags, to compare tags (Validation::TagCheck), and their tag IDs,
+# to create the aliquots (Creation::AliquotFactory).
 class ApiOperation::Reception::Tags::Scheme
   # @param samples [Array<ApiOperation::Reception::Payload::PayloadSample>]
   #   the samples that give their tags this way
@@ -27,6 +29,16 @@ class ApiOperation::Reception::Tags::Scheme
   # @return [Array<Array(String, String)>] the oligo pairs
   def oligos(_sample)
     raise NotImplementedError, "#{self.class} must define oligos"
+  end
+
+  # The IDs of the tags of the aliquots the sample's tags give, for creating
+  # them: a [tag_id, tag2_id] pair for each aliquot, with nil for a tag it
+  # doesn't have. Only for a sample whose tags passed this scheme's checks.
+  #
+  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @return [Array<Array(Integer, Integer)>] the tag ID pairs
+  def tag_ids(_sample)
+    raise NotImplementedError, "#{self.class} must define tag_ids"
   end
 
   private
@@ -86,6 +98,14 @@ class ApiOperation::Reception::Tags::Scheme
     Tag.where(tag_group_id: tag_group_ids).where.not(map_id: nil)
       .pluck(:tag_group_id, :map_id, :oligo)
       .to_h { |group_id, map_id, oligo| [[group_id, map_id], oligo] }
+  end
+
+  # The ID of each tag in the tag groups, by tag group ID and index (map_id),
+  # in one query
+  def ids_by_tag(tag_group_ids)
+    Tag.where(tag_group_id: tag_group_ids).where.not(map_id: nil)
+      .pluck(:tag_group_id, :map_id, :id)
+      .to_h { |group_id, map_id, id| [[group_id, map_id], id] }
   end
 
   def used_by(samples)
