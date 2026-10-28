@@ -9,6 +9,7 @@ RSpec.describe ApiOperation::Reception::Creation do
     ApiOperation::Reception::Payload.new({ labware: }.to_json)
   end
   let(:created) { Barcode.find_by!(barcode: 'SAPIO-1').asset }
+  let(:study) { create(:study) }
 
   before do
     create(:input_plate_purpose, name: 'Library Stock Plate')
@@ -18,7 +19,7 @@ RSpec.describe ApiOperation::Reception::Creation do
 
   # A payload sample, with the optional fields given
   def sample(**fields)
-    { uuid: SecureRandom.uuid, study_uuid: SecureRandom.uuid,
+    { uuid: SecureRandom.uuid, study_uuid: study.uuid,
       sanger_sample_id: "SAMPLE-#{SecureRandom.hex(4)}",
       supplier_sample_name: 'Supplier sample' }.merge(fields)
   end
@@ -128,6 +129,93 @@ RSpec.describe ApiOperation::Reception::Creation do
     it 'creates each' do
       expect(Barcode.where(barcode: %w[SAPIO-1 SAPIO-2 SAPIO-3]).count)
         .to eq(3)
+    end
+  end
+
+  describe 'samples' do
+    let(:created_sample) { Sample.find_by!(sanger_sample_id: 'SAMPLE-1') }
+    let(:uuid) { SecureRandom.uuid }
+
+    context 'with a sample' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1', uuid: uuid))]
+      end
+
+      it 'creates it, externally managed, with the payload UUID' do
+        expect(created_sample).to have_attributes(
+          name: 'SAMPLE-1', uuid: uuid, externally_managed: true,
+          studies: contain_exactly(study),
+          priority: 'no_priority', control: false
+        )
+      end
+
+      it 'gives it the supplier sample name' do
+        expect(created_sample.sample_metadata.supplier_name)
+          .to eq('Supplier sample')
+      end
+    end
+
+    context 'with a sample in two receptacles' do
+      let(:replicate) { sample(sanger_sample_id: 'SAMPLE-1') }
+      let(:labware) { [plate('SAPIO-1', replicate, replicate)] }
+
+      it 'creates it once' do
+        expect(Sample.where(sanger_sample_id: 'SAMPLE-1').count).to eq(1)
+      end
+    end
+
+    context 'with UUIDs in upper case' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                uuid: uuid.upcase,
+                                study_uuid: study.uuid.upcase))]
+      end
+
+      it 'keeps the sample UUID in lower case' do
+        expect(created_sample.uuid).to eq(uuid)
+      end
+
+      it 'finds the study' do
+        expect(created_sample.studies).to contain_exactly(study)
+      end
+    end
+
+    context 'with optional fields' do
+      let(:reference_genome) { create(:reference_genome) }
+      let(:labware) do
+        [tube('SAPIO-1',
+              sample(sanger_sample_id: 'SAMPLE-1', priority: 'surveillance',
+                     control_type: 'positive', donor_id: 'DONOR-1',
+                     reference_genome: reference_genome.name.upcase))]
+      end
+
+      it 'sets them on the sample' do
+        expect(created_sample).to have_attributes(
+          priority: 'surveillance', control: true, control_type: 'positive'
+        )
+      end
+
+      it 'sets them in its metadata' do
+        expect(created_sample.sample_metadata).to have_attributes(
+          donor_id: 'DONOR-1', reference_genome: reference_genome
+        )
+      end
+    end
+
+    context 'with Bioscan fields' do
+      let(:labware) do
+        [plate('SAPIO-1',
+               sample(sanger_sample_id: 'SAMPLE-1',
+                      bioscan_supplier_name: 'CONTROL_1',
+                      bioscan_control_type: 'pcr positive'))]
+      end
+
+      it 'uses the Bioscan supplier name and control type' do
+        expect(created_sample).to have_attributes(
+          control: true, control_type: 'pcr positive',
+          sample_metadata: have_attributes(supplier_name: 'CONTROL_1')
+        )
+      end
     end
   end
 end
