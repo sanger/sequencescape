@@ -39,16 +39,16 @@ class ApiOperation::Reception::Validation::SampleFieldCheck <
   private
 
   def reference_genome_errors
-    users = users_by_name('reference_genome')
-    return [] if users.empty?
+    by_name = samples_by_name('reference_genome')
+    return [] if by_name.empty?
 
-    known = ::ReferenceGenome.where(name: users.keys).pluck(:name)
+    known = ::ReferenceGenome.where(name: by_name.keys).pluck(:name)
       .to_set(&:downcase)
-    users.filter_map do |name, name_users|
+    by_name.filter_map do |name, samples|
       next if known.include?(name.downcase)
 
-      error("#{name_users.first.pointer}/reference_genome",
-            "No reference genome named #{name} (#{used_by(name_users)})")
+      error("#{samples.first.pointer}/reference_genome",
+            "No reference genome named #{name} (#{used_by(samples)})")
     end
   end
 

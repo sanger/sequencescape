@@ -43,23 +43,23 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
   end
 
   def unknown_group_errors(complete, group_field)
-    complete.group_by { it.fields[group_field] }.filter_map do |name, users|
+    complete.group_by { it.fields[group_field] }.filter_map do |name, samples|
       next if tag_group_id(name)
 
-      error("#{users.first.pointer}/#{group_field}",
-            "No tag group named #{name} (#{used_by(users)})")
+      error("#{samples.first.pointer}/#{group_field}",
+            "No tag group named #{name} (#{used_by(samples)})")
     end
   end
 
   def missing_tag_errors(complete, group_field, index_field)
     complete.select { tag_group_id(it.fields[group_field]) }
       .group_by { [it.fields[group_field], it.fields[index_field]] }
-      .filter_map do |(name, index), users|
+      .filter_map do |(name, index), samples|
         next if tag?(tag_group_id(name), index)
 
-        error("#{users.first.pointer}/#{index_field}",
+        error("#{samples.first.pointer}/#{index_field}",
               "Tag group #{name} has no tag with index #{index} " \
-              "(#{used_by(users)})")
+              "(#{used_by(samples)})")
       end
   end
 

@@ -88,8 +88,8 @@ class ApiOperation::Reception::Validation::Tags::Scheme
       .to_h { |group_id, map_id, oligo| [[group_id, map_id], oligo] }
   end
 
-  def used_by(users)
-    "used by #{users.size} #{'sample'.pluralize(users.size)}"
+  def used_by(samples)
+    "used by #{samples.size} #{'sample'.pluralize(samples.size)}"
   end
 
   def error(pointer, detail)

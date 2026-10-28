@@ -59,12 +59,12 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
   private
 
   def unknown_tag_set_errors(complete)
-    complete.group_by { tag_set_name(it) }.filter_map do |name, users|
+    complete.group_by { tag_set_name(it) }.filter_map do |name, samples|
       next if tag_group_id(name)
 
-      error("#{users.first.pointer}/chromium_tag_group",
+      error("#{samples.first.pointer}/chromium_tag_group",
             'No visible single-index Chromium tag set named ' \
-            "#{name} (#{used_by(users)})")
+            "#{name} (#{used_by(samples)})")
     end
   end
 
@@ -81,12 +81,12 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
   # An error for each tag set and well without all the well's tags, once
   def missing_tag_errors(complete)
     complete.select { known?(it) }.group_by { [tag_set_name(it), well(it)] }
-      .filter_map do |(name, well), users|
+      .filter_map do |(name, well), samples|
         next if all_tags?(tag_group_id(name), kit_well_index(well))
 
-        error("#{users.first.pointer}/chromium_tag_well",
+        error("#{samples.first.pointer}/chromium_tag_well",
               "Chromium tag set #{name} doesn't have the #{TAGS_PER_WELL} " \
-              "tags of well #{well} (#{used_by(users)})")
+              "tags of well #{well} (#{used_by(samples)})")
       end
   end
 

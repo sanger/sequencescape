@@ -59,11 +59,11 @@ class ApiOperation::Reception::Validation::LibraryCheck <
   end
 
   def unknown_name_errors(field, model, label)
-    users_by_name(field).filter_map do |name, users|
+    samples_by_name(field).filter_map do |name, samples|
       next if known_names(model).include?(name.downcase)
 
-      error("#{users.first.pointer}/#{field}",
-            "No #{label} named #{name} (#{used_by(users)})")
+      error("#{samples.first.pointer}/#{field}",
+            "No #{label} named #{name} (#{used_by(samples)})")
     end
   end
 
@@ -77,6 +77,6 @@ class ApiOperation::Reception::Validation::LibraryCheck <
   # The names the samples give in any of the model's fields
   def names_of(model)
     FIELDS.select { |_field, (field_model, _label)| field_model == model }
-      .keys.flat_map { users_by_name(it).keys }
+      .keys.flat_map { samples_by_name(it).keys }
   end
 end

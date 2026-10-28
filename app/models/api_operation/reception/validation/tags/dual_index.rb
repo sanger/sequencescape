@@ -45,12 +45,12 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
   private
 
   def unknown_tag_set_errors(complete)
-    complete.group_by { tag_set_name(it) }.filter_map do |name, users|
+    complete.group_by { tag_set_name(it) }.filter_map do |name, samples|
       next if tag_group_ids(name)
 
-      error("#{users.first.pointer}/dual_index_tag_set",
+      error("#{samples.first.pointer}/dual_index_tag_set",
             "No visible dual index tag set named #{name} " \
-            "(#{used_by(users)})")
+            "(#{used_by(samples)})")
     end
   end
 
@@ -66,12 +66,12 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
   # An error for each tag set and well whose i7 or i5 tag is missing, once
   def missing_tag_errors(complete)
     complete.select { known?(it) }.group_by { [tag_set_name(it), well(it)] }
-      .flat_map do |(name, well), users|
+      .flat_map do |(name, well), samples|
         missing_tags(tag_group_ids(name), plate_well_index(well))
           .map do |tag|
-            error("#{users.first.pointer}/dual_index_tag_well",
+            error("#{samples.first.pointer}/dual_index_tag_well",
                   "Dual index tag set #{name} has no #{tag} tag for well " \
-                  "#{well} (#{used_by(users)})")
+                  "#{well} (#{used_by(samples)})")
           end
       end
   end
