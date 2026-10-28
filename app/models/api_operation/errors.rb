@@ -10,7 +10,7 @@ module ApiOperation::Errors
   # Delayed::Job retries the delivery.
   class DeliveryFailed < StandardError
     # @param url [String] the callback URL
-    # @param code [String] the HTTP status code of the response
+    # @param code [Integer] the HTTP status code of the response
     def initialize(url, code)
       super("API callback to #{url} failed with HTTP #{code}")
     end

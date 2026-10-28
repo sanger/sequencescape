@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'net/http'
+require 'faraday'
 
 # Reports the processing status of an API operation back to the calling system
 # by POSTing JSON to the callback URL of the operation's ApiApplication (see
@@ -8,7 +8,7 @@ require 'net/http'
 #
 # Queued once the operation is completed. A failed
 # delivery raises, so Delayed::Job retries it. An application with no callback URL also raises.
-class ApiOperation::CallbackJob
+class ApiOperation::CallbackJob < HTTPClients::BaseClient
   # The environment variable that holds an application's callback URL is named
   # after it: the name in upper case, each run of other characters replaced by
   # an underscore, then this suffix. For example, INTEGRATION_HUB_CALLBACK_URL.
@@ -25,9 +25,9 @@ class ApiOperation::CallbackJob
     response = post(URI(url), body(api_operation))
     api_operation.update!(response_delivered_at: Time.current)
 
-    return if response.is_a?(Net::HTTPSuccess)
+    return if response.success?
 
-    raise ApiOperation::Errors::DeliveryFailed.new(url, response.code)
+    raise ApiOperation::Errors::DeliveryFailed.new(url, response.status)
   end
 
   private
@@ -60,12 +60,9 @@ class ApiOperation::CallbackJob
   end
 
   def post(uri, body)
-    request = Net::HTTP::Post.new(uri, 'Content-Type' => 'application/json')
-    request.body = body.to_json
-    Net::HTTP.start(
-      uri.hostname,
-      uri.port,
-      use_ssl: uri.scheme == 'https'
-    ) { |http| http.request(request) }
+    Faraday.new(
+      headers: default_headers.merge('Content-Type' => 'application/json'),
+      proxy: proxy
+    ).post(uri.to_s, body.to_json)
   end
 end
