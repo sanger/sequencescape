@@ -14,8 +14,8 @@
 #   of the well's tags.
 # Unlike the manifest, a well that isn't on the kit plate (I1, a1, A13) is a
 # problem, not read as another well.
-class ApiOperation::Reception::Validation::Tags::Chromium <
-      ApiOperation::Reception::Validation::Tags::Scheme
+class ApiOperation::Reception::Tags::Chromium <
+      ApiOperation::Reception::Tags::Scheme
   # The payload fields of this scheme
   FIELDS = %w[chromium_tag_group chromium_tag_well].freeze
 
@@ -28,7 +28,7 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
   # The wells of a Chromium kit plate, as in the sample manifest
   KIT_PLATE_SIZE = 96
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#errors)
+  # (see ApiOperation::Reception::Tags::Scheme#errors)
   def errors
     @errors ||=
       begin
@@ -49,7 +49,7 @@ class ApiOperation::Reception::Validation::Tags::Chromium <
     Array.new(TAGS_PER_WELL) { ((well_index - 1) * TAGS_PER_WELL) + it + 1 }
   end
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
     group_id = tag_group_id(tag_set_name(sample))
     self.class.map_ids(kit_well_index(well(sample)))

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApiOperation::Reception::Validation::Tags::DualIndex do
+RSpec.describe ApiOperation::Reception::Tags::DualIndex do
   subject(:scheme) { described_class.new(samples, input) }
 
   let(:input) do

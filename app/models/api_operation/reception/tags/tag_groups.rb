@@ -7,8 +7,8 @@
 # A group needs its index and an index its group. An unknown group, or a
 # missing tag, is reported once, at the first sample that names it, with how
 # many do. All the groups and their tags are looked up in two queries.
-class ApiOperation::Reception::Validation::Tags::TagGroups <
-      ApiOperation::Reception::Validation::Tags::Scheme
+class ApiOperation::Reception::Tags::TagGroups <
+      ApiOperation::Reception::Tags::Scheme
   # The payload fields of this scheme
   FIELDS = %w[tag_group tag_index tag2_group tag2_index].freeze
 
@@ -18,7 +18,7 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
   # Each group field with its index field: for the tag, and for tag 2
   PAIRS = { 'tag_group' => 'tag_index', 'tag2_group' => 'tag2_index' }.freeze
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#errors)
+  # (see ApiOperation::Reception::Tags::Scheme#errors)
   def errors
     @errors ||=
       PAIRS.flat_map do |group_field, index_field|
@@ -26,7 +26,7 @@ class ApiOperation::Reception::Validation::Tags::TagGroups <
       end
   end
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
     [PAIRS.map do |group_field, index_field|
       name = sample.fields[group_field]

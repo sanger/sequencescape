@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-RSpec.describe ApiOperation::Reception::Validation::Tags::TagGroups do
+RSpec.describe ApiOperation::Reception::Tags::TagGroups do
   subject(:scheme) { described_class.new(samples, input) }
 
   let(:input) do

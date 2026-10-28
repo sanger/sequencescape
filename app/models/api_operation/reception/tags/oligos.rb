@@ -3,8 +3,8 @@
 # Tags given as oligo sequences: i7 for the tag, i5 for tag 2. Mirrors the
 # sample manifest's i7 and i5 fields (SampleManifestExcel::Tags::Validator::
 # Formatting).
-class ApiOperation::Reception::Validation::Tags::Oligos <
-      ApiOperation::Reception::Validation::Tags::Scheme
+class ApiOperation::Reception::Tags::Oligos <
+      ApiOperation::Reception::Tags::Scheme
   # The payload fields of this scheme
   FIELDS = %w[i7 i5].freeze
 
@@ -17,7 +17,7 @@ class ApiOperation::Reception::Validation::Tags::Oligos <
   # The longest oligo the sample manifest accepts
   MAX_LENGTH = 30
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#errors)
+  # (see ApiOperation::Reception::Tags::Scheme#errors)
   def errors
     @errors ||=
       samples.flat_map do |sample|
@@ -28,7 +28,7 @@ class ApiOperation::Reception::Validation::Tags::Oligos <
       end
   end
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
     [sample.fields.values_at(*FIELDS)]
   end

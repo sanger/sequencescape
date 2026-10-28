@@ -13,8 +13,8 @@
 # - The receptacle holds only that sample.
 # Unlike the manifest, a well that isn't on the plate (I1, A13) is a
 # problem, not read as another well.
-class ApiOperation::Reception::Validation::Tags::DualIndex <
-      ApiOperation::Reception::Validation::Tags::Scheme
+class ApiOperation::Reception::Tags::DualIndex <
+      ApiOperation::Reception::Tags::Scheme
   # The payload fields of this scheme
   FIELDS = %w[dual_index_tag_set dual_index_tag_well].freeze
 
@@ -24,7 +24,7 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
   # The wells of a dual index tag set's plate, as in the sample manifest
   PLATE_SIZE = 96
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#errors)
+  # (see ApiOperation::Reception::Tags::Scheme#errors)
   def errors
     @errors ||=
       begin
@@ -36,7 +36,7 @@ class ApiOperation::Reception::Validation::Tags::DualIndex <
       end
   end
 
-  # (see ApiOperation::Reception::Validation::Tags::Scheme#oligos)
+  # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
     index = plate_well_index(well(sample))
     [tag_group_ids(tag_set_name(sample)).map { tags[[it, index]] }]

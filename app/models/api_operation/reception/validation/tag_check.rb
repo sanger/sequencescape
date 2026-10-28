@@ -16,10 +16,10 @@ class ApiOperation::Reception::Validation::TagCheck <
       ApiOperation::Reception::Validation::Check
   # The ways a sample can give its tags
   SCHEMES = [
-    ApiOperation::Reception::Validation::Tags::Oligos,
-    ApiOperation::Reception::Validation::Tags::TagGroups,
-    ApiOperation::Reception::Validation::Tags::Chromium,
-    ApiOperation::Reception::Validation::Tags::DualIndex
+    ApiOperation::Reception::Tags::Oligos,
+    ApiOperation::Reception::Tags::TagGroups,
+    ApiOperation::Reception::Tags::Chromium,
+    ApiOperation::Reception::Tags::DualIndex
   ].freeze
 
   # (see ApiOperation::Reception::Validation::Check#errors)

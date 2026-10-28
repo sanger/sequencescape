@@ -4,7 +4,7 @@
 # named NAME in messages. A scheme is given the samples that give their tags
 # its way, and the Input, and checks them. Schemes without rules of their own
 # find no problems.
-class ApiOperation::Reception::Validation::Tags::Scheme
+class ApiOperation::Reception::Tags::Scheme
   # @param samples [Array<ApiOperation::Reception::Payload::PayloadSample>]
   #   the samples that give their tags this way
   # @param input [ApiOperation::Reception::Validation::Input] what the
