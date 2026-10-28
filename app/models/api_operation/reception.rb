@@ -6,8 +6,9 @@
 # the y26_283_sapio_reception feature flag is on, and records the outcome.
 #
 # All problems are collected: known labware that isn't the same (conflicts),
-# and problems with the payload's labware (validation). Later steps add more
-# checks and create the new labware.
+# and problems with the payload's labware (validation). If there are none,
+# the new labware and its samples are created
+# (ApiOperation::Reception::Creation).
 class ApiOperation::Reception
   # @param api_operation [ApiOperation] the operation to receive
   def initialize(api_operation)
@@ -20,10 +21,16 @@ class ApiOperation::Reception
   #   when it is about something in the payload; empty if reception
   #   succeeded
   def call
-    reconciliation.errors + validation.errors
+    errors = reconciliation.errors + validation.errors
+    creation.call if errors.empty?
+    errors
   end
 
   private
+
+  def creation
+    ApiOperation::Reception::Creation.new(reconciliation.new_labware)
+  end
 
   def validation
     @validation ||=
