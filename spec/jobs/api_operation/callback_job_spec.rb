@@ -28,15 +28,14 @@ RSpec.describe ApiOperation::CallbackJob do
       allow(ENV).to receive(:fetch).with('INTEGRATION_HUB_CALLBACK_URL', nil).and_return(nil)
 
       expect { described_class.new(api_operation.id).perform }.to raise_error(
-                                                                    ApiOperation::Errors::MissingCallbackUrl,
-                                                                    'INTEGRATION_HUB_CALLBACK_URL is not set'
-                                                                  )
+        ApiOperation::Errors::MissingCallbackUrl,
+        'INTEGRATION_HUB_CALLBACK_URL is not set'
+      )
     end
 
     it 'does not mark the operation delivered' do
       expect(api_operation.reload.response_delivered_at).to be_nil
     end
-
   end
 
   context 'when the application has a callback URL' do
@@ -97,8 +96,6 @@ RSpec.describe ApiOperation::CallbackJob do
       expect(api_operation.reload.response_delivered_at).not_to be_nil
     end
   end
-
-
 
   describe 'retrying a failed delivery' do
     let(:worker) { Delayed::Worker.new(quiet: true) }
