@@ -115,6 +115,8 @@ Rails.application.routes.draw do
       jsonapi_resources :tube_rack_statuses
       jsonapi_resources :tube_racks
       jsonapi_resources :tubes
+      jsonapi_resources :ultima_applications, only: %i[index show]
+      jsonapi_resources :ultima_primers, only: %i[index show]
       jsonapi_resources :users
       jsonapi_resources :volume_updates
       jsonapi_resources :wells
