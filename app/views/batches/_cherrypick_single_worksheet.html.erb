@@ -79,7 +79,8 @@
                       <td>
                     <% end -%>
                     <%= source_well.map_description %>
-                    <%= source_well.plate.barcode_number %>
+                    <%= source_well.plate.barcode_number ||
+                          source_well.plate.human_barcode %>
                     v<%= "%.#{configatron.tecan_precision}f" % well.get_picked_volume %> b<%= "%.#{configatron.tecan_precision}f" % well.get_buffer_volume %>
                   <% else %>
                     <td>
