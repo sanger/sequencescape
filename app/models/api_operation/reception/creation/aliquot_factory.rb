@@ -8,8 +8,9 @@
 #
 # A sample with tags gets an aliquot for each tag pair its scheme gives
 # (Tags::Scheme#tag_ids), with those tags: one for a tag group and index, or
-# a dual index well. Samples giving their tags as a Chromium well or i7/i5
-# oligos get no aliquot yet. Samples without tags that share a receptacle (a
+# a dual index well, and one for each tag of a Chromium well, as
+# Tag#multitag! gives. Samples giving their tags as i7/i5 oligos get no
+# aliquot yet. Samples without tags that share a receptacle (a
 # pool) get their positions among the receptacle's samples as tag depths (0,
 # 1, 2 ...), as stock manifests give them, so their aliquots can be told
 # apart.
@@ -20,7 +21,8 @@ class ApiOperation::Reception::Creation::AliquotFactory
   # The ways of giving tags whose samples get aliquots with their tags
   SCHEMES = [
     ApiOperation::Reception::Tags::TagGroups,
-    ApiOperation::Reception::Tags::DualIndex
+    ApiOperation::Reception::Tags::DualIndex,
+    ApiOperation::Reception::Tags::Chromium
   ].freeze
 
   # @param labware [Hash{ApiOperation::Reception::Payload::PayloadLabware =>

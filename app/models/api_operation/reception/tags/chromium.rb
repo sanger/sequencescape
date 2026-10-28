@@ -51,12 +51,23 @@ class ApiOperation::Reception::Tags::Chromium <
 
   # (see ApiOperation::Reception::Tags::Scheme#oligos)
   def oligos(sample)
-    group_id = tag_group_id(tag_set_name(sample))
-    self.class.map_ids(kit_well_index(well(sample)))
-      .map { [tags[[group_id, it]], nil] }
+    pairs(sample, tags)
+  end
+
+  # (see ApiOperation::Reception::Tags::Scheme#tag_ids)
+  def tag_ids(sample)
+    pairs(sample, tag_ids_by_index)
   end
 
   private
+
+  # The well's tags, as found by group ID and index in by_index: a pair for
+  # each of the sample's TAGS_PER_WELL aliquots, without a tag 2
+  def pairs(sample, by_index)
+    group_id = tag_group_id(tag_set_name(sample))
+    self.class.map_ids(kit_well_index(well(sample)))
+      .map { [by_index[[group_id, it]], nil] }
+  end
 
   def unknown_tag_set_errors(complete)
     complete.group_by { tag_set_name(it) }.filter_map do |name, samples|
@@ -131,5 +142,10 @@ class ApiOperation::Reception::Tags::Chromium <
   # index
   def tags
     @tags ||= oligos_by_tag(tag_group_ids.values)
+  end
+
+  # The ID of each tag in the named tag sets' groups, by group ID and index
+  def tag_ids_by_index
+    @tag_ids_by_index ||= ids_by_tag(tag_group_ids.values)
   end
 end
