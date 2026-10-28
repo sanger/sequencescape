@@ -3,20 +3,16 @@
 require 'faraday'
 
 # Reports the processing status of an API operation back to the calling system
-# by POSTing JSON to the callback URL of the operation's ApiApplication (see
-# #callback_url_variable).
+# by POSTing JSON to the callback URL configured for the operation's
+# ApiApplication in configatron.api_operations_callback_urls, keyed by application name.
 #
 # Queued once the operation is completed. A failed
 # delivery raises, so Delayed::Job retries it. An application with no callback URL also raises.
 class ApiOperation::CallbackJob < HTTPClients::BaseClient
-  # The environment variable that holds an application's callback URL is named
-  # after it: the name in upper case, each run of other characters replaced by
-  # an underscore, then this suffix. For example, INTEGRATION_HUB_CALLBACK_URL.
-  CALLBACK_URL_SUFFIX = '_CALLBACK_URL'
-
   attr_reader :api_operation
 
   def initialize(api_operation_id)
+    super()
     @api_operation = ApiOperation.find(api_operation_id)
   end
 
@@ -33,20 +29,13 @@ class ApiOperation::CallbackJob < HTTPClients::BaseClient
   private
 
   # @return [String] where to report the status to the calling system
-  # @raise [ApiOperation::Errors::MissingCallbackUrl] if the application's
-  #   variable isn't set
+  # @raise [ApiOperation::Errors::MissingCallbackUrl] if no URL is configured for the application
   def callback_url
-    url = ENV.fetch(callback_url_variable, nil)
+    application_name = api_operation.api_application.name
+    url = configatron.fetch(:api_operations_callback_urls, {})[application_name]
     return url if url.present?
 
-    raise ApiOperation::Errors::MissingCallbackUrl, "#{callback_url_variable} is not set"
-  end
-
-  # @return [String] the name of the environment variable that holds the
-  #   callback URL of this operation's API application
-  def callback_url_variable
-    name = api_operation.api_application.name.upcase.gsub(/[^A-Z0-9]+/, '_').gsub(/\A_|_\z/, '')
-    "#{name}#{CALLBACK_URL_SUFFIX}"
+    raise ApiOperation::Errors::MissingCallbackUrl, "No callback URL configured for #{application_name}"
   end
 
   def body(api_operation)

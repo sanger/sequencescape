@@ -5,19 +5,24 @@ require 'rails_helper'
 RSpec.describe ApiOperation::CallbackJob do
   let(:api_application) { create(:api_application, name: ApiApplication::INTEGRATION_HUB_NAME) }
   let(:api_operation) { create(:api_operation, api_application:) }
-  let(:url) { 'https://caller.example.com/callback' }
+  let(:url) { 'https://test-caller.example.com/callback' }
 
-  before { allow(ENV).to receive(:fetch).and_call_original }
+  around do |example|
+    original = configatron.fetch(:api_operations_callback_urls, {})
+    configatron.api_operations_callback_urls = { ApiApplication::INTEGRATION_HUB_NAME => url }
+    example.run
+    configatron.api_operations_callback_urls = original
+  end
 
   describe 'finding the callback URL' do
     let(:stub) { stub_request(:post, url) }
 
     before { stub }
 
-    it 'reads the variable named after the application' do
+    it 'reads the URL configured for the application name' do
       application = create(:api_application, name: ' my-app (v2) ')
       operation = create(:api_operation, api_application: application)
-      allow(ENV).to receive(:fetch).with('MY_APP_V2_CALLBACK_URL', nil).and_return(url)
+      configatron.api_operations_callback_urls = { ' my-app (v2) ' => url }
 
       described_class.new(operation.id).perform
 
@@ -25,11 +30,11 @@ RSpec.describe ApiOperation::CallbackJob do
     end
 
     it 'raises missing callback URL exception, when it is not set' do
-      allow(ENV).to receive(:fetch).with('INTEGRATION_HUB_CALLBACK_URL', nil).and_return(nil)
+      configatron.api_operations_callback_urls = {}
 
       expect { described_class.new(api_operation.id).perform }.to raise_error(
         ApiOperation::Errors::MissingCallbackUrl,
-        'INTEGRATION_HUB_CALLBACK_URL is not set'
+        'No callback URL configured for Integration Hub'
       )
     end
 
@@ -39,8 +44,6 @@ RSpec.describe ApiOperation::CallbackJob do
   end
 
   context 'when the application has a callback URL' do
-    before { allow(ENV).to receive(:fetch).with('INTEGRATION_HUB_CALLBACK_URL', nil).and_return(url) }
-
     it 'posts the operation status' do
       stub =
         stub_request(:post, url).with(
@@ -102,7 +105,6 @@ RSpec.describe ApiOperation::CallbackJob do
     let(:delayed_job) { Delayed::Job.last }
 
     before do
-      allow(ENV).to receive(:fetch).with('INTEGRATION_HUB_CALLBACK_URL', nil).and_return(url)
       Delayed::Job.delete_all
       Delayed::Job.enqueue(described_class.new(api_operation.id))
     end
