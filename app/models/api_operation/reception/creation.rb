@@ -7,7 +7,8 @@
 # models' validations and callbacks run; a record its model rejects raises,
 # which rolls everything back.
 #
-# It creates the labware (LabwareFactory), then the samples (SampleFactory).
+# It creates the labware (LabwareFactory), then the samples (SampleFactory),
+# then puts the samples into the labware as aliquots (AliquotFactory).
 class ApiOperation::Reception::Creation
   # @param new_labware [Array<ApiOperation::Reception::Payload::
   #   PayloadLabware>] the payload labware Sequencescape doesn't have
@@ -19,7 +20,8 @@ class ApiOperation::Reception::Creation
   #
   # @return [void]
   def call
-    LabwareFactory.new(@new_labware).call
-    SampleFactory.new(@new_labware).call
+    labware = LabwareFactory.new(@new_labware).call
+    samples = SampleFactory.new(@new_labware).call
+    AliquotFactory.new(labware, samples).call
   end
 end
