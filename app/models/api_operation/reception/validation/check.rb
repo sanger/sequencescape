@@ -23,6 +23,12 @@ class ApiOperation::Reception::Validation::Check
     "used by #{users.size} #{'sample'.pluralize(users.size)}"
   end
 
+  # The samples that give the field, by the name they give
+  def users_by_name(field)
+    input.new_samples.select { it.fields.key?(field) }
+      .group_by { it.fields[field] }
+  end
+
   def error(pointer, detail)
     { pointer:, detail: }
   end

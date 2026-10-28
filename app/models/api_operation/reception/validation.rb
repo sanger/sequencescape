@@ -8,8 +8,8 @@
 # labware and its samples.
 class ApiOperation::Reception::Validation
   # The checks, in the order their problems are reported
-  CHECKS = [LabwareCheck, SampleCheck, RecordCheck, TagCheck, LibraryCheck]
-    .freeze
+  CHECKS = [LabwareCheck, SampleCheck, RecordCheck, TagCheck, LibraryCheck,
+            SampleFieldCheck].freeze
 
   # @param payload_labware [Array<ApiOperation::Reception::Payload::
   #   PayloadLabware>] all the payload's labware

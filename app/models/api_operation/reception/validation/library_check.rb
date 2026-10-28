@@ -67,12 +67,6 @@ class ApiOperation::Reception::Validation::LibraryCheck <
     end
   end
 
-  # The samples that give the field, by the name they give
-  def users_by_name(field)
-    input.new_samples.select { it.fields.key?(field) }
-      .group_by { it.fields[field] }
-  end
-
   # The model's names that the samples give, in lower case, looked up once
   def known_names(model)
     @known_names ||= {}
