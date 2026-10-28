@@ -20,7 +20,7 @@ class ApiOperation::Reception::Payload
   PayloadReceptacle = Data.define(:position, :uuid, :samples, :pointer)
 
   # A sample in the payload. fields holds its optional keys, such as tags,
-  # by their payload names.
+  # by their payload names. Its uuid is in lower case (see #build_sample).
   PayloadSample =
     Data.define(:uuid, :study_uuid, :sanger_sample_id, :supplier_sample_name,
                 :fields, :pointer)
@@ -67,8 +67,12 @@ class ApiOperation::Reception::Payload
                           pointer: pointer)
   end
 
+  # The sample's UUID is lowercased: Sequencescape stores UUIDs in lower case
+  # (Uuid accepts no other), and RFC 4122 says they are case insensitive on
+  # input. The checks and creation then see one form of each UUID.
   def build_sample(json, pointer)
     keys = SAMPLE_KEYS.to_h { |key| [key.to_sym, json.fetch(key)] }
+    keys[:uuid] = keys[:uuid].downcase
     PayloadSample.new(**keys, fields: json.except(*SAMPLE_KEYS),
                               pointer: pointer)
   end
