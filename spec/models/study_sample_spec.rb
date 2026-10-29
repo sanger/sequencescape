@@ -3,22 +3,34 @@
 require 'rails_helper'
 
 RSpec.describe StudySample do
+  # As the queue broadcast consumer calls it. Creating the records sends
+  # other messages, so only messages about the study link itself are counted.
   describe '#broadcast' do
-    before { allow(Warren.handler).to receive(:<<) }
-
-    it 'sends the study link of a sample' do
-      study_sample = create(:study_sample)
-      study_sample.broadcast
-      expect(Warren.handler).to have_received(:<<)
-        .with(an_object_having_attributes(record: study_sample))
+    let(:study_sample) { create(:study_sample, sample:) }
+    let(:message_about_link) do
+      an_object_having_attributes(record: study_sample)
     end
 
-    it 'sends nothing for an externally managed sample' do
-      sample = create(:sample, externally_managed: true)
-      study_sample = create(:study_sample, sample:)
+    before do
+      allow(Warren.handler).to receive(:<<)
       study_sample.broadcast
-      expect(Warren.handler).not_to have_received(:<<)
-        .with(an_object_having_attributes(record: study_sample))
+    end
+
+    context 'with a Sequencescape sample' do
+      let(:sample) { create(:sample) }
+
+      it 'sends the study link' do
+        expect(Warren.handler).to have_received(:<<).with(message_about_link)
+      end
+    end
+
+    context 'with a Sapio sample (externally managed)' do
+      let(:sample) { create(:sample, externally_managed: true) }
+
+      it 'does not send the study link' do
+        expect(Warren.handler)
+          .not_to have_received(:<<).with(message_about_link)
+      end
     end
   end
 end

@@ -8,22 +8,32 @@ RSpec.describe Aliquot do
   let(:sample1) { create(:sample) }
   let(:sample2) { create(:sample) }
 
+  # As the queue broadcast consumer calls it. Creating the records sends
+  # other messages, so only messages about the aliquot itself are counted.
   describe '#broadcast' do
-    before { allow(Warren.handler).to receive(:<<) }
+    let(:aliquot) { create(:aliquot, sample:) }
+    let(:message_about_aliquot) { an_object_having_attributes(record: aliquot) }
 
-    it 'sends the aliquot of a sample' do
-      aliquot = create(:aliquot)
+    before do
+      allow(Warren.handler).to receive(:<<)
       aliquot.broadcast
-      expect(Warren.handler).to have_received(:<<)
-        .with(an_object_having_attributes(record: aliquot))
     end
 
-    it 'sends nothing for an externally managed sample' do
-      sample = create(:sample, externally_managed: true)
-      aliquot = create(:aliquot, sample:)
-      aliquot.broadcast
-      expect(Warren.handler).not_to have_received(:<<)
-        .with(an_object_having_attributes(record: aliquot))
+    context 'with a Sequencescape sample' do
+      let(:sample) { create(:sample) }
+
+      it 'sends the aliquot' do
+        expect(Warren.handler).to have_received(:<<).with(message_about_aliquot)
+      end
+    end
+
+    context 'with a Sapio sample (externally managed)' do
+      let(:sample) { create(:sample, externally_managed: true) }
+
+      it 'does not send the aliquot' do
+        expect(Warren.handler)
+          .not_to have_received(:<<).with(message_about_aliquot)
+      end
     end
   end
 
