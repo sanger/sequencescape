@@ -14,4 +14,11 @@ class StudySample < ApplicationRecord
   validates :sample_id, uniqueness: { scope: [:study_id], message: 'cannot be added to the same study more than once' }
 
   broadcast_with_warren
+
+  # Sapio writes the warehouse records of its samples, so the study link of
+  # an externally managed sample isn't sent. As for Aliquot#broadcast, this
+  # runs where the queue broadcast consumer sends the full message.
+  def broadcast
+    super unless sample&.externally_managed?
+  end
 end
