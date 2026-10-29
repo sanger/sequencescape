@@ -117,4 +117,15 @@ RSpec.describe ApiOperation::Reception::Payload do
         .to eq('3f2504e0-4f89-41d3-9a0c-0305e82c3301')
     end
   end
+
+  context 'with a study UUID in upper case' do
+    let(:sample) do
+      super().merge(study_uuid: '3F2504E0-4F89-41D3-9A0C-0305E82C3301')
+    end
+
+    it 'reads it in lower case' do
+      expect(plate_labware.receptacles.first.samples.sole.study_uuid)
+        .to eq('3f2504e0-4f89-41d3-9a0c-0305e82c3301')
+    end
+  end
 end

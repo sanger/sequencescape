@@ -54,6 +54,30 @@ RSpec.describe ApiOperation::Reception do
     end
   end
 
+  context "with a sample whose study's UUID is in upper case" do
+    let(:study) { create(:study) }
+    let(:sample) do
+      { uuid: SecureRandom.uuid, study_uuid: study.uuid.upcase,
+        sanger_sample_id: 'SAMPLE-1', supplier_sample_name: 'Supplier sample' }
+    end
+    let(:labware) do
+      labware_with('UNKNOWN-1').merge(
+        receptacles: [{ position: 'A1', uuid: SecureRandom.uuid,
+                        samples: [sample] }]
+      )
+    end
+
+    it 'finds the study' do
+      expect(reception.call).to be_empty
+    end
+
+    it 'links the new sample to it' do
+      reception.call
+      expect(Sample.find_by!(sanger_sample_id: 'SAMPLE-1').studies)
+        .to contain_exactly(study)
+    end
+  end
+
   describe 'creating the new labware' do
     let(:creation) do
       instance_double(ApiOperation::Reception::Creation, call: nil)
