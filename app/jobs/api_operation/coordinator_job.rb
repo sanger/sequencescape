@@ -19,28 +19,12 @@
 # (with the model's message when a record is invalid), PSD is notified, and
 # the job isn't run again.
 #
+# How it retries a task, and gives up on it, is in Retries.
+#
 # With the y26_283_sapio_reception feature flag off, it only logs that the
 # operation is ready. Work order processing is added by Y26-289.
 class ApiOperation::CoordinatorJob
-  # Errors that a later run may not meet, as Rails' MySQL adapter raises
-  # them: a deadlock, a lock wait timeout, a lost connection, a failed
-  # attempt to connect, and a unique index clash with a record another
-  # request saved after this run's checks, such as the same new sample UUID,
-  # which the next run's checks then report
-  TRANSIENT_ERRORS = [
-    ActiveRecord::Deadlocked,
-    ActiveRecord::LockWaitTimeout,
-    ActiveRecord::ConnectionFailed,
-    ActiveRecord::ConnectionNotEstablished,
-    ActiveRecord::RecordNotUnique
-  ].freeze
-
-  # How long a task is retried for, after transient errors
-  RETRY_WINDOW = 4.hours
-
-  # How many times a task is retried after transient errors. The waits
-  # between runs double, and add up to RETRY_WINDOW.
-  RETRIES = 8
+  include Retries
 
   # @return [Integer] the ID of the operation to process
   attr_reader :api_operation_id
@@ -58,26 +42,6 @@ class ApiOperation::CoordinatorJob
     return log_ready(api_operation) unless reception_enabled?
 
     loop { break unless run_next_task(api_operation) }
-  end
-
-  # Delayed Job calls this when a run raises, to schedule the next run. The
-  # waits double, and the RETRIES waits add up to RETRY_WINDOW: about 56
-  # seconds, 1.9, 3.8, 7.5, 15 and 30 minutes, 1 hour and 2 hours.
-  #
-  # @param current_time [Time] when the run failed
-  # @param attempts [Integer] the number of failed runs so far, from 1
-  # @return [Time] when to run the job again
-  def reschedule_at(current_time, attempts)
-    current_time +
-      (RETRY_WINDOW * Rational(2**(attempts - 1), (2**RETRIES) - 1))
-  end
-
-  # Delayed Job reads this to know how many runs to make: the first and
-  # RETRIES more.
-  #
-  # @return [Integer] the number of runs
-  def max_attempts
-    RETRIES + 1
   end
 
   private
@@ -105,12 +69,25 @@ class ApiOperation::CoordinatorJob
   # Records that a run of the operation's next task has started, in its own
   # transaction, so the event is kept whatever happens to the run.
   #
-  # @return [String, nil] the task, or nil when there is none
+  # @return [String, nil] the task to run, or nil when there is none
   def start_next_task(api_operation)
     ApiOperation.transaction do
       api_operation.lock!
       task = api_operation.next_task
-      api_operation.start_task!(task) if task
+      task && start_or_give_up(api_operation, task)
+    end
+  end
+
+  # Records that a run of the task has started, unless the task's retries
+  # have run out: then PSD is notified and the task fails instead.
+  #
+  # @return [String, nil] the task, or nil if it failed instead
+  def start_or_give_up(api_operation, task)
+    if retry_window_over?(api_operation, task)
+      give_up(api_operation, task)
+      nil
+    else
+      api_operation.start_task!(task)
       task
     end
   end
