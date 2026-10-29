@@ -175,7 +175,7 @@ describe 'Sapio Operations API' do
     context 'with the schema in a schema registry' do
       let(:registry_answer) do
         { subject: 'work-order-schema', version: 1, id: 1, schemaType: 'JSON',
-          schema: Rails.root.join('config/schemas/json_schema/' \
+          schema: Rails.root.join('config/schemas/' \
                                   'work-order-schema/1.json').read }
       end
 
