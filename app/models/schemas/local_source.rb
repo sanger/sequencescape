@@ -1,26 +1,25 @@
 # frozen_string_literal: true
 
-# Reads schemas from files, in a folder for each schema type, then one for
-# each subject, with one file for each version:
-# <root>/json_schema/<subject>/<version>.json for JSON Schema, and
-# <root>/avro/<subject>/<version>.avsc for Avro. The folder gives the type.
+# Reads schemas from files, in a folder for each subject, with one file for
+# each version: <root>/<subject>/<version>.json for JSON Schema, and
+# <root>/<subject>/<version>.avsc for Avro. The extension gives the type.
 # As in a schema registry, versions are whole numbers, so the latest is the
 # highest number, and all versions of a subject have the same type.
 class Schemas::LocalSource < Schemas::Source
-  # The file extension for each schema type, whose folder is named after it
+  # The file extension for each schema type
   TYPE_EXTENSIONS = { json_schema: '.json', avro: '.avsc' }.freeze
 
   # A file name that is a version number, such as 1 or 12
   VERSION_NAME = /\A[1-9]\d*\z/
 
-  # Raised when a subject is in more than one type folder
+  # Raised when a subject has versions of more than one type
   class MixedTypes < Schemas::Error
   end
 
-  # @return [Pathname] the directory that holds the schema type folders
+  # @return [Pathname] the directory that holds the subject folders
   attr_reader :root
 
-  # @param root [Pathname, String] the directory that holds the schema type
+  # @param root [Pathname, String] the directory that holds the subject
   #   folders
   def initialize(root = Rails.root.join('config/schemas'))
     super()
@@ -28,11 +27,11 @@ class Schemas::LocalSource < Schemas::Source
   end
 
   # (see Schemas::Source#fetch)
-  # @raise [MixedTypes] if the subject is in more than one type folder
+  # @raise [MixedTypes] if the subject has versions of more than one type
   def fetch(subject, version)
     type = subject_type(subject)
     version = latest_version(type, subject) if version == :latest
-    path = subject_folder(type, subject).join(file_name(type, version))
+    path = subject_folder(subject).join(file_name(type, version))
     location = "#{subject} version #{version} in #{root}"
     raise NotFound, "No file for #{location}" unless path.file?
 
@@ -42,8 +41,8 @@ class Schemas::LocalSource < Schemas::Source
   private
 
   # A schema registry rejects a version whose type differs from the
-  # subject's earlier versions, so a subject in more than one type folder is
-  # an error.
+  # subject's earlier versions, so a subject with versions of more than one
+  # type is an error.
   def subject_type(subject)
     types = TYPE_EXTENSIONS.keys.select do |type|
       version_files(type, subject).any?
@@ -64,7 +63,7 @@ class Schemas::LocalSource < Schemas::Source
   # The files named by a version number. Others, such as draft.json or
   # v1.json, are ignored.
   def version_files(type, subject)
-    subject_folder(type, subject).glob("*#{TYPE_EXTENSIONS[type]}")
+    subject_folder(subject).glob("*#{TYPE_EXTENSIONS[type]}")
       .select do |path|
         path.file? && VERSION_NAME.match?(version_name(type, path))
       end
@@ -78,7 +77,7 @@ class Schemas::LocalSource < Schemas::Source
     "#{version}#{TYPE_EXTENSIONS[type]}"
   end
 
-  def subject_folder(type, subject)
-    root.join(type.to_s, subject)
+  def subject_folder(subject)
+    root.join(subject)
   end
 end
