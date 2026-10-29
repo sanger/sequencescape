@@ -18,7 +18,7 @@ class ApiOperation < ApplicationRecord
   # The tasks each operation type runs, in order
   TASKS = { 'reception_and_work_order' => %w[reception] }.freeze
 
-  # Raised when a task is completed or failed out of order
+  # Raised when a task is started, completed or failed out of order
   class TaskOrderError < StandardError
   end
 
@@ -65,6 +65,17 @@ class ApiOperation < ApplicationRecord
     return if status.end_with?('_failed')
 
     tasks[completed_tasks]
+  end
+
+  # Records that a run of the next task has started. The status doesn't
+  # change: it names the last completed step.
+  #
+  # @param task [String] the task, which must be the next task
+  # @return [void]
+  # @raise [TaskOrderError] if the task is not the next task
+  def start_task!(task)
+    check_next_task!(task)
+    events.create!(task: task, outcome: Event::STARTED)
   end
 
   # Records that the next task has completed.

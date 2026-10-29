@@ -67,10 +67,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_26_153950) do
     t.index ["key"], name: "index_api_applications_on_key"
   end
 
-  create_table "api_operation_events", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Tasks of API operations that completed or failed, in the order they happened", force: :cascade do |t|
+  create_table "api_operation_events", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Tasks of API operations that started, completed or failed, in the order they happened", force: :cascade do |t|
     t.bigint "api_operation_id", null: false, comment: "The operation the task belongs to"
     t.string "task", null: false, comment: "The task, e.g. reception"
-    t.string "outcome", null: false, comment: "What happened to the task: completed or failed"
+    t.string "outcome", null: false, comment: "What happened to the task: started, completed or failed"
     t.datetime "created_at", null: false, comment: "When it happened"
     t.index ["api_operation_id"], name: "index_api_operation_events_on_api_operation_id"
   end
