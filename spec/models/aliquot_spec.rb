@@ -8,6 +8,25 @@ RSpec.describe Aliquot do
   let(:sample1) { create(:sample) }
   let(:sample2) { create(:sample) }
 
+  describe '#broadcast' do
+    before { allow(Warren.handler).to receive(:<<) }
+
+    it 'sends the aliquot of a sample' do
+      aliquot = create(:aliquot)
+      aliquot.broadcast
+      expect(Warren.handler).to have_received(:<<)
+        .with(an_object_having_attributes(record: aliquot))
+    end
+
+    it 'sends nothing for an externally managed sample' do
+      sample = create(:sample, externally_managed: true)
+      aliquot = create(:aliquot, sample:)
+      aliquot.broadcast
+      expect(Warren.handler).not_to have_received(:<<)
+        .with(an_object_having_attributes(record: aliquot))
+    end
+  end
+
   shared_context 'a tag matcher' do
     context 'with the same tags' do
       let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
@@ -134,13 +153,16 @@ RSpec.describe Aliquot do
       aliquot = create(:aliquot)
       tag_id = aliquot.tag_id
       expect(aliquot.substitution_hash).to be_nil
-      aliquot.update!(tag_id: 42, insert_size_from: 5, insert_size_to: 15)
+      # Another tag, not a fixed ID, which could be the aliquot's own tag
+      substitute_tag_id = create(:tag).id
+      aliquot.update!(tag_id: substitute_tag_id, insert_size_from: 5,
+                      insert_size_to: 15)
       expect(aliquot.other_attributes_for_substitution).to eq('insert_size_from' => 5, 'insert_size_to' => 15)
       expect(aliquot.substitution_hash).to eq(
         :sample_id => aliquot.sample_id,
         :library_id => aliquot.library_id,
         :original_tag_id => tag_id,
-        :substitute_tag_id => 42,
+        :substitute_tag_id => substitute_tag_id,
         'insert_size_from' => 5,
         'insert_size_to' => 15
       )
