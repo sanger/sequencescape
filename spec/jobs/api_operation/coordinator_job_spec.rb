@@ -344,5 +344,137 @@ RSpec.describe ApiOperation::CoordinatorJob do
       perform
       expect(api_operation).to have_received(:lock!).at_least(:once)
     end
+
+    describe 'the retry window' do
+      let(:retries_exhausted_detail) do
+        'Reception could not be completed because of a temporary problem ' \
+          'in Sequencescape; send the request again with a new request ID'
+      end
+
+      def add_started_event(ago)
+        api_operation.events.create!(task: 'reception', outcome: 'started',
+                                     created_at: ago.ago)
+      end
+
+      before { allow(ExceptionNotifier).to receive(:notify_exception) }
+
+      context 'when the first run started more than RETRY_WINDOW ago' do
+        before { add_started_event(described_class::RETRY_WINDOW + 1.minute) }
+
+        it 'does not run the reception again' do
+          perform
+          expect(ApiOperation::Reception).not_to have_received(:new)
+        end
+
+        it 'fails it with an error that asks for the request again' do
+          perform
+          expect(api_operation.reload.error_details['errors'])
+            .to eq([{ 'pointer' => '', 'detail' => retries_exhausted_detail }])
+        end
+
+        it 'adds a failed event, and no started one' do
+          perform
+          expect(api_operation.events.pluck(:outcome))
+            .to eq(%w[started failed])
+        end
+
+        it 'notifies PSD that retries have run out' do
+          perform
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            an_instance_of(described_class::RetriesExhausted),
+            data: { api_operation_id: api_operation.id, task: 'reception' }
+          )
+        end
+      end
+
+      context 'when the first run started less than RETRY_WINDOW ago' do
+        before { add_started_event(described_class::RETRY_WINDOW - 1.minute) }
+
+        it 'runs the reception' do
+          perform
+          expect(api_operation.reload.status).to eq('reception_completed')
+        end
+      end
+
+      context 'when only a later run started less than RETRY_WINDOW ago' do
+        before do
+          add_started_event(described_class::RETRY_WINDOW + 1.minute)
+          add_started_event(1.minute)
+        end
+
+        it 'counts from the first run' do
+          perform
+          expect(api_operation.reload.status).to eq('reception_failed')
+        end
+      end
+
+      context 'when a Delayed Job worker finds the window over' do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          add_started_event(described_class::RETRY_WINDOW + 1.minute)
+          job.update!(last_error: 'Deadlock found when trying to get lock')
+          Delayed::Worker.new.run(job)
+        end
+
+        it 'notifies PSD with the last error' do
+          expect(ExceptionNotifier).to have_received(:notify_exception)
+            .with(anything, data: hash_including(
+              last_error: 'Deadlock found when trying to get lock'
+            ))
+        end
+
+        it 'finishes the job' do
+          expect(Delayed::Job.exists?(job.id)).to be(false)
+        end
+      end
+
+      # The backstop: the last run Delayed Job makes raises a transient
+      # error before the window is over
+      context "when Delayed Job's last run fails" do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          allow(reception).to receive(:call).and_raise(ActiveRecord::Deadlocked)
+          job.update!(attempts: described_class::RETRIES)
+          Delayed::Worker.new.run(job)
+        end
+
+        it 'fails the reception, asking for the request again' do
+          expect(api_operation.reload.error_details['errors'])
+            .to eq([{ 'pointer' => '', 'detail' => retries_exhausted_detail }])
+        end
+
+        it 'notifies PSD with the last error' do
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            an_instance_of(described_class::RetriesExhausted),
+            data: { api_operation_id: api_operation.id,
+                    last_error: a_string_starting_with(
+                      'ActiveRecord::Deadlocked'
+                    ) }
+          )
+        end
+
+        it 'deletes the job' do
+          expect(Delayed::Job.exists?(job.id)).to be(false)
+        end
+      end
+
+      context "when Delayed Job's last run fails after the task has an " \
+              'outcome' do
+        let(:job) { instance_double(Delayed::Job, last_error: 'Deadlock') }
+
+        before { api_operation.complete_task!('reception') }
+
+        it 'keeps the outcome' do
+          described_class.new(api_operation.id).failure(job)
+          expect(api_operation.reload.status).to eq('reception_completed')
+        end
+      end
+    end
   end
 end
