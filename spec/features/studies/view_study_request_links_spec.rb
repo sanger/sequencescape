@@ -34,6 +34,9 @@ describe 'View study properties' do
     )
     login_user(user)
     visit_and_wait_for_title(study_path(study), "Information (#{study.name})")
+    # Wait for the active tab, Sample progress, to load before another tab is
+    # clicked, so its response can't arrive last and replace the other tab.
+    find_by_id('items', text: sample.name, wait: 15)
   end
 
   it 'No links to absent requests', :js do
