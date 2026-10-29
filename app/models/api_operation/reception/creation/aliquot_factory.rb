@@ -9,16 +9,19 @@
 # A sample with tags gets an aliquot for each tag pair its scheme gives
 # (Tags::Scheme#tag_ids), with those tags: one for a tag group and index, or
 # a dual index well, and one for each tag of a Chromium well, as
-# Tag#multitag! gives. Samples giving their tags as i7/i5 oligos get no
-# aliquot yet. Samples without tags that share a receptacle (a
-# pool) get their positions among the receptacle's samples as tag depths (0,
-# 1, 2 ...), as stock manifests give them, so their aliquots can be told
-# apart.
+# Tag#multitag! gives. A sample giving i7/i5 oligos gets one aliquot, with
+# their tags from the Magic Tag Group (OligoTagFactory). Samples without tags
+# that share a receptacle (a pool) get their positions among the
+# receptacle's samples as tag depths (0, 1, 2 ...), as stock manifests give
+# them, so their aliquots can be told apart.
 class ApiOperation::Reception::Creation::AliquotFactory
   # The payload fields of the tag schemes; a sample with any of them has tags
   TAG_FIELDS = ApiOperation::Reception::Validation::SampleCheck::TAG_FIELDS
 
-  # The ways of giving tags whose samples get aliquots with their tags
+  # The fields of tags given as oligos: i7 for the tag, i5 for tag 2
+  OLIGO_FIELDS = ApiOperation::Reception::Tags::Oligos::FIELDS
+
+  # The ways of giving tags from existing tag groups
   SCHEMES = [
     ApiOperation::Reception::Tags::TagGroups,
     ApiOperation::Reception::Tags::DualIndex,
@@ -74,10 +77,23 @@ class ApiOperation::Reception::Creation::AliquotFactory
   # The [tag_id, tag2_id] pair of each of the sample's aliquots: one aliquot
   # without tags for a sample without tags
   def tag_id_pairs(payload_sample)
+    fields = payload_sample.fields
     return [[nil, nil]] unless tagged?(payload_sample)
+    return oligo_tag_id_pairs(fields) if fields.keys.intersect?(OLIGO_FIELDS)
 
-    scheme = SCHEMES.find { payload_sample.fields.keys.intersect?(it::FIELDS) }
-    scheme ? schemes.fetch(scheme).tag_ids(payload_sample) : []
+    scheme = SCHEMES.find { fields.keys.intersect?(it::FIELDS) }
+    schemes.fetch(scheme).tag_ids(payload_sample)
+  end
+
+  # The tags of the i7 and i5 oligos, for the sample's one aliquot
+  def oligo_tag_id_pairs(fields)
+    [fields.values_at(*OLIGO_FIELDS).map { it && oligo_tag_id(it) }]
+  end
+
+  def oligo_tag_id(oligo)
+    @oligo_tags ||= ApiOperation::Reception::Creation::OligoTagFactory
+      .new(field_values(*OLIGO_FIELDS))
+    @oligo_tags.tag_id(oligo)
   end
 
   # Each scheme, given the new samples that give their tags its way
