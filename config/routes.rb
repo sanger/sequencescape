@@ -135,6 +135,7 @@ Rails.application.routes.draw do
 
       namespace :sapio do
         jsonapi_resources :studies
+        resources :operations, only: [:create]
       end
     end
   end
