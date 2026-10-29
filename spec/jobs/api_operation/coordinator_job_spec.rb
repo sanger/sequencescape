@@ -9,6 +9,39 @@ RSpec.describe ApiOperation::CoordinatorJob do
     described_class.new(api_operation.id).perform
   end
 
+  describe '#reschedule_at' do
+    let(:job) { described_class.new(api_operation.id) }
+    let(:now) { Time.zone.local(2026, 10, 29, 12) }
+
+    def wait(attempts)
+      job.reschedule_at(now, attempts) - now
+    end
+
+    it 'waits about a minute after the first failed run' do
+      expect(wait(1)).to be_within(1).of(56.5)
+    end
+
+    it 'doubles the wait after each failed run' do
+      expect((2..8).map { wait(it) / wait(it - 1) }).to all(eq(2))
+    end
+
+    it 'waits about 2 hours after the last failed run it retries' do
+      expect(wait(described_class::RETRIES)).to be_within(60).of(2.hours)
+    end
+
+    it 'spreads the retries over the retry window' do
+      expect((1..described_class::RETRIES).sum { wait(it) })
+        .to be_within(1).of(described_class::RETRY_WINDOW)
+    end
+  end
+
+  describe '#max_attempts' do
+    it 'allows the first run and each retry' do
+      expect(described_class.new(api_operation.id).max_attempts)
+        .to eq(described_class::RETRIES + 1)
+    end
+  end
+
   context 'when reception is disabled', :sapio_reception_disabled do
     it 'logs that the operation is ready for processing' do
       allow(Rails.logger).to receive(:info)
@@ -125,6 +158,26 @@ RSpec.describe ApiOperation::CoordinatorJob do
         perform
         expect(api_operation.events.pluck(:outcome))
           .to eq(%w[started started completed])
+      end
+
+      context 'when a Delayed Job worker runs the job' do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          travel_to(Time.zone.local(2026, 10, 29, 12))
+          Delayed::Worker.new.run(job)
+        end
+
+        it 'records the failed run' do
+          expect(job.reload.attempts).to eq(1)
+        end
+
+        it 'runs the job again about a minute later' do
+          expect(job.reload.run_at)
+            .to be_within(2.seconds).of(56.seconds.from_now)
+        end
       end
     end
 
