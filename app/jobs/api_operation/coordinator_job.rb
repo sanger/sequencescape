@@ -35,6 +35,13 @@ class ApiOperation::CoordinatorJob
     ActiveRecord::RecordNotUnique
   ].freeze
 
+  # How long a task is retried for, after transient errors
+  RETRY_WINDOW = 4.hours
+
+  # How many times a task is retried after transient errors. The waits
+  # between runs double, and add up to RETRY_WINDOW.
+  RETRIES = 8
+
   # @return [Integer] the ID of the operation to process
   attr_reader :api_operation_id
 
@@ -51,6 +58,26 @@ class ApiOperation::CoordinatorJob
     return log_ready(api_operation) unless reception_enabled?
 
     loop { break unless run_next_task(api_operation) }
+  end
+
+  # Delayed Job calls this when a run raises, to schedule the next run. The
+  # waits double, and the RETRIES waits add up to RETRY_WINDOW: about 56
+  # seconds, 1.9, 3.8, 7.5, 15 and 30 minutes, 1 hour and 2 hours.
+  #
+  # @param current_time [Time] when the run failed
+  # @param attempts [Integer] the number of failed runs so far, from 1
+  # @return [Time] when to run the job again
+  def reschedule_at(current_time, attempts)
+    current_time +
+      (RETRY_WINDOW * Rational(2**(attempts - 1), (2**RETRIES) - 1))
+  end
+
+  # Delayed Job reads this to know how many runs to make: the first and
+  # RETRIES more.
+  #
+  # @return [Integer] the number of runs
+  def max_attempts
+    RETRIES + 1
   end
 
   private
