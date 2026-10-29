@@ -48,10 +48,26 @@ RSpec.describe ApiOperation::CoordinatorJob do
       expect(api_operation.reload.status).to eq('reception_completed')
     end
 
-    it 'adds a completed event' do
+    it 'adds a started event, then a completed one' do
       perform
       expect(api_operation.events.pluck(:task, :outcome))
-        .to eq([%w[reception completed]])
+        .to eq([%w[reception started], %w[reception completed]])
+    end
+
+    context 'when the reception runs' do
+      let(:outcomes_seen) { [] }
+
+      before do
+        allow(reception).to receive(:call) do
+          outcomes_seen.concat(api_operation.events.pluck(:outcome))
+          []
+        end
+      end
+
+      it 'has recorded its start' do
+        perform
+        expect(outcomes_seen).to eq(%w[started])
+      end
     end
 
     context 'when the reception finds errors' do
@@ -60,6 +76,12 @@ RSpec.describe ApiOperation::CoordinatorJob do
       it 'records the reception as failed' do
         perform
         expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'adds a started event, then a failed one' do
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started failed])
       end
 
       it 'stores the errors' do
@@ -86,9 +108,17 @@ RSpec.describe ApiOperation::CoordinatorJob do
         expect(api_operation.reload.status).to eq('queued')
       end
 
-      it 'adds no event' do
+      it 'keeps the started event, with no outcome after it' do
         suppress(ActiveRecord::Deadlocked) { perform }
-        expect(api_operation.events).to be_empty
+        expect(api_operation.events.pluck(:outcome)).to eq(%w[started])
+      end
+
+      it 'adds a started event for each run' do
+        suppress(ActiveRecord::Deadlocked) { perform }
+        allow(reception).to receive(:call).and_return([])
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started started completed])
       end
     end
 
@@ -96,6 +126,28 @@ RSpec.describe ApiOperation::CoordinatorJob do
       before { api_operation.complete_task!('reception') }
 
       it 'does not run it again' do
+        perform
+        expect(ApiOperation::Reception).not_to have_received(:new)
+      end
+
+      it 'adds no event' do
+        expect { perform }.not_to(change { api_operation.events.count })
+      end
+    end
+
+    # Another worker completes the reception after this run has recorded its
+    # start, but before this run locks the operation to run it
+    context 'when another run completes the reception after this one starts' do
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(api_operation).to receive(:start_task!)
+          .and_wrap_original do |start_task, task|
+            start_task.call(task)
+            ApiOperation.find_by(id: api_operation.id).complete_task!(task)
+          end
+      end
+
+      it 'does not run it' do
         perform
         expect(ApiOperation::Reception).not_to have_received(:new)
       end

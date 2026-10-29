@@ -175,6 +175,35 @@ RSpec.describe ApiOperation do
       expect(api_operation.next_task).to eq('reception')
     end
 
+    context 'when a task starts' do
+      before { api_operation.start_task!('reception') }
+
+      it 'adds a started event' do
+        expect(api_operation.events.pluck(:task, :outcome))
+          .to eq([%w[reception started]])
+      end
+
+      it 'keeps the status' do
+        expect(api_operation.reload.status).to eq('queued')
+      end
+
+      it 'runs the same task next' do
+        expect(api_operation.next_task).to eq('reception')
+      end
+
+      it 'adds a started event for each run' do
+        api_operation.start_task!('reception')
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started started])
+      end
+
+      it 'adds the outcome after the started event' do
+        api_operation.complete_task!('reception')
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started completed])
+      end
+    end
+
     context 'when a task completes' do
       before { api_operation.complete_task!('reception') }
 
@@ -262,9 +291,27 @@ RSpec.describe ApiOperation do
         .to raise_error(ApiOperation::TaskOrderError)
     end
 
+    it 'rejects starting a task out of order' do
+      expect { api_operation.start_task!('work_order') }
+        .to raise_error(ApiOperation::TaskOrderError)
+    end
+
+    it 'rejects starting a completed task' do
+      api_operation.complete_task!('reception')
+      expect { api_operation.start_task!('reception') }
+        .to raise_error(ApiOperation::TaskOrderError)
+    end
+
     it 'adds no event for a task out of order' do
       suppress(ApiOperation::TaskOrderError) do
         api_operation.complete_task!('work_order')
+      end
+      expect(api_operation.events).to be_empty
+    end
+
+    it 'adds no started event for a task out of order' do
+      suppress(ApiOperation::TaskOrderError) do
+        api_operation.start_task!('work_order')
       end
       expect(api_operation.events).to be_empty
     end

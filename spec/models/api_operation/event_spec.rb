@@ -23,7 +23,7 @@ RSpec.describe ApiOperation::Event do
     expect(event).not_to be_valid
   end
 
-  %w[completed failed].each do |outcome|
+  %w[started completed failed].each do |outcome|
     it "accepts #{outcome}" do
       event.outcome = outcome
       expect(event).to be_valid
@@ -31,7 +31,7 @@ RSpec.describe ApiOperation::Event do
   end
 
   it 'rejects an unknown outcome' do
-    event.outcome = 'started'
+    event.outcome = 'retried'
     expect(event).not_to be_valid
   end
 
