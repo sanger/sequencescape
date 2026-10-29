@@ -32,7 +32,7 @@ class ApiOperation::Reception::Creation::SampleFactory
     sample = Sample.new(sample_attributes(payload_sample))
     sample.lazy_uuid_generation = true
     sample.uuid_object = Uuid.new(external_id: payload_sample.uuid)
-    sample.studies << studies.fetch(payload_sample.study_uuid.downcase)
+    sample.studies << studies.fetch(payload_sample.study_uuid)
     sample.save!
     sample
   end
@@ -65,11 +65,11 @@ class ApiOperation::Reception::Creation::SampleFactory
     }.compact
   end
 
-  # The samples' studies by UUID, looked up once
+  # The samples' studies by UUID (both in lower case), looked up once
   def studies
     @studies ||=
       Study.with_uuid(payload_samples.map(&:study_uuid).uniq)
-        .includes(:uuid_object).index_by { it.uuid.downcase }
+        .includes(:uuid_object).index_by(&:uuid)
   end
 
   # The reference genomes the samples name, by name in lower case, looked up
