@@ -47,4 +47,47 @@ class UltimaSequencingRequest < SequencingRequest
   def wafer_size
     nil
   end
+
+  # Returns the application type from the nearest ancestor conversion request, or the default.
+  # @param aliquot [Aliquot] the aliquot whose application type is needed
+  # @return [String] the application type
+  def application_type_for_aliquot(aliquot)
+    preset_for_aliquot(aliquot)&.application_type || 'native'
+  end
+
+  # Returns the UG100 preset for the given aliquot, if any.
+  # @param aliquot [Aliquot] the aliquot whose preset is needed
+  # @return [UltimaPreset, nil] the UG100 preset
+  def preset_for_aliquot(aliquot)
+    nearest_ultima_conversion_request_for(aliquot)&.ultima_application&.ug100_preset
+  end
+
+  # Finds the closest ancestor conversion request for an aliquot.
+  # Searches parent labware one level at a time so nearer requests take precedence.
+  # @param aliquot [Aliquot] the aliquot whose ancestors to search
+  # @return [UltimaConversionRequest, nil] the closest matching request, if any
+  def nearest_ultima_conversion_request_for(aliquot)
+    frontier = aliquot.receptacle.parents.to_a
+
+    until frontier.empty?
+      conversion_request = conversion_request_for_ancestor_level(frontier, aliquot.sample_id)
+      return conversion_request if conversion_request
+
+      frontier = frontier.flat_map(&:parents).uniq
+    end
+
+    nil
+  end
+
+  private
+
+  def conversion_request_for_ancestor_level(labware, sample_id)
+    Aliquot
+      .joins(:receptacle)
+      .where(receptacles: { labware_id: labware.map(&:id) },
+             aliquots: { sample_id: })
+      .includes(:request)
+      .filter_map(&:request)
+      .find { |request| request.is_a?(UltimaConversionRequest) }
+  end
 end
