@@ -179,4 +179,8 @@ if Rails.env.test? || Rails.env.cucumber?
   configatron.register_printers_automatically = false
 
   configatron.tube_rack_scans_microservice_url = 'http://localhost:5000/tube_rack/'
+
+  # Where ApiOperation::CallbackJob reports operation status, keyed by ApiApplication name.
+  # An application with no URL here raises ApiOperation::Errors::MissingCallbackUrl.
+  configatron.api_operations_callback_urls = { 'Integration Hub' => 'https://caller.example.com/callback' }
 end
