@@ -14,6 +14,9 @@ RSpec.describe ApiOperation::Reception::Creation do
   before do
     create(:input_plate_purpose, name: 'Library Stock Plate')
     allow(PlateBarcode).to receive(:create_barcode)
+    # Sample manifests' configuration isn't loaded in tests
+    allow(SampleManifestExcel.configuration)
+      .to receive(:tag_group).and_return('Magic Tag Group')
     creation.call
   end
 
@@ -378,6 +381,60 @@ RSpec.describe ApiOperation::Reception::Creation do
         expect(created_sample.aliquots.map do |aliquot|
           [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description]
         end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1'] })
+      end
+    end
+
+    describe 'with i7 and i5 oligos' do
+      let(:magic_tag_group) { TagGroup.find_by!(name: 'Magic Tag Group') }
+
+      context 'when the Magic Tag Group has none of them' do
+        let(:labware) do
+          [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                  i7: 'ACGTACGT', i5: 'TTGGCCAA'))]
+        end
+
+        it 'gives the aliquot new tags in the group, with the oligos' do
+          aliquot = created_sample.aliquots.sole
+          expect([aliquot.tag, aliquot.tag2].map { [it.tag_group, it.oligo] })
+            .to eq([[magic_tag_group, 'ACGTACGT'],
+                    [magic_tag_group, 'TTGGCCAA']])
+        end
+
+        it 'numbers the new tags on from the group' do
+          expect(magic_tag_group.tags.pluck(:map_id)).to contain_exactly(1, 2)
+        end
+      end
+
+      context 'when the Magic Tag Group has one, in another case' do
+        let(:existing) do
+          create(:tag, oligo: 'ACGTACGT', map_id: 1,
+                       tag_group: create(:tag_group, name: 'Magic Tag Group'))
+        end
+        let(:labware) do
+          [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                  i7: existing.oligo.downcase))]
+        end
+
+        it 'gives the aliquot that tag' do
+          expect(created_sample.aliquots.sole.tag).to eq(existing)
+        end
+
+        it 'adds no tag' do
+          expect(magic_tag_group.tags.count).to eq(1)
+        end
+      end
+
+      context 'when two samples give the same new oligo' do
+        let(:labware) do
+          [tube('SAPIO-1',
+                sample(sanger_sample_id: 'SAMPLE-1', i7: 'AAAA', i5: 'GGGG'),
+                sample(sanger_sample_id: 'SAMPLE-2', i7: 'CCCC', i5: 'GGGG'))]
+        end
+
+        it 'creates its tag once, for both aliquots' do
+          expect(created.receptacle.aliquots.map(&:tag2).uniq)
+            .to eq(magic_tag_group.tags.where(oligo: 'GGGG').to_a)
+        end
       end
     end
   end
