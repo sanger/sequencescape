@@ -401,7 +401,8 @@ describe 'Sapio Operations API' do
 
       it 'queues one coordinator job for the operation' do
         expect(Delayed::Job.all.map(&:payload_object))
-          .to eq([ApiOperation::CoordinatorJob.new(ApiOperation.last.id)])
+          .to match([have_attributes(class: ApiOperation::CoordinatorJob,
+                                     api_operation_id: ApiOperation.last.id)])
       end
 
       context 'when the same request is sent again' do

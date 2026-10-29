@@ -60,7 +60,8 @@ RSpec.describe ApiOperation do
     it 'queues a coordinator job for the saved operation' do
       operation = described_class.create_with_job!(**attributes)
       expect(Delayed::Job.last.payload_object)
-        .to eq(ApiOperation::CoordinatorJob.new(operation.id))
+        .to have_attributes(class: ApiOperation::CoordinatorJob,
+                            api_operation_id: operation.id)
     end
 
     it 'queues one job' do

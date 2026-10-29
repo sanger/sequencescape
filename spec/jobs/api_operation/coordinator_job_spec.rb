@@ -94,18 +94,24 @@ RSpec.describe ApiOperation::CoordinatorJob do
       end
     end
 
-    context 'when the reception raises' do
+    described_class::TRANSIENT_ERRORS.each do |error|
+      context "when the reception raises #{error}" do
+        before { allow(reception).to receive(:call).and_raise(error) }
+
+        it 'passes the error on, so Delayed Job runs the job again' do
+          expect { perform }.to raise_error(error)
+        end
+
+        it 'leaves the operation queued' do
+          suppress(error) { perform }
+          expect(api_operation.reload.status).to eq('queued')
+        end
+      end
+    end
+
+    context 'when the reception raises a transient error' do
       before do
         allow(reception).to receive(:call).and_raise(ActiveRecord::Deadlocked)
-      end
-
-      it 'passes the error on' do
-        expect { perform }.to raise_error(ActiveRecord::Deadlocked)
-      end
-
-      it 'leaves the operation queued' do
-        suppress(ActiveRecord::Deadlocked) { perform }
-        expect(api_operation.reload.status).to eq('queued')
       end
 
       it 'keeps the started event, with no outcome after it' do
@@ -119,6 +125,118 @@ RSpec.describe ApiOperation::CoordinatorJob do
         perform
         expect(api_operation.events.pluck(:outcome))
           .to eq(%w[started started completed])
+      end
+    end
+
+    context 'when the reception raises any other error' do
+      let(:error) { NoMethodError.new("undefined method 'name' for nil") }
+
+      before do
+        allow(reception).to receive(:call) do
+          create(:sample)
+          raise error
+        end
+        allow(ExceptionNotifier).to receive(:notify_exception)
+      end
+
+      it 'does not pass the error on, so Delayed Job does not run it again' do
+        expect { perform }.not_to raise_error
+      end
+
+      it 'records the reception as failed' do
+        perform
+        expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'stores an error that says PSD has been notified' do
+        perform
+        expect(api_operation.reload.error_details).to eq(
+          'task' => 'reception',
+          'errors' => [{ 'pointer' => '',
+                         'detail' => 'Reception could not be completed ' \
+                                     'because of an error in Sequencescape; ' \
+                                     'PSD has been notified' }]
+        )
+      end
+
+      it 'notifies PSD of the error, without the payload' do
+        perform
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(error, data: { api_operation_id: api_operation.id,
+                               task: 'reception' })
+      end
+
+      it 'keeps nothing the reception created' do
+        expect { perform }.not_to change(Sample, :count)
+      end
+
+      it 'adds a started event, then a failed one' do
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started failed])
+      end
+    end
+
+    # A model rule that reception's checks don't mirror
+    context 'when a record the reception saves is invalid' do
+      let(:sample) { Sample.new.tap { it.errors.add(:name, :taken) } }
+      let(:error) { ActiveRecord::RecordInvalid.new(sample) }
+
+      before do
+        allow(reception).to receive(:call).and_raise(error)
+        allow(ExceptionNotifier).to receive(:notify_exception)
+      end
+
+      it 'stores an error with the validation message' do
+        perform
+        expect(api_operation.reload.error_details['errors']).to eq(
+          [{ 'pointer' => '',
+             'detail' => 'Reception could not be completed: Validation ' \
+                         'failed: Name has already been taken; PSD has ' \
+                         'been notified' }]
+        )
+      end
+
+      it 'notifies PSD, as reception should have found it' do
+        perform
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(error, anything)
+      end
+    end
+
+    context 'when recording the failure raises a transient error' do
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(reception).to receive(:call).and_raise(NoMethodError)
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        allow(api_operation).to receive(:fail_task!)
+          .and_raise(ActiveRecord::Deadlocked)
+      end
+
+      it 'passes it on, so Delayed Job runs the job again' do
+        expect { perform }.to raise_error(ActiveRecord::Deadlocked)
+      end
+
+      it 'has notified PSD of the first error' do
+        suppress(ActiveRecord::Deadlocked) { perform }
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(an_instance_of(NoMethodError), anything)
+      end
+    end
+
+    # Another worker completes the reception after this run's reception
+    # raised, but before this run locks the operation to record the failure
+    context 'when another run completes the reception after this one raises' do
+      before do
+        allow(reception).to receive(:call).and_raise(NoMethodError)
+        allow(ExceptionNotifier).to receive(:notify_exception) do
+          ApiOperation.find_by(id: api_operation.id).complete_task!('reception')
+        end
+      end
+
+      it "keeps the other run's outcome" do
+        perform
+        expect(api_operation.reload.status).to eq('reception_completed')
       end
     end
 
