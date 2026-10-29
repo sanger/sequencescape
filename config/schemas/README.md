@@ -1,8 +1,10 @@
 # Schemas
 
-Schemas that request payloads are checked against. `Schemas::LocalSource`
-(`app/models/schemas/local_source.rb`) reads them when an environment's
-schema source is `local`. The settings that choose the schema
+Schemas that request payloads are checked against. Sequencescape gets them
+from a schema registry (RedPanda), or from the files in this folder.
+`Schemas::LocalSource` (`app/models/schemas/local_source.rb`) reads the files
+when an environment's schema source is `local`, as in development and tests,
+which need no registry. The settings that choose the schema
 (`config.sapio_schema_source`, `_subject` and `_version`) are described in
 `docs/sapio_operations.md`.
 
@@ -33,3 +35,13 @@ For example: `json_schema/work-order-schema/1.json`.
   a subject in more than one type folder is an error.
 - Tests use `latest`, so a new version that the test payloads don't match
   fails the specs, as a backward compatible change shouldn't.
+
+## Modifying schemas managed by RedPanda
+
+Each RedPanda instance has an admin web console, where schemas can be
+changed in a visual editor. The console is at the instance's base URL
+followed by `/console/`, and needs the credentials in the team password
+vault. Use only its Schema Registry section: Sequencescape doesn't use the
+other parts of RedPanda.
+
+New versions of schemas are added by hand in the RedPanda console.
