@@ -456,7 +456,11 @@ See our various clients on GitHub:
 Sequencescape uses RedPanda for schema management. For more information on modifying schemas, see the [Schemas Managed By RedPanda](config/schemas/README.md) documentation.
 You can configure Sequencescape to connect to your RedPanda instance by setting the appropriate schema registry URL in the environment or configuration files.
 
-If a schema registry URL is not provided, Sequencescape will mock the connection to the schema registry, allowing local development and testing without requiring a live RedPanda instance.
+When RedPanda isn't available, as in development and tests, set
+`config.sapio_schema_source` to `local`: Sequencescape then reads the schemas
+from the files in `config/schemas` instead. It doesn't switch by itself: with
+`redpanda`, requests are answered with 503 while the registry can't be
+reached.
 
 ## Miscellaneous
 
