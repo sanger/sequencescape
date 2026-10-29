@@ -1,0 +1,118 @@
+# frozen_string_literal: true
+
+# A way a payload sample can give its tags, by a set of fields (FIELDS),
+# named NAME in messages. A scheme is given the samples that give their tags
+# its way, and the Input, and checks them. Schemes without rules of their own
+# find no problems. For each sample, a scheme also gives the oligos of its
+# aliquots' tags, to compare tags (Validation::TagCheck), and their tag IDs,
+# to create the aliquots (Creation::AliquotFactory).
+class ApiOperation::Reception::Tags::Scheme
+  # @param samples [Array<ApiOperation::Reception::Payload::PayloadSample>]
+  #   the samples that give their tags this way
+  # @param input [ApiOperation::Reception::Validation::Input] what the
+  #   validation looks at, for rules about a sample's receptacle
+  def initialize(samples, input)
+    @samples = samples
+    @input = input
+  end
+
+  # @return [Array<Hash>] the problems, each with a :pointer and a :detail
+  def errors
+    []
+  end
+
+  # The oligos of the aliquots the sample's tags give, for comparing tags:
+  # an [i7, i5] pair for each aliquot, with nil for a tag it doesn't have.
+  # Only for a sample whose tags passed this scheme's checks.
+  #
+  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @return [Array<Array(String, String)>] the oligo pairs
+  def oligos(_sample)
+    raise NotImplementedError, "#{self.class} must define oligos"
+  end
+
+  # The IDs of the tags of the aliquots the sample's tags give, for creating
+  # them: a [tag_id, tag2_id] pair for each aliquot, with nil for a tag it
+  # doesn't have. Only for a sample whose tags passed this scheme's checks.
+  #
+  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @return [Array<Array(Integer, Integer)>] the tag ID pairs
+  def tag_ids(_sample)
+    raise NotImplementedError, "#{self.class} must define tag_ids"
+  end
+
+  private
+
+  attr_reader :samples, :input
+
+  # The samples that give both fields of a pair, and an error for each
+  # sample that gives only one of them
+  #
+  # @return [Array(Array<PayloadSample>, Array<Hash>)] the samples and the
+  #   errors
+  def split_pair(first_field, second_field)
+    pair = [first_field, second_field]
+    giving = samples.select { pair.intersect?(it.fields.keys) }
+    complete, partial = giving.partition { (pair - it.fields.keys).empty? }
+    [complete, partial.map { partial_pair_error(it, pair) }]
+  end
+
+  # The error for a sample that gives only one field of the pair
+  def partial_pair_error(sample, pair)
+    given, missing = sample.fields.key?(pair.first) ? pair : pair.reverse
+    error("#{sample.pointer}/#{given}", "#{given} needs a #{missing}")
+  end
+
+  # An error for each new receptacle that holds a sample of this scheme and
+  # other samples too, for schemes that give a sample tags of its own
+  # receptacle
+  #
+  # @param tags [String] the scheme's tags, as named in the message
+  def shared_receptacle_errors(tags)
+    pointers = samples.to_set(&:pointer)
+    input.new_labware.flat_map(&:receptacles).filter_map do |receptacle|
+      in_it = receptacle.samples
+      next unless in_it.many? && in_it.any? { pointers.include?(it.pointer) }
+
+      error(receptacle.pointer,
+            "A receptacle with #{tags} holds one sample, not #{in_it.size}")
+    end
+  end
+
+  # @return [Integer, nil] the well's position by column on a plate of the
+  #   size, from 1 (A1 is 1, B1 is 2), or nil if it isn't one of its wells.
+  #   A zero-padded well (A01) is read as A1.
+  def well_index(well, plate_size)
+    @well_indexes ||= Hash.new do |indexes, size|
+      indexes[size] =
+        Map.where_plate_size(size).where_plate_shape(AssetShape.default_id)
+          .pluck(:description, :column_order)
+          .to_h { |description, column_order| [description, column_order + 1] }
+    end
+    @well_indexes[plate_size][Map.strip_description(well)]
+  end
+
+  # The oligo of each tag in the tag groups, by tag group ID and index
+  # (map_id), in one query
+  def oligos_by_tag(tag_group_ids)
+    Tag.where(tag_group_id: tag_group_ids).where.not(map_id: nil)
+      .pluck(:tag_group_id, :map_id, :oligo)
+      .to_h { |group_id, map_id, oligo| [[group_id, map_id], oligo] }
+  end
+
+  # The ID of each tag in the tag groups, by tag group ID and index (map_id),
+  # in one query
+  def ids_by_tag(tag_group_ids)
+    Tag.where(tag_group_id: tag_group_ids).where.not(map_id: nil)
+      .pluck(:tag_group_id, :map_id, :id)
+      .to_h { |group_id, map_id, id| [[group_id, map_id], id] }
+  end
+
+  def used_by(samples)
+    "used by #{samples.size} #{'sample'.pluralize(samples.size)}"
+  end
+
+  def error(pointer, detail)
+    { pointer:, detail: }
+  end
+end

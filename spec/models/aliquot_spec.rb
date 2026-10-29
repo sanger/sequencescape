@@ -8,6 +8,35 @@ RSpec.describe Aliquot do
   let(:sample1) { create(:sample) }
   let(:sample2) { create(:sample) }
 
+  # As the queue broadcast consumer calls it. Creating the records sends
+  # other messages, so only messages about the aliquot itself are counted.
+  describe '#broadcast' do
+    let(:aliquot) { create(:aliquot, sample:) }
+    let(:message_about_aliquot) { an_object_having_attributes(record: aliquot) }
+
+    before do
+      allow(Warren.handler).to receive(:<<)
+      aliquot.broadcast
+    end
+
+    context 'with a Sequencescape sample' do
+      let(:sample) { create(:sample) }
+
+      it 'sends the aliquot' do
+        expect(Warren.handler).to have_received(:<<).with(message_about_aliquot)
+      end
+    end
+
+    context 'with a Sapio sample (externally managed)' do
+      let(:sample) { create(:sample, externally_managed: true) }
+
+      it 'does not send the aliquot' do
+        expect(Warren.handler)
+          .not_to have_received(:<<).with(message_about_aliquot)
+      end
+    end
+  end
+
   shared_context 'a tag matcher' do
     context 'with the same tags' do
       let(:aliquot1) { build(:aliquot, tag: tag1, tag2: tag1, sample: sample1) }
@@ -134,13 +163,16 @@ RSpec.describe Aliquot do
       aliquot = create(:aliquot)
       tag_id = aliquot.tag_id
       expect(aliquot.substitution_hash).to be_nil
-      aliquot.update!(tag_id: 42, insert_size_from: 5, insert_size_to: 15)
+      # Another tag, not a fixed ID, which could be the aliquot's own tag
+      substitute_tag_id = create(:tag).id
+      aliquot.update!(tag_id: substitute_tag_id, insert_size_from: 5,
+                      insert_size_to: 15)
       expect(aliquot.other_attributes_for_substitution).to eq('insert_size_from' => 5, 'insert_size_to' => 15)
       expect(aliquot.substitution_hash).to eq(
         :sample_id => aliquot.sample_id,
         :library_id => aliquot.library_id,
         :original_tag_id => tag_id,
-        :substitute_tag_id => 42,
+        :substitute_tag_id => substitute_tag_id,
         'insert_size_from' => 5,
         'insert_size_to' => 15
       )

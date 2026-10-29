@@ -178,6 +178,14 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
     self.library = receptacle if library.nil? || force
   end
 
+  # Sapio writes the warehouse records of its samples, so an aliquot of an
+  # externally managed sample isn't sent. This runs where the queue broadcast
+  # consumer sends the full message, not at commit, so transfers, which copy
+  # aliquots without loading their samples, make no extra query.
+  def broadcast
+    super unless sample&.externally_managed?
+  end
+
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should
   # also reset the timestamp information as this is a new aliquot really.
   # Any options passed in as parameters will override the aliquot defaults
