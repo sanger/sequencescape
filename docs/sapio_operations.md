@@ -24,7 +24,7 @@ returns 404 `FEATURE_DISABLED`.
 
 The body must match the work order schema, the contract between Integration
 Hub and Sequencescape. Its versions are kept in this repository, in
-`config/schemas/json_schema/work-order-schema/`.
+`config/schemas/work-order-schema/`.
 
 Sequencescape also needs `request.external_id`, a non-empty string: the
 request ID, which must be unique for the calling system.
@@ -205,9 +205,9 @@ Two payloads are the same when they hold the same JSON data:
   `latest`, so a new schema version only takes effect when it is deployed on
   purpose.
 
-- **Schema files:** `config/schemas/<type>/<subject>/<version>.<extension>`,
-  for example `config/schemas/json_schema/work-order-schema/1.json`. The
-  folder gives the type (`json_schema`, or `avro` with `.avsc`). Versions are
+- **Schema files:** `config/schemas/<subject>/<version>.<extension>`, for
+  example `config/schemas/work-order-schema/1.json`. The extension gives
+  the type (`.json` for JSON Schema, `.avsc` for Avro). Versions are
   whole numbers, and `latest` is the highest. As in a schema registry, all
   versions of a subject have the same type.
 - **Adding a version:** tests use `latest`, so a new version that the test

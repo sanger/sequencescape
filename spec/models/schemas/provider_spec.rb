@@ -61,9 +61,8 @@ RSpec.describe Schemas::Provider do
     let(:source) { Schemas::LocalSource.new(root) }
 
     before do
-      root.join('json_schema/work-order-schema').mkpath
-      root.join('json_schema/work-order-schema/1.json')
-        .write('{"required": ["request"]}')
+      root.join('work-order-schema').mkpath
+      root.join('work-order-schema/1.json').write('{"required": ["request"]}')
     end
 
     after { FileUtils.remove_entry(root) }

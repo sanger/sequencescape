@@ -14,14 +14,14 @@ RSpec.describe Schemas::LocalSource do
   # Spacing, key order and number formatting that parsing would lose
   let(:text) { %({"b": 1,\n  "a": 1.10}\n) }
 
-  def write_schema(folder, file_name, content = '{}', subject = schema_subject)
-    root.join(folder, subject).mkpath
-    root.join(folder, subject, file_name).write(content)
+  def write_schema(file_name, content = '{}', subject = schema_subject)
+    root.join(subject).mkpath
+    root.join(subject, file_name).write(content)
   end
 
   before do
-    write_schema('json_schema', '1.json', text)
-    write_schema('json_schema', '2.json')
+    write_schema('1.json', text)
+    write_schema('2.json')
   end
 
   after { FileUtils.remove_entry(root) }
@@ -32,23 +32,23 @@ RSpec.describe Schemas::LocalSource do
     expect(source.fetch(schema_subject, version).text).to eq(text)
   end
 
-  it 'reads the json_schema folder as JSON Schema' do
+  it 'reads .json files as JSON Schema' do
     expect(source.fetch(schema_subject, version).type).to eq(:json_schema)
   end
 
-  it 'reads the avro folder as Avro' do
-    write_schema('avro', '1.avsc', '{"type": "record"}', 'avro-subject')
+  it 'reads .avsc files as Avro' do
+    write_schema('1.avsc', '{"type": "record"}', 'avro-subject')
     expect(source.fetch('avro-subject', 1).type).to eq(:avro)
   end
 
-  it "ignores files without their folder's extension" do
-    %w[3.avsc 3.yml].each { |name| write_schema('json_schema', name) }
+  it 'ignores files with other extensions' do
+    %w[3.yml 3.txt].each { |name| write_schema(name) }
     expect { source.fetch(schema_subject, 3) }
       .to raise_error(Schemas::Source::NotFound)
   end
 
-  it 'ignores files outside the type folders' do
-    write_schema('.', '3.json')
+  it 'ignores files in folders inside the subject folder' do
+    write_schema('3.json', '{}', "#{schema_subject}/drafts")
     expect { source.fetch(schema_subject, 3) }
       .to raise_error(Schemas::Source::NotFound)
   end
@@ -59,8 +59,8 @@ RSpec.describe Schemas::LocalSource do
   end
 
   # A schema registry keeps all versions of a subject to one type
-  context 'with a subject in more than one type folder' do
-    before { write_schema('avro', '3.avsc', '{"type": "record"}') }
+  context 'with a subject with versions of more than one type' do
+    before { write_schema('3.avsc', '{"type": "record"}') }
 
     [1, 3, :latest].each do |asked|
       it "raises an error for version #{asked.inspect}" do
@@ -72,24 +72,22 @@ RSpec.describe Schemas::LocalSource do
   end
 
   it 'compares versions as numbers for the latest' do
-    write_schema('json_schema', '10.json')
+    write_schema('10.json')
     expect(source.fetch(schema_subject, :latest).version).to eq(10)
   end
 
   it 'ignores folders named like version files for the latest' do
-    root.join('json_schema', schema_subject, '5.json').mkpath
+    root.join(schema_subject, '5.json').mkpath
     expect(source.fetch(schema_subject, :latest).version).to eq(2)
   end
 
   it 'ignores files not named by a version number for the type' do
-    write_schema('avro', 'draft.avsc', '{"type": "record"}')
+    write_schema('draft.avsc', '{"type": "record"}')
     expect(source.fetch(schema_subject, :latest).type).to eq(:json_schema)
   end
 
   it 'ignores files not named by a version number for the latest' do
-    %w[draft.json v5.json 05.json 6.avsc 7.yml].each do |name|
-      write_schema('json_schema', name)
-    end
+    %w[draft.json v5.json 05.json 7.yml].each { |name| write_schema(name) }
     expect(source.fetch(schema_subject, :latest).version).to eq(2)
   end
 
@@ -105,7 +103,7 @@ RSpec.describe Schemas::LocalSource do
   # The files kept in the repository, so a broken one fails here rather
   # than when a request is validated against it
   context 'with the files in config/schemas' do
-    Rails.root.glob('config/schemas/json_schema/*/*.json').each do |path|
+    Rails.root.glob('config/schemas/*/*.json').each do |path|
       it "holds a valid schema in #{path.relative_path_from(Rails.root)}" do
         schema = described_class.new.fetch(path.dirname.basename.to_s,
                                            path.basename('.json').to_s.to_i)
