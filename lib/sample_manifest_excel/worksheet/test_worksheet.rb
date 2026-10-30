@@ -72,32 +72,15 @@ module SampleManifestExcel
         @sample_manifest ||= create_sample_manifest
       end
 
-      def create_sample_manifest # rubocop:todo Metrics/MethodLength
-        case manifest_type
-        # Any template name with "plate" in it. A compound sample plate
-        # template (#5771) needs its own case above this one.
-        when /plate/
-          FactoryBot.create(
-            :pending_plate_sample_manifest,
-            num_plates:,
-            num_filled_wells_per_plate:,
-            num_rows_per_well:,
-            study:
-          )
-        when /tube_library/, /tube_chromium_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
-        when /tube_multiplexed_library/
-          FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
-        when /tube_rack/
-          FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
-        # Compound sample tube templates. A compound sample plate template
-        # (#5771) would match /plate/ first, so its case must go above
-        # /plate/.
-        when /compound/
-          create_compound_tube_manifest
-        else
-          FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
-        end
+      def create_sample_manifest
+        return create_compound_plate_manifest if compound_plate_manifest?
+        return create_plate_manifest if plate_manifest?
+        return create_library_tube_manifest if tube_library_manifest?
+        return create_multiplexed_library_manifest if multiplexed_library_manifest?
+        return create_tube_rack_manifest if tube_rack_manifest?
+        return create_compound_tube_manifest if compound_tube_manifest?
+
+        create_default_tube_manifest
       end
 
       def multiplexed_library_tube
@@ -106,19 +89,69 @@ module SampleManifestExcel
 
       private
 
+      def compound_plate_manifest?
+        manifest_type.match?(/compound.*plate/)
+      end
+
+      def plate_manifest?
+        manifest_type.include?('plate')
+      end
+
+      def tube_library_manifest?
+        manifest_type.include?('tube_library') || manifest_type.include?('tube_chromium_library')
+      end
+
+      def multiplexed_library_manifest?
+        manifest_type.include?('tube_multiplexed_library')
+      end
+
+      def tube_rack_manifest?
+        manifest_type.include?('tube_rack')
+      end
+
+      def compound_tube_manifest?
+        manifest_type.include?('compound')
+      end
+
+      def create_plate_manifest
+        FactoryBot.create(
+          :pending_plate_sample_manifest,
+          num_plates:,
+          num_filled_wells_per_plate:,
+          num_rows_per_well:,
+          study:
+        )
+      end
+
+      def create_library_tube_manifest
+        FactoryBot.create(:sample_manifest, asset_type: 'library', study: study)
+      end
+
+      def create_multiplexed_library_manifest
+        FactoryBot.create(:sample_manifest, asset_type: 'multiplexed_library', study: study)
+      end
+
+      def create_tube_rack_manifest
+        FactoryBot.create(:tube_rack_manifest, asset_type: 'tube_rack', study: study)
+      end
+
+      def create_default_tube_manifest
+        FactoryBot.create(:sample_manifest, asset_type: '1dtube', study: study)
+      end
+
       def create_dynamic_attributes
-        if type == 'Plates'
-          # create a worksheet for Plates
-          create_plate_dynamic_attributes
-        elsif compound_tubes?
-          create_compound_tube_dynamic_attributes
-        else
-          # by default create a worksheet for Tubes
-          create_library_type
-          create_reference_genome
-          create_tube_dynamic_attributes
-          create_tube_requests
-        end
+        return create_compound_plate_dynamic_attributes if compound_plates?
+        return create_plate_dynamic_attributes if type == 'Plates'
+        return create_compound_tube_dynamic_attributes if compound_tubes?
+
+        create_default_tube_dynamic_attributes
+      end
+
+      def create_default_tube_dynamic_attributes
+        create_library_type
+        create_reference_genome
+        create_tube_dynamic_attributes
+        create_tube_requests
       end
 
       def initialize_dynamic_attributes
@@ -172,6 +205,10 @@ module SampleManifestExcel
         sample_manifest.asset_type == 'compound_tube'
       end
 
+      def compound_plates?
+        sample_manifest.asset_type == 'compound_plate'
+      end
+
       # Needs the component tag group, which decides the rows per tube.
       def create_compound_tube_manifest
         FactoryBot.create(
@@ -183,12 +220,29 @@ module SampleManifestExcel
         ).tap(&:generate)
       end
 
+      def create_compound_plate_manifest
+        FactoryBot.create(
+          :sample_manifest,
+          asset_type: 'compound_plate',
+          count: count,
+          study: study,
+          purpose: PlatePurpose.stock_plate_purpose
+        ).tap(&:generate)
+      end
+
       def create_compound_tube_dynamic_attributes
         create_library_type
         # One row per manifest asset; no_of_rows counts the rows after the first
         self.no_of_rows = sample_manifest.sample_manifest_assets.count - 1
         @dynamic_attributes = initialize_dynamic_attributes
         record_compound_tube_samples
+      end
+
+      def create_compound_plate_dynamic_attributes
+        create_library_type
+        self.no_of_rows = sample_manifest.sample_manifest_assets.count - 1
+        @dynamic_attributes = initialize_dynamic_attributes
+        record_compound_plate_samples
       end
 
       # The filled rows of a tube take the component tags in order; the rows
@@ -204,6 +258,17 @@ module SampleManifestExcel
         end
       end
 
+      def record_compound_plate_samples
+        row_nums = first_to_last.to_a
+        rows_by_well.each_with_index do |assets, well_no|
+          assets.each_with_index do |sample_manifest_asset, index|
+            tag = component_tags[index] if index < components_in_tube(well_no)
+            row = dynamic_attributes[row_nums.shift]
+            record_compound_plate_row(row, sample_manifest_asset, tag)
+          end
+        end
+      end
+
       def record_compound_tube_row(row, sample_manifest_asset, tag)
         row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
         row[:sanger_tube_id] = sample_manifest_asset.human_barcode
@@ -214,7 +279,22 @@ module SampleManifestExcel
         end
       end
 
+      def record_compound_plate_row(row, sample_manifest_asset, tag)
+        row[:sanger_sample_id] = sample_manifest_asset.sanger_sample_id
+        row[:sanger_plate_id] = sample_manifest_asset.asset.plate.human_barcode
+        row[:well] = sample_manifest_asset.asset.map_description
+        if tag
+          row[:component_tag_sequence] = tag.oligo
+        else
+          row[:blank] = true
+        end
+      end
+
       def rows_by_tube
+        sample_manifest.sample_manifest_assets.group_by(&:asset).values
+      end
+
+      def rows_by_well
         sample_manifest.sample_manifest_assets.group_by(&:asset).values
       end
 

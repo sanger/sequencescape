@@ -88,5 +88,28 @@ context 'printing different asset types' do
           .to be_present.and eq(compound.shorten_sanger_sample_id)
       end
     end
+
+    context 'when printing a compound sample plate' do
+      subject(:label) do
+        described_class.new(
+          printables: plate,
+          printer_type_class: BarcodePrinterType96Plate
+        ).labels.first
+      end
+
+      let(:plate) { create(:plate, :with_wells, well_count: 1) }
+      let!(:compound) do
+        SampleManifest::CompoundSampleBuilder.new(
+          study: create(:study),
+          receptacle: plate.wells.first.receptacle,
+          tags_by_component: { create(:sample) => create(:tag) }
+        ).build!
+      end
+
+      it 'shows the sanger sample id of its compound sample' do
+        expect(label[:first_line])
+          .to be_present.and eq(compound.shorten_sanger_sample_id)
+      end
+    end
   end
 end

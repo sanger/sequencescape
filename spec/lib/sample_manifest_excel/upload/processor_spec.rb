@@ -1333,5 +1333,149 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         end
       end
     end
+
+    describe SampleManifestExcel::Upload::Processor::CompoundPlate do
+      let(:manifest_type) { 'kinnex_compound_sample_plate' }
+      let(:component_tag_group) do
+        handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+        create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 3)
+      end
+      let(:download) do
+        component_tag_group
+        build(:test_download_compound_plates, columns: column_list, count: 2)
+      end
+      let(:rows_by_plate) { upload.rows.group_by(&:asset).values }
+
+      def change_value(row, column_name, value)
+        index = row.columns.find_by(:name, column_name).number - 1
+        row.data[index] = value
+      end
+
+      it 'is the processor for compound sample plate manifests' do
+        expect(upload.processor).to be_a(described_class)
+      end
+
+      it 'is not valid without an upload' do
+        expect(described_class.new(nil)).not_to be_valid
+      end
+
+      it 'is valid when the rows of each plate share its barcode' do
+        expect(processor).to be_valid
+      end
+
+      context 'when run' do
+        let(:compounds) do
+          rows_by_plate.map do |rows|
+            rows.first.asset.aliquots.reload.sole.sample
+          end
+        end
+
+        before { processor.run(tag_group) }
+
+        it 'is processed' do
+          expect(processor).to be_processed
+        end
+
+        it 'makes each compound sample from the component samples of a plate' do
+          expect(compounds.map { |compound| compound.component_samples.to_set })
+            .to eq(rows_by_plate.map { |rows| rows.to_set(&:sample) })
+        end
+
+        it 'stores the tag of each component sample on its link' do
+          links = compounds.flat_map(&:joins_as_compound_sample)
+          tags = upload.rows.to_h do |row|
+            [row.sample, row.value('component_tag_sequence')]
+          end
+          expect(links.to_h { |link| [link.component_sample, link.tag.oligo] })
+            .to eq(tags)
+        end
+      end
+
+      it 'is not valid when a barcode is used for more than one plate' do
+        first_plate_rows, second_plate_rows = rows_by_plate
+        barcode = first_plate_rows.first.value('sanger_plate_id')
+        change_value(second_plate_rows.first, 'sanger_plate_id', barcode)
+        processor.valid?
+        expect(processor.errors.full_messages)
+          .to include(/Barcode is used for more than one plate/)
+      end
+
+      it 'is not valid when a plate has more than one barcode' do
+        first_row, second_row = rows_by_plate.first
+        change_value(second_row, 'sanger_plate_id', 'NT1234567X')
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Sanger plate id differs from row " \
+          "#{first_row.number} of the same plate."
+        )
+      end
+
+      it 'is not valid when a tag is used twice in a plate' do
+        first_row, second_row = rows_by_plate.first
+        tag = first_row.value('component_tag_sequence')
+        change_value(second_row, 'component_tag_sequence', tag)
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Component tag sequence is already " \
+          "used in this plate by row #{first_row.number}."
+        )
+      end
+
+      it 'is valid when different plates use the same tag' do
+        first_plate_rows, second_plate_rows = rows_by_plate
+        tag = first_plate_rows.first.value('component_tag_sequence')
+        change_value(second_plate_rows.first, 'component_tag_sequence', tag)
+        expect(processor).to be_valid
+      end
+
+      it 'is not valid when a plate has two library types' do
+        first_row, second_row = rows_by_plate.first
+        change_value(second_row, 'library_type_kinnex', 'Another library type')
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Library type differs from row " \
+          "#{first_row.number} of the same plate."
+        )
+      end
+
+      it 'is not valid when a plate has two retention instructions' do
+        first_row, second_row = rows_by_plate.first
+        change_value(
+          second_row, 'retention_instruction', 'Destroy after 2 years'
+        )
+        processor.valid?
+        expect(processor.errors.full_messages).to include(
+          "Row #{second_row.number} - Retention instruction differs from row " \
+          "#{first_row.number} of the same plate."
+        )
+      end
+
+      it 'is valid when each plate has its own library type and retention' do
+        rows_by_plate.second.each do |row|
+          change_value(row, 'library_type_kinnex', 'Another library type')
+          change_value(row, 'retention_instruction', 'Destroy after 2 years')
+        end
+        expect(processor).to be_valid
+      end
+
+      context 'when a row has a tag but no supplier name' do
+        let(:download) do
+          super().tap do |test_download|
+            worksheet = test_download.worksheet
+            column = worksheet.columns.find_by(:name, :supplier_name)
+            row = worksheet.axlsx_worksheet.rows[worksheet.first_row]
+            row.cells[column.number - 1].value = nil
+          end
+        end
+
+        it 'reports the row instead of dropping it' do
+          processor.valid?
+          expect(processor.errors.full_messages).to include(
+            "Row #{upload.rows.first.number + 1} - Has a component tag " \
+            'sequence but no supplier name.'
+          )
+        end
+      end
+    end
   end
 end
