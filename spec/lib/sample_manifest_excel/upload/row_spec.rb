@@ -290,6 +290,41 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     end
   end
 
+  context 'when the manifest is for compound plates' do
+    let(:columns) do
+      configuration.columns.all.extract(%w[sanger_plate_id well sanger_sample_id supplier_name])
+    end
+    let(:sample_manifest) do
+      create(
+        :sample_manifest,
+        asset_type: 'compound_plate',
+        count: 1,
+        purpose: PlatePurpose.stock_plate_purpose
+      )
+    end
+    let(:sanger_sample_id) do
+      sample_manifest.sample_manifest_assets.first.sanger_sample_id
+    end
+    let(:data) { [sample_manifest.labware.first.human_barcode, 'A1', sanger_sample_id, 'SUPPLIER-NAME'] }
+
+    before do
+      handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+      create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 2)
+      sample_manifest.generate
+    end
+
+    it 'is valid without a primary receptacle' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      expect(row.validate_sample(no_overrides)).to be true
+    end
+
+    it 'returns the plate of the manifest row as its labware' do
+      row = described_class.new(number: 1, data: data, columns: columns)
+      plate = sample_manifest.sample_manifest_assets.first.asset.plate
+      expect(row.labware).to eq(plate)
+    end
+  end
+
   context 'when updating' do
     it 'updates the aliquot with the specialised fields' do
       sample_count = Sample.count

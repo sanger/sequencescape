@@ -7,7 +7,8 @@ module SampleManifest::CoreBehaviour
 
   # Asset types not released yet, with the feature flags that enable them.
   FLAGGED_ASSET_TYPES = {
-    'compound_tube' => :y26_147_2_enable_compound_sample_tube_manifests
+    'compound_tube' => :y26_147_2_enable_compound_sample_tube_manifests,
+    'compound_plate' => :y26_147_1_enable_compound_sample_plate_manifests
   }.freeze
 
   # Include in cores which exhibit the default behaviour
@@ -139,6 +140,8 @@ module SampleManifest::CoreBehaviour
       'LibraryPlateBehaviour'
     when 'compound_tube'
       'CompoundTubeBehaviour'
+    when 'compound_plate'
+      'CompoundPlateBehaviour'
     when nil
       'UnspecifiedBehaviour'
     else

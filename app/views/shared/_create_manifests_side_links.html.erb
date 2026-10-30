@@ -6,6 +6,9 @@
 <% add :menu, "Create manifest for multiplexed libraries" => new_sample_manifest_path({asset_type: "multiplexed_library", study_id: study_id}) %>
 <% if SampleManifest.supported_asset_type?('compound_tube') %>
   <% add :menu, 'Create manifest for compound sample tubes' =>
-       new_sample_manifest_path(asset_type: 'compound_tube', study_id:) %>
+       new_sample_manifest_path(asset_type: 'compound_tube', study_id:) %>      
 <% end %>
-
+<% if SampleManifest.supported_asset_type?('compound_plate') %>
+  <% add :menu, 'Create manifest for compound sample plates' =>
+       new_sample_manifest_path(asset_type: 'compound_plate', study_id:) %>
+<% end %>

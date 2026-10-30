@@ -39,7 +39,8 @@ RSpec.describe SampleManifest, :sample_manifest do
   end
 
   describe '.supported_asset_type?' do
-    let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+    let(:tube_flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+    let(:plate_flag) { :y26_147_1_enable_compound_sample_plate_manifests }
 
     it 'supports an asset type without a feature flag' do
       expect(described_class).to be_supported_asset_type('1dtube')
@@ -50,13 +51,23 @@ RSpec.describe SampleManifest, :sample_manifest do
     end
 
     it 'does not support compound tubes while the feature flag is off' do
-      Flipper.disable(flag)
+      Flipper.disable(tube_flag)
       expect(described_class).not_to be_supported_asset_type('compound_tube')
     end
 
     it 'supports compound tubes when the feature flag is on' do
-      Flipper.enable(flag)
+      Flipper.enable(tube_flag)
       expect(described_class).to be_supported_asset_type('compound_tube')
+    end
+
+    it 'does not support compound plates while the feature flag is off' do
+      Flipper.disable(plate_flag)
+      expect(described_class).not_to be_supported_asset_type('compound_plate')
+    end
+
+    it 'supports compound plates when the feature flag is on' do
+      Flipper.enable(plate_flag)
+      expect(described_class).to be_supported_asset_type('compound_plate')
     end
   end
 

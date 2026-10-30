@@ -1,0 +1,101 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+
+RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
+  let(:study) { create(:study) }
+  let(:tag_count) { 3 }
+  let(:tag_group_name) do
+    SequencescapeExcel::SpecialisedField::ComponentTagSequence::TAG_GROUP_NAME
+  end
+  let(:manifest) do
+    create(
+      :sample_manifest,
+      study: study,
+      asset_type: 'compound_plate',
+      count: 2,
+      purpose: PlatePurpose.stock_plate_purpose
+    )
+  end
+  let(:plates) { manifest.labware }
+
+  it 'does not put the samples in receptacles' do
+    expect(manifest.core_behaviour).not_to be_samples_in_receptacles
+  end
+
+  context 'when the component tag group exists' do
+    before do
+      create(:tag_group, name: tag_group_name, tag_count: tag_count)
+      manifest.generate
+    end
+
+    it 'creates a plate for each plate requested' do
+      expect(plates.size).to eq(2)
+    end
+
+    it 'registers each plate as stock once, whatever its number of rows' do
+      row_receptacles = manifest.sample_manifest_assets.map(&:asset)
+      expect(manifest.core_behaviour.stock_receptacles(row_receptacles))
+        .to match_array(plates.flat_map(&:wells).map(&:receptacle))
+    end
+
+    it 'creates stock plates' do
+      expect(plates).to all(be_a(Plate))
+    end
+
+    it 'creates a row for each tag in the tag group in each plate' do
+      rows = manifest.sample_manifest_assets.group_by(&:asset)
+      expect(rows.transform_values(&:size))
+        .to eq(plates.flat_map(&:wells).to_h { |well| [well.receptacle, tag_count] })
+    end
+
+    it 'gives each row its own sanger sample id' do
+      ids = manifest.sample_manifest_assets.map(&:sanger_sample_id)
+      expect(ids.uniq.size).to eq(2 * tag_count)
+    end
+
+    it 'lists each plate barcode once on the manifest' do
+      expect(manifest.barcodes).to match_array(plates.map(&:human_barcode))
+    end
+
+    it 'shows the plate barcode on each of its rows' do
+      barcodes = manifest.details_array.pluck(:barcode)
+      expect(barcodes.tally)
+        .to eq(plates.to_h { |plate| [plate.human_barcode, tag_count] })
+    end
+
+    it 'prints one label per plate' do
+      expect(manifest.printables).to match_array(plates)
+    end
+
+    describe 'creating a component sample on upload' do
+      let(:row) { manifest.sample_manifest_assets.first }
+      let!(:sample) do
+        manifest.create_sample_and_aliquot(row.sanger_sample_id, row.asset)
+      end
+
+      it 'creates the sample with the sanger sample id of the row' do
+        expect(sample.sanger_sample_id).to eq(row.sanger_sample_id)
+      end
+
+      it 'adds the sample to the study' do
+        expect(study.reload.samples).to include(sample)
+      end
+
+      it 'does not put the sample in the plate' do
+        expect(row.asset.aliquots).to be_empty
+      end
+
+      it 'gives the sample no aliquots' do
+        expect(sample.aliquots).to be_empty
+      end
+    end
+  end
+
+  context 'when the component tag group does not exist' do
+    it 'does not generate the manifest' do
+      expect { manifest.generate }
+        .to raise_error(ActiveRecord::RecordNotFound, /#{tag_group_name}/)
+    end
+  end
+end

@@ -30,6 +30,8 @@ y26_245_sapio_study_upsert: Enables upsert behaviour on the Sapio study creation
 # Kinnex compound sample manifests
 y26_147_2_enable_compound_sample_tube_manifests: >-
   Enables creating compound sample tube manifests, e.g. Kinnex
+y26_147_1_enable_compound_sample_plate_manifests: >-
+  Enables creating compound sample plate manifests, e.g. Kinnex
 
 # Sapio work orders
 y26_282_sapio_operations_endpoint: Enables the Sapio operations endpoint

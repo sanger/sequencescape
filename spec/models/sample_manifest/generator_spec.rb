@@ -143,6 +143,24 @@ RSpec.describe SampleManifest::Generator, :sample_manifest, :sample_manifest_exc
     end
   end
 
+  context 'with a compound sample plate template' do
+    let(:template) { 'kinnex_compound_sample_plate' }
+    let(:flag) { :y26_147_1_enable_compound_sample_plate_manifests }
+    let(:generator) { described_class.new(attributes, user, configuration) }
+
+    it 'rejects the template while the feature flag is off' do
+      Flipper.disable(flag)
+      generator.valid?
+      expect(generator.errors.full_messages)
+        .to include("#{template} is not a valid template")
+    end
+
+    it 'accepts the template when the feature flag is on' do
+      Flipper.enable(flag)
+      expect(generator).to be_valid
+    end
+  end
+
   context 'with rows_per_well set' do
     let(:template) { 'pools_plate' }
 

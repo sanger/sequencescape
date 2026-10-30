@@ -907,3 +907,26 @@ kinnex_compound_sample_tube:
     - :sample_public_name
     - :sample_taxon_id
     - :sample_description
+
+kinnex_compound_sample_plate:
+  heading: "Kinnex Compound Sample Plate"
+  asset_type: "compound_plate"
+  columns:
+    - :sanger_plate_id
+    - :well
+    - :sanger_tube_id
+    - :sanger_sample_id
+    - :supplier_name
+    - :retention_instruction
+    - :component_tag_sequence
+    - :library_type_kinnex
+    - :donor_id
+    - :date_of_sample_collection
+    - :country_of_origin
+    - :gender
+    - :phenotype
+    - :sample_ebi_accession_number
+    - :sample_common_name
+    - :sample_public_name
+    - :sample_taxon_id
+    - :sample_description
