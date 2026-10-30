@@ -138,4 +138,33 @@ RSpec.describe Api::SampleIo do
   end
 
   it_behaves_like('an IO object')
+
+  context 'with joins_as_compound_sample links' do
+    # let(:compound_sample) { create(:sample, component_samples: [comp_sample1, comp_sample2]) }
+    let(:compound) { create(:sample) }
+    let(:components) { create_list(:sample, 2) }
+    let(:entries) do
+      described_class.to_hash(compound)['component_sample_uuids']
+    end
+    before do
+      components.zip(tags).each do | component, tag |
+        compound.joins_as_compound_sample.create!(component_sample: component, tag: tag)
+      end
+    end
+    context 'when the links has no tags, e.g. scRNA' do
+      let(:tags){ [] }
+      it 'sends only uuid of each componenet sample' do
+        expected = components.map { | component |  { 'uuid' => component.uuid } }
+        expect(entries).to match_array(expected)
+      end
+    end
+
+    context 'when the links have tags, e.g. kinnex' do
+      let(:tags){ create_list(:tag, 2) }
+      it 'sends the tag sequence of each component sample' do
+        expected = components.zip(tags).map { | component, tag | { 'uuid' => component.uuid, 'tag_sequence' => tag.oligo } }
+        expect(entries).to match_array(expected)
+      end
+    end
+  end
 end

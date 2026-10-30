@@ -25,6 +25,11 @@ class Api::SampleIo < Api::Base
     def json_root
       'sample'
     end
+
+    def component_links_to_json
+      joins_as_compound_sample.includes(:tag, component_sample: :uuid_object)
+    end
+
   end
 
   renders_model(::Sample)
@@ -43,8 +48,10 @@ class Api::SampleIo < Api::Base
   map_attribute_to_json_attribute(:updated_by_manifest)
   map_attribute_to_json_attribute(:consent_withdrawn)
 
-  with_nested_has_many_association(:component_samples, as: :component_sample_uuids) do
-    map_attribute_to_json_attribute(:uuid)
+
+  with_nested_has_many_association(:component_links_to_json, as: :component_sample_uuids) do
+    with_association(:component_sample) { map_attribute_to_json_attribute(:uuid) }
+    with_association(:tag) { map_attribute_to_json_attribute(:oligo, 'tag_sequence') }
   end
 
   with_association(:sample_metadata) do
