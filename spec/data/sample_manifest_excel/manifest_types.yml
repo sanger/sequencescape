@@ -859,7 +859,6 @@ kinnex_compound_sample_plate:
   columns:
     - :sanger_plate_id
     - :well
-    - :sanger_tube_id
     - :sanger_sample_id
     - :supplier_name
     - :retention_instruction

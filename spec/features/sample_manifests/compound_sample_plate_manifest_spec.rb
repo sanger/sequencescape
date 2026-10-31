@@ -20,6 +20,7 @@ RSpec.describe 'Compound sample plate manifest', :sample_manifest do
     end
     Flipper.enable(:y26_147_1_enable_compound_sample_plate_manifests)
     tag_group
+    allow(PlateBarcode).to receive(:create_barcode) { build(:plate_barcode) }
     login_user(user)
   end
 
@@ -78,8 +79,8 @@ RSpec.describe 'Compound sample plate manifest', :sample_manifest do
     end
 
     def open_compound_sample_page(plate)
-      visit(plate_path(plate))
-      within('#plate-samples-table tbody') { find('a').click }
+      visit(labware_path(plate))
+      within('#plate-samples-table tbody') { find('a[href*="/samples/"]').click }
     end
 
     def component_rows
