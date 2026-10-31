@@ -110,7 +110,10 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       SampleManifestExcel::Upload::Data.new(file)
     end
 
-    before { component_tag_group }
+    before do
+      allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
+      component_tag_group
+    end
 
     def column_values(name)
       columns = SampleManifestExcel.configuration.columns.all

@@ -7,7 +7,7 @@
 module SampleManifest::CompoundPlateBehaviour
   class Core < SampleManifest::PlateBehaviour::Core
     def generate
-      @plates = Array.new(count) { purpose.create!(:without_wells) }
+      @plates = Array.new(count) { purpose.create! }
       add_rows_to_plates
       @manifest.update!(barcodes: @plates.map(&:human_barcode))
       @plates
@@ -63,7 +63,7 @@ module SampleManifest::CompoundPlateBehaviour
       sanger_ids.each do |sanger_id|
         SampleManifestAsset.create!(
           sanger_sample_id: sanger_sample_id_for(sanger_id),
-          asset: plate.wells.first.receptacle,
+          asset: plate.wells.first,
           sample_manifest: @manifest
         )
       end
