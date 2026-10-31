@@ -52,6 +52,7 @@ RSpec.describe LabelPrinter::Label::SampleManifestRedirect do
     before do
       handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
       create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 3)
+      allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
       manifest.generate
     end
 
