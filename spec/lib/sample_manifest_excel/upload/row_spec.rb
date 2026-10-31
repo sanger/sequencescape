@@ -308,6 +308,7 @@ RSpec.describe SampleManifestExcel::Upload::Row, :sample_manifest, :sample_manif
     let(:data) { [sample_manifest.labware.first.human_barcode, 'A1', sanger_sample_id, 'SUPPLIER-NAME'] }
 
     before do
+      allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
       handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
       create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 2)
       sample_manifest.generate
