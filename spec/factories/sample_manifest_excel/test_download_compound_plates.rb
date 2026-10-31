@@ -40,17 +40,27 @@ FactoryBot.define do
         name: handler::TAG_GROUP_NAME,
         tag_count: component_tag_count
       )
-      new(
-        data:,
-        columns:,
-        validation_errors:,
-        study:,
-        supplier:,
-        count:,
-        type:,
-        manifest_type:,
-        components_per_tube:
-      )
+
+      original_create_barcode = PlateBarcode.method(:create_barcode)
+      PlateBarcode.define_singleton_method(:create_barcode) do |*args, **kwargs|
+        FactoryBot.build(:plate_barcode, *args, **kwargs)
+      end
+
+      begin
+        new(
+          data:,
+          columns:,
+          validation_errors:,
+          study:,
+          supplier:,
+          count:,
+          type:,
+          manifest_type:,
+          components_per_tube:
+        )
+      ensure
+        PlateBarcode.define_singleton_method(:create_barcode, original_create_barcode)
+      end
     end
 
     skip_create
