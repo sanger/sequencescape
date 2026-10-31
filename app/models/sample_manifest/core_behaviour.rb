@@ -2,7 +2,7 @@
 module SampleManifest::CoreBehaviour
   BEHAVIOURS = %w[
     1dtube plate multiplexed_library library library_plate tube_rack
-    compound_tube
+    compound_tube compound_plate
   ].freeze
 
   # Asset types not released yet, with the feature flags that enable them.
