@@ -98,7 +98,7 @@ context 'printing different asset types' do
       end
 
       let(:plate) { create(:plate, :with_wells, well_count: 1) }
-      let!(:compound) do
+      let(:compound) do
         SampleManifest::CompoundSampleBuilder.new(
           study: create(:study),
           receptacle: plate.wells.first,
