@@ -19,6 +19,11 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
   end
   let(:plates) { manifest.labware }
 
+  before do
+    allow(PlateBarcode).to receive(:create_barcode)
+      .and_return(build(:plate_barcode), build(:plate_barcode))
+  end
+
   it 'does not put the samples in receptacles' do
     expect(manifest.core_behaviour).not_to be_samples_in_receptacles
   end
@@ -36,7 +41,7 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
     it 'registers each plate as stock once, whatever its number of rows' do
       row_receptacles = manifest.sample_manifest_assets.map(&:asset)
       expect(manifest.core_behaviour.stock_receptacles(row_receptacles))
-        .to match_array(plates.flat_map(&:wells).map(&:receptacle))
+        .to match_array(plates.map { |plate| plate.wells.first })
     end
 
     it 'creates stock plates' do
@@ -46,7 +51,7 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
     it 'creates a row for each tag in the tag group in each plate' do
       rows = manifest.sample_manifest_assets.group_by(&:asset)
       expect(rows.transform_values(&:size))
-        .to eq(plates.flat_map(&:wells).to_h { |well| [well.receptacle, tag_count] })
+        .to eq(plates.to_h { |plate| [plate.wells.first, tag_count] })
     end
 
     it 'gives each row its own sanger sample id' do
@@ -93,6 +98,8 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
   end
 
   context 'when the component tag group does not exist' do
+    before { allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode)) }
+
     it 'does not generate the manifest' do
       expect { manifest.generate }
         .to raise_error(ActiveRecord::RecordNotFound, /#{tag_group_name}/)
