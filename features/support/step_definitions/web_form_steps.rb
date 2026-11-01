@@ -127,7 +127,7 @@ rescue NotImplementedError
 end
 
 When /^I fill in the hidden field "([^"]*)" with "([^"]+)"$/ do |field, value|
-  find("input##{field}", visible: false).set(value)
+  find("input##{field}", visible: false).set(value) # rubocop:todo Capybara/VisibilityOption
 end
 
 When /^I accept the action$/ do
