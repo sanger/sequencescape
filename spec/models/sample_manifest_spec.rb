@@ -19,21 +19,33 @@ RSpec.describe SampleManifest, :sample_manifest do
   end
 
   describe '#core_behaviour' do
-    asset_types = SampleManifest::CoreBehaviour::BEHAVIOURS - ['compound_tube']
+    default_asset_types = SampleManifest::CoreBehaviour::BEHAVIOURS - %w[compound_tube compound_plate]
 
-    (asset_types + [nil]).each do |asset_type|
+    default_asset_types.each do |asset_type|
       it "puts the samples in receptacles for #{asset_type.inspect}" do
         manifest = described_class.new(asset_type:)
         expect(manifest.core_behaviour).to be_samples_in_receptacles
       end
-    end
 
-    asset_types.each do |asset_type|
       it "registers stock once per row for #{asset_type.inspect}" do
         receptacles = [Receptacle.new] * 2
         manifest = described_class.new(asset_type:)
         expect(manifest.core_behaviour.stock_receptacles(receptacles))
           .to eq(receptacles)
+      end
+    end
+
+    %w[compound_tube compound_plate].each do |asset_type|
+      it "does not put the samples in receptacles for #{asset_type.inspect}" do
+        manifest = described_class.new(asset_type:)
+        expect(manifest.core_behaviour).not_to be_samples_in_receptacles
+      end
+
+      it "registers stock once per plate for #{asset_type.inspect}" do
+        receptacles = [Receptacle.new] * 2
+        manifest = described_class.new(asset_type:)
+        expect(manifest.core_behaviour.stock_receptacles(receptacles))
+          .to eq(receptacles.uniq)
       end
     end
   end
