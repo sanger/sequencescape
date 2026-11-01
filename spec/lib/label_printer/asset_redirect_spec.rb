@@ -101,14 +101,13 @@ context 'printing different asset types' do
       let!(:compound) do
         SampleManifest::CompoundSampleBuilder.new(
           study: create(:study),
-          receptacle: plate.wells.first.receptacle,
+          receptacle: plate.wells.first,
           tags_by_component: { create(:sample) => create(:tag) }
         ).build!
       end
 
-      it 'shows the sanger sample id of its compound sample' do
-        expect(label[:first_line])
-          .to be_present.and eq(compound.shorten_sanger_sample_id)
+      it 'uses the plate label format for a compound sample plate' do
+        expect(label[:bottom_left]).to eq(plate.human_barcode)
       end
     end
   end
