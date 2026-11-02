@@ -428,4 +428,28 @@ describe 'Sample manifest', :sample_manifest do
       end
     end
   end
+
+  it 'sets the reference genomes named in the manifest' do
+    visit_new_plate_manifest
+    create(:reference_genome, name: 'Dragon')
+    create(:reference_genome, name: 'Centaur')
+    attach_file('File to upload',
+                'test/data/sample_manifest_reference_genomes.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    reference_genomes =
+      Sample.where(sanger_sample_id: sanger_sample_ids)
+        .includes(sample_metadata: :reference_genome).to_h do |sample|
+          [sample.sanger_sample_id,
+           sample.sample_metadata.reference_genome.name]
+        end
+    # Dragon for sample_1 to sample_5, Centaur for sample_6 to sample_12
+    expect(reference_genomes).to eq(
+      sanger_sample_ids.each_with_index.to_h do |sanger_sample_id, index|
+        [sanger_sample_id, index < 5 ? 'Dragon' : 'Centaur']
+      end
+    )
+  end
 end
