@@ -140,7 +140,6 @@ RSpec.describe Api::SampleIo do
   it_behaves_like('an IO object')
 
   context 'with joins_as_compound_sample links' do
-    # let(:compound_sample) { create(:sample, component_samples: [comp_sample1, comp_sample2]) }
     let(:compound) { create(:sample) }
     let(:components) { create_list(:sample, 2) }
     let(:entries) do

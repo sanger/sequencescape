@@ -26,6 +26,7 @@ class Api::SampleIo < Api::Base
       'sample'
     end
 
+    # Preload tag and uuid object for quering sample_compounds_components table
     def component_links_to_json
       joins_as_compound_sample.includes(:tag, component_sample: :uuid_object)
     end
@@ -46,7 +47,8 @@ class Api::SampleIo < Api::Base
   map_attribute_to_json_attribute(:empty_supplier_sample_name)
   map_attribute_to_json_attribute(:updated_by_manifest)
   map_attribute_to_json_attribute(:consent_withdrawn)
-
+ 
+  # Get component uuid and tag_sequence from sample_compounds_components table
   with_nested_has_many_association(:component_links_to_json, as: :component_sample_uuids) do
     with_association(:component_sample) { map_attribute_to_json_attribute(:uuid) }
     with_association(:tag) { map_attribute_to_json_attribute(:oligo, 'tag_sequence') }
