@@ -28,15 +28,41 @@ describe 'Sample manifest', :sample_manifest do
     "Your #{count} label(s) have been sent to printer #{printer.name}"
   end
 
-  # The manifest table's rows, with only the cells of the given columns
-  def manifest_table(*columns)
+  # The manifest table's rows, with only the cells of the columns the
+  # scenarios check
+  def manifest_table
+    columns = ['Contains', 'Study', 'Supplier', 'Manifest', 'Upload',
+               'Errors', 'State', 'Created by']
     headings, *rows = fetch_table('table#study_list')
     rows.map { |row| headings.zip(row).to_h.values_at(*columns) }
+  end
+
+  # The manifest table's row for a one-plate manifest, in the columns of
+  # manifest_table
+  def plate_manifest_row(upload:, state:, errors: '')
+    ['1 plate', study.name, supplier.name, 'Blank manifest', upload, errors,
+     state, user.login]
+  end
+
+  # As the Cucumber step "a manifest has been created for": a one-plate
+  # manifest from the factory, its Sanger sample IDs renumbered in well
+  # order (A1 is sample_0, B1 sample_1, and so on) as the test files name
+  # them, then the manifest's page
+  def visit_new_plate_manifest
+    manifest = create(:sample_manifest, study:, supplier:, user:)
+    manifest.generate
+    Delayed::Worker.new.work_off
+    manifest.sample_manifest_assets.order(:asset_id)
+      .each_with_index do |asset, index|
+        asset.update!(sanger_sample_id: "sample_#{index}")
+      end
+    visit(sample_manifest_path(manifest))
   end
 
   before do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+      config.tag_group = create(:tag_group).name
       config.load!
     end
     create(:sample_tube_purpose, name: 'Standard sample')
@@ -80,9 +106,24 @@ describe 'Sample manifest', :sample_manifest do
     click_button('Create manifest and print labels')
     expect(page).to have_text('Upload a Sample Manifest')
     click_link('View all manifests')
-    expect(manifest_table('Contains', 'Study', 'Supplier', 'Manifest',
-                          'Upload', 'Errors', 'State', 'Created by'))
-      .to eq([['1 plate', study.name, supplier.name, 'Blank manifest',
-               'Upload manifest', '', 'No manifest uploaded', user.login]])
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Upload manifest',
+                          state: 'No manifest uploaded')]
+    )
+  end
+
+  it 'does not accept an Excel file in the old .xls format' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'data/sample_information.xls')
+    click_button('Upload manifest')
+    expect(page).to have_text(
+      'File extension is unsupported; should be csv or xlsx'
+    )
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Upload manifest',
+                          state: 'No manifest uploaded')]
+    )
+    click_link("Manifest for #{study.name}")
+    expect(page).to have_no_text('Download Completed Manifest')
   end
 end
