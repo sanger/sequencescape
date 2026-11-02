@@ -86,6 +86,9 @@ group :default do
   gem 'avro'
   gem 'json', '~> 2.0' # Required by avro (and others), but should be removed once avro handles the dependency correctly
 
+  # Validates JSON payloads against JSON Schemas, such as Sapio work orders
+  gem 'json_schemer', '~> 2.5'
+
   # Excel file generation
   # Note: We're temporarily using out own for of the project to make use of a few changes
   # which have not yet been merged into a proper release. (Latest release 2.0.1 at time of writing)

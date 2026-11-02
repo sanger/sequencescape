@@ -55,6 +55,7 @@ a organisation of 900 people.
   - [Barcode printing](#barcode-printing)
   - [Plate barcode service](#plate-barcode-service)
   - [Data warehousing](#data-warehousing)
+  - [Schemas](#schemas)
 - [Miscellaneous](#miscellaneous)
   - [Lefthook](#lefthook)
   - [Ruby warnings and rake 11](#ruby-warnings-and-rake-11)
@@ -449,6 +450,17 @@ See our various clients on GitHub:
 [sanger/unified_warehouse](https://github.com/sanger/unified_warehouse)
 
 [sanger/event_warehouse](https://github.com/sanger/event_warehouse)
+
+### Schemas
+
+Sequencescape uses RedPanda for schema management. For more information on modifying schemas, see the [Schemas Managed By RedPanda](config/schemas/README.md) documentation.
+You can configure Sequencescape to connect to your RedPanda instance by setting the appropriate schema registry URL in the environment or configuration files.
+
+When RedPanda isn't available, as in development and tests, set
+`config.sapio_schema_source` to `local`: Sequencescape then reads the schemas
+from the files in `config/schemas` instead. It doesn't switch by itself: with
+`redpanda`, requests are answered with 503 while the registry can't be
+reached.
 
 ## Miscellaneous
 
