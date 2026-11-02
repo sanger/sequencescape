@@ -261,14 +261,20 @@ module SampleManifestExcel
       def record_compound_plate_samples
         row_nums = first_to_last.to_a
         plate_indexes = plate_indexes_by_well
-        rows_by_well.each do |assets|
-          plate_index = plate_indexes.fetch(assets.first.asset.labware_id)
-          assets.each_with_index do |sample_manifest_asset, index|
-            tag = component_tags[index] if index < components_in_tube(plate_index)
-            row = dynamic_attributes[row_nums.shift]
-            record_compound_plate_row(row, sample_manifest_asset, tag)
-          end
+        rows_by_well.each { |assets| record_compound_plate_well(assets, row_nums, plate_indexes) }
+      end
+
+      def record_compound_plate_well(assets, row_nums, plate_indexes)
+        plate_index = plate_indexes.fetch(assets.first.asset.labware_id)
+        assets.each_with_index do |sample_manifest_asset, index|
+          record_compound_plate_sample(sample_manifest_asset, index, plate_index, row_nums)
         end
+      end
+
+      def record_compound_plate_sample(sample_manifest_asset, index, plate_index, row_nums)
+        tag = component_tags[index] if index < components_in_tube(plate_index)
+        row = dynamic_attributes[row_nums.shift]
+        record_compound_plate_row(row, sample_manifest_asset, tag)
       end
 
       def plate_indexes_by_well
