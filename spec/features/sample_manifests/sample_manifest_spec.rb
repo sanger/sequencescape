@@ -264,4 +264,16 @@ describe 'Sample manifest', :sample_manifest do
       expect(report_rows).to eq(expected_report_rows)
     end
   end
+
+  # The scenario was called "Upload a manifest with invalid cell line"
+  it 'does not accept DNA sources that are not in the list' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/test_dna_sources_invalid.csv')
+    click_button('Upload manifest')
+    expect(page).to have_text('DNA source is not included in the list')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Upload manifest',
+                          state: 'No manifest uploaded')]
+    )
+  end
 end
