@@ -26,4 +26,15 @@ describe 'Managing sample suppliers' do
     expect(page).to have_text('Test supplier name')
     expect(page).to have_text('John Doe')
   end
+
+  it 'edits an existing supplier' do
+    create(:supplier, name: 'Test supplier name')
+    click_link('View all suppliers')
+    click_link('Test supplier name')
+    click_link('Edit')
+    fill_in('Name', with: 'New supplier name')
+    click_button('Update Supplier')
+    expect(page).to have_text('Supplier was successfully updated')
+    expect(page).to have_text('New supplier name')
+  end
 end
