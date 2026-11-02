@@ -126,4 +126,10 @@ describe 'Sample manifest', :sample_manifest do
     click_link("Manifest for #{study.name}")
     expect(page).to have_no_text('Download Completed Manifest')
   end
+
+  it 'gives the plate of a plate manifest the Stock Plate purpose' do
+    visit_new_plate_manifest
+    expect(Plate.find_from_barcode('SQPD-1234567').purpose.name)
+      .to eq('Stock Plate')
+  end
 end
