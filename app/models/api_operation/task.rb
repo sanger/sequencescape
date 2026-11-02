@@ -7,7 +7,9 @@
 # it finds.
 #
 # To add a task: a subclass, its line in .for, and its name in
-# ApiOperation::TASKS.
+# ApiOperation::TASKS after the task it follows. The coordinator job runs
+# every task in TASKS while the y26_283_sapio_reception flag is on, so a
+# task with a flag of its own needs the job to check that flag too.
 class ApiOperation::Task
   # @param name [String] the task's name, as in ApiOperation::TASKS
   # @return [Class] the class of the task with that name

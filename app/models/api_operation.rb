@@ -15,7 +15,9 @@
 class ApiOperation < ApplicationRecord
   include Uuid::Uuidable
 
-  # The tasks each operation type runs, in order
+  # The tasks each operation type runs, in order. An operation's type is its
+  # request's request_type, which the schema must allow. To add a type, add
+  # it here with its tasks; to add a task, see ApiOperation::Task.
   TASKS = { 'reception_and_work_order' => %w[reception] }.freeze
 
   # Raised when a task is started, completed or failed out of order
