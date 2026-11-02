@@ -9,12 +9,7 @@
 # and problems with the payload's labware (validation). If there are none,
 # the new labware and its samples are created
 # (ApiOperation::Reception::Creation).
-class ApiOperation::Reception
-  # @param api_operation [ApiOperation] the operation to receive
-  def initialize(api_operation)
-    @api_operation = api_operation
-  end
-
+class ApiOperation::Reception < ApiOperation::Task
   # Receives the operation's labware and samples.
   #
   # @return [Array<Hash>] the errors, each with a :detail, and a :pointer
@@ -44,6 +39,6 @@ class ApiOperation::Reception
   end
 
   def payload
-    @payload ||= ApiOperation::Reception::Payload.new(@api_operation.payload)
+    @payload ||= ApiOperation::Reception::Payload.new(api_operation.payload)
   end
 end
