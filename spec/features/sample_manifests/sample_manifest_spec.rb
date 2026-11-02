@@ -374,4 +374,58 @@ describe 'Sample manifest', :sample_manifest do
              'sample_11' => ['uuuuu', 10_016],
              'sample_12' => ['gggg_updated', 10_017])
   end
+
+  # An upload, then another of a different file with override. Each case is
+  # one line of the scenario outline's examples.
+  describe 'updating sample accession numbers' do
+    # The accession numbers in sample_manifest_a_accessions.csv, by Sanger
+    # sample ID: 12345 for sample_1 up to 12356 for sample_12
+    let(:a_accessions) do
+      sanger_sample_ids.each_with_index.to_h do |sanger_sample_id, index|
+        [sanger_sample_id, [(12_345 + index).to_s]]
+      end
+    end
+
+    [
+      { first: 'sample_manifest_a_accessions.csv',
+        second: 'sample_manifest_no_accessions.csv',
+        state: 'Completed',
+        message: 'Sample manifest successfully uploaded' },
+      { first: 'sample_manifest_a_accessions.csv',
+        second: 'sample_manifest_b_accessions.csv',
+        state: 'Failed',
+        message: 'The accession number does not match the existing ' \
+                 'accession number' },
+      { first: 'sample_manifest_no_accessions.csv',
+        second: 'sample_manifest_a_accessions.csv',
+        state: 'Completed',
+        message: 'Sample manifest successfully uploaded' }
+    ].each do |example|
+      context "when uploading #{example[:first]}, then " \
+              "#{example[:second]} with override" do
+        it 'ends with the accession numbers in ' \
+           'sample_manifest_a_accessions.csv' do
+          visit_new_plate_manifest
+          attach_file('File to upload', "test/data/#{example[:first]}")
+          click_button('Upload manifest')
+          expect(manifest_table).to eq(
+            [plate_manifest_row(upload: 'Completed manifest',
+                                state: 'Completed')]
+          )
+          click_link("Manifest for #{study.name}")
+          attach_file('File to upload', "test/data/#{example[:second]}")
+          check('Override previously uploaded samples')
+          click_button('Upload manifest')
+          expect(page).to have_text(example[:message])
+          expect(table_columns('table#study_list',
+                               %w[Contains Study Supplier Manifest State]))
+            .to eq([['1 plate', study.name, supplier.name, 'Blank manifest',
+                     example[:state]]])
+          expect(sample_metadata_of(sanger_sample_ids,
+                                    'sample_ebi_accession_number'))
+            .to eq(a_accessions)
+        end
+      end
+    end
+  end
 end
