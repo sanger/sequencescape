@@ -66,6 +66,7 @@ describe 'Sample manifest', :sample_manifest do
       config.load!
     end
     create(:sample_tube_purpose, name: 'Standard sample')
+    create(:insdc_country, name: 'United Kingdom')
     allow(PlateBarcode).to receive(:create_barcode)
       .and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
     stub_request(:post, LabelPrinter::PmbClient.print_job_url)
@@ -131,5 +132,16 @@ describe 'Sample manifest', :sample_manifest do
     visit_new_plate_manifest
     expect(Plate.find_from_barcode('SQPD-1234567').purpose.name)
       .to eq('Stock Plate')
+  end
+
+  it 'does not accept a manifest that moves samples between wells' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/manifests/mismatched_wells.csv')
+    click_button('Upload manifest')
+    expect(page).to have_text('Sample cannot be moved between wells')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Upload manifest',
+                          state: 'No manifest uploaded')]
+    )
   end
 end
