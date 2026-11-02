@@ -80,7 +80,9 @@ RSpec.describe 'Compound sample plate manifest', :sample_manifest do
 
     def open_compound_sample_page(plate)
       visit(labware_path(plate))
-      within('#plate-samples-table tbody') { find('a[href*="/samples/"]').click }
+      within('#plate-samples-table tbody') do
+        first('a[href*="/samples/"]').click
+      end
     end
 
     def component_rows

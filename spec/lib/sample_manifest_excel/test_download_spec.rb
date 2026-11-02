@@ -78,6 +78,15 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       end
     end
 
+    def first_well_tags
+      rows = column_values('sanger_plate_id')
+        .zip(column_values('well'), column_values('component_tag_sequence'))
+      first_plate, first_well, = rows.first
+      rows.filter_map do |plate, well, tag|
+        tag if plate == first_plate && well == first_well
+      end
+    end
+
     it 'has a row for each tag in each tube' do
       expect(column_values('sanger_sample_id').size).to eq(2 * tag_count)
     end
@@ -127,6 +136,15 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       columns = SampleManifestExcel.configuration.columns.all
       index = upload_data.header_row.index(columns.find_by(:name, name).heading)
       upload_data.pluck(index)
+    end
+
+    def first_well_tags
+      rows = column_values('sanger_plate_id')
+        .zip(column_values('well'), column_values('component_tag_sequence'))
+      first_plate, first_well, = rows.first
+      rows.filter_map do |plate, well, tag|
+        tag if plate == first_plate && well == first_well
+      end
     end
 
     it 'has a row for each tag in each well of each plate' do
