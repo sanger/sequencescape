@@ -50,6 +50,16 @@ describe 'Sample manifest', :sample_manifest do
      state, user.login]
   end
 
+  # The given sample metadata fields of the samples with the given Sanger
+  # sample IDs, by Sanger sample ID
+  def sample_metadata_of(sanger_sample_ids, *fields)
+    Sample.where(sanger_sample_id: sanger_sample_ids)
+      .includes(:sample_metadata).to_h do |sample|
+        [sample.sanger_sample_id,
+         sample.sample_metadata.attributes.values_at(*fields)]
+      end
+  end
+
   # As the Cucumber step "a manifest has been created for": a one-plate
   # manifest from the factory, its Sanger sample IDs renumbered in well
   # order (A1 is sample_0, B1 sample_1, and so on) as the test files name
@@ -265,7 +275,6 @@ describe 'Sample manifest', :sample_manifest do
     end
   end
 
-  # The scenario was called "Upload a manifest with invalid cell line"
   it 'does not accept DNA sources that are not in the list' do
     visit_new_plate_manifest
     attach_file('File to upload', 'test/data/test_dna_sources_invalid.csv')
@@ -275,5 +284,20 @@ describe 'Sample manifest', :sample_manifest do
       [plate_manifest_row(upload: 'Upload manifest',
                           state: 'No manifest uploaded')]
     )
+  end
+
+  it 'stores DNA sources that are in the list' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/test_dna_sources_valid.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    expected = { 'sample_1' => ['a', 'Cell Line'],
+                 'sample_2' => %w[b Blood],
+                 'sample_3' => %w[c Genomic],
+                 'sample_4' => ['d', 'Amniocentesis Cultured'] }
+    expect(sample_metadata_of(expected.keys, 'supplier_name', 'dna_source'))
+      .to eq(expected)
   end
 end
