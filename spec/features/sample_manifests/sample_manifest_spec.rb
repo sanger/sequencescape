@@ -338,4 +338,40 @@ describe 'Sample manifest', :sample_manifest do
       .to eq(blank_wells_samples.merge('sample_7' => ['xxxx', 10_012])
         .transform_values { |values| [*values, 'Human'] })
   end
+
+  it 'replaces the uploaded samples when uploading again with override' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/test_blank_wells.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    expect(sample_metadata_of(sanger_sample_ids, 'supplier_name',
+                              'sample_taxon_id'))
+      .to eq(blank_wells_samples)
+    click_link("Manifest for #{study.name}")
+    attach_file('File to upload',
+                'test/data/test_blank_wells_with_no_blanks.csv')
+    check('Override previously uploaded samples')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    # Every sample takes the values in
+    # test/data/test_blank_wells_with_no_blanks.csv
+    expect(sample_metadata_of(sanger_sample_ids, 'supplier_name',
+                              'sample_taxon_id'))
+      .to eq('sample_1' => ['aaaa_updated', 9606],
+             'sample_2' => ['bbbb', 9607],
+             'sample_3' => ['zzzzz', 9608],
+             'sample_4' => ['cccc', 9609],
+             'sample_5' => ['yyyyy', 9610],
+             'sample_6' => ['dddd', 9611],
+             'sample_7' => ['xxxx', 10_012],
+             'sample_8' => ['eeee_updated', 10_013],
+             'sample_9' => ['wwwww', 10_014],
+             'sample_10' => ['ffffff_updated', 10_015],
+             'sample_11' => ['uuuuu', 10_016],
+             'sample_12' => ['gggg_updated', 10_017])
+  end
 end
