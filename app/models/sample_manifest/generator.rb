@@ -122,8 +122,17 @@ class SampleManifest::Generator
     end
   end
 
+  # A template for an asset type behind a feature flag that is off is not
+  # valid either, e.g. when posted from a form opened before the flag was
+  # turned off.
   def check_template
-    errors.add(:base, "#{params[:template]} is not a valid template") if columns.blank?
+    return if columns.present? && supported_asset_type?
+
+    errors.add(:base, "#{params[:template]} is not a valid template")
+  end
+
+  def supported_asset_type?
+    SampleManifest.supported_asset_type?(asset_type)
   end
 
   def create_download

@@ -64,6 +64,33 @@ i5:
       prompt: "Input i5."
   conditional_formattings:
     empty_warning_cell:
+# Compound sample manifests only (at present, Kinnex): the tag sequence of
+# a component sample. The upload checks it matches a tag in the
+# Iso-Seq_cDNA_amp_primer tag group: see
+# SpecialisedField::ComponentTagSequence.
+# Those sequences are 51 characters long, so the 30 character limit on the
+# i7 column does not apply here.
+# The heading must stay different from the i7 column's: on upload, columns
+# are matched by heading.
+component_tag_sequence:
+  heading: COMPONENT TAG SEQUENCE
+  unlocked: true
+  validation:
+    options:
+      type: :textLength
+      operator: :between
+      formula1: "1"
+      formula2: "60"
+      allowBlank: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Component tag sequence"
+      error: "Component tag sequence cannot be blank or exceed 60 characters"
+      promptTitle: "Component tag sequence"
+      prompt: "Input the component sample's tag sequence."
+  conditional_formattings:
+    empty_warning_cell:
 tag_group:
   heading: TAG GROUP
   unlocked: true
@@ -208,6 +235,34 @@ library_type_required:
       promptTitle: "Library type"
       prompt: "Provide a library type from the approved list"
     range_name: :library_type
+  conditional_formattings:
+    empty_mandatory_cell:
+    is_error:
+# Kinnex compound sample manifests: only the Kinnex library types (see the
+# library_type_kinnex range). On upload, every LIBRARY TYPE column is read
+# through the last one defined with that heading, library_type_long_read.
+# All of them update library_type, so the upload is the same either way, but
+# keeping this column before library_type_long_read leaves other manifests'
+# uploads exactly as they were. Each template's drop-down comes from its own
+# column.
+library_type_kinnex:
+  heading: LIBRARY TYPE
+  updates: library_type
+  unlocked: true
+  validation:
+    options:
+      type: :list
+      formula1: "$A$1:$A$2"
+      allowBlank: false
+      hideDropDown: false
+      showInputMessage: true
+      showErrorMessage: true
+      errorStyle: :stop
+      errorTitle: "Library type"
+      error: "You must enter a Library type from the list provided."
+      promptTitle: "Library type"
+      prompt: "Provide a library type from the approved list"
+    range_name: :library_type_kinnex
   conditional_formattings:
     empty_mandatory_cell:
     is_error:

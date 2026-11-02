@@ -65,5 +65,28 @@ context 'printing different asset types' do
       it_behaves_like 'a correct filter'
       it_behaves_like 'a correct tube renderer'
     end
+
+    context 'when printing a compound sample tube' do
+      subject(:label) do
+        described_class.new(
+          printables: tube,
+          printer_type_class: BarcodePrinterType1DTube
+        ).labels.first
+      end
+
+      let(:tube) { create(:empty_sample_tube) }
+      let!(:compound) do
+        SampleManifest::CompoundSampleBuilder.new(
+          study: create(:study),
+          receptacle: tube.receptacle,
+          tags_by_component: { create(:sample) => create(:tag) }
+        ).build!
+      end
+
+      it 'shows the sanger sample id of its compound sample' do
+        expect(label[:first_line])
+          .to be_present.and eq(compound.shorten_sanger_sample_id)
+      end
+    end
   end
 end
