@@ -55,4 +55,10 @@ describe 'Sample manifest', :sample_manifest do
     click_button('Create manifest and print labels')
     expect(page).to have_text(labels_sent_message(1))
   end
+
+  it 'creates a tube manifest and prints all the labels' do
+    fill_in_tube_manifest(2)
+    click_button('Create manifest and print labels')
+    expect(page).to have_text(labels_sent_message(2))
+  end
 end
