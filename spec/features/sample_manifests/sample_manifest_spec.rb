@@ -28,12 +28,20 @@ describe 'Sample manifest', :sample_manifest do
     "Your #{count} label(s) have been sent to printer #{printer.name}"
   end
 
+  # The manifest table's rows, with only the cells of the given columns
+  def manifest_table(*columns)
+    headings, *rows = fetch_table('table#study_list')
+    rows.map { |row| headings.zip(row).to_h.values_at(*columns) }
+  end
+
   before do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
       config.load!
     end
     create(:sample_tube_purpose, name: 'Standard sample')
+    allow(PlateBarcode).to receive(:create_barcode)
+      .and_return(build(:plate_barcode, barcode: 'SQPD-1234567'))
     stub_request(:post, LabelPrinter::PmbClient.print_job_url)
     login_user user
     visit(study_path(study))
@@ -60,5 +68,21 @@ describe 'Sample manifest', :sample_manifest do
     fill_in_tube_manifest(2)
     click_button('Create manifest and print labels')
     expect(page).to have_text(labels_sent_message(2))
+  end
+
+  it 'creates a manifest without being given an asset type' do
+    visit(new_sample_manifest_path)
+    select(study.name, from: 'Study')
+    select('Default Plate', from: 'Template')
+    select(supplier.name, from: 'Supplier')
+    select(printer.name, from: 'Barcode printer')
+    fill_in('Count', with: 1)
+    click_button('Create manifest and print labels')
+    expect(page).to have_text('Upload a Sample Manifest')
+    click_link('View all manifests')
+    expect(manifest_table('Contains', 'Study', 'Supplier', 'Manifest',
+                          'Upload', 'Errors', 'State', 'Created by'))
+      .to eq([['1 plate', study.name, supplier.name, 'Blank manifest',
+               'Upload manifest', '', 'No manifest uploaded', user.login]])
   end
 end
