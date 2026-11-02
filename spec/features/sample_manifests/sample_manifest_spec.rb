@@ -12,6 +12,22 @@ describe 'Sample manifest', :sample_manifest do
            barcode_printer_type: BarcodePrinterType1DTube.first)
   end
 
+  # Fills in the form for a Default Tube manifest of the given number of
+  # tubes, up to the options for printing
+  def fill_in_tube_manifest(tubes)
+    click_link('Create manifest for tubes')
+    select(study.name, from: 'Study')
+    select('Default Tube', from: 'Template')
+    select('Standard sample', from: 'Purpose')
+    select(supplier.name, from: 'Supplier')
+    select(printer.name, from: 'Barcode printer')
+    fill_in('Tubes required', with: tubes)
+  end
+
+  def labels_sent_message(count)
+    "Your #{count} label(s) have been sent to printer #{printer.name}"
+  end
+
   before do
     SampleManifestExcel.configure do |config|
       config.folder = File.join('spec', 'data', 'sample_manifest_excel')
@@ -25,17 +41,18 @@ describe 'Sample manifest', :sample_manifest do
   end
 
   it 'creates a tube manifest and prints only the first label' do
-    click_link('Create manifest for tubes')
-    select(study.name, from: 'Study')
-    select('Default Tube', from: 'Template')
-    select('Standard sample', from: 'Purpose')
-    select(supplier.name, from: 'Supplier')
-    select(printer.name, from: 'Barcode printer')
-    fill_in('Tubes required', with: 2)
+    fill_in_tube_manifest(2)
     check('Print only the first label')
     click_button('Create manifest and print labels')
-    expect(page).to have_text(
-      "Your 1 label(s) have been sent to printer #{printer.name}"
-    )
+    expect(page).to have_text(labels_sent_message(1))
+  end
+
+  it 'creates a tube manifest and prints a 2D barcode' do
+    fill_in_tube_manifest(1)
+    check('Print only the first label')
+    select('2D Barcode (with human readable barcode encoded)',
+           from: 'Barcode type')
+    click_button('Create manifest and print labels')
+    expect(page).to have_text(labels_sent_message(1))
   end
 end
