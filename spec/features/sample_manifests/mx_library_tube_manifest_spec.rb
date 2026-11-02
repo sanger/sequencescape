@@ -63,23 +63,40 @@ describe 'Multiplexed library tube manifest', :sample_manifest do
   end
 
   # A library tube's aliquot: the sample's Sanger sample ID, the tag's group
-  # and index, the tag 2's index, the library type, the insert sizes, and
-  # whether the tube is the aliquot's library
+  # and index, the tag 2's group and index, the library type, the insert
+  # sizes, and whether the tube is the aliquot's library
   def library_aliquot(aliquot, tube)
-    [aliquot.sample.sanger_sample_id, aliquot.tag&.tag_group&.name,
-     aliquot.tag&.map_id, aliquot.tag2&.map_id, aliquot.library_type,
-     aliquot.insert_size_from, aliquot.insert_size_to,
-     aliquot.library_id == tube.receptacle.id]
+    [aliquot.sample.sanger_sample_id, *tag_of(aliquot.tag),
+     *tag_of(aliquot.tag2), aliquot.library_type, aliquot.insert_size_from,
+     aliquot.insert_size_to, aliquot.library_id == tube.receptacle.id]
   end
 
-  # The library tubes' aliquots for the given tag indexes, in tube order:
-  # one aliquot each, sample_0 in NT81 with the first index, and so on
-  def expected_library_tube_aliquots(tag_indexes)
-    tag_indexes.each_with_index.to_h do |tag_index, index|
+  # A tag's group name and index, or nils when there is no tag
+  def tag_of(tag)
+    [tag&.tag_group&.name, tag&.map_id]
+  end
+
+  # The library tubes' aliquots in tube order, one each: sample_0 in NT81
+  # with the first tags, and so on. Each element of tags is the tag's group
+  # and index, then the tag 2's group and index (nils when there is none).
+  def expected_library_tube_aliquots(tags)
+    tags.each_with_index.to_h do |tag_values, index|
       barcode = SBCF::SangerBarcode.new(prefix: 'NT', number: 81 + index)
       [barcode.human_barcode,
-       [["sample_#{index}", 'test tag group', tag_index, nil, 'Standard',
-         100, 200, true]]]
+       [["sample_#{index}", *tag_values, 'Standard', 100, 200, true]]]
+    end
+  end
+
+  # Tags from "test tag group" with the given indexes, and no tag 2
+  def single_index_tags(indexes)
+    indexes.map { |index| ['test tag group', index, nil, nil] }
+  end
+
+  # The study's samples expected for the given supplier names: sample_0
+  # with the first name, and so on, each with taxon ID 9606
+  def expected_samples(names)
+    names.each_with_index.to_h do |name, index|
+      ["sample_#{index}", [name, 9606]]
     end
   end
 
@@ -142,12 +159,11 @@ describe 'Multiplexed library tube manifest', :sample_manifest do
     )
     click_link("Manifest for #{study.name}")
     expect(page).to have_text('NT81M')
-    expect(study_samples).to eq(
-      %w[aaaa bbbb cccc dddd eeee].each_with_index
-        .to_h { |name, index| ["sample_#{index}", [name, 9606]] }
+    expect(study_samples)
+      .to eq(expected_samples(%w[aaaa bbbb cccc dddd eeee]))
+    expect(library_tube_aliquots).to eq(
+      expected_library_tube_aliquots(single_index_tags([1, 2, 3, 5, 7]))
     )
-    expect(library_tube_aliquots)
-      .to eq(expected_library_tube_aliquots([1, 2, 3, 5, 7]))
     expect(mx_tube_aliquots)
       .to match_array(expected_mx_tube_aliquots([1, 2, 3, 5, 7]))
 
@@ -155,13 +171,34 @@ describe 'Multiplexed library tube manifest', :sample_manifest do
                 'test/data/updated_multiplexed_library_manifest.csv')
     check('Override previously uploaded samples')
     click_button('Upload manifest')
-    expect(study_samples).to eq(
-      %w[ffff gggg hhhh iiii jjjj].each_with_index
-        .to_h { |name, index| ["sample_#{index}", [name, 9606]] }
+    expect(study_samples)
+      .to eq(expected_samples(%w[ffff gggg hhhh iiii jjjj]))
+    expect(library_tube_aliquots).to eq(
+      expected_library_tube_aliquots(single_index_tags([7, 5, 3, 2, 1]))
     )
-    expect(library_tube_aliquots)
-      .to eq(expected_library_tube_aliquots([7, 5, 3, 2, 1]))
     expect(mx_tube_aliquots)
       .to match_array(expected_mx_tube_aliquots([7, 5, 3, 2, 1]))
+  end
+
+  it 'uploads a manifest with dual index tags' do
+    create(:tag_group, name: 'test tag group2', tag_count: 2)
+    create(:tag_group, name: 'test tag group3', tag_count: 2)
+    attach_file('File to upload',
+                'test/data/multiplexed_di_library_manifest.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [mx_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    click_link("Manifest for #{study.name}")
+    expect(page).to have_text('NT81M')
+    expect(study_samples)
+      .to eq(expected_samples(%w[aaaa bbbb cccc dddd eeee]))
+    # Each tube's tag, then the same tag 2 for all: index 1 of test tag group2
+    tags = [['test tag group', 1], ['test tag group', 2],
+            ['test tag group', 3], ['test tag group3', 1],
+            ['test tag group3', 2]].map { |tag| [*tag, 'test tag group2', 1] }
+    expect(library_tube_aliquots).to eq(expected_library_tube_aliquots(tags))
+    expect(mx_tube_aliquots)
+      .to match_array(expected_mx_tube_aliquots([1, 2, 3, 1, 2]))
   end
 end
