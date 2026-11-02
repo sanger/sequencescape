@@ -144,4 +144,18 @@ describe 'Sample manifest', :sample_manifest do
                           state: 'No manifest uploaded')]
     )
   end
+
+  it 'does not accept a manifest with a changed plate barcode' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/manifests/mismatched_plate.csv')
+    click_button('Upload manifest')
+    expect(page).to have_text(
+      'Sanger plate barcode has been modified, but it is not a valid ' \
+      'foreign barcode format'
+    )
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Upload manifest',
+                          state: 'No manifest uploaded')]
+    )
+  end
 end
