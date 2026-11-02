@@ -452,4 +452,13 @@ describe 'Sample manifest', :sample_manifest do
       end
     )
   end
+
+  it 'does not accept a reference genome that does not exist' do
+    visit_new_plate_manifest
+    create(:reference_genome, name: 'Dragon')
+    attach_file('File to upload',
+                'test/data/sample_manifest_reference_genomes.csv')
+    click_button('Upload manifest')
+    expect(page).to have_text('could not find Centaur reference genome')
+  end
 end
