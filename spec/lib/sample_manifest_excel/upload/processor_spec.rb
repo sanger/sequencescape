@@ -1344,7 +1344,8 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         component_tag_group
         build(:test_download_compound_plates, columns: column_list, count: 2)
       end
-      let(:rows_by_plate) { upload.rows.group_by(&:asset).values }
+      let(:rows_by_plate) { upload.rows.group_by { |row| row.asset.labware_id }.values }
+      let(:rows_by_well) { upload.rows.group_by(&:asset).values }
 
       def change_value(row, column_name, value)
         index = row.columns.find_by(:name, column_name).number - 1
@@ -1365,7 +1366,7 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
 
       context 'when run' do
         let(:compounds) do
-          rows_by_plate.map do |rows|
+          rows_by_well.map do |rows|
             rows.first.asset.aliquots.reload.sole.sample
           end
         end
@@ -1376,9 +1377,9 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
           expect(processor).to be_processed
         end
 
-        it 'makes each compound sample from the component samples of a plate' do
+        it 'makes each compound sample from the component samples of a well' do
           expect(compounds.map { |compound| compound.component_samples.to_set })
-            .to eq(rows_by_plate.map { |rows| rows.to_set(&:sample) })
+            .to eq(rows_by_well.map { |rows| rows.to_set(&:sample) })
         end
 
         it 'stores the tag of each component sample on its link' do
@@ -1410,21 +1411,21 @@ RSpec.describe SampleManifestExcel::Upload::Processor, type: :model do
         )
       end
 
-      it 'is not valid when a tag is used twice in a plate' do
-        first_row, second_row = rows_by_plate.first
+      it 'is not valid when a tag is used twice in a well' do
+        first_row, second_row = rows_by_well.first
         tag = first_row.value('component_tag_sequence')
         change_value(second_row, 'component_tag_sequence', tag)
         processor.valid?
         expect(processor.errors.full_messages).to include(
           "Row #{second_row.number} - Component tag sequence is already " \
-          "used in this plate by row #{first_row.number}."
+          "used in this well by row #{first_row.number}."
         )
       end
 
-      it 'is valid when different plates use the same tag' do
-        first_plate_rows, second_plate_rows = rows_by_plate
-        tag = first_plate_rows.first.value('component_tag_sequence')
-        change_value(second_plate_rows.first, 'component_tag_sequence', tag)
+      it 'is valid when different wells use the same tag' do
+        first_well_rows, second_well_rows = rows_by_well.first(2)
+        tag = first_well_rows.first.value('component_tag_sequence')
+        change_value(second_well_rows.first, 'component_tag_sequence', tag)
         expect(processor).to be_valid
       end
 

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 # Generates the plates for a compound sample manifest, e.g. Kinnex.
-# Each physical plate well holds one compound sample made from several component
-# samples, so each plate gets several manifest rows, all showing the plate's
-# barcode: one row for each tag in the component tag group.
+# Each well holds one compound sample made from several component samples, so
+# each well gets several manifest rows, all showing the plate barcode: one row
+# for each tag in the component tag group.
 module SampleManifest::CompoundPlateBehaviour
   class Core < SampleManifest::PlateBehaviour::Core
     def generate
@@ -25,7 +25,7 @@ module SampleManifest::CompoundPlateBehaviour
       false
     end
 
-    # A plate has a row for each component, but it is one stock resource that
+    # A well has a row for each component, but it is one stock resource that
     # holds only its compound sample, so it is registered once.
     def stock_receptacles(receptacles)
       receptacles.uniq
@@ -40,9 +40,9 @@ module SampleManifest::CompoundPlateBehaviour
     private
 
     # The components of a compound sample must all have different tags, so a
-    # plate can have at most as many components as the tag group has tags.
-    def rows_per_plate
-      @rows_per_plate ||= component_tag_group.tags.count
+    # well can have at most as many components as the tag group has tags.
+    def rows_per_well
+      @rows_per_well ||= component_tag_group.tags.count
     end
 
     def component_tag_group
@@ -53,19 +53,21 @@ module SampleManifest::CompoundPlateBehaviour
     end
 
     def add_rows_to_plates
-      sanger_ids = generate_sanger_ids(count * rows_per_plate)
+      sanger_ids = generate_sanger_ids(@plates.sum(&:size) * rows_per_well)
       @plates.each do |plate|
-        add_manifest_assets(plate, sanger_ids.shift(rows_per_plate))
+        add_manifest_assets(plate, sanger_ids.shift(plate.size * rows_per_well))
       end
     end
 
     def add_manifest_assets(plate, sanger_ids)
-      sanger_ids.each do |sanger_id|
-        SampleManifestAsset.create!(
-          sanger_sample_id: sanger_sample_id_for(sanger_id),
-          asset: plate.wells.first,
-          sample_manifest: @manifest
-        )
+      plate.wells.each do |well|
+        sanger_ids.shift(rows_per_well).each do |sanger_id|
+          SampleManifestAsset.create!(
+            sanger_sample_id: sanger_sample_id_for(sanger_id),
+            asset: well,
+            sample_manifest: @manifest
+          )
+        end
       end
     end
 

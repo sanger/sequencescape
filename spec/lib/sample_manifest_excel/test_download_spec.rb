@@ -69,6 +69,15 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       upload_data.pluck(index)
     end
 
+    def first_well_tags
+      rows = column_values('sanger_plate_id')
+        .zip(column_values('well'), column_values('component_tag_sequence'))
+      first_plate, first_well, = rows.first
+      rows.filter_map do |plate, well, tag|
+        tag if plate == first_plate && well == first_well
+      end
+    end
+
     it 'has a row for each tag in each tube' do
       expect(column_values('sanger_sample_id').size).to eq(2 * tag_count)
     end
@@ -100,8 +109,7 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       build(
         :test_download_compound_plates,
         columns: columns.kinnex_compound_sample_plate.dup,
-        count: 2,
-        components_per_tube: [2, 0]
+        count: 2
       )
     end
     let(:upload_data) do
@@ -121,22 +129,30 @@ RSpec.describe SampleManifestExcel::TestDownload, :sample_manifest, :sample_mani
       upload_data.pluck(index)
     end
 
-    it 'has a row for each tag in each plate' do
-      expect(column_values('sanger_sample_id').size).to eq(2 * tag_count)
+    it 'has a row for each tag in each well of each plate' do
+      rows_by_plate_and_well = column_values('sanger_plate_id')
+        .zip(column_values('well'))
+        .group_by(&:itself)
+
+      expect(rows_by_plate_and_well.values.map(&:size).uniq).to eq([tag_count])
     end
 
     it 'shows the plate barcode on each of its rows' do
-      expect(column_values('sanger_plate_id').tally.values)
-        .to eq([tag_count, tag_count])
+      counts = column_values('sanger_plate_id').tally.values
+      expect(counts).to all(be > tag_count)
     end
 
-    it 'fills the first rows of a plate with the component tags in order' do
-      expect(column_values('component_tag_sequence').first(2))
-        .to eq(tags.first(2).map(&:oligo))
+    it 'uses multiple wells in each plate' do
+      wells_by_plate = column_values('sanger_plate_id')
+        .zip(column_values('well'))
+        .group_by(&:first)
+        .transform_values { |pairs| pairs.map(&:last).uniq }
+
+      expect(wells_by_plate.values).to all(have_attributes(size: be > 1))
     end
 
-    it 'leaves the rows after the components of each plate blank' do
-      expect(column_values('supplier_name').drop(2)).to all(be_nil)
+    it 'fills the rows of each well with the component tags in order' do
+      expect(first_well_tags).to eq(tags.map(&:oligo))
     end
   end
 end

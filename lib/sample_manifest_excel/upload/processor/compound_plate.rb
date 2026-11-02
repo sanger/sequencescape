@@ -11,7 +11,7 @@ module SampleManifestExcel
       class CompoundPlate < SampleManifestExcel::Upload::Processor::Base
         BARCODE_FOR_TWO_PLATES = 'Barcode is used for more than one plate.'
         TAG_USED_TWICE =
-          'Component tag sequence is already used in this plate by row'
+          'Component tag sequence is already used in this well by row'
         TAG_WITHOUT_SUPPLIER_NAME =
           'Has a component tag sequence but no supplier name.'
         TAG_FIELD = SequencescapeExcel::SpecialisedField::ComponentTagSequence
@@ -26,7 +26,7 @@ module SampleManifestExcel
             'Retention instruction'
         }.freeze
 
-        validate :check_tags_unique_in_plate
+        validate :check_tags_unique_in_well
         validate :check_plate_values_consistent
         validate :check_tagged_rows_have_supplier_name
 
@@ -131,12 +131,12 @@ module SampleManifestExcel
           upload.cache.find_by(sanger_sample_id:)&.asset&.labware_id
         end
 
-        # The component samples of a plate are told apart by their tags, so a
-        # tag can be used only once in a plate. Other plates can use it again.
-        def check_tags_unique_in_plate
+        # The component samples of a well are told apart by their tags, so a
+        # tag can be used only once in a well. Other wells can use it again.
+        def check_tags_unique_in_well
           first_rows = {}
-          tagged_rows.each do |row, plate_id, tag|
-            first_row = first_rows[[plate_id, tag]] ||= row
+          tagged_rows.each do |row, well_id, tag|
+            first_row = first_rows[[well_id, tag]] ||= row
             next if first_row == row
 
             errors.add(:base, "#{row.row_title} #{TAG_USED_TWICE} " \
@@ -144,11 +144,23 @@ module SampleManifestExcel
           end
         end
 
-        # Each row with a tag and a plate of the manifest, with both.
+        # Each row with a tag and a well of the manifest, with both.
         def tagged_rows
-          plate_rows.filter_map do |row, plate_id|
+          well_rows.filter_map do |row, well_id|
             tag = tag_of(row)
-            [row, plate_id, tag] if tag
+            [row, well_id, tag] if tag
+          end
+        end
+
+        # Each row with a well of the manifest, with the well.
+        def well_rows
+          return [] unless upload.respond_to?(:rows)
+
+          upload.rows.filter_map do |row|
+            next if row.columns.blank? || row.data.blank?
+
+            well_id = upload.cache.find_by(sanger_sample_id: row.value('sanger_sample_id'))&.asset_id
+            [row, well_id] if well_id
           end
         end
 

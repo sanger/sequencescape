@@ -18,6 +18,8 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
     )
   end
   let(:plates) { manifest.labware }
+  let(:rows_per_well) { tag_count }
+  let(:wells) { plates.flat_map(&:wells) }
 
   before do
     allow(PlateBarcode).to receive(:create_barcode)
@@ -41,22 +43,22 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
     it 'registers each plate as stock once, whatever its number of rows' do
       row_receptacles = manifest.sample_manifest_assets.map(&:asset)
       expect(manifest.core_behaviour.stock_receptacles(row_receptacles))
-        .to match_array(plates.map { |plate| plate.wells.first })
+        .to match_array(wells)
     end
 
     it 'creates stock plates' do
       expect(plates).to all(be_a(Plate))
     end
 
-    it 'creates a row for each tag in the tag group in each plate' do
+    it 'creates a row for each tag in each well of each plate' do
       rows = manifest.sample_manifest_assets.group_by(&:asset)
       expect(rows.transform_values(&:size))
-        .to eq(plates.to_h { |plate| [plate.wells.first, tag_count] })
+        .to eq(wells.index_with(rows_per_well))
     end
 
     it 'gives each row its own sanger sample id' do
       ids = manifest.sample_manifest_assets.map(&:sanger_sample_id)
-      expect(ids.uniq.size).to eq(2 * tag_count)
+      expect(ids.uniq.size).to eq(wells.size * rows_per_well)
     end
 
     it 'lists each plate barcode once on the manifest' do
@@ -66,7 +68,7 @@ RSpec.describe SampleManifest::CompoundPlateBehaviour, :sample_manifest do
     it 'shows the plate barcode on each of its rows' do
       barcodes = manifest.details_array.pluck(:barcode)
       expect(barcodes.tally)
-        .to eq(plates.to_h { |plate| [plate.human_barcode, tag_count] })
+        .to eq(plates.to_h { |plate| [plate.human_barcode, plate.size * rows_per_well] })
     end
 
     it 'prints one label per plate' do
