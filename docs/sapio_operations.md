@@ -238,7 +238,32 @@ Two payloads are the same when they hold the same JSON data:
   Then run Sequencescape with `SAPIO_SCHEMA_SOURCE=redpanda`, and with the
   registry URL setting uncommented in `development.rb`.
 
+- **Adding a task**, such as the work order:
+  1. A subclass of `ApiOperation::Task`. Its `#call` does the work and
+     returns the errors, `[{ pointer:, detail: }]`, empty on success. The
+     job runs it in a transaction with the operation's row locked, so its
+     records commit with the status or not at all. It raises for a problem
+     that isn't in the payload: a transient error is retried, and any other
+     fails the task and notifies PSD.
+  2. Its line in `ApiOperation::Task.for`, which finds a task's class by
+     its name.
+  3. Its name in `ApiOperation::TASKS`, after the task it follows. This
+     also allows the statuses `<task>_completed` and `<task>_failed`.
+
+  The job does the rest for every task: a `started` event before each run,
+  the retries, and the 4-hour window from the task's first run. It runs
+  every task in `TASKS` while `y26_283_sapio_reception` is on, so a task
+  with a flag of its own needs the job to check that flag too. The specs
+  that list a type's statuses (`spec/models/api_operation_spec.rb`) or stub
+  its tasks (`spec/jobs/api_operation/coordinator_job_spec.rb`) change with
+  `TASKS`.
+- **Adding an operation type:** an operation's type is its request's
+  `request.request_type`. The schema must allow the new value (version 1
+  allows only `reception_and_work_order`), and `ApiOperation::TASKS` gets
+  the type with its tasks in order. Another calling system needs an
+  endpoint and schema settings of its own: this endpoint and the
+  `sapio_schema_*` settings are Sapio's.
 - **Code:** `Api::V2::Sapio::OperationsController`, `ApiOperation` (the
   `api_operations` table), `ApiOperation::SchemaCheck`, the `Schemas`
-  classes and `ApiOperation::CoordinatorJob`, which processes each new
-  operation in the background.
+  classes, `ApiOperation::CoordinatorJob`, which processes each new
+  operation in the background, and its tasks (`ApiOperation::Task`).
