@@ -11,6 +11,19 @@ describe 'Sample manifest', :sample_manifest do
     create(:barcode_printer,
            barcode_printer_type: BarcodePrinterType1DTube.first)
   end
+  # The Sanger sample IDs of the manifest's first 12 wells, after A1
+  let(:sanger_sample_ids) { (1..12).map { |number| "sample_#{number}" } }
+  # The supplier sample name and taxon ID of each sample in
+  # test/data/test_blank_wells.csv, by Sanger sample ID. sample_7 has no
+  # supplier sample name, so the upload makes no sample for it.
+  let(:blank_wells_samples) do
+    { 'sample_1' => ['aaaa', 9606], 'sample_2' => ['bbbb', 9607],
+      'sample_3' => ['Water', 9608], 'sample_4' => ['cccc', 9609],
+      'sample_5' => ['Blank', 9610], 'sample_6' => ['dddd', 9611],
+      'sample_8' => ['eeee', 9613], 'sample_9' => ['EMPTY', 9614],
+      'sample_10' => ['ffffff', 9615], 'sample_11' => ['None', 9616],
+      'sample_12' => ['gggg', 9617] }
+  end
 
   # Fills in the form for a Default Tube manifest of the given number of
   # tubes, up to the options for printing
@@ -299,5 +312,30 @@ describe 'Sample manifest', :sample_manifest do
                  'sample_4' => ['d', 'Amniocentesis Cultured'] }
     expect(sample_metadata_of(expected.keys, 'supplier_name', 'dna_source'))
       .to eq(expected)
+  end
+
+  it 'keeps the uploaded samples when uploading again without override' do
+    visit_new_plate_manifest
+    attach_file('File to upload', 'test/data/test_blank_wells.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    expect(sample_metadata_of(sanger_sample_ids, 'supplier_name',
+                              'sample_taxon_id'))
+      .to eq(blank_wells_samples)
+    click_link("Manifest for #{study.name}")
+    attach_file('File to upload',
+                'test/data/test_blank_wells_with_no_blanks.csv')
+    click_button('Upload manifest')
+    expect(manifest_table).to eq(
+      [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+    )
+    # Only sample_7, which the first upload didn't make, takes the new
+    # file's values
+    expect(sample_metadata_of(sanger_sample_ids, 'supplier_name',
+                              'sample_taxon_id', 'sample_common_name'))
+      .to eq(blank_wells_samples.merge('sample_7' => ['xxxx', 10_012])
+        .transform_values { |values| [*values, 'Human'] })
   end
 end
