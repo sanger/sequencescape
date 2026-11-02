@@ -28,13 +28,19 @@ describe 'Sample manifest', :sample_manifest do
     "Your #{count} label(s) have been sent to printer #{printer.name}"
   end
 
+  # The rows of a table on the page, with only the cells of the given
+  # columns
+  def table_columns(selector, columns)
+    headings, *rows = fetch_table(selector)
+    rows.map { |row| headings.zip(row).to_h.values_at(*columns) }
+  end
+
   # The manifest table's rows, with only the cells of the columns the
   # scenarios check
   def manifest_table
-    columns = ['Contains', 'Study', 'Supplier', 'Manifest', 'Upload',
-               'Errors', 'State', 'Created by']
-    headings, *rows = fetch_table('table#study_list')
-    rows.map { |row| headings.zip(row).to_h.values_at(*columns) }
+    table_columns('table#study_list',
+                  ['Contains', 'Study', 'Supplier', 'Manifest', 'Upload',
+                   'Errors', 'State', 'Created by'])
   end
 
   # The manifest table's row for a one-plate manifest, in the columns of
@@ -157,5 +163,105 @@ describe 'Sample manifest', :sample_manifest do
       [plate_manifest_row(upload: 'Upload manifest',
                           state: 'No manifest uploaded')]
     )
+  end
+
+  context 'when uploading a CSV manifest with empty samples' do
+    # Each sample's supplier name, taxon ID and donor ID, by Sanger sample
+    # ID, as test/data/test_blank_wells.csv gives them. sample_7 has no
+    # supplier name, so it isn't created; names such as Water and EMPTY are
+    # kept.
+    let(:expected_samples) do
+      {
+        'sample_1' => ['aaaa', 9606, '12345'],
+        'sample_2' => ['bbbb', 9607, '12345'],
+        'sample_3' => ['Water', 9608, '12345'],
+        'sample_4' => ['cccc', 9609, '12345'],
+        'sample_5' => ['Blank', 9610, '12345'],
+        'sample_6' => ['dddd', 9611, '12345'],
+        'sample_8' => ['eeee', 9613, '12345'],
+        'sample_9' => ['EMPTY', 9614, '12345'],
+        'sample_10' => ['ffffff', 9615, '12345'],
+        'sample_11' => ['None', 9616, '12345'],
+        'sample_12' => ['gggg', 9617, '12345']
+      }
+    end
+    let(:plate) { Plate.find_from_barcode('SQPD-1234567') }
+
+    # The supplier name, taxon ID and donor ID of each sample the upload
+    # created, by Sanger sample ID
+    def uploaded_samples
+      Sample.includes(:sample_metadata).to_h do |sample|
+        metadata = sample.sample_metadata
+        [sample.sanger_sample_id,
+         [metadata.supplier_name, metadata.sample_taxon_id,
+          metadata.donor_id]]
+      end
+    end
+
+    # As the Cucumber step "plate ... has samples with known
+    # sanger_sample_ids": each sample's Sanger sample ID becomes ABC_ and
+    # the index of its well, in column order
+    def rename_samples_by_well
+      plate.wells.in_column_major_order.each_with_index do |well, index|
+        well.primary_aliquot&.sample
+          &.update!(sanger_sample_id: "ABC_#{index}")
+      end
+    end
+
+    def reports_table
+      table_columns('table#study_list',
+                    ['Study', 'Created by', 'Download', 'Rerun'])
+    end
+
+    # The supplier sample name, Sanger sample name, plate and well of each
+    # row of the downloaded report
+    def report_rows
+      CSV.parse(page.driver.response.body, headers: true).map do |row|
+        row.values_at('Supplier Sample Name', 'Sanger Sample Name', 'Plate',
+                      'Well')
+      end
+    end
+
+    # A row for each well, in column order; a well with a sample has its
+    # supplier name and its renamed Sanger sample ID, others empty cells
+    def expected_report_rows
+      plate.maps.in_column_major_order.each_with_index.map do |map, index|
+        name = expected_samples.dig("sample_#{index}", 0)
+        sanger_name = name ? "ABC_#{index}" : ''
+        [name || '', sanger_name, plate.human_barcode, map.description]
+      end
+    end
+
+    before do
+      visit_new_plate_manifest
+      attach_file('File to upload', 'test/data/test_blank_wells.csv')
+      click_button('Upload manifest')
+    end
+
+    it 'completes the upload' do
+      expect(manifest_table).to eq(
+        [plate_manifest_row(upload: 'Completed manifest', state: 'Completed')]
+      )
+    end
+
+    it 'creates a sample for each row with a supplier sample name' do
+      expect(uploaded_samples).to eq(expected_samples)
+    end
+
+    it 'lists the samples in a study report' do
+      rename_samples_by_well
+      visit(study_reports_path)
+      select(study.name, from: 'Study')
+      click_button('Submit')
+      expect(page).to have_text('Report being generated')
+      expect(reports_table)
+        .to eq([[study.name, user.login, 'Processing', '']])
+      Delayed::Worker.new.work_off
+      visit(study_reports_path)
+      expect(reports_table)
+        .to eq([[study.name, user.login, 'Download', 'Rerun']])
+      click_link("Download report for #{study.name}")
+      expect(report_rows).to eq(expected_report_rows)
+    end
   end
 end
