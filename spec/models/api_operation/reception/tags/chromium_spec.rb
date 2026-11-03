@@ -70,8 +70,15 @@ RSpec.describe ApiOperation::Reception::Tags::Chromium do
       [sample(0, chromium_tag_group: tag_set.name, chromium_tag_well: 'B01')]
     end
 
-    it 'reads it as the unpadded well' do
+    it 'finds no errors' do
       expect(scheme.errors).to be_empty
+    end
+
+    # B1 is the second well by column
+    it 'reads it as the unpadded well' do
+      tag_ids = tag_group.tags.where(map_id: described_class.map_ids(2))
+        .order(:map_id).ids
+      expect(scheme.tag_ids(samples.first)).to eq(tag_ids.map { [it, nil] })
     end
   end
 

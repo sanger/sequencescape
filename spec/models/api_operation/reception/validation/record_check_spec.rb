@@ -138,8 +138,9 @@ RSpec.describe ApiOperation::Reception::Validation::RecordCheck do
       [first, first.with(pointer: '/labware/0/receptacles/1/samples/0')]
     end
 
-    it 'reports it once' do
-      expect(check.errors.size).to eq(1)
+    it 'reports it once, at its first entry' do
+      expect(check.errors.pluck(:pointer))
+        .to eq([pointer(0, 'sanger_sample_id')])
     end
   end
 

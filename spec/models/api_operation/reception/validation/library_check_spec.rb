@@ -31,7 +31,7 @@ RSpec.describe ApiOperation::Reception::Validation::LibraryCheck do
   context 'with existing names, in any case' do
     let(:samples) do
       [sample(0, library_type: library_type.name.upcase,
-                 primer_panel: primer_panel.name),
+                 primer_panel: primer_panel.name.downcase),
        sample(1, library_type_long_read: library_type.name,
                  insert_size_from: 100, insert_size_to: 200)]
     end

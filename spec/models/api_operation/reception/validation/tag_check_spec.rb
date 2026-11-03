@@ -72,19 +72,6 @@ RSpec.describe ApiOperation::Reception::Validation::TagCheck do
     end
   end
 
-  context 'with a sample in two receptacles with different tags' do
-    let(:first) { sample(0, i7: 'ACGT') }
-    let(:samples) do
-      [first,
-       first.with(fields: { 'i7' => 'TTTT' },
-                  pointer: '/labware/0/receptacles/1/samples/0')]
-    end
-
-    it 'finds no errors' do
-      expect(check.errors).to be_empty
-    end
-  end
-
   describe 'tag clashes' do
     let(:input) do
       ApiOperation::Reception::Validation::Input.build(labware, labware)
@@ -116,6 +103,33 @@ RSpec.describe ApiOperation::Reception::Validation::TagCheck do
         uuid: SecureRandom.uuid, barcode: 'PLATE-1', type: 'plate96',
         receptacles: receptacles, pointer: '/labware/0'
       )
+    end
+
+    # Tags belong to the aliquot, and are compared within a receptacle
+    context 'with a sample in two receptacles' do
+      let(:uuid) { SecureRandom.uuid }
+
+      context 'with different tags' do
+        let(:labware) do
+          [plate_with([entry(0, 0, uuid: uuid, i7: 'ACGT')],
+                      [entry(1, 0, uuid: uuid, i7: 'TTTT')])]
+        end
+
+        it 'finds no errors' do
+          expect(check.errors).to be_empty
+        end
+      end
+
+      context 'with the same tags' do
+        let(:labware) do
+          [plate_with([entry(0, 0, uuid: uuid, i7: 'ACGT')],
+                      [entry(1, 0, uuid: uuid, i7: 'ACGT')])]
+        end
+
+        it 'finds no errors' do
+          expect(check.errors).to be_empty
+        end
+      end
     end
 
     context 'with different tags in a receptacle' do

@@ -135,11 +135,12 @@ RSpec.describe ApiOperation::Reception::Tags::DualIndex do
     end
 
     it 'reports each tag once, at its first sample' do
-      expect(scheme.errors.pluck(:detail)).to eq(
-        ["Dual index tag set #{tag_set.name} has no i7 tag for well C1 " \
-         '(used by 2 samples)',
-         "Dual index tag set #{tag_set.name} has no i5 tag for well C1 " \
-         '(used by 2 samples)']
+      expect(scheme.errors).to eq(
+        %w[i7 i5].map do |tag|
+          { pointer: pointer(0, 'dual_index_tag_well'),
+            detail: "Dual index tag set #{tag_set.name} has no #{tag} tag " \
+                    'for well C1 (used by 2 samples)' }
+        end
       )
     end
   end
