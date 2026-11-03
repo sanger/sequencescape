@@ -54,14 +54,16 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
       donor_id: "Donor #{sanger_sample_id}" }.merge(fields)
   end
 
-  # A payload 96-well plate with one sample in each given well. For example,
+  # A payload 96-well plate with the samples in the given wells: a sample, or
+  # an array of samples for a pool. For example,
   # plate('SAPIO-PLATE-1', 'A1' => sample('SAPIO-1-1')) gives
   #   { uuid: 'fd2f...', barcode: 'SAPIO-PLATE-1', type: 'plate96',
   #     receptacles: [{ position: 'A1', uuid: '9a51...',
   #                     samples: [sample('SAPIO-1-1')] }] }
   def plate(barcode, samples_by_well)
-    receptacles = samples_by_well.map do |well, sample|
-      { position: well, uuid: SecureRandom.uuid, samples: [sample] }
+    receptacles = samples_by_well.map do |well, samples|
+      { position: well, uuid: SecureRandom.uuid,
+        samples: Array.wrap(samples) }
     end
     { uuid: SecureRandom.uuid, barcode: barcode, type: 'plate96',
       receptacles: receptacles }
@@ -217,6 +219,37 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
       well_ids = received_plate.wells.ids
       expect([CreateAssetRequest.where(asset_id: well_ids).count,
               Messenger.where(root: 'stock_resource').count]).to eq([0, 0])
+    end
+  end
+
+  # As from a plate manifest with pools: a well holding a pool of samples
+  # without tags
+  context 'with a pool of samples without tags in a well' do
+    let(:payload_pool) do
+      %w[SAPIO-1-1 SAPIO-1-2 SAPIO-1-3 SAPIO-1-4].map { sample(it) }
+    end
+    let!(:operation) do
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => payload_pool)))
+    end
+    let(:received_plate) { Barcode.find_by!(barcode: 'SAPIO-PLATE-1').asset }
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    it 'creates a Stock Plate, as the pool has no tags' do
+      expect(received_plate.purpose.name).to eq('Stock Plate')
+    end
+
+    # A manifest numbers a pool's tag depths from 0
+    # (SampleManifest::CoreBehaviour::StockAssets#tag_depth_for_sample)
+    it 'gives the samples tag depths by their positions, counting from 1' do
+      well = received_plate.wells.located_at('A1').sole
+      expect(well.aliquots.map do |aliquot|
+        [aliquot.sample.sanger_sample_id, aliquot.tag_depth]
+      end).to contain_exactly(['SAPIO-1-1', 1], ['SAPIO-1-2', 2],
+                              ['SAPIO-1-3', 3], ['SAPIO-1-4', 4])
     end
   end
 
