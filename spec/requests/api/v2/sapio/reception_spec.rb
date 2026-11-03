@@ -470,6 +470,37 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     end
   end
 
+  # As from a control tube manifest: tubes of one control sample each
+  context 'with control tubes' do
+    let(:payload_samples_by_tube) do
+      { 'SAPIO-TUBE-1' => sample('SAPIO-1-1', control_type: 'positive'),
+        'SAPIO-TUBE-2' => sample('SAPIO-1-2', control_type: 'negative') }
+    end
+    let!(:operation) do
+      tubes = payload_samples_by_tube.map do |barcode, sample|
+        tube(barcode, sample)
+      end
+      post_and_process(reception_request(*tubes))
+    end
+    let(:received_tubes) do
+      payload_samples_by_tube.keys.index_with do |barcode|
+        Barcode.find_by!(barcode:).asset
+      end
+    end
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    it 'puts a control of its type in each tube' do
+      expect(received_tubes.transform_values do |tube|
+        sample = tube.aliquots.sole.sample
+        [sample.sanger_sample_id, sample.control, sample.control_type]
+      end).to eq('SAPIO-TUBE-1' => ['SAPIO-1-1', true, 'positive'],
+                 'SAPIO-TUBE-2' => ['SAPIO-1-2', true, 'negative'])
+    end
+  end
+
   # As from a multiplexed library tube manifest with tag sequences: libraries
   # in one tube, each with an i7 and an i5 oligo, without library fields
   context 'with a tube of libraries with i7 and i5 oligos' do
