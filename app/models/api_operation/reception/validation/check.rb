@@ -29,6 +29,16 @@ class ApiOperation::Reception::Validation::Check
       .group_by { it.fields[field] }
   end
 
+  # The field of the supplier name the sample gets, and that name:
+  # bioscan_supplier_name, which replaces supplier_sample_name, if given
+  def supplier_name_of(sample)
+    if sample.fields.key?('bioscan_supplier_name')
+      ['bioscan_supplier_name', sample.fields['bioscan_supplier_name']]
+    else
+      ['supplier_sample_name', sample.supplier_sample_name]
+    end
+  end
+
   def error(pointer, detail)
     { pointer:, detail: }
   end

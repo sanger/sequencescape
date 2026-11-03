@@ -10,6 +10,9 @@
 #   (Sample::Metadata#supplier_name).
 # - donor_id has no characters of more than 3 bytes, such as emoji
 #   (Sample::Metadata, Utf8mb3Validator).
+# It also checks that the supplier sample name the sample gets isn't blank
+# (only whitespace, which the schema's minLength allows): a manifest makes no
+# sample for a row without one (SampleManifestExcel::Upload::Row#empty?).
 # A sample in more than one receptacle is checked once. Existing names and
 # Sanger sample IDs are checked by SampleCheck. The records are still
 # created with create!, so their models apply every rule.
@@ -28,8 +31,8 @@ class ApiOperation::Reception::Validation::RecordCheck <
   def errors
     @errors ||=
       input.new_samples.uniq(&:uuid).flat_map do |sample|
-        [name_error(sample), *supplier_name_errors(sample),
-         donor_id_error(sample)].compact
+        [name_error(sample), blank_supplier_name_error(sample),
+         *supplier_name_errors(sample), donor_id_error(sample)].compact
       end
   end
 
@@ -44,11 +47,18 @@ class ApiOperation::Reception::Validation::RecordCheck <
           'as it becomes the sample name')
   end
 
+  def blank_supplier_name_error(sample)
+    field, name = supplier_name_of(sample)
+    error("#{sample.pointer}/#{field}", "#{field} is blank") if name.blank?
+  end
+
+  # A blank name is left to blank_supplier_name_error, which reports it if
+  # the sample gets it
   def supplier_name_errors(sample)
     { 'supplier_sample_name' => sample.supplier_sample_name,
       'bioscan_supplier_name' => sample.fields['bioscan_supplier_name'] }
       .filter_map do |field, name|
-        next if name.nil? || ASCII.match?(name)
+        next if name.blank? || ASCII.match?(name)
 
         others = name.chars.grep_v(ASCII).uniq
         error("#{sample.pointer}/#{field}",
