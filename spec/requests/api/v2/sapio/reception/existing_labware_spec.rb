@@ -53,6 +53,8 @@ describe 'Sapio reception of existing labware',
   end
 
   context 'with known and new labware in one request' do
+    # The known plate's aliquots, from the first request
+    let!(:known_aliquot_ids) { Aliquot.order(:id).ids }
     let!(:operation) do
       post_and_process(
         reception_request(plate('SAPIO-PLATE-1', payload_samples_by_well),
@@ -71,8 +73,8 @@ describe 'Sapio reception of existing labware',
     end
 
     it 'leaves the known labware as it was' do
-      expect([Labware.count, received_plate.wells.flat_map(&:aliquots).size])
-        .to eq([2, 2])
+      aliquot_ids = received_plate.wells.flat_map(&:aliquot_ids)
+      expect([Labware.count, aliquot_ids.sort]).to eq([2, known_aliquot_ids])
     end
   end
 end

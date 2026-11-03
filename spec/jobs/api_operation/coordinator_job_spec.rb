@@ -329,11 +329,27 @@ RSpec.describe ApiOperation::CoordinatorJob do
       expect(reception).to have_received(:call).once
     end
 
-    it 'locks the operation before running its task' do
-      allow(ApiOperation).to receive(:find).and_return(api_operation)
-      allow(api_operation).to receive(:lock!).and_call_original
-      perform
-      expect(api_operation).to have_received(:lock!).at_least(:once)
+    context 'when its task runs' do
+      let(:calls) { [] }
+
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(api_operation).to receive(:lock!).and_wrap_original do |lock|
+          calls << :lock
+          lock.call
+        end
+        allow(reception).to receive(:call) do
+          calls << :call
+          []
+        end
+      end
+
+      # The started event's transaction locks it first; the task's
+      # transaction locks it again before the task runs
+      it 'locks the operation again before running the task' do
+        perform
+        expect(calls.first(3)).to eq(%i[lock lock call])
+      end
     end
 
     describe 'the limit of MAX_RUNS runs' do

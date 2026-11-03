@@ -69,11 +69,17 @@ describe 'Sapio reception rollback, retries and recovery',
   end
 
   context 'when creation raises a transient error, then succeeds' do
+    # The labware and samples there were when the error came
+    let(:counts_at_the_error) { [] }
+
     before do
       runs = 0
       allow(aliquot_factory).to receive(:new).and_wrap_original do |new, *args|
         runs += 1
-        raise ActiveRecord::Deadlocked if runs == 1
+        if runs == 1
+          counts_at_the_error.push(Labware.count, Sample.count)
+          raise ActiveRecord::Deadlocked
+        end
 
         new.call(*args)
       end
@@ -83,11 +89,13 @@ describe 'Sapio reception rollback, retries and recovery',
     end
 
     it 'leaves the operation queued after the first run' do
-      expect(operation.status).to eq('queued')
+      expect([operation.status, operation.events.pluck(:outcome)])
+        .to eq(['queued', %w[started]])
     end
 
     it 'keeps nothing from the first run' do
-      expect([Labware.count, Sample.count]).to eq([0, 0])
+      expect([counts_at_the_error, Labware.count, Sample.count])
+        .to eq([[1, 2], 0, 0])
     end
 
     context 'when Delayed Job runs the job again' do
@@ -99,8 +107,8 @@ describe 'Sapio reception rollback, retries and recovery',
         expect(operation.status).to eq('reception_completed')
       end
 
-      it 'creates the labware and samples once' do
-        expect([Labware.count, Sample.count]).to eq([1, 2])
+      it 'creates the labware, samples and aliquots once' do
+        expect([Labware.count, Sample.count, Aliquot.count]).to eq([1, 2, 2])
       end
 
       it 'records each run' do
@@ -113,10 +121,23 @@ describe 'Sapio reception rollback, retries and recovery',
   # As when a worker stops after the reception commits but before Delayed
   # Job deletes the job, so the job runs again
   context 'when the job runs again after the reception has completed' do
+    let(:job_again) do
+      Delayed::Job.enqueue(ApiOperation::CoordinatorJob.new(operation.id))
+    end
+
     before do
       post_and_process(request)
-      Delayed::Job.enqueue(ApiOperation::CoordinatorJob.new(operation.id))
+      allow(ApiOperation::Reception).to receive(:new).and_call_original
+      job_again
       work_off_jobs
+    end
+
+    it 'runs the job' do
+      expect(Delayed::Job.exists?(job_again.id)).to be(false)
+    end
+
+    it 'does not run the reception again' do
+      expect(ApiOperation::Reception).not_to have_received(:new)
     end
 
     it 'leaves the reception completed' do
@@ -125,10 +146,6 @@ describe 'Sapio reception rollback, retries and recovery',
 
     it 'records no more events' do
       expect(operation.events.pluck(:outcome)).to eq(%w[started completed])
-    end
-
-    it 'creates nothing again' do
-      expect([Labware.count, Sample.count]).to eq([1, 2])
     end
   end
 end

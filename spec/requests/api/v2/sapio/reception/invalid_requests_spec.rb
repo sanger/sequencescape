@@ -25,12 +25,18 @@ describe 'Sapio reception of invalid requests',
   context 'with known labware whose contents differ' do
     before do
       post_and_process(reception_request(plate('SAPIO-PLATE-1',
-                                               'A1' => sample('SAPIO-1-1'))))
+                                               'A1' => payload_sample)))
     end
 
+    # The plate's sample, as the first request gave it
+    let(:payload_sample) { sample('SAPIO-1-1') }
+
+    # The sample again, with another supplier sample name: what
+    # reconciliation compares
     let!(:operation) do
+      renamed = payload_sample.merge(supplier_sample_name: 'Other name')
       post_and_process(
-        reception_request(plate('SAPIO-PLATE-1', 'A1' => sample('SAPIO-2-1')),
+        reception_request(plate('SAPIO-PLATE-1', 'A1' => renamed),
                           tube('SAPIO-TUBE-1', sample('SAPIO-2-2')))
       )
     end
@@ -58,6 +64,11 @@ describe 'Sapio reception of invalid requests',
   end
 
   context 'with a sample of an unknown study' do
+    before do
+      allow(ApiOperation::Reception::Creation).to receive(:new)
+        .and_call_original
+    end
+
     let(:unknown_study_uuid) { SecureRandom.uuid }
     let!(:operation) do
       payload_sample = sample('SAPIO-1-1', study_uuid: unknown_study_uuid)
@@ -75,6 +86,10 @@ describe 'Sapio reception of invalid requests',
                         "No study with UUID #{unknown_study_uuid} " \
                         '(used by 1 sample)')
       )
+    end
+
+    it 'does not start creating' do
+      expect(ApiOperation::Reception::Creation).not_to have_received(:new)
     end
 
     it 'creates nothing' do
