@@ -3,7 +3,9 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation do
-  subject(:api_operation) { build(:api_operation) }
+  subject(:api_operation) do
+    build(:api_operation, operation_type: 'reception_and_work_order')
+  end
 
   it 'is valid with the factory attributes' do
     expect(api_operation).to be_valid
@@ -23,7 +25,8 @@ RSpec.describe ApiOperation do
   ].each do |attribute|
     it "requires #{attribute}" do
       api_operation.public_send(:"#{attribute}=", nil)
-      expect(api_operation).not_to be_valid
+      api_operation.valid?
+      expect(api_operation.errors).to be_added(attribute, :blank)
     end
   end
 
@@ -108,12 +111,14 @@ RSpec.describe ApiOperation do
     end
 
     it 'accepts the same request ID from another calling system' do
-      other = build(:api_operation, external_id: existing.external_id)
+      other = build(:api_operation, api_application: create(:api_application),
+                                    external_id: existing.external_id)
       expect { other.save! }.not_to raise_error
     end
 
     it 'accepts another request ID from the same calling system' do
-      other = build(:api_operation, api_application: existing.api_application)
+      other = build(:api_operation, api_application: existing.api_application,
+                                    external_id: "#{existing.external_id}-2")
       expect { other.save! }.not_to raise_error
     end
   end
@@ -136,7 +141,12 @@ RSpec.describe ApiOperation do
       end
     end
 
+    # Another type runs work_order, so the status exists, but not for this
+    # operation's type
     it 'rejects a status of a task its type does not run' do
+      stub_const('ApiOperation::TASKS',
+                 { 'reception_and_work_order' => %w[reception],
+                   'work_order' => %w[work_order] })
       api_operation.status = 'work_order_completed'
       expect(api_operation).not_to be_valid
     end

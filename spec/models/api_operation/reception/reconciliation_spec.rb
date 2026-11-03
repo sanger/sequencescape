@@ -138,10 +138,13 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
     let(:barcode) { plate.human_barcode }
     let(:contents) { contents_of(plate) }
     let(:payload_labware) do
-      [payload_labware_with(barcode, contents:)]
+      [payload_labware_with(barcode, type: 'plate96', contents: contents)]
     end
 
     before do
+      # The factory makes only the wells it fills; a real plate has them all
+      create(:empty_well,
+             plate: plate, map: plate.maps.find_by!(description: 'H12'))
       plate.wells.each do |well|
         well.samples.each do |sample|
           sample.sample_metadata
@@ -159,10 +162,10 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
       expect(described_class.new(new_labware).errors).to be_empty
     end
 
+    # Without contents: the plate's samples would then differ too, so the
+    # one error shows the contents aren't compared after a type conflict
     context 'when the payload says tube' do
-      let(:payload_labware) do
-        [payload_labware_with(barcode, type: 'tube', contents: contents)]
-      end
+      let(:payload_labware) { [payload_labware_with(barcode, type: 'tube')] }
 
       it 'reports the type' do
         expect(reconciliation.errors).to eq(
@@ -175,7 +178,7 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
 
     context 'when the payload says a 384-well plate' do
       let(:payload_labware) do
-        [payload_labware_with(barcode, type: 'plate384', contents: contents)]
+        [payload_labware_with(barcode, type: 'plate384')]
       end
 
       it 'reports the size' do
@@ -278,9 +281,7 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
       let(:barcode) { tube_rack.human_barcode }
 
       it 'names its kind in the type error' do
-        payload_labware =
-          [payload_labware_with(barcode, type: 'tube',
-                                         contents: { nil => ['Another'] })]
+        payload_labware = [payload_labware_with(barcode, type: 'tube')]
         expect(described_class.new(payload_labware).errors.sole[:detail])
           .to eq("#{barcode} is a tube rack in Sequencescape, not a tube")
       end
