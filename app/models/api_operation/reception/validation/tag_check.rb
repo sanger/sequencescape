@@ -74,11 +74,12 @@ class ApiOperation::Reception::Validation::TagCheck <
   end
 
   # The receptacle's aliquots with tags: their oligo pair, in upper case,
-  # and the pointer to the sample they're of
+  # and the pointer to the sample they're of. An untagged sample gives no
+  # pairs, and each pair has at least one oligo.
   def tagged_aliquots(receptacle)
     receptacle.samples.flat_map do |sample|
-      oligos_of(sample).filter_map do |pair|
-        [pair.map { it&.upcase }, sample.pointer] if pair.any?
+      oligos_of(sample).map do |pair|
+        [pair.map { it&.upcase }, sample.pointer]
       end
     end
   end
