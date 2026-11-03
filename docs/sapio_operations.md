@@ -287,6 +287,44 @@ Delayed Job to retry them.)
 
 [one_endpoint_or_two]: https://ssg-confluence.internal.sanger.ac.uk/spaces/PSDPUB/pages/365756493
 
+## Reception
+
+Reception sorts the request's labware into labware Sequencescape already
+has and new labware ([ADR 074][adr_074]). It checks the whole request, and
+creates the new labware and its samples only when it finds no problems.
+
+[adr_074]: https://ssg-confluence.internal.sanger.ac.uk/spaces/SLIM/pages/354943562
+
+### Labware Sequencescape already has
+
+A labware is known when its barcode is any of a Sequencescape labware's
+barcodes, whatever else the request says about it. A barcode Sequencescape
+doesn't have is new labware, even when its samples' supplier names match
+samples in Sequencescape.
+
+Known labware must be the same as in Sequencescape:
+
+- the same type, a plate or a tube, and for a plate the same number of
+  wells;
+- in each well, or in the tube, the same number of samples, with the same
+  supplier sample names, in any order. A well the request doesn't list
+  counts as empty.
+
+Known labware that is the same is left as it is. Reception doesn't check,
+change or add to it, or its samples, and doesn't store the request's UUIDs
+for them. Known labware that isn't the same is a conflict, and the
+operation fails. For example:
+
+| Pointer                    | Detail                                                                  |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `/labware/0/type`          | TUBE-1 is a 96-well plate in Sequencescape, not a tube                  |
+| `/labware/1/receptacles/2` | well C1 of PLATE-1 has 2 samples in Sequencescape, not 1 sample         |
+| `/labware/1/receptacles/3` | well D1 of PLATE-1 has different supplier sample names in Sequencescape |
+| `/labware/1`               | well E1 of PLATE-1 has 1 sample in Sequencescape, not 0 samples         |
+
+The last is a well that has a sample in Sequencescape but isn't in the
+request, so its error points at the labware.
+
 ## For Sequencescape developers
 
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
