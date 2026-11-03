@@ -253,6 +253,45 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     end
   end
 
+  # As from a Bioscan plate manifest: specimens with Bioscan supplier names,
+  # and a lysate negative control in H12
+  context 'with a Bioscan plate' do
+    let(:payload_samples_by_well) do
+      { 'A1' => sample('SAPIO-1-1', bioscan_supplier_name: 'SPECIMEN-1'),
+        'B1' => sample('SAPIO-1-2', bioscan_supplier_name: 'SPECIMEN-2'),
+        'H12' => sample('SAPIO-1-3', bioscan_supplier_name: 'CONTROL_LYSATE-1',
+                                     bioscan_control_type: 'lysate negative') }
+    end
+    let!(:operation) do
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               payload_samples_by_well)))
+    end
+    let(:samples) do
+      Sample.where(sanger_sample_id: %w[SAPIO-1-1 SAPIO-1-2 SAPIO-1-3])
+        .includes(:sample_metadata)
+    end
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    # The request needs supplier_sample_name too, which a Bioscan manifest
+    # doesn't have: bioscan_supplier_name replaces it, as in the manifest
+    it 'gives each sample its Bioscan supplier name' do
+      expect(samples.to_h do |sample|
+        [sample.sanger_sample_id, sample.sample_metadata.supplier_name]
+      end).to eq('SAPIO-1-1' => 'SPECIMEN-1', 'SAPIO-1-2' => 'SPECIMEN-2',
+                 'SAPIO-1-3' => 'CONTROL_LYSATE-1')
+    end
+
+    it 'makes the sample in H12 a lysate negative control' do
+      expect(samples.to_h do |sample|
+        [sample.sanger_sample_id, [sample.control, sample.control_type]]
+      end).to eq('SAPIO-1-1' => [false, nil], 'SAPIO-1-2' => [false, nil],
+                 'SAPIO-1-3' => [true, 'lysate negative'])
+    end
+  end
+
   # As from a library plate manifest: a plate of libraries, each with an i7
   # and an i5 oligo and a library type
   context 'with a plate of libraries with i7 and i5 oligos' do
