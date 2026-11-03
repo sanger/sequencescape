@@ -78,12 +78,12 @@ class ApiOperation::CoordinatorJob
     end
   end
 
-  # Records that a run of the task has started, unless the task's retries
-  # have run out: then PSD is notified and the task fails instead.
+  # Records that a run of the task has started, unless the job's runs are
+  # used up: then PSD is notified and the task fails instead.
   #
   # @return [String, nil] the task, or nil if it failed instead
   def start_or_give_up(api_operation, task)
-    if retry_window_over?(api_operation, task)
+    if runs_used_up?(api_operation)
       give_up(api_operation, task)
       nil
     else

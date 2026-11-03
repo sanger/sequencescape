@@ -251,7 +251,7 @@ Two payloads are the same when they hold the same JSON data:
      also allows the statuses `<task>_completed` and `<task>_failed`.
 
   The job does the rest for every task: a `started` event before each run,
-  the retries, and the 4-hour window from the task's first run. It runs
+  the retries, and the limit of `MAX_RUNS` runs per job. It runs
   every task in `TASKS` while `y26_283_sapio_reception` is on, so a task
   with a flag of its own needs the job to check that flag too. The specs
   that list a type's statuses (`spec/models/api_operation_spec.rb`) or stub

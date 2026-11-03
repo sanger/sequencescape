@@ -2,14 +2,15 @@
 
 # How an ApiOperation::CoordinatorJob retries a task after transient errors,
 # and gives up on it. Delayed Job reads the schedule and calls the hooks;
-# the job checks the retry window before each run. It uses the job's
+# the job counts its runs before each run. It uses the job's
 # api_operation_id.
 #
-# Retries run out RETRY_WINDOW after a task's first run started, whatever
-# went wrong, including workers that were stopped mid-run: the next run
-# fails the task instead of running it, with an error that asks for the
-# request to be sent again, and PSD is notified. Delayed Job's failure hook
-# does the same after max_attempts runs, as a backstop.
+# The job runs its tasks at most MAX_RUNS times, whatever went wrong.
+# Delayed Job counts the job's runs that raised, and calls the failure hook
+# after the last one. A run whose worker was stopped mid-run raises nothing,
+# so before each run the job also counts the operation's started events,
+# which include such runs. Either way the operation's next task fails, with
+# an error that asks for the request to be sent again, and PSD is notified.
 module ApiOperation::CoordinatorJob::Retries
   # Errors that a later run may not meet, as Rails' MySQL adapter raises
   # them: a deadlock, a lock wait timeout, a lost connection, a failed
@@ -24,35 +25,36 @@ module ApiOperation::CoordinatorJob::Retries
     ActiveRecord::RecordNotUnique
   ].freeze
 
-  # How long a task is retried for, after transient errors
-  RETRY_WINDOW = 4.hours
+  # The wait after the job's first failed run. Each later wait is twice the
+  # one before, up to MAX_WAIT.
+  FIRST_WAIT = 30.seconds
 
-  # How many times a task is retried after transient errors. The waits
-  # between runs double, and add up to RETRY_WINDOW.
-  RETRIES = 8
+  # The longest wait between runs
+  MAX_WAIT = 1.hour
 
-  # Sent to PSD, not raised, when a task's retries have run out
+  # How many times the job runs its tasks at most, the first run included
+  MAX_RUNS = 10
+
+  # Sent to PSD, not raised, when the job's runs are used up
   class RetriesExhausted < StandardError
   end
 
-  # Delayed Job calls this when a run raises, to schedule the next run. The
-  # waits double, and the RETRIES waits add up to RETRY_WINDOW: about 56
-  # seconds, 1.9, 3.8, 7.5, 15 and 30 minutes, 1 hour and 2 hours.
+  # Delayed Job calls this when a run raises, to schedule the next run: 30
+  # seconds, then 1, 2, 4, 8, 16 and 32 minutes, then 1 hour, so the last
+  # run starts about 3 hours after the first, plus the runs' own time.
   #
   # @param current_time [Time] when the run failed
   # @param attempts [Integer] the number of failed runs so far, from 1
   # @return [Time] when to run the job again
   def reschedule_at(current_time, attempts)
-    current_time +
-      (RETRY_WINDOW * Rational(2**(attempts - 1), (2**RETRIES) - 1))
+    current_time + [FIRST_WAIT * (2**(attempts - 1)), MAX_WAIT].min
   end
 
-  # Delayed Job reads this to know how many runs to make: the first and
-  # RETRIES more.
+  # Delayed Job reads this to know how many runs to make.
   #
   # @return [Integer] the number of runs
   def max_attempts
-    RETRIES + 1
+    MAX_RUNS
   end
 
   # Delayed Job calls this before each run, with the job's record, which
@@ -65,9 +67,9 @@ module ApiOperation::CoordinatorJob::Retries
   end
 
   # Delayed Job calls this when its last run (max_attempts) has failed, then
-  # deletes the job: a backstop for the retry window. PSD is notified first,
-  # as the database may be what failed; then the operation's next task
-  # fails, unless it already has an outcome.
+  # deletes the job. PSD is notified first, as the database may be what
+  # failed; then the operation's next task fails, unless it already has an
+  # outcome.
   #
   # @param job [Delayed::Job] the job's record
   # @return [void]
@@ -83,16 +85,15 @@ module ApiOperation::CoordinatorJob::Retries
 
   private
 
-  # Whether the task's first run started more than RETRY_WINDOW ago
-  def retry_window_over?(api_operation, task)
-    first_start =
-      api_operation.events
-        .where(task: task, outcome: ApiOperation::Event::STARTED)
-        .minimum(:created_at)
-    first_start.present? && first_start < RETRY_WINDOW.ago
+  # Whether the job has already run its tasks MAX_RUNS times. It counts the
+  # operation's started events, which include runs whose worker was stopped
+  # mid-run: Delayed Job doesn't count those, as they raised nothing.
+  def runs_used_up?(api_operation)
+    api_operation.events.where(outcome: ApiOperation::Event::STARTED)
+      .count >= MAX_RUNS
   end
 
-  # Notifies PSD that the task's retries have run out, then fails it. The
+  # Notifies PSD that the job's runs are used up, then fails the task. The
   # caller holds the operation's row lock.
   def give_up(api_operation, task)
     notify_retries_exhausted(task)
@@ -111,8 +112,8 @@ module ApiOperation::CoordinatorJob::Retries
     )
   end
 
-  # The error recorded for a task whose retries have run out. It applies to
-  # the whole request, so its pointer is empty.
+  # The error recorded for a task when the job's runs are used up. It
+  # applies to the whole request, so its pointer is empty.
   def retries_exhausted_error(task)
     { pointer: '',
       detail: "#{task.humanize} could not be completed because of a " \

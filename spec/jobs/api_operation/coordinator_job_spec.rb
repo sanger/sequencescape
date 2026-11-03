@@ -14,31 +14,22 @@ RSpec.describe ApiOperation::CoordinatorJob do
     let(:now) { Time.zone.local(2026, 10, 29, 12) }
 
     def wait(attempts)
-      job.reschedule_at(now, attempts) - now
+      (job.reschedule_at(now, attempts) - now).seconds
     end
 
-    it 'waits about a minute after the first failed run' do
-      expect(wait(1)).to be_within(1).of(56.5)
-    end
-
-    it 'doubles the wait after each failed run' do
-      expect((2..8).map { wait(it) / wait(it - 1) }).to all(eq(2))
-    end
-
-    it 'waits about 2 hours after the last failed run it retries' do
-      expect(wait(described_class::RETRIES)).to be_within(60).of(2.hours)
-    end
-
-    it 'spreads the retries over the retry window' do
-      expect((1..described_class::RETRIES).sum { wait(it) })
-        .to be_within(1).of(described_class::RETRY_WINDOW)
+    it 'waits 30 seconds, doubling the wait after each failed run, up to ' \
+       'an hour' do
+      expect((1...described_class::MAX_RUNS).map { wait(it) }).to eq(
+        [30.seconds, 1.minute, 2.minutes, 4.minutes, 8.minutes, 16.minutes,
+         32.minutes, 1.hour, 1.hour]
+      )
     end
   end
 
   describe '#max_attempts' do
-    it 'allows the first run and each retry' do
+    it 'allows MAX_RUNS runs' do
       expect(described_class.new(api_operation.id).max_attempts)
-        .to eq(described_class::RETRIES + 1)
+        .to eq(described_class::MAX_RUNS)
     end
   end
 
@@ -174,9 +165,9 @@ RSpec.describe ApiOperation::CoordinatorJob do
           expect(job.reload.attempts).to eq(1)
         end
 
-        it 'runs the job again about a minute later' do
+        it 'runs the job again FIRST_WAIT later' do
           expect(job.reload.run_at)
-            .to be_within(2.seconds).of(56.seconds.from_now)
+            .to be_within(2.seconds).of(described_class::FIRST_WAIT.from_now)
         end
       end
     end
@@ -345,21 +336,23 @@ RSpec.describe ApiOperation::CoordinatorJob do
       expect(api_operation).to have_received(:lock!).at_least(:once)
     end
 
-    describe 'the retry window' do
+    describe 'the limit of MAX_RUNS runs' do
       let(:retries_exhausted_detail) do
         'Reception could not be completed because of a temporary problem ' \
           'in Sequencescape; send the request again with a new request ID'
       end
 
-      def add_started_event(ago)
-        api_operation.events.create!(task: 'reception', outcome: 'started',
-                                     created_at: ago.ago)
+      # Runs that didn't finish, such as runs whose worker was stopped
+      def add_started_events(count)
+        count.times do
+          api_operation.events.create!(task: 'reception', outcome: 'started')
+        end
       end
 
       before { allow(ExceptionNotifier).to receive(:notify_exception) }
 
-      context 'when the first run started more than RETRY_WINDOW ago' do
-        before { add_started_event(described_class::RETRY_WINDOW + 1.minute) }
+      context 'when the job has already run MAX_RUNS times' do
+        before { add_started_events(described_class::MAX_RUNS) }
 
         it 'does not run the reception again' do
           perform
@@ -375,7 +368,8 @@ RSpec.describe ApiOperation::CoordinatorJob do
         it 'adds a failed event, and no started one' do
           perform
           expect(api_operation.events.pluck(:outcome))
-            .to eq(%w[started failed])
+            .to eq([*Array.new(described_class::MAX_RUNS, 'started'),
+                    'failed'])
         end
 
         it 'notifies PSD that retries have run out' do
@@ -387,8 +381,8 @@ RSpec.describe ApiOperation::CoordinatorJob do
         end
       end
 
-      context 'when the first run started less than RETRY_WINDOW ago' do
-        before { add_started_event(described_class::RETRY_WINDOW - 1.minute) }
+      context 'when the job has run fewer than MAX_RUNS times' do
+        before { add_started_events(described_class::MAX_RUNS - 1) }
 
         it 'runs the reception' do
           perform
@@ -396,25 +390,13 @@ RSpec.describe ApiOperation::CoordinatorJob do
         end
       end
 
-      context 'when only a later run started less than RETRY_WINDOW ago' do
-        before do
-          add_started_event(described_class::RETRY_WINDOW + 1.minute)
-          add_started_event(1.minute)
-        end
-
-        it 'counts from the first run' do
-          perform
-          expect(api_operation.reload.status).to eq('reception_failed')
-        end
-      end
-
-      context 'when a Delayed Job worker finds the window over' do
+      context 'when a Delayed Job worker finds the runs used up' do
         let(:job) do
           Delayed::Job.enqueue(described_class.new(api_operation.id))
         end
 
         before do
-          add_started_event(described_class::RETRY_WINDOW + 1.minute)
+          add_started_events(described_class::MAX_RUNS)
           job.update!(last_error: 'Deadlock found when trying to get lock')
           Delayed::Worker.new.run(job)
         end
@@ -431,8 +413,7 @@ RSpec.describe ApiOperation::CoordinatorJob do
         end
       end
 
-      # The backstop: the last run Delayed Job makes raises a transient
-      # error before the window is over
+      # The last run Delayed Job makes raises a transient error
       context "when Delayed Job's last run fails" do
         let(:job) do
           Delayed::Job.enqueue(described_class.new(api_operation.id))
@@ -440,7 +421,7 @@ RSpec.describe ApiOperation::CoordinatorJob do
 
         before do
           allow(reception).to receive(:call).and_raise(ActiveRecord::Deadlocked)
-          job.update!(attempts: described_class::RETRIES)
+          job.update!(attempts: described_class::MAX_RUNS - 1)
           Delayed::Worker.new.run(job)
         end
 
