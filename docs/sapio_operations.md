@@ -373,8 +373,9 @@ own: a manifest has one column for each, so they can't contradict.
 | `dual_index_tag_set`, `dual_index_tag_well`          | A visible dual index tag set; a well of its plate, A1 to H12 (A01 is read as A1), whose position by column gives both tags, which exist; the receptacle holds only that sample | `DualIndexTagSet`, `DualIndexTagWell`            |
 | `chromium_tag_group`, `chromium_tag_well`            | A visible single-index Chromium tag set; a well of its kit plate, A1 to H12, whose 4 tags exist; the receptacle holds only that sample                                         | `ChromiumTagGroup`, `ChromiumTagWell`            |
 
-A well that isn't on the plate, such as I1 or A13, is a problem: the
-manifest reads some of them as another well.
+For dual index and Chromium wells, reception is stricter than the
+manifest: a well that isn't on the plate, such as I1 or A13, is an error,
+where the manifest reads some such wells as another well.
 
 **Tags:**
 
@@ -386,6 +387,69 @@ manifest reads some of them as another well.
   manifest compares them (`Uniqueness`). Different tag records can have
   the same oligos.
 - Samples without tags in one receptacle are a pool, not a clash.
+
+### What reception creates
+
+**Labware.** Each new labware gets a stock purpose, chosen by whether its
+samples have tags, given in any of the ways above. Library type and insert
+sizes don't decide it.
+
+| Request                               | Purpose               | Example                                               |
+| ------------------------------------- | --------------------- | ----------------------------------------------------- |
+| `plate96`, no sample has tags         | `Stock Plate`         | a plate of DNA samples                                |
+| `plate96`, a sample has tags          | `Library Stock Plate` | a plate of libraries, one in each well                |
+| `tube`, no sample has tags            | `Standard sample`     | one sample, or an untagged pool, such as scRNA Core's |
+| `tube`, one sample has tags           | `Standard library`    | one library                                           |
+| `tube`, more than one sample has tags | `Standard MX`         | a multiplexed library                                 |
+
+The labware's only barcode is the one it arrived with (`barcode`, stored
+in the external format): reception gives it no Sanger barcode. A plate is
+named `Plate <barcode>` and gets all the wells of its size. The request's
+labware and receptacle UUIDs aren't stored.
+
+**Samples.** Reception creates one sample for each `uuid`, so a sample in
+more than one receptacle is one sample. Each sample is externally managed:
+Sapio writes the warehouse records for it, so Sequencescape doesn't send
+the messages about it, its aliquots or its study link. The fields are
+stored as a sample manifest stores the matching fields:
+
+| Request field                                      | The sample's                                              |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| `uuid`                                             | UUID, in lower case                                       |
+| `study_uuid`                                       | study                                                     |
+| `sanger_sample_id`                                 | name and Sanger sample ID                                 |
+| `supplier_sample_name`, or `bioscan_supplier_name` | supplier name; `bioscan_supplier_name` replaces the other |
+| `donor_id`                                         | donor ID                                                  |
+| `reference_genome`                                 | reference genome, found by name                           |
+| `control_type`, or `bioscan_control_type`          | control and control type                                  |
+| `priority`                                         | priority                                                  |
+
+Supplier names such as Water, Blank, EMPTY or None are kept as samples, as
+sample manifests keep them.
+
+**Aliquots.** Each sample gets an aliquot in each receptacle that lists it,
+with its study, and the library type (under Sequencescape's own name),
+insert sizes and primer panel it gives. Its tags, as sample manifests set
+them:
+
+- a tag group and index, and tag 2's if given: one aliquot with the tag,
+  and tag 2;
+- a dual index tag set and well: one aliquot with the well's two tags;
+- a Chromium tag set and well: four aliquots, one for each of the well's
+  tags;
+- `i7` and `i5`: one aliquot, with tags found or created in the Magic Tag
+  Group by their oligos.
+
+On labware whose samples have tags, each aliquot's library is its
+receptacle, as library manifests set it, so the samples in a received
+`Standard MX` tube share the tube as their library. Samples without tags
+that share a receptacle get tag depths 1, 2, 3 and so on, in the order the
+request lists them, so their aliquots can be told apart.
+
+**Not created:** compound samples (samples made of other samples): a
+pool's samples are received as separate samples. Nor a sample manifest, a
+supplier, retention instructions, stock resource records or requests.
+Reception doesn't accession the samples.
 
 ## For Sequencescape developers
 
