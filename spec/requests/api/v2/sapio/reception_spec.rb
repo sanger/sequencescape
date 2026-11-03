@@ -504,6 +504,54 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     end
   end
 
+  # As from a library tube manifest with tag sequences: tubes of one library
+  # each, with an i7 oligo and a library type
+  context 'with library tubes' do
+    let(:library_type) { create(:library_type) }
+    let(:payload_libraries_by_tube) do
+      { 'SAPIO-TUBE-1' => sample('SAPIO-1-1', i7: 'ACGTACGT',
+                                              library_type: library_type.name),
+        'SAPIO-TUBE-2' => sample('SAPIO-1-2', i7: 'CATGCATG',
+                                              library_type: library_type.name) }
+    end
+    let!(:operation) do
+      tubes = payload_libraries_by_tube.map do |barcode, library|
+        tube(barcode, library)
+      end
+      post_and_process(reception_request(*tubes))
+    end
+    let(:received_tubes) do
+      payload_libraries_by_tube.keys.index_with do |barcode|
+        Barcode.find_by!(barcode:).asset
+      end
+    end
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    it 'creates a Standard library tube for each' do
+      expect(received_tubes.values).to all(
+        have_attributes(class: LibraryTube,
+                        purpose: have_attributes(name: 'Standard library'))
+      )
+    end
+
+    it 'puts each library in its tube, tagged with its i7 oligo' do
+      expect(received_tubes.transform_values do |tube|
+        aliquot = tube.aliquots.sole
+        [aliquot.sample.sanger_sample_id, aliquot.tag.oligo, aliquot.tag2_id]
+      end).to eq('SAPIO-TUBE-1' => ['SAPIO-1-1', 'ACGTACGT', -1],
+                 'SAPIO-TUBE-2' => ['SAPIO-1-2', 'CATGCATG', -1])
+    end
+
+    it 'gives each aliquot the library type and its tube as library' do
+      expect(received_tubes.values.flat_map(&:aliquots).map do |aliquot|
+        [aliquot.library_type, aliquot.library_id == aliquot.receptacle_id]
+      end).to eq([[library_type.name, true]] * payload_libraries_by_tube.size)
+    end
+  end
+
   # As from a multiplexed library tube manifest with tag sequences: libraries
   # in one tube, each with an i7 and an i5 oligo, without library fields
   context 'with a tube of libraries with i7 and i5 oligos' do
