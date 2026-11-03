@@ -215,6 +215,53 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     end
   end
 
+  # As from a sample tube manifest: tubes of one sample each, without tags
+  context 'with tubes of one sample each' do
+    let(:samples_by_tube) do
+      { 'SAPIO-TUBE-1' => sample('SAPIO-1-1'),
+        'SAPIO-TUBE-2' => sample('SAPIO-1-2'),
+        'SAPIO-TUBE-3' => sample('SAPIO-1-3') }
+    end
+    let!(:operation) do
+      tubes = samples_by_tube.map { |barcode, sample| tube(barcode, sample) }
+      post_and_process(reception_request(*tubes))
+    end
+    let(:received_tubes) do
+      samples_by_tube.keys.index_with { Barcode.find_by!(barcode: it).asset }
+    end
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    it 'creates a Standard sample tube for each' do
+      expect(received_tubes.values).to all(
+        have_attributes(class: SampleTube,
+                        purpose: have_attributes(name: 'Standard sample'))
+      )
+    end
+
+    # A manifest's sample tube has a Sanger barcode
+    it 'gives each tube only the barcode it arrived with' do
+      expect(received_tubes.transform_values do |tube|
+        tube.barcodes.map { [it.format, it.barcode] }
+      end).to eq(samples_by_tube.keys.index_with { [['external', it]] })
+    end
+
+    it 'puts each sample in its tube' do
+      expect(received_tubes.transform_values do |tube|
+        tube.aliquots.map { it.sample.sanger_sample_id }
+      end).to eq(samples_by_tube.transform_values { [it[:sanger_sample_id]] })
+    end
+
+    it 'gives each aliquot the study, no tags, tag depth 1 and no library' do
+      expect(received_tubes.values.flat_map(&:aliquots).map do |aliquot|
+        [aliquot.study, aliquot.tag_id, aliquot.tag2_id, aliquot.tag_depth,
+         aliquot.library_id]
+      end).to eq([[study, -1, -1, 1, nil]] * samples_by_tube.size)
+    end
+  end
+
   # As from a multiplexed library tube manifest with tag sequences: libraries
   # in one tube, each with an i7 and an i5 oligo, without library fields
   context 'with a tube of libraries with i7 and i5 oligos' do
