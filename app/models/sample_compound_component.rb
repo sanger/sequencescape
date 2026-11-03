@@ -10,6 +10,10 @@ class SampleCompoundComponent < ApplicationRecord
   belongs_to :compound_sample, class_name: 'Sample', touch: true
   belongs_to :component_sample, class_name: 'Sample', touch: true
 
+  # The tag of the component sample, when the components are tagged
+  # individually within the compound sample (e.g. Kinnex).
+  belongs_to :tag, optional: true
+
   validate :nested_compound_samples_validation
   validate :nested_component_samples_validation
 

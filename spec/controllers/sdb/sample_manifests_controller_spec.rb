@@ -53,6 +53,30 @@ RSpec.describe Sdb::SampleManifestsController do
         expect(LabelPrinter::PrintJob).to have_received(:new).once
       end
     end
+
+    context 'when creating a compound sample tube manifest' do
+      let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }
+
+      before do
+        SampleManifestExcel.configure do |config|
+          config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+          config.load!
+        end
+      end
+
+      it 'refuses it while the feature flag is off' do
+        Flipper.disable(flag)
+        get :new, params: { asset_type: 'compound_tube' }
+        expect(flash[:error])
+          .to eq("'compound_tube' is not a supported manifest type.")
+      end
+
+      it 'allows it when the feature flag is on' do
+        Flipper.enable(flag)
+        get :new, params: { asset_type: 'compound_tube' }
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe 'POST #print_labels' do

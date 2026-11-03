@@ -51,6 +51,13 @@ library_type_long_read:
     - :from_record_loaders
     - 001_long_read
   scope_on: LibraryType
+# The library types for Kinnex compound sample manifests.
+library_type_kinnex:
+  identifier: :name
+  scope:
+    - :from_record_loaders
+    - 005_kinnex_library_types
+  scope_on: LibraryType
 primer_panel:
   identifier: :name
   scope: :alphabetical

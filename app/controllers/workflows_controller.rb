@@ -45,6 +45,7 @@ class WorkflowsController < ApplicationController
     # just rendering so we only redirect on "Update" after a successful do_task
     # call.
     task_success = true
+    task_message = nil
 
     # If params[:next_stage] is nil then just render the current task
     # else actually execute the task.
@@ -61,14 +62,17 @@ class WorkflowsController < ApplicationController
 
       ActiveRecord::Base.transaction do
         task_success, task_message = @task.do_task(self, params, current_user)
-        if task_success
-          # Task completed, start the batch is necessary and display the next one
-          start_batch
-          @stage += 1
-          params[:id] = @stage
-          @task = @workflow.tasks[@stage]
+        unless task_success
+          flash[:alert] ||= task_message if task_message
+          next
         end
-        flash[task_success ? :notice : :alert] ||= task_message if task_message
+
+        # Task completed, start the batch is necessary and display the next one
+        start_batch
+        @stage += 1
+        params[:id] = @stage
+        @task = @workflow.tasks[@stage]
+        flash[:notice] ||= task_message if task_message
       end
     end
 

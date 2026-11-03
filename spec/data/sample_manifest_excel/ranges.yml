@@ -45,6 +45,13 @@ dna_storage_conditions:
 library_type:
   identifier: :name
   scope: :alphabetical
+# The library types for Kinnex compound sample manifests.
+library_type_kinnex:
+  identifier: :name
+  scope:
+    - :from_record_loaders
+    - 005_kinnex_library_types
+  scope_on: LibraryType
 primer_panel:
   identifier: :name
   scope: :alphabetical
