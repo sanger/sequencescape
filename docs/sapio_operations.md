@@ -451,6 +451,26 @@ pool's samples are received as separate samples. Nor a sample manifest, a
 supplier, retention instructions, stock resource records or requests.
 Reception doesn't accession the samples.
 
+### Sample data, the warehouse and the callback
+
+- **Sample fields:** reception stores every sample field the schema has.
+  Of the optional ones, `donor_id` is needed (scRNA Core's pooling uses
+  it); `reference_genome`, `control_type`, `priority`,
+  `bioscan_supplier_name` and `bioscan_control_type` could be removed from
+  the schema. Sample manifest fields the request doesn't have, such as the
+  sample metadata, volume, concentration, taxon ID, EBI accession number
+  and genome size, are left to Sapio.
+- **Warehouse:** Sapio writes the warehouse (MLWH) records for its
+  samples. Sequencescape sends no messages about the received samples,
+  their aliquots or their study links. Its messages about the new labware
+  and wells aren't stored by the MLWH. When the samples are sequenced,
+  Sequencescape's flowcell messages name them by UUID, and the MLWH finds
+  a sample only by that UUID, so Sapio must have written the sample by
+  then. Reception keeps the request's sample UUIDs, so they match.
+- **For the callback:** an operation keeps its status, its events (each
+  task's runs, and when it completed or failed) and its errors. Which
+  labware reception created and which it matched isn't stored.
+
 ## For Sequencescape developers
 
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
