@@ -25,9 +25,9 @@ class ApiOperation::Reception::Tags::Scheme
   # an [i7, i5] pair for each aliquot, with nil for a tag it doesn't have.
   # Only for a sample whose tags passed this scheme's checks.
   #
-  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @param sample [ApiOperation::Reception::Payload::PayloadSample]
   # @return [Array<Array(String, String)>] the oligo pairs
-  def oligos(_sample)
+  def oligos(sample)
     raise NotImplementedError, "#{self.class} must define oligos"
   end
 
@@ -35,9 +35,9 @@ class ApiOperation::Reception::Tags::Scheme
   # them: a [tag_id, tag2_id] pair for each aliquot, with nil for a tag it
   # doesn't have. Only for a sample whose tags passed this scheme's checks.
   #
-  # @param _sample [ApiOperation::Reception::Payload::PayloadSample]
+  # @param sample [ApiOperation::Reception::Payload::PayloadSample]
   # @return [Array<Array(Integer, Integer)>] the tag ID pairs
-  def tag_ids(_sample)
+  def tag_ids(sample)
     raise NotImplementedError, "#{self.class} must define tag_ids"
   end
 
