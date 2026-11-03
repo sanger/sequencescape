@@ -253,14 +253,17 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     end
   end
 
-  # As from a Bioscan plate manifest: specimens with Bioscan supplier names,
-  # and a lysate negative control in H12
+  # As from a Bioscan plate manifest: specimens named by their specimen plate
+  # and well, and a lysate negative control in H12, whose name begins with
+  # CONTROL_ as a control's must
   context 'with a Bioscan plate' do
     let(:payload_samples_by_well) do
-      { 'A1' => sample('SAPIO-1-1', bioscan_supplier_name: 'SPECIMEN-1'),
-        'B1' => sample('SAPIO-1-2', bioscan_supplier_name: 'SPECIMEN-2'),
-        'H12' => sample('SAPIO-1-3', bioscan_supplier_name: 'CONTROL_LYSATE-1',
-                                     bioscan_control_type: 'lysate negative') }
+      { 'A1' => sample('SAPIO-1-1', bioscan_supplier_name: 'TEST_001_A1'),
+        'B1' => sample('SAPIO-1-2', bioscan_supplier_name: 'TEST_001_B1'),
+        'H12' =>
+          sample('SAPIO-1-3',
+                 bioscan_supplier_name: 'CONTROL_NEG_LYSATE_TEST_001_H12',
+                 bioscan_control_type: 'lysate negative') }
     end
     let!(:operation) do
       post_and_process(reception_request(plate('SAPIO-PLATE-1',
@@ -280,8 +283,8 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     it 'gives each sample its Bioscan supplier name' do
       expect(samples.to_h do |sample|
         [sample.sanger_sample_id, sample.sample_metadata.supplier_name]
-      end).to eq('SAPIO-1-1' => 'SPECIMEN-1', 'SAPIO-1-2' => 'SPECIMEN-2',
-                 'SAPIO-1-3' => 'CONTROL_LYSATE-1')
+      end).to eq('SAPIO-1-1' => 'TEST_001_A1', 'SAPIO-1-2' => 'TEST_001_B1',
+                 'SAPIO-1-3' => 'CONTROL_NEG_LYSATE_TEST_001_H12')
     end
 
     it 'makes the sample in H12 a lysate negative control' do
