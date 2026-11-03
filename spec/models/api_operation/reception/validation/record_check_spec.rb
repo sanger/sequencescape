@@ -74,6 +74,52 @@ RSpec.describe ApiOperation::Reception::Validation::RecordCheck do
     end
   end
 
+  context 'with a supplier sample name of only spaces' do
+    let(:samples) { [sample(0, supplier_sample_name: '   ')] }
+
+    it 'reports it, as a manifest makes no sample without a supplier name' do
+      expect(check.errors).to eq(
+        [{ pointer: pointer(0, 'supplier_sample_name'),
+           detail: 'supplier_sample_name is blank' }]
+      )
+    end
+  end
+
+  context 'with a Bioscan supplier name of only spaces' do
+    let(:samples) do
+      [sample(0, fields: { bioscan_supplier_name: '  ' })]
+    end
+
+    it 'reports it, as the sample gets it' do
+      expect(check.errors).to eq(
+        [{ pointer: pointer(0, 'bioscan_supplier_name'),
+           detail: 'bioscan_supplier_name is blank' }]
+      )
+    end
+  end
+
+  context 'with a blank supplier sample name and a Bioscan supplier name' do
+    let(:samples) do
+      [sample(0, supplier_sample_name: ' ',
+                 fields: { bioscan_supplier_name: 'B1' })]
+    end
+
+    it 'finds no errors, as the sample gets the Bioscan supplier name' do
+      expect(check.errors).to be_empty
+    end
+  end
+
+  context 'with a supplier sample name of only non-breaking spaces' do
+    let(:samples) { [sample(0, supplier_sample_name: "\u00A0\u00A0")] }
+
+    it 'reports it once, as blank' do
+      expect(check.errors).to eq(
+        [{ pointer: pointer(0, 'supplier_sample_name'),
+           detail: 'supplier_sample_name is blank' }]
+      )
+    end
+  end
+
   context 'with an emoji in the donor ID' do
     let(:samples) { [sample(0, fields: { donor_id: 'Donor 🙂' })] }
 
