@@ -111,18 +111,19 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     let(:reference_genome) do
       create(:reference_genome, name: 'Genus species (v1)')
     end
-    let(:samples_by_well) do
+    let(:payload_samples_by_well) do
       { 'A1' => sample('SAPIO-1-1', reference_genome: reference_genome.name),
         'B1' => sample('SAPIO-1-2'),
         'C1' => sample('SAPIO-1-3', control_type: 'negative') }
     end
     let!(:operation) do
       post_and_process(reception_request(plate('SAPIO-PLATE-1',
-                                               samples_by_well)))
+                                               payload_samples_by_well)))
     end
     let(:received_plate) { Barcode.find_by!(barcode: 'SAPIO-PLATE-1').asset }
     let(:samples) do
-      sanger_sample_ids = samples_by_well.values.pluck(:sanger_sample_id)
+      sanger_sample_ids =
+        payload_samples_by_well.values.pluck(:sanger_sample_id)
       Sample.where(sanger_sample_id: sanger_sample_ids)
         .includes(:sample_metadata).index_by(&:sanger_sample_id)
     end
@@ -178,7 +179,7 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
       expect(samples.values.map do |sample|
         [sample.name, sample.uuid, sample.externally_managed,
          sample.sample_manifest_id, sample.studies]
-      end).to match_array(samples_by_well.values.map do |payload_sample|
+      end).to match_array(payload_samples_by_well.values.map do |payload_sample|
         [payload_sample[:sanger_sample_id], payload_sample[:uuid], true, nil,
          [study]]
       end)
@@ -217,17 +218,21 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
 
   # As from a sample tube manifest: tubes of one sample each, without tags
   context 'with tubes of one sample each' do
-    let(:samples_by_tube) do
+    let(:payload_samples_by_tube) do
       { 'SAPIO-TUBE-1' => sample('SAPIO-1-1'),
         'SAPIO-TUBE-2' => sample('SAPIO-1-2'),
         'SAPIO-TUBE-3' => sample('SAPIO-1-3') }
     end
     let!(:operation) do
-      tubes = samples_by_tube.map { |barcode, sample| tube(barcode, sample) }
+      tubes = payload_samples_by_tube.map do |barcode, sample|
+        tube(barcode, sample)
+      end
       post_and_process(reception_request(*tubes))
     end
     let(:received_tubes) do
-      samples_by_tube.keys.index_with { Barcode.find_by!(barcode: it).asset }
+      payload_samples_by_tube.keys.index_with do |barcode|
+        Barcode.find_by!(barcode:).asset
+      end
     end
 
     it 'completes the reception' do
@@ -245,33 +250,36 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     it 'gives each tube only the barcode it arrived with' do
       expect(received_tubes.transform_values do |tube|
         tube.barcodes.map { [it.format, it.barcode] }
-      end).to eq(samples_by_tube.keys.index_with { [['external', it]] })
+      end).to eq(payload_samples_by_tube.keys.index_with { [['external', it]] })
     end
 
     it 'puts each sample in its tube' do
       expect(received_tubes.transform_values do |tube|
         tube.aliquots.map { it.sample.sanger_sample_id }
-      end).to eq(samples_by_tube.transform_values { [it[:sanger_sample_id]] })
+      end).to eq(payload_samples_by_tube.transform_values do |payload_sample|
+        [payload_sample[:sanger_sample_id]]
+      end)
     end
 
     it 'gives each aliquot the study, no tags, tag depth 1 and no library' do
       expect(received_tubes.values.flat_map(&:aliquots).map do |aliquot|
         [aliquot.study, aliquot.tag_id, aliquot.tag2_id, aliquot.tag_depth,
          aliquot.library_id]
-      end).to eq([[study, -1, -1, 1, nil]] * samples_by_tube.size)
+      end).to eq([[study, -1, -1, 1, nil]] * payload_samples_by_tube.size)
     end
   end
 
   # As from a multiplexed library tube manifest with tag sequences: libraries
   # in one tube, each with an i7 and an i5 oligo, without library fields
   context 'with a tube of libraries with i7 and i5 oligos' do
-    let(:libraries) do
+    let(:payload_libraries) do
       [sample('SAPIO-1-1', i7: 'ACGTACGT', i5: 'TTGGCCAA'),
        sample('SAPIO-1-2', i7: 'CATGCATG', i5: 'AACCGGTT'),
        sample('SAPIO-1-3', i7: 'GTCAGTCA', i5: 'GGAATTCC')]
     end
     let!(:operation) do
-      post_and_process(reception_request(tube('SAPIO-TUBE-1', *libraries)))
+      post_and_process(reception_request(tube('SAPIO-TUBE-1',
+                                              *payload_libraries)))
     end
     let(:received_tube) { Barcode.find_by!(barcode: 'SAPIO-TUBE-1').asset }
 
@@ -296,7 +304,7 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
       expect(received_tube.aliquots.map do |aliquot|
         [aliquot.sample.sanger_sample_id,
          *[aliquot.tag, aliquot.tag2].map { [it.tag_group.name, it.oligo] }]
-      end).to match_array(libraries.map do |library|
+      end).to match_array(payload_libraries.map do |library|
         [library[:sanger_sample_id], ['Magic Tag Group', library[:i7]],
          ['Magic Tag Group', library[:i5]]]
       end)
@@ -308,7 +316,9 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     it 'gives each aliquot the study, tag depth 1 and the tube as library' do
       expect(received_tube.aliquots.map do |aliquot|
         [aliquot.study, aliquot.library, aliquot.tag_depth]
-      end).to eq([[study, received_tube.receptacle, 1]] * libraries.size)
+      end).to eq(
+        [[study, received_tube.receptacle, 1]] * payload_libraries.size
+      )
     end
 
     it 'creates no labware other than the tube' do
@@ -323,7 +333,7 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
     let(:tag_group) { create(:tag_group_with_tags, tag_count: 3) }
     let(:tag2_group) { create(:tag_group_with_tags, tag_count: 3) }
     let(:library_type) { create(:library_type) }
-    let(:libraries) do
+    let(:payload_libraries) do
       (1..3).map do |index|
         sample("SAPIO-1-#{index}",
                tag_group: tag_group.name, tag_index: index,
@@ -333,7 +343,8 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
       end
     end
     let!(:operation) do
-      post_and_process(reception_request(tube('SAPIO-TUBE-1', *libraries)))
+      post_and_process(reception_request(tube('SAPIO-TUBE-1',
+                                              *payload_libraries)))
     end
     let(:received_tube) { Barcode.find_by!(barcode: 'SAPIO-TUBE-1').asset }
 
@@ -346,7 +357,7 @@ describe 'Sapio reception', :sapio_operations_endpoint_enabled,
         [aliquot.sample.sanger_sample_id, aliquot.tag, aliquot.tag2,
          aliquot.library_type, aliquot.insert_size_from,
          aliquot.insert_size_to]
-      end).to match_array(libraries.map do |library|
+      end).to match_array(payload_libraries.map do |library|
         [library[:sanger_sample_id],
          tag_group.tags.find_by(map_id: library[:tag_index]),
          tag2_group.tags.find_by(map_id: library[:tag2_index]),
