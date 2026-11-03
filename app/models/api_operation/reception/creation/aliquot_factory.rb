@@ -11,9 +11,9 @@
 # a dual index well, and one for each tag of a Chromium well, as
 # Tag#multitag! gives. A sample giving i7/i5 oligos gets one aliquot, with
 # their tags from the Magic Tag Group (OligoTagFactory). Samples without tags
-# that share a receptacle (a pool) get their positions among the
-# receptacle's samples as tag depths (0, 1, 2 ...), as stock manifests give
-# them, so their aliquots can be told apart.
+# that share a receptacle (a pool) get tag depths by their positions among
+# the receptacle's samples, counting from the aliquots table's default tag
+# depth (1, 2, 3 ...), so their aliquots can be told apart.
 class ApiOperation::Reception::Creation::AliquotFactory
   # The payload fields of the tag schemes; a sample with any of them has tags
   TAG_FIELDS = ApiOperation::Reception::Validation::SampleCheck::TAG_FIELDS
@@ -60,7 +60,7 @@ class ApiOperation::Reception::Creation::AliquotFactory
   def create_aliquots(payload_receptacle, receptacle, library_labware)
     pool = payload_receptacle.samples.many?
     payload_receptacle.samples.each_with_index do |payload_sample, position|
-      tag_depth = position if pool && !tagged?(payload_sample)
+      tag_depth = first_tag_depth + position if pool && !tagged?(payload_sample)
       tag_id_pairs(payload_sample).each do |tag_id, tag2_id|
         receptacle.aliquots.create!(
           aliquot_attributes(payload_sample).merge(
@@ -134,6 +134,12 @@ class ApiOperation::Reception::Creation::AliquotFactory
 
   def tagged?(payload_sample)
     payload_sample.fields.keys.intersect?(TAG_FIELDS)
+  end
+
+  # The aliquots table's default tag depth (1): what an aliquot alone in its
+  # receptacle has, and the tag depth of a pool's first untagged sample
+  def first_tag_depth
+    @first_tag_depth ||= Aliquot.column_defaults['tag_depth']
   end
 
   # The library type's own name: the payload may give it in another case.
