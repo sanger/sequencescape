@@ -262,6 +262,29 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
           .to eq("the tube of #{barcode} has different supplier sample " \
                  'names in Sequencescape')
       end
+
+      it 'reports the type when the payload says a plate' do
+        payload_labware =
+          [payload_labware_with(barcode, contents: { 'A1' => ['Tube sample'] })]
+        expect(described_class.new(payload_labware).errors).to eq(
+          [{ pointer: '/labware/0/type',
+             detail: "#{barcode} is a tube in Sequencescape, " \
+                     'not a 96-well plate' }]
+        )
+      end
+    end
+
+    context 'with labware that is neither a plate nor a tube' do
+      let(:tube_rack) { create(:tube_rack) }
+      let(:barcode) { tube_rack.human_barcode }
+
+      it 'names its kind in the type error' do
+        payload_labware =
+          [payload_labware_with(barcode, type: 'tube',
+                                         contents: { nil => ['Another'] })]
+        expect(described_class.new(payload_labware).errors.sole[:detail])
+          .to eq("#{barcode} is a tube rack in Sequencescape, not a tube")
+      end
     end
 
     context 'with several plates' do
