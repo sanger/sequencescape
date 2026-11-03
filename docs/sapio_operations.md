@@ -257,6 +257,7 @@ Two payloads are the same when they hold the same JSON data:
   that list a type's statuses (`spec/models/api_operation_spec.rb`) or stub
   its tasks (`spec/jobs/api_operation/coordinator_job_spec.rb`) change with
   `TASKS`.
+
 - **Adding an operation type:** an operation's type is its request's
   `request.request_type`. The schema must allow the new value (version 1
   allows only `reception_and_work_order`), and `ApiOperation::TASKS` gets
