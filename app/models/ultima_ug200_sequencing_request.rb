@@ -36,11 +36,4 @@ class UltimaUG200SequencingRequest < UltimaSequencingRequest
   def requested_sequencer_type
     'UG 200'
   end
-
-  # Returns the UG200 preset for the given aliquot, if any.
-  # @param aliquot [Aliquot] the aliquot whose preset is needed
-  # @return [UltimaPreset, nil] the UG200 preset
-  def preset_for_aliquot(aliquot)
-    nearest_ultima_conversion_request_for(aliquot)&.ultima_application&.ug200_preset
-  end
 end
