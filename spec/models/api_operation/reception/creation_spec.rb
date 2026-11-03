@@ -17,6 +17,7 @@ RSpec.describe ApiOperation::Reception::Creation do
     # Sample manifests' configuration isn't loaded in tests
     allow(SampleManifestExcel.configuration)
       .to receive(:tag_group).and_return('Magic Tag Group')
+    allow(Accession).to receive(:accession_sample)
     creation.call
   end
 
@@ -155,6 +156,14 @@ RSpec.describe ApiOperation::Reception::Creation do
       it 'gives it the supplier sample name' do
         expect(created_sample.sample_metadata.supplier_name)
           .to eq('Supplier sample')
+      end
+
+      it 'does not accession it' do
+        expect(Accession).not_to have_received(:accession_sample)
+      end
+
+      it 'leaves accessioning unpaused afterwards' do
+        expect(Sample::Current.temporary_accessioning_pause).to be_nil
       end
     end
 

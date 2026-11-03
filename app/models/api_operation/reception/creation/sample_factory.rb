@@ -12,11 +12,15 @@ class ApiOperation::Reception::Creation::SampleFactory
     @studies = studies
   end
 
-  # Creates the samples in the labware.
+  # Creates the samples in the labware. Accessioning is paused while they
+  # are saved, as sample manifest uploads pause it, so saving a sample
+  # doesn't accession it: Sequencescape doesn't accession Sapio's samples.
   #
   # @return [Hash{String => Sample}] the new samples, by UUID
   def call
-    payload_samples.to_h { [it.uuid, create_sample(it)] }
+    Sample::Current.set(temporary_accessioning_pause: true) do
+      payload_samples.to_h { [it.uuid, create_sample(it)] }
+    end
   end
 
   private
