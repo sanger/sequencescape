@@ -325,6 +325,68 @@ operation fails. For example:
 The last is a well that has a sample in Sequencescape but isn't in the
 request, so its error points at the labware.
 
+### Checks on new labware
+
+Reception checks the new labware and its samples before it creates
+anything, and reports every problem it finds. A name Sequencescape doesn't
+have, such as an unknown study or tag group, is reported once, at the
+first sample that uses it, with how many samples do: one wrong value in a
+large request gives one error.
+
+**Labware:**
+
+- Each barcode appears once in the request, known labware included.
+- New 384-well plates aren't supported by reception.
+- A new tube has one receptacle, with a `null` position.
+- A new plate's positions are wells of its size, each listed once.
+
+**Samples:**
+
+- The study (`study_uuid`) exists. Its state isn't checked.
+- The sample's `uuid` isn't used by any record in Sequencescape. Its
+  `sanger_sample_id` isn't already a sample's Sanger sample ID or name,
+  ignoring case, and no two samples in the request share one.
+- A sample in more than one receptacle (the same `uuid`) has the same
+  `sanger_sample_id`, `supplier_sample_name` and `study_uuid` in each. It
+  becomes one sample.
+- A sample in one receptacle more than once has tags in all but one.
+- The values the sample's records would reject: `sanger_sample_id`, which
+  becomes the sample's name, has only letters, digits, `_` and `-`; the
+  supplier sample name has only ASCII characters and isn't blank;
+  `donor_id` has no characters of more than 3 bytes, such as emoji.
+
+**Fields a sample manifest also has**, checked as the manifest's
+specialised field checks them (`SequencescapeExcel::SpecialisedField`,
+`SampleManifestExcel::Tags::Validator`). Rules marked \* are reception's
+own: a manifest has one column for each, so they can't contradict.
+
+| Fields                                               | Rule                                                                                                                                                                           | Manifest rule                                    |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| `reference_genome`                                   | An existing reference genome, ignoring case                                                                                                                                    | `ReferenceGenome`                                |
+| `library_type`, `library_type_long_read`             | An existing library type, ignoring case; the same when both are given\*                                                                                                        | `LibraryType`                                    |
+| `primer_panel`                                       | An existing primer panel, ignoring case                                                                                                                                        | `PrimerPanel`                                    |
+| `insert_size_from`, `insert_size_to`                 | Whole numbers of at least 1 (the schema checks this); from is at most to when both are given\*                                                                                 | `InsertSizeFrom`, `InsertSizeTo`                 |
+| `control_type`, `bioscan_control_type`               | The same when both are given\*                                                                                                                                                 | `ControlType`, `BioscanControlType`              |
+| `bioscan_control_type`                               | The supplier name begins with `CONTROL_`; a pcr positive or pcr negative control isn't in H12; a lysate negative control is in H12, so not in a tube                           | `BioscanControlType`                             |
+| `i7`, `i5`                                           | Only A, C, G, T or N, in either case, and at most 30 characters                                                                                                                | `Formatting`                                     |
+| `tag_group`, `tag_index`, `tag2_group`, `tag2_index` | A group needs its index, and an index its group; the group exists, ignoring case, and has a tag at the index                                                                   | `TagGroup`, `TagIndex`, `Tag2Group`, `Tag2Index` |
+| `dual_index_tag_set`, `dual_index_tag_well`          | A visible dual index tag set; a well of its plate, A1 to H12 (A01 is read as A1), whose position by column gives both tags, which exist; the receptacle holds only that sample | `DualIndexTagSet`, `DualIndexTagWell`            |
+| `chromium_tag_group`, `chromium_tag_well`            | A visible single-index Chromium tag set; a well of its kit plate, A1 to H12, whose 4 tags exist; the receptacle holds only that sample                                         | `ChromiumTagGroup`, `ChromiumTagWell`            |
+
+A well that isn't on the plate, such as I1 or A13, is a problem: the
+manifest reads some of them as another well.
+
+**Tags:**
+
+- A sample gives its tags one way only: as `i7` and `i5`, as tag groups
+  and indexes, as a dual index tag set and well, as a Chromium tag set and
+  well, or not at all.
+- In a new receptacle, samples with tags have different tags: their i7 and
+  i5 oligos are compared, ignoring case, as the multiplexed library tube
+  manifest compares them (`Uniqueness`). Different tag records can have
+  the same oligos.
+- Samples without tags in one receptacle are a pool, not a clash.
+
 ## For Sequencescape developers
 
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
