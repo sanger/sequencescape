@@ -6,8 +6,10 @@
 class ApiOperation::Reception::Creation::SampleFactory
   # @param new_labware [Array<ApiOperation::Reception::Payload::
   #   PayloadLabware>] the payload labware Sequencescape doesn't have
-  def initialize(new_labware)
+  # @param studies [Hash{String => Study}] the samples' studies, by UUID
+  def initialize(new_labware, studies)
     @new_labware = new_labware
+    @studies = studies
   end
 
   # Creates the samples in the labware.
@@ -25,15 +27,17 @@ class ApiOperation::Reception::Creation::SampleFactory
       @new_labware.flat_map(&:receptacles).flat_map(&:samples).uniq(&:uuid)
   end
 
-  # One save writes the sample, its metadata, its UUID and its study link.
-  # The sample keeps the payload's UUID: without lazy_uuid_generation, a new
-  # one would replace it after the sample is created.
+  # Saves the sample, with its metadata and its UUID, then links it to its
+  # study. Linking the saved sample saves only the link; linked before the
+  # save, the study would be validated again with each sample. The sample
+  # keeps the payload's UUID: without lazy_uuid_generation, a new one would
+  # replace it after the sample is created.
   def create_sample(payload_sample)
     sample = Sample.new(sample_attributes(payload_sample))
     sample.lazy_uuid_generation = true
     sample.uuid_object = Uuid.new(external_id: payload_sample.uuid)
-    sample.studies << studies.fetch(payload_sample.study_uuid)
     sample.save!
+    sample.studies << @studies.fetch(payload_sample.study_uuid)
     sample
   end
 
@@ -63,13 +67,6 @@ class ApiOperation::Reception::Creation::SampleFactory
       donor_id: fields['donor_id'],
       reference_genome: reference_genomes[fields['reference_genome']&.downcase]
     }.compact
-  end
-
-  # The samples' studies by UUID (both in lower case), looked up once
-  def studies
-    @studies ||=
-      Study.with_uuid(payload_samples.map(&:study_uuid).uniq)
-        .includes(:uuid_object).index_by(&:uuid)
   end
 
   # The reference genomes the samples name, by name in lower case, looked up

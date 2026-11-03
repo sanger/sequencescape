@@ -31,9 +31,11 @@ class ApiOperation::Reception::Creation::AliquotFactory
   # @param labware [Hash{ApiOperation::Reception::Payload::PayloadLabware =>
   #   Labware}] the new labware, by its payload labware
   # @param samples [Hash{String => Sample}] the new samples, by UUID
-  def initialize(labware, samples)
+  # @param studies [Hash{String => Study}] the samples' studies, by UUID
+  def initialize(labware, samples, studies)
     @labware = labware
     @samples = samples
+    @studies = studies
   end
 
   # Creates the aliquots.
@@ -115,7 +117,7 @@ class ApiOperation::Reception::Creation::AliquotFactory
     fields = payload_sample.fields
     {
       sample: sample,
-      study: sample.studies.first,
+      study: @studies.fetch(payload_sample.study_uuid),
       library_type: library_type_name(fields),
       insert_size_from: fields['insert_size_from'],
       insert_size_to: fields['insert_size_to'],
