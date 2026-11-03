@@ -1,0 +1,160 @@
+# frozen_string_literal: true
+
+require 'rails_helper'
+require 'shared_contexts/sapio_reception_shared_context'
+
+# Sapio reception from end to end, for requests the reception rejects: the
+# operation fails with each problem's pointer and detail, for Integration
+# Hub, and nothing is created. How these specs work:
+# spec/shared_contexts/sapio_reception_shared_context.rb
+describe 'Sapio reception of invalid requests',
+         :sapio_operations_endpoint_enabled, :sapio_reception_enabled do
+  include_context 'with Sapio reception'
+
+  # The pointer of the only sample in the request's first labware
+  let(:sample_pointer) { '/labware/0/receptacles/0/samples/0' }
+
+  # The error details reception records for one problem
+  def reception_error(pointer, detail)
+    { 'task' => 'reception',
+      'errors' => [{ 'pointer' => pointer, 'detail' => detail }] }
+  end
+
+  # A first request received the plate; a second gives it other contents,
+  # and a new tube
+  context 'with known labware whose contents differ' do
+    before do
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => sample('SAPIO-1-1'))))
+    end
+
+    let!(:operation) do
+      post_and_process(
+        reception_request(plate('SAPIO-PLATE-1', 'A1' => sample('SAPIO-2-1')),
+                          tube('SAPIO-TUBE-1', sample('SAPIO-2-2')))
+      )
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the run of the reception' do
+      expect(operation.events.pluck(:task, :outcome))
+        .to eq([%w[reception started], %w[reception failed]])
+    end
+
+    it 'records the conflict, with its pointer' do
+      expect(operation.reload.error_details).to eq(
+        reception_error('/labware/0/receptacles/0',
+                        'well A1 of SAPIO-PLATE-1 has different supplier ' \
+                        'sample names in Sequencescape')
+      )
+    end
+
+    it 'creates nothing, not even the new tube' do
+      expect([Labware.count, Sample.count]).to eq([1, 1])
+    end
+  end
+
+  context 'with a sample of an unknown study' do
+    let(:unknown_study_uuid) { SecureRandom.uuid }
+    let!(:operation) do
+      payload_sample = sample('SAPIO-1-1', study_uuid: unknown_study_uuid)
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => payload_sample)))
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the error, with its pointer' do
+      expect(operation.reload.error_details).to eq(
+        reception_error("#{sample_pointer}/study_uuid",
+                        "No study with UUID #{unknown_study_uuid} " \
+                        '(used by 1 sample)')
+      )
+    end
+
+    it 'creates nothing' do
+      expect([Labware.count, Sample.count]).to eq([0, 0])
+    end
+  end
+
+  context 'with a sample whose UUID Sequencescape already uses' do
+    let(:existing_sample) { create(:sample) }
+    let!(:operation) do
+      payload_sample = sample('SAPIO-1-1', uuid: existing_sample.uuid)
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => payload_sample)))
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the error, with its pointer' do
+      expect(operation.reload.error_details).to eq(
+        reception_error("#{sample_pointer}/uuid",
+                        "UUID #{existing_sample.uuid} is already used in " \
+                        'Sequencescape')
+      )
+    end
+
+    it 'creates nothing' do
+      expect([Labware.count, Sample.count]).to eq([0, 1])
+    end
+  end
+
+  context 'with a tag index that its tag group does not have' do
+    let(:tag_group) { create(:tag_group_with_tags, tag_count: 2) }
+    let!(:operation) do
+      payload_sample = sample('SAPIO-1-1', tag_group: tag_group.name,
+                                           tag_index: 3)
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => payload_sample)))
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the error, with its pointer' do
+      expect(operation.reload.error_details).to eq(
+        reception_error("#{sample_pointer}/tag_index",
+                        "Tag group #{tag_group.name} has no tag with index " \
+                        '3 (used by 1 sample)')
+      )
+    end
+
+    it 'creates nothing' do
+      expect([Labware.count, Sample.count]).to eq([0, 0])
+    end
+  end
+
+  context 'with an unknown reference genome' do
+    let!(:operation) do
+      payload_sample = sample('SAPIO-1-1',
+                              reference_genome: 'Genus species (v0)')
+      post_and_process(reception_request(plate('SAPIO-PLATE-1',
+                                               'A1' => payload_sample)))
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the error, with its pointer' do
+      expect(operation.reload.error_details).to eq(
+        reception_error("#{sample_pointer}/reference_genome",
+                        'No reference genome named Genus species (v0) ' \
+                        '(used by 1 sample)')
+      )
+    end
+
+    it 'creates nothing' do
+      expect([Labware.count, Sample.count]).to eq([0, 0])
+    end
+  end
+end
