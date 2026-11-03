@@ -185,6 +185,108 @@ Two payloads are the same when they hold the same JSON data:
 - Array order, values, and whether a number is an integer or a decimal (`1`
   or `1.0`) do.
 
+## After the 202
+
+Sequencescape processes the operation in the background, one task after
+another: the labware reception, then the work order (Y26-289). Operations
+stay `queued` while reception is switched off (the
+`y26_283_sapio_reception` feature flag).
+
+### Statuses
+
+| Status                | Meaning                                                                           |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `queued`              | Accepted; no task has completed, including while reception runs or waits to retry |
+| `reception_completed` | The labware and its samples are in Sequencescape                                  |
+| `reception_failed`    | Reception failed and kept nothing; the operation's errors say why                 |
+
+The status names the last task completed or failed: there is no status
+for a task in progress. Sending the request again with the same request
+ID returns the operation with its current status (200).
+
+A failed operation isn't processed again, and a corrected payload under the
+same request ID is a conflict (409). A corrected request needs a new
+request ID. When an earlier attempt's reception completed, the new
+request's reception finds the labware it created and leaves it as it is.
+
+### Errors
+
+A failed task's errors are stored with the operation: the task, and one
+error for each problem, with a JSON Pointer into the request body and a
+detail. An empty pointer means the whole request. Y26-285 sends the
+outcome and these errors back to Integration Hub.
+
+```json
+{
+  "task": "reception",
+  "errors": [
+    {
+      "pointer": "/labware/0/receptacles/0/samples/0/study_uuid",
+      "detail": "No study with UUID 6f1c1d2e-0000-4000-8000-000000000004 (used by 1 sample)"
+    }
+  ]
+}
+```
+
+A task fails for one of three reasons:
+
+- **Problems in the request**, such as an unknown study, or labware that
+  doesn't match what Sequencescape already has. Reception checks the whole
+  request first and reports every problem it finds, each with its pointer.
+  It creates nothing.
+- **A temporary problem in Sequencescape** that doesn't clear (see Retries,
+  below): pointer `""`, detail "Reception could not be
+  completed because of a temporary problem in Sequencescape; send the
+  request again with a new request ID".
+- **An error in Sequencescape**: pointer `""`, detail "Reception could not
+  be completed because of an error in Sequencescape; PSD has been
+  notified". When a record breaks a rule reception's checks don't cover,
+  the detail gives the rule's message instead: "Reception could not be
+  completed: Validation failed: …; PSD has been notified".
+
+### Retries
+
+Each task runs in a database transaction of its own: what it creates, the
+operation's status and its errors are saved together, or not at all. A
+temporary problem in Sequencescape rolls the task back, and the job runs
+it again later. These problems are a deadlock, a lock wait timeout, a
+lost or refused database connection, and a record that another request
+saved at the same moment.
+
+The job that processes an operation runs its tasks at most 10 times in
+all: the limit is per operation, so reception and the work order share
+it. A run that completes reception and goes on to the work order counts
+once for each. The waits between runs start at 30 seconds and double, up
+to 1 hour:
+
+| Run | Wait before it | Starts at, from the first run |
+| --- | -------------- | ----------------------------- |
+| 1   |                | 0:00:00                       |
+| 2   | 30 s           | 0:00:30                       |
+| 3   | 1 min          | 0:01:30                       |
+| 4   | 2 min          | 0:03:30                       |
+| 5   | 4 min          | 0:07:30                       |
+| 6   | 8 min          | 0:15:30                       |
+| 7   | 16 min         | 0:31:30                       |
+| 8   | 32 min         | 1:03:30                       |
+| 9   | 1 h            | 2:03:30                       |
+| 10  | 1 h            | 3:03:30                       |
+
+The times leave out how long each run takes. If the 10th run fails, the
+task it was running fails with the temporary problem error, and PSD gets
+one message.
+
+When a run is stopped part way, for example when a deployment restarts
+the workers, the task it was running saves nothing. Another worker runs
+the job again once its lock has expired, about 4 hours after the run
+started (Delayed Job's `max_run_time`). That run counts as one of the 10.
+
+Other errors in Sequencescape aren't retried, as the same run would fail
+the same way. ([One endpoint or two?][one_endpoint_or_two] expected
+Delayed Job to retry them.)
+
+[one_endpoint_or_two]: https://ssg-confluence.internal.sanger.ac.uk/spaces/PSDPUB/pages/365756493
+
 ## For Sequencescape developers
 
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
