@@ -35,7 +35,8 @@ module ApiOperation::CoordinatorJob::Retries
   # How many times the job runs its tasks at most, the first run included
   MAX_RUNS = 10
 
-  # Sent to PSD, not raised, when the job's runs are used up
+  # Sent to PSD, not raised, when the job's runs are used up and no run's
+  # exception is at hand
   class RetriesExhausted < StandardError
   end
 
@@ -100,16 +101,19 @@ module ApiOperation::CoordinatorJob::Retries
     api_operation.fail_task!(task, [retries_exhausted_error(task)])
   end
 
-  # Notifies PSD that retries have run out, with the last error that the
-  # job's record holds. Nothing was raised, so it sends a RetriesExhausted.
+  # Notifies PSD that retries have run out. In the failure hook, the job's
+  # record holds the last run's exception, which is sent, so PSD gets its
+  # backtrace. A run that gives up before it starts has no exception: it
+  # sends a RetriesExhausted, with the last error the record holds, if any.
   def notify_retries_exhausted(task = nil)
-    error = RetriesExhausted.new(
-      "Retries ran out for ApiOperation #{api_operation_id}"
-    )
-    ExceptionNotifier.notify_exception(
-      error, data: { api_operation_id: api_operation_id, task: task,
-                     last_error: @delayed_job&.last_error }.compact
-    )
+    message = "Retries ran out for ApiOperation #{api_operation_id}"
+    error = @delayed_job&.error
+    data = { message:, api_operation_id:, task: }
+    unless error
+      error = RetriesExhausted.new(message)
+      data[:last_error] = @delayed_job&.last_error
+    end
+    ExceptionNotifier.notify_exception(error, data: data.compact)
   end
 
   # The error recorded for a task when the job's runs are used up. It

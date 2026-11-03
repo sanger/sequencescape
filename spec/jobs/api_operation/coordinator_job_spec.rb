@@ -357,6 +357,9 @@ RSpec.describe ApiOperation::CoordinatorJob do
         'Reception could not be completed because of a temporary problem ' \
           'in Sequencescape; send the request again with a new request ID'
       end
+      let(:retries_exhausted_message) do
+        "Retries ran out for ApiOperation #{api_operation.id}"
+      end
 
       # Runs that didn't finish, such as runs whose worker was stopped
       def add_started_events(count)
@@ -392,7 +395,8 @@ RSpec.describe ApiOperation::CoordinatorJob do
           perform
           expect(ExceptionNotifier).to have_received(:notify_exception).with(
             an_instance_of(described_class::RetriesExhausted),
-            data: { api_operation_id: api_operation.id, task: 'reception' }
+            data: { message: retries_exhausted_message,
+                    api_operation_id: api_operation.id, task: 'reception' }
           )
         end
       end
@@ -417,11 +421,13 @@ RSpec.describe ApiOperation::CoordinatorJob do
           Delayed::Worker.new.run(job)
         end
 
+        # Nothing was raised in this run, so there is no exception to send
         it 'notifies PSD with the last error' do
           expect(ExceptionNotifier).to have_received(:notify_exception)
-            .with(anything, data: hash_including(
-              last_error: 'Deadlock found when trying to get lock'
-            ))
+            .with(an_instance_of(described_class::RetriesExhausted),
+                  data: hash_including(
+                    last_error: 'Deadlock found when trying to get lock'
+                  ))
         end
 
         it 'finishes the job' do
@@ -446,13 +452,12 @@ RSpec.describe ApiOperation::CoordinatorJob do
             .to eq([{ 'pointer' => '', 'detail' => retries_exhausted_detail }])
         end
 
-        it 'notifies PSD with the last error' do
+        it "notifies PSD with the last run's error, with its backtrace" do
           expect(ExceptionNotifier).to have_received(:notify_exception).with(
-            an_instance_of(described_class::RetriesExhausted),
-            data: { api_operation_id: api_operation.id,
-                    last_error: a_string_starting_with(
-                      'ActiveRecord::Deadlocked'
-                    ) }
+            an_instance_of(ActiveRecord::Deadlocked)
+              .and(having_attributes(backtrace: be_present)),
+            data: { message: retries_exhausted_message,
+                    api_operation_id: api_operation.id }
           )
         end
 
@@ -463,7 +468,9 @@ RSpec.describe ApiOperation::CoordinatorJob do
 
       context "when Delayed Job's last run fails after the task has an " \
               'outcome' do
-        let(:job) { instance_double(Delayed::Job, last_error: 'Deadlock') }
+        let(:job) do
+          instance_double(Delayed::Job, error: nil, last_error: 'Deadlock')
+        end
 
         before { api_operation.complete_task!('reception') }
 
