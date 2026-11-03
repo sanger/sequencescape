@@ -337,4 +337,114 @@ RSpec.describe Api::Messages::UseqWaferIo do
       expect(message.as_json).to include_json(expected_json)
     end
   end
+
+  context 'with Illumina converted library requests' do
+    let(:conversion_preset) do
+      create(:ultima_preset, name: 'GEM-X Flex', application_type: 'scRNA_GEX_10x_flex')
+    end
+    let(:ultima_primer_a) { create(:ultima_primer, name: 'UGA-1') }
+    let(:ultima_primer_b) { create(:ultima_primer, name: 'UGB-1') }
+    let(:conversion_application) do
+      create(:ultima_application, name: 'GEM-X Flex', ug100_preset: conversion_preset, uga_primer: ultima_primer_a,
+                                  ugb_primer: ultima_primer_b)
+    end
+
+    let(:illumina_tag) { create(:tag, oligo: 'ACGT') }
+    let(:illumina_tag2) { create(:tag, oligo: 'TGCA') }
+    let(:illumina_tagged_well) do
+      create(:well).tap do |well|
+        well.aliquots.create!(sample: sample, study: sample.studies.first, tag: illumina_tag, tag2: illumina_tag2)
+      end
+    end
+    let(:conversion_stock_plate) { create(:stock_plate, well_count: 1) }
+    let(:illumina_transfer) do
+      create(:transfer_request, asset: illumina_tagged_well, target_asset: conversion_stock_plate.wells.first)
+    end
+    let(:conversion_request) do
+      create(
+        :ultima_conversion_request,
+        asset: conversion_stock_plate.wells.first,
+        ultima_application: conversion_application
+      )
+    end
+    let(:mx_tube1) { create(:multiplexed_library_tube, sample_count: 1) }
+    let(:sequencing_pipeline) { create(:ultima_sequencing_pipeline) }
+    let(:sequencing_batch) { create(:sequencing_batch, pipeline: sequencing_pipeline) }
+    let(:request_type) { sequencing_pipeline.request_types.first }
+    let(:lane1) { create(:lane, aliquots: mx_tube1.aliquots.map(&:dup)).tap(&:index_aliquots) }
+    let(:tags) { lane1.aliquots.map(&:tag) }
+    let(:aliquots) { lane1.aliquots }
+    let(:sample) { aliquots[0].sample }
+
+    let(:request_data) do
+      {
+        'UG AMP Inst. Name' => 'UG Amp 1',
+        'Opentrons Inst. Name' => 'OTR Inst 1'
+      }
+    end
+
+    let(:request1) do
+      create(
+        :complete_ultima_sequencing_request,
+        asset: mx_tube1,
+        batch: sequencing_batch,
+        target_asset: lane1,
+        request_type: request_type,
+        event_descriptors: request_data
+      )
+    end
+    let(:expected_json) do
+      {
+        'wafer_id' => sequencing_batch.id,
+        'lanes' => [
+          {
+            'request_order' => 1,
+            'id_wafer_lims' => "#{sequencing_batch.id}_#{mx_tube1.human_barcode}_1",
+            'id_pool_lims' => mx_tube1.human_barcode,
+            'entity_id_lims' => lane1.id,
+            'otr_instrument_name' => 'OTR Inst 1',
+            'amp_instrument_name' => 'UG Amp 1',
+            'ot_recipe' => 'Free',
+            'wafer_size' => nil,
+            'requested_sequencer_type' => 'UG 100',
+            'samples' => [
+              {
+                'tag_sequence' => tags[0].oligo,
+                'pipeline_id_lims' => 'Standard',
+                'bait_name' => aliquots[0].bait_library.name,
+                'requested_insert_size_from' => 100,
+                'requested_insert_size_to' => 200,
+                'sample_uuid' => aliquots[0].sample.uuid,
+                'study_uuid' => aliquots[0].study.uuid,
+                'primer_panel' => aliquots[0].primer_panel.name,
+                'id_library_lims' => aliquots[0].library.human_barcode,
+                'entity_type' => 'library_indexed',
+                'application_type' => 'scRNA_GEX_10x_flex',
+                'uga_primer' => ultima_primer_a.name,
+                'ugb_primer' => ultima_primer_b.name,
+                'converted_illumina_tag_sequence' => illumina_tag.oligo,
+                'converted_illumina_tag2_sequence' => illumina_tag2.oligo
+              }
+            ]
+          }
+        ]
+      }
+    end
+
+    before do
+      illumina_transfer
+      mx_tube1.receptacle.aliquots.each do |aliquot|
+        create(:aliquot, sample: aliquot.sample, receptacle: conversion_stock_plate.wells.first,
+                         request: conversion_request)
+      end
+      mx_tube1.parents << conversion_stock_plate
+      create(:transfer_request, asset: conversion_stock_plate.wells.first, target_asset: mx_tube1.receptacle)
+      lane1.labware.parents << mx_tube1
+      request1
+    end
+
+    it 'generates valid json with the converted Illumina tag and tag2' do
+      expect(message.as_json).to include_json(expected_json)
+    end
+  end
 end
