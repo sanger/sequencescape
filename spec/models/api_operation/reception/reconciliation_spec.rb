@@ -264,8 +264,7 @@ RSpec.describe ApiOperation::Reception::Reconciliation do
       end
 
       it 'reports the type when the payload says a plate' do
-        payload_labware =
-          [payload_labware_with(barcode, contents: { 'A1' => ['Tube sample'] })]
+        payload_labware = [payload_labware_with(barcode, type: 'plate96')]
         expect(described_class.new(payload_labware).errors).to eq(
           [{ pointer: '/labware/0/type',
              detail: "#{barcode} is a tube in Sequencescape, " \
