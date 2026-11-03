@@ -290,11 +290,11 @@ RSpec.describe ApiOperation::Reception::Creation do
         end)]
       end
 
-      it 'gives them their positions as tag depths' do
+      it 'gives them their positions as tag depths, counting from 1' do
         expect(created.receptacle.aliquots.map do |aliquot|
           [aliquot.sample.sanger_sample_id, aliquot.tag_depth]
-        end).to contain_exactly(['SAMPLE-1', 0], ['SAMPLE-2', 1],
-                                ['SAMPLE-3', 2])
+        end).to contain_exactly(['SAMPLE-1', 1], ['SAMPLE-2', 2],
+                                ['SAMPLE-3', 3])
       end
 
       it 'gives them no library' do
@@ -322,7 +322,7 @@ RSpec.describe ApiOperation::Reception::Creation do
       it 'gives its aliquot the tag, with the tube as its library' do
         expect(created_sample.aliquots.sole).to have_attributes(
           tag: tag_group.tags.find_by(map_id: 2), tag2: nil,
-          library: created.receptacle
+          library: created.receptacle, tag_depth: 1
         )
       end
     end
@@ -358,7 +358,7 @@ RSpec.describe ApiOperation::Reception::Creation do
       it 'gives its aliquot both tags of the well' do
         expect(created_sample.aliquots.sole).to have_attributes(
           tag: tag_set.tag_group.tags.find_by(map_id: 2),
-          tag2: tag_set.tag2_group.tags.find_by(map_id: 2)
+          tag2: tag_set.tag2_group.tags.find_by(map_id: 2), tag_depth: 1
         )
       end
     end
@@ -379,8 +379,9 @@ RSpec.describe ApiOperation::Reception::Creation do
 
       it 'gives it an aliquot for each tag of the well, in its well' do
         expect(created_sample.aliquots.map do |aliquot|
-          [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description]
-        end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1'] })
+          [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description,
+           aliquot.tag_depth]
+        end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1', 1] })
       end
     end
 
@@ -402,6 +403,10 @@ RSpec.describe ApiOperation::Reception::Creation do
 
         it 'numbers the new tags on from the group' do
           expect(magic_tag_group.tags.pluck(:map_id)).to contain_exactly(1, 2)
+        end
+
+        it 'gives the aliquot the default tag depth' do
+          expect(created_sample.aliquots.sole.tag_depth).to eq(1)
         end
       end
 
