@@ -145,7 +145,7 @@ Then /^show me the page$/ do
 end
 
 Given /^the "([^"]*)" field is hidden$/ do |field_name|
-  assert find_field(field_name, visible: false).visible? == false
+  assert find_field(field_name, visible: false).visible? == false # rubocop:todo Capybara/VisibilityOption
 end
 
 Given /^I drag "(.*?)" to "(.*?)"$/ do |source, target|
