@@ -251,6 +251,64 @@ describe 'Bulk Transfer API', with: :api_v2 do
       end
     end
 
+    context 'when pooling aliquots with matching tags from different parent plates' do
+      let(:src_plates) { create_list(:plate_with_empty_wells, 2, well_count: 1) }
+      let(:destination_plate) { create(:plate_with_empty_wells, well_count: 1) }
+      let(:destination_well) { destination_plate.wells.first }
+      let(:tag) { create(:tag) }
+      let(:tag2) { create(:tag) }
+      let!(:source_aliquots) do
+        src_plates.map { |plate| create(:aliquot, receptacle: plate.wells.first, tag: tag, tag2: tag2) }
+      end
+      let(:well_transfers) do
+        src_plates.map do |plate|
+          {
+            'source_uuid' => plate.uuid,
+            'source_location' => plate.wells.first.map_description,
+            'destination_uuid' => destination_plate.uuid,
+            'destination_location' => destination_well.map_description
+          }
+        end
+      end
+      let(:payload) do
+        { data: { type: resource_type, attributes: { user_uuid: user.uuid, well_transfers: well_transfers } } }
+      end
+
+      it 'rejects matching default tag depths', :aggregate_failures do
+        expect(source_aliquots.map { |aliquot| aliquot.reload.tag_depth }).to eq([1, 1])
+        api_post base_endpoint, payload
+
+        expect(response).to have_http_status(:unprocessable_content)
+        expect(json['errors']).to contain_exactly(
+          'status' => '422',
+          'code' => 'tag_clash',
+          'title' => 'Tag clash',
+          'detail' => "Aliquot::TagClash: #{src_plates.last.wells.first.display_name} contains aliquots " \
+                      "which can't be transferred due to tag clash"
+        )
+      end
+
+      it 'rolls back the transfers after a tag clash', :aggregate_failures do
+        api_post base_endpoint, payload
+
+        expect(destination_well.aliquots.reload).to be_empty
+        expect(BulkTransfer.count).to eq(0)
+        expect(Transfer::BetweenPlates.count).to eq(0)
+      end
+
+      context 'with different tag depths' do
+        before { source_aliquots.last.update!(tag_depth: 2) }
+
+        it 'pools both aliquots into the destination well', :aggregate_failures do
+          api_post base_endpoint, payload
+
+          expect(response).to have_http_status(:success)
+          expect(destination_well.aliquots.reload.pluck(:sample_id)).to match_array(source_aliquots.map(&:sample_id))
+          expect(destination_well.aliquots.pluck(:tag_depth)).to contain_exactly(1, 2)
+        end
+      end
+    end
+
     context 'with a read-only attribute in the payload' do
       context 'with uuid' do
         let(:disallowed_value) { 'uuid' }

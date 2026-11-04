@@ -11,6 +11,7 @@ Rails.application.config.after_initialize do
     # :underscored_key, :camelized_key, :dasherized_key, or custom
     config.json_key_format = :underscored_key
     config.route_format = :underscored_route
+    config.exception_class_whitelist << Aliquot::TagClash
   end
 
   # Monkey patch the ApiKeyAuthenticatable concern into all JSONAPI::ResourceControllers
