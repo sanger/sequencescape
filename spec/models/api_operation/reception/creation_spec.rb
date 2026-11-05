@@ -3,11 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::Reception::Creation do
-  subject(:creation) { described_class.new(payload.labware) }
+  subject(:creation) { described_class.new(payload.labware, api_operation) }
 
   let(:payload) do
     ApiOperation::Reception::Payload.new({ labware: }.to_json)
   end
+  let(:api_operation) { create(:api_operation) }
   let(:created) { Barcode.find_by!(barcode: 'SAPIO-1').asset }
   let(:study) { create(:study) }
 
@@ -238,6 +239,70 @@ RSpec.describe ApiOperation::Reception::Creation do
           control: true, control_type: 'pcr positive',
           sample_metadata: have_attributes(supplier_name: 'CONTROL_1')
         )
+      end
+    end
+  end
+
+  describe 'volumes' do
+    let(:volume_results) do
+      QcResult.where(asset: created.receptacles).map do |qc_result|
+        [qc_result.asset_id, qc_result.key, qc_result.value, qc_result.units,
+         qc_result.assay_type, qc_result.assay_version]
+      end
+    end
+
+    context 'with a tube of a sample with a volume' do
+      let(:labware) { [tube('SAPIO-1', sample(volume: 12.5))] }
+
+      it 'records the volume as a customer-supplied QC result on the tube' do
+        expect(volume_results).to eq(
+          [[created.receptacle.id, 'volume', '12.5', 'ul', 'customer_supplied',
+            'v0.0']]
+        )
+      end
+
+      it 'puts the QC result in a QC assay named after the operation' do
+        expect(created.receptacle.qc_results.sole.qc_assay.lot_number)
+          .to eq("api_operation_id:#{api_operation.id}")
+      end
+
+      it 'sets the volume of the tube' do
+        expect(created.receptacle.reload.volume).to eq(12.5)
+      end
+    end
+
+    context 'with a plate of samples with volumes' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(volume: 10), sample(volume: 20))]
+      end
+
+      it 'sets the measured volume of each well' do
+        expect(created.wells.located_at(%w[A1 B1]).map do |well|
+          well.reload.well_attribute.measured_volume
+        end).to eq([10.0, 20.0])
+      end
+    end
+
+    context 'with a tube of samples with volumes' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(volume: 10), sample(volume: 20))]
+      end
+
+      it 'records no QC result, as the volumes are of the samples' do
+        expect(volume_results).to be_empty
+      end
+
+      it 'keeps each volume in its sample' do
+        expect(created.receptacle.samples.map { it.sample_metadata.volume })
+          .to contain_exactly('10', '20')
+      end
+    end
+
+    context 'with a tube of a sample without a volume' do
+      let(:labware) { [tube('SAPIO-1', sample)] }
+
+      it 'records no QC result' do
+        expect(volume_results).to be_empty
       end
     end
   end
