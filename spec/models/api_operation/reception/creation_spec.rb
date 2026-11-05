@@ -307,6 +307,85 @@ RSpec.describe ApiOperation::Reception::Creation do
     end
   end
 
+  describe 'concentrations' do
+    let(:concentration_results) do
+      QcResult.where(asset: created.receptacles, key: 'concentration')
+        .map do |qc_result|
+          [qc_result.asset_id, qc_result.value, qc_result.units,
+           qc_result.assay_type, qc_result.assay_version]
+        end
+    end
+
+    context 'with a tube of a sample with a concentration' do
+      let(:labware) { [tube('SAPIO-1', sample(concentration: 4.2))] }
+
+      it 'records the concentration as a customer-supplied QC result on ' \
+         'the tube' do
+        expect(concentration_results).to eq(
+          [[created.receptacle.id, '4.2', 'ng/ul', 'customer_supplied',
+            'v0.0']]
+        )
+      end
+
+      it 'leaves the concentration of the tube unset, as a tube keeps ' \
+         'only molar concentrations' do
+        expect(created.receptacle.reload.concentration).to be_nil
+      end
+    end
+
+    context 'with a plate of samples with concentrations' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(concentration: 4.2),
+               sample(concentration: 15.5))]
+      end
+
+      it 'sets the concentration of each well' do
+        expect(created.wells.located_at(%w[A1 B1]).map do |well|
+          well.reload.well_attribute.concentration
+        end).to eq([4.2, 15.5])
+      end
+    end
+
+    context 'with a tube of a sample with a volume and a concentration' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(volume: 12.5, concentration: 4.2))]
+      end
+      let(:qc_assay) do
+        QcAssay.find_by!(lot_number: "api_operation_id:#{api_operation.id}")
+      end
+
+      it 'puts both QC results in the QC assay named after the operation' do
+        expect(created.receptacle.qc_results.map { [it.key, it.qc_assay] })
+          .to contain_exactly(['volume', qc_assay], ['concentration', qc_assay])
+      end
+    end
+
+    context 'with a tube of samples with concentrations' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(concentration: 4.2),
+              sample(concentration: 3.8))]
+      end
+
+      it 'records no QC result, as the concentrations are of the samples' do
+        expect(concentration_results).to be_empty
+      end
+
+      it 'keeps each concentration in its sample' do
+        expect(created.receptacle.samples.map do |created_sample|
+          created_sample.sample_metadata.concentration
+        end).to contain_exactly('4.2', '3.8')
+      end
+    end
+
+    context 'with a tube of a sample with a volume but no concentration' do
+      let(:labware) { [tube('SAPIO-1', sample(volume: 12.5))] }
+
+      it 'records no concentration QC result' do
+        expect(concentration_results).to be_empty
+      end
+    end
+  end
+
   describe 'aliquots' do
     let(:created_sample) { Sample.find_by!(sanger_sample_id: 'SAMPLE-1') }
 
