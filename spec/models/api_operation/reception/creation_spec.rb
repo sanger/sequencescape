@@ -198,7 +198,8 @@ RSpec.describe ApiOperation::Reception::Creation do
         [tube('SAPIO-1',
               sample(sanger_sample_id: 'SAMPLE-1', priority: 'surveillance',
                      control_type: 'positive', donor_id: 'DONOR-1',
-                     reference_genome: reference_genome.name.upcase))]
+                     reference_genome: reference_genome.name.upcase,
+                     volume: 12.5, concentration: 10, genome_size: 3100))]
       end
 
       it 'sets them on the sample' do
@@ -209,8 +210,18 @@ RSpec.describe ApiOperation::Reception::Creation do
 
       it 'sets them in its metadata' do
         expect(created_sample.sample_metadata).to have_attributes(
-          donor_id: 'DONOR-1', reference_genome: reference_genome
+          donor_id: 'DONOR-1', reference_genome: reference_genome,
+          volume: '12.5', concentration: '10', genome_size: 3100
         )
+      end
+    end
+
+    context 'without optional fields' do
+      let(:labware) { [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1'))] }
+
+      it 'leaves the measurements empty in its metadata' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil, genome_size: nil)
       end
     end
 
