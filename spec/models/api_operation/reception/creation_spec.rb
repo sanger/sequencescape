@@ -327,8 +327,8 @@ RSpec.describe ApiOperation::Reception::Creation do
         )
       end
 
-      it 'leaves the concentration of the tube unset, as a tube keeps ' \
-         'only molar concentrations' do
+      it 'keeps the concentration in the QC result only, as the tube\'s ' \
+         'own concentration is molar' do
         expect(created.receptacle.reload.concentration).to be_nil
       end
     end

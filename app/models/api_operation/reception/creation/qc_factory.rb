@@ -6,7 +6,8 @@
 # a manifest keeps concentration in the sample's metadata only, but the lab
 # uses both, and pipelines read them from QC results. A QC result sets its
 # receptacle's value: a well's measured volume and concentration, a tube's
-# volume (a tube keeps only molar concentrations).
+# volume. A tube's own concentration is molar, so a tube keeps ours in the QC
+# result only.
 #
 # A volume or concentration describes what is in the receptacle, so only a
 # receptacle that holds that one sample gets them; in a pool or an MX tube,
