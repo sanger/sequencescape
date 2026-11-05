@@ -347,9 +347,16 @@ large request gives one error.
   `sanger_sample_id` isn't already a sample's Sanger sample ID or name,
   ignoring case, and no two samples in the request share one.
 - A sample in more than one receptacle (the same `uuid`) has the same
-  `sanger_sample_id`, `supplier_sample_name` and `study_uuid` in each. It
-  becomes one sample.
+  `sanger_sample_id`, `supplier_sample_name`, `study_uuid` and
+  `genome_size` in each: a genome size is the organism's, not the
+  receptacle's, so a sample has one. A missing genome size differs from a
+  given one. The sample's `volume` and `concentration` may differ, as they
+  describe its receptacles. It becomes one sample.
 - A sample in one receptacle more than once has tags in all but one.
+- A `volume` or `concentration` can be stored: a sample's entry in a
+  receptacle with other samples gives neither when the sample has another
+  entry, as neither the receptacle nor the sample could keep it (see
+  "Volume, concentration and genome size" under "What reception creates").
 - The values the sample's records would reject: `sanger_sample_id`, which
   becomes the sample's name, has only letters, digits, `_` and `-`; the
   supplier sample name has only ASCII characters and isn't blank;
@@ -423,9 +430,10 @@ stored as a sample manifest stores the matching fields:
 | `reference_genome`                                 | reference genome, found by name                           |
 | `control_type`, or `bioscan_control_type`          | control and control type                                  |
 | `priority`                                         | priority                                                  |
+| `genome_size`                                      | genome size                                               |
 
 Supplier names such as Water, Blank, EMPTY or None are kept as samples, as
-sample manifests keep them.
+sample manifests keep them. Volume and concentration are below.
 
 **Aliquots.** Each sample gets an aliquot in each receptacle that lists it,
 with its study, and the library type (under Sequencescape's own name),
@@ -451,6 +459,44 @@ pool's samples are received as separate samples. Nor a sample manifest, a
 supplier, retention instructions, stock resource records or requests.
 Reception doesn't accession the samples.
 
+**Volume, concentration and genome size.** Schema version 2 adds three
+optional sample fields: `volume` in µl and `concentration` in ng/µl, each
+a number of at least 0, and `genome_size`, a whole number of at least 0.
+They are the sample manifest's VOLUME (ul), CONC. (ng/ul) and GENOME SIZE
+columns.
+
+`genome_size` goes into the sample's metadata. `volume` and
+`concentration` describe what is in a receptacle, so they are stored in
+two places:
+
+- **QC results on the well or tube**, when it holds only that sample: a
+  customer-supplied QC result for each (key `volume`, units `ul`; key
+  `concentration`, units `ng/ul`; assay version `v0.0`), in a QC assay
+  whose lot number is `api_operation_id:<operation's id>`. A QC result
+  sets its receptacle's own value, which pipelines read: a well's measured
+  volume and concentration, a tube's volume. A tube's own concentration is
+  molar, so a tube keeps ours in the QC result only.
+- **The sample's metadata**, when the sample has only one entry in the
+  request. The metadata's volume and concentration are text, so a number
+  is kept as written: `12.5`, `10`.
+
+| The sample is                                    | Its metadata          | QC results                  |
+| ------------------------------------------------ | --------------------- | --------------------------- |
+| the only sample in one well or tube              | volume, concentration | on that well or tube        |
+| one of the samples in a pool or an MX tube, once | volume, concentration | none                        |
+| the only sample in several wells or tubes        | none                  | on each, from its own entry |
+
+A sample in a pool that also has another entry can't keep a volume or
+concentration from its pooled entry, so the request is rejected if that
+entry gives one (see the checks).
+
+A sample manifest's VOLUME also makes a customer-supplied QC result on the
+row's well or tube; its CONC. goes into the metadata only. Each manifest
+row is one sample in its own receptacle, so a manifest never has the other
+cases. In an MX library manifest a row's receptacle is the library's own
+tube, which reception doesn't make: a received MX tube's samples keep
+their values in their metadata.
+
 ### Sample data, the warehouse and the callback
 
 - **Sample fields:** reception stores every sample field the schema has.
@@ -458,15 +504,32 @@ Reception doesn't accession the samples.
   it); `reference_genome`, `control_type`, `priority`,
   `bioscan_supplier_name` and `bioscan_control_type` could be removed from
   the schema. Sample manifest fields the request doesn't have, such as the
-  sample metadata, volume, concentration, taxon ID, EBI accession number
-  and genome size, are left to Sapio.
+  sample metadata, taxon ID and EBI accession number, are left to Sapio.
 - **Warehouse:** Sapio writes the warehouse (MLWH) records for its
-  samples. Sequencescape sends no messages about the received samples,
-  their aliquots or their study links. Its messages about the new labware
-  and wells aren't stored by the MLWH. When the samples are sequenced,
-  Sequencescape's flowcell messages name them by UUID, and the MLWH finds
-  a sample only by that UUID, so Sapio must have written the sample by
-  then. Reception keeps the request's sample UUIDs, so they match.
+  samples and studies, so Sequencescape doesn't send these messages:
+
+  | Not sent                                       | Why                                                                                                                                                                                                                    |
+  | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | the samples                                    | the MLWH sample table is Sapio's for them: Sequencescape's would be duplicates (Y26-267)                                                                                                                               |
+  | their studies                                  | the same, for the study table (Y26-172)                                                                                                                                                                                |
+  | the samples' aliquots and study links          | they are about Sapio's samples (Y26-283)                                                                                                                                                                               |
+  | reception's QC results (volume, concentration) | the MLWH stores a QC result only once it has the sample, and these would be sent seconds after reception. The MLWH sample table, which Sapio writes, has columns for the customer's volume and concentration (Y26-327) |
+
+  Sequencescape still sends, as for any labware:
+
+  - messages about the new labware and wells, which the MLWH doesn't
+    store;
+  - the QC results the lab adds later, such as volume checks and
+    concentrations. The MLWH stores each in its `qc_result` table, a row
+    for each aliquot, linked to the sample it finds by UUID; it doesn't
+    change the sample;
+  - flowcell messages, when the samples are sequenced, which name the
+    samples by UUID.
+
+  The MLWH finds a sample only by its UUID, so Sapio must have written the
+  sample before the lab's first QC result or flowcell message about it.
+  Reception keeps the request's sample UUIDs, so they match.
+
 - **For the callback:** an operation keeps its status, its events (each
   task's runs, and when it completed or failed) and its errors. Which
   labware reception created and which it matched isn't stored.
