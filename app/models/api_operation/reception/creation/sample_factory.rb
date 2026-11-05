@@ -63,19 +63,31 @@ class ApiOperation::Reception::Creation::SampleFactory
 
   # bioscan_supplier_name replaces supplier_sample_name, as in the manifest;
   # without a reference genome the sample gets the blank one. Volume and
-  # concentration are text columns, so a number is kept as Ruby writes it
-  # (12.5, 10, or 10.0 for 10.0); genome size is a whole number.
+  # concentration only for a sample with one entry (one_entry?); they are
+  # text columns, so a number is kept as Ruby writes it (12.5, 10, or 10.0
+  # for 10.0); genome size is a whole number.
   def metadata_attributes(payload_sample)
     fields = payload_sample.fields
+    measured = one_entry?(payload_sample) ? fields : {}
     {
       supplier_name: fields['bioscan_supplier_name'] ||
         payload_sample.supplier_sample_name,
       donor_id: fields['donor_id'],
       reference_genome: reference_genomes[fields['reference_genome']&.downcase],
-      volume: fields['volume'],
-      concentration: fields['concentration'],
+      volume: measured['volume'],
+      concentration: measured['concentration'],
       genome_size: fields['genome_size']
     }.compact
+  end
+
+  # Whether the sample has only one entry in the request. A sample in more
+  # than one receptacle gets no volume or concentration: its entries may give
+  # different values, and which is the sample's isn't known. Each receptacle
+  # that holds only that sample gets its own as QC results (QcFactory).
+  def one_entry?(payload_sample)
+    @entry_counts ||= @new_labware.flat_map(&:receptacles)
+      .flat_map(&:samples).map(&:uuid).tally
+    @entry_counts[payload_sample.uuid] == 1
   end
 
   # The reference genomes the samples name, by name in lower case, looked up
