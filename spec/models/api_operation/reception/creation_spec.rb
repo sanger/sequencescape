@@ -386,6 +386,20 @@ RSpec.describe ApiOperation::Reception::Creation do
     end
   end
 
+  describe 'warehouse messages for the QC results', :warren do
+    let(:labware) do
+      [tube('SAPIO-1', sample(volume: 12.5, concentration: 4.2))]
+    end
+
+    it 'creates the QC results' do
+      expect(created.receptacle.qc_results.count).to eq(2)
+    end
+
+    it 'does not send them to the warehouse' do
+      expect(Warren.handler.messages_matching('message.qc_result.')).to eq(0)
+    end
+  end
+
   describe 'volume and concentration of a sample in two wells' do
     let(:first_entry) { sample(volume: 20, concentration: 15.5) }
     let(:created_sample) do
