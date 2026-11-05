@@ -62,14 +62,19 @@ class ApiOperation::Reception::Creation::SampleFactory
   end
 
   # bioscan_supplier_name replaces supplier_sample_name, as in the manifest;
-  # without a reference genome the sample gets the blank one
+  # without a reference genome the sample gets the blank one. Volume and
+  # concentration are text columns, so a number is kept as Ruby writes it
+  # (12.5, 10, or 10.0 for 10.0); genome size is a whole number.
   def metadata_attributes(payload_sample)
     fields = payload_sample.fields
     {
       supplier_name: fields['bioscan_supplier_name'] ||
         payload_sample.supplier_sample_name,
       donor_id: fields['donor_id'],
-      reference_genome: reference_genomes[fields['reference_genome']&.downcase]
+      reference_genome: reference_genomes[fields['reference_genome']&.downcase],
+      volume: fields['volume'],
+      concentration: fields['concentration'],
+      genome_size: fields['genome_size']
     }.compact
   end
 
