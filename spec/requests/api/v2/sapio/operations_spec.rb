@@ -696,6 +696,59 @@ describe 'Sapio Operations API' do
           expect(json['meta']).to eq('errors_total' => 3, 'errors_shown' => 2)
         end
       end
+
+      # Schema version 2's sample measurements, given on the valid payload's
+      # sample
+      describe 'volume, concentration and genome size' do
+        let(:receptacle) do
+          sample = super()[:samples].first.merge(sample_fields)
+          super().merge(samples: [sample])
+        end
+        let(:sample_pointer) { '/labware/0/receptacles/0/samples/0' }
+
+        context 'when they are given' do
+          let(:sample_fields) do
+            { volume: 12.5, concentration: 3.25, genome_size: 3100 }
+          end
+
+          it 'accepts the request' do
+            expect(response).to have_http_status(:accepted)
+          end
+        end
+
+        # Each case gives one field a value the schema rejects, and names the
+        # end of the schema's message: a rule of version 2's, where version 1
+        # rejects any of these fields as a disallowed additional property
+        {
+          'a negative volume' => [{ volume: -1 }, 'is less than: 0'],
+          'a volume as text' => [{ volume: '12.5' }, 'is not a number'],
+          'a negative concentration' =>
+            [{ concentration: -0.5 }, 'is less than: 0'],
+          'a concentration as text' =>
+            [{ concentration: '3.25' }, 'is not a number'],
+          'a negative genome size' => [{ genome_size: -1 }, 'is less than: 0'],
+          'a genome size as text' =>
+            [{ genome_size: '3100' }, 'is not an integer'],
+          'a genome size that is not a whole number' =>
+            [{ genome_size: 3100.5 }, 'is not an integer']
+        }.each do |description, (fields, problem)|
+          context "with #{description}" do
+            let(:sample_fields) { fields }
+            let(:field_pointer) { "#{sample_pointer}/#{fields.keys.first}" }
+
+            it 'returns a schema validation error at the field' do
+              expect([response.status, json.dig('errors', 0, 'code'),
+                      json.dig('errors', 0, 'source', 'pointer')])
+                .to eq([422, 'SCHEMA_VALIDATION_FAILED', field_pointer])
+            end
+
+            it 'says what is wrong with the value' do
+              expect(json.dig('errors', 0, 'detail'))
+                .to end_with("at `#{field_pointer}` #{problem}")
+            end
+          end
+        end
+      end
     end
   end
 end
