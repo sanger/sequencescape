@@ -386,6 +386,53 @@ RSpec.describe ApiOperation::Reception::Creation do
     end
   end
 
+  describe 'volume and concentration of a sample in two wells' do
+    let(:first_entry) { sample(volume: 20, concentration: 15.5) }
+    let(:created_sample) do
+      Sample.find_by!(sanger_sample_id: first_entry[:sanger_sample_id])
+    end
+    let(:well_results) do
+      created.wells.located_at(%w[A1 B1]).map do |well|
+        well.qc_results.order(:key).pluck(:key, :value)
+      end
+    end
+
+    context 'with the same volume and concentration in each' do
+      let(:labware) { [plate('SAPIO-1', first_entry, first_entry)] }
+
+      it 'gives the sample no volume or concentration' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil)
+      end
+
+      it 'records them on each well' do
+        expect(well_results).to eq(
+          [[%w[concentration 15.5], %w[volume 20.0]],
+           [%w[concentration 15.5], %w[volume 20.0]]]
+        )
+      end
+    end
+
+    context 'with a different volume and concentration in each' do
+      let(:labware) do
+        [plate('SAPIO-1', first_entry,
+               first_entry.merge(volume: 15, concentration: 12.0))]
+      end
+
+      it 'gives the sample no volume or concentration' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil)
+      end
+
+      it 'records on each well the values of its own entry' do
+        expect(well_results).to eq(
+          [[%w[concentration 15.5], %w[volume 20.0]],
+           [%w[concentration 12.0], %w[volume 15.0]]]
+        )
+      end
+    end
+  end
+
   describe 'aliquots' do
     let(:created_sample) { Sample.find_by!(sanger_sample_id: 'SAMPLE-1') }
 
