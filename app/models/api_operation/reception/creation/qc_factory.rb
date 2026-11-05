@@ -17,6 +17,12 @@
 #
 # The QC results of one reception share a QC assay named after its
 # operation, as a manifest's share one named after the manifest.
+#
+# They aren't sent to the warehouse (MLWH), for now. The MLWH stores a QC
+# result only once it has the sample, which Sapio writes there, and these
+# would be sent seconds after reception. Sapio's sample records in the MLWH
+# have the customer's volume and concentration. QC results the lab adds later
+# are sent, as usual.
 class ApiOperation::Reception::Creation::QcFactory
   # The units of each sample field recorded as a QC result of the same key
   UNITS = { 'volume' => 'ul', 'concentration' => 'ng/ul' }.freeze
@@ -58,7 +64,8 @@ class ApiOperation::Reception::Creation::QcFactory
   def create_qc_result(receptacle, key, value)
     receptacle.qc_results.create!(
       qc_assay: qc_assay, key: key, value: value.to_f, units: UNITS[key],
-      assay_type: 'customer_supplied', assay_version: 'v0.0'
+      assay_type: 'customer_supplied', assay_version: 'v0.0',
+      suppress_broadcast: true
     )
   end
 
