@@ -33,8 +33,16 @@ Each environment checks bodies against one schema version, set in its
 configuration. The body's `request.schema_version` isn't used to choose
 it; a schema error's `meta` shows the version used.
 
-The smallest valid body for version 1 of the schema: one tube with one
-sample, and a work order for the tube.
+| Version | Adds                                                                                                                          |
+| ------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| 1       | labware, receptacles and samples, and the work order                                                                          |
+| 2       | three optional sample fields: `volume`, `concentration` and `genome_size` (see "Volume, concentration and genome size" below) |
+
+An environment on version 1 rejects a body with the version 2 fields: a
+422 with "is a disallowed additional property" at the field's pointer.
+
+The smallest valid body, for versions 1 and 2 of the schema: one tube with
+one sample, and a work order for the tube.
 
 ```json
 {
@@ -608,9 +616,9 @@ their values in their metadata.
   `TASKS`.
 
 - **Adding an operation type:** an operation's type is its request's
-  `request.request_type`. The schema must allow the new value (version 1
-  allows only `reception_and_work_order`), and `ApiOperation::TASKS` gets
-  the type with its tasks in order. Another calling system needs an
+  `request.request_type`. The schema must allow the new value (versions 1
+  and 2 allow only `reception_and_work_order`), and `ApiOperation::TASKS`
+  gets the type with its tasks in order. Another calling system needs an
   endpoint and schema settings of its own: this endpoint and the
   `sapio_schema_*` settings are Sapio's.
 - **Code:** `Api::V2::Sapio::OperationsController`, `ApiOperation` (the
