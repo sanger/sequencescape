@@ -1,0 +1,32 @@
+---
+# UG-RD-1929, the Ultima tags for 10x Flex v2: Z numbers and wells as in
+# Ultima's list for it. The keys are as in 001_ultima_tag_groups.yml.
+# Ultima's guides number barcode plates 1-16 (Z0001-Z1536) only; plate
+# number 5 for this set is our choice.
+UG-RD-1929:
+  barcode_plate_num: 5
+  ultima_tags:
+    1: { index_barcode_num: Z5001, barcode_plate_well: A1 }
+    2: { index_barcode_num: Z5005, barcode_plate_well: B1 }
+    3: { index_barcode_num: Z5006, barcode_plate_well: C1 }
+    4: { index_barcode_num: Z5007, barcode_plate_well: D1 }
+    5: { index_barcode_num: Z5008, barcode_plate_well: E1 }
+    6: { index_barcode_num: Z5009, barcode_plate_well: F1 }
+    7: { index_barcode_num: Z5014, barcode_plate_well: G1 }
+    8: { index_barcode_num: Z5016, barcode_plate_well: H1 }
+    9: { index_barcode_num: Z5018, barcode_plate_well: A2 }
+    10: { index_barcode_num: Z5019, barcode_plate_well: B2 }
+    11: { index_barcode_num: Z5022, barcode_plate_well: C2 }
+    12: { index_barcode_num: Z5024, barcode_plate_well: D2 }
+    13: { index_barcode_num: Z5025, barcode_plate_well: E2 }
+    14: { index_barcode_num: Z5026, barcode_plate_well: F2 }
+    15: { index_barcode_num: Z5030, barcode_plate_well: G2 }
+    16: { index_barcode_num: Z5033, barcode_plate_well: H2 }
+    17: { index_barcode_num: Z5034, barcode_plate_well: A3 }
+    18: { index_barcode_num: Z5036, barcode_plate_well: B3 }
+    19: { index_barcode_num: Z5037, barcode_plate_well: C3 }
+    20: { index_barcode_num: Z5039, barcode_plate_well: D3 }
+    21: { index_barcode_num: Z5043, barcode_plate_well: E3 }
+    22: { index_barcode_num: Z5045, barcode_plate_well: F3 }
+    23: { index_barcode_num: Z5047, barcode_plate_well: G3 }
+    24: { index_barcode_num: Z5048, barcode_plate_well: H3 }
