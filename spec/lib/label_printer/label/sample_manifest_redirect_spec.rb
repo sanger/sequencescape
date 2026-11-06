@@ -37,4 +37,32 @@ RSpec.describe LabelPrinter::Label::SampleManifestRedirect do
         .to match_array(tubes.map(&:machine_barcode))
     end
   end
+
+  context 'with a compound sample plate manifest' do
+    let(:manifest) do
+      create(
+        :sample_manifest,
+        asset_type: 'compound_plate',
+        count: 2,
+        purpose: PlatePurpose.stock_plate_purpose
+      )
+    end
+    let(:plates) { manifest.labware }
+
+    before do
+      handler = SequencescapeExcel::SpecialisedField::ComponentTagSequence
+      create(:tag_group, name: handler::TAG_GROUP_NAME, tag_count: 3)
+      allow(PlateBarcode).to receive(:create_barcode).and_return(build(:plate_barcode))
+      manifest.generate
+    end
+
+    it 'prints one label per plate, not one per row' do
+      expect(labels.size).to eq(plates.size)
+    end
+
+    it 'prints the barcode of each plate' do
+      expect(labels.pluck(:barcode))
+        .to match_array(plates.map(&:machine_barcode))
+    end
+  end
 end
