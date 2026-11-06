@@ -172,8 +172,8 @@ class LabwareController < ApplicationController # rubocop:todo Metrics/ClassLeng
 
   def labware_params
     permitted = %i[volume concentration retention_instruction]
-    permitted << :name if can? :rename, Labware
-    permitted << :plate_purpose_id if can? :change_purpose, Labware
+    permitted << :name if can? :rename, @asset
+    permitted << :plate_purpose_id if can? :change_purpose, @asset
     params.require(:labware).permit(permitted)
   end
 
