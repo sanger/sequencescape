@@ -1,4 +1,8 @@
 ---
+# Ultima data for Ultima tag groups. Each section names a tag group (or
+# gives it as name:). ultima_tags are keyed by each tag's map_id, the
+# number the tag has in its tag group in tag_groups/; the tag's well on
+# the Ultima plate is barcode_plate_well.
 Ultima P1:
   barcode_plate_num: 1
   ultima_tags:
