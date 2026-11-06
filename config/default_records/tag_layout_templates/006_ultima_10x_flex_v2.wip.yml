@@ -1,0 +1,6 @@
+---
+# Ultima tag layout template for the 10x Flex v2 application.
+UG-RD-1929:
+  :tag_group_name: UG-RD-1929
+  :direction_algorithm: TagLayout::InColumns
+  :walking_algorithm: TagLayout::WalkWellsOfPlate
