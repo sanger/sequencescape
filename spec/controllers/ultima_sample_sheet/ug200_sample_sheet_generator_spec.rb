@@ -14,6 +14,8 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
     create(:tag_group_with_tags, tag_count: 96, name: tag_group3_name).tap do |tg|
       # To test Z0193 matching with the oligo sequence.
       tg.tags.first.update!(oligo: plate3_first_oligo)
+      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: 3,
+                                ultima_tags: { 1 => %w[Z0193 A1] })
     end
   end
 
@@ -21,9 +23,10 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
     create(:tag_group_with_tags, tag_count: 96, name: tag_group4_name).tap do |tg|
       # To test Z0289 matching with the oligo sequence.
       tg.tags.first.update!(oligo: plate4_first_oligo)
+      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: 4,
+                                ultima_tags: { 1 => %w[Z0289 A1] })
     end
   end
-  let(:tag_groups) { [tag_group3, tag_group4] }
 
   let(:request_type) { create(:ultima_ug200_sequencing) }
   let(:pipeline) { create(:ultima_ug200_sequencing_pipeline, request_types: [request_type]) }
@@ -49,18 +52,6 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
     tube = create(:multiplexed_library_tube, receptacle:)
     create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
     tube
-  end
-
-  # Expected mapping of tag groups to their respective 1-based plate numbers.
-  let(:tag_group_index_map) { { tag_group3 => 3, tag_group4 => 4 } }
-
-  # Expected mapping of tags to their respective 1-based index numbers.
-  # Mirrors the generator's tag_index_map: config-value-based offsets.
-  let(:tag_index_map) do
-    tag_groups.each_with_object({}) do |tg, map|
-      start_index = generator.ultima_tag_groups_config[tg.name][:z_start]
-      tg.tags.sort_by(&:map_id).each_with_index { |tag, i| map[tag] = start_index + i }
-    end
   end
 
   def add_ancestor_aliquots_for(child_aliquots, plate, request)
@@ -134,25 +125,16 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       end
     end
 
-    it 'uses UG200 tag group mapping config' do
-      expect(generator.ultima_tag_groups_config.slice(tag_group3_name, tag_group4_name)).to eq(
-        tag_group3_name => { plate_num: 3, z_start: 193 },
-        tag_group4_name => { plate_num: 4, z_start: 289 }
-      )
-    end
-
     it 'maps the first plate sample indexes and plate number', :aggregate_failures do
       expect(csv1[9][2]).to eq('Z0193')
       expect(csv1[9][3]).to eq(plate3_first_oligo)
-      expect(csv1[9][4]).to eq(tag_group_index_map[tag_group3].to_s)
-      expect(csv1[9][2]).to eq(format('Z%04d', tag_index_map[tag_group3.tags.first]))
+      expect(csv1[9][4]).to eq('3')
     end
 
     it 'maps the second plate sample indexes and plate number', :aggregate_failures do
       expect(csv2[9][2]).to eq('Z0289')
       expect(csv2[9][3]).to eq(plate4_first_oligo)
-      expect(csv2[9][4]).to eq(tag_group_index_map[tag_group4].to_s)
-      expect(csv2[9][2]).to eq(format('Z%04d', tag_index_map[tag_group4.tags.first]))
+      expect(csv2[9][4]).to eq('4')
     end
   end
 
@@ -166,6 +148,8 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       create(:tag_group_with_tags, tag_count: 96, name: solaris_p1_tag_group_name).tap do |tg|
         # To test Z0001 matching with the oligo sequence.
         tg.tags.first.update!(oligo: solaris_p1_first_oligo)
+        create(:ultima_tag_group, tag_group: tg, barcode_plate_num: 1,
+                                  ultima_tags: { 1 => %w[Z0001 A1] })
       end
     end
     let(:request_type) { create(:ultima_ug200_sequencing) }
@@ -198,13 +182,6 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
       tube = create(:multiplexed_library_tube, receptacle:)
       create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
       tube
-    end
-
-    it 'uses the same plate number and z_start as Ultima P1, leaving P4 unaffected' do
-      expect(generator.ultima_tag_groups_config.slice(solaris_p1_tag_group_name, tag_group4_name)).to eq(
-        solaris_p1_tag_group_name => { plate_num: 1, z_start: 1 },
-        tag_group4_name => { plate_num: 4, z_start: (3 * 96) + 1 }
-      )
     end
 
     it 'maps the Solaris P1 sample index, oligo sequence, and plate number', :aggregate_failures do
