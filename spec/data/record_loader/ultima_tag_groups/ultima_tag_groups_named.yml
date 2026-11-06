@@ -1,0 +1,9 @@
+---
+# The section key isn't the tag group name; name: gives it.
+Short key:
+  name: Ultima Spec Group
+  barcode_plate_num: 5
+  ultima_tags:
+    1: { index_barcode_num: Z5001, barcode_plate_well: A1 }
+    2: { index_barcode_num: Z5005, barcode_plate_well: B1 }
+    3: { index_barcode_num: Z5014, barcode_plate_well: C1 }

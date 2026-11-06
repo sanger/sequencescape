@@ -1,0 +1,6 @@
+---
+# No tag group has this name.
+Ultima Spec Unknown Group:
+  barcode_plate_num: 5
+  ultima_tags:
+    1: { index_barcode_num: Z5001, barcode_plate_well: A1 }

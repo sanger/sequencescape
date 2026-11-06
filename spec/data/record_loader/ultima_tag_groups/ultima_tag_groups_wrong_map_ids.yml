@@ -1,0 +1,7 @@
+---
+# Tags 2 and 3 of the group are missing; the group has no tag 4.
+Ultima Spec Group:
+  barcode_plate_num: 5
+  ultima_tags:
+    1: { index_barcode_num: Z5001, barcode_plate_well: A1 }
+    4: { index_barcode_num: Z5014, barcode_plate_well: D1 }
