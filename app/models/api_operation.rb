@@ -7,14 +7,22 @@
 # (payload) are stored exactly as received. The payload digest identifies
 # the payload, so a repeated request can be told apart from a changed one.
 #
-# The status starts as queued. Later stories add the other values, such as
-# completed and failed. response_delivered_at records when the response was
+# The status starts as queued and is one of the STATUSES. response_delivered_at records when the response was
 # delivered to the calling system, and is null until then.
 class ApiOperation < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :api_application, optional: false
 
+  # The processing progress of an operation, stored as the string value
+  STATUSES = {
+    queued: 'queued', # api request received, job not yet started
+    processing: 'processing', # api request received and job started
+    completed: 'completed', # completed successfully
+    completed_with_errors: 'completed_with_errors' # completed with errors
+  }.freeze
+
+  enum :status, STATUSES, default: :queued
   validates :external_id, :operation_type, :payload, :status, presence: true
   validates :payload_digest, presence: true, length: { is: 64 }
 
@@ -29,5 +37,14 @@ class ApiOperation < ApplicationRecord
         Delayed::Job.enqueue(CoordinatorJob.new(operation.id))
       end
     end
+  end
+
+  # Reports the operation's status back to the calling system by queuing a
+  # CallbackJob. The job will POST the operation's external_id, operation_type,
+  # status to the calling system, in one transaction.
+  # This method is called after the operation is completed, so the status is either completed or completed_with_errors.
+  # @return [void]
+  def report_back_operation_status
+    Delayed::Job.enqueue(CallbackJob.new(id))
   end
 end
