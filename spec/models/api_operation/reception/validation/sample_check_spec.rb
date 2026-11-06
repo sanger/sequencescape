@@ -28,6 +28,21 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
     sample.with(pointer: "/labware/0/receptacles/#{index}/samples/0", **values)
   end
 
+  # A receptacle at the index and position, with the sample entries
+  def receptacle_with(index, position, *entries)
+    ApiOperation::Reception::Payload::PayloadReceptacle.new(
+      position: position, uuid: SecureRandom.uuid, samples: entries,
+      pointer: "/labware/0/receptacles/#{index}"
+    )
+  end
+
+  def plate_with(*receptacles)
+    ApiOperation::Reception::Payload::PayloadLabware.new(
+      uuid: SecureRandom.uuid, barcode: 'PLATE-1', type: 'plate96',
+      receptacles: receptacles, pointer: '/labware/0'
+    )
+  end
+
   context 'with valid samples' do
     let(:samples) { [sample(0), sample(1)] }
 
@@ -79,8 +94,16 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
   describe 'a sample in more than one receptacle' do
     let(:first) { sample(0) }
 
+    # In two wells of new labware, so the checks that go receptacle by
+    # receptacle see both
     context 'when its entries agree' do
-      let(:samples) { [first, replicate(first, 1)] }
+      let(:input) do
+        ApiOperation::Reception::Validation::Input.build(labware, labware)
+      end
+      let(:labware) do
+        [plate_with(receptacle_with(0, 'A1', first),
+                    receptacle_with(1, 'B1', replicate(first, 1)))]
+      end
 
       it 'finds no errors' do
         expect(check.errors).to be_empty
@@ -145,15 +168,19 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
       let(:first) { sample(0, uuid: create(:sample).uuid) }
       let(:samples) { [first, replicate(first, 1)] }
 
-      it 'reports it once' do
-        expect(check.errors.size).to eq(1)
+      it 'reports it once, at its first entry' do
+        expect(check.errors.pluck(:pointer))
+          .to eq(['/labware/0/receptacles/0/samples/0/uuid'])
       end
     end
   end
 
   describe 'Sanger sample IDs Sequencescape already uses' do
     context "with a sample's Sanger sample ID" do
-      let(:existing) { create(:sample_with_sanger_sample_id) }
+      # Its name differs, so only its Sanger sample ID can match
+      let(:existing) do
+        create(:sample_with_sanger_sample_id, name: 'Other_name')
+      end
       let(:samples) do
         [sample(0, sanger_sample_id: existing.sanger_sample_id)]
       end
@@ -183,7 +210,6 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
     let(:input) do
       ApiOperation::Reception::Validation::Input.build(labware, labware)
     end
-    let(:samples) { [] }
     let(:first) { sample(0) }
 
     # The sample's entry at the index in receptacle 0, with tag fields
@@ -192,22 +218,10 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
                   fields: fields.stringify_keys)
     end
 
-    def receptacle_with(*entries)
-      ApiOperation::Reception::Payload::PayloadReceptacle.new(
-        position: 'A1', uuid: SecureRandom.uuid, samples: entries,
-        pointer: '/labware/0/receptacles/0'
-      )
-    end
-
-    def plate_with(receptacle)
-      ApiOperation::Reception::Payload::PayloadLabware.new(
-        uuid: SecureRandom.uuid, barcode: 'PLATE-1', type: 'plate96',
-        receptacles: [receptacle], pointer: '/labware/0'
-      )
-    end
-
     context 'without tags' do
-      let(:labware) { [plate_with(receptacle_with(first, again(first, 1)))] }
+      let(:labware) do
+        [plate_with(receptacle_with(0, 'A1', first, again(first, 1)))]
+      end
 
       it 'reports the second entry' do
         expect(check.errors).to eq(
@@ -220,7 +234,8 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
 
     context 'with tags in all but one entry' do
       let(:labware) do
-        [plate_with(receptacle_with(first, again(first, 1, i7: 'ACGT'),
+        [plate_with(receptacle_with(0, 'A1', first,
+                                    again(first, 1, i7: 'ACGT'),
                                     again(first, 2, i7: 'TTGA')))]
       end
 

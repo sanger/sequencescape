@@ -10,8 +10,8 @@
 # even if the task's transaction rolls back or the worker is stopped. The
 # task then runs in its own transaction, with the operation's row locked, so
 # the task's records, the operation's status and its outcome event commit
-# together, or none of them. Tasks only do the work and return their errors;
-# the job records whether each task completed or failed.
+# together, or none of them. Tasks (ApiOperation::Task) only do the work and
+# return their errors; the job records whether each task completed or failed.
 #
 # A task that raises rolls its transaction back. A transient error
 # (TRANSIENT_ERRORS) reaches Delayed Job, which runs the job again. Any other
@@ -78,12 +78,12 @@ class ApiOperation::CoordinatorJob
     end
   end
 
-  # Records that a run of the task has started, unless the task's retries
-  # have run out: then PSD is notified and the task fails instead.
+  # Records that a run of the task has started, unless the job's runs are
+  # used up: then PSD is notified and the task fails instead.
   #
   # @return [String, nil] the task, or nil if it failed instead
   def start_or_give_up(api_operation, task)
-    if retry_window_over?(api_operation, task)
+    if runs_used_up?(api_operation)
       give_up(api_operation, task)
       nil
     else
@@ -116,7 +116,7 @@ class ApiOperation::CoordinatorJob
       next false unless api_operation.next_task == task
 
       record_outcome(api_operation, task,
-                     task_class(task).new(api_operation).call)
+                     ApiOperation::Task.for(task).new(api_operation).call)
       true
     end
   end
@@ -159,10 +159,5 @@ class ApiOperation::CoordinatorJob
     { pointer: '',
       detail: "#{task.humanize} could not be completed#{reason}; " \
               'PSD has been notified' }
-  end
-
-  # @return [Class] the class that runs the task
-  def task_class(task)
-    { 'reception' => ApiOperation::Reception }.fetch(task)
   end
 end

@@ -77,12 +77,7 @@ class ApiOperation::Reception::Validation::SampleFieldCheck <
   end
 
   def supplier_name_error(sample)
-    field, name =
-      if sample.fields.key?('bioscan_supplier_name')
-        ['bioscan_supplier_name', sample.fields['bioscan_supplier_name']]
-      else
-        ['supplier_sample_name', sample.supplier_sample_name]
-      end
+    field, name = supplier_name_of(sample)
     return if CONTROL_NAME.match?(name)
 
     error("#{sample.pointer}/#{field}",

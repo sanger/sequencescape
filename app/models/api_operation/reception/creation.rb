@@ -8,7 +8,8 @@
 # which rolls everything back.
 #
 # It creates the labware (LabwareFactory), then the samples (SampleFactory),
-# then puts the samples into the labware as aliquots (AliquotFactory).
+# then puts the samples into the labware as aliquots (AliquotFactory). The
+# samples' studies are looked up once, for both samples and aliquots.
 class ApiOperation::Reception::Creation
   # @param new_labware [Array<ApiOperation::Reception::Payload::
   #   PayloadLabware>] the payload labware Sequencescape doesn't have
@@ -21,7 +22,18 @@ class ApiOperation::Reception::Creation
   # @return [void]
   def call
     labware = LabwareFactory.new(@new_labware).call
-    samples = SampleFactory.new(@new_labware).call
-    AliquotFactory.new(labware, samples).call
+    samples = SampleFactory.new(@new_labware, studies).call
+    AliquotFactory.new(labware, samples, studies).call
+  end
+
+  private
+
+  # The new samples' studies by UUID (both in lower case), looked up once
+  def studies
+    @studies ||= begin
+      uuids = @new_labware.flat_map(&:receptacles).flat_map(&:samples)
+        .map(&:study_uuid).uniq
+      Study.with_uuid(uuids).includes(:uuid_object).index_by(&:uuid)
+    end
   end
 end

@@ -12,7 +12,7 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
 
   let(:new_labware) { payload_labware }
 
-  def labware(barcode, index, type: 'plate96', positions: ['A1'])
+  def labware(barcode, index, type:, positions: ['A1'])
     pointer = "/labware/#{index}"
     receptacles =
       positions.each_with_index.map do |position, receptacle_index|
@@ -29,7 +29,7 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
 
   context 'with a valid plate and tube' do
     let(:payload_labware) do
-      [labware('PLATE-1', 0, positions: %w[A1 H12]),
+      [labware('PLATE-1', 0, type: 'plate96', positions: %w[A1 H12]),
        labware('TUBE-1', 1, type: 'tube', positions: [nil])]
     end
 
@@ -40,7 +40,9 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
 
   context 'with a barcode used twice' do
     let(:payload_labware) do
-      [labware('PLATE-1', 0), labware('PLATE-2', 1), labware('PLATE-1', 2)]
+      [labware('PLATE-1', 0, type: 'plate96'),
+       labware('PLATE-2', 1, type: 'plate96'),
+       labware('PLATE-1', 2, type: 'plate96')]
     end
 
     it 'reports the second use' do
@@ -52,7 +54,10 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
   end
 
   context 'with a known labware whose barcode is used again' do
-    let(:payload_labware) { [labware('PLATE-1', 0), labware('PLATE-1', 1)] }
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate96'),
+       labware('PLATE-1', 1, type: 'plate96')]
+    end
     let(:new_labware) { [payload_labware.last] }
 
     it 'reports it too' do
@@ -98,7 +103,9 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
   end
 
   context 'with a plate position that is not a well of its size' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[A1 A13])] }
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate96', positions: %w[A1 A13])]
+    end
 
     it 'reports the position' do
       expect(check.errors).to eq(
@@ -133,7 +140,9 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
   end
 
   context 'with a well listed twice' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[A1 B1 A1])] }
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate96', positions: %w[A1 B1 A1])]
+    end
 
     it 'reports the second listing' do
       expect(check.errors).to eq(
@@ -144,7 +153,9 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
   end
 
   context 'with a well without a position' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: [nil])] }
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate96', positions: [nil])]
+    end
 
     it 'reports the position' do
       expect(check.errors.sole[:detail]).to eq('A well needs a position')
@@ -152,7 +163,9 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
   end
 
   context 'with known labware' do
-    let(:payload_labware) { [labware('PLATE-1', 0, positions: %w[Z99])] }
+    let(:payload_labware) do
+      [labware('PLATE-1', 0, type: 'plate96', positions: %w[Z99])]
+    end
     let(:new_labware) { [] }
 
     it 'leaves its positions to the reconciliation' do
@@ -162,7 +175,7 @@ RSpec.describe ApiOperation::Reception::Validation::LabwareCheck do
 
   context 'with several problems' do
     let(:payload_labware) do
-      [labware('PLATE-1', 0, positions: %w[A13]),
+      [labware('PLATE-1', 0, type: 'plate96', positions: %w[A13]),
        labware('PLATE-1', 1, type: 'tube', positions: [])]
     end
 

@@ -134,7 +134,8 @@ RSpec.describe ApiOperation::Reception::Validation::SampleFieldCheck do
 
   context 'with a Bioscan control whose supplier name is not a control name' do
     let(:receptacles) do
-      [receptacle(0, 'A1', bioscan_control_type: 'pcr positive')]
+      [receptacle(0, 'A1', supplier_sample_name: 'Supplier sample',
+                           bioscan_control_type: 'pcr positive')]
     end
 
     it 'reports the supplier name' do
@@ -171,7 +172,10 @@ RSpec.describe ApiOperation::Reception::Validation::SampleFieldCheck do
   end
 
   context 'with a non-Bioscan control without a control name' do
-    let(:receptacles) { [receptacle(0, 'A1', control_type: 'positive')] }
+    let(:receptacles) do
+      [receptacle(0, 'A1', supplier_sample_name: 'Supplier sample',
+                           control_type: 'positive')]
+    end
 
     it 'finds no errors' do
       expect(check.errors).to be_empty
@@ -207,6 +211,8 @@ RSpec.describe ApiOperation::Reception::Validation::SampleFieldCheck do
   end
 
   context 'with a lysate negative control in a tube' do
+    # The check knows a tube by its receptacle's nil position; the type
+    # makes the labware realistic
     let(:type) { 'tube' }
     let(:receptacles) do
       [receptacle(0, nil, supplier_sample_name: 'CONTROL_1',
@@ -220,6 +226,8 @@ RSpec.describe ApiOperation::Reception::Validation::SampleFieldCheck do
   end
 
   context 'with a pcr positive control in a tube' do
+    # The check knows a tube by its receptacle's nil position; the type
+    # makes the labware realistic
     let(:type) { 'tube' }
     let(:receptacles) do
       [receptacle(0, nil, supplier_sample_name: 'CONTROL_1',

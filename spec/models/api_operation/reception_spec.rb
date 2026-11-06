@@ -9,12 +9,12 @@ RSpec.describe ApiOperation::Reception do
     create(:api_operation, payload: { labware: [labware] }.to_json)
   end
 
-  def labware_with(barcode, type: 'plate96')
+  def labware_with(barcode, type:)
     { uuid: SecureRandom.uuid, barcode: barcode, type: type, receptacles: [] }
   end
 
   context 'with new labware' do
-    let(:labware) { labware_with('UNKNOWN-1') }
+    let(:labware) { labware_with('UNKNOWN-1', type: 'plate96') }
 
     it 'finds no errors' do
       expect(reception.call).to be_empty
@@ -23,7 +23,7 @@ RSpec.describe ApiOperation::Reception do
 
   context 'with known labware that is the same' do
     let(:plate) { create(:plate) }
-    let(:labware) { labware_with(plate.human_barcode) }
+    let(:labware) { labware_with(plate.human_barcode, type: 'plate96') }
 
     it 'finds no errors' do
       expect(reception.call).to be_empty
@@ -61,7 +61,7 @@ RSpec.describe ApiOperation::Reception do
         sanger_sample_id: 'SAMPLE-1', supplier_sample_name: 'Supplier sample' }
     end
     let(:labware) do
-      labware_with('UNKNOWN-1').merge(
+      labware_with('UNKNOWN-1', type: 'plate96').merge(
         receptacles: [{ position: 'A1', uuid: SecureRandom.uuid,
                         samples: [sample] }]
       )
@@ -90,7 +90,7 @@ RSpec.describe ApiOperation::Reception do
     end
 
     context 'when nothing is wrong' do
-      let(:labware) { labware_with('UNKNOWN-1') }
+      let(:labware) { labware_with('UNKNOWN-1', type: 'plate96') }
 
       it 'is given the new labware' do
         expect(ApiOperation::Reception::Creation).to have_received(:new)
@@ -104,7 +104,7 @@ RSpec.describe ApiOperation::Reception do
 
     context 'when the only labware is known' do
       let(:plate) { create(:plate) }
-      let(:labware) { labware_with(plate.human_barcode) }
+      let(:labware) { labware_with(plate.human_barcode, type: 'plate96') }
 
       it 'is given no labware' do
         expect(ApiOperation::Reception::Creation)
@@ -112,8 +112,17 @@ RSpec.describe ApiOperation::Reception do
       end
     end
 
-    context 'when something is wrong' do
+    context 'when new labware is not valid' do
       let(:labware) { labware_with('UNKNOWN-1', type: 'tube') }
+
+      it 'creates nothing' do
+        expect(creation).not_to have_received(:call)
+      end
+    end
+
+    context 'when known labware differs' do
+      let(:plate) { create(:plate) }
+      let(:labware) { labware_with(plate.human_barcode, type: 'tube') }
 
       it 'creates nothing' do
         expect(creation).not_to have_received(:call)

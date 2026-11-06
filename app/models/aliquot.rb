@@ -184,7 +184,7 @@ class Aliquot < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # consumer sends the full message, not at commit, so transfers, which copy
   # aliquots without loading their samples, make no extra query.
   def broadcast
-    super unless sample&.externally_managed?
+    super unless sample.externally_managed?
   end
 
   # Cloning an aliquot should unset the receptacle ID because otherwise it won't get reassigned.  We should

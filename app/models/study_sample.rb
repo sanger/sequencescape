@@ -19,6 +19,6 @@ class StudySample < ApplicationRecord
   # an externally managed sample isn't sent. As for Aliquot#broadcast, this
   # runs where the queue broadcast consumer sends the full message.
   def broadcast
-    super unless sample&.externally_managed?
+    super unless sample.externally_managed?
   end
 end

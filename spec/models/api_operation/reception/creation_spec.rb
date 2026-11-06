@@ -17,6 +17,7 @@ RSpec.describe ApiOperation::Reception::Creation do
     # Sample manifests' configuration isn't loaded in tests
     allow(SampleManifestExcel.configuration)
       .to receive(:tag_group).and_return('Magic Tag Group')
+    allow(Accession).to receive(:accession_sample)
     creation.call
   end
 
@@ -156,6 +157,14 @@ RSpec.describe ApiOperation::Reception::Creation do
         expect(created_sample.sample_metadata.supplier_name)
           .to eq('Supplier sample')
       end
+
+      it 'does not accession it' do
+        expect(Accession).not_to have_received(:accession_sample)
+      end
+
+      it 'leaves accessioning unpaused afterwards' do
+        expect(Sample::Current.temporary_accessioning_pause).to be_nil
+      end
     end
 
     context 'with a sample in two receptacles' do
@@ -290,15 +299,16 @@ RSpec.describe ApiOperation::Reception::Creation do
         end)]
       end
 
-      it 'gives them their positions as tag depths' do
+      it 'gives them their positions as tag depths, counting from 1' do
         expect(created.receptacle.aliquots.map do |aliquot|
           [aliquot.sample.sanger_sample_id, aliquot.tag_depth]
-        end).to contain_exactly(['SAMPLE-1', 0], ['SAMPLE-2', 1],
-                                ['SAMPLE-3', 2])
+        end).to contain_exactly(['SAMPLE-1', 1], ['SAMPLE-2', 2],
+                                ['SAMPLE-3', 3])
       end
 
       it 'gives them no library' do
-        expect(created.receptacle.aliquots.map(&:library)).to all(be_nil)
+        expect(created.receptacle.aliquots.map(&:library))
+          .to eq([nil, nil, nil])
       end
     end
 
@@ -322,7 +332,7 @@ RSpec.describe ApiOperation::Reception::Creation do
       it 'gives its aliquot the tag, with the tube as its library' do
         expect(created_sample.aliquots.sole).to have_attributes(
           tag: tag_group.tags.find_by(map_id: 2), tag2: nil,
-          library: created.receptacle
+          library: created.receptacle, tag_depth: 1
         )
       end
     end
@@ -358,7 +368,7 @@ RSpec.describe ApiOperation::Reception::Creation do
       it 'gives its aliquot both tags of the well' do
         expect(created_sample.aliquots.sole).to have_attributes(
           tag: tag_set.tag_group.tags.find_by(map_id: 2),
-          tag2: tag_set.tag2_group.tags.find_by(map_id: 2)
+          tag2: tag_set.tag2_group.tags.find_by(map_id: 2), tag_depth: 1
         )
       end
     end
@@ -379,8 +389,9 @@ RSpec.describe ApiOperation::Reception::Creation do
 
       it 'gives it an aliquot for each tag of the well, in its well' do
         expect(created_sample.aliquots.map do |aliquot|
-          [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description]
-        end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1'] })
+          [aliquot.tag.map_id, aliquot.tag2, aliquot.receptacle.map_description,
+           aliquot.tag_depth]
+        end).to match_array(chromium.map_ids(2).map { [it, nil, 'A1', 1] })
       end
     end
 
@@ -400,8 +411,29 @@ RSpec.describe ApiOperation::Reception::Creation do
                     [magic_tag_group, 'TTGGCCAA']])
         end
 
-        it 'numbers the new tags on from the group' do
+        it 'numbers the new tags from 1' do
           expect(magic_tag_group.tags.pluck(:map_id)).to contain_exactly(1, 2)
+        end
+
+        it 'gives the aliquot the default tag depth' do
+          expect(created_sample.aliquots.sole.tag_depth).to eq(1)
+        end
+      end
+
+      context 'when the Magic Tag Group has other tags' do
+        let(:other_tag) do
+          create(:tag, oligo: 'GGGGGGGG', map_id: 1,
+                       tag_group: create(:tag_group, name: 'Magic Tag Group'))
+        end
+        let(:labware) do
+          other_tag # in the group before the payload's tags are created
+          [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1',
+                                  i7: 'ACGTACGT', i5: 'TTGGCCAA'))]
+        end
+
+        it 'numbers the new tags on from the group' do
+          expect(magic_tag_group.tags.where.not(id: other_tag).pluck(:map_id))
+            .to contain_exactly(2, 3)
         end
       end
 
@@ -432,8 +464,8 @@ RSpec.describe ApiOperation::Reception::Creation do
         end
 
         it 'creates its tag once, for both aliquots' do
-          expect(created.receptacle.aliquots.map(&:tag2).uniq)
-            .to eq(magic_tag_group.tags.where(oligo: 'GGGG').to_a)
+          tag = magic_tag_group.tags.where(oligo: 'GGGG').sole
+          expect(created.receptacle.aliquots.map(&:tag2)).to eq([tag, tag])
         end
       end
     end
