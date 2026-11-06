@@ -15,7 +15,7 @@ describe 'Lab view', :js do
     fill_in('Concentration (nM)', with: 30)
     click_on 'Update'
     expect(page).to have_text 'Labware was successfully updated'
-    expect(find_field('Volume (µL)').value).to eq('20.0')
-    expect(find_field('Concentration (nM)').value).to eq('30.0')
+    expect(page).to have_field('Volume (µL)', with: '20.0')
+    expect(page).to have_field('Concentration (nM)', with: '30.0')
   end
 end
