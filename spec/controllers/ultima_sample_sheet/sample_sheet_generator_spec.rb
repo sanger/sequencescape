@@ -54,20 +54,42 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   let(:plate1_first_oligo) { 'CAGCTCGAATGCGAT' }
   let(:plate2_first_oligo) { 'CAGTCAGTTGCAGAT' }
 
+  # Ultima data of the two tag groups: the plate number, and the Z number
+  # and well of the tags used, by map_id.
+  let(:plate1_num) { 1 }
+  let(:plate1_ultima_tags) do
+    { 1 => %w[Z0001 A1], 2 => %w[Z0002 B1], 3 => %w[Z0003 C1] }
+  end
+  let(:plate2_num) { 2 }
+  let(:plate2_ultima_tags) do
+    { 1 => %w[Z0097 A1], 2 => %w[Z0098 B1], 3 => %w[Z0099 C1] }
+  end
+
   # Eagerly create tag groups and tags to get consistent IDs.
   let!(:tag_group1) do
     create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P1').tap do |tg|
       # To test Z0001 matching with the oligo sequence.
       tg.tags.first.update!(oligo: plate1_first_oligo)
+      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: plate1_num,
+                                ultima_tags: plate1_ultima_tags)
     end
   end
   let!(:tag_group2) do
     create(:tag_group_with_tags, tag_count: 96, name: 'Ultima P2').tap do |tg|
       # To test Z0097 matching with the oligo sequence.
       tg.tags.first.update!(oligo: plate2_first_oligo)
+      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: plate2_num,
+                                ultima_tags: plate2_ultima_tags)
     end
   end
-  let(:tag_groups) { [tag_group1, tag_group2] }
+
+  # Expected plate number and tag Ultima data of each tag group.
+  let(:expected_ultima_data) do
+    {
+      tag_group1 => [plate1_num, plate1_ultima_tags],
+      tag_group2 => [plate2_num, plate2_ultima_tags]
+    }
+  end
 
   let(:request_type) { create(:ultima_sequencing) }
   let(:pipeline) { create(:ultima_sequencing_pipeline, request_types: [request_type]) }
@@ -92,15 +114,6 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     tube = create(:multiplexed_library_tube, receptacle:)
     create(:event, content: Time.zone.today.to_s, message: 'scanned in', family: 'scanned_into_lab', eventful: tube)
     tube
-  end
-
-  # Expected mapping of tag groups to their respective 1-based plate numbers.
-  let(:tag_group_index_map) { { tag_group1 => 1, tag_group2 => 2 } }
-
-  # Expected mapping of tags to their respective 1-based index numbers.
-  let(:tag_index_map) do
-    tags = tag_groups.flat_map { |tg| tg.tags.sort_by(&:map_id) }
-    tags.each_with_index.to_h { |tag, i| [tag, i + 1] }
   end
 
   # Expected mapping of aliquots to their respective 1-based sample IDs.
@@ -133,30 +146,19 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
   # @return [Array<Array<String>>] the expected sample rows
   def csv_samples_for(request) # rubocop:disable Metrics/AbcSize
     request.asset.aliquots.map do |aliquot|
+      plate_num, ultima_tags = expected_ultima_data.fetch(aliquot.tag.tag_group)
+      z_number, well = ultima_tags.fetch(aliquot.tag.map_id)
       [
         format('s%d', sample_id_index_map[aliquot]),
         aliquot.sample.name,
-        format('Z%04d', tag_index_map[aliquot.tag]),
+        z_number,
         aliquot.tag.oligo,
-        tag_group_index_map[aliquot.tag.tag_group].to_s,
-        map_description(aliquot.tag.map_id),
+        plate_num.to_s,
+        well,
         'native', # application_type
         aliquot.study_id.to_s
       ]
     end
-  end
-
-  # Helper to return the well description (e.g., "A1") for a given map ID,
-  # which is in colum-order and one-based on a 96-well plate. This is used for
-  # finding where tag is located on a tag plate.
-  # @param map_id [Integer] the one-based map ID
-  def map_description(map_id)
-    plate_length = 8 # assuming 96-well plate
-    rows = ('A'..'H').to_a
-    index = map_id - 1 # zero-based
-    row = rows[index % plate_length]
-    col = (index / plate_length) + 1
-    "#{row}#{col}"
   end
 
   def add_ancestor_aliquots_for(child_aliquots, plate, request)
@@ -257,6 +259,39 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
       expect(csv2[9][2]).to eq('Z0097') # Index_Barcode_Num
       expect(csv2[9][3]).to eq(plate2_first_oligo) # Index_Barcode_Sequence
       expect(csv2[9][4]).to eq('2') # Barcode_Plate_Num
+    end
+
+    context 'with Z numbers that have gaps and wells not in column order' do
+      let(:plate2_num) { 5 }
+      let(:plate2_ultima_tags) do
+        { 1 => %w[Z5001 A1], 2 => %w[Z5005 A2], 3 => %w[Z5014 A3] }
+      end
+
+      it 'uses the stored Z numbers, plate number and wells' do
+        expect(csv2[9..].map { |row| row.values_at(2, 4, 5) }).to eq(
+          [%w[Z5001 5 A1], %w[Z5005 5 A2], %w[Z5014 5 A3]]
+        )
+      end
+    end
+
+    context 'when a tag has no Ultima data' do
+      before { tag_group1.tags.first.ultima_tag.destroy! }
+
+      it 'raises, naming the tag and tag group' do
+        expect { generator.csv_string(request1) }.to raise_error(
+          StandardError, 'No Ultima data for tag 1 of tag group Ultima P1'
+        )
+      end
+    end
+
+    context 'when a tag group has no Ultima data' do
+      before { tag_group1.ultima_tag_group.destroy! }
+
+      it 'raises, naming the tag group' do
+        expect { generator.csv_string(request1) }.to raise_error(
+          StandardError, 'No Ultima data for tag group Ultima P1'
+        )
+      end
     end
 
     it 'generates global section with only Application column and WGS Native value' do

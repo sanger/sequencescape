@@ -14,8 +14,6 @@ module UltimaSampleSheet::SampleSheetGenerator
   # It creates a ZIP archive containing individual sample sheet CSV files
   # for each request in the given Ultima sequencing batch.
   class Generator # rubocop:disable Metrics/ClassLength
-    PLATE_LENGTH = 8 # Assumes 96-well tag plates with 8 rows (A-H).
-
     # Using config methods instead of constants to allow easier overriding.
     def header_title_config
       ['[Header]'].freeze
@@ -42,24 +40,6 @@ module UltimaSampleSheet::SampleSheetGenerator
 
     def num_columns_config
       samples_headers_config.size
-    end
-
-    # Tag group config used to derive CSV plate numbers and Z-index starts.
-    # Values are explicit to avoid arithmetic assumptions in index mapping.
-    def ultima_tag_groups_config
-      {
-        'Ultima P1' => { plate_num: 1, z_start: 1 },
-        'Ultima P2' => { plate_num: 2, z_start: 97 },
-        'Ultima P3' => { plate_num: 3, z_start: 193 },
-        'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' => {
-          plate_num: 4,
-          z_start: 289
-        },
-        'UG-RD-1940 (Solaris 2.0 PCR-Free Adapters for Ultima Genomics P1)' => {
-          plate_num: 1,
-          z_start: 1
-        }
-      }.freeze
     end
 
     # Initializes the generator with the given batch.
@@ -158,7 +138,9 @@ module UltimaSampleSheet::SampleSheetGenerator
     def add_samples_section(csv, sequencing_request)
       csv << pad(samples_title_config)
       csv << pad(samples_headers_config)
-      sequencing_request.asset.aliquots.sort_by(&:id).each do |aliquot|
+      aliquots = sequencing_request.asset.aliquots
+        .includes(tag: [:ultima_tag, { tag_group: :ultima_tag_group }])
+      aliquots.sort_by(&:id).each do |aliquot|
         csv << sample_row_for(aliquot)
       end
     end
@@ -197,14 +179,13 @@ module UltimaSampleSheet::SampleSheetGenerator
       aliquot.sample.name
     end
 
-    # Returns the barcode index number for the given aliquot's tag.
-    # This number is incremented across all tags in the batch. If no aliquot
-    # matches a certain tag, the corresponding number is simply skipped in the
-    # file.
-    # @param aliquot [Aliquot] the aliquot whose tag z-index number is needed
-    # @return [String] the barcode index number
+    # Returns the barcode index number (Z number) of the given aliquot's tag,
+    # from the tag's Ultima data.
+    # @param aliquot [Aliquot] the aliquot whose tag Z number is needed
+    # @return [String] the barcode index number, e.g. Z0001
+    # @raise [StandardError] if the tag has no Ultima data
     def index_barcode_num_for(aliquot)
-      format('Z%04d', tag_index_map[aliquot.tag])
+      ultima_tag_for(aliquot).index_barcode_num
     end
 
     # Returns the barcode sequence for the given aliquot's tag.
@@ -214,20 +195,22 @@ module UltimaSampleSheet::SampleSheetGenerator
       aliquot.tag.oligo
     end
 
-    # Returns the barcode plate number for the given aliquot's tag group.
-    # This number is incremented across all tag groups in the batch.
+    # Returns the barcode plate number of the given aliquot's tag group, from
+    # the tag group's Ultima data.
     # @param aliquot [Aliquot] the aliquot whose tag group plate number is needed
     # @return [Integer] the barcode plate number
+    # @raise [StandardError] if the tag group has no Ultima data
     def barcode_plate_num_for(aliquot)
-      tag_group_index_map[aliquot.tag.tag_group]
+      ultima_tag_group_for(aliquot).barcode_plate_num
     end
 
-    # Returns the barcode plate well for the given aliquot's tag.
-    # @note This method assumes 96-well tag plates with 8 rows (A-H).
-    # @param aliquot [Aliquot] the aliquot whose tag's map description is needed
-    # @return [String] the barcode plate well
+    # Returns the barcode plate well of the given aliquot's tag, from the
+    # tag's Ultima data.
+    # @param aliquot [Aliquot] the aliquot whose tag plate well is needed
+    # @return [String] the barcode plate well, e.g. A1
+    # @raise [StandardError] if the tag has no Ultima data
     def barcode_plate_well_for(aliquot)
-      Map::Coordinate.vertical_position_to_description(aliquot.tag.map_id, PLATE_LENGTH)
+      ultima_tag_for(aliquot).barcode_plate_well
     end
 
     # Returns the study ID for the given aliquot.
@@ -237,31 +220,27 @@ module UltimaSampleSheet::SampleSheetGenerator
       aliquot.study_id.to_s
     end
 
-    # Returns a mapping of all Ultima tags to their respective 1-based index
-    # numbers. Each group's starting index is taken directly from
-    # ultima_tag_groups_config[:z_start], so numbering is independent of which
-    # other tag groups exist in the database.
-    # @return [Hash{Tag => Integer}] mapping of tags to index numbers
-    def tag_index_map
-      @tag_index_map ||= ultima_tag_groups.each_with_object({}) do |tag_group, map|
-        start_index = ultima_tag_groups_config[tag_group.name][:z_start]
-        tag_group.tags.sort_by(&:map_id).each_with_index { |tag, i| map[tag] = start_index + i }
-      end
+    # Returns the Ultima data of the given aliquot's tag.
+    # @param aliquot [Aliquot] the aliquot whose tag's Ultima data is needed
+    # @return [UltimaTag] the tag's Ultima data
+    # @raise [StandardError] if the tag has no Ultima data
+    def ultima_tag_for(aliquot)
+      tag = aliquot.tag
+      tag.ultima_tag ||
+        raise(StandardError,
+              "No Ultima data for tag #{tag.map_id} of tag group " \
+              "#{tag.tag_group.name}")
     end
 
-    # Returns a mapping of all Ultima tag groups to 1-based index numbers.
-    # This indexes the tag groups as given in the ultima_tag_groups_config hash.
-    # @return [Hash{TagGroup => Integer}] mapping of tag groups to index numbers
-    def tag_group_index_map
-      @tag_group_index_map ||= ultima_tag_groups.index_with { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
-    end
-
-    # Returns all unique tag groups used for Ultima sequencing from database,
-    # sorted by their index number as defined in ultima_tag_groups_config.
-    # @return [Array<TagGroup>] the tag groups used for Ultima sequencing
-    def ultima_tag_groups
-      @ultima_tag_groups ||= TagGroup.where(name: ultima_tag_groups_config.keys)
-        .sort_by { |tg| ultima_tag_groups_config[tg.name][:plate_num] }
+    # Returns the Ultima data of the given aliquot's tag group.
+    # @param aliquot [Aliquot] the aliquot whose tag group's Ultima data is
+    #   needed
+    # @return [UltimaTagGroup] the tag group's Ultima data
+    # @raise [StandardError] if the tag group has no Ultima data
+    def ultima_tag_group_for(aliquot)
+      tag_group = aliquot.tag.tag_group
+      tag_group.ultima_tag_group ||
+        raise(StandardError, "No Ultima data for tag group #{tag_group.name}")
     end
 
     # Returns the sequencing requests associated with the batch.
