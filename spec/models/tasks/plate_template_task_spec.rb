@@ -88,6 +88,34 @@ RSpec.describe PlateTemplateTask do
       expect(workflow_controller).to receive(:spreadsheet_layout=).with(spreadsheet_layout)
       task.do_task(workflow_controller, params, user)
     end
+
+    # Its only barcode is an external one without a number, as Sapio
+    # reception creates (Y26-283)
+    context 'with a source plate whose only barcode has no number' do
+      let(:plate_b) do
+        plate = create(:plate, barcode: 'SQPD-2', well_count: 4,
+                               well_factory: :untagged_well)
+        plate.barcodes.delete_all
+        plate.barcodes.create!(format: :external, barcode: 'SAPIO-PLATE')
+        plate.reload
+      end
+      let(:layout) do
+        layout = nil
+        allow(workflow_controller)
+          .to receive(:spreadsheet_layout=) { layout = it }
+        task.do_task(workflow_controller, params, user)
+        layout
+      end
+
+      it 'lists the plate by its whole barcode' do
+        expect(layout.last).to eq(%w[1 SAPIO-PLATE])
+      end
+
+      it 'shows its whole barcode in its wells' do
+        expect(layout.first.first[4])
+          .to eq([requests[4].id, 'SAPIO-PLATE', 'SAPIO-PLATE:A1'])
+      end
+    end
   end
 
   describe Tasks::PlateTemplateHandler do
