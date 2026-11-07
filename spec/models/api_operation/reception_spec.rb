@@ -94,7 +94,7 @@ RSpec.describe ApiOperation::Reception do
 
       it 'is given the new labware' do
         expect(ApiOperation::Reception::Creation).to have_received(:new)
-          .with([having_attributes(barcode: 'UNKNOWN-1')])
+          .with([having_attributes(barcode: 'UNKNOWN-1')], api_operation)
       end
 
       it 'creates it' do
@@ -108,7 +108,7 @@ RSpec.describe ApiOperation::Reception do
 
       it 'is given no labware' do
         expect(ApiOperation::Reception::Creation)
-          .to have_received(:new).with([])
+          .to have_received(:new).with([], api_operation)
       end
     end
 

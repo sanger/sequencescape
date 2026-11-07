@@ -8,13 +8,17 @@
 # which rolls everything back.
 #
 # It creates the labware (LabwareFactory), then the samples (SampleFactory),
-# then puts the samples into the labware as aliquots (AliquotFactory). The
-# samples' studies are looked up once, for both samples and aliquots.
+# then puts the samples into the labware as aliquots (AliquotFactory), and
+# records the volumes and concentrations the samples give on their wells and
+# tubes (QcFactory). The samples' studies are looked up once, for both
+# samples and aliquots.
 class ApiOperation::Reception::Creation
   # @param new_labware [Array<ApiOperation::Reception::Payload::
   #   PayloadLabware>] the payload labware Sequencescape doesn't have
-  def initialize(new_labware)
+  # @param api_operation [ApiOperation] the operation being received
+  def initialize(new_labware, api_operation)
     @new_labware = new_labware
+    @api_operation = api_operation
   end
 
   # Creates the new labware and its samples.
@@ -24,6 +28,7 @@ class ApiOperation::Reception::Creation
     labware = LabwareFactory.new(@new_labware).call
     samples = SampleFactory.new(@new_labware, studies).call
     AliquotFactory.new(labware, samples, studies).call
+    QcFactory.new(labware, @api_operation).call
   end
 
   private

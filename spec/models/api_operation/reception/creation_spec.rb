@@ -3,11 +3,12 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::Reception::Creation do
-  subject(:creation) { described_class.new(payload.labware) }
+  subject(:creation) { described_class.new(payload.labware, api_operation) }
 
   let(:payload) do
     ApiOperation::Reception::Payload.new({ labware: }.to_json)
   end
+  let(:api_operation) { create(:api_operation) }
   let(:created) { Barcode.find_by!(barcode: 'SAPIO-1').asset }
   let(:study) { create(:study) }
 
@@ -198,7 +199,8 @@ RSpec.describe ApiOperation::Reception::Creation do
         [tube('SAPIO-1',
               sample(sanger_sample_id: 'SAMPLE-1', priority: 'surveillance',
                      control_type: 'positive', donor_id: 'DONOR-1',
-                     reference_genome: reference_genome.name.upcase))]
+                     reference_genome: reference_genome.name.upcase,
+                     volume: 12.5, concentration: 10, genome_size: 3100))]
       end
 
       it 'sets them on the sample' do
@@ -209,8 +211,18 @@ RSpec.describe ApiOperation::Reception::Creation do
 
       it 'sets them in its metadata' do
         expect(created_sample.sample_metadata).to have_attributes(
-          donor_id: 'DONOR-1', reference_genome: reference_genome
+          donor_id: 'DONOR-1', reference_genome: reference_genome,
+          volume: '12.5', concentration: '10', genome_size: 3100
         )
+      end
+    end
+
+    context 'without optional fields' do
+      let(:labware) { [tube('SAPIO-1', sample(sanger_sample_id: 'SAMPLE-1'))] }
+
+      it 'leaves the measurements empty in its metadata' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil, genome_size: nil)
       end
     end
 
@@ -226,6 +238,210 @@ RSpec.describe ApiOperation::Reception::Creation do
         expect(created_sample).to have_attributes(
           control: true, control_type: 'pcr positive',
           sample_metadata: have_attributes(supplier_name: 'CONTROL_1')
+        )
+      end
+    end
+  end
+
+  describe 'volumes' do
+    let(:volume_results) do
+      QcResult.where(asset: created.receptacles).map do |qc_result|
+        [qc_result.asset_id, qc_result.key, qc_result.value, qc_result.units,
+         qc_result.assay_type, qc_result.assay_version]
+      end
+    end
+
+    context 'with a tube of a sample with a volume' do
+      let(:labware) { [tube('SAPIO-1', sample(volume: 12.5))] }
+
+      it 'records the volume as a customer-supplied QC result on the tube' do
+        expect(volume_results).to eq(
+          [[created.receptacle.id, 'volume', '12.5', 'ul', 'customer_supplied',
+            'v0.0']]
+        )
+      end
+
+      it 'puts the QC result in a QC assay named after the operation' do
+        expect(created.receptacle.qc_results.sole.qc_assay.lot_number)
+          .to eq("api_operation_id:#{api_operation.id}")
+      end
+
+      it 'sets the volume of the tube' do
+        expect(created.receptacle.reload.volume).to eq(12.5)
+      end
+    end
+
+    context 'with a plate of samples with volumes' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(volume: 10), sample(volume: 20))]
+      end
+
+      it 'sets the measured volume of each well' do
+        expect(created.wells.located_at(%w[A1 B1]).map do |well|
+          well.reload.well_attribute.measured_volume
+        end).to eq([10.0, 20.0])
+      end
+    end
+
+    context 'with a tube of samples with volumes' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(volume: 10), sample(volume: 20))]
+      end
+
+      it 'records no QC result, as the volumes are of the samples' do
+        expect(volume_results).to be_empty
+      end
+
+      it 'keeps each volume in its sample' do
+        expect(created.receptacle.samples.map { it.sample_metadata.volume })
+          .to contain_exactly('10', '20')
+      end
+    end
+
+    context 'with a tube of a sample without a volume' do
+      let(:labware) { [tube('SAPIO-1', sample)] }
+
+      it 'records no QC result' do
+        expect(volume_results).to be_empty
+      end
+    end
+  end
+
+  describe 'concentrations' do
+    let(:concentration_results) do
+      QcResult.where(asset: created.receptacles, key: 'concentration')
+        .map do |qc_result|
+          [qc_result.asset_id, qc_result.value, qc_result.units,
+           qc_result.assay_type, qc_result.assay_version]
+        end
+    end
+
+    context 'with a tube of a sample with a concentration' do
+      let(:labware) { [tube('SAPIO-1', sample(concentration: 4.2))] }
+
+      it 'records the concentration as a customer-supplied QC result on ' \
+         'the tube' do
+        expect(concentration_results).to eq(
+          [[created.receptacle.id, '4.2', 'ng/ul', 'customer_supplied',
+            'v0.0']]
+        )
+      end
+
+      it 'keeps the concentration in the QC result only, as the tube\'s ' \
+         'own concentration is molar' do
+        expect(created.receptacle.reload.concentration).to be_nil
+      end
+    end
+
+    context 'with a plate of samples with concentrations' do
+      let(:labware) do
+        [plate('SAPIO-1', sample(concentration: 4.2),
+               sample(concentration: 15.5))]
+      end
+
+      it 'sets the concentration of each well' do
+        expect(created.wells.located_at(%w[A1 B1]).map do |well|
+          well.reload.well_attribute.concentration
+        end).to eq([4.2, 15.5])
+      end
+    end
+
+    context 'with a tube of a sample with a volume and a concentration' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(volume: 12.5, concentration: 4.2))]
+      end
+      let(:qc_assay) do
+        QcAssay.find_by!(lot_number: "api_operation_id:#{api_operation.id}")
+      end
+
+      it 'puts both QC results in the QC assay named after the operation' do
+        expect(created.receptacle.qc_results.map { [it.key, it.qc_assay] })
+          .to contain_exactly(['volume', qc_assay], ['concentration', qc_assay])
+      end
+    end
+
+    context 'with a tube of samples with concentrations' do
+      let(:labware) do
+        [tube('SAPIO-1', sample(concentration: 4.2),
+              sample(concentration: 3.8))]
+      end
+
+      it 'records no QC result, as the concentrations are of the samples' do
+        expect(concentration_results).to be_empty
+      end
+
+      it 'keeps each concentration in its sample' do
+        expect(created.receptacle.samples.map do |created_sample|
+          created_sample.sample_metadata.concentration
+        end).to contain_exactly('4.2', '3.8')
+      end
+    end
+
+    context 'with a tube of a sample with a volume but no concentration' do
+      let(:labware) { [tube('SAPIO-1', sample(volume: 12.5))] }
+
+      it 'records no concentration QC result' do
+        expect(concentration_results).to be_empty
+      end
+    end
+  end
+
+  describe 'warehouse messages for the QC results', :warren do
+    let(:labware) do
+      [tube('SAPIO-1', sample(volume: 12.5, concentration: 4.2))]
+    end
+
+    it 'creates the QC results' do
+      expect(created.receptacle.qc_results.count).to eq(2)
+    end
+
+    it 'does not send them to the warehouse' do
+      expect(Warren.handler.messages_matching('message.qc_result.')).to eq(0)
+    end
+  end
+
+  describe 'volume and concentration of a sample in two wells' do
+    let(:first_entry) { sample(volume: 20, concentration: 15.5) }
+    let(:created_sample) do
+      Sample.find_by!(sanger_sample_id: first_entry[:sanger_sample_id])
+    end
+    let(:well_results) do
+      created.wells.located_at(%w[A1 B1]).map do |well|
+        well.qc_results.order(:key).pluck(:key, :value)
+      end
+    end
+
+    context 'with the same volume and concentration in each' do
+      let(:labware) { [plate('SAPIO-1', first_entry, first_entry)] }
+
+      it 'gives the sample no volume or concentration' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil)
+      end
+
+      it 'records them on each well' do
+        expect(well_results).to eq(
+          [[%w[concentration 15.5], %w[volume 20.0]],
+           [%w[concentration 15.5], %w[volume 20.0]]]
+        )
+      end
+    end
+
+    context 'with a different volume and concentration in each' do
+      let(:labware) do
+        [plate('SAPIO-1', first_entry,
+               first_entry.merge(volume: 15, concentration: 12.0))]
+      end
+
+      it 'gives the sample no volume or concentration' do
+        expect(created_sample.sample_metadata)
+          .to have_attributes(volume: nil, concentration: nil)
+      end
+
+      it 'records on each well the values of its own entry' do
+        expect(well_results).to eq(
+          [[%w[concentration 15.5], %w[volume 20.0]],
+           [%w[concentration 12.0], %w[volume 15.0]]]
         )
       end
     end

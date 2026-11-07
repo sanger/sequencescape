@@ -140,4 +140,25 @@ describe 'Sapio reception of tubes',
       end).to eq([[library_type.name, true]] * payload_libraries_by_tube.size)
     end
   end
+
+  # As from a sample tube manifest with its VOLUME (ul), CONC. (ng/ul) and
+  # GENOME SIZE columns filled in
+  context 'with a tube whose sample gives its measurements' do
+    let!(:operation) do
+      measured = sample('SAPIO-1-1', volume: 12.5, concentration: 10,
+                                     genome_size: 3100)
+      post_and_process(reception_request(tube('SAPIO-TUBE-1', measured)))
+    end
+    let(:received_sample) { Sample.find_by!(sanger_sample_id: 'SAPIO-1-1') }
+
+    it 'completes the reception' do
+      expect(operation.reload.status).to eq('reception_completed')
+    end
+
+    it "keeps the measurements in the sample's metadata" do
+      expect(received_sample.sample_metadata).to have_attributes(
+        volume: '12.5', concentration: '10', genome_size: 3100
+      )
+    end
+  end
 end

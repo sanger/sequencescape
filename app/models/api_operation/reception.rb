@@ -24,7 +24,8 @@ class ApiOperation::Reception < ApiOperation::Task
   private
 
   def creation
-    ApiOperation::Reception::Creation.new(reconciliation.new_labware)
+    ApiOperation::Reception::Creation.new(reconciliation.new_labware,
+                                          api_operation)
   end
 
   def validation

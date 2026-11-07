@@ -72,4 +72,10 @@ describe QcResult, :warren do
     resource.save!
     expect(warren.messages_matching(routing_key)).to eq(1)
   end
+
+  it 'does not broadcast the resource when told not to' do
+    resource.suppress_broadcast = true
+    resource.save!
+    expect(warren.messages_matching(routing_key)).to eq(0)
+  end
 end

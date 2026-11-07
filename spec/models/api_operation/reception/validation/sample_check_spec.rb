@@ -124,6 +124,48 @@ RSpec.describe ApiOperation::Reception::Validation::SampleCheck do
         )
       end
     end
+
+    context 'when an entry gives a different genome size' do
+      let(:first) { sample(0, fields: { 'genome_size' => 3100 }) }
+      let(:samples) do
+        [first, replicate(first, 1, fields: { 'genome_size' => 3000 })]
+      end
+
+      it 'reports the entry' do
+        expect(check.errors).to eq(
+          [{ pointer: '/labware/0/receptacles/1/samples/0',
+             detail: "Sample #{first.uuid} has a different genome_size " \
+                     'from /labware/0/receptacles/0/samples/0' }]
+        )
+      end
+    end
+
+    context 'when only its first entry gives a genome size' do
+      let(:first) { sample(0, fields: { 'genome_size' => 3100 }) }
+      let(:samples) { [first, replicate(first, 1, fields: {})] }
+
+      it 'reports the other entry, as the genome size is the sample\'s' do
+        expect(check.errors).to eq(
+          [{ pointer: '/labware/0/receptacles/1/samples/0',
+             detail: "Sample #{first.uuid} has a different genome_size " \
+                     'from /labware/0/receptacles/0/samples/0' }]
+        )
+      end
+    end
+
+    context 'when an entry gives a different volume and concentration' do
+      let(:first) do
+        sample(0, fields: { 'volume' => 20, 'concentration' => 15.5 })
+      end
+      let(:samples) do
+        [first, replicate(first, 1, fields: { 'volume' => 15,
+                                              'concentration' => 12.0 })]
+      end
+
+      it 'finds no errors, as they describe the receptacles' do
+        expect(check.errors).to be_empty
+      end
+    end
   end
 
   context 'with two samples with one Sanger sample ID' do
