@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'cherrypicking_helpers'
 
 RSpec.describe 'Robot verification', :js do
   include SlfCherrypickingHelpers

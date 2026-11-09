@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'cherrypicking_helpers'
 
 RSpec.describe 'Printing the buffer requirement on cherrypicking worksheets', :js do
   include SlfCherrypickingHelpers

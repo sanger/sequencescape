@@ -23,7 +23,10 @@ RSpec.describe 'Bulk submission from tubes' do
   end
 
   def upload_tube_submission
-    attach_file('bulk_submission_spreadsheet', Rails.root.join('features/submission/csv/1_tube_submission.csv'))
+    attach_file(
+      'bulk_submission_spreadsheet',
+      Rails.root.join('spec/data/submission/bulk_submission/1_tube_submission.csv')
+    )
     click_button 'Create Bulk submission'
   end
 

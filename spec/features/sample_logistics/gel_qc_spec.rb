@@ -47,7 +47,6 @@ RSpec.describe 'Gel QC' do
     click_button 'Update gel values'
     expect(page).to have_text('Gel results for plate updated')
     expect(page).to have_current_path(gels_path)
-    expect_gel_score(score)
   end
 
   def expect_gel_score(score)
@@ -169,6 +168,7 @@ RSpec.describe 'Gel QC' do
       expect(page).to have_no_text('Well A2')
       expect(page).to have_no_select('A2')
       update_gel('No Band')
+      expect_gel_score('No Band')
     end
   end
 
@@ -183,5 +183,6 @@ RSpec.describe 'Gel QC' do
     expect(page).to have_no_text('Well A2')
     expect(page).to have_no_select('A2')
     update_gel('No Band')
+    expect_gel_score('No Band')
   end
 end

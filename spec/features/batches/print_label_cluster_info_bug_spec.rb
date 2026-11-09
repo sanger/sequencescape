@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'rails_helper'
-require_relative 'batch_feature_helpers'
 
 RSpec.describe 'Batch side links for each pipeline' do
   include BatchFeatureHelpers
