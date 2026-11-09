@@ -15,7 +15,11 @@ RSpec.describe UltimaTagGroup do
 
     it do
       expect(ultima_tag_group).to validate_numericality_of(:barcode_plate_num)
-        .only_integer.is_greater_than(0)
+        .only_integer.is_greater_than(0).allow_nil
+    end
+
+    it 'is valid without a plate number, when Ultima gives none' do
+      expect(build(:ultima_tag_group, barcode_plate_num: nil)).to be_valid
     end
   end
 end
