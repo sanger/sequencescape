@@ -12,8 +12,9 @@ class CreateUltimaTagGroups < ActiveRecord::Migration[8.1]
                    foreign_key: true,
                    comment: 'The tag group this Ultima data is for'
       t.integer :barcode_plate_num,
-                null: false,
-                comment: 'Barcode_Plate_Num in Ultima sample sheets, e.g. 1'
+                comment: 'Barcode_Plate_Num in Ultima sample sheets, e.g. 1; ' \
+                         'NULL when Ultima gives no plate number, and then ' \
+                         'the sheet leaves the column out'
 
       t.timestamps
     end

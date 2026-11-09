@@ -1913,7 +1913,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_06_180252) do
 
   create_table "ultima_tag_groups", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Ultima data for a tag group in tag_groups, one row per Ultima tag group", force: :cascade do |t|
     t.integer "tag_group_id", null: false, comment: "The tag group this Ultima data is for"
-    t.integer "barcode_plate_num", null: false, comment: "Barcode_Plate_Num in Ultima sample sheets, e.g. 1"
+    t.integer "barcode_plate_num", comment: "Barcode_Plate_Num in Ultima sample sheets, e.g. 1; NULL when Ultima gives no plate number, and then the sheet leaves the column out"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tag_group_id"], name: "index_ultima_tag_groups_on_tag_group_id", unique: true
