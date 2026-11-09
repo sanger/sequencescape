@@ -595,7 +595,6 @@ GEM
       logger (~> 1.4)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    set (1.1.1)
     shoulda-context (3.0.0.rc1)
     shoulda-matchers (8.0.1)
       activesupport (>= 7.2)
@@ -604,9 +603,8 @@ GEM
     simplecov_json_formatter (0.1.4)
     simpleidn (0.3.0)
     slack-notifier (2.4.0)
-    sorted_set (1.0.3)
+    sorted_set (1.1.0)
       rbtree
-      set (~> 1.0)
     ssrf_filter (1.6.0)
     stringio (3.2.0)
     super_diff (0.19.0)
