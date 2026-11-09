@@ -697,6 +697,7 @@ DEPENDENCIES
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   avro
+  benchmark
   bootsnap
   builder
   bullet
@@ -741,6 +742,7 @@ DEPENDENCIES
   mysql2
   net-ldap
   nokogiri
+  ostruct
   prettier_print
   pry-byebug
   pry-rails
