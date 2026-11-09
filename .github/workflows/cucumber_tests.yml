@@ -77,6 +77,13 @@ jobs:
           install-chromedriver: true
           install-dependencies: true
 
+      # The runner image also ships Chromium. Selenium 4.52 picks it
+      # before the pinned Chrome on PATH, so remove it.
+      - name: Remove image-bundled Chromium
+        run: |
+          sudo rm -rf /usr/bin/chromium /usr/bin/chromium-browser \
+            /usr/local/share/chromium
+
       - name: Setup environment
         env:
           DBPORT: ${{ job.services.mysql.ports[3306] }}
