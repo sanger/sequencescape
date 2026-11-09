@@ -183,7 +183,7 @@ GEM
       bigdecimal
       rexml
     crass (1.0.8)
-    csv (3.3.6)
+    csv (3.3.7)
     cucumber (11.1.1)
       base64 (~> 0.2)
       builder (~> 3.2)
@@ -488,7 +488,7 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     rexml (3.4.4)
-    roo (3.0.0)
+    roo (4.0.0)
       base64 (~> 0.2)
       csv (~> 3)
       logger (~> 1)
@@ -579,7 +579,7 @@ GEM
       ffi (~> 1.12)
       logger
     ruby2_keywords (0.0.5)
-    rubyzip (3.4.1)
+    rubyzip (3.7.0)
     sanger-jsonapi-resources (0.1.4)
       activerecord (>= 7.2, < 9.0)
       concurrent-ruby
