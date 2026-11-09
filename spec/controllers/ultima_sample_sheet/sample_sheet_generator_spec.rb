@@ -141,23 +141,44 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
     result
   end
 
-  # Helper to generate expected sample rows for a request
+  # Helper to generate expected sample rows for a request. A sheet with any
+  # tag group that has no plate number (nil) has no Barcode_Plate_Num
+  # column, so the plate number is left out of all of its rows.
   # @param request [UltimaSequencingRequest] the request to generate sample rows for
   # @return [Array<Array<String>>] the expected sample rows
-  def csv_samples_for(request) # rubocop:disable Metrics/AbcSize
-    request.asset.aliquots.map do |aliquot|
-      plate_num, ultima_tags = expected_ultima_data.fetch(aliquot.tag.tag_group)
-      z_number, well = ultima_tags.fetch(aliquot.tag.map_id)
-      [
-        format('s%d', sample_id_index_map[aliquot]),
-        aliquot.sample.name,
-        z_number,
-        aliquot.tag.oligo,
-        plate_num.to_s,
-        well,
-        'native', # application_type
-        aliquot.study_id.to_s
-      ]
+  def csv_samples_for(request)
+    aliquots = request.asset.aliquots
+    rows = aliquots.map { |aliquot| csv_sample_for(aliquot) }
+    tag_groups = aliquots.map { |aliquot| aliquot.tag.tag_group }
+    return rows if tag_groups.all? { |tg| expected_ultima_data.fetch(tg).first }
+
+    plate_num_index = 4 # of Barcode_Plate_Num in samples_headers_config
+    rows.each { |row| row.delete_at(plate_num_index) }
+  end
+
+  # Helper to generate the expected sample row of an aliquot, with every
+  # column.
+  # @param aliquot [Aliquot] the aliquot to generate the sample row for
+  # @return [Array<String>] the expected sample row
+  def csv_sample_for(aliquot) # rubocop:disable Metrics/AbcSize
+    plate_num, ultima_tags = expected_ultima_data.fetch(aliquot.tag.tag_group)
+    z_number, well = ultima_tags.fetch(aliquot.tag.map_id)
+    [
+      format('s%d', sample_id_index_map[aliquot]),
+      aliquot.sample.name,
+      z_number,
+      aliquot.tag.oligo,
+      plate_num.to_s,
+      well,
+      'native', # application_type
+      aliquot.study_id.to_s
+    ]
+  end
+
+  # The rows of each sheet of the batch's zip, in zip order (request id).
+  def zip_sheets
+    extract_zip(described_class.generate(batch)).values.map do |content|
+      CSV.parse(content, row_sep: "\r\n", nil_value: '')
     end
   end
 
@@ -291,6 +312,74 @@ RSpec.describe UltimaSampleSheet::SampleSheetGenerator do
         expect { generator.csv_string(request1) }.to raise_error(
           StandardError, 'No Ultima data for tag group Ultima P1'
         )
+      end
+    end
+
+    # Ultima gives no plate number for some tag groups. Their sheets leave
+    # the Barcode_Plate_Num column out, and every row of the sheet is
+    # padded to the remaining columns.
+    context 'when a tag group has no plate number' do
+      let(:plate2_num) { nil }
+      let(:headers_without_plate_num) do
+        generator.samples_headers_config - ['Barcode_Plate_Num']
+      end
+
+      it 'leaves Barcode_Plate_Num out of the column headers of its sheet' do
+        expect(csv2[8].compact_blank).to eq(headers_without_plate_num)
+      end
+
+      it 'leaves the plate number out of the sample rows of its sheet' do
+        expect(csv2[9..]).to eq(csv2_samples)
+      end
+
+      it 'pads every row of its sheet to the remaining columns' do
+        expect(csv2.map(&:size).uniq).to eq([headers_without_plate_num.size])
+      end
+
+      it 'keeps Barcode_Plate_Num in the sheet of a numbered tag group' do
+        expect(csv1[8].compact_blank).to eq(generator.samples_headers_config)
+      end
+    end
+
+    # One unnumbered tag group among the rows is enough to leave the column
+    # out: a sheet never has a half-empty Barcode_Plate_Num column.
+    context 'when one sheet mixes numbered and unnumbered tag groups' do
+      let(:plate2_num) { nil }
+
+      before do
+        create(:aliquot, tag: tag_group2.tags.first,
+                         receptacle: tube1.receptacle,
+                         library_type: library_type)
+      end
+
+      it 'leaves Barcode_Plate_Num out of that sheet', :aggregate_failures do
+        expect(csv1[8].compact_blank)
+          .to eq(generator.samples_headers_config - ['Barcode_Plate_Num'])
+        expect(csv1[9..]).to eq(csv1_samples)
+      end
+    end
+
+    # The sheets of a zip are made one after the other; each gets its own
+    # columns, whichever comes first.
+    context 'with a numbered and an unnumbered tag group in one zip' do
+      let(:full_width) { generator.samples_headers_config.size }
+
+      context 'when the first sheet has no plate number' do
+        let(:plate1_num) { nil }
+
+        it 'leaves the column out of the first sheet only' do
+          expect(zip_sheets.map { |rows| rows.map(&:size).uniq })
+            .to eq([[full_width - 1], [full_width]])
+        end
+      end
+
+      context 'when the second sheet has no plate number' do
+        let(:plate2_num) { nil }
+
+        it 'leaves the column out of the second sheet only' do
+          expect(zip_sheets.map { |rows| rows.map(&:size).uniq })
+            .to eq([[full_width], [full_width - 1]])
+        end
       end
     end
 

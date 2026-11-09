@@ -8,13 +8,14 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
   let(:plate4_first_oligo) { 'CATCATGCTCCGCTGAT' } # Z0289
   let(:tag_group3_name) { 'Ultima P3' }
   let(:tag_group4_name) { 'UG-RD-1916 (Solaris 2.0 V1 PCR-Free Adapters for Ultima Genomics P4)' }
+  let(:plate3_num) { 3 }
 
   # Eagerly create tag groups and tags to get consistent IDs.
   let!(:tag_group3) do
     create(:tag_group_with_tags, tag_count: 96, name: tag_group3_name).tap do |tg|
       # To test Z0193 matching with the oligo sequence.
       tg.tags.first.update!(oligo: plate3_first_oligo)
-      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: 3,
+      create(:ultima_tag_group, tag_group: tg, barcode_plate_num: plate3_num,
                                 ultima_tags: { 1 => %w[Z0193 A1] })
     end
   end
@@ -122,6 +123,29 @@ RSpec.describe UltimaSampleSheet::UG200SampleSheetGenerator do
 
       it 'uses the application type from the UG200 preset' do
         expect(csv1[9][6]).to eq(flex_apex_preset.application_type)
+      end
+
+      # As for a 10x Flex v2 tag group that Ultima gives no plate number:
+      # the sheet leaves Barcode_Plate_Num out, and the UG200 global rows
+      # are padded to the remaining columns like every other row.
+      context 'when the tag group has no plate number' do
+        let(:plate3_num) { nil }
+        let(:headers_without_plate_num) do
+          generator.samples_headers_config - ['Barcode_Plate_Num']
+        end
+
+        it 'keeps the barcode schema in the global section',
+           :aggregate_failures do
+          expect(csv1[4].compact_blank).to eq(%w[Application barcode_schema])
+          expect(csv1[5].compact_blank)
+            .to eq(['Unprocessed CRAM', 'ug_efficient_tt'])
+        end
+
+        it 'leaves Barcode_Plate_Num out and pads every row',
+           :aggregate_failures do
+          expect(csv1[8].compact_blank).to eq(headers_without_plate_num)
+          expect(csv1.map(&:size).uniq).to eq([headers_without_plate_num.size])
+        end
       end
     end
 

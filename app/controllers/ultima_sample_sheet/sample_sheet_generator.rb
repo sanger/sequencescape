@@ -64,9 +64,14 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Generates the CSV string for a single sequencing request.
+    # The [Samples] columns of the sheet are chosen first: they may leave
+    # Barcode_Plate_Num out (see samples_headers_for), and every row of the
+    # sheet is padded to their number. They belong to this sheet only, so
+    # they are cleared when it is done.
     # @param sequencing_request [SequencingRequest] the sequencing request to generate the CSV for
     # @return [String] the CSV content as a string with CRLF line endings
     def csv_string(sequencing_request)
+      @samples_headers = samples_headers_for(sequencing_request)
       CSV.generate(row_sep: "\r\n", force_quotes: false, quote_empty: false) do |csv|
         add_header_section(csv, sequencing_request)
         csv << pad # empty row
@@ -74,6 +79,8 @@ module UltimaSampleSheet::SampleSheetGenerator
         csv << pad
         add_samples_section(csv, sequencing_request)
       end
+    ensure
+      @samples_headers = nil
     end
 
     private
@@ -137,28 +144,63 @@ module UltimaSampleSheet::SampleSheetGenerator
     # @param sequencing_request [UltimaSequencingRequest] the sequencing request whose samples are to be added
     def add_samples_section(csv, sequencing_request)
       csv << pad(samples_title_config)
-      csv << pad(samples_headers_config)
-      aliquots = sequencing_request.asset.aliquots
-        .includes(tag: [:ultima_tag, { tag_group: :ultima_tag_group }])
-      aliquots.sort_by(&:id).each do |aliquot|
+      csv << pad(@samples_headers)
+      sample_aliquots_for(sequencing_request).each do |aliquot|
         csv << sample_row_for(aliquot)
       end
     end
 
-    # Builds a sample section row for a single aliquot.
+    # Returns the [Samples] column headers of the request's sheet. These are
+    # samples_headers_config without Barcode_Plate_Num when the plate number
+    # of any of the sheet's tag groups is nil (Ultima gives none for it).
+    # Ultima's sample sheet format doesn't need the column: Ultima's manual
+    # sample sheets don't have it (UG Sample Sheet & SampleDB Reference
+    # Guide D1001358, Table 2). Leaving it out avoids an empty cell or a
+    # made-up number.
+    # @param sequencing_request [UltimaSequencingRequest] the request
+    # @return [Array<String>] the column headers of the [Samples] section
+    def samples_headers_for(sequencing_request)
+      aliquots = sample_aliquots_for(sequencing_request)
+      numbered = aliquots.all? { |aliquot| barcode_plate_num_for(aliquot) }
+      return samples_headers_config if numbered
+
+      samples_headers_config - ['Barcode_Plate_Num']
+    end
+
+    # Returns the aliquots of the request's asset, sorted by id, with their
+    # tags' Ultima data. Loaded once per request, for the columns and rows.
+    # @param sequencing_request [UltimaSequencingRequest] the request
+    # @return [Array<Aliquot>] the aliquots, one per sample row
+    def sample_aliquots_for(sequencing_request)
+      @sample_aliquots_for ||= {}
+      @sample_aliquots_for[sequencing_request.id] ||=
+        sequencing_request.asset.aliquots
+          .includes(tag: [:ultima_tag, { tag_group: :ultima_tag_group }])
+          .sort_by(&:id)
+    end
+
+    # Builds a sample section row for a single aliquot, with the values of
+    # the sheet's columns only, so a left-out Barcode_Plate_Num is not in it.
     # @param aliquot [Aliquot] the aliquot whose sample row is needed
     # @return [Array<String>] the sample row values
     def sample_row_for(aliquot)
-      [
-        sample_id_for(aliquot),
-        library_name_for(aliquot),
-        index_barcode_num_for(aliquot),
-        index_barcode_sequence_for(aliquot),
-        barcode_plate_num_for(aliquot),
-        barcode_plate_well_for(aliquot),
-        aliquot.ultima_application_type,
-        study_id_for(aliquot)
-      ]
+      sample_values_for(aliquot).values_at(*@samples_headers)
+    end
+
+    # Returns the values of a sample row for an aliquot, by column header.
+    # @param aliquot [Aliquot] the aliquot whose sample values are needed
+    # @return [Hash{String => Object}] the values by column header
+    def sample_values_for(aliquot)
+      {
+        'Sample_ID' => sample_id_for(aliquot),
+        'Library_name' => library_name_for(aliquot),
+        'Index_Barcode_Num' => index_barcode_num_for(aliquot),
+        'Index_Barcode_Sequence' => index_barcode_sequence_for(aliquot),
+        'Barcode_Plate_Num' => barcode_plate_num_for(aliquot),
+        'Barcode_Plate_Well' => barcode_plate_well_for(aliquot),
+        'application_type' => aliquot.ultima_application_type,
+        'study_id' => study_id_for(aliquot)
+      }
     end
 
     # Returns a unique sample_ID for the given aliquot. This prefixes numbers
@@ -196,9 +238,10 @@ module UltimaSampleSheet::SampleSheetGenerator
     end
 
     # Returns the barcode plate number of the given aliquot's tag group, from
-    # the tag group's Ultima data.
+    # the tag group's Ultima data. It is nil when Ultima gives no plate
+    # number; the sheet then leaves the Barcode_Plate_Num column out.
     # @param aliquot [Aliquot] the aliquot whose tag group plate number is needed
-    # @return [Integer] the barcode plate number
+    # @return [Integer, nil] the barcode plate number
     # @raise [StandardError] if the tag group has no Ultima data
     def barcode_plate_num_for(aliquot)
       ultima_tag_group_for(aliquot).barcode_plate_num
@@ -267,12 +310,14 @@ module UltimaSampleSheet::SampleSheetGenerator
       end
     end
 
-    # Pads the given row with empty columns to match the CSV number of columns.
-    # This is used for adding empty rows between the sections as well.
+    # Pads the given row with empty columns to the sheet's number of
+    # [Samples] columns, which is one fewer when Barcode_Plate_Num is left
+    # out. This is used for adding empty rows between the sections as well.
     # @param row [Array<String>] the row to pad (defaults to an empty array)
     # @return [Array<String>] the padded row
     def pad(row = [])
-      row + Array.new(num_columns_config - row.size, '')
+      columns = @samples_headers&.size || num_columns_config
+      row + Array.new(columns - row.size, '')
     end
   end
 end
