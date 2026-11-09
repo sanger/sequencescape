@@ -10,9 +10,10 @@ module RecordLoader
     # @param section_name [String] the name of an existing tag group, unless
     #   options give 'name'
     # @param options [Hash] 'name' (optional) of an existing tag group,
-    #   'barcode_plate_num', and 'ultima_tags': the attributes of each
-    #   tag's UltimaTag, keyed by the tag's map_id (its index in the tag
-    #   group, not a well's Map)
+    #   'barcode_plate_num' (nil, ~ in the file, when Ultima gives no plate
+    #   number; sample sheets then leave the Barcode_Plate_Num column out),
+    #   and 'ultima_tags': the attributes of each tag's UltimaTag, keyed by
+    #   the tag's map_id (its index in the tag group, not a well's Map)
     # @raise [ActiveRecord::RecordNotFound] if the tag group doesn't exist
     # @raise [ArgumentError] if the tag map_ids aren't exactly the group's
     def create_or_update!(section_name, options)

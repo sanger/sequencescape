@@ -68,6 +68,20 @@ RSpec.describe RecordLoader::UltimaTagGroupLoader, :loader, type: :model do
     end
   end
 
+  context 'with no plate number for the tag group' do
+    let(:selected_files) { 'ultima_tag_groups_no_plate_num' }
+
+    it 'creates the Ultima data of the tag group without a plate number' do
+      record_loader.create!
+      expect(tag_group.reload.ultima_tag_group.barcode_plate_num).to be_nil
+    end
+
+    it 'creates the Ultima data of each tag as given' do
+      record_loader.create!
+      expect(loaded_ultima_tags).to eq(sparse_ultima_tags)
+    end
+  end
+
   context 'with the tag group name given as name:' do
     let(:selected_files) { 'ultima_tag_groups_named' }
 

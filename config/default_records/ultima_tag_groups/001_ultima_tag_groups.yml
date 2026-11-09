@@ -2,7 +2,9 @@
 # Ultima data for Ultima tag groups. Each section names a tag group (or
 # gives it as name:). ultima_tags are keyed by each tag's map_id, the
 # number the tag has in its tag group in tag_groups/; the tag's well on
-# the Ultima plate is barcode_plate_well.
+# the Ultima plate is barcode_plate_well. barcode_plate_num is ~ (NULL)
+# when Ultima gives no plate number for the tag group; sample sheets with
+# its tags then leave the Barcode_Plate_Num column out.
 Ultima P1:
   barcode_plate_num: 1
   ultima_tags:
