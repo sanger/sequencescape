@@ -172,4 +172,33 @@ describe 'Sapio reception of invalid requests',
       expect([Labware.count, Sample.count]).to eq([0, 0])
     end
   end
+
+  # A sample in two pools has nowhere to keep a volume: not its pooled
+  # wells, nor its metadata, as it has two entries
+  context 'with a sample in two pools that gives a volume' do
+    let(:pooled_sample) { sample('SAPIO-1-1') }
+    let(:other_sample) { sample('SAPIO-2-2') }
+    let(:detail) do
+      "Sample #{pooled_sample[:uuid]} gives a volume that can't be stored: " \
+        'it is in more than one receptacle, and this one holds other samples'
+    end
+    let!(:operation) do
+      pools = { 'A1' => [pooled_sample.merge(volume: 10), other_sample],
+                'B1' => [pooled_sample, other_sample] }
+      post_and_process(reception_request(plate('SAPIO-PLATE-1', pools)))
+    end
+
+    it 'fails the reception' do
+      expect(operation.reload.status).to eq('reception_failed')
+    end
+
+    it 'records the error, with its pointer' do
+      expect(operation.reload.error_details)
+        .to eq(reception_error(sample_pointer, detail))
+    end
+
+    it 'creates nothing' do
+      expect([Labware.count, Sample.count]).to eq([0, 0])
+    end
+  end
 end

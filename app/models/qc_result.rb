@@ -15,6 +15,9 @@ class QcResult < ApplicationRecord
   # Set to disable updating well_attributes
   attr_accessor :suppress_updates
 
+  # Set to disable sending the QC result to the warehouse
+  attr_accessor :suppress_broadcast
+
   belongs_to :asset, optional: false, class_name: 'Receptacle'
   belongs_to :qc_assay, optional: true
 
@@ -24,7 +27,8 @@ class QcResult < ApplicationRecord
   has_many :studies, through: :asset
 
   after_create :update_asset, unless: :suppress_updates
-  after_commit :broadcast_qc_result, on: %i[create update]
+  after_commit :broadcast_qc_result, on: %i[create update],
+                                     unless: :suppress_broadcast
 
   validates :key, :value, :units, presence: true
 

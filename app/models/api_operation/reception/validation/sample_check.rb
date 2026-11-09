@@ -4,7 +4,8 @@
 # - Each sample has an existing study. An unknown study is reported once, at
 #   the first sample that uses it, with how many do.
 # - A sample in more than one receptacle (the same UUID) has the same Sanger
-#   sample ID, supplier sample name and study in each.
+#   sample ID, supplier sample name, study and genome size in each. Its
+#   volume and concentration may differ, as they describe its receptacles.
 # - Each sample's UUID and Sanger sample ID are new to Sequencescape, and no
 #   two samples share a Sanger sample ID. Sanger sample IDs are compared
 #   ignoring case, as sample names are.
@@ -13,8 +14,10 @@
 # Each check looks up all the samples in one query.
 class ApiOperation::Reception::Validation::SampleCheck <
       ApiOperation::Reception::Validation::Check
-  # The fields every entry of a sample in more than one receptacle must share
-  SAMPLE_FIELDS = %i[sanger_sample_id supplier_sample_name study_uuid].freeze
+  # The fields every entry of a sample in more than one receptacle must share:
+  # the entry's own, and genome_size from its optional fields
+  SAMPLE_FIELDS =
+    %i[sanger_sample_id supplier_sample_name study_uuid genome_size].freeze
 
   # The fields that give a sample's tags, in any scheme
   TAG_FIELDS =
@@ -58,7 +61,7 @@ class ApiOperation::Reception::Validation::SampleCheck <
   def repeated_sample_errors
     samples_by_uuid.values.flat_map do |first, *others|
       others.filter_map do |sample|
-        fields = SAMPLE_FIELDS.reject { first.send(it) == sample.send(it) }
+        fields = differing_fields(first, sample)
         next if fields.empty?
 
         error(sample.pointer,
@@ -66,6 +69,18 @@ class ApiOperation::Reception::Validation::SampleCheck <
               "#{fields.to_sentence} from #{first.pointer}")
       end
     end
+  end
+
+  # The SAMPLE_FIELDS in which the entry differs from the sample's first
+  def differing_fields(first, sample)
+    SAMPLE_FIELDS.reject { field_value(first, it) == field_value(sample, it) }
+  end
+
+  # A field of the entry: one of its own, or one of its optional fields
+  def field_value(sample, field)
+    return sample.public_send(field) if sample.respond_to?(field)
+
+    sample.fields[field.to_s]
   end
 
   # An error for each untagged entry of a sample after its first untagged
