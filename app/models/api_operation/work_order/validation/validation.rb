@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Checks that a work order has its required fields, and that the labware it
-# requests exists and has contents.
+# requests exists and has contents, and each requested receptacle has one study.
 class ApiOperation::WorkOrder::Validation::Validation
   POINTER = '/work_order'
 
@@ -38,6 +38,6 @@ class ApiOperation::WorkOrder::Validation::Validation
   end
 
   def labware_errors
-    @requested_receptacles.errors
+    @requested_receptacles.errors.presence || @requested_receptacles.study_errors
   end
 end

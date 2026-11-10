@@ -7,7 +7,7 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
 
   let(:donors) { %w[D1 D2 D3 D4 D5 D6 D7 D8 D9 D10] }
   let(:identifiers) { donors.each_index.map { |i| "PLATE-X:A#{i + 1}" } }
-  let(:options) { { 'scrna_core_number_of_pools' => 2, 'scrna_core_cells_per_chip_well' => 20_000 } }
+  let(:options) { { 'number_of_pools' => 2, 'cells_per_chip_well' => 20_000 } }
   let(:requested_receptacles) { ApiOperation::WorkOrder::RequestedReceptacles.new(identifiers) }
 
   before do
@@ -30,22 +30,22 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
 
     it 'points at each missing option' do
       expect(feasibility.errors.map(&:pointer)).to eq(
-        %w[/work_order/options/scrna_core_number_of_pools /work_order/options/scrna_core_cells_per_chip_well]
+        %w[/work_order/options/number_of_pools /work_order/options/cells_per_chip_well]
       )
     end
   end
 
   context 'with zero for an option' do
-    let(:options) { { 'scrna_core_number_of_pools' => 0, 'scrna_core_cells_per_chip_well' => 20_000 } }
+    let(:options) { { 'number_of_pools' => 0, 'cells_per_chip_well' => 20_000 } }
 
     it 'only reports the option, without checking the pooling' do
-      expect(feasibility.errors.map(&:pointer)).to eq(['/work_order/options/scrna_core_number_of_pools'])
+      expect(feasibility.errors.map(&:pointer)).to eq(['/work_order/options/number_of_pools'])
     end
   end
 
   context 'with too few samples' do
     let(:donors) { %w[D1 D2 D3] }
-    let(:options) { { 'scrna_core_number_of_pools' => 1, 'scrna_core_cells_per_chip_well' => 20_000 } }
+    let(:options) { { 'number_of_pools' => 1, 'cells_per_chip_well' => 20_000 } }
 
     it 'points at the requested labware' do
       expect(feasibility.errors.map(&:pointer)).to include('/work_order/requested_labware_identifiers')
@@ -53,10 +53,10 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
   end
 
   context 'with too many pools' do
-    let(:options) { { 'scrna_core_number_of_pools' => 9, 'scrna_core_cells_per_chip_well' => 20_000 } }
+    let(:options) { { 'number_of_pools' => 9, 'cells_per_chip_well' => 20_000 } }
 
     it 'points at the number of pools' do
-      expect(feasibility.errors.map(&:pointer)).to include('/work_order/options/scrna_core_number_of_pools')
+      expect(feasibility.errors.map(&:pointer)).to include('/work_order/options/number_of_pools')
     end
   end
 

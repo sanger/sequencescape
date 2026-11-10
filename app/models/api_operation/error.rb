@@ -25,7 +25,5 @@ class ApiOperation::Error < StandardError
   end
 
   # @param key [Symbol] :pointer or :detail
-  def [](key)
-    to_h[key]
-  end
+  delegate :[], to: :to_h
 end

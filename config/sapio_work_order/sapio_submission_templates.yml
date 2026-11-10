@@ -18,18 +18,18 @@ services:
     - Limber-Htp - Targeted NanoSeq
   Human Exome RNA FFPE:
     - Limber-Htp - RNAF
-#    - Limber-Htp - RNAF - Pool (librrary prep + multiplxing)
-#    - Limber-Htp - RNAF - Element Aviti sequencing
-#    - Limber-Htp - RNAF - NovaSeqX paired end sequencing
-#    - Limber-Htp - RNAF - NovaSeq 6000 paired end sequencing
-#    - Limber-Htp - RNAF - MiSeq sequencing
+  #    - Limber-Htp - RNAF - Pool (librrary prep + multiplxing)
+  #    - Limber-Htp - RNAF - Element Aviti sequencing
+  #    - Limber-Htp - RNAF - NovaSeqX paired end sequencing
+  #    - Limber-Htp - RNAF - NovaSeq 6000 paired end sequencing
+  #    - Limber-Htp - RNAF - MiSeq sequencing
   Short Read Respiratory Virus Target Enrichment:
     - Limber-Htp - RVI Bait Capture Library
-#    - Limber-Htp - RVI Bait Capture Library - NovaSeq 6000 Paired end sequencing
-#    - Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing
-#  Genotyping by Amplicon Sequencing (GbS) for Anopholes:
-#    - Limber-Htp - ANOSPP Lysate Prep and GBS
-#    - Limber-Htp - GbS
+  #    - Limber-Htp - RVI Bait Capture Library - NovaSeq 6000 Paired end sequencing
+  #    - Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing
+  #  Genotyping by Amplicon Sequencing (GbS) for Anopholes:
+  #    - Limber-Htp - ANOSPP Lysate Prep and GBS
+  #    - Limber-Htp - GbS
   Targeted EMseq:
     - Limber-Htp - LCM Triomics EMSeq
   Long Read Amplicon- PacBio:

@@ -41,4 +41,33 @@ class ApiOperation::WorkOrder::RequestedReceptacles
   def plates
     @plates ||= receptacles.map(&:labware).grep(Plate).uniq
   end
+
+  # @return [Hash{Study => Array<Receptacle>}] the receptacles by their study; those
+  #   without exactly one study are left out, see #study_errors
+  def receptacles_by_study
+    @receptacles_by_study ||= receptacles.group_by { |receptacle| one_study_of(receptacle) }.except(nil)
+  end
+
+  # @return [Array<ApiOperation::Error>] a problem for each receptacle without exactly one study
+  def study_errors
+    receptacles.filter_map do |receptacle|
+      next if one_study_of(receptacle)
+
+      found = studies_of(receptacle).map(&:name).to_sentence.presence || 'none'
+      ApiOperation::Error.new(POINTER, 'Each requested receptacle must have samples from one study; ' \
+                                       "found #{found} for #{receptacle.display_name}")
+    end
+  end
+
+  private
+
+  def one_study_of(receptacle)
+    studies = studies_of(receptacle)
+    studies.first if studies.one?
+  end
+
+  # The studies of the receptacle's aliquots, or if they have none, of its samples.
+  def studies_of(receptacle)
+    (receptacle.aliquots.filter_map(&:study).presence || receptacle.samples.flat_map(&:studies)).uniq
+  end
 end

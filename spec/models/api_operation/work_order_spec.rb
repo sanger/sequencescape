@@ -16,6 +16,7 @@ RSpec.describe ApiOperation::WorkOrder do
     let!(:template) { create(:submission_template, name: 'Limber-Htp - LCMB') }
 
     before do
+      create(:plate_purpose, name: 'LCMB Cherrypick')
       allow(ApiOperation::WorkOrder::Validation::Validation).to receive(:new).and_return(
         instance_double(ApiOperation::WorkOrder::Validation::Validation, errors: [])
       )
@@ -24,7 +25,8 @@ RSpec.describe ApiOperation::WorkOrder do
 
     it 'creates the submission from the resolved template' do
       work_order.call
-      expect(ApiOperation::WorkOrder::SubmissionCreation).to have_received(:new).with(api_operation, template)
+      expect(ApiOperation::WorkOrder::SubmissionCreation).to have_received(:new).with(api_operation, template,
+                                                                                      requested_receptacles: anything)
     end
 
     it 'returns the errors of the creation' do
@@ -62,7 +64,8 @@ RSpec.describe ApiOperation::WorkOrder do
     let(:details) { { service_name: 'Nope', requested_labware_identifiers: ['DN1:A1'] } }
 
     it 'reports the unknown service' do
-      expect(work_order.call).to eq([{ pointer: '/work_order/service_name', detail: "Unknown Sapio service 'Nope' for Sequencescape" }])
+      expect(work_order.call).to eq([{ pointer: '/work_order/service_name',
+                                       detail: "Unknown Sapio service 'Nope' for Sequencescape" }])
     end
   end
 

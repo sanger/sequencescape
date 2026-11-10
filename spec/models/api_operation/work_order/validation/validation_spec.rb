@@ -5,7 +5,7 @@ require 'rails_helper'
 RSpec.describe ApiOperation::WorkOrder::Validation::Validation do
   subject(:validation) { described_class.new(api_operation) }
 
-  let(:plate) { create(:plate_with_untagged_wells, well_count: 1) }
+  let(:plate) { create(:plate_with_untagged_wells, well_count: 1, studies: [create(:study)]) }
   let(:identifiers) { ["#{plate.human_barcode}:A1", 'NOPE'] }
   let(:work_order) do
     { external_id: 'WO1', service_name: 'Human Exome', requested_by: 'user', cost_code: 'S1234',
@@ -22,6 +22,16 @@ RSpec.describe ApiOperation::WorkOrder::Validation::Validation do
 
     it 'finds no errors' do
       expect(validation.errors).to be_empty
+    end
+  end
+
+  context 'when a receptacle has no study' do
+    let(:identifiers) { ["#{plate.human_barcode}:A1"] }
+
+    before { plate.wells.first.aliquots.each { |aliquot| aliquot.update!(study: nil) } }
+
+    it 'points at the requested labware identifiers' do
+      expect(validation.errors.pluck(:pointer)).to eq(['/work_order/requested_labware_identifiers'])
     end
   end
 

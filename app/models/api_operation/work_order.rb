@@ -3,7 +3,8 @@
 # Validates the work order in an operation's payload, resolves its submission
 # template (SubmissionTemplateResolver), validates its requested labware
 # (Validation::Validation), gives the requested plates their purpose
-# (PlatePurposeResolver) and creates its submission (SubmissionCreation).
+# (PlatePurposeResolver), validates its options against the template
+# (Validation::SubmissionTemplateValidation) and creates its submission (SubmissionCreation).
 # ApiOperation::CoordinatorJob runs it as the work_order task, after
 # reception, and records the outcome.
 class ApiOperation::WorkOrder
@@ -20,13 +21,10 @@ class ApiOperation::WorkOrder
     template = find_template
     return template if template.is_a?(Array)
 
-    errors = Validation::Validation.new(@api_operation, requested_receptacles:).errors
-    return errors.map(&:to_h) if errors.any?
+    errors = validate(template)
+    return errors if errors.any?
 
-    purpose_errors = assign_plate_purposes(template)
-    return purpose_errors if purpose_errors.any?
-
-    SubmissionCreation.new(@api_operation, template).call
+    SubmissionCreation.new(@api_operation, template, requested_receptacles:).call
   end
 
   private
@@ -39,6 +37,21 @@ class ApiOperation::WorkOrder
     [e.to_h]
   rescue StandardError => e
     [{ pointer: SubmissionTemplateResolver::POINTER, detail: e.message }]
+  end
+
+  # Validates the receptacles, gives the plates their purpose, then validates the options
+  # against the template, which may depend on the purpose.
+  # @return [Array<Hash>] the errors; empty if the work order is valid
+  def validate(template)
+    errors = Validation::Validation.new(@api_operation, requested_receptacles:).errors
+    return errors.map(&:to_h) if errors.any?
+
+    errors = assign_plate_purposes(template)
+    return errors if errors.any?
+
+    Validation::SubmissionTemplateValidation.new(
+      template, work_order['options'] || {}, requested_receptacles:
+    ).errors.map(&:to_h)
   end
 
   # The receptacles of the work order's requested labware, found once for all its steps.

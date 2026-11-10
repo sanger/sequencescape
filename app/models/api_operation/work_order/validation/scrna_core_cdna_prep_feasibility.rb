@@ -7,8 +7,8 @@
 # from a bulk submission spreadsheet. A work order is a single submission of one
 # study and project, so there is a single group of requested receptacles, and
 # its settings are the work order's options:
-# - scrna_core_number_of_pools
-# - scrna_core_cells_per_chip_well
+# - number_of_pools
+# - cells_per_chip_well
 #
 # Errors are reported when:
 # - the total number of samples is outside the configured range
@@ -20,14 +20,20 @@
 # enough material for the "full allowance" (2 full runs on the chip).
 #
 # The messages are the strings in the locale file.
-class ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
+class ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility # rubocop:todo Metrics/ClassLength
   include Submission::ScrnaCoreCdnaPrepFeasibilityCalculator
 
   I18N_SCOPE = 'submissions.scrna_core_cdna_prep_feasibility_validator'
   OPTIONS_POINTER = '/work_order/options/'
   IDENTIFIERS_POINTER = '/work_order/requested_labware_identifiers'
-  OPTION_POOLS = 'scrna_core_number_of_pools'
-  OPTION_CELLS = 'scrna_core_cells_per_chip_well'
+  OPTION_POOLS = 'number_of_pools'
+  OPTION_CELLS = 'cells_per_chip_well'
+  ALLOWANCE_BAND_RUNS_AND_COUNTS = [
+    [:two_pools_two_counts, 2, 2],
+    [:two_pools_one_count, 2, 1],
+    [:one_pool_two_counts, 1, 2],
+    [:one_pool_one_count, 1, 1]
+  ].freeze
 
   # @param requested_receptacles [ApiOperation::WorkOrder::RequestedReceptacles] the work order's receptacles
   # @param options [Hash] the work order's options
@@ -44,6 +50,17 @@ class ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
   # @return [Array<String>] the advice, only given when there are no errors
   def warnings
     errors.empty? ? full_allowance_warnings : []
+  end
+
+  # The allowance band of the work order, as BulkSubmission's allowance_band request option:
+  # the first band, from the biggest, that the final resuspension volume covers.
+  # @return [String, nil] e.g. '2 pool attempts, 2 counts'; nil if no band is covered
+  def allowance_band
+    final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
+    band, = ALLOWANCE_BAND_RUNS_AND_COUNTS.find do |_band, runs, counts|
+      final_resuspension_volume >= calculate_volume_needed(number_of_cells_per_chip_well, runs, counts)
+    end
+    ALLOWANCE_BANDS[band]
   end
 
   private
@@ -137,8 +154,11 @@ class ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
     receptacle.aliquots.first&.sample&.sample_metadata.try(:donor_id)
   end
 
+  def number_of_samples_in_smallest_pool
+    calculate_pool_size_types(number_of_samples, number_of_pools)['smallest']
+  end
+
   def full_allowance_warnings
-    number_of_samples_in_smallest_pool = calculate_pool_size_types(number_of_samples, number_of_pools)['smallest']
     final_resuspension_volume = calculate_resuspension_volume(number_of_samples_in_smallest_pool)
     full_allowance = calculate_volume_needed(number_of_cells_per_chip_well, 2, 2)
     return [] if final_resuspension_volume >= full_allowance

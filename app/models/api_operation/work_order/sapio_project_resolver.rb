@@ -19,7 +19,7 @@ class ApiOperation::WorkOrder::SapioProjectResolver
   private
 
   def find
-    Project.find_by_name(@name)
+    Project.find_by(name: @name)
   end
 
   def create
