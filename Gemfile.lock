@@ -239,7 +239,7 @@ GEM
     factory_bot_rails (6.5.1)
       factory_bot (~> 6.5)
       railties (>= 6.1.0)
-    faraday (2.15.0)
+    faraday (2.15.1)
       faraday-net_http (>= 2.0, < 3.6)
       json
       logger
@@ -299,7 +299,7 @@ GEM
       railties (>= 4.1)
     jsonapi-resources-matchers (1.0.0)
       jsonapi-resources (>= 0.9.0)
-    knapsack_pro (10.0.1)
+    knapsack_pro (11.0.0)
       rake
       thor (~> 1.4)
     language_server-protocol (3.17.0.6)
@@ -590,13 +590,11 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.46.0)
+    selenium-webdriver (4.52.0)
       base64 (~> 0.2)
       logger (~> 1.4)
-      rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 4.0)
       websocket (~> 1.0)
-    set (1.1.1)
     shoulda-context (3.0.0.rc1)
     shoulda-matchers (8.0.1)
       activesupport (>= 7.2)
@@ -605,9 +603,8 @@ GEM
     simplecov_json_formatter (0.1.4)
     simpleidn (0.3.0)
     slack-notifier (2.4.0)
-    sorted_set (1.0.3)
+    sorted_set (1.1.0)
       rbtree
-      set (~> 1.0)
     ssrf_filter (1.6.0)
     stringio (3.2.0)
     super_diff (0.19.0)
@@ -700,6 +697,7 @@ DEPENDENCIES
   acts-as-dag!
   after_commit_everywhere (~> 1.0)
   avro
+  benchmark
   bootsnap
   builder
   bullet
@@ -744,6 +742,7 @@ DEPENDENCIES
   mysql2
   net-ldap
   nokogiri
+  ostruct
   prettier_print
   pry-byebug
   pry-rails
