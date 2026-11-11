@@ -8,8 +8,10 @@
 # name may carry a sequencing platform suffix ("<mapped name> - <platform>"),
 # so the longest mapped name the template name starts with is used.
 #
-# Identifiers naming tubes are left alone: only plates have a plate purpose.
+# Only plates whose current purpose is 'Library Stock Plate' are given a mapped
+# purpose; other plates, and tubes, are left alone.
 class ApiOperation::WorkOrder::PlatePurposeResolver
+  STOCK_PURPOSE_NAME = 'Library Stock Plate'
   POINTER = '/work_order/requested_labware_identifiers'
   CONFIG_PATH = Rails.root.join('config/sapio_work_order/plate_purpose_mapping_by_submission.yml')
 
@@ -29,18 +31,25 @@ class ApiOperation::WorkOrder::PlatePurposeResolver
   end
 
   # Identifiers that name no usable receptacle are skipped; validation reports them.
-  # @return [Array<Plate>] the plates given the purpose
+  # @return [Array<Plate>] the Library Stock Plates given the purpose
   # @raise [ApiOperation::Error] if the template has no single mapped purpose,
   #   or the purpose doesn't exist
   def assign!
+    return [] if stock_plates.empty?
+
     purpose = plate_purpose
     return [] if purpose.nil?
 
-    plates.each { |plate| plate.update!(plate_purpose: purpose) }
+    stock_plates.each { |plate| plate.update!(plate_purpose: purpose) }
   end
 
   # @return [Array<Plate>] the distinct plates the identifiers name
   delegate :plates, to: :@requested_receptacles
+
+  # @return [Array<Plate>] those of the plates whose purpose is 'Library Stock Plate'
+  def stock_plates
+    @stock_plates ||= plates.select { |plate| plate.plate_purpose&.name == STOCK_PURPOSE_NAME }
+  end
 
   # @return [PlatePurpose, nil] nil if the template has no mapping
   def plate_purpose

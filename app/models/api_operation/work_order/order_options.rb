@@ -7,9 +7,6 @@
 # spreadsheet. Currently the scRNA Core cDNA Prep template has an
 # `allowance_band` option.
 class ApiOperation::WorkOrder::OrderOptions
-  # Options of the work order that are attributes of the order or submission rather than request options
-  NON_REQUEST_OPTIONS = %w[number_of_lanes priority comments pre_capture_group].freeze
-
   LIBRARY_TYPE_POINTER = '/work_order/options/library_type'
 
   # @param template [SubmissionTemplate] the template of the work order's service
@@ -27,11 +24,10 @@ class ApiOperation::WorkOrder::OrderOptions
     @all_options ||= @options.merge(calculated_options)
   end
 
-  # @return [Hash] the options the requests are made with: the order's options without those that
-  #   are attributes of the order or submission
+  # @return [Hash] the options the requests are made with: all the order's options
   def request_options
     options = { read_length: all_options['read_length'], multiplier: {} }
-      .merge(all_options.except('read_length', *NON_REQUEST_OPTIONS))
+      .merge(all_options.except('read_length'))
     options['library_type'] = library_type if options.key?('library_type')
     options.compact
   end

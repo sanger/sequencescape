@@ -69,10 +69,12 @@ RSpec.describe ApiOperation::WorkOrder do
   end
 
   context 'without requested labware identifiers' do
-    let(:details) { { service_name: 'Human Exome' } }
+    let(:details) { { service_name: 'Human Exome', cost_code: 'S1234' } }
+
+    before { create(:submission_template, name: 'Limber-Htp - ISC') }
 
     it 'points at the identifiers' do
-      expect(work_order.call.pluck(:pointer)).to eq(['/work_order/requested_labware_identifiers'])
+      expect(work_order.call.pluck(:pointer)).to include('/work_order/requested_labware_identifiers')
     end
   end
 

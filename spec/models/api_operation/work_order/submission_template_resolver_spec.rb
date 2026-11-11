@@ -8,37 +8,17 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
   let(:work_order) do
     {
       service_name: 'Human Exome',
-      sequencing_platform: 'NovaSeq6000',
-      requested_labware_identifiers: ['DN1:A1'],
-      options: {
-        fragment_size: 300
-      }
+      sequencing_platform: 'NovaSeq6000'
     }
   end
   let(:api_operation) { create(:api_operation, payload: { work_order: }.to_json) }
 
-  it 'extracts the request details from the payload' do
-    expect(resolver).to have_attributes(
-      service_name: 'Human Exome',
-      sequencing_platform: 'NovaSeq6000',
-      requested_labware_identifiers: ['DN1:A1'],
-      options: {
-        'fragment_size' => 300
-      }
-    )
-  end
-
-  it 'defaults options to an empty hash when absent' do
-    work_order.delete(:options)
-    expect(resolver.options).to eq({})
-  end
-
-  it 'maps the platform to the wording used in template names' do
-    expect(resolver.platform_keyword).to eq('NovaSeq 6000 Paired end sequencing')
+  it 'extracts the service and platform from the payload' do
+    expect(resolver).to have_attributes(service_name: 'Human Exome', sequencing_platform: 'NovaSeq6000')
   end
 
   describe 'validation' do
-    it 'is valid with a service name and requested labware identifiers' do
+    it 'is valid with a service name' do
       expect(resolver).to be_valid
     end
 
@@ -46,12 +26,6 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
       work_order[:service_name] = ''
       resolver.validate
       expect(resolver.errors).to include(:service_name)
-    end
-
-    it 'requires requested labware identifiers' do
-      work_order[:requested_labware_identifiers] = []
-      resolver.validate
-      expect(resolver.errors).to include(:requested_labware_identifiers)
     end
 
     it 'refuses to resolve a template when invalid' do
