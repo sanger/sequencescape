@@ -5,6 +5,9 @@ require 'rails_helper'
 RSpec.describe ApiOperation::CoordinatorJob do
   let(:api_operation) { create(:api_operation) }
 
+  # The reception is tested alone; the work order has its own context below
+  before { stub_const('ApiOperation::TASKS', { 'reception_and_work_order' => %w[reception] }) }
+
   def perform
     described_class.new(api_operation.id).perform
   end
@@ -478,6 +481,35 @@ RSpec.describe ApiOperation::CoordinatorJob do
           described_class.new(api_operation.id).failure(job)
           expect(api_operation.reload.status).to eq('reception_completed')
         end
+      end
+    end
+  end
+
+  context 'when the operation runs the reception, then the work order', :sapio_reception_enabled do
+    let(:reception) { instance_double(ApiOperation::Reception, call: []) }
+    let(:work_order_errors) { [] }
+    let(:work_order) { instance_double(ApiOperation::WorkOrder, call: work_order_errors) }
+
+    before do
+      stub_const('ApiOperation::TASKS', { 'reception_and_work_order' => %w[reception work_order] })
+      allow(ApiOperation::Reception).to receive(:new).and_return(reception)
+      allow(ApiOperation::WorkOrder).to receive(:new).and_return(work_order)
+      perform
+    end
+
+    it 'completes the work order after the reception' do
+      expect(api_operation.reload.status).to eq('work_order_completed')
+    end
+
+    context 'when the work order finds errors' do
+      let(:work_order_errors) { [{ pointer: '/work_order/cost_code', detail: 'cost_code is required' }] }
+
+      it 'fails the work order task and stores the errors' do
+        expect(api_operation.reload).to have_attributes(
+          status: 'work_order_failed',
+          error_details: { 'task' => 'work_order', 'errors' => [{ 'pointer' => '/work_order/cost_code',
+                                                                  'detail' => 'cost_code is required' }] }
+        )
       end
     end
   end

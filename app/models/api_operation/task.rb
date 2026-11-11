@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# A task of an ApiOperation: reception, and the work order in Y26-289.
+# A task of an ApiOperation: reception, and the work order.
 # ApiOperation::CoordinatorJob runs an operation's tasks in the order
 # ApiOperation::TASKS gives for its type, and records each one's outcome.
 # Each task is a subclass that does its work in #call and returns the errors
@@ -15,7 +15,7 @@ class ApiOperation::Task
   # @return [Class] the class of the task with that name
   # @raise [KeyError] if there is no task with that name
   def self.for(name)
-    { 'reception' => ApiOperation::Reception }.fetch(name)
+    { 'reception' => ApiOperation::Reception, 'work_order' => ApiOperation::WorkOrder }.fetch(name)
   end
 
   # @param api_operation [ApiOperation] the operation the task is part of

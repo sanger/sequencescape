@@ -131,10 +131,10 @@ RSpec.describe ApiOperation do
   describe 'statuses' do
     it 'lists the statuses of a combined request' do
       expect(api_operation.statuses)
-        .to eq(%w[queued reception_completed reception_failed])
+        .to eq(%w[queued reception_completed reception_failed work_order_completed work_order_failed])
     end
 
-    %w[queued reception_completed reception_failed].each do |status|
+    %w[queued reception_completed reception_failed work_order_completed work_order_failed].each do |status|
       it "accepts #{status}" do
         api_operation.status = status
         expect(api_operation).to be_valid

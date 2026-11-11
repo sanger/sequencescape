@@ -22,7 +22,7 @@
 # How it retries a task, and gives up on it, is in Retries.
 #
 # With the y26_283_sapio_reception feature flag off, it only logs that the
-# operation is ready. Work order processing is added by Y26-289.
+# operation is ready.
 class ApiOperation::CoordinatorJob
   include Retries
 
@@ -159,5 +159,10 @@ class ApiOperation::CoordinatorJob
     { pointer: '',
       detail: "#{task.humanize} could not be completed#{reason}; " \
               'PSD has been notified' }
+  end
+
+  # @return [Class] the class that runs the task
+  def task_class(task)
+    { 'reception' => ApiOperation::Reception, 'work_order' => ApiOperation::WorkOrder }.fetch(task)
   end
 end
