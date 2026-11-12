@@ -28,6 +28,8 @@ describe 'Batches controller', :js, :warren do
     post_drag = [requests_ids[2], requests_ids[0], requests_ids[1]]
     Warren.handler.clear_messages
     click_button('Save')
+    # Save posts in the background; the popup shows once the server is done.
+    expect(page).to have_text('Batch updated')
     request_list
       .all('tr')
       .each_with_index { |request, index| expect(request.text).to include((index + 1).to_s, post_drag[index].to_s) }
