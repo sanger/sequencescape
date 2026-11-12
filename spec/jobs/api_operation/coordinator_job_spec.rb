@@ -118,6 +118,47 @@ RSpec.describe ApiOperation::CoordinatorJob do
       end
     end
 
+    context 'when the reception writes a record, then finds errors' do
+      let(:written) { 'Written by the reception' }
+
+      before do
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: written)
+          [{ pointer: '/labware/0', detail: 'Barcode in use' }]
+        end
+        perform
+      end
+
+      it 'undoes what the reception wrote' do
+        expect(ReferenceGenome.exists?(name: written)).to be(false)
+      end
+
+      it 'records the reception as failed, with its errors' do
+        expect(api_operation.reload).to have_attributes(
+          status: 'reception_failed',
+          error_details: { 'task' => 'reception',
+                           'errors' => [{ 'pointer' => '/labware/0',
+                                          'detail' => 'Barcode in use' }] }
+        )
+      end
+    end
+
+    context 'when the reception writes a record and finds no errors' do
+      let(:written) { 'Written by the reception' }
+
+      before do
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: written)
+          []
+        end
+        perform
+      end
+
+      it 'keeps what the reception wrote' do
+        expect(ReferenceGenome.exists?(name: written)).to be(true)
+      end
+    end
+
     described_class::TRANSIENT_ERRORS.each do |error|
       context "when the reception raises #{error}" do
         before { allow(reception).to receive(:call).and_raise(error) }
@@ -130,6 +171,35 @@ RSpec.describe ApiOperation::CoordinatorJob do
           suppress(error) { perform }
           expect(api_operation.reload.status).to eq('queued')
         end
+      end
+    end
+
+    # On a deadlock MySQL rolls back the whole transaction, savepoint and all,
+    # and Rails marks the transaction invalid, so it doesn't roll back to the
+    # savepoint. Here a rollback to the task's savepoint fails, as it would
+    # against MySQL, and the deadlock must still reach Delayed Job. Only the
+    # task's savepoint is made to fail: in a test the job's own transaction is
+    # a savepoint too. The task writes first: Rails makes a savepoint in the
+    # database only at its first query, and rolls back only one it made.
+    context 'when a deadlock has rolled back the whole transaction' do
+      let(:connection) { ApiOperation.connection }
+
+      before do
+        allow(connection).to receive(:rollback_to_savepoint).and_call_original
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: 'Written before the deadlock')
+          transaction = connection.current_transaction
+          allow(connection).to receive(:rollback_to_savepoint)
+            .with(transaction.savepoint_name)
+            .and_raise(ActiveRecord::StatementInvalid,
+                       'SAVEPOINT does not exist')
+          transaction.invalidate!
+          raise ActiveRecord::Deadlocked
+        end
+      end
+
+      it 'passes the deadlock on, so Delayed Job runs the job again' do
+        expect { perform }.to raise_error(ActiveRecord::Deadlocked)
       end
     end
 
