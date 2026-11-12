@@ -12,6 +12,8 @@
 # the task's records, the operation's status and its outcome event commit
 # together, or none of them. Tasks (ApiOperation::Task) only do the work and
 # return their errors; the job records whether each task completed or failed.
+# A task that returns errors has what it wrote undone, so a failed task
+# leaves only its outcome: the status, the errors and the failed event.
 #
 # A task that raises rolls its transaction back. A transient error
 # (TRANSIENT_ERRORS) reaches Delayed Job, which runs the job again. Any other
@@ -115,10 +117,25 @@ class ApiOperation::CoordinatorJob
       api_operation.lock!
       next false unless api_operation.next_task == task
 
-      record_outcome(api_operation, task,
-                     ApiOperation::Task.for(task).new(api_operation).call)
+      record_outcome(api_operation, task, call_task(api_operation, task))
       true
     end
+  end
+
+  # Calls the task in a savepoint, and rolls back to it when the task returns
+  # errors, so what the task wrote is undone. The savepoint is inside the
+  # run's transaction: the operation stays locked, and nothing is committed
+  # until the outcome is recorded. A task that raises rolls back the whole
+  # transaction, as before.
+  #
+  # @return [Array<Hash>] the task's errors
+  def call_task(api_operation, task)
+    errors = nil
+    ApiOperation.transaction(requires_new: true) do
+      errors = ApiOperation::Task.for(task).new(api_operation).call
+      raise ActiveRecord::Rollback if errors.any?
+    end
+    errors
   end
 
   def record_outcome(api_operation, task, errors)
