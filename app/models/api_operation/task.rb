@@ -25,9 +25,10 @@ class ApiOperation::Task
 
   # Does the task's work. The job runs it in a transaction with the
   # operation's row locked, then records the outcome. When it returns
-  # errors, what it wrote is undone and only the failure is recorded. Check
-  # everything before writing anyway, so a request with problems does no
-  # work that is then thrown away.
+  # errors, what it wrote is undone and only the failure is recorded. That's
+  # a safety net: a task should still check everything before it writes, as
+  # reception does, so it reports every problem and doesn't create records
+  # only to undo them.
   #
   # @return [Array<Hash>] the errors, each with a :detail, and a :pointer (a
   #   JSON pointer) when it is about something in the payload; empty if the

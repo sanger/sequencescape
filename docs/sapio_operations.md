@@ -216,6 +216,10 @@ error for each problem, with a JSON Pointer into the request body and a
 detail. An empty pointer means the whole request. Y26-285 sends the
 outcome and these errors back to Integration Hub.
 
+A failed task keeps nothing it wrote: only its outcome, the status and
+these errors, is stored. Tasks that completed before it keep their
+records.
+
 ```json
 {
   "task": "reception",
@@ -409,9 +413,9 @@ labware and receptacle UUIDs aren't stored.
 
 **Samples.** Reception creates one sample for each `uuid`, so a sample in
 more than one receptacle is one sample. Each sample is externally managed:
-Sapio writes the warehouse records for it, so Sequencescape doesn't send
-the messages about it, its aliquots or its study link. The fields are
-stored as a sample manifest stores the matching fields:
+Sapio writes the warehouse record for it, so Sequencescape doesn't send its
+sample message. The fields are stored as a sample manifest stores the
+matching fields:
 
 | Request field                                      | The sample's                                              |
 | -------------------------------------------------- | --------------------------------------------------------- |
@@ -461,12 +465,17 @@ Reception doesn't accession the samples.
   sample metadata, volume, concentration, taxon ID, EBI accession number
   and genome size, are left to Sapio.
 - **Warehouse:** Sapio writes the warehouse (MLWH) records for its
-  samples. Sequencescape sends no messages about the received samples,
-  their aliquots or their study links. Its messages about the new labware
-  and wells aren't stored by the MLWH. When the samples are sequenced,
-  Sequencescape's flowcell messages name them by UUID, and the MLWH finds
-  a sample only by that UUID, so Sapio must have written the sample by
-  then. Reception keeps the request's sample UUIDs, so they match.
+  samples, so Sequencescape doesn't send their sample messages. Its
+  messages about the samples' aliquots and study links, and about the new
+  labware and wells, aren't stored by the MLWH: no queue takes aliquot or
+  study link messages, for any sample
+  ([Y26-331](https://github.com/sanger/sequencescape/issues/6197) removes
+  them), and the MLWH doesn't store labware or well messages. When the
+  samples are sequenced, Sequencescape's flowcell messages name them by
+  UUID, and the MLWH finds a sample only by that UUID, so Sapio must have
+  written the sample by then (the MLWH retries a message for about 15
+  minutes before giving up on it). Reception keeps the request's sample
+  UUIDs, so they match.
 - **For the callback:** an operation keeps its status, its events (each
   task's runs, and when it completed or failed) and its errors. Which
   labware reception created and which it matched isn't stored.
@@ -528,9 +537,14 @@ Reception doesn't accession the samples.
   1. A subclass of `ApiOperation::Task`. Its `#call` does the work and
      returns the errors, `[{ pointer:, detail: }]`, empty on success. The
      job runs it in a transaction with the operation's row locked, so its
-     records commit with the status or not at all. It raises for a problem
-     that isn't in the payload: a transient error is retried, and any other
-     fails the task and notifies PSD.
+     records commit with the status or not at all. When it returns errors,
+     the job rolls back what it wrote (a savepoint inside that
+     transaction) and records only the failure. That's a safety net: a
+     task should still check everything before it writes, as reception
+     does, so it reports every problem and doesn't create records only to
+     undo them. It raises for a problem that isn't in the payload: a
+     transient error is retried, and any other fails the task and notifies
+     PSD.
   2. Its line in `ApiOperation::Task.for`, which finds a task's class by
      its name.
   3. Its name in `ApiOperation::TASKS`, after the task it follows. This
