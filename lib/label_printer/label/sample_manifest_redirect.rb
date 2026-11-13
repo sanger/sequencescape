@@ -10,19 +10,25 @@ module LabelPrinter
         @options = options
       end
 
-      def labels # rubocop:todo Metrics/MethodLength
+      def labels
         case sample_manifest.asset_type
         when 'plate', 'library_plate'
-          if @printer_type_class.double_label?
-            SampleManifestPlateDouble.new(options).labels
-          else
-            SampleManifestPlate.new(options).labels
-          end
+          plate_labels
         when '1dtube', 'library', 'compound_tube'
           SampleManifestTube.new(options).labels
+        when 'compound_plate'
+          SampleManifestPlate.new(options).labels
         when 'multiplexed_library'
           SampleManifestMultiplex.new(options).labels
         end
+      end
+
+      private
+
+      def plate_labels
+        return SampleManifestPlateDouble.new(options).labels if @printer_type_class.double_label?
+
+        SampleManifestPlate.new(options).labels
       end
     end
   end

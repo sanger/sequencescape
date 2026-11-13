@@ -148,6 +148,8 @@ module SampleManifestExcel
           Upload::Processor::TubeRack.new(self)
         when 'compound_tube'
           Upload::Processor::CompoundTube.new(self)
+        when 'compound_plate'
+          Upload::Processor::CompoundPlate.new(self)
         else
           SequencescapeExcel::NullObjects::NullProcessor.new(self)
         end
