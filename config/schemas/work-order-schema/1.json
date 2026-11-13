@@ -134,6 +134,16 @@
               "minimum": 1,
               "description": "Number of lanes"
             },
+            "number_of_pools": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of pools requested (scRNA Core cDNA Prep)"
+            },
+            "cells_per_chip_well": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Number of cells per chip well (scRNA Core cDNA Prep)"
+            },
             "comments": {
               "type": "string",
               "description": "Comments for the work order"
