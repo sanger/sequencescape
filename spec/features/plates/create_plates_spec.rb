@@ -89,47 +89,53 @@ describe 'Printing new plate barcodes' do
       expect(page).to have_text('Create Plates')
       expect(page).to have_text('Barcode printer')
 
-      create_plates(purpose: 'Pulldown', user_barcode: nil)
-
+      expect { create_plates(purpose: 'Pulldown', user_barcode: nil) }.not_to change(Plate, :count)
       expect(page).to have_text('Please scan your user barcode')
     end
 
     it 'accepts a user barcode followed by a carriage return' do
       visit new_plate_path
       select 'No', from: 'Group results for reprinting barcodes?'
-      create_plates(purpose: 'Stock Plate', user_barcode: "#{jack_barcode}\n")
-
+      expect { create_plates(purpose: 'Stock Plate', user_barcode: "#{jack_barcode}\n") }
+        .to change(Plate, :count).by(1)
       expect(page).to have_text('Created plates successfully')
       expect(page).to have_current_path(plates_path)
     end
 
-    ['Pico Standard', 'Pulldown', 'Pico Assay Plates', 'Dilution Plates', 'Gel Dilution Plates',
-     'Stock Plate'].each do |purpose|
+    {
+      'Pico Standard' => 1,
+      'Pulldown' => 1,
+      'Pico Assay Plates' => 2,
+      'Dilution Plates' => 2,
+      'Gel Dilution Plates' => 1,
+      'Stock Plate' => 1
+    }.each do |purpose, plate_count|
       it "creates #{purpose} plates" do
         visit new_plate_path
-        create_plates(purpose:)
+        expect { create_plates(purpose:) }.to change(Plate, :count).by(plate_count)
 
         expect(page).to have_text('Created plates successfully')
         expect(page).to have_current_path(plates_path)
       end
     end
 
-    {
-      'Working dilution' => 'Stock Plate',
-      'Pico dilution' => 'Working Dilution',
-      'Pico Assay Plates' => 'Pico Dilution'
-    }.each do |purpose, parent_purpose|
+    [
+      ['Working dilution', 'Stock Plate', 1],
+      ['Pico dilution', 'Working Dilution', 1],
+      ['Pico Assay Plates', 'Pico Dilution', 2]
+    ].each do |purpose, parent_purpose, plate_count|
       it "creates #{purpose} plates from scratch but not from a Cherrypicked plate" do
         create_plate('1221234567841', purpose: purposes.fetch(parent_purpose))
         create_plate('1220001454858', purpose: purposes.fetch('Cherrypicked'))
 
         visit new_plate_path
         expect(page).to have_text('Create Plates')
-        create_plates(purpose:)
+        expect { create_plates(purpose:) }.to change(Plate, :count).by(plate_count)
         expect(page).to have_text('Created plates successfully')
         expect(page).to have_current_path(plates_path)
 
-        create_plates(purpose: purpose, source_plates: '1220001454858')
+        # The success message is still in the flash, so the plate count proves nothing was created
+        expect { create_plates(purpose: purpose, source_plates: '1220001454858') }.not_to change(Plate, :count)
         expect(page).to have_text('Scanned plate 1220001454858 has a purpose Cherrypicked not valid')
         expect(page).to have_current_path(plates_path)
       end
@@ -143,15 +149,16 @@ describe 'Printing new plate barcodes' do
       visit new_plate_path
       expect(page).to have_text('Create Plates')
 
+      # The success message stays in the flash after each submission, so check the plate count on every step
       [
-        ['Pico Standard', nil],
-        ['Stock Plate', 'SQPD-1454'],
-        ['Working dilution', 'SQPD-1234567'],
-        ['Pico dilution', 'SQPD-1234567-1'],
-        ['Pico Assay Plates', 'SQPD-1234567-2'],
-        ['Gel Dilution Plates', 'SQPD-1234567-1']
-      ].each do |purpose, source_plates|
-        create_plates(purpose:, source_plates:)
+        ['Pico Standard', nil, 1],
+        ['Stock Plate', 'SQPD-1454', 1],
+        ['Working dilution', 'SQPD-1234567', 1],
+        ['Pico dilution', 'SQPD-1234567-1', 1],
+        ['Pico Assay Plates', 'SQPD-1234567-2', 2],
+        ['Gel Dilution Plates', 'SQPD-1234567-1', 1]
+      ].each do |purpose, source_plates, plate_count|
+        expect { create_plates(purpose:, source_plates:) }.to change(Plate, :count).by(plate_count)
         expect(page).to have_text('Created plates successfully')
       end
 
@@ -190,8 +197,7 @@ describe 'Printing new plate barcodes' do
       expect(page).to have_text('Create Plates')
       expect(page).to have_text('Barcode printer')
 
-      create_plates(purpose: 'Pulldown')
-
+      expect { create_plates(purpose: 'Pulldown') }.to change(Plate, :count).by(1)
       expect(page).to have_text('Barcode labels failed to print')
     end
   end

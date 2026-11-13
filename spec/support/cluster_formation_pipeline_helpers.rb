@@ -4,9 +4,12 @@
 # so these helpers build an equivalent pipeline and requests waiting in its inbox.
 # Include it in a spec with `include ClusterFormationPipelineHelpers`.
 module ClusterFormationPipelineHelpers
-  def create_cluster_formation_pipeline(name, task_names: ['Specify Dilution Volume'])
+  # The sequencing pipeline factory always adds a control request type. Set the controls argument to false to remove it,
+  # like the seeded 'Cluster formation SE (no controls)' pipeline.
+  def create_cluster_formation_pipeline(name, task_names: ['Specify Dilution Volume'], controls: true)
     pipeline =
       create(:sequencing_pipeline, name: name, workflow: build(:lab_workflow_for_pipeline, name: name, item_limit: 8))
+    pipeline.update!(control_request_type: nil) unless controls
     task_names.each.with_index(1) do |task_name, sorted|
       create(:set_descriptors_task, name: task_name, workflow: pipeline.workflow, sorted: sorted, batched: true)
     end

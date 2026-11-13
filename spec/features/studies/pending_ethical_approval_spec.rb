@@ -43,10 +43,14 @@ describe 'Studies pending ethical approval', :js do
   # A study needs ethical approval only when it contains human DNA, is not contaminated with human DNA
   # and its samples are not commercially available.
   it 'lists a study with human DNA that is not contaminated and not commercially available' do
+    # The default 'Interesting' list already shows the studies this user manages. This study must disappear
+    # once the 'Pending ethical approval' list loads, which proves the assertions run against the new list.
+    create(:study, name: 'study not pending approval').tap { |study| user.grant_manager(study) }
     create_study(human_dna: 'Yes', contaminated_dna: 'No', commercially_available: 'No')
     list_studies_pending_ethical_approval
 
     expect(page).to have_css('table#study_list a', text: 'new study')
+    expect(page).to have_no_css('table#study_list a', text: 'study not pending approval')
   end
 
   [

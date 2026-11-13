@@ -7,7 +7,7 @@ describe 'Creating a batch in the Cluster formation SE (no controls) pipeline' d
   include ClusterFormationPipelineHelpers
 
   let(:user) { create(:admin, login: 'John Smith') }
-  let(:pipeline) { create_cluster_formation_pipeline('Cluster formation SE (no controls)') }
+  let(:pipeline) { create_cluster_formation_pipeline('Cluster formation SE (no controls)', controls: false) }
   let!(:requests) { Array.new(pipeline.workflow.item_limit) { create_cluster_formation_request(pipeline) } }
 
   it 'creates a batch of eight requests and shows the first task' do
@@ -20,6 +20,7 @@ describe 'Creating a batch in the Cluster formation SE (no controls) pipeline' d
     first(:button, 'Submit').click
 
     expect(page).to have_text('Specify Dilution Volume')
-    expect(Batch.last.requests).to include(*requests)
+    expect(pipeline.reload.control_request_type).to be_nil
+    expect(Batch.last.requests).to match_array(requests)
   end
 end
