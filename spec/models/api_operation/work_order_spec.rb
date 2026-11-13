@@ -90,9 +90,14 @@ RSpec.describe ApiOperation::WorkOrder do
   context 'with a service configured as N/A' do
     let(:details) { { service_name: 'Long Read Amplicon- PacBio' } }
 
-    it 'does nothing and reports no errors' do
-      allow(ApiOperation::WorkOrder::SubmissionCreation).to receive(:new)
+    before { allow(ApiOperation::WorkOrder::SubmissionCreation).to receive(:new) }
+
+    it 'reports no errors' do
       expect(work_order.call).to eq([])
+    end
+
+    it 'does not create a submission' do
+      work_order.call
       expect(ApiOperation::WorkOrder::SubmissionCreation).not_to have_received(:new)
     end
   end

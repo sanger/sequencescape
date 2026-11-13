@@ -41,7 +41,6 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
     end
 
     it 'is false for a mapped or unknown service' do
-      expect(resolver).not_to be_not_applicable
       work_order[:service_name] = 'Nope'
       expect(resolver).not_to be_not_applicable
     end

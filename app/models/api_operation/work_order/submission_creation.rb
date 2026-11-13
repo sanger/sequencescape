@@ -37,7 +37,7 @@ class ApiOperation::WorkOrder::SubmissionCreation
   # the orders for the requested receptacles, then the submission of that order.
   # @return [Array<Hash>] the problems, each with a :pointer and :detail; empty if the submission was built
   def call
-    submission = Submission.create!(name: external_id, user: user, orders: orders, priority: priority)
+    Submission.create!(name: external_id, user: user, orders: orders, priority: priority)
     []
   rescue ApiOperation::Error => e
     [e.to_h]
