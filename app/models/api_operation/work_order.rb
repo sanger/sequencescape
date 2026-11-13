@@ -2,6 +2,9 @@
 
 # The work_order task of an ApiOperation, run by ApiOperation::CoordinatorJob
 # after reception. For the work order in the operation's payload it:
+# Services configured as N/A (e.g. Long Read Amplicon- PacBio) need nothing from
+# Sequencescape: the task completes without creating a submission.
+#
 # 1. resolves the submission template (SubmissionTemplateResolver);
 # 2. finds or creates the project of its cost code (SapioProjectResolver);
 # 3. validates it: the required fields and requested labware (Validation::Validation),
@@ -17,6 +20,7 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   #   the part of the payload; empty if the submission was created
   def call
     return validation_errors unless resolver.valid?
+    return [] if resolver.not_applicable?
 
     template = find_template
     return template if template.is_a?(Array)
@@ -33,13 +37,12 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   private
 
   # @return [SubmissionTemplate, Array<Hash>] the template, or the error if
-  #   the service is unmapped or ambiguous, or its template is missing or deprecated
+  #   the service is unmapped or ambiguous, or its template is missing or deprecated.
+  #   Any other error is unexpected and left to the coordinator.
   def find_template
     resolver.submission_template
   rescue ApiOperation::Error => e
     [e.to_h]
-  rescue StandardError => e
-    [{ pointer: SubmissionTemplateResolver::POINTER, detail: e.message }]
   end
 
   # @return [Project, Array<Hash>] the project of the work order's cost code, or the error

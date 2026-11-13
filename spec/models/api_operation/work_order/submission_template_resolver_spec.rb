@@ -34,6 +34,19 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
     end
   end
 
+  describe '#not_applicable?' do
+    it 'is true for a service configured as N/A' do
+      work_order[:service_name] = 'Long Read Amplicon- PacBio'
+      expect(resolver).to be_not_applicable
+    end
+
+    it 'is false for a mapped or unknown service' do
+      expect(resolver).not_to be_not_applicable
+      work_order[:service_name] = 'Nope'
+      expect(resolver).not_to be_not_applicable
+    end
+  end
+
   describe '#submission_template' do
     let!(:expected) { create(:submission_template, name: 'Limber-Htp - ISC - NovaSeq 6000 Paired end sequencing') }
 
@@ -56,14 +69,14 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
 
     it 'raises when the template does not exist' do
       work_order[:sequencing_platform] = 'MiSeq'
-      expect { resolver.submission_template }.to raise_error(StandardError, /Cannot find template/)
+      expect { resolver.submission_template }.to raise_error(ApiOperation::Error, /Cannot find template/)
     end
 
     it 'raises when the template is deprecated' do
       work_order[:service_name] = 'Custom panel ultra low input DNA (LCMB) - FS-shear'
       work_order.delete(:sequencing_platform)
       create(:submission_template, name: 'Limber-Htp - LCMB', superceded_by_id: 1)
-      expect { resolver.submission_template }.to raise_error(StandardError, /deprecated/)
+      expect { resolver.submission_template }.to raise_error(ApiOperation::Error, /deprecated/)
     end
   end
 end

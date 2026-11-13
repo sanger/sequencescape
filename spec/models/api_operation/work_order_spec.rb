@@ -87,6 +87,16 @@ RSpec.describe ApiOperation::WorkOrder do
     end
   end
 
+  context 'with a service configured as N/A' do
+    let(:details) { { service_name: 'Long Read Amplicon- PacBio' } }
+
+    it 'does nothing and reports no errors' do
+      allow(ApiOperation::WorkOrder::SubmissionCreation).to receive(:new)
+      expect(work_order.call).to eq([])
+      expect(ApiOperation::WorkOrder::SubmissionCreation).not_to have_received(:new)
+    end
+  end
+
   context 'when the template does not exist' do
     it 'reports the missing template' do
       expect(work_order.call.first[:detail]).to include('Cannot find template')

@@ -38,7 +38,6 @@ class ApiOperation::WorkOrder::SubmissionCreation
   # @return [Array<Hash>] the problems, each with a :pointer and :detail; empty if the submission was built
   def call
     submission = Submission.create!(name: external_id, user: user, orders: orders, priority: priority)
-    submission.built!
     []
   rescue ApiOperation::Error => e
     [e.to_h]

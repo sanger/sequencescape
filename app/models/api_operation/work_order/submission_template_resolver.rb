@@ -14,6 +14,9 @@ class ApiOperation::WorkOrder::SubmissionTemplateResolver
   POINTER = '/work_order/service_name'
   CONFIG_PATH = Rails.root.join('config/sapio_work_order/sapio_submission_templates.yml')
 
+  # Configured for services that Sequencescape does not handle (e.g. Long Read Amplicon- PacBio).
+  NOT_APPLICABLE = 'N/A'
+
   # Sapio sequencing_platform values, as they appear in submission template names.
   PLATFORM_KEYWORDS = {
     'Aviti' => 'Element Aviti sequencing',
@@ -41,16 +44,29 @@ class ApiOperation::WorkOrder::SubmissionTemplateResolver
     @sequencing_platform = work_order['sequencing_platform']
   end
 
+  # @return [Boolean] true if the service is configured as N/A: Sequencescape has nothing to do for it
+  def not_applicable?
+    self.class.mapping.fetch(service_name.to_s.strip, nil) == [NOT_APPLICABLE]
+  end
+
   # @return [SubmissionTemplate]
   # @raise [ActiveModel::ValidationError] if service_name is missing
-  # @raise [ApiOperation::Error] if the service is not mapped, or unless the service has exactly one configured name
-  # @raise [StandardError] if the template is missing or deprecated (from BulkSubmission#find_template)
+  # @raise [ApiOperation::Error] if the service is not mapped, or unless the service has exactly one configured name,
+  #   or if the template is missing or deprecated
   def submission_template
     validate!
-    BulkSubmission.new.find_template(template_name)
+    find_template(template_name)
   end
 
   private
+
+  def find_template(name)
+    template = SubmissionTemplate.find_by(name:)
+    raise ApiOperation::Error.new(POINTER, "Cannot find template #{name}") unless template
+    return template if template.visible
+
+    raise ApiOperation::Error.new(POINTER, "Template: '#{name}' is deprecated and no longer in use.")
+  end
 
   def template_name
     base_name = configured_name
