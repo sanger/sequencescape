@@ -13,7 +13,7 @@ describe 'Printing new plate barcodes' do
   let(:purposes) do
     ['Pico Standard', 'Pulldown', 'Working Dilution', 'Pico Dilution', 'Pico Assay A', 'Pico Assay B',
      'Gel Dilution', 'Cherrypicked'].index_with { |name| create(:plate_purpose, name:) }
-      .merge('Stock Plate' => create(:stock_plate_purpose, name: 'Stock Plate'))
+                                    .merge('Stock Plate' => create(:stock_plate_purpose, name: 'Stock Plate'))
   end
 
   def create_plate_creator(name, purpose_names, parent_purpose_names: [])
@@ -44,6 +44,15 @@ describe 'Printing new plate barcodes' do
     fill_in 'User barcode', with: user_barcode if user_barcode
     select 'xyz', from: 'Barcode printer'
     click_button 'Submit'
+  end
+
+  # The plate form uses select2, which hides the native selects in a JavaScript browser
+  def choose_select2_option(select_id, text)
+    execute_script(<<~JS, select_id, text)
+      const select = document.getElementById(arguments[0]);
+      select.value = Array.from(select.options).find((option) => option.text === arguments[1]).value;
+      select.dispatchEvent(new Event('change', { bubbles: true }));
+    JS
   end
 
   def events_for(barcode)
@@ -93,13 +102,23 @@ describe 'Printing new plate barcodes' do
       expect(page).to have_text('Please scan your user barcode')
     end
 
-    it 'accepts a user barcode followed by a carriage return' do
+    # Barcode scanners append a carriage return. The page JS stops it from submitting the form
+    # and moves the focus to the source plates field instead.
+    it 'moves to the source plates field when the user barcode ends with a carriage return', :js do
       visit new_plate_path
-      select 'No', from: 'Group results for reprinting barcodes?'
-      expect { create_plates(purpose: 'Stock Plate', user_barcode: "#{jack_barcode}\n") }
-        .to change(Plate, :count).by(1)
-      expect(page).to have_text('Created plates successfully')
-      expect(page).to have_current_path(plates_path)
+      fill_in 'User barcode', with: "#{jack_barcode}\n"
+
+      expect(page).to have_css('#plates_source_plates:focus')
+      expect(page).to have_field('User barcode', with: jack_barcode)
+      expect(page).to have_current_path(new_plate_path)
+
+      choose_select2_option('plates_creator_id', 'Stock Plate')
+      choose_select2_option('plates_barcode_printer', 'xyz')
+      choose_select2_option('plates_create_asset_group', 'No')
+      expect do
+        click_button 'Submit'
+        expect(page).to have_text('Created plates successfully')
+      end.to change(Plate, :count).by(1)
     end
 
     {
@@ -169,19 +188,19 @@ describe 'Printing new plate barcodes' do
       expect(events_for('SQPD-1234567')).to eq([event('Created child Working Dilution plate')])
       expect(events_for('SQPD-1454')).to eq([event('Created child Stock Plate plate')])
       expect(events_for('SQPD-1234567-2')).to eq(
-        [
-          event('Created Pico Dilution plate'),
-          event('Created child Pico Assay A plate'),
-          event('Created child Pico Assay B plate')
-        ]
-      )
+                                                [
+                                                  event('Created Pico Dilution plate'),
+                                                  event('Created child Pico Assay A plate'),
+                                                  event('Created child Pico Assay B plate')
+                                                ]
+                                              )
       expect(events_for('SQPD-1234567-1')).to eq(
-        [
-          event('Created Working Dilution plate'),
-          event('Created child Pico Dilution plate'),
-          event('Created child Gel Dilution plate')
-        ]
-      )
+                                                [
+                                                  event('Created Working Dilution plate'),
+                                                  event('Created child Pico Dilution plate'),
+                                                  event('Created child Gel Dilution plate')
+                                                ]
+                                              )
       expect(events_for('SQPD-1234567-3')).to eq([event('Created Pico Assay A plate')])
       expect(events_for('SQPD-1234567-4')).to eq([event('Created Pico Assay B plate')])
       expect(events_for('SQPD-1234567-5')).to eq([event('Created Gel Dilution plate')])
