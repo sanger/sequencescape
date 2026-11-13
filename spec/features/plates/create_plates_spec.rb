@@ -13,7 +13,7 @@ describe 'Printing new plate barcodes' do
   let(:purposes) do
     ['Pico Standard', 'Pulldown', 'Working Dilution', 'Pico Dilution', 'Pico Assay A', 'Pico Assay B',
      'Gel Dilution', 'Cherrypicked'].index_with { |name| create(:plate_purpose, name:) }
-                                    .merge('Stock Plate' => create(:stock_plate_purpose, name: 'Stock Plate'))
+      .merge('Stock Plate' => create(:stock_plate_purpose, name: 'Stock Plate'))
   end
 
   def create_plate_creator(name, purpose_names, parent_purpose_names: [])
@@ -188,19 +188,19 @@ describe 'Printing new plate barcodes' do
       expect(events_for('SQPD-1234567')).to eq([event('Created child Working Dilution plate')])
       expect(events_for('SQPD-1454')).to eq([event('Created child Stock Plate plate')])
       expect(events_for('SQPD-1234567-2')).to eq(
-                                                [
-                                                  event('Created Pico Dilution plate'),
-                                                  event('Created child Pico Assay A plate'),
-                                                  event('Created child Pico Assay B plate')
-                                                ]
-                                              )
+        [
+          event('Created Pico Dilution plate'),
+          event('Created child Pico Assay A plate'),
+          event('Created child Pico Assay B plate')
+        ]
+      )
       expect(events_for('SQPD-1234567-1')).to eq(
-                                                [
-                                                  event('Created Working Dilution plate'),
-                                                  event('Created child Pico Dilution plate'),
-                                                  event('Created child Gel Dilution plate')
-                                                ]
-                                              )
+        [
+          event('Created Working Dilution plate'),
+          event('Created child Pico Dilution plate'),
+          event('Created child Gel Dilution plate')
+        ]
+      )
       expect(events_for('SQPD-1234567-3')).to eq([event('Created Pico Assay A plate')])
       expect(events_for('SQPD-1234567-4')).to eq([event('Created Pico Assay B plate')])
       expect(events_for('SQPD-1234567-5')).to eq([event('Created Gel Dilution plate')])
