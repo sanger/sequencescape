@@ -20,8 +20,10 @@ class PlateTemplateTask < Task
             request_id = mapped_wells[i]
             if request_id.present?
               asset = requests[request_id].asset
-              barcodes << asset.plate.barcode_number
-              [request_id, asset.plate.barcode_number, asset.display_name]
+              # The plate's number, or its whole barcode when it has no number
+              barcode = asset.plate.barcode_number || asset.plate.human_barcode
+              barcodes << barcode
+              [request_id, barcode, asset.display_name]
             else
               CherrypickTask::EMPTY_WELL
             end

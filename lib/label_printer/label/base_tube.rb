@@ -19,8 +19,9 @@ module LabelPrinter
       def first_line(tube)
       end
 
+      # The barcode's number, or the whole barcode when it has no number
       def second_line(tube)
-        tube.barcode_number
+        tube.barcode_number || tube.human_barcode
       end
 
       def third_line(_tube)
@@ -31,8 +32,9 @@ module LabelPrinter
         tube.prefix
       end
 
+      # The barcode's number, or the whole barcode when it has no number
       def round_label_bottom_line(tube)
-        tube.barcode_number
+        tube.barcode_number || tube.human_barcode
       end
 
       def barcode(tube)
