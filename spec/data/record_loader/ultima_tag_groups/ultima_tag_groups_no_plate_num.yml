@@ -1,0 +1,8 @@
+---
+# Ultima gives no plate number for this tag group.
+Ultima Spec Group:
+  barcode_plate_num: ~
+  ultima_tags:
+    1: { index_barcode_num: Z5001, barcode_plate_well: A1 }
+    2: { index_barcode_num: Z5005, barcode_plate_well: B1 }
+    3: { index_barcode_num: Z5014, barcode_plate_well: C1 }

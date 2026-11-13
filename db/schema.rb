@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_06_180252) do
   create_table "accession_sample_statuses", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", force: :cascade do |t|
     t.integer "sample_id", null: false
     t.string "status", null: false
@@ -1911,6 +1911,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "ultima_tag_groups", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Ultima data for a tag group in tag_groups, one row per Ultima tag group", force: :cascade do |t|
+    t.integer "tag_group_id", null: false, comment: "The tag group this Ultima data is for"
+    t.integer "barcode_plate_num", comment: "Barcode_Plate_Num in Ultima sample sheets, e.g. 1; NULL when Ultima gives no plate number, and then the sheet leaves the column out"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_group_id"], name: "index_ultima_tag_groups_on_tag_group_id", unique: true
+  end
+
+  create_table "ultima_tags", charset: "utf8mb4", collation: "utf8mb4_unicode_ci", comment: "Ultima data for a tag in tags, one row per tag in an Ultima tag group", force: :cascade do |t|
+    t.integer "tag_id", null: false, comment: "The tag this Ultima data is for"
+    t.string "index_barcode_num", null: false, comment: "Index_Barcode_Num (Z number) in Ultima sample sheets, e.g. Z0001"
+    t.string "barcode_plate_well", null: false, comment: "Barcode_Plate_Well in Ultima sample sheets, e.g. A1"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tag_id"], name: "index_ultima_tags_on_tag_id", unique: true
+  end
+
   create_table "users", id: :integer, charset: "utf8mb4", collation: "utf8mb4_unicode_ci", options: "ENGINE=InnoDB ROW_FORMAT=DYNAMIC", force: :cascade do |t|
     t.string "login"
     t.string "email"
@@ -2101,6 +2118,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_10_15_144018) do
   add_foreign_key "ultima_applications", "ultima_presets", column: "ug200_preset_id", name: "fk_ultima_apps_on_ug200_preset"
   add_foreign_key "ultima_applications", "ultima_primers", column: "uga_primer_id", name: "fk_ultima_apps_on_uga_primer"
   add_foreign_key "ultima_applications", "ultima_primers", column: "ugb_primer_id", name: "fk_ultima_apps_on_ugb_primer"
+  add_foreign_key "ultima_tag_groups", "tag_groups"
+  add_foreign_key "ultima_tags", "tags"
   add_foreign_key "work_completions", "labware", column: "target_id"
   add_foreign_key "work_completions", "users"
   add_foreign_key "work_completions_submissions", "submissions"
