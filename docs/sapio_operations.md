@@ -185,6 +185,301 @@ Two payloads are the same when they hold the same JSON data:
 - Array order, values, and whether a number is an integer or a decimal (`1`
   or `1.0`) do.
 
+## After the 202
+
+Sequencescape processes the operation in the background, one task after
+another: the labware reception, then the work order (Y26-289). Operations
+stay `queued` while reception is switched off (the
+`y26_283_sapio_reception` feature flag).
+
+### Statuses
+
+| Status                | Meaning                                                                           |
+| --------------------- | --------------------------------------------------------------------------------- |
+| `queued`              | Accepted; no task has completed, including while reception runs or waits to retry |
+| `reception_completed` | The labware and its samples are in Sequencescape                                  |
+| `reception_failed`    | Reception failed and kept nothing; the operation's errors say why                 |
+
+The status names the last task completed or failed: there is no status
+for a task in progress. Sending the request again with the same request
+ID returns the operation with its current status (200).
+
+A failed operation isn't processed again, and a corrected payload under the
+same request ID is a conflict (409). A corrected request needs a new
+request ID. When an earlier attempt's reception completed, the new
+request's reception finds the labware it created and leaves it as it is.
+
+### Errors
+
+A failed task's errors are stored with the operation: the task, and one
+error for each problem, with a JSON Pointer into the request body and a
+detail. An empty pointer means the whole request. Y26-285 sends the
+outcome and these errors back to Integration Hub.
+
+A failed task keeps nothing it wrote: only its outcome, the status and
+these errors, is stored. Tasks that completed before it keep their
+records.
+
+```json
+{
+  "task": "reception",
+  "errors": [
+    {
+      "pointer": "/labware/0/receptacles/0/samples/0/study_uuid",
+      "detail": "No study with UUID 6f1c1d2e-0000-4000-8000-000000000004 (used by 1 sample)"
+    }
+  ]
+}
+```
+
+A task fails for one of three reasons:
+
+- **Problems in the request**, such as an unknown study, or labware that
+  doesn't match what Sequencescape already has. Reception checks the whole
+  request first and reports every problem it finds, each with its pointer.
+  It creates nothing.
+- **A temporary problem in Sequencescape** that doesn't clear (see Retries,
+  below): pointer `""`, detail "Reception could not be
+  completed because of a temporary problem in Sequencescape; send the
+  request again with a new request ID".
+- **An error in Sequencescape**: pointer `""`, detail "Reception could not
+  be completed because of an error in Sequencescape; PSD has been
+  notified". When a record breaks a rule reception's checks don't cover,
+  the detail gives the rule's message instead: "Reception could not be
+  completed: Validation failed: …; PSD has been notified".
+
+### Retries
+
+Each task runs in a database transaction of its own: what it creates, the
+operation's status and its errors are saved together, or not at all. A
+temporary problem in Sequencescape rolls the task back, and the job runs
+it again later. These problems are a deadlock, a lock wait timeout, a
+lost or refused database connection, and a record that another request
+saved at the same moment.
+
+The job that processes an operation runs its tasks at most 10 times in
+all: the limit is per operation, so reception and the work order share
+it. A run that completes reception and goes on to the work order counts
+once for each. The waits between runs start at 30 seconds and double, up
+to 1 hour:
+
+| Run | Wait before it | Starts at, from the first run |
+| --- | -------------- | ----------------------------- |
+| 1   |                | 0:00:00                       |
+| 2   | 30 s           | 0:00:30                       |
+| 3   | 1 min          | 0:01:30                       |
+| 4   | 2 min          | 0:03:30                       |
+| 5   | 4 min          | 0:07:30                       |
+| 6   | 8 min          | 0:15:30                       |
+| 7   | 16 min         | 0:31:30                       |
+| 8   | 32 min         | 1:03:30                       |
+| 9   | 1 h            | 2:03:30                       |
+| 10  | 1 h            | 3:03:30                       |
+
+The times leave out how long each run takes. If the 10th run fails, the
+task it was running fails with the temporary problem error, and PSD gets
+one message.
+
+When a run is stopped part way, for example when a deployment restarts
+the workers, the task it was running saves nothing. Another worker runs
+the job again once its lock has expired, about 4 hours after the run
+started (Delayed Job's `max_run_time`). That run counts as one of the 10.
+
+Other errors in Sequencescape aren't retried, as the same run would fail
+the same way. ([One endpoint or two?][one_endpoint_or_two] expected
+Delayed Job to retry them.)
+
+[one_endpoint_or_two]: https://ssg-confluence.internal.sanger.ac.uk/spaces/PSDPUB/pages/365756493
+
+## Reception
+
+Reception sorts the request's labware into labware Sequencescape already
+has and new labware ([ADR 074][adr_074]). It checks the whole request, and
+creates the new labware and its samples only when it finds no problems.
+
+[adr_074]: https://ssg-confluence.internal.sanger.ac.uk/spaces/SLIM/pages/354943562
+
+### Labware Sequencescape already has
+
+A labware is known when its barcode is any of a Sequencescape labware's
+barcodes, whatever else the request says about it. A barcode Sequencescape
+doesn't have is new labware, even when its samples' supplier names match
+samples in Sequencescape.
+
+Known labware must be the same as in Sequencescape:
+
+- the same type, a plate or a tube, and for a plate the same number of
+  wells;
+- in each well, or in the tube, the same number of samples, with the same
+  supplier sample names, in any order. A well the request doesn't list
+  counts as empty.
+
+Known labware that is the same is left as it is. Reception doesn't check,
+change or add to it, or its samples, and doesn't store the request's UUIDs
+for them. Known labware that isn't the same is a conflict, and the
+operation fails. For example:
+
+| Pointer                    | Detail                                                                  |
+| -------------------------- | ----------------------------------------------------------------------- |
+| `/labware/0/type`          | TUBE-1 is a 96-well plate in Sequencescape, not a tube                  |
+| `/labware/1/receptacles/2` | well C1 of PLATE-1 has 2 samples in Sequencescape, not 1 sample         |
+| `/labware/1/receptacles/3` | well D1 of PLATE-1 has different supplier sample names in Sequencescape |
+| `/labware/1`               | well E1 of PLATE-1 has 1 sample in Sequencescape, not 0 samples         |
+
+The last is a well that has a sample in Sequencescape but isn't in the
+request, so its error points at the labware.
+
+### Checks on new labware
+
+Reception checks the new labware and its samples before it creates
+anything, and reports every problem it finds. A name Sequencescape doesn't
+have, such as an unknown study or tag group, is reported once, at the
+first sample that uses it, with how many samples do: one wrong value in a
+large request gives one error.
+
+**Labware:**
+
+- Each barcode appears once in the request, known labware included.
+- New 384-well plates aren't supported by reception.
+- A new tube has one receptacle, with a `null` position.
+- A new plate's positions are wells of its size, each listed once.
+
+**Samples:**
+
+- The study (`study_uuid`) exists. Its state isn't checked.
+- The sample's `uuid` isn't used by any record in Sequencescape. Its
+  `sanger_sample_id` isn't already a sample's Sanger sample ID or name,
+  ignoring case, and no two samples in the request share one.
+- A sample in more than one receptacle (the same `uuid`) has the same
+  `sanger_sample_id`, `supplier_sample_name` and `study_uuid` in each. It
+  becomes one sample.
+- A sample in one receptacle more than once has tags in all but one.
+- The values the sample's records would reject: `sanger_sample_id`, which
+  becomes the sample's name, has only letters, digits, `_` and `-`; the
+  supplier sample name has only ASCII characters and isn't blank;
+  `donor_id` has no characters of more than 3 bytes, such as emoji.
+
+**Fields a sample manifest also has**, checked as the manifest's
+specialised field checks them (`SequencescapeExcel::SpecialisedField`,
+`SampleManifestExcel::Tags::Validator`). Rules marked \* are reception's
+own: a manifest has one column for each, so they can't contradict.
+
+| Fields                                               | Rule                                                                                                                                                                           | Manifest rule                                    |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| `reference_genome`                                   | An existing reference genome, ignoring case                                                                                                                                    | `ReferenceGenome`                                |
+| `library_type`, `library_type_long_read`             | An existing library type, ignoring case; the same when both are given\*                                                                                                        | `LibraryType`                                    |
+| `primer_panel`                                       | An existing primer panel, ignoring case                                                                                                                                        | `PrimerPanel`                                    |
+| `insert_size_from`, `insert_size_to`                 | Whole numbers of at least 1 (the schema checks this); from is at most to when both are given\*                                                                                 | `InsertSizeFrom`, `InsertSizeTo`                 |
+| `control_type`, `bioscan_control_type`               | The same when both are given\*                                                                                                                                                 | `ControlType`, `BioscanControlType`              |
+| `bioscan_control_type`                               | The supplier name begins with `CONTROL_`; a pcr positive or pcr negative control isn't in H12; a lysate negative control is in H12, so not in a tube                           | `BioscanControlType`                             |
+| `i7`, `i5`                                           | Only A, C, G, T or N, in either case, and at most 30 characters                                                                                                                | `Formatting`                                     |
+| `tag_group`, `tag_index`, `tag2_group`, `tag2_index` | A group needs its index, and an index its group; the group exists, ignoring case, and has a tag at the index                                                                   | `TagGroup`, `TagIndex`, `Tag2Group`, `Tag2Index` |
+| `dual_index_tag_set`, `dual_index_tag_well`          | A visible dual index tag set; a well of its plate, A1 to H12 (A01 is read as A1), whose position by column gives both tags, which exist; the receptacle holds only that sample | `DualIndexTagSet`, `DualIndexTagWell`            |
+| `chromium_tag_group`, `chromium_tag_well`            | A visible single-index Chromium tag set; a well of its kit plate, A1 to H12, whose 4 tags exist; the receptacle holds only that sample                                         | `ChromiumTagGroup`, `ChromiumTagWell`            |
+
+For dual index and Chromium wells, reception is stricter than the
+manifest: a well that isn't on the plate, such as I1 or A13, is an error,
+where the manifest reads some such wells as another well.
+
+**Tags:**
+
+- A sample gives its tags one way only: as `i7` and `i5`, as tag groups
+  and indexes, as a dual index tag set and well, as a Chromium tag set and
+  well, or not at all.
+- In a new receptacle, samples with tags have different tags: their i7 and
+  i5 oligos are compared, ignoring case, as the multiplexed library tube
+  manifest compares them (`Uniqueness`). Different tag records can have
+  the same oligos.
+- Samples without tags in one receptacle are a pool, not a clash.
+
+### What reception creates
+
+**Labware.** Each new labware gets a stock purpose, chosen by whether its
+samples have tags, given in any of the ways above. Library type and insert
+sizes don't decide it.
+
+| Request                               | Purpose               | Example                                               |
+| ------------------------------------- | --------------------- | ----------------------------------------------------- |
+| `plate96`, no sample has tags         | `Stock Plate`         | a plate of DNA samples                                |
+| `plate96`, a sample has tags          | `Library Stock Plate` | a plate of libraries, one in each well                |
+| `tube`, no sample has tags            | `Standard sample`     | one sample, or an untagged pool, such as scRNA Core's |
+| `tube`, one sample has tags           | `Standard library`    | one library                                           |
+| `tube`, more than one sample has tags | `Standard MX`         | a multiplexed library                                 |
+
+The labware's only barcode is the one it arrived with (`barcode`, stored
+in the external format): reception gives it no Sanger barcode. A plate is
+named `Plate <barcode>` and gets all the wells of its size. The request's
+labware and receptacle UUIDs aren't stored.
+
+**Samples.** Reception creates one sample for each `uuid`, so a sample in
+more than one receptacle is one sample. Each sample is externally managed:
+Sapio writes the warehouse record for it, so Sequencescape doesn't send its
+sample message. The fields are stored as a sample manifest stores the
+matching fields:
+
+| Request field                                      | The sample's                                              |
+| -------------------------------------------------- | --------------------------------------------------------- |
+| `uuid`                                             | UUID, in lower case                                       |
+| `study_uuid`                                       | study                                                     |
+| `sanger_sample_id`                                 | name and Sanger sample ID                                 |
+| `supplier_sample_name`, or `bioscan_supplier_name` | supplier name; `bioscan_supplier_name` replaces the other |
+| `donor_id`                                         | donor ID                                                  |
+| `reference_genome`                                 | reference genome, found by name                           |
+| `control_type`, or `bioscan_control_type`          | control and control type                                  |
+| `priority`                                         | priority                                                  |
+
+Supplier names such as Water, Blank, EMPTY or None are kept as samples, as
+sample manifests keep them.
+
+**Aliquots.** Each sample gets an aliquot in each receptacle that lists it,
+with its study, and the library type (under Sequencescape's own name),
+insert sizes and primer panel it gives. Its tags, as sample manifests set
+them:
+
+- a tag group and index, and tag 2's if given: one aliquot with the tag,
+  and tag 2;
+- a dual index tag set and well: one aliquot with the well's two tags;
+- a Chromium tag set and well: four aliquots, one for each of the well's
+  tags;
+- `i7` and `i5`: one aliquot, with tags found or created in the Magic Tag
+  Group by their oligos.
+
+On labware whose samples have tags, each aliquot's library is its
+receptacle, as library manifests set it, so the samples in a received
+`Standard MX` tube share the tube as their library. Samples without tags
+that share a receptacle get tag depths 1, 2, 3 and so on, in the order the
+request lists them, so their aliquots can be told apart.
+
+**Not created:** compound samples (samples made of other samples): a
+pool's samples are received as separate samples. Nor a sample manifest, a
+supplier, retention instructions, stock resource records or requests.
+Reception doesn't accession the samples.
+
+### Sample data, the warehouse and the callback
+
+- **Sample fields:** reception stores every sample field the schema has.
+  Of the optional ones, `donor_id` is needed (scRNA Core's pooling uses
+  it); `reference_genome`, `control_type`, `priority`,
+  `bioscan_supplier_name` and `bioscan_control_type` could be removed from
+  the schema. Sample manifest fields the request doesn't have, such as the
+  sample metadata, volume, concentration, taxon ID, EBI accession number
+  and genome size, are left to Sapio.
+- **Warehouse:** Sapio writes the warehouse (MLWH) records for its
+  samples, so Sequencescape doesn't send their sample messages. Its
+  messages about the samples' aliquots and study links, and about the new
+  labware and wells, aren't stored by the MLWH: no queue takes aliquot or
+  study link messages, for any sample
+  ([Y26-331](https://github.com/sanger/sequencescape/issues/6197) removes
+  them), and the MLWH doesn't store labware or well messages. When the
+  samples are sequenced, Sequencescape's flowcell messages name them by
+  UUID, and the MLWH finds a sample only by that UUID, so Sapio must have
+  written the sample by then (the MLWH retries a message for about 15
+  minutes before giving up on it). Reception keeps the request's sample
+  UUIDs, so they match.
+- **For the callback:** an operation keeps its status, its events (each
+  task's runs, and when it completed or failed) and its errors. Which
+  labware reception created and which it matched isn't stored.
+
 ## For Sequencescape developers
 
 - **Feature flag:** `y26_282_sapio_operations_endpoint`.
@@ -238,7 +533,38 @@ Two payloads are the same when they hold the same JSON data:
   Then run Sequencescape with `SAPIO_SCHEMA_SOURCE=redpanda`, and with the
   registry URL setting uncommented in `development.rb`.
 
+- **Adding a task**, such as the work order:
+  1. A subclass of `ApiOperation::Task`. Its `#call` does the work and
+     returns the errors, `[{ pointer:, detail: }]`, empty on success. The
+     job runs it in a transaction with the operation's row locked, so its
+     records commit with the status or not at all. When it returns errors,
+     the job rolls back what it wrote (a savepoint inside that
+     transaction) and records only the failure. That's a safety net: a
+     task should still check everything before it writes, as reception
+     does, so it reports every problem and doesn't create records only to
+     undo them. It raises for a problem that isn't in the payload: a
+     transient error is retried, and any other fails the task and notifies
+     PSD.
+  2. Its line in `ApiOperation::Task.for`, which finds a task's class by
+     its name.
+  3. Its name in `ApiOperation::TASKS`, after the task it follows. This
+     also allows the statuses `<task>_completed` and `<task>_failed`.
+
+  The job does the rest for every task: a `started` event before each run,
+  the retries, and the limit of `MAX_RUNS` runs per job. It runs
+  every task in `TASKS` while `y26_283_sapio_reception` is on, so a task
+  with a flag of its own needs the job to check that flag too. The specs
+  that list a type's statuses (`spec/models/api_operation_spec.rb`) or stub
+  its tasks (`spec/jobs/api_operation/coordinator_job_spec.rb`) change with
+  `TASKS`.
+
+- **Adding an operation type:** an operation's type is its request's
+  `request.request_type`. The schema must allow the new value (version 1
+  allows only `reception_and_work_order`), and `ApiOperation::TASKS` gets
+  the type with its tasks in order. Another calling system needs an
+  endpoint and schema settings of its own: this endpoint and the
+  `sapio_schema_*` settings are Sapio's.
 - **Code:** `Api::V2::Sapio::OperationsController`, `ApiOperation` (the
   `api_operations` table), `ApiOperation::SchemaCheck`, the `Schemas`
-  classes and `ApiOperation::CoordinatorJob`, which processes each new
-  operation in the background.
+  classes, `ApiOperation::CoordinatorJob`, which processes each new
+  operation in the background, and its tasks (`ApiOperation::Task`).

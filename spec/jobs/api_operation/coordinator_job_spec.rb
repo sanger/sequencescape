@@ -5,10 +5,550 @@ require 'rails_helper'
 RSpec.describe ApiOperation::CoordinatorJob do
   let(:api_operation) { create(:api_operation) }
 
-  it 'logs that the operation is ready for processing' do
-    allow(Rails.logger).to receive(:info)
+  def perform
     described_class.new(api_operation.id).perform
-    expect(Rails.logger).to have_received(:info)
-      .with("ApiOperation #{api_operation.uuid} is ready for processing")
+  end
+
+  describe '#reschedule_at' do
+    let(:job) { described_class.new(api_operation.id) }
+    let(:now) { Time.zone.local(2026, 10, 29, 12) }
+
+    def wait(attempts)
+      (job.reschedule_at(now, attempts) - now).seconds
+    end
+
+    it 'waits 30 seconds, doubling the wait after each failed run, up to ' \
+       'an hour' do
+      expect((1...described_class::MAX_RUNS).map { wait(it) }).to eq(
+        [30.seconds, 1.minute, 2.minutes, 4.minutes, 8.minutes, 16.minutes,
+         32.minutes, 1.hour, 1.hour]
+      )
+    end
+  end
+
+  describe '#max_attempts' do
+    it 'allows MAX_RUNS runs' do
+      expect(described_class.new(api_operation.id).max_attempts)
+        .to eq(described_class::MAX_RUNS)
+    end
+  end
+
+  context 'when reception is disabled', :sapio_reception_disabled do
+    it 'logs that the operation is ready for processing' do
+      allow(Rails.logger).to receive(:info)
+      perform
+      expect(Rails.logger).to have_received(:info)
+        .with("ApiOperation #{api_operation.uuid} is ready for processing")
+    end
+
+    it 'does not run the reception' do
+      allow(ApiOperation::Reception).to receive(:new)
+      perform
+      expect(ApiOperation::Reception).not_to have_received(:new)
+    end
+
+    it 'leaves the operation queued' do
+      perform
+      expect(api_operation.reload.status).to eq('queued')
+    end
+  end
+
+  context 'when reception is enabled', :sapio_reception_enabled do
+    let(:errors) { [] }
+    let(:reception) { instance_double(ApiOperation::Reception, call: errors) }
+
+    before do
+      allow(ApiOperation::Reception).to receive(:new).and_return(reception)
+    end
+
+    it 'runs the reception for the operation' do
+      perform
+      expect(ApiOperation::Reception).to have_received(:new)
+        .with(api_operation)
+    end
+
+    it 'records the reception as completed' do
+      perform
+      expect(api_operation.reload.status).to eq('reception_completed')
+    end
+
+    it 'adds a started event, then a completed one' do
+      perform
+      expect(api_operation.events.pluck(:task, :outcome))
+        .to eq([%w[reception started], %w[reception completed]])
+    end
+
+    context 'when the reception runs' do
+      let(:outcomes_seen) { [] }
+
+      before do
+        allow(reception).to receive(:call) do
+          outcomes_seen.concat(api_operation.events.pluck(:outcome))
+          []
+        end
+      end
+
+      it 'has recorded its start' do
+        perform
+        expect(outcomes_seen).to eq(%w[started])
+      end
+    end
+
+    context 'when the reception finds errors' do
+      let(:errors) { [{ pointer: '/labware/0', detail: 'Barcode in use' }] }
+
+      it 'records the reception as failed' do
+        perform
+        expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'adds a started event, then a failed one' do
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started failed])
+      end
+
+      it 'stores the errors' do
+        perform
+        expect(api_operation.reload.error_details).to eq(
+          'task' => 'reception',
+          'errors' => [{ 'pointer' => '/labware/0',
+                         'detail' => 'Barcode in use' }]
+        )
+      end
+    end
+
+    context 'when the reception writes a record, then finds errors' do
+      let(:written) { 'Written by the reception' }
+
+      before do
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: written)
+          [{ pointer: '/labware/0', detail: 'Barcode in use' }]
+        end
+        perform
+      end
+
+      it 'undoes what the reception wrote' do
+        expect(ReferenceGenome.exists?(name: written)).to be(false)
+      end
+
+      it 'records the reception as failed, with its errors' do
+        expect(api_operation.reload).to have_attributes(
+          status: 'reception_failed',
+          error_details: { 'task' => 'reception',
+                           'errors' => [{ 'pointer' => '/labware/0',
+                                          'detail' => 'Barcode in use' }] }
+        )
+      end
+    end
+
+    context 'when the reception writes a record and finds no errors' do
+      let(:written) { 'Written by the reception' }
+
+      before do
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: written)
+          []
+        end
+        perform
+      end
+
+      it 'keeps what the reception wrote' do
+        expect(ReferenceGenome.exists?(name: written)).to be(true)
+      end
+    end
+
+    described_class::TRANSIENT_ERRORS.each do |error|
+      context "when the reception raises #{error}" do
+        before { allow(reception).to receive(:call).and_raise(error) }
+
+        it 'passes the error on, so Delayed Job runs the job again' do
+          expect { perform }.to raise_error(error)
+        end
+
+        it 'leaves the operation queued' do
+          suppress(error) { perform }
+          expect(api_operation.reload.status).to eq('queued')
+        end
+      end
+    end
+
+    # On a deadlock MySQL rolls back the whole transaction, savepoint and all,
+    # and Rails marks the transaction invalid, so it doesn't roll back to the
+    # savepoint. Here a rollback to the task's savepoint fails, as it would
+    # against MySQL, and the deadlock must still reach Delayed Job. Only the
+    # task's savepoint is made to fail: in a test the job's own transaction is
+    # a savepoint too. The task writes first: Rails makes a savepoint in the
+    # database only at its first query, and rolls back only one it made.
+    context 'when a deadlock has rolled back the whole transaction' do
+      let(:connection) { ApiOperation.connection }
+
+      before do
+        allow(connection).to receive(:rollback_to_savepoint).and_call_original
+        allow(reception).to receive(:call) do
+          ReferenceGenome.create!(name: 'Written before the deadlock')
+          transaction = connection.current_transaction
+          allow(connection).to receive(:rollback_to_savepoint)
+            .with(transaction.savepoint_name)
+            .and_raise(ActiveRecord::StatementInvalid,
+                       'SAVEPOINT does not exist')
+          transaction.invalidate!
+          raise ActiveRecord::Deadlocked
+        end
+      end
+
+      it 'passes the deadlock on, so Delayed Job runs the job again' do
+        expect { perform }.to raise_error(ActiveRecord::Deadlocked)
+      end
+    end
+
+    context 'when the reception raises a transient error' do
+      before do
+        allow(reception).to receive(:call).and_raise(ActiveRecord::Deadlocked)
+      end
+
+      it 'keeps the started event, with no outcome after it' do
+        suppress(ActiveRecord::Deadlocked) { perform }
+        expect(api_operation.events.pluck(:outcome)).to eq(%w[started])
+      end
+
+      it 'adds a started event for each run' do
+        suppress(ActiveRecord::Deadlocked) { perform }
+        allow(reception).to receive(:call).and_return([])
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started started completed])
+      end
+
+      context 'when a Delayed Job worker runs the job' do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          travel_to(Time.zone.local(2026, 10, 29, 12))
+          Delayed::Worker.new.run(job)
+        end
+
+        it 'records the failed run' do
+          expect(job.reload.attempts).to eq(1)
+        end
+
+        it 'runs the job again FIRST_WAIT later' do
+          expect(job.reload.run_at)
+            .to be_within(2.seconds).of(described_class::FIRST_WAIT.from_now)
+        end
+      end
+    end
+
+    context 'when the reception raises any other error' do
+      let(:error) { NoMethodError.new("undefined method 'name' for nil") }
+
+      before do
+        allow(reception).to receive(:call) do
+          create(:sample)
+          raise error
+        end
+        allow(ExceptionNotifier).to receive(:notify_exception)
+      end
+
+      it 'does not pass the error on, so Delayed Job does not run it again' do
+        expect { perform }.not_to raise_error
+      end
+
+      it 'records the reception as failed' do
+        perform
+        expect(api_operation.reload.status).to eq('reception_failed')
+      end
+
+      it 'stores an error that says PSD has been notified' do
+        perform
+        expect(api_operation.reload.error_details).to eq(
+          'task' => 'reception',
+          'errors' => [{ 'pointer' => '',
+                         'detail' => 'Reception could not be completed ' \
+                                     'because of an error in Sequencescape; ' \
+                                     'PSD has been notified' }]
+        )
+      end
+
+      it 'notifies PSD of the error, without the payload' do
+        perform
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(error, data: { api_operation_id: api_operation.id,
+                               task: 'reception' })
+      end
+
+      it 'keeps nothing the reception created' do
+        expect { perform }.not_to change(Sample, :count)
+      end
+
+      it 'adds a started event, then a failed one' do
+        perform
+        expect(api_operation.events.pluck(:outcome))
+          .to eq(%w[started failed])
+      end
+    end
+
+    # A model rule that reception's checks don't mirror
+    context 'when a record the reception saves is invalid' do
+      let(:sample) { Sample.new.tap { it.errors.add(:name, :taken) } }
+      let(:error) { ActiveRecord::RecordInvalid.new(sample) }
+
+      before do
+        allow(reception).to receive(:call).and_raise(error)
+        allow(ExceptionNotifier).to receive(:notify_exception)
+      end
+
+      it 'stores an error with the validation message' do
+        perform
+        expect(api_operation.reload.error_details['errors']).to eq(
+          [{ 'pointer' => '',
+             'detail' => 'Reception could not be completed: Validation ' \
+                         'failed: Name has already been taken; PSD has ' \
+                         'been notified' }]
+        )
+      end
+
+      it 'notifies PSD, as reception should have found it' do
+        perform
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(error, anything)
+      end
+    end
+
+    context 'when recording the failure raises a transient error' do
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(reception).to receive(:call).and_raise(NoMethodError)
+        allow(ExceptionNotifier).to receive(:notify_exception)
+        allow(api_operation).to receive(:fail_task!)
+          .and_raise(ActiveRecord::Deadlocked)
+      end
+
+      it 'passes it on, so Delayed Job runs the job again' do
+        expect { perform }.to raise_error(ActiveRecord::Deadlocked)
+      end
+
+      it 'has notified PSD of the first error' do
+        suppress(ActiveRecord::Deadlocked) { perform }
+        expect(ExceptionNotifier).to have_received(:notify_exception)
+          .with(an_instance_of(NoMethodError), anything)
+      end
+    end
+
+    # Another worker completes the reception after this run's reception
+    # raised, but before this run locks the operation to record the failure
+    context 'when another run completes the reception after this one raises' do
+      before do
+        allow(reception).to receive(:call).and_raise(NoMethodError)
+        allow(ExceptionNotifier).to receive(:notify_exception) do
+          ApiOperation.find_by(id: api_operation.id).complete_task!('reception')
+        end
+      end
+
+      it "keeps the other run's outcome" do
+        perform
+        expect(api_operation.reload.status).to eq('reception_completed')
+      end
+    end
+
+    context 'when the reception has already completed' do
+      before { api_operation.complete_task!('reception') }
+
+      it 'does not run it again' do
+        perform
+        expect(ApiOperation::Reception).not_to have_received(:new)
+      end
+
+      it 'adds no event' do
+        expect { perform }.not_to(change { api_operation.events.count })
+      end
+    end
+
+    # Another worker completes the reception after this run has recorded its
+    # start, but before this run locks the operation to run it
+    context 'when another run completes the reception after this one starts' do
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(api_operation).to receive(:start_task!)
+          .and_wrap_original do |start_task, task|
+            start_task.call(task)
+            ApiOperation.find_by(id: api_operation.id).complete_task!(task)
+          end
+      end
+
+      it 'does not run it' do
+        perform
+        expect(ApiOperation::Reception).not_to have_received(:new)
+      end
+    end
+
+    context 'when the reception has already failed' do
+      before { api_operation.fail_task!('reception', [{ detail: 'Failed' }]) }
+
+      it 'does not run it again' do
+        perform
+        expect(ApiOperation::Reception).not_to have_received(:new)
+      end
+    end
+
+    it 'runs the reception once when the job runs twice' do
+      2.times { perform }
+      expect(reception).to have_received(:call).once
+    end
+
+    context 'when its task runs' do
+      let(:calls) { [] }
+
+      before do
+        allow(ApiOperation).to receive(:find).and_return(api_operation)
+        allow(api_operation).to receive(:lock!).and_wrap_original do |lock|
+          calls << :lock
+          lock.call
+        end
+        allow(reception).to receive(:call) do
+          calls << :call
+          []
+        end
+      end
+
+      # The started event's transaction locks it first; the task's
+      # transaction locks it again before the task runs
+      it 'locks the operation again before running the task' do
+        perform
+        expect(calls.first(3)).to eq(%i[lock lock call])
+      end
+    end
+
+    describe 'the limit of MAX_RUNS runs' do
+      let(:retries_exhausted_detail) do
+        'Reception could not be completed because of a temporary problem ' \
+          'in Sequencescape; send the request again with a new request ID'
+      end
+      let(:retries_exhausted_message) do
+        "Retries ran out for ApiOperation #{api_operation.id}"
+      end
+
+      # Runs that didn't finish, such as runs whose worker was stopped
+      def add_started_events(count)
+        count.times do
+          api_operation.events.create!(task: 'reception', outcome: 'started')
+        end
+      end
+
+      before { allow(ExceptionNotifier).to receive(:notify_exception) }
+
+      context 'when the job has already run MAX_RUNS times' do
+        before { add_started_events(described_class::MAX_RUNS) }
+
+        it 'does not run the reception again' do
+          perform
+          expect(ApiOperation::Reception).not_to have_received(:new)
+        end
+
+        it 'fails it with an error that asks for the request again' do
+          perform
+          expect(api_operation.reload.error_details['errors'])
+            .to eq([{ 'pointer' => '', 'detail' => retries_exhausted_detail }])
+        end
+
+        it 'adds a failed event, and no started one' do
+          perform
+          expect(api_operation.events.pluck(:outcome))
+            .to eq([*Array.new(described_class::MAX_RUNS, 'started'),
+                    'failed'])
+        end
+
+        it 'notifies PSD that retries have run out' do
+          perform
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            an_instance_of(described_class::RetriesExhausted),
+            data: { message: retries_exhausted_message,
+                    api_operation_id: api_operation.id, task: 'reception' }
+          )
+        end
+      end
+
+      context 'when the job has run fewer than MAX_RUNS times' do
+        before { add_started_events(described_class::MAX_RUNS - 1) }
+
+        it 'runs the reception' do
+          perform
+          expect(api_operation.reload.status).to eq('reception_completed')
+        end
+      end
+
+      context 'when a Delayed Job worker finds the runs used up' do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          add_started_events(described_class::MAX_RUNS)
+          job.update!(last_error: 'Deadlock found when trying to get lock')
+          Delayed::Worker.new.run(job)
+        end
+
+        # Nothing was raised in this run, so there is no exception to send
+        it 'notifies PSD with the last error' do
+          expect(ExceptionNotifier).to have_received(:notify_exception)
+            .with(an_instance_of(described_class::RetriesExhausted),
+                  data: hash_including(
+                    last_error: 'Deadlock found when trying to get lock'
+                  ))
+        end
+
+        it 'finishes the job' do
+          expect(Delayed::Job.exists?(job.id)).to be(false)
+        end
+      end
+
+      # The last run Delayed Job makes raises a transient error
+      context "when Delayed Job's last run fails" do
+        let(:job) do
+          Delayed::Job.enqueue(described_class.new(api_operation.id))
+        end
+
+        before do
+          allow(reception).to receive(:call).and_raise(ActiveRecord::Deadlocked)
+          job.update!(attempts: described_class::MAX_RUNS - 1)
+          Delayed::Worker.new.run(job)
+        end
+
+        it 'fails the reception, asking for the request again' do
+          expect(api_operation.reload.error_details['errors'])
+            .to eq([{ 'pointer' => '', 'detail' => retries_exhausted_detail }])
+        end
+
+        it "notifies PSD with the last run's error, with its backtrace" do
+          expect(ExceptionNotifier).to have_received(:notify_exception).with(
+            an_instance_of(ActiveRecord::Deadlocked)
+              .and(having_attributes(backtrace: be_present)),
+            data: { message: retries_exhausted_message,
+                    api_operation_id: api_operation.id }
+          )
+        end
+
+        it 'deletes the job' do
+          expect(Delayed::Job.exists?(job.id)).to be(false)
+        end
+      end
+
+      context "when Delayed Job's last run fails after the task has an " \
+              'outcome' do
+        let(:job) do
+          instance_double(Delayed::Job, error: nil, last_error: 'Deadlock')
+        end
+
+        before { api_operation.complete_task!('reception') }
+
+        it 'keeps the outcome' do
+          described_class.new(api_operation.id).failure(job)
+          expect(api_operation.reload.status).to eq('reception_completed')
+        end
+      end
+    end
   end
 end

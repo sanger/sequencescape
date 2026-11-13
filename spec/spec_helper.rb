@@ -306,6 +306,26 @@ RSpec.configure do |config|
     Flipper.enable(:y26_282_sapio_operations_endpoint, enabled)
   end
 
+  # Add sapio_reception_enabled to a spec to automatically:
+  # - Set y26_283_sapio_reception to true before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_reception_enabled) do |example|
+    enabled = Flipper.enabled?(:y26_283_sapio_reception)
+    Flipper.enable(:y26_283_sapio_reception)
+    example.run
+    Flipper.enable(:y26_283_sapio_reception, enabled)
+  end
+
+  # Add sapio_reception_disabled to a spec to automatically:
+  # - Set y26_283_sapio_reception to false before the test
+  # - Roll the feature flag back to its original state afterward
+  config.around(:each, :sapio_reception_disabled) do |example|
+    enabled = Flipper.enabled?(:y26_283_sapio_reception)
+    Flipper.disable(:y26_283_sapio_reception)
+    example.run
+    Flipper.enable(:y26_283_sapio_reception, enabled)
+  end
+
   config.before do
     # Reset the all sequences at the beginning of each
     # test to reduce the impact test order has on test execution
