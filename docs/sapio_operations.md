@@ -225,7 +225,10 @@ Two payloads are the same when they hold the same JSON data:
   WIP files only where `config.deploy_wip_pipelines` is on (development,
   test and cucumber; deployed environments get it from the deployment
   project, which turns it on for UAT only). UAT reads them when its
-  `sapio_schema_source` is `local`, with `sapio_schema_version` `latest`.
+  `sapio_schema_source` is `local`, with `sapio_schema_version` set to the
+  WIP's number (for example `2`): the same setting then reads `2.json`
+  once the WIP is renamed, and a newer WIP is used only when the setting
+  is changed for it.
   There, a WIP counts as its version, including for `latest`, and
   a schema error's `meta` says `"wip": true`. Elsewhere it is ignored. A
   version with both a file and a WIP file (`2.json` and `2.wip.json`) is an
