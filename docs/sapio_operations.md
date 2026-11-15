@@ -33,6 +33,12 @@ Each environment checks bodies against one schema version, set in its
 configuration. The body's `request.schema_version` isn't used to choose
 it; a schema error's `meta` shows the version used.
 
+The next version can be checked against while it is a work in progress
+(WIP), before it is agreed, in development, test and UAT environments. A
+schema error's `meta` then also says `"wip": true`: a WIP isn't agreed,
+and can still change. PSD tells Integration Hub when an environment it
+uses checks against a WIP.
+
 The smallest valid body for version 1 of the schema: one tube with one
 sample, and a work order for the tube.
 
@@ -155,6 +161,9 @@ lacks it, and the detail names the property.
 }
 ```
 
+Checked against a WIP, each error's `meta` also has `"wip": true`, for
+example `{ "schema": "work-order-schema", "version": 2, "wip": true }`.
+
 ### Schema unavailable
 
 A new request gets 500 `SCHEMA_UNAVAILABLE` when Sequencescape can't load the
@@ -210,9 +219,31 @@ Two payloads are the same when they hold the same JSON data:
   the type (`.json` for JSON Schema, `.avsc` for Avro). Versions are
   whole numbers, and `latest` is the highest. As in a schema registry, all
   versions of a subject have the same type.
-- **Adding a version:** tests use `latest`, so a new version that the test
-  payloads don't match fails the specs, as a backward compatible change
-  shouldn't.
+- **WIP schema files:** the next version, while it is worked on, as
+  record loaders' `.wip.yml` files: `<version>.wip.<extension>`, for example
+  `config/schemas/work-order-schema/2.wip.json`. The `local` source reads
+  WIP files only where `config.deploy_wip_pipelines` is on (development,
+  test and cucumber; deployed environments get it from the deployment
+  project, which turns it on for UAT only). UAT reads them when its
+  `sapio_schema_source` is `local`, with `sapio_schema_version` `latest`.
+  There, a WIP counts as its version, including for `latest`, and
+  a schema error's `meta` says `"wip": true`. Elsewhere it is ignored. A
+  version with both a file and a WIP file (`2.json` and `2.wip.json`) is an
+  error (`Schemas::LocalSource::DuplicateVersion`). A schema registry has
+  no WIP versions.
+- **Changing the schema:** a numbered version is never changed once it is
+  released. Changes go in the next version's WIP file: a copy of the
+  latest version with the changes, one WIP for each subject, shared by
+  every story that changes the schema. Tests use `latest`, so they check
+  the WIP; a change that the test payloads don't match fails the specs, as
+  a backward compatible change shouldn't. When Integration Hub agree the
+  WIP:
+  1. Rename it, for example `2.wip.json` to `2.json` (unwip).
+  2. Register the version in UAT's schema registry, so the registry holds
+     only agreed versions.
+  3. Set `sapio_schema_version` for each environment in the deployment
+     project.
+  4. Tell Integration Hub when each environment uses it.
 - **Schema registry:** the `redpanda` source reads
   `<registry URL>/subjects/<subject>/versions/<version>` through
   `HTTPClients::SchemaRegistryClient`. The registry's `schemaType` gives the
