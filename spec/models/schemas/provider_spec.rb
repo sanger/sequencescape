@@ -77,6 +77,22 @@ RSpec.describe Schemas::Provider do
       expect(described_class.configured.source).to be_a(Schemas::LocalSource)
     end
 
+    # As record loaders' WIP files: the test environment turns the setting on
+    { true => true, false => false, nil => false }.each do |setting, wip|
+      context "with deploy_wip_pipelines #{setting.inspect}" do
+        before do
+          allow(Rails.application.config).to receive(:deploy_wip_pipelines)
+            .and_return(setting)
+          allow(Schemas::LocalSource).to receive(:new).and_call_original
+          described_class.configured
+        end
+
+        it "makes the local source with wip: #{wip}" do
+          expect(Schemas::LocalSource).to have_received(:new).with(wip:)
+        end
+      end
+    end
+
     context 'with the redpanda source setting' do
       before do
         allow(Rails.application.config)
