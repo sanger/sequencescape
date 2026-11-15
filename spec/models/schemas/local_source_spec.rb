@@ -91,6 +91,73 @@ RSpec.describe Schemas::LocalSource do
     expect(source.fetch(schema_subject, :latest).version).to eq(2)
   end
 
+  it 'says a numbered schema is not a WIP' do
+    expect(source.fetch(schema_subject, version).wip).to be(false)
+  end
+
+  context 'with a WIP file' do
+    before { write_schema('3.wip.json', '{"wip": true}') }
+
+    it 'ignores it by default' do
+      expect { source.fetch(schema_subject, 3) }
+        .to raise_error(Schemas::Source::NotFound)
+    end
+
+    it 'leaves it out of the latest by default' do
+      expect(source.fetch(schema_subject, :latest).version).to eq(2)
+    end
+
+    context 'when WIP files are read' do
+      subject(:source) { described_class.new(root, wip: true) }
+
+      it 'reads it as its version' do
+        expect(source.fetch(schema_subject, 3))
+          .to have_attributes(text: '{"wip": true}', version: 3, wip: true)
+      end
+
+      it 'counts it for the latest' do
+        expect(source.fetch(schema_subject, :latest))
+          .to have_attributes(version: 3, wip: true)
+      end
+
+      it 'still reads the numbered versions' do
+        expect(source.fetch(schema_subject, version))
+          .to have_attributes(text: text, wip: false)
+      end
+    end
+  end
+
+  context 'with a WIP file for a version that has a file' do
+    before { write_schema('2.wip.json') }
+
+    it 'ignores the WIP file by default' do
+      expect(source.fetch(schema_subject, 2).wip).to be(false)
+    end
+
+    context 'when WIP files are read' do
+      subject(:source) { described_class.new(root, wip: true) }
+
+      it 'raises a duplicate version error' do
+        expect { source.fetch(schema_subject, version) }.to raise_error(
+          described_class::DuplicateVersion,
+          "#{schema_subject} version 2 has both 2.json and 2.wip.json in " \
+          "#{root}"
+        )
+      end
+    end
+  end
+
+  context 'with a WIP file of another type, when WIP files are read' do
+    subject(:source) { described_class.new(root, wip: true) }
+
+    before { write_schema('3.wip.avsc', '{"type": "record"}') }
+
+    it 'raises an error for mixed types' do
+      expect { source.fetch(schema_subject, :latest) }
+        .to raise_error(described_class::MixedTypes)
+    end
+  end
+
   it 'raises not found for the latest of a subject it does not hold' do
     expect { source.fetch('other-subject', :latest) }
       .to raise_error(Schemas::Source::NotFound)
