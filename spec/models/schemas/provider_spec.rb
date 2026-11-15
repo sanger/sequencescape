@@ -34,6 +34,20 @@ RSpec.describe Schemas::Provider do
       .with('Using schema work-order-schema version 2')
   end
 
+  context 'with a WIP schema' do
+    let(:schema) do
+      Schemas::Schema.new(text: '{"type": "object"}', type: :json_schema,
+                          version: 2, wip: true)
+    end
+
+    it 'logs that it is a WIP' do
+      allow(Rails.logger).to receive(:info)
+      validator
+      expect(Rails.logger).to have_received(:info)
+        .with('Using schema work-order-schema version 2 (WIP)')
+    end
+  end
+
   context 'with a schema type that has no validator' do
     let(:schema) do
       Schemas::Schema.new(text: '{"type": "record"}', type: :avro, version: 1)

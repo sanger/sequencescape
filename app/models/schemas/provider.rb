@@ -84,7 +84,8 @@ class Schemas::Provider
   end
 
   # Fetches a schema and gives a validator for it. Logs the subject and the
-  # version used, which is resolved when the latest is asked for.
+  # version used, which is resolved when the latest is asked for, and
+  # whether it is a WIP.
   #
   # @param subject [String] the schema's name
   # @param version [Integer, :latest] the schema's version
@@ -96,7 +97,8 @@ class Schemas::Provider
     validator = VALIDATORS.fetch(schema.type) do
       raise UnsupportedType, "No validator for #{schema.type} schemas"
     end
-    Rails.logger.info("Using schema #{subject} version #{schema.version}")
+    Rails.logger.info("Using schema #{subject} version #{schema.version}" \
+                      "#{' (WIP)' if schema.wip}")
     validator.new(schema)
   end
 end

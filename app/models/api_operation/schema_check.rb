@@ -29,9 +29,15 @@ class ApiOperation::SchemaCheck
     all_problems.size
   end
 
-  # @return [Hash] the subject and version of the schema used
+  # The subject and version of the schema used, and wip: true when it is a
+  # WIP, so the calling system can tell its errors aren't from an agreed
+  # version
+  #
+  # @return [Hash]
   def schema_meta
-    { schema: setting(:subject), version: validator.schema.version }
+    schema = validator.schema
+    meta = { schema: setting(:subject), version: schema.version }
+    schema.wip ? meta.merge(wip: true) : meta
   end
 
   private
