@@ -167,13 +167,16 @@ RSpec.describe Schemas::LocalSource do
     expect(described_class.new.root).to eq(Rails.root.join('config/schemas'))
   end
 
-  # The files kept in the repository, so a broken one fails here rather
-  # than when a request is validated against it
+  # The files kept in the repository, WIP files included, so a broken one
+  # fails here rather than when a request is validated against it. A WIP
+  # left beside the file it was renamed to fails as a duplicate version.
   context 'with the files in config/schemas' do
     Rails.root.glob('config/schemas/*/*.json').each do |path|
       it "holds a valid schema in #{path.relative_path_from(Rails.root)}" do
-        schema = described_class.new.fetch(path.dirname.basename.to_s,
-                                           path.basename('.json').to_s.to_i)
+        # "2" for 2.json, and for 2.wip.json "2.wip", whose to_i is 2 too
+        version = path.basename('.json').to_s.to_i
+        schema = described_class.new(wip: true)
+          .fetch(path.dirname.basename.to_s, version)
         expect { Schemas::JsonSchemaValidator.new(schema) }
           .not_to raise_error
       end
