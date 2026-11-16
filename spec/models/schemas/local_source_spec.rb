@@ -124,6 +124,12 @@ RSpec.describe Schemas::LocalSource do
         expect(source.fetch(schema_subject, version))
           .to have_attributes(text: text, wip: false)
       end
+
+      it 'still ignores files not named by a version number' do
+        %w[draft.json draft.wip.json 05.wip.json v6.wip.json]
+          .each { |name| write_schema(name) }
+        expect(source.fetch(schema_subject, :latest).version).to eq(3)
+      end
     end
   end
 
