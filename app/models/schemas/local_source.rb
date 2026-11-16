@@ -88,12 +88,18 @@ class Schemas::LocalSource < Schemas::Source
       end
   end
 
-  # The version a file is for, or nil if it isn't a version file
+  # The version a file is for, or nil if it isn't one: a file named by
+  # neither a version number nor, when WIP files are read, a WIP name.
+  # @return [Integer, nil]
   def version_number(type, path)
     name = version_name(type, path)
     return name.to_i if VERSION_NAME.match?(name)
+    return unless @wip
 
-    WIP_NAME.match(name)&.[](1)&.to_i if @wip
+    wip = WIP_NAME.match(name)
+    return unless wip
+
+    wip[1].to_i
   end
 
   def check_duplicate(subject, version, earlier, path)
