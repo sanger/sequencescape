@@ -3,6 +3,13 @@
 require 'rails_helper'
 
 RSpec.describe Tag do
+  describe 'associations' do
+    it do
+      expect(build(:tag)).to have_one(:ultima_tag)
+        .dependent(:restrict_with_exception)
+    end
+  end
+
   describe 'validations' do
     it 'is valid with valid attributes' do
       tag = build(:tag)

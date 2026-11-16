@@ -41,6 +41,18 @@ RSpec.describe ApiOperation::SchemaCheck do
     expect(check.schema_meta).to eq(schema: 'work-order-schema', version: 7)
   end
 
+  context 'with a WIP schema' do
+    let(:schema) do
+      Schemas::Schema.new(text: '{}', type: :json_schema, version: 7,
+                          wip: true)
+    end
+
+    it 'says the schema is a WIP' do
+      expect(check.schema_meta)
+        .to eq(schema: 'work-order-schema', version: 7, wip: true)
+    end
+  end
+
   context 'with other schema settings' do
     let(:schema) do
       Schemas::Schema.new(text: '{}', type: :json_schema, version: 3)
