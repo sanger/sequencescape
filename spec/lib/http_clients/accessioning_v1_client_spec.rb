@@ -158,13 +158,12 @@ RSpec.describe HTTPClients::AccessioningV1Client do
       end
     end
 
+    # Put back the configatron setting changed here
     around do |example|
-      configatron_dup = configatron.dup
-      configatron.accession.url = 'http://example.com/submit/'
-
-      example.run
-
-      configatron_dup
+      configatron.temp do
+        configatron.accession.url = 'http://example.com/submit/'
+        example.run
+      end
     end
 
     let(:client) { described_class.new }
