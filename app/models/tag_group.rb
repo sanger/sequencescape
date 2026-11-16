@@ -7,6 +7,9 @@ class TagGroup < ApplicationRecord
 
   has_many :tags, -> { order(:map_id) } # rubocop:todo Rails/HasManyOrHasOneDependent
   belongs_to :adapter_type, class_name: 'TagGroup::AdapterType', optional: true
+  # Ultima data for the tag group if it is an Ultima tag group; nil for
+  # other tag groups. The tag group can't be destroyed while this exists.
+  has_one :ultima_tag_group, dependent: :restrict_with_exception
 
   scope :include_tags, -> { includes(:tags) }
 

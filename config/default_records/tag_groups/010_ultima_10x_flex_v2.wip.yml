@@ -1,0 +1,30 @@
+---
+# Ultima tags for the 10x Flex v2 application.
+UG-RD-1929:
+  visible: true
+  adapter_type_name: Ultima
+  tags:
+    1: CTCAGCATA
+    2: CGCGCTGCA
+    3: CTATGCACA
+    4: CTACATGCA
+    5: CTGTGCTGA
+    6: CTGTGATCA
+    7: CATATATCA
+    8: CACTATGCA
+    9: CTGATATGA
+    10: CACATCACA
+    11: CATATGCTA
+    12: CGATGCATA
+    13: CAGTGTGCA
+    14: CACTGCTCA
+    15: CAGACATCA
+    16: CGCACAGCA
+    17: CAGATAGCA
+    18: CGAGATGCA
+    19: CATAGAGCA
+    20: CTGCTCATA
+    21: CACACTGCA
+    22: CAGAGCTGA
+    23: CTATGTGCA
+    24: CGATGCGCA
