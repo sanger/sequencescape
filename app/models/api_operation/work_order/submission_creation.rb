@@ -96,7 +96,7 @@ class ApiOperation::WorkOrder::SubmissionCreation
     {
       study: study, project: project, user: user, comments: order_options.comments,
       request_options: order_options.request_options, pre_cap_group: order_options.pre_capture_group,
-      asset_group_name:  "#{external_id}_#{study.id}", assets: study_receptacles
+      asset_group_name: "#{external_id}_#{study.id}", assets: study_receptacles
     }
   end
 
