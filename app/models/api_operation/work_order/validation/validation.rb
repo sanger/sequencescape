@@ -5,11 +5,11 @@
 class ApiOperation::WorkOrder::Validation::Validation
   POINTER = '/work_order'
 
-  # @param api_operation [ApiOperation] the operation whose work order to check
+  # @param work_order [Hash] the work order section of the operation's payload
   # @param requested_receptacles [ApiOperation::WorkOrder::RequestedReceptacles, nil] the
   #   work order's requested receptacles, found from its identifiers if not given
-  def initialize(api_operation, requested_receptacles: nil)
-    @work_order = JSON.parse(api_operation.payload).fetch('work_order')
+  def initialize(work_order, requested_receptacles: nil)
+    @work_order = work_order
     @requested_receptacles = requested_receptacles ||
       ApiOperation::WorkOrder::RequestedReceptacles.new(@work_order['requested_labware_identifiers'])
   end

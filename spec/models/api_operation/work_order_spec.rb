@@ -26,8 +26,8 @@ RSpec.describe ApiOperation::WorkOrder do
     it 'creates the submission from the resolved template' do
       work_order.call
       expect(ApiOperation::WorkOrder::SubmissionCreation)
-        .to have_received(:new).with(api_operation, template, project: instance_of(Project),
-                                                              requested_receptacles: anything)
+        .to have_received(:new).with(details.deep_stringify_keys, template, project: instance_of(Project),
+                                                                            requested_receptacles: anything)
     end
 
     it 'returns the errors of the creation' do
@@ -84,6 +84,14 @@ RSpec.describe ApiOperation::WorkOrder do
     it 'reports the unknown service' do
       expect(work_order.call).to eq([{ pointer: '/work_order/service_name',
                                        detail: "Unknown Sapio service 'Nope' for Sequencescape" }])
+    end
+  end
+
+  context 'without a work order in the payload' do
+    let(:api_operation) { create(:api_operation, payload: { request: {}, labware: [] }.to_json) }
+
+    it 'reports no errors' do
+      expect(work_order.call).to eq([])
     end
   end
 

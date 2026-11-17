@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::WorkOrder::SubmissionCreation do
-  subject(:creation) { described_class.new(api_operation, template) }
+  subject(:creation) { described_class.new(details.deep_stringify_keys, template) }
 
   let(:study) { create(:study) }
   let(:project) { create(:project, name: 'SAPIO-COST1', project_metadata_attributes: { project_cost_code: 'COST1' }) }
@@ -28,7 +28,6 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionCreation do
       }
     }
   end
-  let(:api_operation) { create(:api_operation, payload: { work_order: details }.to_json) }
 
   before { well.samples.first.studies << study }
 
@@ -37,9 +36,9 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionCreation do
       expect(creation.call).to be_empty
     end
 
-    it 'creates a built submission named after the work order, with its priority' do
+    it 'creates a submission named after the work order, with its priority' do
       creation.call
-      expect(Submission.find_by(name: 'WO-1')).to have_attributes(user: user, priority: 3)
+      expect(Submission.find_by(name: 'WO-1')).to have_attributes(user: user, priority: 3, state: 'building')
     end
 
     it 'submits the requested well with the project and study' do
@@ -57,10 +56,13 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionCreation do
     end
   end
 
-  context 'with an unknown cost code' do
-    before { details[:cost_code] = 'NOPE' }
+  context 'with a cost code whose project is not approved' do
+    before do
+      create(:project, name: 'SAPIO-NOPE', approved: false, enforce_quotas: true)
+      details[:cost_code] = 'NOPE'
+    end
 
-    it 'points at cost_code, as the new Sapio project is not approved for submissions' do
+    it 'points at cost_code' do
       expect(creation.call.pluck(:pointer)).to eq(['/work_order/cost_code'])
     end
   end

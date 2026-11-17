@@ -2,8 +2,12 @@
 
 # Finds the project for a Sapio work order's cost code, creating it when none exists.
 # Projects are matched with their name; projects are named "SAPIO-<cost_code>".
+# A created project is approved, active, externally funded and in the Sapio budget division,
+# so that submissions can be made for it.
 class ApiOperation::WorkOrder::SapioProjectResolver
   NAME_PREFIX = 'SAPIO'
+  BUDGET_DIVISION = 'Sapio'
+  FUNDING_MODEL = 'External'
 
   def initialize(cost_code)
     @cost_code = cost_code.to_s.strip
@@ -25,7 +29,13 @@ class ApiOperation::WorkOrder::SapioProjectResolver
   def create
     Project.create!(
       name: @name,
-      project_metadata_attributes: { project_cost_code: @cost_code }
+      state: Project::ACTIVE_STATE,
+      approved: true,
+      project_metadata_attributes: {
+        project_cost_code: @cost_code,
+        project_funding_model: FUNDING_MODEL,
+        budget_division: BudgetDivision.find_or_create_by!(name: BUDGET_DIVISION)
+      }
     )
   end
 end

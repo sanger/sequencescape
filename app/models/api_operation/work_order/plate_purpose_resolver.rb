@@ -8,10 +8,10 @@
 # name may carry a sequencing platform suffix ("<mapped name> - <platform>"),
 # so the longest mapped name the template name starts with is used.
 #
-# Only plates whose current purpose is 'Library Stock Plate' are given a mapped
+# Only plates whose current purpose is 'Stock Plate' are given a mapped
 # purpose; other plates, and tubes, are left alone.
 class ApiOperation::WorkOrder::PlatePurposeResolver
-  STOCK_PURPOSE_NAME = 'Library Stock Plate'
+  STOCK_PURPOSE_NAME = 'Stock Plate'
   POINTER = '/work_order/requested_labware_identifiers'
   CONFIG_PATH = Rails.root.join('config/sapio_work_order/plate_purpose_mapping_by_submission.yml')
 

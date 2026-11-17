@@ -7,7 +7,7 @@ RSpec.describe ApiOperation::WorkOrder::PlatePurposeResolver do
 
   let(:template) { instance_double(SubmissionTemplate, name: template_name) }
   let(:template_name) { 'Limber-Htp - LCMB - Illumina-HTP' }
-  let(:stock_purpose) { create(:plate_purpose, name: 'Library Stock Plate') }
+  let(:stock_purpose) { create(:plate_purpose, name: 'Stock Plate') }
   let(:plate) { create(:plate_with_untagged_wells, well_count: 1, plate_purpose: stock_purpose) }
   let(:requested_receptacles) { ApiOperation::WorkOrder::RequestedReceptacles.new(["#{plate.human_barcode}:A1"]) }
   let!(:purpose) { create(:plate_purpose, name: 'LCMB Cherrypick') }
@@ -17,7 +17,7 @@ RSpec.describe ApiOperation::WorkOrder::PlatePurposeResolver do
     expect(plate.reload.plate_purpose).to eq(purpose)
   end
 
-  context 'when the plate is not a Library Stock Plate' do
+  context 'when the plate is not a Stock Plate' do
     let(:plate) { create(:plate_with_untagged_wells, well_count: 1, plate_purpose: create(:plate_purpose)) }
 
     it 'leaves the plate purpose unchanged' do

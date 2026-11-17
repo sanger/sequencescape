@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
-  subject(:resolver) { described_class.new(api_operation) }
+  subject(:resolver) { described_class.new(work_order.deep_stringify_keys) }
 
   let(:work_order) do
     {
@@ -11,7 +11,6 @@ RSpec.describe ApiOperation::WorkOrder::SubmissionTemplateResolver do
       sequencing_platform: 'NovaSeq6000'
     }
   end
-  let(:api_operation) { create(:api_operation, payload: { work_order: }.to_json) }
 
   it 'extracts the service and platform from the payload' do
     expect(resolver).to have_attributes(service_name: 'Human Exome', sequencing_platform: 'NovaSeq6000')

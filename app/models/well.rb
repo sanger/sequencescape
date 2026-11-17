@@ -377,10 +377,6 @@ class Well < Receptacle # rubocop:todo Metrics/ClassLength
     nil
   end
 
-  def empty?
-    aliquots.blank?
-  end
-
   def self.qc_report_in_batches(study, exclude_existing, product_criteria, plate_purposes, plate_barcodes, &)
     # @note We include aliquots here, despite the fact they are only needed if we have to set a poor-quality flag
     #       as in some cases failures are not as rare as you may imagine, and it can cause major performance issues.

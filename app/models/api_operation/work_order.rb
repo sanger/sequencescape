@@ -2,8 +2,13 @@
 
 # The work_order task of an ApiOperation, run by ApiOperation::CoordinatorJob
 # after reception. For the work order in the operation's payload it:
-# Services configured as N/A (e.g. Long Read Amplicon- PacBio) need nothing from
-# Sequencescape: the task completes without creating a submission.
+#
+# Two cases need nothing from Sequencescape, and the task completes without
+# creating a submission:
+# - the payload has no work order (the schema only requires the request and labware);
+# - the work order's service is configured as N/A (e.g. Long Read Amplicon- PacBio).
+#
+# Otherwise it:
 #
 # 1. resolves the submission template (SubmissionTemplateResolver);
 # 2. finds or creates the project of its cost code (SapioProjectResolver);
@@ -19,9 +24,17 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   # @return [Array<Hash>] the errors, each with a :detail and a :pointer to
   #   the part of the payload; empty if the submission was created
   def call
+    return [] if work_order.nil?
     return validation_errors unless resolver.valid?
     return [] if resolver.not_applicable?
 
+    create_submission
+  end
+
+  private
+
+  # @return [Array<Hash>] the errors found along the way, or those of the submission creation
+  def create_submission
     template = find_template
     return template if template.is_a?(Array)
 
@@ -31,10 +44,8 @@ class ApiOperation::WorkOrder < ApiOperation::Task
     errors = validate(template)
     return errors if errors.any?
 
-    SubmissionCreation.new(api_operation, template, project:, requested_receptacles:).call
+    SubmissionCreation.new(work_order, template, project:, requested_receptacles:).call
   end
-
-  private
 
   # @return [SubmissionTemplate, Array<Hash>] the template, or the error if
   #   the service is unmapped or ambiguous, or its template is missing or deprecated.
@@ -60,7 +71,7 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   # against the template, which may depend on the purpose.
   # @return [Array<Hash>] the errors; empty if the work order is valid
   def validate(template)
-    errors = Validation::Validation.new(api_operation, requested_receptacles:).errors
+    errors = Validation::Validation.new(work_order, requested_receptacles:).errors
     return errors.map(&:to_h) if errors.any?
 
     errors = assign_plate_purposes(template)
@@ -77,7 +88,7 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   end
 
   def work_order
-    @work_order ||= JSON.parse(api_operation.payload).fetch('work_order')
+    @work_order ||= JSON.parse(api_operation.payload)['work_order']
   end
 
   # Gives the validated requested plates the purpose mapped to the template, so the later
@@ -91,7 +102,7 @@ class ApiOperation::WorkOrder < ApiOperation::Task
   end
 
   def resolver
-    @resolver ||= SubmissionTemplateResolver.new(api_operation)
+    @resolver ||= SubmissionTemplateResolver.new(work_order)
   end
 
   def validation_errors

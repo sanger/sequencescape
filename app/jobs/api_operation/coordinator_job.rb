@@ -160,9 +160,4 @@ class ApiOperation::CoordinatorJob
       detail: "#{task.humanize} could not be completed#{reason}; " \
               'PSD has been notified' }
   end
-
-  # @return [Class] the class that runs the task
-  def task_class(task)
-    { 'reception' => ApiOperation::Reception, 'work_order' => ApiOperation::WorkOrder }.fetch(task)
-  end
 end

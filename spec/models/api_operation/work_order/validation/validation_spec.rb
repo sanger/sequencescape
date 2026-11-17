@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 RSpec.describe ApiOperation::WorkOrder::Validation::Validation do
-  subject(:validation) { described_class.new(api_operation) }
+  subject(:validation) { described_class.new(work_order.deep_stringify_keys) }
 
   let(:plate) { create(:plate_with_untagged_wells, well_count: 1, studies: [create(:study)]) }
   let(:identifiers) { ["#{plate.human_barcode}:A1", 'NOPE'] }
@@ -11,7 +11,6 @@ RSpec.describe ApiOperation::WorkOrder::Validation::Validation do
     { external_id: 'WO1', service_name: 'Human Exome', requested_by: 'user', cost_code: 'S1234',
       requested_labware_identifiers: identifiers, options: {} }
   end
-  let(:api_operation) { create(:api_operation, payload: { work_order: }.to_json) }
 
   it 'reports only the problem identifiers, each at its own index' do
     expect(validation.errors.pluck(:pointer)).to eq(['/work_order/requested_labware_identifiers/1'])

@@ -36,10 +36,8 @@ class ApiOperation::WorkOrder::SubmissionTemplateResolver
     @mapping ||= YAML.safe_load_file(CONFIG_PATH).fetch('services').freeze
   end
 
-  # @param api_operation [ApiOperation] an operation whose payload is JSON text
-  # @raise [JSON::ParserError] if the payload is not valid JSON
-  def initialize(api_operation)
-    work_order = JSON.parse(api_operation.payload)['work_order'] || {}
+  # @param work_order [Hash] the work order section of an operation's payload
+  def initialize(work_order)
     @service_name = work_order['service_name']
     @sequencing_platform = work_order['sequencing_platform']
   end

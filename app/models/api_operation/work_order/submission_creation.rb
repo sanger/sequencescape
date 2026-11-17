@@ -20,13 +20,13 @@
 class ApiOperation::WorkOrder::SubmissionCreation
   include ActiveModel::Validations
 
-  # @param api_operation [ApiOperation] the operation whose work order to submit
+  # @param work_order [Hash] the work order section of the operation's payload
   # @param template [SubmissionTemplate] the template of the work order's service
   # @param project [Project, nil] the work order's project, found from its cost code if not given
   # @param requested_receptacles [ApiOperation::WorkOrder::RequestedReceptacles, nil] the work
   #   order's requested receptacles, found from its identifiers if not given
-  def initialize(api_operation, template, project: nil, requested_receptacles: nil)
-    @work_order = JSON.parse(api_operation.payload).fetch('work_order')
+  def initialize(work_order, template, project: nil, requested_receptacles: nil)
+    @work_order = work_order
     @template = template
     @project = project
     @requested_receptacles = requested_receptacles ||
@@ -44,7 +44,7 @@ class ApiOperation::WorkOrder::SubmissionCreation
   rescue Submission::ProjectValidation::Error => e
     [{ pointer: '/work_order/cost_code', detail: "There was an issue with the project: #{e.message}" }]
   rescue ActiveRecord::RecordInvalid => e
-    [{ pointer: '/work_order', detail: e.message }]
+    [{ pointer: '/work_order/requested_labware_identifiers', detail: e.message }]
   end
 
   private
@@ -85,8 +85,6 @@ class ApiOperation::WorkOrder::SubmissionCreation
   end
 
   def order(study, study_receptacles)
-    add_study_to_assets(study_receptacles, study)
-
     @template.new_order(order_attributes(study, study_receptacles)).tap do |new_order|
       new_order.request_type_multiplier do |multiplexed_request_type_id|
         new_order.request_options[:multiplier][multiplexed_request_type_id] = order_options.number_of_lanes
@@ -98,12 +96,8 @@ class ApiOperation::WorkOrder::SubmissionCreation
     {
       study: study, project: project, user: user, comments: order_options.comments,
       request_options: order_options.request_options, pre_cap_group: order_options.pre_capture_group,
-      asset_group_name: external_id, assets: study_receptacles
+      asset_group_name:  "#{external_id}_#{study.id}", assets: study_receptacles
     }
-  end
-
-  def add_study_to_assets(assets, study)
-    assets.flat_map(&:samples).uniq.each { |sample| sample.studies << study unless sample.studies.include?(study) }
   end
 
   def priority
