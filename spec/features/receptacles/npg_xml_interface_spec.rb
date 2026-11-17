@@ -41,12 +41,15 @@ describe 'NPG XML interface for receptacles' do
 
     expect(asset_xml).to include('type' => 'LibraryTube', 'name' => 'Tube')
     expect(request_properties(asset_xml)).to contain_exactly(
-                                               property('customer_accepts_responsibility', 'Still charge on fail', 'false'),
-                                               property('requested_flowcell_type', 'Flowcell type', nil),
-                                               property('read_length', 'Read length', '76'),
-                                               property('fragment_size_required_from', 'Fragment size required (from)', '1'),
-                                               property('fragment_size_required_to', 'Fragment size required (to)', '21')
-                                             )
+      property('customer_accepts_responsibility', 'Still charge on fail',
+               'false'),
+      property('requested_flowcell_type', 'Flowcell type', nil),
+      property('read_length', 'Read length', '76'),
+      property('fragment_size_required_from', 'Fragment size required (from)',
+               '1'),
+      property('fragment_size_required_to', 'Fragment size required (to)',
+               '21')
+    )
   end
 
   it 'returns the request properties for a sample tube involved in library creation' do
@@ -70,12 +73,15 @@ describe 'NPG XML interface for receptacles' do
     expect(asset_xml).to include('type' => 'SampleTube', 'name' => 'Tube')
     expect(asset_xml['sample_id']).to be_present
     expect(request_properties(asset_xml)).to contain_exactly(
-                                               property('customer_accepts_responsibility', 'Still charge on fail', 'false'),
-                                               property('read_length', 'Read length', '76'),
-                                               property('gigabases_expected', 'Gigabases expected', nil),
-                                               property('library_type', 'Library type', 'Standard'),
-                                               property('fragment_size_required_from', 'Fragment size required (from)', '1'),
-                                               property('fragment_size_required_to', 'Fragment size required (to)', '20')
-                                             )
+      property('customer_accepts_responsibility', 'Still charge on fail',
+               'false'),
+      property('read_length', 'Read length', '76'),
+      property('gigabases_expected', 'Gigabases expected', nil),
+      property('library_type', 'Library type', 'Standard'),
+      property('fragment_size_required_from', 'Fragment size required (from)',
+               '1'),
+      property('fragment_size_required_to', 'Fragment size required (to)',
+               '20')
+    )
   end
 end
