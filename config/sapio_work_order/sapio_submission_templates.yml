@@ -1,0 +1,36 @@
+# Maps Sapio service names to the Sequencescape submission template for the
+# library prep process of that service.
+#
+# Only the library prep templates are mapped here. Sequencing platform
+# templates (e.g. "... - NovaSeqX paired end sequencing", "... - MiSeq sequencing")
+# is chosen separately from the request.
+---
+services:
+  Human Exome:
+    - Limber-Htp - ISC
+  Human Exome Ultra low input DNA (LCMB) - FS-shear:
+    - Limber-Htp - LCMB
+  Custom Targeted panel:
+    - Limber-Htp - ISC
+  Custom panel ultra low input DNA (LCMB) - FS-shear:
+    - Limber-Htp - LCMB
+  Targeted NanoSeq:
+    - Limber-Htp - Targeted NanoSeq
+  Human Exome RNA FFPE:
+    - Limber-Htp - RNAF
+  #    - Limber-Htp - RNAF - Pool (librrary prep + multiplxing)
+  #    - Limber-Htp - RNAF - Element Aviti sequencing
+  #    - Limber-Htp - RNAF - NovaSeqX paired end sequencing
+  #    - Limber-Htp - RNAF - NovaSeq 6000 paired end sequencing
+  #    - Limber-Htp - RNAF - MiSeq sequencing
+  Short Read Respiratory Virus Target Enrichment:
+    - Limber-Htp - RVI Bait Capture Library
+  #    - Limber-Htp - RVI Bait Capture Library - NovaSeq 6000 Paired end sequencing
+  #    - Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing
+  #  Genotyping by Amplicon Sequencing (GbS) for Anopholes:
+  #    - Limber-Htp - ANOSPP Lysate Prep and GBS
+  #    - Limber-Htp - GbS
+  Targeted EMseq:
+    - Limber-Htp - LCM Triomics EMSeq
+  Long Read Amplicon- PacBio:
+    - N/A

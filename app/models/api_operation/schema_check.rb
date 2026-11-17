@@ -40,6 +40,12 @@ class ApiOperation::SchemaCheck
     schema.wip ? meta.merge(wip: true) : meta
   end
 
+  # @param property [String] a top-level property of the schema, such as 'work_order'
+  # @return [Array<String>] the properties the schema requires of that object
+  def required_properties(property)
+    JSON.parse(validator.schema.text).dig('properties', property, 'required') || []
+  end
+
   private
 
   def all_problems

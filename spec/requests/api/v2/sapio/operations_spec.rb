@@ -652,8 +652,10 @@ describe 'Sapio Operations API' do
             expect(json.dig('errors', 0, 'source', 'pointer')).to eq(pointer)
           end
 
+          # Schema metadata may include additional fields (like `wip`), so
+          # assert only the schema identity and version.
           it 'names the schema and version used' do
-            expect(json.dig('errors', 0, 'meta')).to eq(
+            expect(json.dig('errors', 0, 'meta')).to include(
               'schema' => 'work-order-schema',
               'version' => schema_validator.schema.version
             )

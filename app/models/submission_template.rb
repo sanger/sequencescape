@@ -110,13 +110,13 @@ class SubmissionTemplate < ApplicationRecord # rubocop:todo Metrics/ClassLength
     request_types.pluck(:key)
   end
 
-  private
-
   # Retrieves the request types that are associated with this submission template,
   # from the ids that are specified in the submission_parameters field.
   def request_types
     @request_types ||= RequestType.where(id: request_type_ids)
   end
+
+  private
 
   # Returns the request types in the order that they are specified in the submission_parameters field.
   def sorted_request_types
