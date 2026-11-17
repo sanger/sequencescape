@@ -24,6 +24,8 @@ shared_context 'with Sapio reception' do
   # - the name of the tag group for tags given as i7 and i5 oligos, which
   #   config/initializers/sample_manifest_excel.rb sets outside tests
   before do
+    # These specs are about the reception; the work order task is tested with the work order
+    stub_const('ApiOperation::TASKS', { 'reception_and_work_order' => %w[reception] })
     create(:input_plate_purpose, name: 'Library Stock Plate')
     allow(SampleManifestExcel.configuration)
       .to receive(:tag_group).and_return('Magic Tag Group')
