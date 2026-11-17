@@ -161,6 +161,7 @@ describe 'Printing new plate barcodes' do
     end
 
     it 'creates all the QC plates for SLF' do
+      # Freeze time so the dates in the event history assertions below are deterministic
       travel_to Time.zone.parse('Mon Jul 12 10:23:58 UTC 2010')
       create_plate('SQPD-1234567', purpose: purposes.fetch('Stock Plate'), wells: 7)
       create_plate('SQPD-1454')

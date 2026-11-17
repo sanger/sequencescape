@@ -5,14 +5,24 @@ require 'rails_helper'
 # Migrated from features/pipelines_navigation.feature
 describe 'Pipeline navigation' do
   include BatchFeatureHelpers
-  include ClusterFormationPipelineHelpers
 
   let(:user) { create(:admin, login: 'user') }
-  let(:pipeline) { create_cluster_formation_pipeline('Cluster formation PE') }
+  let(:pipeline) { create(:sequencing_pipeline, :with_workflow) }
 
   before { login_user(user) }
 
-  def create_batch_from_first_request
+  # Creates a request in the pipeline inbox, on a library tube that has been scanned into the lab
+  def create_inbox_request
+    create(
+      :sequencing_request_with_assets,
+      request_type: pipeline.request_types.first,
+      asset: create(:library_tube, :scanned_into_lab),
+      target_asset: nil,
+      submission: create(:submission)
+    )
+  end
+
+  def create_batch_from_first_inbox_request
     within('#available-requests') { first('input[type=checkbox]').check }
     first(:button, 'Submit').click
   end
@@ -28,10 +38,10 @@ describe 'Pipeline navigation' do
   end
 
   it 'removes the requests from the inbox once they are batched' do
-    create_cluster_formation_request(pipeline)
+    create_inbox_request
 
     visit pipeline_path(pipeline)
-    create_batch_from_first_request
+    create_batch_from_first_inbox_request
     expect(page).to have_text('Specify Dilution Volume')
 
     visit pipeline_path(pipeline)
@@ -44,14 +54,14 @@ describe 'Pipeline navigation' do
 
   it 'shows the inbox and creates a batch from it' do
     create(:batch, pipeline: pipeline, state: 'pending', production_state: nil)
-    create_cluster_formation_request(pipeline)
+    create_inbox_request
 
     visit pipeline_path(pipeline)
     expect(page).to have_text('Submission ID')
     expect(page).to have_text('Last 5')
     expect(page).to have_text('View batch')
 
-    create_batch_from_first_request
+    create_batch_from_first_inbox_request
 
     expect(page).to have_text('Edit batch')
     expect(page).to have_text('Specify Dilution Volume')
