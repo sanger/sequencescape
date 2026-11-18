@@ -16,7 +16,7 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ReceptacleValidation do
     end
 
     it 'finds the tube receptacle' do
-      expect(validation.receptacle).to eq(tube.receptacle)
+      expect(validation.receptacles).to eq([tube.receptacle])
     end
   end
 
@@ -59,8 +59,26 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ReceptacleValidation do
     let(:plate) { create(:plate_with_untagged_wells, well_count: 2) }
     let(:identifier) { plate.human_barcode }
 
-    it 'is not valid' do
-      expect(validation).not_to be_valid
+    it 'is valid' do
+      expect(validation).to be_valid
+    end
+
+    it 'names every well that holds something' do
+      expect(validation.receptacles).to match_array(plate.wells)
+    end
+
+    it 'leaves out empty wells' do
+      plate.wells.first.aliquots.destroy_all
+      expect(validation.receptacles).to eq([plate.wells.last])
+    end
+  end
+
+  context 'with a plate whose wells are all empty' do
+    let(:plate) { create(:plate_with_empty_wells, well_count: 2) }
+    let(:identifier) { plate.human_barcode }
+
+    it 'reports it is empty' do
+      expect(validation.errors.pluck(:detail)).to eq(["#{identifier} is empty"])
     end
   end
 end
