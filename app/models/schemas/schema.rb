@@ -10,7 +10,14 @@
 #   @return [Symbol] one of TYPES
 # @!attribute [r] version
 #   @return [Integer] the version, resolved when the latest was asked for
-Schemas::Schema = Data.define(:text, :type, :version)
+# @!attribute [r] wip
+#   @return [Boolean] true if it is a work in progress, not yet agreed (see
+#     Schemas::LocalSource); false unless given
+Schemas::Schema = Data.define(:text, :type, :version, :wip) do
+  def initialize(text:, type:, version:, wip: false)
+    super
+  end
+end
 
 # The schema types: JSON Schema and Avro
 Schemas::Schema::TYPES = %i[json_schema avro].freeze

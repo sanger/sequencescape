@@ -11,14 +11,11 @@ module UltimaSampleSheet::UG200SampleSheetGenerator
   end
 
   # Ultima UG200 sample sheet generator class.
-  # Uses the shared Ultima base implementation with UG200-specific globals and tags.
+  # Uses the shared Ultima base implementation with UG200-specific globals.
   class Generator < UltimaSampleSheet::SampleSheetGenerator::Generator
     def global_headers_config
       ['Application'].freeze
     end
-
-    # Added ultima_tag_groups_config items to the parent class to make them
-    # available to all Ultima sample sheet generators.
 
     private
 

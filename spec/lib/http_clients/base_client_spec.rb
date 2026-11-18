@@ -15,11 +15,10 @@ RSpec.describe HTTPClients::BaseClient do
   end
   let(:client) { client_class.new }
 
-  around do |example|
-    configatron_dup = configatron.dup
-    example.run
-    configatron.reset_to(configatron_dup)
-  end
+  # configatron.temp is configatron's built-in way to change settings
+  # temporarily. Any setting you change inside the block goes back to its
+  # old value when the block ends.
+  around { |example| configatron.temp { example.run } }
 
   describe '#default_headers' do
     it 'returns a User-Agent header with the client name' do
