@@ -1,7 +1,7 @@
 ---
-# UG-RD-1929, the Ultima tags for 10x Flex v2: Z numbers and wells as in
-# Ultima's list for it. The keys are as in 001_ultima_tag_groups.yml.
-UG-RD-1929:
+# UG-RD-1928, the Ultima tags for 10x Flex v2 on UG100: Z numbers and wells
+# as in Ultima's list for it. The keys are as in 001_ultima_tag_groups.yml.
+UG-RD-1928:
   # This tag set has no barcode plate number: the number is only an input
   # of Ultima's sample sheet generator, and the set is a single plate
   # (wells A1-H3). Sample sheets with its tags leave the Barcode_Plate_Num
