@@ -50,7 +50,7 @@ class ApiOperation::WorkOrder::Validation::ReceptacleValidation
   end
 
   def filled_receptacles
-    labware.nil? ? [] : labware.receptacles.includes(:aliquots).reject(&:empty?)
+    labware.nil? ? [] : labware.receptacles.with_aliquots
   end
 
   def labware
