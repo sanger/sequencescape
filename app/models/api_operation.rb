@@ -10,8 +10,12 @@
 # Its CoordinatorJob runs the tasks of its operation type (TASKS) in order.
 # The status names the last completed step: it starts as queued, becomes
 # <task>_completed as each task completes, or <task>_failed if a task fails.
-# response_delivered_at records when the response was delivered to the
-# calling system, and is null until then.
+# When the operation finishes (see #finished?), the CoordinatorJob queues its
+# CallbackJob to send the outcome to the calling system. The callback is only
+# queued after all retries of the last task are exhausted, so it is not sent
+# prematurely during a retry cycle.
+# response_delivered_at records when that was acknowledged, and is null until
+# then.
 class ApiOperation < ApplicationRecord
   include Uuid::Uuidable
 
@@ -19,6 +23,15 @@ class ApiOperation < ApplicationRecord
   # request's request_type, which the schema must allow. To add a type, add
   # it here with its tasks; to add a task, see ApiOperation::Task.
   TASKS = { 'reception_and_work_order' => %w[reception work_order] }.freeze
+
+  # The statuses at which an operation of each type is finished and its outcome is reported to
+  # the calling system: a task failed, or the last task completed. Add an entry with each new type.
+  FINISHED_STATUSES = {
+    'reception_and_work_order' => %w[reception_failed work_order_failed work_order_completed]
+  }.freeze
+
+  # The name the events of the callback to the calling system have as their task
+  CALLBACK = 'callback'
 
   # Raised when a task is started, completed or failed out of order
   class TaskOrderError < StandardError
@@ -57,6 +70,26 @@ class ApiOperation < ApplicationRecord
 
     ['queued'] +
       tasks.product(Event::OUTCOMES).map { |pair| pair.join('_') }
+  end
+
+  # @return [Boolean] true if the status is one of the type's FINISHED_STATUSES
+  def finished?
+    FINISHED_STATUSES.fetch(operation_type, []).include?(status)
+  end
+
+  # Records that a run of the callback job failed to deliver the outcome. It is not a task, so
+  # it doesn't change the status.
+  #
+  # @return [void]
+  def record_callback_failure!
+    events.create!(task: CALLBACK, outcome: Event::FAILED)
+  end
+
+  # The tasks of the operation's type, in order
+  #
+  # @return [Array<String>] the task names
+  def tasks
+    TASKS.fetch(operation_type)
   end
 
   # The first task not yet completed: the one to run next.
@@ -104,19 +137,29 @@ class ApiOperation < ApplicationRecord
                   error_details: { task:, errors: }.deep_stringify_keys)
   end
 
+  # Queues the CallbackJob if the operation is finished.
+  # The CoordinatorJob calls this after completing or failing a task so the callback
+  # is sent only when the operation is truly finished (all tasks completed, retries
+  # exhausted, or non-retryable error).
+  #
+  # @return [void]
+  def enqueue_callback_if_finished!
+    Delayed::Job.enqueue(CallbackJob.new(id)) if finished?
+  end
+
   private
 
   # Adds the event and sets the status to match, in one transaction: the
   # caller's if there is one, so the task's records commit with them.
+  #
+  # Ends the task with its outcome: sets the status and adds the event.
+  # The CoordinatorJob calls #enqueue_callback_if_finished! after this method
+  # to queue the callback only when the operation is truly finished.
   def record_event!(task, outcome, **attributes)
     transaction do
       update!(status: "#{task}_#{outcome}", **attributes)
       events.create!(task:, outcome:)
     end
-  end
-
-  def tasks
-    TASKS.fetch(operation_type)
   end
 
   # The number of tasks completed so far

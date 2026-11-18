@@ -61,6 +61,12 @@ configatron.external_applications = [
 configatron.integration_hub do |integration_hub|
   integration_hub.auth_token_url = 'https://inthub-ppd.auth.eu-west-2.amazoncognito.com/oauth2/token'
   integration_hub.base_url = 'https://ppd.integration-hub.sanger.ac.uk'
+  # Where ApiOperation::CallbackJob sends the outcome of an API operation. A placeholder until
+  # Integration Hub agrees the endpoint; set INTEGRATION_HUB_OPERATION_CALLBACK_URL to override it.
+  integration_hub.operation_callback_url =
+    ENV.fetch('INTEGRATION_HUB_OPERATION_CALLBACK_URL', "#{integration_hub.base_url}/sapio/operation-callbacks/v1")
+  integration_hub.operation_callback_open_timeout = 5 # seconds to connect
+  integration_hub.operation_callback_timeout = 15 # seconds to wait for the response
 end
 
 configatron.location_reports_fetch_count_max = 25000

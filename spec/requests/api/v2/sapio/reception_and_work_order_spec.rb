@@ -35,6 +35,16 @@ describe 'Sapio reception and work order',
       expect([operation.reload.status, operation.error_details]).to eq(['work_order_completed', nil])
     end
 
+    it 'sends the outcome to Integration Hub once' do
+      expect(a_request(:post, configatron.integration_hub.operation_callback_url)
+        .with(body: hash_including(external_id: operation.external_id,
+                                   status: 'work_order_completed'))).to have_been_made.once
+    end
+
+    it 'records the delivery' do
+      expect(operation.reload.response_delivered_at).to be_present
+    end
+
     it 'creates the submission of the work order' do
       expect(Submission.find_by!(name: 'WO-1').orders.map(&:study)).to eq([study])
     end
