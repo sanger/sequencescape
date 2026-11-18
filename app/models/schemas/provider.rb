@@ -24,7 +24,7 @@ class Schemas::Provider
 
   # The source for each value of the sapio_schema_source setting
   SOURCES = {
-    'local' => -> { Schemas::LocalSource.new },
+    'local' => -> { Schemas::LocalSource.new(wip: wip_files?) },
     'redpanda' => -> { Schemas::RedpandaSource.new(registry_url) }
   }.freeze
 
@@ -69,13 +69,23 @@ class Schemas::Provider
   end
   private_class_method :registry_url
 
+  # Whether the local source reads WIP schema files: as for record loaders'
+  # WIP files, when the deploy_wip_pipelines setting is on
+  #
+  # @return [Boolean]
+  def self.wip_files?
+    Rails.application.config.try(:deploy_wip_pipelines) || false
+  end
+  private_class_method :wip_files?
+
   # @param source [Schemas::Source] where schemas are fetched from
   def initialize(source)
     @source = source
   end
 
   # Fetches a schema and gives a validator for it. Logs the subject and the
-  # version used, which is resolved when the latest is asked for.
+  # version used, which is resolved when the latest is asked for, and
+  # whether it is a WIP.
   #
   # @param subject [String] the schema's name
   # @param version [Integer, :latest] the schema's version
@@ -87,7 +97,8 @@ class Schemas::Provider
     validator = VALIDATORS.fetch(schema.type) do
       raise UnsupportedType, "No validator for #{schema.type} schemas"
     end
-    Rails.logger.info("Using schema #{subject} version #{schema.version}")
+    Rails.logger.info("Using schema #{subject} version #{schema.version}" \
+                      "#{' (WIP)' if schema.wip}")
     validator.new(schema)
   end
 end

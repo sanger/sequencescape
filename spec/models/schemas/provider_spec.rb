@@ -34,6 +34,20 @@ RSpec.describe Schemas::Provider do
       .with('Using schema work-order-schema version 2')
   end
 
+  context 'with a WIP schema' do
+    let(:schema) do
+      Schemas::Schema.new(text: '{"type": "object"}', type: :json_schema,
+                          version: 2, wip: true)
+    end
+
+    it 'logs that it is a WIP' do
+      allow(Rails.logger).to receive(:info)
+      validator
+      expect(Rails.logger).to have_received(:info)
+        .with('Using schema work-order-schema version 2 (WIP)')
+    end
+  end
+
   context 'with a schema type that has no validator' do
     let(:schema) do
       Schemas::Schema.new(text: '{"type": "record"}', type: :avro, version: 1)
@@ -75,6 +89,22 @@ RSpec.describe Schemas::Provider do
   describe '.configured' do
     it 'uses the local source in the test environment' do
       expect(described_class.configured.source).to be_a(Schemas::LocalSource)
+    end
+
+    # As record loaders' WIP files: the test environment turns the setting on
+    { true => true, false => false, nil => false }.each do |setting, wip|
+      context "with deploy_wip_pipelines #{setting.inspect}" do
+        before do
+          allow(Rails.application.config).to receive(:deploy_wip_pipelines)
+            .and_return(setting)
+          allow(Schemas::LocalSource).to receive(:new).and_call_original
+          described_class.configured
+        end
+
+        it "makes the local source with wip: #{wip}" do
+          expect(Schemas::LocalSource).to have_received(:new).with(wip:)
+        end
+      end
     end
 
     context 'with the redpanda source setting' do
