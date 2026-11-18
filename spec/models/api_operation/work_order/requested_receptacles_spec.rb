@@ -19,6 +19,10 @@ RSpec.describe ApiOperation::WorkOrder::RequestedReceptacles do
     expect(requested.identified_receptacles.map(&:first)).to eq(identifiers.first(2))
   end
 
+  it 'finds every filled well for a plate barcode alone' do
+    expect(described_class.new([plate.human_barcode]).receptacles).to match_array(plate.wells)
+  end
+
   it 'reports an error for each identifier it cannot use, pointing at its index' do
     expect(requested.errors.map(&:pointer)).to eq(['/work_order/requested_labware_identifiers/2'])
   end

@@ -25,11 +25,15 @@ class ApiOperation::WorkOrder::RequestedReceptacles
     validations.flat_map(&:errors)
   end
 
-  # @return [Array<Array(String, Receptacle)>] each identifier that names a
-  #   receptacle, with it, in the order requested
+  # @return [Array<Array(String, Receptacle)>] each receptacle the identifiers name, with
+  #   its identifier, in the order requested; a plate barcode alone gives one per filled well
   def identified_receptacles
     @identified_receptacles ||=
-      validations.filter_map { |validation| [validation.identifier, validation.receptacle] if validation.receptacle }
+      validations.flat_map do |validation|
+        validation.receptacles.map do |receptacle|
+          [validation.identifier, receptacle]
+        end
+      end
   end
 
   # @return [Array<Receptacle>] the receptacles the identifiers name

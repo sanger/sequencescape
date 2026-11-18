@@ -17,7 +17,7 @@ RSpec.describe ApiOperation::WorkOrder::Validation::ScrnaCoreCdnaPrepFeasibility
     end
     allow(ApiOperation::WorkOrder::Validation::ReceptacleValidation).to receive(:new) do |identifier, **|
       instance_double(ApiOperation::WorkOrder::Validation::ReceptacleValidation,
-                      identifier: identifier, receptacle: receptacles[identifier])
+                      identifier: identifier, receptacles: [receptacles[identifier]].compact)
     end
   end
 

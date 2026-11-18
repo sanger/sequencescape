@@ -3,8 +3,9 @@
 # Checks one of a work order's requested labware identifiers: the labware and
 # receptacle it names must exist, and the receptacle must hold something.
 #
-# An identifier is a tube barcode ("TUBE-Y"), or a plate barcode and a well
-# position separated by a colon ("PLATE-X:A1").
+# An identifier is a tube barcode ("TUBE-Y"), a plate barcode and a well
+# position separated by a colon ("PLATE-X:A1"), or a plate barcode alone
+# ("PLATE-X"), which names every well of the plate that holds something.
 class ApiOperation::WorkOrder::Validation::ReceptacleValidation
   POINTER = '/work_order/requested_labware_identifiers'
 
@@ -30,11 +31,10 @@ class ApiOperation::WorkOrder::Validation::ReceptacleValidation
     errors.empty?
   end
 
-  # @return [Receptacle, nil] the well or tube receptacle the identifier names
-  def receptacle
-    return @receptacle if defined?(@receptacle)
-
-    @receptacle = @position ? well : labware&.receptacles&.first
+  # @return [Array<Receptacle>] the receptacles the identifier names: the well at its
+  #   position, or, with no position, the receptacles of the labware that hold something
+  def receptacles
+    @receptacles ||= @position ? [well].compact : filled_receptacles
   end
 
   private
@@ -42,13 +42,15 @@ class ApiOperation::WorkOrder::Validation::ReceptacleValidation
   def problem
     if labware.nil?
       "Cannot find labware with barcode #{@barcode.inspect}"
-    elsif @position.nil? && labware.receptacles.many?
-      "#{@barcode} has several receptacles; specify a well as #{@barcode}:A1"
-    elsif receptacle.nil?
+    elsif @position && well.nil?
       "Cannot find well #{@position.inspect} on #{@barcode}"
-    elsif receptacle.empty?
+    elsif receptacles.all?(&:empty?)
       "#{@identifier} is empty"
     end
+  end
+
+  def filled_receptacles
+    labware.nil? ? [] : labware.receptacles.with_aliquots
   end
 
   def labware
@@ -58,6 +60,8 @@ class ApiOperation::WorkOrder::Validation::ReceptacleValidation
   end
 
   def well
-    labware.try(:wells)&.located_at(@position)&.first
+    return @well if defined?(@well)
+
+    @well = labware.try(:wells)&.located_at(@position)&.first
   end
 end
