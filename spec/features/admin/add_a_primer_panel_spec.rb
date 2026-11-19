@@ -27,12 +27,20 @@ describe 'Primer Panel' do
     expect(page).to have_text(
       'Editing a primer panel will affect all experiments where a primer panel has been used.'
     )
-    expect(find_field('Name').value).to eq('Primer Panel 1')
-    expect(find_field('SNP count').value).to eq('1')
-    expect(find_field('primer_panel_programs_pcr_1_name').value).to eq('pcr1 program')
-    expect(find_field('primer_panel_programs_pcr_1_duration').value).to eq('45')
-    expect(find_field('primer_panel_programs_pcr_2_name').value).to eq('pcr2 program')
-    expect(find_field('primer_panel_programs_pcr_2_duration').value).to eq('20')
+    expect(page).to have_field('Name', with: 'Primer Panel 1')
+    expect(page).to have_field('SNP count', with: '1')
+    expect(page).to have_field(
+      'primer_panel_programs_pcr_1_name', with: 'pcr1 program'
+    )
+    expect(page).to have_field(
+      'primer_panel_programs_pcr_1_duration', with: '45'
+    )
+    expect(page).to have_field(
+      'primer_panel_programs_pcr_2_name', with: 'pcr2 program'
+    )
+    expect(page).to have_field(
+      'primer_panel_programs_pcr_2_duration', with: '20'
+    )
     click_on 'Update'
     expect(page).to have_text('Primer Panel was successfully updated.')
   end

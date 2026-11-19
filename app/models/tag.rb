@@ -19,6 +19,9 @@ class Tag < ApplicationRecord
   include Uuid::Uuidable
 
   belongs_to :tag_group
+  # Ultima data for the tag if it is in an Ultima tag group; nil for other
+  # tags. The tag can't be destroyed while this exists.
+  has_one :ultima_tag, dependent: :restrict_with_exception
   has_many :aliquots
   has_many :assets, through: :aliquots, source: :receptacle
   has_many :requests, -> { distinct }, through: :assets

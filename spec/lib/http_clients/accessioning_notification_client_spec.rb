@@ -10,14 +10,17 @@ RSpec.describe HTTPClients::AccessioningNotificationClient do
   let(:notification_id) { 'notification-123' }
   let(:notifications_url) { "https://integration-hub.example.com#{described_class::NOTIFICATIONS_URL}" }
 
+  # Put back the configatron settings changed here
   around do |example|
-    configatron_dup = configatron.dup
-    configatron.accession.notifications.client_id = 'test_client_id'
-    configatron.accession.notifications.client_secret = 'test_client_secret'
-    configatron.integration_hub.base_url = 'https://integration-hub.example.com'
-    configatron.integration_hub.auth_token_url = 'https://auth.example.com/oauth2/token'
-    example.run
-    configatron.reset_to(configatron_dup)
+    configatron.temp do
+      configatron.accession.notifications.client_id = 'test_client_id'
+      configatron.accession.notifications.client_secret = 'test_client_secret'
+      configatron.integration_hub.base_url =
+        'https://integration-hub.example.com'
+      configatron.integration_hub.auth_token_url =
+        'https://auth.example.com/oauth2/token'
+      example.run
+    end
   end
 
   before do

@@ -7,7 +7,10 @@ describe 'Bulk submission', js: false do
   let(:study) { create(:study, name: 'abc123_study') }
 
   def process_submission(filename, encoding = nil)
-    attach_file('bulk_submission_spreadsheet', Rails.root.join('features', 'submission', 'csv', filename))
+    attach_file(
+      'bulk_submission_spreadsheet',
+      Rails.root.join('spec', 'data', 'submission', 'bulk_submission', filename)
+    )
     select(encoding, from: 'Encoding') if encoding
     click_button 'Create Bulk submission'
   end

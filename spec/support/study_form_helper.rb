@@ -34,7 +34,7 @@ module StudyFormHelper
   end
 
   # Fills in the mandatory fields of the form (everything except the data release strategy and timing).
-  def fill_in_study_details(name:, description:, human_dna: 'No', commercially_available: 'Yes')
+  def fill_in_study_details(name:, description:, human_dna: 'No', contaminated_dna: 'No', commercially_available: 'Yes')
     fill_in 'Study name', with: name
     select 'Jack Sponsor', from: 'Faculty Sponsor'
     select 'General', from: 'Program'
@@ -43,7 +43,7 @@ module StudyFormHelper
     select 'PCR', from: 'EBI Library Selection'
     fill_in 'Study description', with: description
     choose_from_fieldset(human_dna, HUMAN_DNA_QUESTION)
-    choose_from_fieldset('No', CONTAMINATED_DNA_QUESTION)
+    choose_from_fieldset(contaminated_dna, CONTAMINATED_DNA_QUESTION)
     choose_from_fieldset(commercially_available, COMMERCIALLY_AVAILABLE_QUESTION)
   end
 

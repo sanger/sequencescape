@@ -10,9 +10,11 @@ group :default do
   gem 'rails'
 
   # Previously part of ruby or rails, now separate gems
+  gem 'benchmark'
   gem 'drb'
   gem 'logger'
   gem 'mutex_m'
+  gem 'ostruct'
   gem 'syslog'
 
   # Connections to external HTTP services
