@@ -50,7 +50,6 @@ require 'database_cleaner/active_record'
 # uninitialized constant RSpec::Support::Differ
 require 'rspec/support/differ'
 
-require './features/support/capybara'
 require './lib/plate_map_generation'
 require 'pry'
 
