@@ -12,7 +12,7 @@ module RecordLoader
 
     # Creates a Task with the given name and options.
     # This method first retrieves the associated Workflow by its name. If the Workflow
-    # it logs a warning and returns `nil` in `development`, `staging`, or `cucumber` environments.
+    # it logs a warning and returns `nil` in `development` or `staging` environments.
     # In all other environments, it raises an `ActiveRecord::RecordNotFound` exception.
     # If the Workflow is found, it assigns its ID to the `pipeline_workflow_id` attribute
     # and creates or updates the Task.
@@ -21,7 +21,7 @@ module RecordLoader
     # @param options [Hash] The options for creating or updating the Task.
     # @return [Task, nil] The created Task, or `nil` if the Workflow is not found in specific environments.
     # @raise [ActiveRecord::RecordNotFound] If the Workflow is not found in environments other than
-    # `development`, `staging`, or `cucumber`.
+    # `development` or `staging`.
     def create_or_update!(section_name, options)
       name = options['name'] || section_name # use name from options if provided
       workflow_name = options.delete('workflow')

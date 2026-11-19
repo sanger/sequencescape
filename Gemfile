@@ -183,7 +183,7 @@ group :linting, :test do
   gem 'test-prof'
 end
 
-group :development, :test, :cucumber do
+group :development, :test do
   gem 'knapsack_pro'
   gem 'pry-byebug'
   gem 'pry-rails'
@@ -208,14 +208,6 @@ group :test do
   gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
-  gem 'minitest'
-  gem 'minitest-mock'
-  gem 'minitest-profiler'
-  gem 'minitest-reporters'
-  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
-end
-
-group :test, :cucumber do
   gem 'capybara'
   gem 'database_cleaner-active_record'
   gem 'database_cleaner-activerecord-seeded_deletion',
@@ -223,8 +215,13 @@ group :test, :cucumber do
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
+  gem 'minitest'
+  gem 'minitest-mock'
+  gem 'minitest-profiler'
+  gem 'minitest-reporters'
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
+  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', require: false
   gem 'shoulda-context'
@@ -233,9 +230,6 @@ group :test, :cucumber do
   gem 'simplecov_json_formatter', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
-
-  gem 'cucumber_github_formatter'
-  gem 'cucumber-rails', require: false
 end
 
 group :deployment do

@@ -11,10 +11,5 @@
     "autoBuild": true,
     "publicOutputDir": "vite-test",
     "port": 3037
-  },
-  "cucumber": {
-    "autoBuild": true,
-    "publicOutputDir": "vite-cucumber",
-    "port": 3037
   }
 }
