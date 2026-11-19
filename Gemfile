@@ -208,14 +208,6 @@ group :test do
   gem 'rspec-github', require: false
   gem 'rspec-json_expectations', require: false
 
-  gem 'minitest'
-  gem 'minitest-mock'
-  gem 'minitest-profiler'
-  gem 'minitest-reporters'
-  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
-end
-
-group :test do
   gem 'capybara'
   gem 'database_cleaner-active_record'
   gem 'database_cleaner-activerecord-seeded_deletion',
@@ -223,8 +215,13 @@ group :test do
   gem 'factory_bot_rails', require: false
   gem 'jsonapi-resources-matchers', require: false
   gem 'launchy', require: false
+  gem 'minitest'
+  gem 'minitest-mock'
+  gem 'minitest-profiler'
+  gem 'minitest-reporters'
   gem 'mocha', require: false # avoids load order problems
   gem 'nokogiri', require: false
+  gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
   gem 'rspec-rails', '~> 8.0.0', require: false
   gem 'selenium-webdriver', require: false
   gem 'shoulda-context'
