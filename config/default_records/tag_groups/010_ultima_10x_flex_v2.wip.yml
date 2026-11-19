@@ -1,6 +1,6 @@
 ---
-# Ultima tags for the 10x Flex v2 application.
-UG-RD-1929:
+# Ultima tags for the 10x Flex v2 application on UG100.
+UG-RD-1928:
   visible: true
   adapter_type_name: Ultima
   tags:
