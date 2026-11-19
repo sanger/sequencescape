@@ -7,7 +7,8 @@
 # WARNING: Seeding anything other than the development or test DB takes someone who knows exactly what
 # they are doing.  So here we're preventing you from actually doing that.
 ##########################################################################################################
-raise StandardError, <<~END_OF_MESSAGE unless %i[development test seeding].include?(Rails.env.to_sym)
+# Rails.env.local? is true only in the development and test environments.
+raise StandardError, <<~END_OF_MESSAGE unless Rails.env.local?
     **********************************************************************************************************
     ********************************** SERIOUSLY, YOU DON'T WANT TO DO THIS **********************************
 
