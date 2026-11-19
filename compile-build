@@ -25,7 +25,6 @@ tar \
   --exclude='./README*' \
   --exclude='./compile-build' \
   --exclude='./coverage' \
-  --exclude='./features' \
   --exclude='./log/*' \
   --exclude='./node_modules' \
   --exclude='./sbin' \
