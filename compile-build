@@ -26,7 +26,6 @@ tar \
   --exclude='./compile-build' \
   --exclude='./coverage' \
   --exclude='./features' \
-  --exclude='./knapsack_cucumber_report.json' \
   --exclude='./log/*' \
   --exclude='./node_modules' \
   --exclude='./sbin' \

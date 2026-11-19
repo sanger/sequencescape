@@ -7,9 +7,8 @@
 # This module was used to generate the purposes and their associations as part of
 # both the seeds and the original migration.
 #
-# Removal of this code shouldn't affect production, but will disrupt seeds,
-# and potentially a number of cucumber features. It will probably also require
-# the corresponding search objects to be deprecated.
+# Removal of this code shouldn't affect production, but will disrupt seeds.
+# It will probably also require the corresponding search objects to be deprecated.
 #
 # @todo #2396 Remove
 module Pulldown::PlatePurposes

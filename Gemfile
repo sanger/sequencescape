@@ -183,7 +183,7 @@ group :linting, :test do
   gem 'test-prof'
 end
 
-group :development, :test, :cucumber do
+group :development, :test do
   gem 'knapsack_pro'
   gem 'pry-byebug'
   gem 'pry-rails'
@@ -215,7 +215,7 @@ group :test do
   gem 'rails-controller-testing' # It is needed to use #assigns(attribute) in controllers tests
 end
 
-group :test, :cucumber do
+group :test do
   gem 'capybara'
   gem 'database_cleaner-active_record'
   gem 'database_cleaner-activerecord-seeded_deletion',
@@ -233,9 +233,6 @@ group :test, :cucumber do
   gem 'simplecov_json_formatter', require: false
   gem 'simplecov-lcov', require: false
   gem 'timecop', require: false
-
-  gem 'cucumber_github_formatter'
-  gem 'cucumber-rails', require: false
 end
 
 group :deployment do

@@ -234,7 +234,6 @@ Rails/UnknownEnv:
   - production
   - development
   - test
-  - cucumber
   - profile
   - staging
 

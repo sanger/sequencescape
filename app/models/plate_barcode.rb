@@ -136,15 +136,4 @@ class PlateBarcode
       child_barcodes
     end
   end
-
-  if Rails.env.cucumber?
-    def self.create_barcode
-      barcode_record = fetch_response("#{site}/barcodes/#{prefix}/new")
-      if barcode_record[:format] == 'DN'
-        Barcode.build_sanger_code39(prefix: 'DN', number: barcode_record[:barcode])
-      else
-        Barcode.build_sequencescape22(barcode_record)
-      end
-    end
-  end
 end

@@ -8,7 +8,7 @@
   <%= vite_stylesheet_tag "print", media: "all" %>
   <%= vite_javascript_tag "worksheet", media: "print" %>
 </head>
-<body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
+<body data-enable-printing="<%= ["test"].exclude?(Rails.env) %>">
   <% if @batch.workflow_name.present? -%>
     <div class="h1 text-right pr-3"><%= @batch.workflow_name %></div>
   <% end -%>

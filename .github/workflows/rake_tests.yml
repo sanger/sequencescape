@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       RAILS_ENV: test
-      BUNDLE_WITHOUT: "cucumber deployment profile development"
+      BUNDLE_WITHOUT: "deployment profile development"
     services:
       mysql:
         # Use the Mysql docker image https://hub.docker.com/_/mysql
