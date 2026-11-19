@@ -77,6 +77,30 @@ RSpec.describe Sdb::SampleManifestsController do
         expect(response).to have_http_status(:ok)
       end
     end
+
+    context 'when creating a compound sample plate manifest' do
+      let(:flag) { :y26_147_1_enable_compound_sample_plate_manifests }
+
+      before do
+        SampleManifestExcel.configure do |config|
+          config.folder = File.join('spec', 'data', 'sample_manifest_excel')
+          config.load!
+        end
+      end
+
+      it 'refuses it while the feature flag is off' do
+        Flipper.disable(flag)
+        get :new, params: { asset_type: 'compound_plate' }
+        expect(flash[:error])
+          .to eq("'compound_plate' is not a supported manifest type.")
+      end
+
+      it 'allows it when the feature flag is on' do
+        Flipper.enable(flag)
+        get :new, params: { asset_type: 'compound_plate' }
+        expect(response).to have_http_status(:ok)
+      end
+    end
   end
 
   describe 'POST #print_labels' do

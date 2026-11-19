@@ -29,6 +29,8 @@ module Api
       Order.descendants.each { |subclass| model_hint model: subclass, resource: :order }
       Purpose.descendants.each { |subclass| model_hint model: subclass, resource: :purpose }
       Plate.descendants.each { |subclass| model_hint model: subclass, resource: :plate }
+      model_hint model: PlateTemplate, resource: :plate_template
+      model_hint model: Tag2LayoutTemplate, resource: :tag2_layout_template
       Tube.descendants.each { |subclass| model_hint model: subclass, resource: :tube }
       Request.descendants.each { |subclass| model_hint model: subclass, resource: :request }
       Transfer.descendants.each { |subclass| model_hint model: subclass, resource: :transfer }
