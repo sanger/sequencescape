@@ -88,5 +88,50 @@ context 'printing different asset types' do
           .to be_present.and eq(compound.shorten_sanger_sample_id)
       end
     end
+
+    # Replaces the labware's barcodes with an external one without a number,
+    # as Sapio reception creates (Y26-283)
+    def with_only_external_barcode(labware)
+      labware.barcodes.delete_all
+      labware.barcodes.create!(format: :external, barcode: 'SAPIO-BARCODE')
+      labware.reload
+    end
+
+    context 'with a tube whose only barcode has no number' do
+      subject(:redirect) { described_class.new(printables: tube) }
+
+      let(:tube) { with_only_external_barcode(create(:empty_sample_tube)) }
+
+      it 'does not add a barcode' do
+        expect { redirect.assets }
+          .not_to(change { tube.reload.barcodes.count })
+      end
+
+      it 'prints the external barcode' do
+        expect(redirect.labels.first[:barcode]).to eq('SAPIO-BARCODE')
+      end
+    end
+
+    context 'with a plate whose only barcode has no number' do
+      subject(:redirect) { described_class.new(printables: plate) }
+
+      let(:plate) { with_only_external_barcode(create(:child_plate)) }
+
+      it 'does not add a barcode' do
+        expect { redirect.assets }
+          .not_to(change { plate.reload.barcodes.count })
+      end
+    end
+
+    context 'with a tube without a barcode' do
+      let(:tube) do
+        create(:empty_sample_tube).tap { it.barcodes.delete_all }.reload
+      end
+
+      it 'gives the tube a barcode' do
+        described_class.new(printables: tube).assets
+        expect(tube.reload.barcodes.map(&:format)).to eq(['sanger_ean13'])
+      end
+    end
   end
 end

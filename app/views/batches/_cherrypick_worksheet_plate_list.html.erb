@@ -15,7 +15,7 @@
           <% plate = Plate.find_from_barcode(barcode) %>
           <tr>
             <td><%= bed_prefix %><%= index %></td>
-            <td><%= plate.barcode_number %></td>
+            <td><%= plate.barcode_number || plate.human_barcode %></td>
             <td><strong><%= barcode %></strong></td>
             <td ><%= plate.storage_location %></td>
           </tr>

@@ -60,6 +60,22 @@ context 'printing plates' do
     end
 
     it_behaves_like 'asset labels creator'
+
+    # Its only barcode is an external one without a number, as Sapio
+    # reception creates (Y26-283)
+    context 'with a plate whose only barcode has no number' do
+      let(:plate) do
+        create(:child_plate).tap do |plate|
+          plate.barcodes.delete_all
+          plate.barcodes.create!(format: :external, barcode: 'SAPIO-BARCODE')
+        end.reload
+      end
+
+      it 'shows the whole barcode on the right' do
+        label = described_class.new([plate]).labels.first
+        expect(label[:right_text]).to eq('SAPIO-BARCODE')
+      end
+    end
   end
 end
 
@@ -84,6 +100,25 @@ context 'printing tubes' do
     end
 
     it_behaves_like 'asset labels creator'
+
+    # Its only barcode is an external one without a number, as Sapio
+    # reception creates (Y26-283)
+    context 'with a tube whose only barcode has no number' do
+      let(:tube) do
+        create(:empty_sample_tube).tap do |tube|
+          tube.barcodes.delete_all
+          tube.barcodes.create!(format: :external, barcode: 'SAPIO-BARCODE')
+        end.reload
+      end
+
+      it 'shows the whole barcode in place of its number' do
+        expect(described_class.new([tube]).labels.first).to include(
+          second_line: 'SAPIO-BARCODE',
+          round_label_top_line: nil,
+          round_label_bottom_line: 'SAPIO-BARCODE'
+        )
+      end
+    end
   end
 end
 
