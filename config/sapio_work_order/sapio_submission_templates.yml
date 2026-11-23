@@ -27,7 +27,7 @@ services:
     - Limber-Htp - RVI Bait Capture Library
   #    - Limber-Htp - RVI Bait Capture Library - NovaSeq 6000 Paired end sequencing
   #    - Limber-Htp - RVI Bait Capture Library - Element Aviti sequencing
-  #  Genotyping by Amplicon Sequencing (GbS) for Anopholes:
+  #  Genotyping by Amplicon Sequencing (GbS) for Anopheles:
   #    - Limber-Htp - ANOSPP Lysate Prep and GBS
   #    - Limber-Htp - GbS
   Targeted EMseq:
