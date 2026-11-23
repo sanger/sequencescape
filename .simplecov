@@ -27,7 +27,6 @@ SimpleCov.skip '/doc/'
 SimpleCov.skip '/log/'
 SimpleCov.skip '/public/'
 SimpleCov.skip '/script/'
-SimpleCov.skip '/features/'
 SimpleCov.skip '/vendor/'
 SimpleCov.skip '/tmp/'
 

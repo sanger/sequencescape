@@ -29,7 +29,7 @@ class Uuid < ApplicationRecord
     # In the test environment we need to have a slightly different behaviour, as we can predefine
     # the UUID for a record to make things predictable.  In production new records always have new
     # UUIDs.
-    if %w[test cucumber].include?(Rails.env)
+    if %w[test].include?(Rails.env)
       def ensure_uuid_created
         new_uuid = Uuid.store_for_tests && Uuid.store_for_tests.next_uuid_for(self.class.base_class)
         create_uuid_object!(resource: self, external_id: new_uuid)
