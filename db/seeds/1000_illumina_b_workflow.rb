@@ -3,15 +3,6 @@
 ActiveRecord::Base.transaction do
   pipeline_name = 'Illumina-B STD'
 
-  if Rails.env.cucumber?
-    RecordLoader::TubePurposeLoader.new(
-      files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes]
-    ).create!
-    RecordLoader::PlatePurposeLoader.new(
-      files: %w[002_illumina_b_legacy_purposes 004_illumina_htp_legacy_purposes]
-    ).create!
-  end
-
   # For B
   shared_options_b = {
     asset_type: 'Well',

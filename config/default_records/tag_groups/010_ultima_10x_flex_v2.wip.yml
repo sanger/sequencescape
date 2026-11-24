@@ -1,0 +1,59 @@
+---
+# Ultima tags for the 10x Flex v2 application on UG100.
+UG-RD-1928:
+  visible: true
+  adapter_type_name: Ultima
+  tags:
+    1: CTCAGCATA
+    2: CGCGCTGCA
+    3: CTATGCACA
+    4: CTACATGCA
+    5: CTGTGCTGA
+    6: CTGTGATCA
+    7: CATATATCA
+    8: CACTATGCA
+    9: CTGATATGA
+    10: CACATCACA
+    11: CATATGCTA
+    12: CGATGCATA
+    13: CAGTGTGCA
+    14: CACTGCTCA
+    15: CAGACATCA
+    16: CGCACAGCA
+    17: CAGATAGCA
+    18: CGAGATGCA
+    19: CATAGAGCA
+    20: CTGCTCATA
+    21: CACACTGCA
+    22: CAGAGCTGA
+    23: CTATGTGCA
+    24: CGATGCGCA
+# Ultima tags for the 10x Flex v2 application on UG200.
+UG-RD-1929:
+  visible: true
+  adapter_type_name: Ultima
+  tags:
+    1: CATCGCTGA
+    2: CTATGCACA
+    3: CTGTGCTGA
+    4: CTCTCTGCA
+    5: CATGAGATA
+    6: CGCATATCA
+    7: CATATATCA
+    8: CATGTCTCA
+    9: CACATCACA
+    10: CTGAGCAGA
+    11: CATATGCTA
+    12: CGCTGAGCA
+    13: CGATGCATA
+    14: CAGTGTGCA
+    15: CACTGCTCA
+    16: CACAGATCA
+    17: CAGACATCA
+    18: CAGTGCACA
+    19: CGAGATGCA
+    20: CATAGAGCA
+    21: CACGCAGCA
+    22: CGCATCTGA
+    23: CTCTGCAGA
+    24: CTATGTGCA

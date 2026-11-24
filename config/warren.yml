@@ -30,11 +30,6 @@ test:
   config:
     routing_key_prefix: test
 
-cucumber:
-  type: test
-  config:
-    routing_key_prefix: test
-
 # We need to pass some value to Warren when the app is being packaged up (vite:build),
 # because the initializers are run.
 # The value will be overwritten when the app is deployed.

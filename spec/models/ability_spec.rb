@@ -455,6 +455,10 @@ RSpec.describe Ability do
         basic_permissions,
         {
           GelsController => %i[create edit read delete],
+          # cancancan passes a class check when any subclass is allowed, and
+          # the role can manage PlateTemplate, a subclass of Labware. Checks
+          # on other labware still fail, see the example below.
+          Labware => %i[rename change_purpose edit],
           Plate => %i[convert_to_tube],
           PlateTemplate => %i[create edit delete],
           SampleLogisticsController => %i[read],
@@ -465,5 +469,13 @@ RSpec.describe Ability do
     end
 
     it_behaves_like 'it grants only granted_permissions'
+
+    it 'does not grant labware actions on a plate', :aggregate_failures do
+      plate = build(:plate)
+
+      %i[rename change_purpose edit].each do |action|
+        expect(ability).not_to be_able_to(action, plate)
+      end
+    end
   end
 end

@@ -6,10 +6,6 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
-  # Configure 'rails notes' to inspect Cucumber files
-  config.annotations.register_directories('features')
-  config.annotations.register_extensions('feature') { |tag| /#\s*(#{tag}):?\s*(.*)$/ }
-
   # While tests run files are not watched, reloading is not necessary.
   config.enable_reloading = false
 

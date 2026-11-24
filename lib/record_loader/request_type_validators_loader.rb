@@ -22,7 +22,7 @@ module RecordLoader
       rt = RequestType.find_by(key: request_type_key)
       if rt.nil?
         message = "RequestType with key '#{request_type_key}' not found for RequestType::Validator with key '#{key}'"
-        if Rails.env.development? || Rails.env.staging? || Rails.env.cucumber?
+        if Rails.env.development? || Rails.env.staging?
           Rails.logger.warn(message)
           return nil
         end

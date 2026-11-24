@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-####################################################################################################################
-# Used in features/listing_by_type
-####################################################################################################################
-# This user is used when setting up relations to the studies and as the login for the feature.  It isn't actually
-# required (as the login step does this) but it's here for clarity should that ever change.
 FactoryBot.define do
   factory :study do
     name { generate(:study_name) }

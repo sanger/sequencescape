@@ -44,34 +44,14 @@ development:
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
-
-test2: &test
+test:
   <<: *MYSQL
   database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>
-  pool: 1
-  timeout: 5000
-
-cucumber: &cucumber
-  <<: *MYSQL
-  database: sequencescape_test<%= ENV['TEST_ENV_NUMBER'] %><%= suffix %>_cuke
   pool: 5
-  timeout: 15000
-
-test: &test
-  <<: *cucumber
+  timeout: 5000
 
 # We need to have some dummy configuration here when the app is being packaged up (vite:build),
 # because the initializers are run.
 # The config will be overwritten when the app is deployed.
 production:
   <<: *MYSQL
-
-# These other connections are exported during deploy, from:
-# ssh://git/repos/git/psd/config/private.git/
-### Staging
-### Next release
-### Training
-### Production
-
-cucumber:
-  <<: *test
