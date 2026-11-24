@@ -8,7 +8,7 @@
   <%= vite_javascript_tag "worksheet" %>
   <title>Batch <%= @batch.id %></title>
 </head>
-<body data-enable-printing="<%= ["cucumber", "test"].exclude?(Rails.env) %>">
+<body data-enable-printing="<%= ["test"].exclude?(Rails.env) %>">
   <% @plates.each do |plate| %>
     <% pick_to_layout = @robot.pick_number_to_expected_layout(@batch, plate.human_barcode) %>
     <% pick_to_layout.each do |pick_number, robot_plate_layout| %>

@@ -132,7 +132,7 @@ if Rails.env.development? || Rails.env.profile?
   configatron.enable_report_fails = true
 end
 
-if Rails.env.test? || Rails.env.cucumber?
+if Rails.env.test?
   configatron.barcode_images_url = 'http://example.com/deliberately_broken_url'
   configatron.invalid_policy_url_domains = %w[internal.example.com invalid.example.com]
 

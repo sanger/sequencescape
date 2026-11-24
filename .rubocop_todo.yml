@@ -78,7 +78,6 @@ Layout/LeadingCommentSpace:
 # Configuration parameters: AllowedMethods, AllowedPatterns.
 Lint/AmbiguousBlockAssociation:
   Exclude:
-    - 'features/support/step_definitions/bulk_submission_steps.rb'
     - 'spec/features/sample_manifests/uploader_for_manifests_with_tag_sequences_spec.rb'
     - 'spec/features/studies/accession_all_samples_spec.rb'
     - 'spec/lib/sample_manifest_excel/worksheet_spec.rb'
@@ -101,7 +100,6 @@ Lint/BooleanSymbol:
 # AllowedMethods: enums
 Lint/ConstantDefinitionInBlock:
   Exclude:
-    - 'features/support/timecop.rb'
     - 'lib/tasks/add_heron_product.rake'
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
     - 'spec/lib/accession/accessionable_spec.rb'
@@ -119,7 +117,6 @@ Lint/DuplicateBranch:
     - 'app/models/submission/submission_creator.rb'
     - 'app/models/submission_template.rb'
     - 'app/models/well.rb'
-    - 'features/support/step_definitions/order_steps.rb'
     - 'test/shoulda_macros/sanger_macros.rb'
 
 # Offense count: 8
@@ -152,12 +149,6 @@ Lint/EmptyBlock:
     - 'test/factories/location_report_factories.rb'
     - 'test/unit/data_release_test.rb'
     - 'test/unit/fragment_test.rb'
-
-# Offense count: 1
-# Configuration parameters: AllowComments.
-Lint/EmptyFile:
-  Exclude:
-    - 'features/support/step_definitions/25387227_transfer_requests_request_type.rb'
 
 # Offense count: 2
 Lint/IneffectiveAccessModifier:
@@ -224,22 +215,6 @@ Lint/UselessAssignment:
     - 'app/models/single_request_submission.rb'
     - 'app/models/user/authentication.rb'
     - 'app/models/uuid.rb'
-    - 'features/support/paths.rb'
-    - 'features/support/step_definitions/10071597_change_request_type_on_request_steps.rb'
-    - 'features/support/step_definitions/11438075_request_xml_exception_on_nil_study_steps.rb'
-    - 'features/support/step_definitions/20530077_weird_submission_link_behaviour.rb'
-    - 'features/support/step_definitions/3673146_tables_with_multiple_criteria_steps.rb'
-    - 'features/support/step_definitions/4759010_bug_on_reset_batches_steps.rb'
-    - 'features/support/step_definitions/5004860_change_decision_by_request_steps.rb'
-    - 'features/support/step_definitions/65192392_tag_qc_steps.rb'
-    - 'features/support/step_definitions/6679401_batch_request_recycling_broken_steps.rb'
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'features/support/step_definitions/order_steps.rb'
-    - 'features/support/step_definitions/pipeline_steps.rb'
-    - 'features/support/step_definitions/samples_steps.rb'
-    - 'features/support/step_definitions/study_report_steps.rb'
-    - 'features/support/step_definitions/study_steps.rb'
-    - 'features/support/step_definitions/tube_steps.rb'
     - 'spec/models/study_spec.rb'
     - 'test/lib/label_printer/plate_creator_test.rb'
     - 'test/unit/tasks/plate_transfer_task_test.rb'
@@ -367,14 +342,6 @@ Naming/AccessorMethodName:
     - 'lib/tasks/add_templates_and_printers_to_pmb.rake'
 
 # Offense count: 1
-# Configuration parameters: ExpectMatchingDefinition, CheckDefinitionPathHierarchy, CheckDefinitionPathHierarchyRoots, Regex, IgnoreExecutableScripts, AllowedAcronyms.
-# CheckDefinitionPathHierarchyRoots: lib, spec, test, src
-# AllowedAcronyms: CLI, DSL, ACL, API, ASCII, CPU, CSS, DNS, EOF, GUID, HTML, HTTP, HTTPS, ID, IP, JSON, LHS, QPS, RAM, RHS, RPC, SLA, SMTP, SQL, SSH, TCP, TLS, TTL, UDP, UI, UID, UUID, URI, URL, UTF8, VM, XML, XMPP, XSRF, XSS
-Naming/FileName:
-  Exclude:
-    - 'features/support/step_definitions/641709_create_duplicate_SE_pipeline_with_no_controls_steps.rb'
-
-# Offense count: 1
 # Configuration parameters: ForbiddenDelimiters.
 # ForbiddenDelimiters: (?i-mx:(^|\s)(EO[A-Z]{1}|END)(\s|$))
 Naming/HeredocDelimiterNaming:
@@ -404,7 +371,6 @@ Naming/MethodParameterName:
   Exclude:
     - 'app/models/asset_shape.rb'
     - 'app/models/map.rb'
-    - 'features/support/step_definitions/api_steps.rb'
     - 'lib/informatics/lib/informatics/application.rb'
     - 'lib/informatics/lib/informatics/controller_helper.rb'
     - 'lib/oligo_enumerator.rb'
@@ -501,8 +467,6 @@ Naming/VariableNumber:
 Performance/CollectionLiteralInLoop:
   Exclude:
     - 'db/seeds/3000_library_types_setup.rb'
-    - 'features/support/step_definitions/6040471_truncate_sample_name_barcode_steps.rb'
-    - 'features/support/step_definitions/sample_manifest_steps.rb'
     - 'spec/models/transfer_request_spec.rb'
 
 # Offense count: 9
@@ -513,8 +477,6 @@ Performance/MapMethodChain:
     - 'app/models/bait_library_layout.rb'
     - 'app/models/lane.rb'
     - 'app/models/submission/asset_submission_finder.rb'
-    - 'features/support/step_definitions/multiplexed_inbox_steps.rb'
-    - 'features/support/step_definitions/project_steps.rb'
     - 'lib/tasks/support/update_library_types.rake'
     - 'test/unit/tag_qc/qcable_statemachine_checks.rb'
 
@@ -525,12 +487,6 @@ Performance/MethodObjectAsBlock:
     - 'app/models/cherrypick/task/pick_by_nano_grams.rb'
     - 'app/models/cherrypick/task/pick_by_nano_grams_per_micro_litre.rb'
     - 'app/models/request/statistics.rb'
-    - 'features/support/step_definitions/6679401_batch_request_recycling_broken_steps.rb'
-    - 'features/support/step_definitions/aliquot_steps.rb'
-    - 'features/support/step_definitions/bait_library_steps.rb'
-    - 'features/support/step_definitions/pulldown_steps.rb'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
-    - 'features/support/step_definitions/transfer_steps.rb'
     - 'lib/tasks/report.rake'
 
 # Offense count: 2
@@ -1280,7 +1236,6 @@ Rails/CompactBlank:
   Exclude:
     - 'app/models/batch.rb'
     - 'app/models/bulk_submission.rb'
-    - 'features/support/step_definitions/delayed_job_steps.rb'
     - 'lib/event_factory.rb'
     - 'lib/sample_manifest_excel/upload/base.rb'
 
@@ -1320,8 +1275,6 @@ Rails/FilePath:
     - 'config/initializers/failure_reasons.rb'
     - 'config/initializers/i18n.rb'
     - 'config/initializers/load_config.rb'
-    - 'features/support/step_definitions/49061511_qc_file_steps.rb'
-    - 'features/support/step_definitions/bulk_submission_steps.rb'
     - 'lib/tasks/sample_manifest_excel_tests.rake'
     - 'test/test_helper.rb'
     - 'test/unit/fluidigm_file_test.rb'
@@ -1648,7 +1601,6 @@ Style/ExplicitBlockArgument:
   Exclude:
     - 'app/models/messenger_creator.rb'
     - 'app/models/submission/flexible_request_graph.rb'
-    - 'features/support/step_definitions/web_steps.rb'
 
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
@@ -1658,8 +1610,6 @@ Style/FormatString:
   Exclude:
     - 'app/helpers/plates_helper.rb'
     - 'app/models/map.rb'
-    - 'features/support/step_definitions/4560014_refactoring_properties_descriptors_etc_to_table_columns_steps.rb'
-    - 'features/support/step_definitions/samples_steps.rb'
 
 # Offense count: 5
 # This cop supports safe autocorrection (--autocorrect).
@@ -1710,7 +1660,6 @@ Style/GuardClause:
     - 'app/models/sample_manifest.rb'
     - 'app/models/study.rb'
     - 'app/models/transfer/between_plate_and_tubes.rb'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
     - 'lib/accession/sample.rb'
     - 'lib/accession/submission.rb'
     - 'lib/authenticated_system.rb'
@@ -1751,7 +1700,6 @@ Style/HashEachMethods:
 Style/IdenticalConditionalBranches:
   Exclude:
     - 'app/controllers/studies/documents_controller.rb'
-    - 'features/support/step_definitions/api_steps.rb'
 
 # Offense count: 3
 # This cop supports safe autocorrection (--autocorrect).
@@ -1770,7 +1718,6 @@ Style/IfUnlessModifierOfIfUnless:
     - 'app/models/parsers/plate_reader_parser.rb'
     - 'app/models/robot/verification/base.rb'
     - 'app/uploaders/polymorphic_uploader.rb'
-    - 'features/support/step_definitions/display_submitted_at_inbox_pipeline_steps.rb'
 
 # Offense count: 2
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1887,7 +1834,6 @@ Style/NestedModifier:
     - 'app/models/parsers/plate_reader_parser.rb'
     - 'app/models/robot/verification/base.rb'
     - 'app/uploaders/polymorphic_uploader.rb'
-    - 'features/support/step_definitions/display_submitted_at_inbox_pipeline_steps.rb'
 
 # Offense count: 2
 # This cop supports safe autocorrection (--autocorrect).
@@ -1910,7 +1856,6 @@ Style/Not:
     - 'app/models/submission/project_validation.rb'
     - 'app/models/user.rb'
     - 'app/views/batches/show.xml.builder'
-    - 'features/support/step_definitions/api_steps.rb'
 
 # Offense count: 30
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -1961,7 +1906,6 @@ Style/OptionalBooleanParameter:
     - 'app/models/pipeline/inbox_extensions.rb'
     - 'app/models/presenters/grouped_pipeline_inbox_presenter.rb'
     - 'db/seeds/0001_workflows.rb'
-    - 'features/support/step_definitions/web_form_steps.rb'
     - 'lib/object_space_profile.rb'
     - 'lib/sample_manifest_excel/tags/example_data.rb'
     - 'spec/lib/sequencescape_excel/list_spec.rb'
@@ -1996,10 +1940,6 @@ Style/ParallelAssignment:
     - 'app/models/transfer/between_plate_and_tubes.rb'
     - 'app/models/validation_state_guard.rb'
     - 'app/views/studies/show.xml.builder'
-    - 'features/support/paths.rb'
-    - 'features/support/step_definitions/4560014_refactoring_properties_descriptors_etc_to_table_columns_steps.rb'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
-    - 'features/support/step_definitions/transfer_steps.rb'
     - 'test/unit/batch_test.rb'
     - 'test/unit/messaging/hash_generation_test.rb'
     - 'test/unit/tag_qc/qcable_statemachine_checks.rb'
@@ -2016,8 +1956,6 @@ Style/ParenthesesAroundCondition:
 Style/PerlBackrefs:
   Exclude:
     - 'app/models/validation_state_guard.rb'
-    - 'features/support/paths.rb'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
     - 'lib/validateable.rb'
 
 # Offense count: 4
@@ -2116,7 +2054,6 @@ Style/SoleNestedConditional:
     - 'app/models/order.rb'
     - 'app/models/parsers/plate_reader_parser.rb'
     - 'app/uploaders/polymorphic_uploader.rb'
-    - 'features/support/step_definitions/display_submitted_at_inbox_pipeline_steps.rb'
 
 # Offense count: 5
 # This cop supports unsafe autocorrection (--autocorrect-all).
@@ -2131,8 +2068,6 @@ Style/SpecialGlobalVars:
 # This cop supports safe autocorrection (--autocorrect).
 Style/StderrPuts:
   Exclude:
-    - 'features/support/step_definitions/api_steps.rb'
-    - 'features/support/step_definitions/tag_layout_steps.rb'
     - 'script/autospec'
 
 # Offense count: 5

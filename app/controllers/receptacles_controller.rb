@@ -127,7 +127,6 @@ class ReceptaclesController < ApplicationController # rubocop:todo Metrics/Class
     # In rare cases the user links in to the 'new request' page
     # with a specific study specified. In even rarer cases this may
     # conflict with the assets primary study.
-    # ./features/7711055_new_request_links_broken.feature:29
     # This resolves the issue, but the code could do with a significant
     # refactor. I'm delaying this currently as we NEED to get SS434 completed.
     # 1. This should probably be RequestsController::new

@@ -517,9 +517,9 @@ Reception doesn't accession the samples.
 - **WIP schema files:** the next version, while it is worked on, as
   record loaders' `.wip.yml` files: `<version>.wip.<extension>`, for example
   `config/schemas/work-order-schema/2.wip.json`. The `local` source reads
-  WIP files only where `config.deploy_wip_pipelines` is on (development,
-  test and cucumber; deployed environments get it from the deployment
-  project, which turns it on for UAT only). UAT reads them when its
+  WIP files only where `config.deploy_wip_pipelines` is on (development
+  and test; deployed environments get it from the deployment project,
+  which turns it on for UAT only). UAT reads them when its
   `sapio_schema_source` is `local`, with `sapio_schema_version` set to the
   WIP's number (for example `2`): the same setting then reads `2.json`
   once the WIP is renamed, and a newer WIP is used only when the setting

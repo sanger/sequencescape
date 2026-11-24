@@ -25,7 +25,6 @@
 /yarn-error.log
 app/sample_manifest_excel/doc/
 capybara*.html
-config/cucumber.yml
 config/database.yml
 coverage
 data/avro_schema_cache/*

@@ -6,7 +6,6 @@
 [![Test Coverage](https://codecov.io/github/sanger/sequencescape/graph/badge.svg?token=Fsd7I0GYQf)](https://codecov.io/github/sanger/sequencescape)
 [![Yard Docs](http://img.shields.io/badge/yard-docs-blue.svg)](https://sanger.github.io/sequencescape/)
 [![Knapsack Pro Parallel CI builds for RSpec Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20RSpec%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1880/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1880&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
-[![Knapsack Pro Parallel CI builds for Cucumber Tests](https://img.shields.io/badge/Knapsack%20Pro-Parallel%20%2F%20Cucumber%20Tests-%230074ff)](https://knapsackpro.com/dashboard/organizations/1976/projects/1324/test_suites/1881/builds?utm_campaign=organization-id-1976&utm_content=test-suite-id-1881&utm_medium=readme&utm_source=knapsack-pro-badge&utm_term=project-id-1324)
 
 Sequencescape is a cloud based and highly extensible LIMS system for use in labs with large numbers
 of samples.
@@ -64,7 +63,7 @@ a organisation of 900 people.
     - [MySQL errors when installing](#mysql-errors-when-installing)
     - [MySQL errors after system updates](#mysql-errors-after-system-updates)
     - [Installing on Apple Silicon (M1)](#installing-on-apple-silicon-m1)
-    - [Cucumber / RSpec feature chromedriver issues](#cucumber--rspec-feature-chromedriver-issues)
+    - [RSpec feature chromedriver issues](#rspec-feature-chromedriver-issues)
   - [API V2 Authentication](#api-v2-authentication)
     - [Documentation](#documentation-1)
   - [Publishing AMQP Messages](#publishing-amqp-messages)
@@ -297,7 +296,7 @@ These should not be committed to the github repo.
 
 ### Rails
 
-Testing is done in one of three ways; using rspec, via rails tests or with cucumber.
+Testing is done in one of two ways; using rspec or via rails tests.
 
 1. To run the rspec tests (found in `rspec/` dir.):
 
@@ -315,24 +314,6 @@ Testing is done in one of three ways; using rspec, via rails tests or with cucum
 
    ```shell
    bundle exec ruby -Itest test/lib/label_printer/print_job_test.rb
-   ```
-
-1. To run cucumber tests (found in `features/` dir.) first ensure you have a `sequencescape_test_cuke` database configured by running:
-
-   ```shell
-   RAILS_ENV=cucumber bundle exec rake db:setup
-   ```
-
-   then run cucumber itself:
-
-   ```shell
-   bundle exec cucumber
-   ```
-
-   For a single file:
-
-   ```shell
-   bundle exec cucumber features/create_plates.feature
    ```
 
 #### Rspec feature tests with javascript
@@ -555,7 +536,7 @@ If installation issues are encountered with Docker on M1 processors, try the fix
 
   [[GitHub issue](https://github.com/evilmartians/terraforming-rails/issues/34#issuecomment-872021786)]
 
-#### Cucumber / RSpec feature chromedriver issues
+#### RSpec feature chromedriver issues
 
 If you encounter Selenium/Chromedriver issues locally it may be because the latest version of Chrome is yet to be supported by our testing libraries (Capybara). This may require a fix to the `Capybara.rb` file, e.g. new driver arguments. In the case the fix is not identifiable you made need to rely on a pinned version of Chrome in the CI to run these tests, see [Chromedriver issues](#chromedriver-issues) below for further instructions.
 
@@ -596,11 +577,11 @@ This isn't necessary at this stage, but it seems wise to note the intended patte
 
 ### CI
 
-The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec and Cucumber tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
+The GH actions builds use the Knapsack-pro gem to reduce build time by parallelizing the RSpec tests. There is no need to regenerate the knapsack_rspec_report.json file, Knapsack Pro will dynamically allocate tests to ensure tests finish as close together as possible.
 
 #### Chromedriver issues
 
-If you encounter CI failures for cucumber and rspec feature tests it may be caused by our CI GitHub runner being on the latest version of Chrome while our testing libraries are yet to support it. To fix this, you can pin the version of Chrome in the CI to an older, known working version. This can be done in the `.github/workflows/ruby_test.yml` workflow under `Setup stable Chrome`. If this is required ensure you revert the change once the testing libraries are updated.
+If you encounter CI failures for rspec feature tests it may be caused by our CI GitHub runner being on the latest version of Chrome while our testing libraries are yet to support it. To fix this, you can pin the version of Chrome in the CI to an older, known working version. This can be done in the `.github/workflows/ruby_test.yml` workflow under `Setup stable Chrome`. If this is required ensure you revert the change once the testing libraries are updated.
 
 ### ERD
 
