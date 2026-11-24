@@ -347,6 +347,10 @@ class Receptacle < Asset # rubocop:todo Metrics/ClassLength
     requests_as_target.order(id: :asc).index_by(&:asset_id).values
   end
 
+  def empty?
+    aliquots.blank?
+  end
+
   private
 
   def set_external_release(state) # rubocop:todo Metrics/MethodLength
