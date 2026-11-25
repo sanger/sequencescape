@@ -6,4 +6,4 @@ limber_multiplexing_ultima_eqmol_htp:
   request_class_name: Request::Multiplexing
   for_multiplexing: true
   product_line_name: Ultima
-  target_purpose_name: UPF EqMol Pool
+  target_purpose_name: UPF EqMol Norm
