@@ -20,8 +20,9 @@
           <% end %>
         </td>
         <td><%= asset.label %></td>
-        <% unless asset.barcode_number.nil? %>
-          <td><%= "Barcode: #{asset.barcode_number}" %></td>
+        <% barcode = asset.barcode_number || asset.human_barcode %>
+        <% unless barcode.nil? %>
+          <td><%= "Barcode: #{barcode}" %></td>
         <% else %>
           <td></td>
         <% end %>

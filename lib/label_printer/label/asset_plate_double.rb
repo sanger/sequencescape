@@ -15,10 +15,18 @@ module LabelPrinter
       def build_label(plate)
         {
           left_text: plate.human_barcode,
-          right_text: "#{plate.prefix} #{plate.barcode_number}",
+          right_text: right_text(plate),
           barcode: barcode(plate),
           label_name: 'main_label'
         }
+      end
+
+      # The barcode's prefix and number, or the whole barcode when it has no
+      # number, such as an external one
+      def right_text(plate)
+        return plate.human_barcode if plate.barcode_number.blank?
+
+        "#{plate.prefix} #{plate.barcode_number}"
       end
 
       def build_extra_label(plate)
