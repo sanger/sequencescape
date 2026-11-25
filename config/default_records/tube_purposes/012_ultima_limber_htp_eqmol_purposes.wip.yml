@@ -1,0 +1,7 @@
+---
+UPF EqMol Pool:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
+UPF EqMol Norm:
+  type: IlluminaHtp::MxTubePurpose
+  target_type: MultiplexedLibraryTube
