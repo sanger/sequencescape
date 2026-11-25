@@ -189,6 +189,41 @@ describe UatActions::TestSubmission do
     end
   end
 
+  context 'with several plate barcodes supplied' do
+    let(:submission_template) { create(:limber_wgs_submission_template) }
+    let(:plates) { create_list(:plate_with_untagged_wells, 2, sample_count: 4) }
+    let(:parameters) do
+      {
+        submission_template_name: submission_template.name,
+        plate_barcode: plates.map(&:human_barcode).join(' '),
+        number_of_wells_to_submit: '3'
+      }
+    end
+    let(:uat_action) { described_class.new(parameters) }
+
+    before { uat_action.perform }
+
+    it 'makes one order with the chosen wells of each plate' do
+      order = Submission.find(uat_action.report['submission_id']).orders.sole
+      wells_per_plate = order.assets.group_by(&:plate).transform_values(&:size)
+      expect(wells_per_plate).to eq(plates[0] => 3, plates[1] => 3)
+    end
+
+    it 'reports the barcode of each plate' do
+      barcodes =
+        uat_action.report.values_at('plate_barcode_0', 'plate_barcode_1')
+      expect(barcodes).to eq(plates.map(&:human_barcode))
+    end
+
+    it 'reports the number of wells to submit from all plates' do
+      expect(uat_action.report['number_of_wells_to_submit']).to eq 6
+    end
+
+    it 'reports the number of wells with samples on all plates' do
+      expect(uat_action.report['number_of_wells_with_samples']).to eq 8
+    end
+  end
+
   it 'returns a default' do
     expect(described_class.default).to be_a described_class
   end
@@ -227,7 +262,7 @@ describe UatActions::TestSubmission do
       let(:error_message) { format(described_class::ERROR_PLATE_DOES_NOT_EXIST, plate_barcode) }
 
       context 'when the plate does not exist' do
-        let(:plate_barcode) { 'Invalid Plate Barcode' }
+        let(:plate_barcode) { 'INVALID-PLATE-BARCODE' }
 
         it 'adds the error message' do
           expect(uat_action.valid?).to be false
@@ -242,6 +277,18 @@ describe UatActions::TestSubmission do
         it 'does not add the error message' do
           uat_action.valid? # run validations
           expect(uat_action.errors[:plate_barcode]).not_to include(error_message)
+        end
+      end
+
+      context 'when one of several plates does not exist' do
+        let(:plate) { create(:plate) }
+        let(:plate_barcode) { "#{plate.human_barcode} MISSING" }
+
+        it 'adds the error message for the missing plate only' do
+          expect(uat_action.valid?).to be false
+          expect(uat_action.errors[:plate_barcode]).to eq(
+            [format(described_class::ERROR_PLATE_DOES_NOT_EXIST, 'MISSING')]
+          )
         end
       end
     end

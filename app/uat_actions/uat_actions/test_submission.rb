@@ -30,11 +30,12 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
              select_options: -> { compatible_submission_templates }
   form_field :plate_barcode,
              :text_field,
-             label: 'Plate barcode',
+             label: 'Plate barcodes',
              help:
-               'Add the plate which will form part of your submission. ' \
-               'Leave blank to automatically generate compatible labware. ' \
-               'This page does not currently support cross-plate submissions.'
+               'Add the plates which will form part of your submission, ' \
+               'separated by spaces. The wells of all the plates go into ' \
+               'one order. ' \
+               'Leave blank to automatically generate compatible labware.'
   form_field :plate_purpose_name,
              :select,
              label: 'Plate Purpose',
@@ -179,7 +180,9 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
         assets: assets,
         request_options: order_request_options
       )
-    report['plate_barcode_0'] = labware.human_barcode
+    plates.each_with_index do |plate, index|
+      report["plate_barcode_#{index}"] = plate.human_barcode
+    end
     report['submission_id'] = order.submission.id
     report['library_type'] = order.request_options[:library_type] if order.request_options[:library_type].present? &&
       order.request_options[:library_type] != 0
@@ -189,8 +192,10 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['ultima_application'] = ultima_application_name if ultima_application_name.present?
     report['study_name'] = order.study.name
     report['project_name'] = order.project.name
-    report['number_of_wells_with_samples'] = labware.wells.with_aliquots.size
-    report['number_of_samples_in_each_well'] = labware.wells.with_aliquots.first.aliquots.size
+    report['number_of_wells_with_samples'] =
+      plates.sum { |plate| plate.wells.with_aliquots.size }
+    report['number_of_samples_in_each_well'] =
+      plates.first.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
     order.submission.built!
     true
@@ -212,16 +217,16 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     errors.add(:submission_template_name, message)
   end
 
-  # Validates that the plate exists for the specified plate barcode. It is
-  # is skipped if no barcode is provided, because a new plate is generated.
+  # Validates that a plate exists for each specified plate barcode. It is
+  # skipped if no barcode is provided, because a new plate is generated.
   #
   # @return [void]
   def validate_plate_exists
-    return if plate_barcode.blank? # an appropriate plate will be generated
-    return if Plate.find_by_barcode(plate_barcode.strip).present?
+    plate_barcodes.each do |barcode|
+      next if Plate.find_by_barcode(barcode).present?
 
-    message = format(ERROR_PLATE_DOES_NOT_EXIST, plate_barcode)
-    errors.add(:plate_barcode, message)
+      errors.add(:plate_barcode, format(ERROR_PLATE_DOES_NOT_EXIST, barcode))
+    end
   end
 
   # Validates that the plate purpose exists for the specified plate purpose
@@ -310,12 +315,17 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     @assets ||= select_assets
   end
 
-  # take a selection of the wells to go into the submission
+  # take a selection of the wells of each plate to go into the submission
   def select_assets
+    plates.flat_map { |plate| select_wells(plate) }
+  end
+
+  # take a selection of the wells of the plate
+  def select_wells(plate)
     num_wells_to_submit_from_plate = number_of_wells_to_submit.to_i
 
     # fetch wells with aliquots, and remove duplicates in cases where multiple aliquots per well
-    wells_with_aliquots = labware.wells.with_aliquots.uniq
+    wells_with_aliquots = plate.wells.with_aliquots.uniq
 
     # return all wells if a subset is not required or the requested number is greater than the total wells with aliquots
     if num_wells_to_submit_from_plate.zero? || num_wells_to_submit_from_plate > wells_with_aliquots.size
@@ -326,8 +336,20 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     end
   end
 
-  def labware
-    @labware ||= plate_barcode.blank? ? generate_plate : Plate.find_by_barcode(plate_barcode.strip)
+  # The barcodes in the plate barcode field, which takes one or more barcodes
+  # separated by spaces.
+  def plate_barcodes
+    plate_barcode.to_s.split
+  end
+
+  # The plates of the plate barcodes, or a new plate if no barcode is given.
+  def plates
+    @plates ||=
+      if plate_barcodes.empty?
+        [generate_plate]
+      else
+        plate_barcodes.map { |barcode| Plate.find_by_barcode(barcode) }
+      end
   end
 
   # Ensures number of samples per occupied well is at least 1
