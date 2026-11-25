@@ -23,6 +23,11 @@
 #
 # How it retries a task, and gives up on it, is in Retries.
 #
+# When the operation finishes, the job queues its CallbackJob to send the
+# outcome to the calling system. The callback is only queued after all retries
+# of the last task are exhausted, so it is not sent prematurely during a
+# retry cycle.
+#
 # With the y26_283_sapio_reception feature flag off, it only logs that the
 # operation is ready.
 class ApiOperation::CoordinatorJob
@@ -118,6 +123,7 @@ class ApiOperation::CoordinatorJob
       next false unless api_operation.next_task == task
 
       record_outcome(api_operation, task, call_task(api_operation, task))
+      api_operation.enqueue_callback_if_finished!
       true
     end
   end
@@ -159,6 +165,7 @@ class ApiOperation::CoordinatorJob
       next unless api_operation.next_task == task
 
       api_operation.fail_task!(task, [unexpected_error(task, error)])
+      api_operation.enqueue_callback_if_finished!
     end
   end
 

@@ -119,6 +119,13 @@ RSpec.describe ApiOperation::CoordinatorJob do
                          'detail' => 'Barcode in use' }]
         )
       end
+
+      it 'queues the callback job' do
+        perform
+        expect(Delayed::Job.last.payload_object)
+          .to have_attributes(class: ApiOperation::CallbackJob,
+                              api_operation_id: api_operation.id)
+      end
     end
 
     context 'when the reception writes a record, then finds errors' do
@@ -571,6 +578,12 @@ RSpec.describe ApiOperation::CoordinatorJob do
       expect(api_operation.reload.status).to eq('work_order_completed')
     end
 
+    it 'queues the callback job' do
+      expect(Delayed::Job.last.payload_object)
+        .to have_attributes(class: ApiOperation::CallbackJob,
+                            api_operation_id: api_operation.id)
+    end
+
     context 'when the work order finds errors' do
       let(:work_order_errors) { [{ pointer: '/work_order/cost_code', detail: 'cost_code is required' }] }
 
@@ -580,6 +593,12 @@ RSpec.describe ApiOperation::CoordinatorJob do
           error_details: { 'task' => 'work_order', 'errors' => [{ 'pointer' => '/work_order/cost_code',
                                                                   'detail' => 'cost_code is required' }] }
         )
+      end
+
+      it 'queues the callback job' do
+        expect(Delayed::Job.last.payload_object)
+          .to have_attributes(class: ApiOperation::CallbackJob,
+                              api_operation_id: api_operation.id)
       end
     end
   end

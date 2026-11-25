@@ -182,6 +182,10 @@ RSpec.describe ApiOperation do
                  { 'reception_and_work_order' => %w[reception work_order] })
     end
 
+    def callback_job_ids
+      Delayed::Job.all.map(&:payload_object).grep(ApiOperation::CallbackJob).map(&:api_operation_id)
+    end
+
     it 'runs the first task while queued' do
       expect(api_operation.next_task).to eq('reception')
     end
@@ -236,6 +240,7 @@ RSpec.describe ApiOperation do
       before do
         api_operation.complete_task!('reception')
         api_operation.complete_task!('work_order')
+        api_operation.enqueue_callback_if_finished!
       end
 
       it 'has no next task' do
@@ -246,10 +251,41 @@ RSpec.describe ApiOperation do
         expect(api_operation.events.pluck(:task, :outcome))
           .to eq([%w[reception completed], %w[work_order completed]])
       end
+
+      it 'is finished' do
+        expect(api_operation).to be_finished
+      end
+
+      it 'queues one callback job' do
+        expect(callback_job_ids).to eq([api_operation.id])
+      end
+    end
+
+    context 'when only the first task completes' do
+      before { api_operation.complete_task!('reception') }
+
+      it 'is not finished' do
+        expect(api_operation).not_to be_finished
+      end
+
+      it 'queues no callback job' do
+        expect(callback_job_ids).to be_empty
+      end
     end
 
     context 'when a task fails' do
-      before { api_operation.fail_task!('reception', errors) }
+      before do
+        api_operation.fail_task!('reception', errors)
+        api_operation.enqueue_callback_if_finished!
+      end
+
+      it 'is finished' do
+        expect(api_operation).to be_finished
+      end
+
+      it 'queues one callback job' do
+        expect(callback_job_ids).to eq([api_operation.id])
+      end
 
       it 'records the task as failed' do
         expect(api_operation.reload.status).to eq('reception_failed')

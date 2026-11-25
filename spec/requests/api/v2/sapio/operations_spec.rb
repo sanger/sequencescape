@@ -632,6 +632,8 @@ describe 'Sapio Operations API' do
           [->(p) { p.merge(labware: {}) }, '/labware'],
         'a work order section that is not an object' =>
           [->(p) { p.merge(work_order: []) }, '/work_order'],
+        'a null work order section' =>
+          [->(p) { p.merge(work_order: nil) }, '/work_order'],
         'an unknown labware type' =>
           [->(p) { p.merge(labware: [p[:labware].first.merge(type: 'vial')]) },
            '/labware/0/type']
