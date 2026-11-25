@@ -236,7 +236,8 @@ GEM
       actionpack (>= 7.2.0)
     globalid (1.4.0)
       activesupport (>= 6.1)
-    haml (7.2.0)
+    haml (7.5.2)
+      prism (>= 1.1.0)
       temple (>= 0.8.2)
       thor
       tilt
@@ -348,7 +349,7 @@ GEM
     optimist (3.2.1)
     ostruct (0.6.3)
     parallel (2.3.0)
-    parser (3.3.13.0)
+    parser (3.3.14.0)
       ast (~> 2.4.1)
       racc
     patience_diff (1.2.0)
@@ -376,7 +377,7 @@ GEM
     puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.2.8)
+    rack (3.2.9)
     rack-cors (3.0.0)
       logger
       rack (>= 3.0.14)
@@ -449,7 +450,7 @@ GEM
       prism (>= 1.6.0)
       rbs (>= 4.0.0)
       tsort
-    regexp_parser (2.13.1)
+    regexp_parser (2.13.4)
     reline (0.7.0)
       io-console (~> 0.5)
     rest-client (2.1.0)
@@ -496,7 +497,7 @@ GEM
       rspec-support (>= 3.13.0, < 5.0.0)
     rspec-support (3.13.7)
     ruboclean (0.8.0)
-    rubocop (1.92.2)
+    rubocop (1.92.3)
       json (>= 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -507,7 +508,7 @@ GEM
       rubocop-ast (>= 1.49.0, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.52.0)
+    rubocop-ast (1.53.0)
       ast (~> 2.4)
       parser (>= 3.3.7.2)
       prism (>= 1.7)
@@ -595,11 +596,11 @@ GEM
       syntax_tree (>= 2.0.1)
     syslog (0.4.0)
       logger
-    temple (0.10.4)
+    temple (0.10.7)
     test-prof (1.6.4)
       logger
     thor (1.5.0)
-    tilt (2.7.0)
+    tilt (2.9.0)
     timecop (0.9.11)
     timeout (0.6.1)
     traceroute (0.8.1)
