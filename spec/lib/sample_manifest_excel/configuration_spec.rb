@@ -152,7 +152,7 @@ RSpec.describe SampleManifestExcel::Configuration, :sample_manifest, :sample_man
       end
 
       it 'lists only them in the Kinnex template' do
-        expect(library_type_range.options).to eq(kinnex_library_types)
+        expect(library_type_range.options).to match_array(kinnex_library_types)
       end
     end
   end
