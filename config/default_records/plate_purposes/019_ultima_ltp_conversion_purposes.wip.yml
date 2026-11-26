@@ -1,8 +1,7 @@
 ---
-# Created in Limber from the submitted wells of Illumina library plates, and
-# normalised for the Ultima LTP conversion. A conversion submission can also be
-# made on this plate, so it must exist before it can be listed in the request
-# type acceptable purposes.
+# Created in Limber from the wells with conversion requests of Illumina library
+# plates (XP plates or Library Stock Plates), and normalised for the Ultima LTP
+# conversion.
 ULTP DNA Norm:
   input_plate: false
   stock_plate: false

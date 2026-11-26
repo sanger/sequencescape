@@ -1,5 +1,5 @@
 # The conversion submission is made directly on Illumina library plates (XP
-# plates or Library Stock Plates), or on ULTP DNA Norm.
+# plates or Library Stock Plates).
 # The purposes are not checked for this request class (UltimaConversionRequest
 # is a CustomerRequest).
 limber_ultima_ltp_conversion:
@@ -11,7 +11,6 @@ limber_ultima_ltp_conversion:
   billable: true
   product_line_name: Ultima
   acceptable_purposes:
-    - ULTP DNA Norm
     - LB Lib PCR-XP
     - LTN Lib PCR XP
     - RVI Lib PCR XP
