@@ -91,6 +91,36 @@ describe 'SampleManifest controller', :sample_manifest do
     end
   end
 
+  context 'when the compound sample plate feature flag is off' do
+    before do
+      Flipper.disable(:y26_147_1_enable_compound_sample_plate_manifests)
+      page.refresh
+    end
+
+    it 'has no link to create compound sample plate manifests' do
+      expect(page)
+        .to have_no_link('Create manifest for compound sample plates')
+    end
+  end
+
+  context 'when the compound sample plate feature flag is on' do
+    before do
+      Flipper.enable(:y26_147_1_enable_compound_sample_plate_manifests)
+      page.refresh
+    end
+
+    it 'asks for the number of plates' do
+      click_link('Create manifest for compound sample plates')
+      expect(page).to have_field('Plates required')
+    end
+
+    it 'links to the compound sample plate manifest templates' do
+      click_link('Create manifest for compound sample plates')
+      options = ['Select a template', 'Kinnex Compound Sample Plate']
+      expect(page).to have_select('Template', options:)
+    end
+  end
+
   context 'without a type specified' do
     let!(:created_purpose) { create(:plate_purpose, stock_plate: true) }
     let(:flag) { :y26_147_2_enable_compound_sample_tube_manifests }

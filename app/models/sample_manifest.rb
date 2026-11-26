@@ -41,6 +41,9 @@ class SampleManifest < ApplicationRecord # rubocop:todo Metrics/ClassLength
   # Tube asset types
   TUBE_ASSET_TYPES = %w[1dtube library multiplexed_library compound_tube].freeze
 
+  # Plate asset types
+  PLATE_ASSET_TYPES = %w[plate library_plate compound_plate].freeze
+
   module Associations
     def self.included(base)
       base.has_many(:sample_manifests)
