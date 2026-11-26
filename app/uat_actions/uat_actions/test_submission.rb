@@ -133,10 +133,24 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
                minimum: 1
              }
 
+  form_field :number_of_lanes,
+             :number_field,
+             label: 'Number of lanes',
+             help:
+               'The number of sequencing requests for each pool, as the ' \
+               'number of lanes of a bulk submission (for Ultima, one ' \
+               'request per wafer). Leave blank for one.',
+             options: {
+               minimum: 1
+             }
+
   validates :submission_template, presence: { message: 'could not be found' }
   validates :number_of_wells_with_samples, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
   validates :number_of_samples_in_each_well, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
   validates :number_of_wells_to_submit, numericality: { greater_than: 0, only_integer: true, allow_blank: true }
+  validates :number_of_lanes,
+            numericality: { greater_than: 0, only_integer: true,
+                            allow_blank: true }
 
   validate :validate_submission_template_exists
   validate :validate_plate_exists
@@ -173,13 +187,16 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
   # rubocop:todo Metrics/MethodLength
   def perform # rubocop:todo Metrics/AbcSize
     order =
-      submission_template.create_with_submission!(
+      submission_template.create_order!(
         study: study,
         project: project,
         user: user,
         assets: assets,
         request_options: order_request_options
-      )
+      ) do |new_order|
+        apply_number_of_lanes(new_order)
+        new_order.create_submission(user_id: new_order.user_id)
+      end
     plates.each_with_index do |plate, index|
       report["plate_barcode_#{index}"] = plate.human_barcode
     end
@@ -197,6 +214,7 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
     report['number_of_samples_in_each_well'] =
       plates.first.wells.with_aliquots.first.aliquots.size
     report['number_of_wells_to_submit'] = assets.size
+    report['number_of_lanes'] = lanes
     order.submission.built!
     true
   end
@@ -411,6 +429,23 @@ class UatActions::TestSubmission < UatActions # rubocop:todo Metrics/ClassLength
           end
         )
       end
+  end
+
+  # Sets the number of lanes as a bulk submission does: a multiplier for the
+  # last request type of the template, e.g. the sequencing requests. Without
+  # it, each pool gets one request of that type.
+  def apply_number_of_lanes(order)
+    return if number_of_lanes.blank?
+
+    order.request_options[:multiplier] ||= {}
+    order.request_type_multiplier do |request_type_id|
+      order.request_options[:multiplier][request_type_id] = lanes
+    end
+  end
+
+  # The number of lanes; one if left blank
+  def lanes
+    number_of_lanes.present? ? number_of_lanes.to_i : 1
   end
 
   def custom_request_options

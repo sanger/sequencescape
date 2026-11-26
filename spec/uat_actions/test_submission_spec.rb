@@ -224,6 +224,74 @@ describe UatActions::TestSubmission do
     end
   end
 
+  context 'with a number of lanes supplied' do
+    let(:submission_template) { create(:library_and_sequencing_template) }
+    let(:plate) { create(:plate_with_untagged_wells, sample_count: 3) }
+    let(:parameters) do
+      {
+        submission_template_name: submission_template.name,
+        plate_barcode: plate.human_barcode,
+        number_of_lanes: '2'
+      }
+    end
+    let(:uat_action) { described_class.new(parameters) }
+
+    # The requests of the last request type of the template, as for the
+    # number of lanes of a bulk submission. The action only queues the
+    # submission; processing it here builds the requests, as the queued job
+    # does.
+    def requests_of_last_request_type
+      submission = Submission.find(uat_action.report['submission_id'])
+      submission.process!
+      last_request_type_id = submission.orders.sole.request_types.last
+      submission.requests.where(request_type_id: last_request_type_id)
+    end
+
+    it 'makes that many requests of the last request type for each well' do
+      uat_action.perform
+      expect(requests_of_last_request_type.count).to eq 3 * 2
+    end
+
+    it 'reports the number of lanes' do
+      uat_action.perform
+      expect(uat_action.report['number_of_lanes']).to eq 2
+    end
+
+    context 'when it is left blank' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          plate_barcode: plate.human_barcode
+        }
+      end
+
+      it 'makes one request of the last request type for each well' do
+        uat_action.perform
+        expect(requests_of_last_request_type.count).to eq 3
+      end
+
+      it 'reports one lane' do
+        uat_action.perform
+        expect(uat_action.report['number_of_lanes']).to eq 1
+      end
+    end
+
+    context 'when it is not a positive whole number' do
+      let(:parameters) do
+        {
+          submission_template_name: submission_template.name,
+          plate_barcode: plate.human_barcode,
+          number_of_lanes: '0'
+        }
+      end
+
+      it 'is not valid' do
+        expect(uat_action).not_to be_valid
+        expect(uat_action.errors[:number_of_lanes]).to be_present
+      end
+    end
+  end
+
   it 'returns a default' do
     expect(described_class.default).to be_a described_class
   end
