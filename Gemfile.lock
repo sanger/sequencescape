@@ -149,7 +149,7 @@ GEM
       sorted_set (~> 1, >= 1.0.2)
     byebug (13.0.0)
       reline (>= 0.6.0)
-    cancancan (3.7.0)
+    cancancan (3.7.1)
     capybara (3.40.0)
       addressable
       matrix
@@ -373,7 +373,7 @@ GEM
       date
       stringio
     public_suffix (7.0.5)
-    puma (8.0.2)
+    puma (8.1.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.8)
