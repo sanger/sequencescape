@@ -14,7 +14,9 @@ class UatActions::GenerateAndReleaseBatch < UatActions
   form_field :tube_2_barcode,
              :text_field,
              label: 'Tube 2 Barcode',
-             help: 'Enter the barcode of the second tube (mandatory).'
+             help: 'Enter the barcode of the second tube (mandatory). It can ' \
+                   'be the first tube again if that tube has two requests, ' \
+                   'e.g. one pool on both wafers.'
   form_field :pipeline_name,
              :select,
              label: 'Pipeline name',
@@ -73,14 +75,30 @@ class UatActions::GenerateAndReleaseBatch < UatActions
     nil
   end
 
+  # Finds a pending request of the pipeline for each tube. The same tube can be
+  # given twice when it has two requests, e.g. one pool sequenced on both
+  # wafers of an Ultima batch: each tube takes a request not taken yet.
   def find_requests(pipeline, tubes)
-    requests = tubes.map { |tube| pipeline.requests.inputs.find_by(asset_id: tube.receptacle.id) }
-    requests.each_with_index do |request, index|
-      errors.add(:base, "No pending request for Tube #{index + 1} was found in #{pipeline.name}.") unless request
+    requests = []
+    tubes.each_with_index do |tube, index|
+      request = next_request_for(pipeline, tube, requests)
+      message = "No pending request for Tube #{index + 1} was found in " \
+                "#{pipeline.name}."
+      errors.add(:base, message) unless request
+      requests << request
     end
     return if requests.any?(&:nil?)
 
     requests
+  end
+
+  # A pending request of the pipeline from the tube, other than the requests
+  # already taken for the batch
+  def next_request_for(pipeline, tube, taken)
+    pipeline.requests.inputs
+      .where(asset_id: tube.receptacle.id)
+      .where.not(id: taken.compact.map(&:id))
+      .first
   end
 
   def build_batch(pipeline, requests)
