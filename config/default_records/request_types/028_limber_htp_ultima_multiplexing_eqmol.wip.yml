@@ -1,0 +1,18 @@
+---
+limber_multiplexing_ultima_eqmol_htp:
+  name: Limber Multiplexing Ultima EqMol HTP
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Ultima
+  target_purpose_name: UPF EqMol Norm
+
+limber_multiplexing_ultima_ug200_eqmol_htp:
+  name: Limber Multiplexing Ultima UG200 EqMol HTP
+  asset_type: Well
+  order: 2
+  request_class_name: Request::Multiplexing
+  for_multiplexing: true
+  product_line_name: Ultima
+  target_purpose_name: UPF2 EqMol Norm
