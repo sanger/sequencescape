@@ -85,6 +85,45 @@ describe UatActions::GenerateAndReleaseBatch do
     end
   end
 
+  # One pool sequenced on both wafers of an Ultima batch: one tube with two
+  # sequencing requests (e.g. a submission with two lanes)
+  context 'when the same tube is given as both tubes' do
+    let(:action) do
+      described_class.new(
+        tube_1_barcode: tube_one.human_barcode,
+        tube_2_barcode: tube_one.human_barcode,
+        pipeline_name: pipeline_name
+      )
+    end
+
+    context 'with two pending requests on it' do
+      let(:request_two) do
+        create(
+          request_factory,
+          asset: tube_one,
+          request_type: pipeline.request_types.first,
+          state: 'pending'
+        )
+      end
+
+      it 'includes both requests of the tube' do
+        action.save
+
+        expect(released_batch.requests)
+          .to contain_exactly(request_one, request_two)
+      end
+    end
+
+    context 'with one pending request on it' do
+      it 'reports that Tube 2 has no pending request', :aggregate_failures do
+        expect(action.save).to be false
+        expect(action.errors[:base])
+          .to include('No pending request for Tube 2 was found in Ultima.')
+        expect(Batch.count).to eq(0)
+      end
+    end
+  end
+
   context 'when a tube has no pending request in the selected pipeline' do
     let(:request_one) do
       create(request_factory, asset: tube_one, request_type: pipeline.request_types.first, state: 'passed')
