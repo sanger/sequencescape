@@ -73,16 +73,9 @@ jobs:
       - name: Setup stable Chrome
         uses: sanger/.github/.github/actions/tests/setup-chrome@master
         with:
-          chrome-version: 128
+          chrome-version: 156
           install-chromedriver: true
           install-dependencies: true
-
-      # The runner image also ships Chromium. Selenium 4.52 picks it
-      # before the pinned Chrome on PATH, so remove it.
-      - name: Remove image-bundled Chromium
-        run: |
-          sudo rm -rf /usr/bin/chromium /usr/bin/chromium-browser \
-            /usr/local/share/chromium
 
       # Establish a cache of js modules to improve performance
       - name: Cache JS
