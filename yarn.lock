@@ -3387,10 +3387,10 @@ systemjs@^6.15.1:
   resolved "https://registry.yarnpkg.com/systemjs/-/systemjs-6.15.1.tgz#74175b6810e27a79e1177d21db5f0e3057118cea"
   integrity sha512-Nk8c4lXvMB98MtbmjX7JwJRgJOL8fluecYCfCeYBznwmpOs8Bf15hLM6z4z71EDAhQVrQrI+wt1aLWSXZq+hXA==
 
-terser@^5.51.2:
-  version "5.51.2"
-  resolved "https://registry.yarnpkg.com/terser/-/terser-5.51.2.tgz#555912425a7f2ff7737425c3718fa76c7069f6ef"
-  integrity sha512-bWnjSNscmuI+GJze6ZupnHP8G/cTcsJF+bXCeQknk2SHQsgbNJnLrqiH9jZ2W4STPVXH2mDKKRX3iwPhc9Cn/Q==
+terser@^5.51.4:
+  version "5.51.4"
+  resolved "https://registry.yarnpkg.com/terser/-/terser-5.51.4.tgz#b3874fdb414054ec2cb54522fef78c6773a0fc85"
+  integrity sha512-VPi1CkDvCWLGUVIToctNBG+NdHbSXwOPjHJnQ3pdB0XknaldnI76wSkAFOGxV2ZdkzOP5d6gpQ5c58XvDghRvw==
   dependencies:
     "@jridgewell/source-map" "^0.3.3"
     acorn "^8.15.0"
